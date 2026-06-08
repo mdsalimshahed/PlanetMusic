@@ -31,10 +31,25 @@ const LyricsDisplay = ({
                 onClick={() => handleLineClick(seekTarget)}
                 style={{ cursor: seekTarget !== null ? 'pointer' : 'default' }}
               >
-                <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' } : { color: line.color, textShadow: `0 0 20px ${line.color}80` }) : {}}>
-                  {line.text}
-                </span>
-                {savedNode?.pronunciation && <span className="pronunciation-text">{savedNode.pronunciation}</span>}
+                {Array.isArray(savedNode?.pronunciation) ? (
+                  <span className="sync-text-chunks">
+                    {savedNode.pronunciation.map((chunk, idx) => (
+                      <ruby key={idx} className="lyric-chunk">
+                        <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' } : { color: line.color, textShadow: `0 0 20px ${line.color}80` }) : {}}>
+                          {chunk.text}
+                        </span>
+                        {chunk.pron && <rt className="pronunciation-text">{chunk.pron}</rt>}
+                      </ruby>
+                    ))}
+                  </span>
+                ) : (
+                  <ruby className="lyric-chunk">
+                    <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' } : { color: line.color, textShadow: `0 0 20px ${line.color}80` }) : {}}>
+                      {line.text}
+                    </span>
+                    {savedNode?.pronunciation && <rt className="pronunciation-text">{savedNode.pronunciation}</rt>}
+                  </ruby>
+                )}
               </div>
             );
           })}
@@ -53,10 +68,25 @@ const LyricsDisplay = ({
                 className={`focused-line ${isActive ? 'active' : ''}`}
                 onClick={() => handleLineClick(seekTarget)}
               >
-                <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.4))' } : { color: line.color, textShadow: `0 0 30px ${line.color}80` }) : {}}>
-                  {line.text}
-                </span>
-                {savedNode?.pronunciation && <span className="pronunciation-text">{savedNode.pronunciation}</span>}
+                {Array.isArray(savedNode?.pronunciation) ? (
+                  <span className="sync-text-chunks">
+                    {savedNode.pronunciation.map((chunk, idx) => (
+                      <ruby key={idx} className="lyric-chunk">
+                        <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.4))' } : { color: line.color, textShadow: `0 0 30px ${line.color}80` }) : {}}>
+                          {chunk.text}
+                        </span>
+                        {chunk.pron && <rt className="pronunciation-text">{chunk.pron}</rt>}
+                      </ruby>
+                    ))}
+                  </span>
+                ) : (
+                  <ruby className="lyric-chunk">
+                    <span className="primary-text" style={isActive ? (line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.4))' } : { color: line.color, textShadow: `0 0 30px ${line.color}80` }) : {}}>
+                      {line.text}
+                    </span>
+                    {savedNode?.pronunciation && <rt className="pronunciation-text">{savedNode.pronunciation}</rt>}
+                  </ruby>
+                )}
               </div>
             );
           })}

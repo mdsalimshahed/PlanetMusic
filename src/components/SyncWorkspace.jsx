@@ -8,7 +8,6 @@ const SyncWorkspace = ({
   syncAudioRef, syncAudioSrc, handleSyncTimeUpdate, setIsSyncPlaying, activeLineRef
 }) => {
   
-  // Reliably capture audio length even if the file is instantly cached
   const handleAudioLoaded = (e) => {
     if (e.target.readyState > 0) {
       setSyncDuration(e.target.duration || 0);
@@ -61,10 +60,25 @@ const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper">
-                <span className="sync-text" style={line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: line.color }}>
-                  {line.text}
-                </span>
-                {line.pronunciation && <span className="sync-pronunciation">{line.pronunciation}</span>}
+                {Array.isArray(line.pronunciation) ? (
+                  <span className="sync-text-chunks">
+                    {line.pronunciation.map((chunk, idx) => (
+                      <ruby key={idx} className="lyric-chunk">
+                        <span className="sync-text" style={line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: line.color }}>
+                          {chunk.text}
+                        </span>
+                        {chunk.pron && <rt className="sync-pronunciation">{chunk.pron}</rt>}
+                      </ruby>
+                    ))}
+                  </span>
+                ) : (
+                  <ruby className="lyric-chunk">
+                    <span className="sync-text" style={line.isGradient ? { backgroundImage: line.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: line.color }}>
+                      {line.text}
+                    </span>
+                    {line.pronunciation && <rt className="sync-pronunciation">{line.pronunciation}</rt>}
+                  </ruby>
+                )}
               </div>
               <span className="sync-time">{formatPreciseTime(line.start)} - {formatPreciseTime(line.end)}</span>
             </div>
@@ -72,7 +86,6 @@ const SyncWorkspace = ({
         })}
       </div>
 
-      {/* AUDIO ELEMENT FIX: Double binding onDurationChange & onLoadedMetadata */}
       <audio 
         ref={syncAudioRef} 
         src={syncAudioSrc}
