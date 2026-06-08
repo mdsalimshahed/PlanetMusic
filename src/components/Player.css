@@ -1,0 +1,209 @@
+/* --- src/components/Player.css --- */
+.global-player {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 900px;
+  height: 80px;
+  padding: 0 24px;
+  border-radius: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  z-index: 10000; /* Increased so it hovers above the modal */
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+  animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUpPlayer {
+  from { bottom: -100px; opacity: 0; transform: translate(-50%, 20px) scale(0.9); }
+  to { bottom: 24px; opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+/* --- Left: Info & Interactive Art --- */
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.album-art-container {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.album-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: spin 10s linear infinite;
+}
+
+.album-art.paused {
+  animation-play-state: paused;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.album-art-container:hover .play-overlay,
+.play-overlay.show-play {
+  opacity: 1;
+}
+
+.player-text {
+  overflow: hidden;
+}
+
+.player-text h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-text p {
+  font-size: 13px;
+  color: var(--text-subdued);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Center: Wide Seek Bar --- */
+.player-center-controls {
+  flex: 2; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.time-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-subdued);
+  min-width: 35px;
+  text-align: center;
+  font-variant-numeric: tabular-nums; 
+}
+
+/* --- Right: Small Volume & Close --- */
+.player-right-controls {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: 180px;
+}
+
+.volume-icon {
+  font-size: 18px;
+  color: var(--text-subdued);
+  margin-right: -4px;
+}
+
+.close-player {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.close-player:hover {
+  background: var(--accent);
+  color: black;
+  transform: scale(1.1);
+}
+
+/* --- Universal Custom Sliders --- */
+.custom-slider {
+  -webkit-appearance: none;
+  background: transparent;
+  height: 6px;
+  cursor: pointer;
+}
+
+.progress-slider {
+  flex: 1;
+}
+
+.volume-slider {
+  width: 70px; 
+}
+
+.custom-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.custom-slider:hover::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: white;
+  margin-top: -5px; 
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  transition: transform 0.1s ease, background 0.2s;
+}
+
+.custom-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background: var(--accent);
+}

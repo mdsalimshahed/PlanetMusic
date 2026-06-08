@@ -1,0 +1,27 @@
+.ambient-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--base-bg);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: float 20s infinite ease-in-out alternate;
+  opacity: 0.6;
+}
+
+.orb-1 { width: 600px; height: 600px; background: #4a00e0; top: -100px; left: -100px; }
+.orb-2 { width: 500px; height: 500px; background: #8e2de2; bottom: -50px; right: -50px; animation-delay: -5s; }
+.orb-3 { width: 400px; height: 400px; background: #00c6ff; top: 40%; left: 40%; animation-delay: -10s; opacity: 0.4; }
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(100px, 50px) scale(1.2); }
+}

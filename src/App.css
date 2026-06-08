@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --base-bg: #050510;
+  --text-base: #ffffff;
+  --text-subdued: rgba(255, 255, 255, 0.6);
+  --accent: #b388eb; 
+  --accent-glow: rgba(179, 136, 235, 0.8);
+  
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-heavy: rgba(10, 10, 25, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  
+  --font-family: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--base-bg);
+  color: var(--text-base);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; 
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.glass-panel-heavy {
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.glass-panel-light {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--glass-highlight);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.search-container {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 30;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 500px;
+  padding: 0 24px;
+  width: 600px;
+  max-width: 100%;
+  height: 50px;
+  transition: all 0.3s;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.search-box:focus-within {
+  border-color: var(--accent);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px rgba(179, 136, 235, 0.3);
+}
+
+.search-icon {
+  color: var(--text-subdued);
+  font-size: 20px;
+  margin-right: 16px;
+}
+
+.search-box input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-base);
+  font-size: 16px;
+  outline: none;
+  font-family: var(--font-family);
+}
+
+.search-box input::placeholder {
+  color: var(--text-subdued);
+}
+
+.hidden-submit {
+  display: none;
+}
+
+.content-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 40px 100px 40px; 
+}
+
+.content-scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.content-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--glass-highlight);
+  border-radius: 10px;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  letter-spacing: -0.5px;
+}
+
+/* --- MASONRY LAYOUT UPDATES --- */
+.track-grid {
+  column-width: var(--dyn-card-width, 200px);
+  column-gap: var(--dyn-card-gap, 28px);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.empty-message {
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: var(--dyn-border-radius);
+  padding: 40px;
+}
+
+.empty-message h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.empty-message p {
+  color: var(--text-subdued);
+  font-size: 18px;
+}
