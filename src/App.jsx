@@ -13,7 +13,15 @@ const App = () => {
   
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
-    return saved ? JSON.parse(saved) : {
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Ensure the new settings exist for returning users
+      if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
+      if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 34;
+      if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
+      return parsed;
+    }
+    return {
       cardFontSize: 16,
       modalFontSize: 56,
       cardWidth: 200,
@@ -21,7 +29,10 @@ const App = () => {
       cardGap: 28,
       isRounded: true,
       borderRadius: 16,
-      persistentMemory: true
+      persistentMemory: true,
+      bgImageOpacity: 0.25,
+      liveSyncFontSize: 34,
+      focusedSyncFontSize: 42
     };
   });
 
@@ -60,10 +71,7 @@ const App = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-
-    if (activeTab === 'library' || activeTab === 'settings') {
-      return; 
-    }
+    if (activeTab === 'library' || activeTab === 'settings') return; 
 
     setIsSearching(true);
     try {
@@ -103,29 +111,19 @@ const App = () => {
   const handleExport = () => {
     if (library.length === 0) return alert("Your vault is empty! Add songs before exporting.");
     
-    // OPTIMIZATION: Prune redundant and useless data before exporting
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song };
-      
-      // 1. If syncData exists, delete the raw lyrics completely to prevent duplicate storage
-      if (optimizedSong.syncData && optimizedSong.syncData.length > 0) {
-        delete optimizedSong.lyrics;
-      }
-
-      // 2. Strip useless iTunes API bulk that we never display in the UI
+      if (optimizedSong.syncData && optimizedSong.syncData.length > 0) delete optimizedSong.lyrics;
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
       delete optimizedSong.collectionCensoredName;
       delete optimizedSong.artistViewUrl;
       delete optimizedSong.trackViewUrl;
-
       return optimizedSong;
     });
 
     const exportData = { library: optimizedLibrary, settings: settings };
-    
-    // OPTIMIZATION: Removed 'null, 2' to minify the JSON. No line breaks = massive size reduction!
     const jsonString = JSON.stringify(exportData); 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -180,6 +178,8 @@ const App = () => {
     '--dyn-card-padding': `${settings.cardPadding}px`,
     '--dyn-card-gap': `${settings.cardGap}px`,
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
+    '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}px`,
+    '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}px`,
   };
 
   const filteredLibrary = library.filter(song => {
@@ -201,6 +201,7 @@ const App = () => {
         setActiveTab={setActiveTab} 
         handleExport={handleExport}
         handleImport={handleImport}
+        openSettings={() => setActiveTab('settings')}
       />
 
       <main className="main-content">
@@ -288,6 +289,8 @@ const App = () => {
         toggleLibrary={toggleLibrary}
         updateSongInLibrary={updateSongInLibrary}
         setCurrentTrack={setCurrentTrack} 
+        currentTrack={currentTrack}
+        settings={settings}
       />
 
       <Player currentTrack={currentTrack} setCurrentTrack={setCurrentTrack} />
