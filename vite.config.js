@@ -13,7 +13,6 @@ export default defineConfig({
   },
   build: {
     // Prevent aggressive CSS minification that might remove important rules
-    minify: 'terser',
     cssMinify: 'lightningcss'
   }
 })
