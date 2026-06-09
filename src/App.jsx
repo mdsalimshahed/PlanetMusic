@@ -113,7 +113,8 @@ const App = () => {
     
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song };
-      if (optimizedSong.syncData && optimizedSong.syncData.length > 0) delete optimizedSong.lyrics;
+      // REMOVED: The line that deleted raw lyrics when sync data was present is now gone.
+      // The raw pasted lyrics will now be exported exactly as they are.
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
