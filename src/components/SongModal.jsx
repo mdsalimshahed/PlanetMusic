@@ -347,10 +347,18 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const releaseType = isSingle ? 'Single' : selectedSong.collectionName || 'Single';
   const highResArt = selectedSong.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
   
+  // Format the milliseconds into M:SS for the search query
+  const minutes = Math.floor(selectedSong.trackTimeMillis / 60000);
+  const seconds = ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0);
+  const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+  // Add the time string to the YouTube search query
   const searchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`);
+  const ytSearchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`);
+
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
-    yt: customData.yt || `https://music.youtube.com/search?q=${searchQuery}`,
+    yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
     deezer: customData.deezer || `https://www.deezer.com/search/${searchQuery}`,
   };
 

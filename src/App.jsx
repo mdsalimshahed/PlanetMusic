@@ -68,25 +68,43 @@ const App = () => {
     }
   }, [settings, library, searchQuery, searchResults]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    if (activeTab === 'library' || activeTab === 'settings') return; 
-
-    setIsSearching(true);
-    try {
-      const response = await fetch(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
-      );
-      const data = await response.json();
-      setSearchResults(data.results);
-      setActiveTab('search'); 
-    } catch (error) {
-      console.error('Error fetching songs:', error);
-      alert('Failed to search for songs.');
-    } finally {
-      setIsSearching(false);
+  // --- NEW: Clear search query when switching between Discover and Vault tabs ---
+  const handleTabSwitch = (tab) => {
+    if (activeTab !== tab) {
+      setSearchQuery('');
+      setActiveTab(tab);
     }
+  };
+
+  // --- NEW: Debounced Live Search ---
+  useEffect(() => {
+    // Only fetch automatically if we are in the Discover (search) tab
+    if (activeTab !== 'search') return;
+    if (!searchQuery.trim()) return;
+
+    // Wait 400ms after the user stops typing before making the API request
+    const debounceTimer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const response = await fetch(
+          `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
+        );
+        const data = await response.json();
+        setSearchResults(data.results);
+      } catch (error) {
+        console.error('Error fetching songs:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+
+    // Cleanup the timer if the user types again before the 400ms is up
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, activeTab]);
+
+  // Prevent default form submission since search is now live
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
   };
 
   const toggleLibrary = (e, song) => {
@@ -113,8 +131,7 @@ const App = () => {
     
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song };
-      // REMOVED: The line that deleted raw lyrics when sync data was present is now gone.
-      // The raw pasted lyrics will now be exported exactly as they are.
+      // Preserving raw lyrics as requested in the previous step
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
@@ -153,7 +170,7 @@ const App = () => {
           });
           setLibrary(newLibrary);
           if (parsedData.settings) setSettings({ ...settings, ...parsedData.settings });
-          setActiveTab('library');
+          handleTabSwitch('library');
           alert(`Successfully imported ${parsedData.library.length} songs and applied UI settings!`);
         } else if (Array.isArray(parsedData)) {
           const newLibrary = [...library];
@@ -161,7 +178,7 @@ const App = () => {
             if (!newLibrary.some(s => s.trackId === newSong.trackId)) newLibrary.push(newSong);
           });
           setLibrary(newLibrary);
-          setActiveTab('library');
+          handleTabSwitch('library');
           alert(`Successfully imported ${parsedData.length} songs!`);
         }
       } catch (err) {
@@ -199,16 +216,16 @@ const App = () => {
 
       <Topbar 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleTabSwitch} 
         handleExport={handleExport}
         handleImport={handleImport}
-        openSettings={() => setActiveTab('settings')}
+        openSettings={() => handleTabSwitch('settings')}
       />
 
       <main className="main-content">
         {activeTab !== 'settings' && (
           <div className="search-container glass-panel-light">
-            <form onSubmit={handleSearch} className="search-box glass-input">
+            <form onSubmit={handleSearchSubmit} className="search-box glass-input">
               <span className="search-icon">🔎</span>
               <input
                 type="text"
