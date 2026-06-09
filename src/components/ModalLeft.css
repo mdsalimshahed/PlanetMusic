@@ -98,3 +98,6 @@
 .sync-instructions-left strong { color: var(--accent); }
 .instruction-row { display: flex; gap: 8px; }
 .instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
+.modal-left-col {
+  overflow: hidden !important;
+}
