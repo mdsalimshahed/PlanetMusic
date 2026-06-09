@@ -1,7 +1,31 @@
 /* --- src/components/ModalLeft.css --- */
-.modal-left-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; /* <-- ADD THIS LINE */}
-.modal-left-static { display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; padding-right: 12px; margin-bottom: 20px; }
-.modal-left-scrollable { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-right: 12px; padding-bottom: 24px; min-height: 0; /* <-- ADD THIS LINE HERE TOO just to be safe */}
+.modal-left-col { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden; 
+  min-height: 0; /* Ensures the flex container can shrink */
+}
+
+.modal-left-static { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  flex-shrink: 0; 
+  padding-right: 12px; 
+  margin-bottom: 20px; 
+}
+
+.modal-left-scrollable { 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 20px; 
+  overflow-y: auto; 
+  padding-right: 12px; 
+  padding-bottom: 24px; 
+  min-height: 0; /* Forces the browser to activate the scrollbar */
+}
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
