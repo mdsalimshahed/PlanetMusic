@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { saveAudioFile, deleteAudioFile, getAudioFile } from '../db';
 import { getBulkPronunciations } from '../transliterator'; 
-import { getDistinctArtistColors, parseLyrics, fetchSingerImage, cleanUrl, cleanImageUrl } from '../utils/songHelpers';
+import { getDistinctArtistColors, parseLyrics, fetchSingerImage, cleanUrl, cleanImageUrl, fetchLRCLIB, fetchYouLyrics, parseLRC, mergeSyncWithGenius } from '../utils/songHelpers';
 import ModalLeft from './ModalLeft';
 import ModalRight from './ModalRight';
 import './SongModal.css';
@@ -12,6 +12,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {} });
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isSyncLoading, setIsSyncLoading] = useState(false);
+  const [isLrcFetching, setIsLrcFetching] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false); 
   const [syncData, setSyncData] = useState([]);
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
@@ -24,6 +25,8 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const [singerImages, setSingerImages] = useState({});
   const [currentSingerBg, setCurrentSingerBg] = useState(null); 
   const [isSingerVisible, setIsSingerVisible] = useState(false);
+  
+  const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   
   const singerTimeoutRef = useRef(null);
   const activeSingerRef = useRef(null); 
@@ -60,6 +63,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         setIsSingerVisible(false);
         activeSingerRef.current = null; 
         setPlaybackRate(1.0); 
+        setDebugInfo({ source: 'Local Vault / Cache', rawData: null }); 
       }
 
       const rawLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
@@ -194,16 +198,31 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
 
+    let updatedSyncData = selectedSong.syncData;
+
+    // IF LRCLIB DATA ALREADY EXISTS AND USER JUST PASTED GENIUS LYRICS -> MERGE THEM!
+    if (updatedSyncData && updatedSyncData.some(l => l.start !== null)) {
+      if (customData.lyrics.includes('[')) {
+        updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
+      } else if (updatedSyncData.length === parsedLines.length) {
+        updatedSyncData = updatedSyncData.map((line, idx) => ({ 
+          ...line, 
+          text: parsedLines[idx].text, 
+          singer: parsedLines[idx].singer, 
+          color: parsedLines[idx].color, 
+          isGradient: parsedLines[idx].isGradient, 
+          gradient: parsedLines[idx].gradient 
+        }));
+      }
+    }
+
     const updatedSong = { 
       ...selectedSong, 
       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
-      artistImages: customData.artistImages 
+      artistImages: customData.artistImages,
+      syncData: updatedSyncData // Important: saves the newly merged data!
     };
-
-    if (updatedSong.syncData && updatedSong.syncData.length === parsedLines.length) {
-      updatedSong.syncData = updatedSong.syncData.map((line, idx) => ({ ...line, text: parsedLines[idx].text, singer: parsedLines[idx].singer, color: parsedLines[idx].color, isGradient: parsedLines[idx].isGradient, gradient: parsedLines[idx].gradient }));
-    }
 
     updateSongInLibrary(updatedSong);
     setIsEditing(false);
@@ -242,6 +261,119 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     setIsSyncMode(false);
   };
 
+  const handleAutoSyncDatabases = async () => {
+    if (!isSaved) return alert("Please add this song to your Vault first before auto-syncing!");
+    setIsLrcFetching(true);
+    
+    try {
+      let finalSyncData = null;
+      let finalPlainText = "";
+      let hasWordSync = false;
+      let finalSource = 'None';
+      let finalRawData = null;
+      
+      const youData = await fetchYouLyrics(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
+      let youParsed = null;
+      let youHasWordSync = false;
+      
+      if (youData && youData.syncedLyrics) {
+        const masterPalette = getDistinctArtistColors(youData.syncedLyrics, selectedSong.artistName);
+        youParsed = parseLRC(youData.syncedLyrics, selectedSong.artistName, masterPalette);
+        youHasWordSync = youParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
+      }
+
+      if (youHasWordSync) {
+        finalSyncData = youParsed.syncData;
+        finalPlainText = youParsed.plainTextLyrics;
+        hasWordSync = true;
+        finalSource = 'YouLyrics API';
+        finalRawData = youData;
+      } else {
+        const lrcData = await fetchLRCLIB(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
+        
+        if (lrcData && lrcData.syncedLyrics) {
+          const masterPalette = getDistinctArtistColors(lrcData.syncedLyrics, selectedSong.artistName);
+          const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
+          const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
+          
+          if (lrcHasWordSync || !youParsed) {
+            finalSyncData = lrcParsed.syncData;
+            finalPlainText = lrcParsed.plainTextLyrics;
+            hasWordSync = lrcHasWordSync;
+            finalSource = 'LRCLIB API';
+            finalRawData = lrcData;
+          } else {
+            finalSyncData = youParsed.syncData;
+            finalPlainText = youParsed.plainTextLyrics;
+            finalSource = 'YouLyrics API (Fallback)';
+            finalRawData = youData;
+          }
+        } else if (youParsed) {
+          finalSyncData = youParsed.syncData;
+          finalPlainText = youParsed.plainTextLyrics;
+          finalSource = 'YouLyrics API (Fallback)';
+          finalRawData = youData;
+        } else {
+          if (youData && youData.plainLyrics) {
+            finalPlainText = youData.plainLyrics;
+            finalSource = 'YouLyrics API (Plain Text)';
+            finalRawData = youData;
+          } else if (lrcData && lrcData.plainLyrics) {
+            finalPlainText = lrcData.plainLyrics;
+            finalSource = 'LRCLIB API (Plain Text)';
+            finalRawData = lrcData;
+          }
+        }
+      }
+
+      setDebugInfo({ source: finalSource, rawData: finalRawData });
+
+      if (!finalSyncData && !finalPlainText) {
+        alert("No lyrics found in YouLyrics or LRCLIB for this track.");
+        setIsLrcFetching(false);
+        return;
+      }
+
+      if (finalSyncData) {
+        // IF USER HAS ALREADY PASTED GENIUS LYRICS -> MERGE WITH LRCLIB TIMESTAMPS
+        if (customData.lyrics && customData.lyrics.includes('[')) {
+          const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
+          finalSyncData = mergeSyncWithGenius(finalSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
+          finalPlainText = customData.lyrics; // Retain user's custom Genius headers!
+        }
+
+        const linesText = finalSyncData.map(l => l.text);
+        const pronunciations = await getBulkPronunciations(linesText);
+        
+        finalSyncData = finalSyncData.map((line, i) => ({
+          ...line,
+          pronunciation: pronunciations[i]
+        }));
+
+        const updatedSong = { ...selectedSong, syncData: finalSyncData, lyrics: finalPlainText };
+        updateSongInLibrary(updatedSong);
+        setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
+        setSyncData(finalSyncData);
+        
+        if (hasWordSync) {
+          alert("Successfully auto-synced! (✨ Word-by-word Karaoke sync found!)");
+        } else {
+          alert("Successfully auto-synced! (Note: Only Line-by-Line sync was available in the database for this track)");
+        }
+      } else {
+        const updatedSong = { ...selectedSong, lyrics: finalPlainText };
+        updateSongInLibrary(updatedSong);
+        setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
+        alert("Imported plain lyrics (Synced lyrics were not available in either database).");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error fetching lyrics from databases.");
+    } finally {
+      setIsLrcFetching(false);
+    }
+  };
+
   const toggleSyncPlay = () => {
     if (!syncAudioRef.current) return;
     if (syncAudioRef.current.paused) syncAudioRef.current.play().catch(err => console.log("Playback prevented:", err));
@@ -278,7 +410,13 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   };
 
   const handleSpeedChange = (e) => setPlaybackRate(parseFloat(e.target.value));
-  const cycleViewMode = () => setLyricsViewMode(prev => prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live');
+  
+  const cycleViewMode = () => setLyricsViewMode(prev => 
+    prev === 'live' ? 'focused' : 
+    prev === 'focused' ? 'karaoke' : 
+    prev === 'karaoke' ? 'debug' :
+    prev === 'debug' ? 'plain' : 'live'
+  );
 
   const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
@@ -296,12 +434,12 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   }
 
   useEffect(() => {
-    if (!isSyncMode && !isEditing && !isImageManagerOpen && (lyricsViewMode === 'live' || lyricsViewMode === 'focused') && activePreviewRef.current) {
+    if (!isSyncMode && !isEditing && !isImageManagerOpen && (lyricsViewMode === 'live' || lyricsViewMode === 'focused' || lyricsViewMode === 'karaoke') && activePreviewRef.current) {
       const container = activePreviewRef.current.parentElement;
       const offsetTop = activePreviewRef.current.offsetTop;
       const scrollPos = offsetTop - (container.clientHeight / 2) + (activePreviewRef.current.clientHeight / 2);
       
-      if (lyricsViewMode === 'live') container.scrollTop = scrollPos;
+      if (lyricsViewMode === 'live' || lyricsViewMode === 'karaoke') container.scrollTop = scrollPos;
       else container.scrollTo({ top: scrollPos, behavior: 'smooth' });
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
@@ -347,12 +485,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const releaseType = isSingle ? 'Single' : selectedSong.collectionName || 'Single';
   const highResArt = selectedSong.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
   
-  // Format the milliseconds into M:SS for the search query
   const minutes = Math.floor(selectedSong.trackTimeMillis / 60000);
   const seconds = ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0);
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-  // Add the time string to the YouTube search query
   const searchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`);
   const ytSearchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`);
 
@@ -367,10 +503,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   const sharedProps = {
     selectedSong, isSaved, customData, isEditing, setIsEditing, isSyncMode, setIsSyncMode,
-    isSyncLoading, isImageManagerOpen, setIsImageManagerOpen, syncData, activeSyncIndex,
-    syncProgress, syncDuration, setSyncDuration, isSyncPlaying, syncAudioSrc, playbackRate, singerImages, // NOTE: added setSyncDuration here
+    isSyncLoading, isLrcFetching, handleAutoSyncDatabases, isImageManagerOpen, setIsImageManagerOpen, syncData, activeSyncIndex,
+    syncProgress, syncDuration, setSyncDuration, isSyncPlaying, syncAudioSrc, playbackRate, singerImages,
     currentSingerBg, isSingerVisible, settings, lyricsViewMode, liveParsedLyrics, activePreviewIndex, hasValidSyncData,
-    highResArt, releaseType, finalLinks, masterPalette, allPotentialSingers,
+    highResArt, releaseType, finalLinks, masterPalette, allPotentialSingers, globalProgress, debugInfo,
     handleDataChange, handleImageChange, handleLocalFileChange, handleClearLocal,
     saveData, saveImageManager, startSyncMode, saveSyncData, toggleSyncPlay,
     handleSyncSeek, handleSpeedChange, handleLineClick, cycleViewMode, toggleLibrary,

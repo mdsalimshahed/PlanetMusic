@@ -33,3 +33,4 @@
 .modal-two-column-layout {
   display: flex; height: calc(100% - 50px); margin-top: 50px; gap: 32px; padding: 0 40px 24px 40px; overflow: hidden;
 }
+
