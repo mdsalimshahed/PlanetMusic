@@ -28,8 +28,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   
-  const singerTimeoutRef = useRef(null);
-  const activeSingerRef = useRef(null); 
+  const silenceTimerRef = useRef(null);
 
   const [lyricsViewMode, setLyricsViewMode] = useState('live'); 
   const [globalProgress, setGlobalProgress] = useState(0);
@@ -46,6 +45,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   const trackNameData = selectedSong ? parseTrackName(selectedSong.trackName) : { mainTitle: '', extras: [], featuredArtists: [] };
   const featuredArtists = trackNameData.featuredArtists;
+
+  const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+  const basePalette = selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, featuredArtists) : {};
+  const masterPalette = { ...basePalette, ...customData.artistColors };
+  const allPotentialSingers = Object.keys(masterPalette).filter(Boolean); 
 
   useEffect(() => { activeIdxRef.current = activeSyncIndex; syncDataRef.current = syncData; }, [activeSyncIndex, syncData]);
 
@@ -67,16 +71,16 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         
         setCurrentSingerBg(null);
         setIsSingerVisible(false);
-        activeSingerRef.current = null; 
         
         setPlaybackRate(1.0); 
         setDebugInfo({ source: 'Local Vault / Cache', rawData: null }); 
+        setSingerImages({});
       }
 
-      const rawLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-      const basePalette = getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, featuredArtists);
-      const masterColors = { ...basePalette, ...selectedSong.artistColors };
-      const cleanedLiveLines = parseLyrics(rawLyricsStr, selectedSong.artistName, masterColors);
+      const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+      const initialBasePalette = getDistinctArtistColors(initialLyricsStr, selectedSong.artistName, featuredArtists);
+      const initialMasterColors = { ...initialBasePalette, ...selectedSong.artistColors };
+      const cleanedLiveLines = parseLyrics(initialLyricsStr, selectedSong.artistName, initialMasterColors);
       
       setLiveParsedLyrics(cleanedLiveLines);
 
@@ -86,26 +90,39 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         deezer: selectedSong.customLinks?.deezer || '',
         hasLocal: selectedSong.customLinks?.hasLocal || false,
         localName: selectedSong.customLinks?.localName || '',
-        lyrics: rawLyricsStr,
+        lyrics: initialLyricsStr,
         artistImages: selectedSong.artistImages || {},
         artistColors: selectedSong.artistColors || {}
       });
-
-      if (isNewTrack) {
-        const uniqueSingers = [...new Set(cleanedLiveLines.map(line => line.singer).filter(Boolean))];
-        uniqueSingers.forEach(async (singer) => {
-          const individualNames = singer.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean);
-          individualNames.forEach(async (name) => {
-            const cleanName = name.trim();
-            if (cleanName !== selectedSong.artistName && !singerImages[cleanName] && !(selectedSong.artistImages && selectedSong.artistImages[cleanName])) {
-              const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName);
-              if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
-            }
-          });
-        });
-      }
     }
   }, [selectedSong]);
+
+  useEffect(() => {
+    if (!selectedSong) return;
+
+    allPotentialSingers.forEach(async (singerName) => {
+      const cleanName = singerName.trim();
+      if (
+        cleanName && 
+        singerImages[cleanName] === undefined && 
+        !customData.artistImages?.[cleanName]
+      ) {
+        setSingerImages(prev => ({ ...prev, [cleanName]: null }));
+        
+        const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName);
+        if (imgUrl) {
+          setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
+        }
+      }
+    });
+  }, [allPotentialSingers.join('|'), selectedSong?.artistName]);
+
+  useEffect(() => {
+    if (selectedSong) {
+      const cleanedLiveLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
+      setLiveParsedLyrics(cleanedLiveLines);
+    }
+  }, [customData.lyrics, customData.artistColors]);
 
   useEffect(() => {
     const loadSyncAudio = async () => {
@@ -209,10 +226,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   };
 
   const saveData = () => {
-    const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
-    const masterPalette = { ...basePalette, ...customData.artistColors };
-    const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
-
     let updatedSyncData = selectedSong.syncData;
 
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null)) {
@@ -248,8 +261,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     setCurrentTrack(null); 
     setIsSyncLoading(true);
     
-    const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
-    const masterPalette = { ...basePalette, ...customData.artistColors };
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
     
     let initialData = [];
@@ -292,7 +303,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
       let youHasWordSync = false;
       
       if (youData && youData.syncedLyrics) {
-        const masterPalette = getDistinctArtistColors(youData.syncedLyrics, selectedSong.artistName, featuredArtists);
         youParsed = parseLRC(youData.syncedLyrics, selectedSong.artistName, masterPalette);
         youHasWordSync = youParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
       }
@@ -307,7 +317,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         const lrcData = await fetchLRCLIB(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
         
         if (lrcData && lrcData.syncedLyrics) {
-          const masterPalette = getDistinctArtistColors(lrcData.syncedLyrics, selectedSong.artistName, featuredArtists);
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
           
@@ -351,8 +360,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
       if (finalSyncData) {
         if (customData.lyrics) {
-          const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
-          const masterPalette = { ...basePalette, ...customData.artistColors };
           finalSyncData = mergeSyncWithGenius(finalSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
           finalPlainText = customData.lyrics; 
         }
@@ -458,7 +465,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
-  // NEW SNAPPY ENGINE: Safely fading in/out exactly when artist changes
+  // --- PURE STATE-DRIVEN ENGINE ---
   useEffect(() => {
     if (!selectedSong) return;
 
@@ -470,39 +477,28 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
     const activeLineObj = liveParsedLyrics[activePreviewIndex];
 
-    if (activeLineObj && activeLineObj.singer) {
-      if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
+    if (activeLineObj) {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
 
-      if (activeSingerRef.current && activeSingerRef.current !== activeLineObj.singer) {
-        // Singer changed! Trigger CSS fade out first
-        setIsSingerVisible(false); 
-        
-        // Wait 200ms for it to disappear, swap data, then fade back in
-        singerTimeoutRef.current = setTimeout(() => {
-          activeSingerRef.current = activeLineObj.singer;
-          setCurrentSingerBg({ 
-            name: activeLineObj.singer, 
-            color: activeLineObj.isGradient ? '#fff' : activeLineObj.color 
-          });
-          setIsSingerVisible(true);
-        }, 200); 
-      } else {
-        // Same singer, or first time showing up
-        activeSingerRef.current = activeLineObj.singer;
+      if (activeLineObj.singer) {
         setCurrentSingerBg({ 
           name: activeLineObj.singer, 
           color: activeLineObj.isGradient ? '#fff' : activeLineObj.color 
         });
         setIsSingerVisible(true);
+      } else {
+        setIsSingerVisible(false);
       }
     } else {
-      if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
-      setIsSingerVisible(false);
-      activeSingerRef.current = null;
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      
+      silenceTimerRef.current = setTimeout(() => {
+        setIsSingerVisible(false);
+      }, 2000);
     }
 
     return () => {
-      if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
   }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData]);
 
@@ -524,10 +520,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
     deezer: customData.deezer || `https://www.deezer.com/search/${searchQuery}`,
   };
-
-  const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
-  const masterPalette = { ...basePalette, ...customData.artistColors };
-  const allPotentialSingers = Object.keys(masterPalette).filter(Boolean); 
 
   const sharedProps = {
     selectedSong, isSaved, customData, isEditing, setIsEditing, isSyncMode, setIsSyncMode,

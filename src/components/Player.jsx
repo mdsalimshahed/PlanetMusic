@@ -18,7 +18,6 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState('');
   
-  // NEW: State to hold a seek request while a new track loads
   const [pendingSeek, setPendingSeek] = useState(null);
   
   const [volume, setVolume] = useState(() => {
@@ -51,8 +50,6 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   useEffect(() => {
     if (audioSrc && audioRef.current) {
       audioRef.current.volume = volume;
-      // Note: Auto-play is handled by the onLoadedMetadata now if there's a pendingSeek,
-      // but we still trigger it normally if you just clicked a normal Play button.
       if (pendingSeek === null) {
         audioRef.current.play()
           .then(() => setIsPlaying(true))
@@ -61,18 +58,14 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     }
   }, [audioSrc]);
 
-  // --- FIXED: Smart Seek Listener ---
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
       
-      // 1. If clicking a lyric from a DIFFERENT song, switch to that song first!
       if (!currentTrack || currentTrack.trackId !== track.trackId) {
         setCurrentTrack(track);
-        setPendingSeek(time); // Store the timestamp to apply AFTER metadata loads
-      } 
-      // 2. If it's already the current song, just jump instantly.
-      else {
+        setPendingSeek(time); 
+      } else {
         if (audioRef.current && time !== null) {
           audioRef.current.currentTime = time;
           if (!isPlaying) {
@@ -120,7 +113,6 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [isPlaying]);
 
-  // --- FIXED: Execute pending seeks immediately when a new track finishes loading ---
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
@@ -130,7 +122,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
         audioRef.current.play()
           .then(() => setIsPlaying(true))
           .catch(() => {});
-        setPendingSeek(null); // Clear the memory
+        setPendingSeek(null); 
       }
     }
   };
@@ -186,14 +178,28 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
       <div className="player-center-controls">
         <div className="player-progress-container">
           <span className="time-text">{formatTime(progress)}</span>
-          <input type="range" className="custom-slider progress-slider" min="0" max={duration || 100} value={progress} onChange={handleSeek} />
+          <input 
+            type="range" 
+            className="custom-slider progress-slider" 
+            min="0" max={duration || 100} 
+            value={progress} 
+            onChange={handleSeek} 
+            style={{ '--progress': `${(progress / (duration || 1)) * 100}%` }}
+          />
           <span className="time-text">{formatTime(duration)}</span>
         </div>
       </div>
 
       <div className="player-right-controls">
         <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
-        <input type="range" className="custom-slider volume-slider" min="0" max="1" step="0.01" value={volume} onChange={handleVolumeChange} />
+        <input 
+          type="range" 
+          className="custom-slider volume-slider" 
+          min="0" max="1" step="0.01" 
+          value={volume} 
+          onChange={handleVolumeChange} 
+          style={{ '--progress': `${volume * 100}%` }}
+        />
         <button className="close-player" onClick={closePlayer}>✕</button>
       </div>
     </div>

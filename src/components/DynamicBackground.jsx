@@ -26,14 +26,17 @@ const DynamicBackground = ({
       })}
       
       <div className={`singer-name-corner ${isSingerVisible && currentSingerBg ? 'visible' : 'hidden'}`}>
-        {currentSingerBg?.name.split(/(&|,|\band\b)/i).map((part, index) => {
+        {currentSingerBg?.name.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
           const trimmedPart = part.trim();
           if (!trimmedPart) return null; 
           
           if (/^(?:&|,|and)$/i.test(trimmedPart)) {
-            // Absolutely precise spacing: No space before comma, one space after. Spaces around '&' and 'and'.
-            const separatorText = trimmedPart === ',' ? ', ' : ` ${trimmedPart} `;
-            return <span key={index} className="singer-name-separator">{separatorText}</span>;
+            const isComma = trimmedPart === ',';
+            return (
+              <span key={index} className="singer-name-separator">
+                {isComma ? `${trimmedPart} ` : ` ${trimmedPart} `}
+              </span>
+            );
           }
           
           const individualColor = masterPalette[trimmedPart] || '#fff';

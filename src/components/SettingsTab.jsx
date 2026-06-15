@@ -20,15 +20,15 @@ const SettingsTab = ({ settings, setSettings }) => {
           <h3>Layout & Sizing</h3>
           <div className="setting-item">
             <label>Horizontal Card Width ({settings.cardWidth}px)</label>
-            <input type="range" name="cardWidth" min="120" max="400" value={settings.cardWidth} onChange={handleChange} />
+            <input type="range" name="cardWidth" min="120" max="400" value={settings.cardWidth} onChange={handleChange} style={{'--progress': `${((settings.cardWidth - 120) / 280) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Horizontal Card Padding ({settings.cardPadding}px)</label>
-            <input type="range" name="cardPadding" min="8" max="40" value={settings.cardPadding} onChange={handleChange} />
+            <input type="range" name="cardPadding" min="8" max="40" value={settings.cardPadding} onChange={handleChange} style={{'--progress': `${((settings.cardPadding - 8) / 32) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Grid Gap ({settings.cardGap}px)</label>
-            <input type="range" name="cardGap" min="8" max="64" value={settings.cardGap} onChange={handleChange} />
+            <input type="range" name="cardGap" min="8" max="64" value={settings.cardGap} onChange={handleChange} style={{'--progress': `${((settings.cardGap - 8) / 56) * 100}%`}} />
           </div>
         </div>
 
@@ -36,23 +36,23 @@ const SettingsTab = ({ settings, setSettings }) => {
           <h3>Visuals & Styling</h3>
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
-            <input type="range" name="bgImageOpacity" min="0" max="1" step="0.05" value={settings.bgImageOpacity ?? 0.25} onChange={handleChange} />
+            <input type="range" name="bgImageOpacity" min="0" max="1" step="0.05" value={settings.bgImageOpacity ?? 0.25} onChange={handleChange} style={{'--progress': `${(settings.bgImageOpacity ?? 0.25) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Card Title Font Size ({settings.cardFontSize}px)</label>
-            <input type="range" name="cardFontSize" min="10" max="32" value={settings.cardFontSize} onChange={handleChange} />
+            <input type="range" name="cardFontSize" min="10" max="32" value={settings.cardFontSize} onChange={handleChange} style={{'--progress': `${((settings.cardFontSize - 10) / 22) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Modal Title Font Size ({settings.modalFontSize}px)</label>
-            <input type="range" name="modalFontSize" min="24" max="80" value={settings.modalFontSize} onChange={handleChange} />
+            <input type="range" name="modalFontSize" min="24" max="80" value={settings.modalFontSize} onChange={handleChange} style={{'--progress': `${((settings.modalFontSize - 24) / 56) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Live Sync Active Line Size ({settings.liveSyncFontSize}px)</label>
-            <input type="range" name="liveSyncFontSize" min="16" max="64" value={settings.liveSyncFontSize} onChange={handleChange} />
+            <input type="range" name="liveSyncFontSize" min="16" max="64" value={settings.liveSyncFontSize} onChange={handleChange} style={{'--progress': `${((settings.liveSyncFontSize - 16) / 48) * 100}%`}} />
           </div>
           <div className="setting-item">
             <label>Focused View Line Size ({settings.focusedSyncFontSize}px)</label>
-            <input type="range" name="focusedSyncFontSize" min="24" max="80" value={settings.focusedSyncFontSize} onChange={handleChange} />
+            <input type="range" name="focusedSyncFontSize" min="24" max="80" value={settings.focusedSyncFontSize} onChange={handleChange} style={{'--progress': `${((settings.focusedSyncFontSize - 24) / 56) * 100}%`}} />
           </div>
           <div className="setting-item toggle-item">
             <label>Enable Rounded Corners</label>
@@ -61,7 +61,7 @@ const SettingsTab = ({ settings, setSettings }) => {
           {settings.isRounded && (
             <div className="setting-item">
               <label>Border Radius Intensity ({settings.borderRadius}px)</label>
-              <input type="range" name="borderRadius" min="4" max="50" value={settings.borderRadius} onChange={handleChange} />
+              <input type="range" name="borderRadius" min="4" max="50" value={settings.borderRadius} onChange={handleChange} style={{'--progress': `${((settings.borderRadius - 4) / 46) * 100}%`}} />
             </div>
           )}
         </div>

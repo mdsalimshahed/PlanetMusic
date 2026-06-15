@@ -16,28 +16,33 @@ export const getDistinctArtistColors = (rawLyrics, defaultArtist, featuredArtist
   const artistColors = {};
   const discoveredNames = new Set();
   
-  // FIXED: Split the default track artist string to identify individuals (e.g. "Artist A & Artist B")
   if (defaultArtist) {
     defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).forEach(n => discoveredNames.add(n.trim()));
   }
   
-  // Extract featured artists from the track title
   if (featuredArtists && featuredArtists.length > 0) {
     featuredArtists.forEach(f => {
       f.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).forEach(n => discoveredNames.add(n.trim()));
     });
   }
 
-  // Extract tagged artists from the lyrics headers
   if (rawLyrics) {
-    const headerLines = rawLyrics.split('\n').filter(l => l.startsWith('[') && l.endsWith(']'));
+    const lines = rawLyrics.split('\n').map(l => l.trim());
+    const headerLines = lines.filter(l => l.startsWith('[') && l.endsWith(']'));
+    
     headerLines.forEach(line => {
       const content = line.slice(1, -1);
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
-        const nakedNames = singersPart.replace(/<\/?[^>]+(>|$)/g, "").replace(/_/g, "");
+        const nakedNames = singersPart.replace(/<\/?[^>]+(>|$)/g, "").replace(/[_*~]/g, "");
         const splitNames = nakedNames.split(/\s*(?:,|&|\band\b)\s*/i).filter(Boolean);
-        splitNames.forEach(name => discoveredNames.add(name.trim()));
+        
+        splitNames.forEach(name => {
+          const cleanName = name.trim();
+          if (cleanName.toLowerCase() !== 'both' && cleanName.toLowerCase() !== 'all') {
+            discoveredNames.add(cleanName);
+          }
+        });
       }
     });
   }
@@ -56,108 +61,154 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   
-  let currentDefaultSinger = defaultArtist;
-  let currentUnderscoreSinger = null;
-  let tagMap = {};
-  let activeHtmlTag = null; 
+  let currentRules = [];
+  const defaultArtistsList = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
 
   lines.forEach(line => {
-    if (!line) return; 
-    
-    const headerMatch = line.match(/^\[(.*?)\]$/);
+    // Strip HTML artifacts
+    const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    if (!cleanHtmlLine || cleanHtmlLine.startsWith('<!')) return; 
+
+    // --- DYNAMIC HEADER VERSE PARSER ---
+    const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
       const content = headerMatch[1];
-      tagMap = {}; 
-      activeHtmlTag = null; 
-      currentUnderscoreSinger = null;
+      currentRules = [];
       
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
         
-        // Detect underscore singer (e.g. "_& Eminem_")
-        const underscoreMatch = singersPart.match(/_([^_]+)_/);
-        if (underscoreMatch) {
-            currentUnderscoreSinger = underscoreMatch[1].replace(/&/g, '').replace(/\band\b/gi, '').replace(/,/g, '').trim();
-        }
+        let unmarkedStr = singersPart;
+        const parsedTokens = [];
+        const explicitArtists = [];
 
-        const cleanSingersPart = singersPart.replace(/_([^_]+)_/g, '$1').replace(/&/g, ',').replace(/\band\b/gi, ',');
-        const singerEntries = cleanSingersPart.split(',').map(s => s.trim()).filter(Boolean);
+        // 1. Extract explicitly marked artists (matches _, **, *, ~ dynamically)
+        const matches = [...singersPart.matchAll(/([_*~]+)(.+?)\1/g)];
         
-        if (singerEntries.length > 0) {
-           currentDefaultSinger = singerEntries[0].replace(/<\/?[^>]+(>|$)/g, "").trim() || "";
-        } else {
-           currentDefaultSinger = "";
-        }
-
-        if (!currentUnderscoreSinger && singerEntries.length > 1) {
-           currentUnderscoreSinger = singerEntries[1].replace(/<\/?[^>]+(>|$)/g, "").trim();
-        }
-
-        singerEntries.forEach((entry, idx) => {
-           const tagRegex = /^((?:<[a-zA-Z0-9]+>)*)(.*?)((?:<\/[a-zA-Z0-9]+>)*)$/;
-           const match = entry.match(tagRegex);
-           if (match) {
-             const openingTags = match[1]; 
-             const name = match[2].replace(/<\/?[^>]+(>|$)/g, "").trim(); 
-             if (openingTags) {
-               tagMap[openingTags] = name;
-             }
-           }
+        matches.forEach(m => {
+            const marker = m[1];
+            let name = m[2].trim();
+            // Remove lingering conjunctions from the edge of the name
+            name = name.replace(/^(?:&|\band\b|\+|,)\s*/i, '').replace(/\s*(?:&|\band\b|\+|,)$/i, '').trim();
+            
+            parsedTokens.push({ marker, name });
+            unmarkedStr = unmarkedStr.replace(m[0], ' '); 
+            
+            if (name.toLowerCase() !== 'both' && name.toLowerCase() !== 'all') {
+                name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).forEach(n => explicitArtists.push(n.trim()));
+            }
         });
+
+        // 2. Extract remaining unmarked (default) artists for THIS verse
+        unmarkedStr = unmarkedStr.trim();
+        const unmarkedTokens = unmarkedStr.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean);
+        
+        if (unmarkedTokens.length > 0) {
+            parsedTokens.push({ marker: '', name: unmarkedTokens.join(', ') });
+            unmarkedTokens.forEach(n => {
+                if (n.toLowerCase() !== 'both' && n.toLowerCase() !== 'all') {
+                    explicitArtists.push(n.trim());
+                }
+            });
+        }
+
+        // 3. Resolve context: If "Both" is used, who does it mean?
+        const contextArtists = explicitArtists.length > 0 ? [...new Set(explicitArtists)] : defaultArtistsList;
+
+        currentRules = parsedTokens.map(pt => {
+            const lowerName = pt.name.toLowerCase();
+            let ruleArtists = [];
+            
+            if (lowerName === 'both' || lowerName === 'all') {
+                ruleArtists = contextArtists;
+            } else {
+                ruleArtists = pt.name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
+            }
+            return { marker: pt.marker, artists: ruleArtists };
+        });
+
+        // Ensure longer markers (** vs *) are checked first
+        currentRules.sort((a, b) => b.marker.length - a.marker.length);
+
       } else {
-        currentDefaultSinger = ""; 
+        // e.g. [Verse 1] with no names -> Entire verse is blank
+        currentRules = [];
       }
       return; 
     }
 
-    let lineSinger = currentDefaultSinger;
-    
-    if (activeHtmlTag && tagMap[activeHtmlTag]) {
-      lineSinger = tagMap[activeHtmlTag];
-    }
-    const openTagMatch = line.match(/((?:<[a-zA-Z0-9]+>)+)/);
-    if (openTagMatch) {
-      const tags = openTagMatch[1];
-      if (tagMap[tags]) {
-        lineSinger = tagMap[tags]; 
-        activeHtmlTag = tags; 
-      }
-    }
-    if (activeHtmlTag && line.includes('</')) {
-      activeHtmlTag = null; 
-    }
+    // --- PROCESS LYRIC LINE WITH ALL APPLICABLE MARKERS ---
+    let cleanText = cleanHtmlLine;
+    let lineArtists = new Set();
 
-    let cleanText = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
-    if (!cleanText) return;
+    const markerRules = currentRules.filter(r => r.marker !== '');
+    let remainingText = cleanText;
 
-    if (cleanText.includes('_')) {
-        if (currentUnderscoreSinger) {
-            const isFullyUnderscore = cleanText.startsWith('_') && cleanText.endsWith('_');
-            if (isFullyUnderscore) {
-                lineSinger = currentUnderscoreSinger;
-            } else {
-                lineSinger = `${currentDefaultSinger}, ${currentUnderscoreSinger}`;
+    // First Pass: Extract all marked text sections
+    for (const rule of markerRules) {
+        if (remainingText.includes(rule.marker)) {
+            const escapedMarker = rule.marker.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+            const markerRegex = new RegExp(`${escapedMarker}(.*?)${escapedMarker}`, 'g');
+            
+            if (markerRegex.test(remainingText)) {
+                rule.artists.forEach(a => lineArtists.add(a));
+                remainingText = remainingText.replace(markerRegex, ' ');
+            } else if (remainingText.startsWith(rule.marker) || remainingText.endsWith(rule.marker)) {
+                rule.artists.forEach(a => lineArtists.add(a));
+                remainingText = remainingText.split(rule.marker).join(' ');
             }
         }
-        cleanText = cleanText.replace(/_/g, "");
     }
 
+    // Clean up remaining text to check if unmarked words still exist
+    for (const rule of markerRules) {
+        const escapedMarker = rule.marker.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        remainingText = remainingText.replace(new RegExp(escapedMarker, 'g'), ' ');
+    }
+
+    // Check if there are real lyrics left (not just punctuation or spaces)
+    const hasUnmarkedWords = /[\p{L}\p{N}]/u.test(remainingText);
+
+    if (hasUnmarkedWords) {
+        const defaultRule = currentRules.find(r => r.marker === '');
+        const defaultArtists = defaultRule ? defaultRule.artists : (currentRules.length > 0 ? currentRules[0].artists : []);
+        defaultArtists.forEach(a => lineArtists.add(a));
+    }
+
+    // Fallback: If line failed all checks, assign the default singer of the verse
+    if (lineArtists.size === 0) {
+        const defaultRule = currentRules.find(r => r.marker === '');
+        if (defaultRule) {
+            defaultRule.artists.forEach(a => lineArtists.add(a));
+        } else if (currentRules.length > 0) {
+            currentRules[0].artists.forEach(a => lineArtists.add(a));
+        }
+    }
+
+    const finalArtistsArray = Array.from(lineArtists);
+    const lineSinger = finalArtistsArray.join(', ');
+    
     let finalColor = '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
 
-    const subArtists = lineSinger.split(/\s*(?:,|&|\band\b)\s*/i).map(n => n.trim()).filter(Boolean);
-
-    if (subArtists.length > 1) {
+    if (finalArtistsArray.length > 1) {
       isGradient = true;
-      const c1 = colorPalette[subArtists[0]] || '#ffffff';
-      const c2 = colorPalette[subArtists[1]] || '#ffffff';
+      const c1 = colorPalette[finalArtistsArray[0]] || '#ffffff';
+      const c2 = colorPalette[finalArtistsArray[1]] || '#ffffff';
       gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-    } else {
-      finalColor = colorPalette[lineSinger] || '#ffffff';
+    } else if (finalArtistsArray.length === 1) {
+      finalColor = colorPalette[finalArtistsArray[0]] || '#ffffff';
     }
 
-    result.push({ text: cleanText, singer: lineSinger, color: finalColor, isGradient, gradient: gradientStyle });
+    // Clean up display text (strip all visual markers and double spaces)
+    let displayText = cleanText;
+    for (const rule of markerRules) {
+        displayText = displayText.split(rule.marker).join('');
+    }
+    displayText = displayText.replace(/\s{2,}/g, ' ').trim();
+
+    result.push({ text: displayText, singer: lineSinger, color: finalColor, isGradient, gradient: gradientStyle });
   });
   return result;
 };
@@ -171,7 +222,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   let currentLrcIdx = 0;
 
   const mergedData = parsedLines.map((geniusLine) => {
-    const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
     const cleanGenius = normalize(geniusLine.text);
 
     if (!cleanGenius) {
@@ -234,13 +285,22 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       }
 
       mergedData[i].start = prevTime;
-      mergedData[i].end = nextTime ? Math.min(prevTime + 3, nextTime) : prevTime + 3;
+      mergedData[i].end = nextTime ? Math.min(prevTime + 5, nextTime) : prevTime + 5;
     }
   }
 
   for (let i = 0; i < mergedData.length - 1; i++) {
     if (mergedData[i].end !== null && mergedData[i+1].start !== null && mergedData[i].end > mergedData[i+1].start) {
       mergedData[i].end = mergedData[i+1].start;
+    }
+  }
+
+  // Cap lines to allow instrumentals
+  for (let i = 0; i < mergedData.length; i++) {
+    if (mergedData[i].start !== null && mergedData[i].end !== null) {
+      if (mergedData[i].end - mergedData[i].start > 7) {
+        mergedData[i].end = mergedData[i].start + 7;
+      }
     }
   }
 
@@ -469,16 +529,19 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
   });
 
   for (let i = 0; i < syncData.length; i++) {
-    if (i < syncData.length - 1) {
-      syncData[i].end = syncData[i + 1].start;
+    const currentStart = syncData[i].start;
+    const nextStart = (i < syncData.length - 1) ? syncData[i + 1].start : currentStart + 7;
+    
+    if (nextStart - currentStart > 7) {
+        syncData[i].end = currentStart + 7;
     } else {
-      syncData[i].end = syncData[i].start + 5; 
+        syncData[i].end = nextStart;
     }
     
     if (syncData[i].wordSync) {
         const ws = syncData[i].wordSync;
         for (let j = 0; j < ws.length - 1; j++) ws[j].end = ws[j+1].start;
-        ws[ws.length - 1].end = syncData[i].end;
+        ws[ws.length - 1].end = Math.min(ws[ws.length - 1].start + 1.5, syncData[i].end);
     }
   }
 
