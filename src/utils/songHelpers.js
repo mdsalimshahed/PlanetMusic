@@ -1,29 +1,51 @@
 /* --- src/utils/songHelpers.js --- */
 
-export const getDistinctArtistColors = (rawLyrics, defaultArtist) => {
+// Helper to convert HSL to HEX for the native HTML Color Picker
+const hslToHex = (h, s, l) => {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};
+
+export const getDistinctArtistColors = (rawLyrics, defaultArtist, featuredArtists = []) => {
   const artistColors = {};
-  if (!rawLyrics) {
-    artistColors[defaultArtist] = `hsl(0, 85%, 70%)`;
-    return artistColors;
+  const discoveredNames = new Set();
+  
+  // FIXED: Split the default track artist string to identify individuals (e.g. "Artist A & Artist B")
+  if (defaultArtist) {
+    defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).forEach(n => discoveredNames.add(n.trim()));
+  }
+  
+  // Extract featured artists from the track title
+  if (featuredArtists && featuredArtists.length > 0) {
+    featuredArtists.forEach(f => {
+      f.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).forEach(n => discoveredNames.add(n.trim()));
+    });
   }
 
-  const headerLines = rawLyrics.split('\n').filter(l => l.startsWith('[') && l.endsWith(']'));
-  const discoveredNames = new Set([defaultArtist]);
-
-  headerLines.forEach(line => {
-    const content = line.slice(1, -1);
-    if (content.includes(':')) {
-      const singersPart = content.split(':').slice(1).join(':').trim();
-      const nakedNames = singersPart.replace(/<\/?[^>]+(>|$)/g, "");
-      const splitNames = nakedNames.split(/,|\s&\s|\sand\s/).map(n => n.trim()).filter(Boolean);
-      splitNames.forEach(name => discoveredNames.add(name));
-    }
-  });
+  // Extract tagged artists from the lyrics headers
+  if (rawLyrics) {
+    const headerLines = rawLyrics.split('\n').filter(l => l.startsWith('[') && l.endsWith(']'));
+    headerLines.forEach(line => {
+      const content = line.slice(1, -1);
+      if (content.includes(':')) {
+        const singersPart = content.split(':').slice(1).join(':').trim();
+        const nakedNames = singersPart.replace(/<\/?[^>]+(>|$)/g, "").replace(/_/g, "");
+        const splitNames = nakedNames.split(/\s*(?:,|&|\band\b)\s*/i).filter(Boolean);
+        splitNames.forEach(name => discoveredNames.add(name.trim()));
+      }
+    });
+  }
 
   const artistArray = Array.from(discoveredNames);
   artistArray.forEach((artist, index) => {
     const hue = (index * (360 / artistArray.length) + 45) % 360;
-    artistColors[artist] = `hsl(${hue}, 90%, 75%)`;
+    artistColors[artist] = hslToHex(hue, 90, 75);
   });
 
   return artistColors;
@@ -35,6 +57,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const result = [];
   
   let currentDefaultSinger = defaultArtist;
+  let currentUnderscoreSinger = null;
   let tagMap = {};
   let activeHtmlTag = null; 
 
@@ -46,36 +69,52 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       const content = headerMatch[1];
       tagMap = {}; 
       activeHtmlTag = null; 
+      currentUnderscoreSinger = null;
       
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
-        const singerEntries = singersPart.split(',').map(s => s.trim());
         
+        // Detect underscore singer (e.g. "_& Eminem_")
+        const underscoreMatch = singersPart.match(/_([^_]+)_/);
+        if (underscoreMatch) {
+            currentUnderscoreSinger = underscoreMatch[1].replace(/&/g, '').replace(/\band\b/gi, '').replace(/,/g, '').trim();
+        }
+
+        const cleanSingersPart = singersPart.replace(/_([^_]+)_/g, '$1').replace(/&/g, ',').replace(/\band\b/gi, ',');
+        const singerEntries = cleanSingersPart.split(',').map(s => s.trim()).filter(Boolean);
+        
+        if (singerEntries.length > 0) {
+           currentDefaultSinger = singerEntries[0].replace(/<\/?[^>]+(>|$)/g, "").trim() || "";
+        } else {
+           currentDefaultSinger = "";
+        }
+
+        if (!currentUnderscoreSinger && singerEntries.length > 1) {
+           currentUnderscoreSinger = singerEntries[1].replace(/<\/?[^>]+(>|$)/g, "").trim();
+        }
+
         singerEntries.forEach((entry, idx) => {
            const tagRegex = /^((?:<[a-zA-Z0-9]+>)*)(.*?)((?:<\/[a-zA-Z0-9]+>)*)$/;
            const match = entry.match(tagRegex);
            if (match) {
              const openingTags = match[1]; 
              const name = match[2].replace(/<\/?[^>]+(>|$)/g, "").trim(); 
-             
              if (openingTags) {
                tagMap[openingTags] = name;
-             } else if (idx === 0) {
-               currentDefaultSinger = name || defaultArtist;
              }
            }
         });
       } else {
-        currentDefaultSinger = defaultArtist; 
+        currentDefaultSinger = ""; 
       }
       return; 
     }
 
     let lineSinger = currentDefaultSinger;
+    
     if (activeHtmlTag && tagMap[activeHtmlTag]) {
       lineSinger = tagMap[activeHtmlTag];
     }
-
     const openTagMatch = line.match(/((?:<[a-zA-Z0-9]+>)+)/);
     if (openTagMatch) {
       const tags = openTagMatch[1];
@@ -84,27 +123,38 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         activeHtmlTag = tags; 
       }
     }
-
     if (activeHtmlTag && line.includes('</')) {
       activeHtmlTag = null; 
     }
 
-    const cleanText = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    let cleanText = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
     if (!cleanText) return;
+
+    if (cleanText.includes('_')) {
+        if (currentUnderscoreSinger) {
+            const isFullyUnderscore = cleanText.startsWith('_') && cleanText.endsWith('_');
+            if (isFullyUnderscore) {
+                lineSinger = currentUnderscoreSinger;
+            } else {
+                lineSinger = `${currentDefaultSinger}, ${currentUnderscoreSinger}`;
+            }
+        }
+        cleanText = cleanText.replace(/_/g, "");
+    }
 
     let finalColor = '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
 
-    const subArtists = lineSinger.split(/,|\s&\s|\sand\s/).map(n => n.trim()).filter(Boolean);
+    const subArtists = lineSinger.split(/\s*(?:,|&|\band\b)\s*/i).map(n => n.trim()).filter(Boolean);
 
     if (subArtists.length > 1) {
       isGradient = true;
-      const c1 = colorPalette[subArtists[0]] || 'hsl(0, 100%, 100%)';
-      const c2 = colorPalette[subArtists[1]] || 'hsl(180, 100%, 100%)';
+      const c1 = colorPalette[subArtists[0]] || '#ffffff';
+      const c2 = colorPalette[subArtists[1]] || '#ffffff';
       gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
     } else {
-      finalColor = colorPalette[lineSinger] || colorPalette[defaultArtist] || '#ffffff';
+      finalColor = colorPalette[lineSinger] || '#ffffff';
     }
 
     result.push({ text: cleanText, singer: lineSinger, color: finalColor, isGradient, gradient: gradientStyle });
@@ -112,68 +162,132 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   return result;
 };
 
-// --- GENIUS AUTO-MERGE SYNC ENGINE ---
-export const mergeSyncWithGenius = (lrcSyncData, rawGeniusLyrics, defaultArtist, colorPalette) => {
-  if (!rawGeniusLyrics || !rawGeniusLyrics.includes('[')) return lrcSyncData;
+export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, colorPalette) => {
+  if (!rawLyrics) return lrcSyncData;
 
-  const geniusParsed = parseLyrics(rawGeniusLyrics, defaultArtist, colorPalette);
-  if (geniusParsed.length === 0) return lrcSyncData;
+  const parsedLines = parseLyrics(rawLyrics, defaultArtist, colorPalette);
+  if (parsedLines.length === 0) return lrcSyncData;
 
-  let currentGeniusIdx = 0;
-  
-  return lrcSyncData.map(lrcLine => {
+  let currentLrcIdx = 0;
+
+  const mergedData = parsedLines.map((geniusLine) => {
     const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cleanLrc = normalize(lrcLine.text);
-    
-    if (!cleanLrc) return lrcLine; // Skip empty instrumental lines
+    const cleanGenius = normalize(geniusLine.text);
 
-    let bestMatchIdx = currentGeniusIdx;
-    let found = false;
+    if (!cleanGenius) {
+      return { ...geniusLine, start: null, end: null, wordSync: null, pronunciation: null };
+    }
 
-    // Scan ahead up to 15 lines to find a matching lyric line 
-    for (let i = currentGeniusIdx; i < Math.min(currentGeniusIdx + 15, geniusParsed.length); i++) {
-      const cleanGenius = normalize(geniusParsed[i].text);
-      if (cleanGenius && (cleanLrc.includes(cleanGenius) || cleanGenius.includes(cleanLrc) || cleanLrc === cleanGenius)) {
+    let bestMatchIdx = -1;
+    let highestScore = 0;
+
+    for (let i = currentLrcIdx; i < Math.min(currentLrcIdx + 15, lrcSyncData.length); i++) {
+      const cleanLrc = normalize(lrcSyncData[i].text);
+      if (!cleanLrc) continue;
+
+      let score = 0;
+      if (cleanGenius === cleanLrc) {
+        score = 100;
+      } else if (cleanGenius.includes(cleanLrc) || cleanLrc.includes(cleanGenius)) {
+        score = 60 + (Math.min(cleanGenius.length, cleanLrc.length) / Math.max(cleanGenius.length, cleanLrc.length)) * 40;
+      }
+
+      if (score > highestScore && score > 50) {
+        highestScore = score;
         bestMatchIdx = i;
-        found = true;
-        break;
       }
     }
 
-    if (found) {
-      currentGeniusIdx = bestMatchIdx + 1; // Move pointer forward so we don't match the same line twice
-    } else {
-      // If we didn't find a match, just assume the singer of the current active block
-      bestMatchIdx = Math.min(currentGeniusIdx, geniusParsed.length - 1);
+    let start = null;
+    let end = null;
+    let wordSync = null;
+
+    if (bestMatchIdx !== -1) {
+      start = lrcSyncData[bestMatchIdx].start;
+      end = lrcSyncData[bestMatchIdx].end;
+      if (highestScore > 90) {
+        wordSync = lrcSyncData[bestMatchIdx].wordSync;
+      }
+      currentLrcIdx = bestMatchIdx + 1; 
     }
 
-    const assignedSinger = geniusParsed[bestMatchIdx].singer;
-    const assignedColor = geniusParsed[bestMatchIdx].color;
-    const assignedIsGradient = geniusParsed[bestMatchIdx].isGradient;
-    const assignedGradient = geniusParsed[bestMatchIdx].gradient;
-
     return {
-      ...lrcLine,
-      singer: assignedSinger,
-      color: assignedColor,
-      isGradient: assignedIsGradient,
-      gradient: assignedGradient
+      ...geniusLine,
+      start,
+      end,
+      wordSync,
+      pronunciation: null
     };
   });
+
+  for (let i = 0; i < mergedData.length; i++) {
+    if (mergedData[i].start === null && mergedData[i].text.trim() !== '') {
+      let prevTime = 0;
+      for (let j = i - 1; j >= 0; j--) {
+        if (mergedData[j].end !== null) { prevTime = mergedData[j].end; break; }
+        if (mergedData[j].start !== null) { prevTime = mergedData[j].start + 2; break; }
+      }
+      
+      let nextTime = null;
+      for (let j = i + 1; j < mergedData.length; j++) {
+        if (mergedData[j].start !== null) { nextTime = mergedData[j].start; break; }
+      }
+
+      mergedData[i].start = prevTime;
+      mergedData[i].end = nextTime ? Math.min(prevTime + 3, nextTime) : prevTime + 3;
+    }
+  }
+
+  for (let i = 0; i < mergedData.length - 1; i++) {
+    if (mergedData[i].end !== null && mergedData[i+1].start !== null && mergedData[i].end > mergedData[i+1].start) {
+      mergedData[i].end = mergedData[i+1].start;
+    }
+  }
+
+  return mergedData;
 };
 
 export const fetchSingerImage = async (band, singer) => {
   if (!singer || singer === band || singer.includes('&') || singer.includes(',')) return null;
-  try {
-    const deezerRes = await fetch(`https://api.deezer.com/search/artist?q=${encodeURIComponent(singer)}`);
-    const deezerData = await deezerRes.json();
-    if (deezerData?.data?.length > 0 && deezerData.data[0].picture_xl) return deezerData.data[0].picture_xl;
-  } catch (e) {}
-
+  
   try {
     const adbRes = await fetch(`https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(singer)}`);
     const adbData = await adbRes.json();
-    if (adbData?.artists && adbData.artists[0].strArtistThumb) return adbData.artists[0].strArtistThumb;
+    if (adbData?.artists && adbData.artists[0].strArtistThumb) {
+      return adbData.artists[0].strArtistThumb;
+    }
+  } catch (e) {}
+
+  try {
+    const deezerRes = await fetch(`https://api.deezer.com/search/artist?q=${encodeURIComponent(singer)}`);
+    const deezerData = await deezerRes.json();
+    if (deezerData?.data?.length > 0) {
+      const topMatch = deezerData.data.find(a => a.name.toLowerCase() === singer.toLowerCase()) || deezerData.data[0];
+      if (topMatch.name.toLowerCase().includes(singer.toLowerCase())) {
+         if (topMatch.picture_xl) return topMatch.picture_xl;
+      }
+    }
+  } catch (e) {}
+
+  try {
+    const wikiRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch=${encodeURIComponent(singer)}&gsrlimit=5&prop=pageimages|pageterms&pithumbsize=1000`);
+    const wikiData = await wikiRes.json();
+    
+    if (wikiData?.query?.pages) {
+      const pages = Object.values(wikiData.query.pages).sort((a, b) => a.index - b.index);
+      const musicKeywords = ['singer', 'musician', 'band', 'rapper', 'dj', 'songwriter', 'composer', 'group', 'pop', 'vocalist', 'artist'];
+      
+      for (const page of pages) {
+        const desc = page.terms?.description?.[0]?.toLowerCase() || '';
+        const title = page.title.toLowerCase();
+        if (title.includes('disambiguation') || title.includes('list of')) continue;
+
+        const isMusician = musicKeywords.some(keyword => desc.includes(keyword) || title.includes(`(${keyword})`));
+        if (isMusician && page.thumbnail?.source && !page.thumbnail.source.toLowerCase().endsWith('.svg')) {
+          return page.thumbnail.source;
+        }
+      }
+    }
   } catch (e) {}
   
   return null;
@@ -242,7 +356,6 @@ export const parseTrackName = (trackName) => {
   
   let mainTitle = trackName.replace(/[\(\[]([^()\[\]]+)[\)\]]/g, (match, content) => {
     const lowerContent = content.toLowerCase().trim();
-    
     if (
       lowerContent.includes('soundtrack') || 
       lowerContent.includes('motion picture') || 
@@ -267,8 +380,6 @@ export const parseTrackName = (trackName) => {
   
   return { mainTitle, extras, featuredArtists };
 };
-
-// --- DATABASE INTEGRATIONS ---
 
 export const fetchYouLyrics = async (trackName, artistName, durationMs) => {
   const track = encodeURIComponent(trackName);

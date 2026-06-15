@@ -68,7 +68,7 @@ const App = () => {
     }
   }, [settings, library, searchQuery, searchResults]);
 
-  // --- NEW: Clear search query when switching between Discover and Vault tabs ---
+  // Clear search query when switching between Discover and Vault tabs
   const handleTabSwitch = (tab) => {
     if (activeTab !== tab) {
       setSearchQuery('');
@@ -76,7 +76,7 @@ const App = () => {
     }
   };
 
-  // --- NEW: Debounced Live Search ---
+  // Debounced Live Search
   useEffect(() => {
     // Only fetch automatically if we are in the Discover (search) tab
     if (activeTab !== 'search') return;
@@ -90,7 +90,15 @@ const App = () => {
           `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
         );
         const data = await response.json();
-        setSearchResults(data.results);
+        
+        // Prioritize explicit songs
+        const sortedResults = data.results.sort((a, b) => {
+          const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
+          const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
+          return isBExplicit - isAExplicit; 
+        });
+
+        setSearchResults(sortedResults);
       } catch (error) {
         console.error('Error fetching songs:', error);
       } finally {
@@ -131,7 +139,7 @@ const App = () => {
     
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song };
-      // Preserving raw lyrics as requested in the previous step
+      // Preserving raw lyrics
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;

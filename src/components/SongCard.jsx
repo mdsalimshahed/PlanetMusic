@@ -57,7 +57,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         <div className="artwork-overlay">
-          {/* Now safely checks the hasLocal flag so the button appears even without iTunes preview */}
           {(song.previewUrl || song.customLinks?.hasLocal) && (
             <button 
               className="play-btn glass-button" 
@@ -75,7 +74,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
 
       <div className="card-info">
         <div className="text-info">
-          <h4 title={song.trackName}>{song.trackName}</h4>
+          <h4 title={song.trackName}>
+            {song.trackName}
+            {song.trackExplicitness === 'explicit' && <span className="explicit-tag">E</span>}
+          </h4>
           <p title={song.artistName}>{song.artistName}</p>
         </div>
         <button 

@@ -14,23 +14,30 @@ const DynamicBackground = ({
         const finalImgUrl = customData.artistImages?.[singerName] || singerImages[singerName] || (isDefault ? highResArt : null);
         if (!finalImgUrl) return null;
 
-        const isCurrentSingerActive = isSingerVisible && currentSingerBg?.name.includes(singerName);
+        const activeNames = currentSingerBg?.name.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
+        const isActive = currentSingerBg?.name.trim() === singerName || activeNames.includes(singerName);
+
+        const isCurrentSingerActive = isSingerVisible && isActive;
         const imgClass = isCurrentSingerActive ? 'active-watermark' : 'inactive-watermark';
         
-        // Connect the settings slider directly to the active watermark's opacity
         const style = isCurrentSingerActive ? { opacity: opacityVal } : {};
 
         return <img key={singerName} src={finalImgUrl} alt="" className={`singer-watermark ${imgClass}`} style={style} />;
       })}
       
       <div className={`singer-name-corner ${isSingerVisible && currentSingerBg ? 'visible' : 'hidden'}`}>
-        {currentSingerBg?.name.split(/(\s&\s|\s,\s|\sand\s)/).map((part, index) => {
+        {currentSingerBg?.name.split(/(&|,|\band\b)/i).map((part, index) => {
           const trimmedPart = part.trim();
-          if (trimmedPart === '&' || trimmedPart === ',' || trimmedPart === 'and') {
-            return <span key={index} className="singer-name-separator">{part}</span>;
+          if (!trimmedPart) return null; 
+          
+          if (/^(?:&|,|and)$/i.test(trimmedPart)) {
+            // Absolutely precise spacing: No space before comma, one space after. Spaces around '&' and 'and'.
+            const separatorText = trimmedPart === ',' ? ', ' : ` ${trimmedPart} `;
+            return <span key={index} className="singer-name-separator">{separatorText}</span>;
           }
+          
           const individualColor = masterPalette[trimmedPart] || '#fff';
-          return <span key={index} style={{ color: individualColor }}>{part}</span>;
+          return <span key={index} style={{ color: individualColor }}>{trimmedPart}</span>;
         })}
       </div>
     </div>

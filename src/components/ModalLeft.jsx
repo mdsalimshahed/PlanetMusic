@@ -23,7 +23,6 @@ const ModalLeft = ({
             <span className="modal-type">{selectedSong.primaryGenreName}</span>
             <h2 className="text-glow">
               {mainTitle}
-              {/* THE NEW EXPLICIT BADGE */}
               {selectedSong.trackExplicitness === 'explicit' && <span className="explicit-tag">E</span>}
               {extras.map((extra, idx) => (
                 <span key={idx} className="title-extra"> ({extra})</span>
@@ -98,7 +97,7 @@ const ModalLeft = ({
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google for Lyrics</a>
               </>
             ) : isImageManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✓ Save Images</button>
+              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✓ Save Artists Data</button>
             ) : (
               <>
                 <button className="edit-links-btn" onClick={() => setIsEditing(true)}>✎ Edit Info</button>
@@ -117,7 +116,9 @@ const ModalLeft = ({
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? '⏳ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
                     </button>
-                    {allPotentialSingers.length > 1 && (<button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🖼️ Manage Artist Images</button>)}
+                    
+                    {/* FIXED: Removed the allPotentialSingers.length restriction so it always appears */}
+                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🎨 Manage Artists</button>
                     
                     {hasValidSyncData && !isSyncLoading && (
                       <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>

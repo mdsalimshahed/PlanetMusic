@@ -2,14 +2,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { saveAudioFile, deleteAudioFile, getAudioFile } from '../db';
 import { getBulkPronunciations } from '../transliterator'; 
-import { getDistinctArtistColors, parseLyrics, fetchSingerImage, cleanUrl, cleanImageUrl, fetchLRCLIB, fetchYouLyrics, parseLRC, mergeSyncWithGenius } from '../utils/songHelpers';
+import { getDistinctArtistColors, parseLyrics, fetchSingerImage, cleanUrl, cleanImageUrl, fetchLRCLIB, fetchYouLyrics, parseLRC, mergeSyncWithGenius, parseTrackName } from '../utils/songHelpers';
 import ModalLeft from './ModalLeft';
 import ModalRight from './ModalRight';
 import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {} });
+  const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isSyncLoading, setIsSyncLoading] = useState(false);
   const [isLrcFetching, setIsLrcFetching] = useState(false);
@@ -35,12 +35,17 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const [globalProgress, setGlobalProgress] = useState(0);
   const [liveParsedLyrics, setLiveParsedLyrics] = useState([]);
 
+  const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
+
   const syncAudioRef = useRef(null);
   const activeLineRef = useRef(null);
   const activePreviewRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
   const previousTrackId = useRef(null);
+
+  const trackNameData = selectedSong ? parseTrackName(selectedSong.trackName) : { mainTitle: '', extras: [], featuredArtists: [] };
+  const featuredArtists = trackNameData.featuredArtists;
 
   useEffect(() => { activeIdxRef.current = activeSyncIndex; syncDataRef.current = syncData; }, [activeSyncIndex, syncData]);
 
@@ -59,15 +64,18 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         setIsSyncMode(false);
         setIsImageManagerOpen(false); 
         setLyricsViewMode('live');
+        
         setCurrentSingerBg(null);
         setIsSingerVisible(false);
         activeSingerRef.current = null; 
+        
         setPlaybackRate(1.0); 
         setDebugInfo({ source: 'Local Vault / Cache', rawData: null }); 
       }
 
       const rawLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-      const masterColors = getDistinctArtistColors(rawLyricsStr, selectedSong.artistName);
+      const basePalette = getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, featuredArtists);
+      const masterColors = { ...basePalette, ...selectedSong.artistColors };
       const cleanedLiveLines = parseLyrics(rawLyricsStr, selectedSong.artistName, masterColors);
       
       setLiveParsedLyrics(cleanedLiveLines);
@@ -79,17 +87,19 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         hasLocal: selectedSong.customLinks?.hasLocal || false,
         localName: selectedSong.customLinks?.localName || '',
         lyrics: rawLyricsStr,
-        artistImages: selectedSong.artistImages || {} 
+        artistImages: selectedSong.artistImages || {},
+        artistColors: selectedSong.artistColors || {}
       });
 
       if (isNewTrack) {
         const uniqueSingers = [...new Set(cleanedLiveLines.map(line => line.singer).filter(Boolean))];
         uniqueSingers.forEach(async (singer) => {
-          const individualNames = singer.split(/,|\s&\s|\sand\s/).map(n => n.trim()).filter(Boolean);
+          const individualNames = singer.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean);
           individualNames.forEach(async (name) => {
-            if (name !== selectedSong.artistName && !singerImages[name] && !(selectedSong.artistImages && selectedSong.artistImages[name])) {
-              const imgUrl = await fetchSingerImage(selectedSong.artistName, name);
-              if (imgUrl) setSingerImages(prev => ({ ...prev, [name]: imgUrl }));
+            const cleanName = name.trim();
+            if (cleanName !== selectedSong.artistName && !singerImages[cleanName] && !(selectedSong.artistImages && selectedSong.artistImages[cleanName])) {
+              const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName);
+              if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
             }
           });
         });
@@ -177,6 +187,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     setCustomData(prev => ({ ...prev, artistImages: { ...prev.artistImages, [singerName]: cleanImageUrl(url) } }));
   };
 
+  const handleColorChange = (singerName, colorHex) => {
+    setCustomData(prev => ({ ...prev, artistColors: { ...prev.artistColors, [singerName]: colorHex } }));
+  };
+
   const handleLocalFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -195,24 +209,15 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   };
 
   const saveData = () => {
-    const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
+    const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
+    const masterPalette = { ...basePalette, ...customData.artistColors };
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
 
     let updatedSyncData = selectedSong.syncData;
 
-    // IF LRCLIB DATA ALREADY EXISTS AND USER JUST PASTED GENIUS LYRICS -> MERGE THEM!
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null)) {
-      if (customData.lyrics.includes('[')) {
+      if (customData.lyrics) {
         updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
-      } else if (updatedSyncData.length === parsedLines.length) {
-        updatedSyncData = updatedSyncData.map((line, idx) => ({ 
-          ...line, 
-          text: parsedLines[idx].text, 
-          singer: parsedLines[idx].singer, 
-          color: parsedLines[idx].color, 
-          isGradient: parsedLines[idx].isGradient, 
-          gradient: parsedLines[idx].gradient 
-        }));
       }
     }
 
@@ -221,7 +226,8 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
       artistImages: customData.artistImages,
-      syncData: updatedSyncData // Important: saves the newly merged data!
+      artistColors: customData.artistColors,
+      syncData: updatedSyncData
     };
 
     updateSongInLibrary(updatedSong);
@@ -229,7 +235,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   };
 
   const saveImageManager = () => {
-    updateSongInLibrary({ ...selectedSong, artistImages: customData.artistImages });
+    updateSongInLibrary({ 
+      ...selectedSong, 
+      artistImages: customData.artistImages,
+      artistColors: customData.artistColors
+    });
     setIsImageManagerOpen(false);
   };
 
@@ -238,14 +248,19 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     setCurrentTrack(null); 
     setIsSyncLoading(true);
     
-    const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
+    const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
+    const masterPalette = { ...basePalette, ...customData.artistColors };
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
+    
     let initialData = [];
     const linesText = parsedLines.map(l => l.text);
     const pronunciations = await getBulkPronunciations(linesText);
 
     if (selectedSong.syncData && selectedSong.syncData.length === parsedLines.length) {
       initialData = parsedLines.map((line, i) => ({ ...line, pronunciation: selectedSong.syncData[i].pronunciation || pronunciations[i], start: selectedSong.syncData[i].start, end: selectedSong.syncData[i].end })); 
+    } else if (selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null)) {
+      const salvagedData = mergeSyncWithGenius(selectedSong.syncData, customData.lyrics, selectedSong.artistName, masterPalette);
+      initialData = salvagedData.map((line, i) => ({ ...line, pronunciation: line.pronunciation || pronunciations[i] }));
     } else {
       initialData = parsedLines.map((line, i) => ({ ...line, pronunciation: pronunciations[i], start: null, end: null }));
     }
@@ -277,7 +292,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
       let youHasWordSync = false;
       
       if (youData && youData.syncedLyrics) {
-        const masterPalette = getDistinctArtistColors(youData.syncedLyrics, selectedSong.artistName);
+        const masterPalette = getDistinctArtistColors(youData.syncedLyrics, selectedSong.artistName, featuredArtists);
         youParsed = parseLRC(youData.syncedLyrics, selectedSong.artistName, masterPalette);
         youHasWordSync = youParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
       }
@@ -292,7 +307,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         const lrcData = await fetchLRCLIB(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
         
         if (lrcData && lrcData.syncedLyrics) {
-          const masterPalette = getDistinctArtistColors(lrcData.syncedLyrics, selectedSong.artistName);
+          const masterPalette = getDistinctArtistColors(lrcData.syncedLyrics, selectedSong.artistName, featuredArtists);
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync && line.wordSync.length > 0);
           
@@ -335,11 +350,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
       }
 
       if (finalSyncData) {
-        // IF USER HAS ALREADY PASTED GENIUS LYRICS -> MERGE WITH LRCLIB TIMESTAMPS
-        if (customData.lyrics && customData.lyrics.includes('[')) {
-          const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
+        if (customData.lyrics) {
+          const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
+          const masterPalette = { ...basePalette, ...customData.artistColors };
           finalSyncData = mergeSyncWithGenius(finalSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
-          finalPlainText = customData.lyrics; // Retain user's custom Genius headers!
+          finalPlainText = customData.lyrics; 
         }
 
         const linesText = finalSyncData.map(l => l.text);
@@ -419,7 +434,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   );
 
   const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
-  const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
   let activePreviewIndex = -1;
 
   if (hasValidSyncData && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong) {
@@ -444,40 +458,53 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
+  // NEW SNAPPY ENGINE: Safely fading in/out exactly when artist changes
   useEffect(() => {
+    if (!selectedSong) return;
+
+    if (!hasValidSyncData) {
+      setCurrentSingerBg({ name: selectedSong.artistName, color: '#fff' });
+      setIsSingerVisible(true);
+      return;
+    }
+
     const activeLineObj = liveParsedLyrics[activePreviewIndex];
-    
+
     if (activeLineObj && activeLineObj.singer) {
       if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
-      
-      if (activeLineObj.singer !== selectedSong.artistName) {
-        if (activeSingerRef.current !== activeLineObj.singer) {
-          setIsSingerVisible(false); 
-          activeSingerRef.current = activeLineObj.singer; 
-          
-          singerTimeoutRef.current = setTimeout(() => {
-            setCurrentSingerBg({ name: activeLineObj.singer, color: activeLineObj.isGradient ? '#fff' : activeLineObj.color });
-            setIsSingerVisible(true);
-          }, 150); 
-        } else {
+
+      if (activeSingerRef.current && activeSingerRef.current !== activeLineObj.singer) {
+        // Singer changed! Trigger CSS fade out first
+        setIsSingerVisible(false); 
+        
+        // Wait 200ms for it to disappear, swap data, then fade back in
+        singerTimeoutRef.current = setTimeout(() => {
+          activeSingerRef.current = activeLineObj.singer;
+          setCurrentSingerBg({ 
+            name: activeLineObj.singer, 
+            color: activeLineObj.isGradient ? '#fff' : activeLineObj.color 
+          });
           setIsSingerVisible(true);
-        }
+        }, 200); 
       } else {
-        setIsSingerVisible(false);
-        activeSingerRef.current = null;
+        // Same singer, or first time showing up
+        activeSingerRef.current = activeLineObj.singer;
+        setCurrentSingerBg({ 
+          name: activeLineObj.singer, 
+          color: activeLineObj.isGradient ? '#fff' : activeLineObj.color 
+        });
+        setIsSingerVisible(true);
       }
     } else {
       if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
-      singerTimeoutRef.current = setTimeout(() => {
-        setIsSingerVisible(false);
-        activeSingerRef.current = null;
-      }, 1500);
+      setIsSingerVisible(false);
+      activeSingerRef.current = null;
     }
 
     return () => {
       if (singerTimeoutRef.current) clearTimeout(singerTimeoutRef.current);
     };
-  }, [activePreviewIndex, liveParsedLyrics, selectedSong]);
+  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData]);
 
   if (!selectedSong) return null;
 
@@ -498,8 +525,9 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     deezer: customData.deezer || `https://www.deezer.com/search/${searchQuery}`,
   };
 
-  const masterPalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName);
-  const allPotentialSingers = Object.keys(masterPalette);
+  const basePalette = getDistinctArtistColors(customData.lyrics, selectedSong.artistName, featuredArtists);
+  const masterPalette = { ...basePalette, ...customData.artistColors };
+  const allPotentialSingers = Object.keys(masterPalette).filter(Boolean); 
 
   const sharedProps = {
     selectedSong, isSaved, customData, isEditing, setIsEditing, isSyncMode, setIsSyncMode,
@@ -507,7 +535,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     syncProgress, syncDuration, setSyncDuration, isSyncPlaying, syncAudioSrc, playbackRate, singerImages,
     currentSingerBg, isSingerVisible, settings, lyricsViewMode, liveParsedLyrics, activePreviewIndex, hasValidSyncData,
     highResArt, releaseType, finalLinks, masterPalette, allPotentialSingers, globalProgress, debugInfo,
-    handleDataChange, handleImageChange, handleLocalFileChange, handleClearLocal,
+    handleDataChange, handleImageChange, handleColorChange, handleLocalFileChange, handleClearLocal,
     saveData, saveImageManager, startSyncMode, saveSyncData, toggleSyncPlay,
     handleSyncSeek, handleSpeedChange, handleLineClick, cycleViewMode, toggleLibrary,
     setCurrentTrack, setSyncData, setActiveSyncIndex, setIsSyncPlaying, handleSyncTimeUpdate

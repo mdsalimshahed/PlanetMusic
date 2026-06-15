@@ -1,19 +1,16 @@
+/* --- src/components/SongCard.css --- */
 .song-card {
-  /* Updated to use dynamic padding */
   padding: var(--dyn-card-padding, 16px);
   border-radius: var(--dyn-border-radius);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
   width: 100%; 
   margin-bottom: var(--dyn-card-gap, 28px); 
   break-inside: avoid; 
   box-sizing: border-box;
 }
-
-/* Keep everything else below this the same... */
 
 .song-card:hover {
   transform: translateY(-8px);
@@ -88,6 +85,25 @@
   font-weight: 600;
   margin-bottom: 6px;
   line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Added explicit tag styling for the song card */
+.explicit-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-base);
+  font-size: 11px;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .text-info p {
