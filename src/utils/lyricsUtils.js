@@ -64,7 +64,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
       } else {
-        currentRules = [{ marker: '', artists: globalDefaultArtists }];
+        // Fix for generic headers like [Intro] or [Chorus] with no explicit singer specified
+        currentRules = [{ marker: '', artists: [] }];
       }
       return; 
     }

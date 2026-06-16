@@ -14,8 +14,8 @@ const DynamicBackground = ({
         const finalImgUrl = customData.artistImages?.[singerName] || singerImages[singerName] || (isDefault ? highResArt : null);
         if (!finalImgUrl) return null;
 
-        const activeNames = currentSingerBg?.name.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
-        const isActive = currentSingerBg?.name.trim() === singerName || activeNames.includes(singerName);
+        const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
+        const isActive = currentSingerBg?.name?.trim() === singerName || activeNames.includes(singerName);
 
         const isCurrentSingerActive = isSingerVisible && isActive;
         const imgClass = isCurrentSingerActive ? 'active-watermark' : 'inactive-watermark';
@@ -26,7 +26,7 @@ const DynamicBackground = ({
       })}
       
       <div className={`singer-name-corner ${isSingerVisible && currentSingerBg ? 'visible' : 'hidden'}`}>
-        {currentSingerBg?.name.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
+        {currentSingerBg?.name?.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
           const trimmedPart = part.trim();
           if (!trimmedPart) return null; 
           
