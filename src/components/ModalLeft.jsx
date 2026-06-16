@@ -9,7 +9,7 @@ const ModalLeft = ({
   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
-  handleAutoSyncDatabases, isLrcFetching
+  handleAutoSyncDatabases, isLrcFetching, handleTranslate, isTranslating
 }) => {
   
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
@@ -104,8 +104,8 @@ const ModalLeft = ({
 
                 <button 
                   className="edit-links-btn" 
-                  onClick={handleAutoSyncDatabases} 
-                  disabled={isLrcFetching || isSyncLoading}
+                  onClick={() => handleAutoSyncDatabases()} 
+                  disabled={isLrcFetching || isSyncLoading || isTranslating}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? '📥 Fetching Databases...' : '📥 Auto-Sync Lyrics'}
@@ -113,11 +113,19 @@ const ModalLeft = ({
 
                 {customData.lyrics ? (
                   <>
-                    <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
+                    <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching || isTranslating} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? '⏳ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
                     </button>
                     
-                    {/* FIXED: Removed the allPotentialSingers.length restriction so it always appears */}
+                    <button 
+                      className="edit-links-btn" 
+                      onClick={handleTranslate} 
+                      disabled={isTranslating || isSyncLoading || isLrcFetching}
+                      style={{ opacity: isTranslating ? 0.6 : 1, cursor: isTranslating ? 'wait' : 'pointer' }}
+                    >
+                      {isTranslating ? '🌐 Translating...' : '🌐 Translate Lyrics'}
+                    </button>
+                    
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🎨 Manage Artists</button>
                     
                     {hasValidSyncData && !isSyncLoading && (
@@ -144,7 +152,10 @@ const ModalLeft = ({
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">🗑</button>
           ) : (
-            <button className="edit-links-btn save-mode" onClick={(e) => toggleLibrary(e, selectedSong)}>+ Add to Vault</button>
+            <button className="edit-links-btn save-mode" onClick={(e) => {
+              toggleLibrary(e, selectedSong);
+              handleAutoSyncDatabases(true); // Automatically fetch from database after adding
+            }}>+ Add to Vault</button>
           )}
         </div>
       </div>

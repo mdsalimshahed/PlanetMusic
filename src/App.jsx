@@ -15,7 +15,6 @@ const App = () => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Ensure the new settings exist for returning users
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 34;
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
@@ -68,7 +67,6 @@ const App = () => {
     }
   }, [settings, library, searchQuery, searchResults]);
 
-  // Clear search query when switching between Discover and Vault tabs
   const handleTabSwitch = (tab) => {
     if (activeTab !== tab) {
       setSearchQuery('');
@@ -76,13 +74,10 @@ const App = () => {
     }
   };
 
-  // Debounced Live Search
   useEffect(() => {
-    // Only fetch automatically if we are in the Discover (search) tab
     if (activeTab !== 'search') return;
     if (!searchQuery.trim()) return;
 
-    // Wait 400ms after the user stops typing before making the API request
     const debounceTimer = setTimeout(async () => {
       setIsSearching(true);
       try {
@@ -91,7 +86,6 @@ const App = () => {
         );
         const data = await response.json();
         
-        // Prioritize explicit songs
         const sortedResults = data.results.sort((a, b) => {
           const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
           const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
@@ -106,11 +100,9 @@ const App = () => {
       }
     }, 400);
 
-    // Cleanup the timer if the user types again before the 400ms is up
     return () => clearTimeout(debounceTimer);
   }, [searchQuery, activeTab]);
 
-  // Prevent default form submission since search is now live
   const handleSearchSubmit = (e) => {
     e.preventDefault();
   };
@@ -128,9 +120,14 @@ const App = () => {
   };
 
   const updateSongInLibrary = (updatedSong) => {
-    setLibrary(prevLibrary => 
-      prevLibrary.map(s => s.trackId === updatedSong.trackId ? updatedSong : s)
-    );
+    setLibrary(prevLibrary => {
+      const exists = prevLibrary.some(s => s.trackId === updatedSong.trackId);
+      if (exists) {
+        return prevLibrary.map(s => s.trackId === updatedSong.trackId ? updatedSong : s);
+      } else {
+        return [...prevLibrary, updatedSong];
+      }
+    });
     setSelectedSong(updatedSong);
   };
 
@@ -139,7 +136,6 @@ const App = () => {
     
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song };
-      // Preserving raw lyrics
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;

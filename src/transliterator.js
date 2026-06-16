@@ -1,16 +1,5 @@
 /* --- src/transliterator.js --- */
 
-export const chunkText = (text) => {
-  // A robust regex that isolates blocks of English letters, numbers, punctuation, and whitespace
-  const regex = /([A-Za-zÀ-ÖØ-öø-ÿ0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~‘’“”\–\—]+)/;
-  const parts = text.split(regex).filter(p => p !== '');
-  
-  return parts.map(part => {
-    const isEnglish = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~‘’“”\–\—]+$/.test(part);
-    return { text: part, isEnglish: isEnglish };
-  });
-};
-
 const stripHtmlAndBrackets = (text) => {
   if (!text) return '';
   return text
@@ -39,38 +28,28 @@ const getGooglePronunciation = async (text) => {
   }
 };
 
-export const getBulkPronunciations = async (linesArray) => {
+export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
   
   for (let i = 0; i < linesArray.length; i++) {
-    const cleanLine = stripHtmlAndBrackets(linesArray[i]);
-    
-    if (!cleanLine) {
+    if (linesArray[i] === null) {
       results.push(null);
-      continue;
-    }
-
-    const chunks = chunkText(cleanLine);
-    const pronChunks = [];
-    
-    for (const chunk of chunks) {
-      if (chunk.isEnglish || !chunk.text.trim()) {
-        // Skip the API completely, preserve English seamlessly
-        pronChunks.push({ text: chunk.text, pron: null });
+    } else {
+      const cleanLine = stripHtmlAndBrackets(linesArray[i]);
+      
+      // Skip if line is completely empty or purely English/Punctuation
+      const isEnglish = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~‘’“”\–\—]+$/.test(cleanLine);
+      
+      if (!cleanLine || isEnglish) {
+        results.push(null);
       } else {
-        // Only translate the isolated foreign characters
-        const p = await getGooglePronunciation(chunk.text);
-        pronChunks.push({ text: chunk.text, pron: p });
-        
+        const p = await getGooglePronunciation(cleanLine);
+        results.push(p);
         await new Promise(resolve => setTimeout(resolve, 50));
       }
     }
-    
-    if (pronChunks.every(c => c.pron === null)) {
-      results.push(null);
-    } else {
-      results.push(pronChunks);
-    }
+
+    if (onProgress) onProgress(i + 1, linesArray.length);
   }
   
   return results;
