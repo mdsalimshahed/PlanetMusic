@@ -64,7 +64,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
       } else {
-        // Fix for generic headers like [Intro] or [Chorus] with no explicit singer specified
+        // Unassigned headers like [Intro] with no explicit singer specified get empty artists 
+        // to render as default white text without generating a watermark.
         currentRules = [{ marker: '', artists: [] }];
       }
       return; 

@@ -7,6 +7,9 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const [globalProgress, setGlobalProgress] = useState(0);
   const [liveParsedLyrics, setLiveParsedLyrics] = useState([]);
   
+  // Track player state directly from Player.jsx events
+  const [playState, setPlayState] = useState({ isPlaying: false, isEnded: false });
+  
   // Controlled transition states
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
@@ -19,8 +22,15 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   useEffect(() => {
     const handleGlobalTime = (e) => setGlobalProgress(e.detail);
+    const handlePlayState = (e) => setPlayState(e.detail);
+    
     window.addEventListener('globalTimeUpdate', handleGlobalTime);
-    return () => window.removeEventListener('globalTimeUpdate', handleGlobalTime);
+    window.addEventListener('globalPlayState', handlePlayState);
+    
+    return () => {
+      window.removeEventListener('globalTimeUpdate', handleGlobalTime);
+      window.removeEventListener('globalPlayState', handlePlayState);
+    };
   }, []);
 
   useEffect(() => {
@@ -51,7 +61,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
   let activePreviewIndex = -1;
 
-  if (hasValidSyncData && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong) {
+  if (hasValidSyncData && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong && !playState.isEnded) {
     activePreviewIndex = selectedSong.syncData.findIndex((savedNode, i) => {
       if (!savedNode || savedNode.start === null) return false;
       const nextNode = selectedSong.syncData[i + 1];
@@ -72,12 +82,18 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
-  // Handle the 150ms Snappy Transition Logic
+  // Handle the 150ms Snappy Transition Logic and Idle Fade
   useEffect(() => {
     if (!selectedSong) return;
+    
+    // Fallback display if song has no sync data
     if (!hasValidSyncData) {
-      setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
-      setIsSingerVisible(true);
+      if (isPlayingCurrentSong && !playState.isEnded) {
+        setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
+        setIsSingerVisible(true);
+      } else {
+        setIsSingerVisible(false);
+      }
       return;
     }
 
@@ -111,9 +127,8 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
     
     return () => { if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); };
-  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData]);
+  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded]);
 
-  // Rename variables going out to match your old hook format so components don't break
   return {
     lyricsViewMode, cycleViewMode, globalProgress, liveParsedLyrics, 
     currentSingerBg: displaySingerBg, isSingerVisible,

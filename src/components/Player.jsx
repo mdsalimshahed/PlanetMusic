@@ -25,10 +25,15 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
 
+  const emitPlayState = (playing, ended = false) => {
+    window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
+  };
+
   useEffect(() => {
     if (!currentTrack) {
       setAudioSrc('');
       setPendingSeek(null); 
+      emitPlayState(false, true);
       return;
     }
 
@@ -52,7 +57,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
       audioRef.current.volume = volume;
       if (pendingSeek === null) {
         audioRef.current.play()
-          .then(() => setIsPlaying(true))
+          .then(() => { setIsPlaying(true); emitPlayState(true, false); })
           .catch(err => console.log("Autoplay prevented:", err));
       }
     }
@@ -70,8 +75,10 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
           audioRef.current.currentTime = time;
           if (!isPlaying) {
             audioRef.current.play()
-              .then(() => setIsPlaying(true))
+              .then(() => { setIsPlaying(true); emitPlayState(true, false); })
               .catch(() => {});
+          } else {
+            emitPlayState(true, false);
           }
         }
       }
@@ -91,7 +98,6 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     if (!audioRef.current) return;
     if (isPlaying) audioRef.current.pause();
     else audioRef.current.play();
-    setIsPlaying(!isPlaying);
   };
 
   useEffect(() => {
@@ -120,7 +126,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         audioRef.current.play()
-          .then(() => setIsPlaying(true))
+          .then(() => { setIsPlaying(true); emitPlayState(true, false); })
           .catch(() => {});
         setPendingSeek(null); 
       }
@@ -129,7 +135,11 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
 
   const handleSeek = (e) => {
     const time = Number(e.target.value);
-    if (audioRef.current) audioRef.current.currentTime = time;
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      const isEnded = time >= duration && duration > 0;
+      emitPlayState(isPlaying, isEnded);
+    }
     setProgress(time);
     window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
   };
@@ -143,6 +153,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   const closePlayer = () => {
     setCurrentTrack(null);
     setIsPlaying(false);
+    emitPlayState(false, true);
   };
 
   if (!currentTrack) return null;
@@ -153,9 +164,9 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
         ref={audioRef}
         src={audioSrc} 
         onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
+        onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
+        onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
       />
 
       <div className="player-info">
