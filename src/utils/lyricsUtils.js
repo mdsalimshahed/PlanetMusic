@@ -7,7 +7,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
-  let activeMarkerState = ''; 
+  
+  // Track active markdown characters across lines (supports multi-line formatting!)
+  let activeCounts = {}; 
+
+  // Normalizes markers so `_**` and `**_` match perfectly as the same combination
+  const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
     const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
@@ -15,8 +20,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
+      activeCounts = {}; // Reset active formatting whenever a new section header begins
       const content = headerMatch[1];
-      activeMarkerState = ''; 
       
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
@@ -24,18 +29,24 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const parsedTokens = [];
         const explicitArtists = [];
 
-        const matches = [...singersPart.matchAll(/([_*~]+)(.+?)\1/g)];
+        // Accurately capture nested start and end markers wrapping a name, ignoring inner text
+        const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
-            const marker = m[1];
-            let name = m[2].trim();
-            name = name.replace(/^(?:&|\band\b|\+|,)\s*/i, '').replace(/\s*(?:&|\band\b|\+|,)$/i, '').trim();
+            const startMarker = m[1];
+            const endMarker = m[3];
             
-            parsedTokens.push({ marker, name });
-            unmarkedStr = unmarkedStr.replace(m[0], ' '); 
-            
-            if (name.toLowerCase() !== 'both' && name.toLowerCase() !== 'all') {
-                name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).forEach(n => explicitArtists.push(n.trim()));
+            if (normalizeMarker(startMarker) === normalizeMarker(endMarker)) {
+                const marker = normalizeMarker(startMarker);
+                let name = m[2].trim();
+                name = name.replace(/^(?:&|\band\b|\+|,)\s*/i, '').replace(/\s*(?:&|\band\b|\+|,)$/i, '').trim();
+                
+                parsedTokens.push({ marker, name });
+                unmarkedStr = unmarkedStr.replace(m[0], ' '); 
+                
+                if (name.toLowerCase() !== 'both' && name.toLowerCase() !== 'all') {
+                    name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).forEach(n => explicitArtists.push(n.trim()));
+                }
             }
         });
 
@@ -64,42 +75,58 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
       } else {
-        // Unassigned headers like [Intro] with no explicit singer specified get empty artists 
-        // to render as default white text without generating a watermark.
         currentRules = [{ marker: '', artists: [] }];
       }
       return; 
     }
 
     let lineSegments = [];
-    // Always split by all standard markers so undefined tags can be correctly isolated
     const regex = /([_*~]+)/g;
     const parts = cleanHtmlLine.split(regex);
-    
     let currentText = '';
+
+    // Logic to smartly toggle overlapping/nested tags based on character frequency
+    const applyMarkerChunk = (chunk) => {
+        const chunkCounts = {};
+        for (let char of chunk) {
+            chunkCounts[char] = (chunkCounts[char] || 0) + 1;
+        }
+
+        for (let char in chunkCounts) {
+            const act = activeCounts[char] || 0;
+            const chk = chunkCounts[char];
+
+            if (act >= chk) {
+                activeCounts[char] = act - chk; // It's a closing tag, subtract count
+            } else {
+                activeCounts[char] = act + chk; // It's an opening tag, add count
+            }
+        }
+    };
+
+    const getActiveMarkerString = () => {
+        let str = '';
+        const chars = Object.keys(activeCounts).sort();
+        for (let char of chars) {
+            str += char.repeat(activeCounts[char]);
+        }
+        return str; // Yields a perfectly normalized format string (e.g., "**_")
+    };
 
     parts.forEach(part => {
         if (/^[_*~]+$/.test(part)) {
-            if (activeMarkerState === part) {
-                if (currentText) lineSegments.push({ text: currentText, marker: activeMarkerState });
+            if (currentText) {
+                lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
                 currentText = '';
-                activeMarkerState = ''; 
-            } 
-            else if (activeMarkerState === '') {
-                if (currentText) lineSegments.push({ text: currentText, marker: '' });
-                currentText = '';
-                activeMarkerState = part; 
-            } 
-            else {
-                currentText += part;
             }
+            applyMarkerChunk(part);
         } else if (part) {
             currentText += part;
         }
     });
 
     if (currentText) {
-        lineSegments.push({ text: currentText, marker: activeMarkerState });
+        lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
     }
 
     const finalSegments = [];
@@ -116,7 +143,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         } else if (seg.marker === '') {
             artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
         } else {
-            artists = []; // Unassigned marker logic: Default to empty (renders white text)
+            artists = []; 
         }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
@@ -148,7 +175,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
-    // Ensures we don't accidentally lose the watermark on a line full of unknown tags
     if (lineArtistsSet.size === 0) {
         const defaultRule = currentRules.find(r => r.marker === '');
         if (defaultRule) {
