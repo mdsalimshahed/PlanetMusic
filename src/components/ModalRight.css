@@ -8,7 +8,7 @@
 .inactive-watermark { opacity: 0 !important; z-index: 0; transform: scale(1.02); filter: blur(4px) grayscale(50%) !important; }
 
 /* Singer Names */
-.singer-name-corner { position: absolute; bottom: 32px; right: 32px; z-index: 2; pointer-events: none; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, filter 0.3s ease-in-out; filter: blur(0px); }
+.singer-name-corner { position: absolute; bottom: 32px; right: 32px; z-index: 2; pointer-events: none; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, filter 0.3s ease-in-out; filter: blur(0px);will-change: opacity, transform, filter; }
 .singer-name-corner.visible { opacity: 0.9; transform: translateY(0) scale(1); filter: blur(0px); }
 .singer-name-corner.hidden { opacity: 0; transform: translateY(10px) scale(0.98); filter: blur(2px); }
 .singer-name-separator { color: rgba(255, 255, 255, 1) !important; text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); font-weight: 600; white-space: pre-wrap; }
