@@ -7,14 +7,10 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const [globalProgress, setGlobalProgress] = useState(0);
   const [liveParsedLyrics, setLiveParsedLyrics] = useState([]);
   
-  // Track player state directly from Player.jsx events
   const [playState, setPlayState] = useState({ isPlaying: false, isEnded: false });
-  
-  // Controlled transition states
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   
-  // Dynamic Transition Timing (defaults to 150ms for snappiness)
   const [transitionTiming, setTransitionTiming] = useState(() => {
     return parseInt(localStorage.getItem('artistTransitionTime')) || 150;
   });
@@ -53,10 +49,71 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   useEffect(() => {
     if (selectedSong) {
-      const cleanedLiveLines = parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
-      setLiveParsedLyrics(cleanedLiveLines);
+      const rawLyrics = customData.lyrics || '';
+      // Initial robust parse
+      const cleanedLiveLines = parseLyrics(rawLyrics, selectedSong.artistName, masterPalette);
+      
+      // POST-PROCESS: Enforce "No Artist" on generic sections without explicit headers
+      // Guarantees [Intro] or untagged sections stay white with no attribution
+      const rawLines = rawLyrics.split('\n');
+      const sectionMap = [];
+      
+      let currentSectionSinger = selectedSong.artistName;
+      let isBlankSection = false;
+
+      for (let line of rawLines) {
+        // Strip inline timestamps securely to read headers and text properly
+        const lineWithoutTime = line.replace(/\[\d{2}:\d{2}\.\d{2,3}\]/g, '').trim();
+        if (!lineWithoutTime) continue;
+
+        if (lineWithoutTime.startsWith('[') && lineWithoutTime.endsWith(']')) {
+          if (lineWithoutTime.includes(':')) {
+            // Explicit tag found, e.g., [Verse 1: Eminem]
+            currentSectionSinger = lineWithoutTime.split(':')[1].replace(']', '').trim();
+            isBlankSection = false;
+          } else {
+            // Generic tag with no artist, e.g., [Intro], [Chorus]
+            currentSectionSinger = '';
+            isBlankSection = true;
+          }
+        } else {
+          sectionMap.push({
+            text: lineWithoutTime.replace(/_/g, ''), // Strip underscores for safer matching
+            singer: currentSectionSinger,
+            isBlank: isBlankSection
+          });
+        }
+      }
+
+      // Apply the corrected states to the parsed lines safely
+      let mapIndex = 0;
+      const finalLines = cleanedLiveLines.map(lineObj => {
+        const cleanText = lineObj.text.replace(/_/g, '').trim();
+        
+        // Fast-forward until we match the parsed text
+        while (mapIndex < sectionMap.length && sectionMap[mapIndex].text !== cleanText) {
+          mapIndex++;
+        }
+        
+        if (mapIndex < sectionMap.length) {
+          const matched = sectionMap[mapIndex];
+          mapIndex++; 
+          
+          if (matched.isBlank) {
+            return {
+              ...lineObj,
+              singer: '',
+              color: '#ffffff',
+              isGradient: false
+            };
+          }
+        }
+        return lineObj;
+      });
+
+      setLiveParsedLyrics(finalLines);
     }
-  }, [customData.lyrics, customData.artistColors, selectedSong]);
+  }, [customData.lyrics, customData.artistColors, selectedSong, masterPalette]);
 
   const cycleViewMode = () => setLyricsViewMode(prev => 
     prev === 'live' ? 'focused' : prev === 'focused' ? 'karaoke' : prev === 'karaoke' ? 'debug' : prev === 'debug' ? 'plain' : 'live'
@@ -91,7 +148,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
-  // Handle the Snappy Transition Logic and Idle Fade
+  // Handle Dynamic Singer Display Transitions
   useEffect(() => {
     if (!selectedSong) return;
     
@@ -107,39 +164,45 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
     const activeLineObj = liveParsedLyrics[activePreviewIndex];
 
-    if (activeLineObj && activeLineObj.singer) {
+    if (activeLineObj) {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
 
-      if (activeLineObj.singer !== displaySingerBg?.name) {
-        // Fade out
-        setIsSingerVisible(false);
+      // Treat missing/empty singers securely as a blank state (white background, no name text)
+      const targetSinger = activeLineObj.singer || '';
+      const targetColor = targetSinger 
+        ? (activeLineObj.isGradient ? '#fff' : activeLineObj.color) 
+        : '#ffffff';
+
+      // Transition only if the singer changed, OR if rendering for the very first time
+      if (targetSinger !== (displaySingerBg?.name || '') || !displaySingerBg) {
+        setIsSingerVisible(false); 
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
         
-        // Wait for the requested transitionTiming duration, then fade in the new artist
         transitionTimerRef.current = setTimeout(() => {
           setDisplaySingerBg({
-            name: activeLineObj.singer,
-            color: activeLineObj.isGradient ? '#fff' : activeLineObj.color
+            name: targetSinger,
+            color: targetColor
           });
-          setIsSingerVisible(true);
+          setIsSingerVisible(true); 
         }, transitionTiming); 
       } else {
         setIsSingerVisible(true);
       }
     } else {
+      // Break between lines
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       
       silenceTimerRef.current = setTimeout(() => {
         setIsSingerVisible(false);
-      }, 2000); // 2-second silence rule
+      }, 2000); 
     }
     
     return () => { 
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); 
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current); 
     };
-  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded, displaySingerBg?.name, transitionTiming]);
+  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded, displaySingerBg, transitionTiming]);
 
   return {
     lyricsViewMode, cycleViewMode, globalProgress, liveParsedLyrics, 
