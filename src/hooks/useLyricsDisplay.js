@@ -107,26 +107,35 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
     const activeLineObj = liveParsedLyrics[activePreviewIndex];
 
-    if (activeLineObj && activeLineObj.singer) {
-      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+    if (activeLineObj) {
+      if (activeLineObj.singer) {
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
 
-      if (activeLineObj.singer !== displaySingerBg?.name) {
-        // Fade out
-        setIsSingerVisible(false);
-        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-        
-        // Wait for the requested transitionTiming duration, then fade in the new artist
-        transitionTimerRef.current = setTimeout(() => {
-          setDisplaySingerBg({
-            name: activeLineObj.singer,
-            color: activeLineObj.isGradient ? '#fff' : activeLineObj.color
-          });
+        if (activeLineObj.singer !== displaySingerBg?.name) {
+          // Fade out
+          setIsSingerVisible(false);
+          if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+          
+          // Wait for the requested transitionTiming duration, then fade in the new artist
+          transitionTimerRef.current = setTimeout(() => {
+            setDisplaySingerBg({
+              name: activeLineObj.singer,
+              color: activeLineObj.isGradient ? '#fff' : activeLineObj.color
+            });
+            setIsSingerVisible(true);
+          }, transitionTiming); 
+        } else {
           setIsSingerVisible(true);
-        }, transitionTiming); 
+        }
       } else {
-        setIsSingerVisible(true);
+        // Line exists but has NO singer (e.g. unassigned intro header)
+        // Hide immediately without waiting for the 2-second silence rule
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+        setIsSingerVisible(false);
       }
     } else {
+      // No active line (silence between valid parsed lines)
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       
