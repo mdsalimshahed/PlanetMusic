@@ -48,11 +48,12 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       const cleanName = singerName.trim();
       if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName]) {
         setSingerImages(prev => ({ ...prev, [cleanName]: null }));
-        const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName);
+        // Pass both track name and album name down to the API utility for article scanning
+        const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName, selectedSong.trackName, selectedSong.collectionName);
         if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
       }
     });
-  }, [allPotentialSingers.join('|'), selectedSong?.artistName]);
+  }, [allPotentialSingers.join('|'), selectedSong?.artistName, selectedSong?.trackName, selectedSong?.collectionName]);
 
   const handleDataChange = (e) => {
     const { name, value } = e.target;
