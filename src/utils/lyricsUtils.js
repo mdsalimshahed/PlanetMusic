@@ -72,42 +72,34 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     }
 
     let lineSegments = [];
-    const activeMarkers = currentRules.filter(r => r.marker !== '').map(r => r.marker);
+    // Always split by all standard markers so undefined tags can be correctly isolated
+    const regex = /([_*~]+)/g;
+    const parts = cleanHtmlLine.split(regex);
+    
+    let currentText = '';
 
-    if (activeMarkers.length > 0) {
-        const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regexParts = activeMarkers.map(m => escapeRegExp(m));
-        
-        const regex = new RegExp(`(${regexParts.join('|')})`, 'g');
-        const parts = cleanHtmlLine.split(regex);
-        
-        let currentText = '';
-
-        parts.forEach(part => {
-            if (activeMarkers.includes(part)) {
-                if (activeMarkerState === part) {
-                    if (currentText) lineSegments.push({ text: currentText, marker: activeMarkerState });
-                    currentText = '';
-                    activeMarkerState = ''; 
-                } 
-                else if (activeMarkerState === '') {
-                    if (currentText) lineSegments.push({ text: currentText, marker: '' });
-                    currentText = '';
-                    activeMarkerState = part; 
-                } 
-                else {
-                    currentText += part;
-                }
-            } else if (part) {
+    parts.forEach(part => {
+        if (/^[_*~]+$/.test(part)) {
+            if (activeMarkerState === part) {
+                if (currentText) lineSegments.push({ text: currentText, marker: activeMarkerState });
+                currentText = '';
+                activeMarkerState = ''; 
+            } 
+            else if (activeMarkerState === '') {
+                if (currentText) lineSegments.push({ text: currentText, marker: '' });
+                currentText = '';
+                activeMarkerState = part; 
+            } 
+            else {
                 currentText += part;
             }
-        });
-
-        if (currentText) {
-            lineSegments.push({ text: currentText, marker: activeMarkerState });
+        } else if (part) {
+            currentText += part;
         }
-    } else {
-        lineSegments.push({ text: cleanHtmlLine, marker: activeMarkerState });
+    });
+
+    if (currentText) {
+        lineSegments.push({ text: currentText, marker: activeMarkerState });
     }
 
     const finalSegments = [];
@@ -119,8 +111,13 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let artists = [];
         const rule = currentRules.find(r => r.marker === seg.marker);
         
-        if (rule) artists = rule.artists;
-        else artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
+        if (rule) {
+            artists = rule.artists;
+        } else if (seg.marker === '') {
+            artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
+        } else {
+            artists = []; // Unassigned marker logic: Default to empty (renders white text)
+        }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
             artists.forEach(a => lineArtistsSet.add(a));
@@ -151,9 +148,14 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
-    if (lineArtistsSet.size === 0 && currentRules.length > 0) {
+    // Ensures we don't accidentally lose the watermark on a line full of unknown tags
+    if (lineArtistsSet.size === 0) {
         const defaultRule = currentRules.find(r => r.marker === '');
-        if (defaultRule) defaultRule.artists.forEach(a => lineArtistsSet.add(a));
+        if (defaultRule) {
+            defaultRule.artists.forEach(a => lineArtistsSet.add(a));
+        } else {
+            globalDefaultArtists.forEach(a => lineArtistsSet.add(a));
+        }
     }
 
     const finalArtistsArray = Array.from(lineArtistsSet);
