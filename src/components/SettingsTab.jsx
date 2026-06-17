@@ -34,6 +34,40 @@ const SettingsTab = ({ settings, setSettings }) => {
 
         <div className="settings-card glass-panel">
           <h3>Visuals & Styling</h3>
+
+          {/* --- ARTIST TRANSITION TIMING SLIDER --- */}
+          <div className="setting-item">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <label htmlFor="transitionSlider" style={{ marginBottom: 0 }}>Artist Transition Timing</label>
+              <span id="transitionValueDisplay" style={{ fontSize: '14px', fontWeight: '500', color: 'var(--accent)' }}>
+                {localStorage.getItem('artistTransitionTime') || 150}ms
+              </span>
+            </div>
+            <input 
+              id="transitionSlider"
+              type="range" 
+              min="0" 
+              max="1000" 
+              step="10" 
+              defaultValue={localStorage.getItem('artistTransitionTime') || 150}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                localStorage.setItem('artistTransitionTime', val);
+                
+                document.getElementById('transitionValueDisplay').innerText = `${val}ms`;
+                e.target.style.setProperty('--progress', `${(val / 1000) * 100}%`);
+                
+                window.dispatchEvent(new CustomEvent('updateTransitionTime', { detail: val }));
+              }}
+              style={{
+                '--progress': `${(parseInt(localStorage.getItem('artistTransitionTime') || 150) / 1000) * 100}%`
+              }}
+            />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              Lower is snappier (0ms = instant). Adjusts the fade gap between singer changes.
+            </span>
+          </div>
+
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
             <input type="range" name="bgImageOpacity" min="0" max="1" step="0.05" value={settings.bgImageOpacity ?? 0.25} onChange={handleChange} style={{'--progress': `${(settings.bgImageOpacity ?? 0.25) * 100}%`}} />

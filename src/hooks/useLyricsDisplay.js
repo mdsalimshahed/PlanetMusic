@@ -14,8 +14,14 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   
+  // Dynamic Transition Timing (defaults to 150ms for snappiness)
+  const [transitionTiming, setTransitionTiming] = useState(() => {
+    return parseInt(localStorage.getItem('artistTransitionTime')) || 150;
+  });
+  
   const activePreviewRef = useRef(null);
   const silenceTimerRef = useRef(null);
+  const transitionTimerRef = useRef(null);
   const previousTrackId = useRef(null);
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
@@ -23,13 +29,16 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   useEffect(() => {
     const handleGlobalTime = (e) => setGlobalProgress(e.detail);
     const handlePlayState = (e) => setPlayState(e.detail);
+    const handleTimingUpdate = (e) => setTransitionTiming(e.detail);
     
     window.addEventListener('globalTimeUpdate', handleGlobalTime);
     window.addEventListener('globalPlayState', handlePlayState);
+    window.addEventListener('updateTransitionTime', handleTimingUpdate);
     
     return () => {
       window.removeEventListener('globalTimeUpdate', handleGlobalTime);
       window.removeEventListener('globalPlayState', handlePlayState);
+      window.removeEventListener('updateTransitionTime', handleTimingUpdate);
     };
   }, []);
 
@@ -82,11 +91,10 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
-  // Handle the 150ms Snappy Transition Logic and Idle Fade
+  // Handle the Snappy Transition Logic and Idle Fade
   useEffect(() => {
     if (!selectedSong) return;
     
-    // Fallback display if song has no sync data
     if (!hasValidSyncData) {
       if (isPlayingCurrentSong && !playState.isEnded) {
         setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
@@ -98,36 +106,40 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
 
     const activeLineObj = liveParsedLyrics[activePreviewIndex];
-    const newSingerName = activeLineObj?.singer || null;
 
-    if (newSingerName !== displaySingerBg?.name) {
-      setIsSingerVisible(false); // Trigger fade-out class via CSS
-      
+    if (activeLineObj && activeLineObj.singer) {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = setTimeout(() => {
-        if (activeLineObj && activeLineObj.singer) {
+
+      if (activeLineObj.singer !== displaySingerBg?.name) {
+        // Fade out
+        setIsSingerVisible(false);
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+        
+        // Wait for the requested transitionTiming duration, then fade in the new artist
+        transitionTimerRef.current = setTimeout(() => {
           setDisplaySingerBg({
             name: activeLineObj.singer,
             color: activeLineObj.isGradient ? '#fff' : activeLineObj.color
           });
-          setIsSingerVisible(true); // Trigger fade-in class via CSS
-        } else {
-          setDisplaySingerBg(null);
-        }
-      }, 150); // Exact delay for snap transition
-      
-    } else {
-      if (activeLineObj && activeLineObj.singer) {
-        setIsSingerVisible(true);
-        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+          setIsSingerVisible(true);
+        }, transitionTiming); 
       } else {
-        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-        silenceTimerRef.current = setTimeout(() => setIsSingerVisible(false), 2000);
+        setIsSingerVisible(true);
       }
+    } else {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      
+      silenceTimerRef.current = setTimeout(() => {
+        setIsSingerVisible(false);
+      }, 2000); // 2-second silence rule
     }
     
-    return () => { if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); };
-  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded]);
+    return () => { 
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); 
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current); 
+    };
+  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded, displaySingerBg?.name, transitionTiming]);
 
   return {
     lyricsViewMode, cycleViewMode, globalProgress, liveParsedLyrics, 
