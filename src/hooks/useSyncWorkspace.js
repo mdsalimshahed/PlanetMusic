@@ -209,8 +209,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       targetData = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette).map(l => ({...l, start: null, end: null, pronunciation: null}));
     }
 
-    // Only translate lines that don't already have a valid pronunciation!
-    const linesToTranslate = targetData.map(l => l.pronunciation ? null : l.text);
+    // Always translate everything, passing the full text strings
+    const linesToTranslate = targetData.map(l => l.text);
 
     const pronunciations = await getBulkPronunciations(linesToTranslate, (current, total) => {
       setNotification({ show: true, message: `Translating line ${current} of ${total}...`, progress: Math.round((current/total)*100) });
