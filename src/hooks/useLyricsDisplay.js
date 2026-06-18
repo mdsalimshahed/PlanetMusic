@@ -85,9 +85,12 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     if (!isSyncMode && !isEditing && !isImageManagerOpen && ['live', 'focused', 'karaoke'].includes(lyricsViewMode) && activePreviewRef.current) {
       const container = activePreviewRef.current.parentElement;
       const offsetTop = activePreviewRef.current.offsetTop;
+      
+      // Calculate exact center position
       const scrollPos = offsetTop - (container.clientHeight / 2) + (activePreviewRef.current.clientHeight / 2);
-      if (lyricsViewMode === 'focused') container.scrollTo({ top: scrollPos, behavior: 'smooth' });
-      else container.scrollTop = scrollPos;
+      
+      // ALWAYS use smooth scrolling behavior to completely eliminate the harsh jumping/jittering
+      container.scrollTo({ top: scrollPos, behavior: 'smooth' });
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
@@ -129,7 +132,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         }
       } else {
         // Line exists but has NO singer (e.g. unassigned intro header)
-        // Hide immediately without waiting for the 2-second silence rule
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
         setIsSingerVisible(false);
@@ -141,7 +143,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       
       silenceTimerRef.current = setTimeout(() => {
         setIsSingerVisible(false);
-      }, 2000); // 2-second silence rule
+      }, 2000); 
     }
     
     return () => { 

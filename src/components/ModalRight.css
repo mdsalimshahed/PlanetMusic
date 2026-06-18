@@ -95,18 +95,75 @@ ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wr
 .lyrics-textarea::-webkit-scrollbar-thumb { background: rgba(179, 136, 235, 0.3); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: rgba(179, 136, 235, 0.6); }
 
-/* Live Lyrics View */
-.live-lyrics-preview { flex-grow: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 16px; padding: 20px; scroll-behavior: smooth; }
+/* --- Live Lyrics View (Static Sizing Fixes Layout Thrashing) --- */
+.live-lyrics-preview { 
+  flex-grow: 1; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 16px; 
+  padding: 40px 20px; 
+  scroll-behavior: smooth; 
+}
 .live-lyrics-preview::-webkit-scrollbar { width: 6px; }
 .live-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
-.preview-line { font-size: 20px; font-weight: 700; color: rgba(255, 255, 255, 0.3); transition: color 0.3s ease, text-shadow 0.3s ease, font-size 0.3s ease; line-height: 1.4; width: 100%; white-space: normal; word-wrap: break-word; cursor: pointer; }
-.preview-line:hover { color: rgba(255, 255, 255, 0.6); }
-.preview-line.active { color: rgba(255, 255, 255, 1); text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); font-size: var(--dyn-live-sync-font-size, 34px); }
 
-/* Focused Lyrics View */
-.focused-lyrics-preview { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 40px; }
-.focused-line { position: absolute; width: 100%; text-align: center; font-size: var(--dyn-focused-sync-font-size, 42px); font-weight: 900; line-height: 1.4; color: white; white-space: normal; word-wrap: break-word; opacity: 0; transform: translateY(15px) scale(0.95); transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; }
-.focused-line.active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; cursor: pointer; text-shadow: 0 0 30px rgba(255, 255, 255, 0.4); }
+.preview-line { 
+  font-size: var(--dyn-live-sync-font-size, 34px); 
+  font-weight: 700; 
+  color: rgba(255, 255, 255, 0.3); 
+  /* Removed font-size from transition to stop re-wrap jitter */
+  transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease; 
+  line-height: 1.4; 
+  width: 100%; 
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+  cursor: pointer; 
+  margin: 0; 
+  opacity: 0.4;
+  will-change: color, opacity;
+}
+.preview-line:hover { 
+  color: rgba(255, 255, 255, 0.6); 
+  opacity: 0.8; 
+}
+.preview-line.active { 
+  color: rgba(255, 255, 255, 1); 
+  opacity: 1;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
+}
+
+/* Focused Lyrics View (Fixed Transform Rendering Bug) */
+.focused-lyrics-preview { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 40px; position: relative; }
+.focused-line { 
+  /* Hard absolute centering to stop Flexbox reflow adjustments */
+  position: absolute; 
+  top: 50%;
+  left: 50%;
+  width: 100%; 
+  padding: 0 40px;
+  text-align: center; 
+  font-size: var(--dyn-focused-sync-font-size, 42px); 
+  font-weight: 900; 
+  line-height: 1.4; 
+  color: white; 
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+  opacity: 0; 
+  /* Removed scale() - handles exact centering + slide down effect */
+  transform: translate(-50%, calc(-50% + 20px)); 
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), text-shadow 0.3s ease, color 0.3s ease; 
+  pointer-events: none; 
+  will-change: opacity, transform;
+}
+.focused-line.active { 
+  opacity: 1; 
+  transform: translate(-50%, -50%); 
+  pointer-events: auto; 
+  cursor: pointer; 
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.4); 
+}
 .focused-line.active:hover { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
 
 /* Debug Lyrics View */
@@ -124,7 +181,6 @@ rt.sync-pronunciation { font-size: 11px; color: inherit; opacity: 0.6; font-styl
 rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease, text-shadow 0.3s ease; }
 .preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
 .sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
-.preview-line.active span[style*="background-image"], .focused-line.active span[style*="background-image"] { font-weight: 800; }
 
 .no-lyrics-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 200px; gap: 20px; text-align: center; color: var(--text-subdued); }
 .no-lyrics-empty-state p { font-size: 16px; font-weight: 500; margin: 0; }

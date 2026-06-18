@@ -135,18 +135,27 @@ const App = () => {
     if (library.length === 0) return alert("Your vault is empty! Add songs before exporting.");
     
     const optimizedLibrary = library.map(song => {
-      const optimizedSong = { ...song };
+      const optimizedSong = { 
+        ...song,
+        // Explicitly format these to ensure they're saved into the JSON backup
+        lyrics: song.lyrics || "",
+        syncData: song.syncData || []
+      };
+      
+      // Clean up unneeded bloat from the iTunes API response
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
       delete optimizedSong.collectionCensoredName;
       delete optimizedSong.artistViewUrl;
       delete optimizedSong.trackViewUrl;
+      
       return optimizedSong;
     });
 
     const exportData = { library: optimizedLibrary, settings: settings };
-    const jsonString = JSON.stringify(exportData); 
+    // Export with spacing for readability if someone wants to manually inspect their vault data
+    const jsonString = JSON.stringify(exportData, null, 2); 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     
@@ -167,20 +176,28 @@ const App = () => {
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
-        if (parsedData.library && Array.isArray(parsedData.library)) {
-          const newLibrary = [...library];
-          parsedData.library.forEach(newSong => {
-            if (!newLibrary.some(s => s.trackId === newSong.trackId)) newLibrary.push(newSong);
+        const newLibrary = [...library];
+
+        // Ensure we properly overwrite existing songs to apply imported lyrics & sync data
+        const mergeSongs = (importedSongs) => {
+          importedSongs.forEach(newSong => {
+            const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
+            if (existingIdx >= 0) {
+              newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
+            } else {
+              newLibrary.push(newSong);
+            }
           });
+        };
+
+        if (parsedData.library && Array.isArray(parsedData.library)) {
+          mergeSongs(parsedData.library);
           setLibrary(newLibrary);
           if (parsedData.settings) setSettings({ ...settings, ...parsedData.settings });
           handleTabSwitch('library');
           alert(`Successfully imported ${parsedData.library.length} songs and applied UI settings!`);
         } else if (Array.isArray(parsedData)) {
-          const newLibrary = [...library];
-          parsedData.forEach(newSong => {
-            if (!newLibrary.some(s => s.trackId === newSong.trackId)) newLibrary.push(newSong);
-          });
+          mergeSongs(parsedData);
           setLibrary(newLibrary);
           handleTabSwitch('library');
           alert(`Successfully imported ${parsedData.length} songs!`);
