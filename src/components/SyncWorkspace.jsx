@@ -14,11 +14,8 @@ const SyncWorkspace = ({
     }
   };
 
-  const englishRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~‘’“”\–\—]+$/;
-
   const renderWorkspaceLine = (line) => {
     const pronString = line.pronunciation;
-    const pronWords = pronString && typeof pronString === 'string' ? pronString.trim().split(/\s+/).filter(Boolean) : [];
     const segments = line.segments || [];
 
     const pronStyle = { 
@@ -33,6 +30,18 @@ const SyncWorkspace = ({
         marginTop: '4px'
     };
 
+    let parsedChunks = null;
+    if (typeof pronString === 'string') {
+        try {
+            const parsed = JSON.parse(pronString);
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type) {
+                parsedChunks = parsed;
+            }
+        } catch (e) {
+            parsedChunks = null;
+        }
+    }
+
     const chars = [];
     segments.forEach(seg => {
         for (let char of seg.text) {
@@ -40,85 +49,43 @@ const SyncWorkspace = ({
         }
     });
 
-    const tokens = [];
-    let currentToken = [];
-    let isSpace = false;
-    
-    for (let i = 0; i < chars.length; i++) {
-        const c = chars[i];
-        const charIsSpace = /\s/.test(c.char);
-        if (i === 0) isSpace = charIsSpace;
-        
-        if (charIsSpace === isSpace) {
-            currentToken.push(c);
-        } else {
-            tokens.push({ type: isSpace ? 'space' : 'word', data: currentToken, text: currentToken.map(x=>x.char).join('') });
-            currentToken = [c];
-            isSpace = charIsSpace;
-        }
-    }
-    if (currentToken.length > 0) tokens.push({ type: isSpace ? 'space' : 'word', data: currentToken, text: currentToken.map(x=>x.char).join('') });
+    const renderColoredChar = (c, cIdx) => {
+        const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
+        const activeColor = isPunct ? '#fbbf24' : (c.seg.color || '#ffffff');
+        const isGradient = !isPunct && c.seg.isGradient;
 
-    const actualWordsCount = tokens.filter(t => t.type === 'word').length;
-    const canAlignWords = pronWords.length > 0 && pronWords.length === actualWordsCount;
+        const style = isGradient ? { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
+        return <span key={cIdx} style={style}>{c.char}</span>;
+    };
 
-    if (canAlignWords) {
-        let pronIdx = 0;
-        const renderedTokens = tokens.map((token, tIdx) => {
-            const renderedChars = token.data.map((c, cIdx) => {
-                const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
-                const activeColor = isPunct ? '#fbbf24' : (c.seg.color || '#ffffff');
-                const isGradient = !isPunct && c.seg.isGradient;
+    if (parsedChunks) {
+        let charOffset = 0;
+        const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
+            const chunkLen = chunk.text.length;
+            const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
+            charOffset += chunkLen;
 
-                const style = isGradient ? { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-                return <span key={cIdx} style={style}>{c.char}</span>;
-            });
+            const renderedText = chunkChars.map((c, i) => renderColoredChar(c, i));
 
-            if (token.type === 'space') {
-                return <span key={tIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'top' }}>{renderedChars}</span>;
+            if (chunk.type === 'foreign' && chunk.trans) {
+                return (
+                    <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
+                        <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
+                        <span style={pronStyle}>{chunk.trans}</span>
+                    </span>
+                );
             } else {
-                const isEnglishWord = englishRegex.test(token.text);
-                
-                let p = null;
-                // Always increment the index so the pointer stays aligned
-                if (pronIdx < pronWords.length) {
-                    p = pronWords[pronIdx];
-                    pronIdx++;
-                }
-
-                // Erase the pronunciation for English words
-                if (isEnglishWord) {
-                    p = null;
-                }
-
-                if (p) {
-                    return (
-                        <span key={tIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'top' }}>
-                            <span style={{ display: 'inline-block' }}>{renderedChars}</span>
-                            <span style={pronStyle}>{p}</span>
-                        </span>
-                    );
-                } else {
-                    return <span key={tIdx} style={{ verticalAlign: 'top' }}>{renderedChars}</span>;
-                }
+                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom' }}>{renderedText}</span>;
             }
         });
 
         return (
             <div style={{ textAlign: 'left', width: '100%' }}>
-                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{renderedTokens}</span>
+                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', verticalAlign: 'bottom' }}>{renderedChunks}</span>
             </div>
         );
     } else {
-        const renderedChars = chars.map((c, cIdx) => {
-            const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
-            const activeColor = isPunct ? '#fbbf24' : (c.seg.color || '#ffffff');
-            const isGradient = !isPunct && c.seg.isGradient;
-
-            const style = isGradient ? { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-            return <span key={cIdx} style={style}>{c.char}</span>;
-        });
-
+        const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
         const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
 
         return (

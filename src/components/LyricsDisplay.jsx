@@ -48,11 +48,8 @@ const LyricsDisplay = ({
     }
   };
 
-  const englishRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~‘’“”\–\—]+$/;
-
   const renderLine = (lineObj, savedNode, isActive, isFocused = false, isKaraoke = false) => {
     const pronString = savedNode?.pronunciation;
-    const pronWords = pronString && typeof pronString === 'string' ? pronString.trim().split(/\s+/).filter(Boolean) : [];
     const segments = lineObj.segments || [];
     const wordSync = savedNode?.wordSync;
 
@@ -60,6 +57,20 @@ const LyricsDisplay = ({
         ? { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' }
         : { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
 
+    // Decode chunks from database
+    let parsedChunks = null;
+    if (typeof pronString === 'string') {
+        try {
+            const parsed = JSON.parse(pronString);
+            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type) {
+                parsedChunks = parsed;
+            }
+        } catch (e) {
+            parsedChunks = null; // Legacy string format fallback
+        }
+    }
+
+    // Flatten segments into discrete character objects
     const chars = [];
     segments.forEach(seg => {
         for (let char of seg.text) {
@@ -67,13 +78,35 @@ const LyricsDisplay = ({
         }
     });
 
-    const renderColoredChar = (c, cIdx, isWordActive = isActive) => {
+    // Handle Karaoke start timings on a per-character basis
+    if (isKaraoke && wordSync && wordSync.length > 0) {
+        let charOffset = 0;
+        let lastStartTime = wordSync.length > 0 ? wordSync[0].start : 0;
+        
+        wordSync.forEach(wordObj => {
+            for (let i = 0; i < wordObj.text.length; i++) {
+                if (chars[charOffset]) {
+                    chars[charOffset].startTime = wordObj.start;
+                    lastStartTime = wordObj.start;
+                }
+                charOffset++;
+            }
+        });
+        
+        // Fill trailing characters (like spaces) with the last known start time
+        while (charOffset < chars.length) {
+            if (chars[charOffset]) chars[charOffset].startTime = lastStartTime;
+            charOffset++;
+        }
+    }
+
+    const renderColoredChar = (c, cIdx, isCharActive) => {
         const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
         const activeColor = isPunct ? '#fbbf24' : (c.seg.color || '#ffffff');
         const isGradient = !isPunct && c.seg.isGradient;
 
         let style = {};
-        if (isWordActive) {
+        if (isCharActive) {
             if (isGradient) style = { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
             else style = { color: activeColor, textShadow: `0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
         } else {
@@ -82,135 +115,49 @@ const LyricsDisplay = ({
         return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
-    if (isKaraoke && wordSync && wordSync.length > 0) {
+    if (parsedChunks) {
         let charOffset = 0;
-        let pronIdx = 0;
-
-        const renderedKaraokeWords = wordSync.map((wordObj, wIdx) => {
-            const isWordActive = globalProgress >= wordObj.start;
-            const wordLen = wordObj.text.length;
-            const wordChars = chars.slice(charOffset, charOffset + wordLen);
-            charOffset += wordLen;
-
-            let splitIdx = wordChars.length;
-            while (splitIdx > 0 && /\s/.test(wordChars[splitIdx - 1].char)) {
-                splitIdx--;
-            }
-            const coreChars = wordChars.slice(0, splitIdx);
-            const spaceChars = wordChars.slice(splitIdx);
-
-            const coreTextStr = coreChars.map(c => c.char).join('');
-            const isEnglishWord = coreTextStr ? englishRegex.test(coreTextStr) : true;
-            
-            let p = null;
-            // Always increment the pointer so we stay perfectly aligned with the translation array
-            if (pronIdx < pronWords.length) {
-                p = pronWords[pronIdx];
-                pronIdx++;
-            }
-            
-            // Discard the translation if the word is English
-            if (isEnglishWord) {
-                p = null;
-            }
-
-            const renderedCore = coreChars.map((c, i) => renderColoredChar(c, i, isWordActive));
-            const renderedSpaces = spaceChars.map((c, i) => renderColoredChar(c, i + coreChars.length, isWordActive));
-
-            return (
-                <React.Fragment key={wIdx}>
-                    {p ? (
-                        <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'top' }}>
-                            <span style={{ display: 'inline-block' }}>{renderedCore}</span>
-                            <span style={pronStyle}>{p}</span>
-                        </span>
-                    ) : (
-                        <span style={{ verticalAlign: 'top' }}>{renderedCore}</span>
-                    )}
-                    {renderedSpaces.length > 0 && <span style={{ whiteSpace: 'pre-wrap', verticalAlign: 'top' }}>{renderedSpaces}</span>}
-                </React.Fragment>
-            );
-        });
-
-        return (
-            <div style={{ textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block' }}>
-                    {renderedKaraokeWords}
-                </span>
-            </div>
-        );
-    }
-
-    // --- Standard Live/Focused View ---
-    const tokens = [];
-    let currentToken = [];
-    let isSpace = false;
-    
-    for (let i = 0; i < chars.length; i++) {
-        const c = chars[i];
-        const charIsSpace = /\s/.test(c.char);
         
-        if (i === 0) isSpace = charIsSpace;
-        
-        if (charIsSpace === isSpace) {
-            currentToken.push(c);
-        } else {
-            tokens.push({ type: isSpace ? 'space' : 'word', data: currentToken, text: currentToken.map(x=>x.char).join('') });
-            currentToken = [c];
-            isSpace = charIsSpace;
-        }
-    }
-    if (currentToken.length > 0) tokens.push({ type: isSpace ? 'space' : 'word', data: currentToken, text: currentToken.map(x=>x.char).join('') });
+        const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
+            const chunkLen = chunk.text.length;
+            const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
+            charOffset += chunkLen;
 
-    const actualWordsCount = tokens.filter(t => t.type === 'word').length;
-    const canAlignWords = pronWords.length > 0 && pronWords.length === actualWordsCount;
+            const renderedText = chunkChars.map((c, i) => {
+                const isCharActive = isKaraoke ? (c.startTime !== undefined ? globalProgress >= c.startTime : isActive) : isActive;
+                return renderColoredChar(c, i, isCharActive);
+            });
 
-    if (canAlignWords) {
-        let pronIdx = 0;
-        const renderedTokens = tokens.map((token, tIdx) => {
-            const renderedChars = token.data.map((c, cIdx) => renderColoredChar(c, cIdx, isActive));
-
-            if (token.type === 'space') {
-                return <span key={tIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'top' }}>{renderedChars}</span>;
+            // If foreign chunk, stack original text on top, transliteration directly below
+            if (chunk.type === 'foreign' && chunk.trans) {
+                return (
+                    <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
+                        <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
+                        <span style={pronStyle}>{chunk.trans}</span>
+                    </span>
+                );
             } else {
-                const isEnglishWord = englishRegex.test(token.text);
-                
-                let p = null;
-                // Always consume the translation token to keep the arrays perfectly aligned
-                if (pronIdx < pronWords.length) {
-                    p = pronWords[pronIdx];
-                    pronIdx++;
-                }
-
-                // But don't display it if it's an English word
-                if (isEnglishWord) {
-                    p = null;
-                }
-
-                if (p) {
-                    return (
-                        <span key={tIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'top' }}>
-                            <span style={{ display: 'inline-block' }}>{renderedChars}</span>
-                            <span style={pronStyle}>{p}</span>
-                        </span>
-                    );
-                } else {
-                    return <span key={tIdx} style={{ verticalAlign: 'top' }}>{renderedChars}</span>;
-                }
+                // If English chunk, render normal text without any transliteration underlay
+                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom' }}>{renderedText}</span>;
             }
         });
 
         return (
             <div style={{ textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block' }}>
-                    {renderedTokens}
+                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', verticalAlign: 'bottom' }}>
+                    {renderedChunks}
                 </span>
             </div>
         );
     } else {
-        const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx, isActive));
+        // Fallback for legacy database strings
+        const renderedChars = chars.map((c, i) => {
+            const isCharActive = isKaraoke ? (c.startTime !== undefined ? globalProgress >= c.startTime : isActive) : isActive;
+            return renderColoredChar(c, i, isCharActive);
+        });
+        
         const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
-
+        
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{renderedChars}</span>
