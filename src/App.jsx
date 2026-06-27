@@ -18,6 +18,8 @@ const App = () => {
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 34;
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
+      if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
+      if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       return parsed;
     }
     return {
@@ -31,7 +33,9 @@ const App = () => {
       persistentMemory: true,
       bgImageOpacity: 0.25,
       liveSyncFontSize: 34,
-      focusedSyncFontSize: 42
+      focusedSyncFontSize: 42,
+      modalSplitRatio: 50,
+      bgPreemptionTime: 400
     };
   });
 
@@ -137,12 +141,9 @@ const App = () => {
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { 
         ...song,
-        // Explicitly format these to ensure they're saved into the JSON backup
         lyrics: song.lyrics || "",
         syncData: song.syncData || []
       };
-      
-      // Clean up unneeded bloat from the iTunes API response
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
@@ -154,7 +155,6 @@ const App = () => {
     });
 
     const exportData = { library: optimizedLibrary, settings: settings };
-    // Export with spacing for readability if someone wants to manually inspect their vault data
     const jsonString = JSON.stringify(exportData, null, 2); 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -178,7 +178,6 @@ const App = () => {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
 
-        // Ensure we properly overwrite existing songs to apply imported lyrics & sync data
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -219,6 +218,7 @@ const App = () => {
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
     '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}px`,
     '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}px`,
+    '--dyn-modal-split': settings.modalSplitRatio,
   };
 
   const filteredLibrary = library.filter(song => {

@@ -2,21 +2,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { parseLyrics } from '../utils/songHelpers';
 
-export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack) => {
+export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
   const [globalProgress, setGlobalProgress] = useState(0);
   const [liveParsedLyrics, setLiveParsedLyrics] = useState([]);
   
-  // Track player state directly from Player.jsx events
   const [playState, setPlayState] = useState({ isPlaying: false, isEnded: false });
   
-  // Controlled transition states
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   
-  // Dynamic Transition Timing (defaults to 150ms for snappiness)
   const [transitionTiming, setTransitionTiming] = useState(() => {
-    return parseInt(localStorage.getItem('artistTransitionTime')) || 150;
+    const stored = localStorage.getItem('artistTransitionTime');
+    return stored !== null ? parseInt(stored, 10) : 0; 
   });
   
   const activePreviewRef = useRef(null);
@@ -25,6 +23,9 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const previousTrackId = useRef(null);
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
+  
+  // Dynamically uses the slider setting (defaulting to 400ms) converted to seconds
+  const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000; 
 
   useEffect(() => {
     const handleGlobalTime = (e) => setGlobalProgress(e.detail);
@@ -69,14 +70,28 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
   let activePreviewIndex = -1;
+  let bgActiveIndex = -1;
 
   if (hasValidSyncData && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong && !playState.isEnded) {
+    // 1. Text Tracking (Perfect Sync)
     activePreviewIndex = selectedSong.syncData.findIndex((savedNode, i) => {
       if (!savedNode || savedNode.start === null) return false;
       const nextNode = selectedSong.syncData[i + 1];
       const isStarted = globalProgress >= savedNode.start;
       const isBeforeEnd = savedNode.end !== null ? globalProgress <= savedNode.end : true;
       const isBeforeNext = nextNode && nextNode.start !== null ? globalProgress < nextNode.start : true;
+      return isStarted && isBeforeEnd && isBeforeNext;
+    });
+
+    // 2. Background Tracking (Preemptive Sync)
+    bgActiveIndex = selectedSong.syncData.findIndex((savedNode, i) => {
+      if (!savedNode || savedNode.start === null) return false;
+      const nextNode = selectedSong.syncData[i + 1];
+      
+      const isStarted = globalProgress >= (savedNode.start - preemptionTimeSec);
+      const isBeforeEnd = savedNode.end !== null ? globalProgress <= savedNode.end : true;
+      const isBeforeNext = nextNode && nextNode.start !== null ? globalProgress < (nextNode.start - preemptionTimeSec) : true;
+      
       return isStarted && isBeforeEnd && isBeforeNext;
     });
   }
@@ -86,15 +101,11 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       const container = activePreviewRef.current.parentElement;
       const offsetTop = activePreviewRef.current.offsetTop;
       
-      // Calculate exact center position
       const scrollPos = offsetTop - (container.clientHeight / 2) + (activePreviewRef.current.clientHeight / 2);
-      
-      // ALWAYS use smooth scrolling behavior to completely eliminate the harsh jumping/jittering
       container.scrollTo({ top: scrollPos, behavior: 'smooth' });
     }
   }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
-  // Handle the Snappy Transition Logic and Idle Fade
   useEffect(() => {
     if (!selectedSong) return;
     
@@ -108,22 +119,20 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       return;
     }
 
-    const activeLineObj = liveParsedLyrics[activePreviewIndex];
+    const activeBgLineObj = liveParsedLyrics[bgActiveIndex]; 
 
-    if (activeLineObj) {
-      if (activeLineObj.singer) {
+    if (activeBgLineObj) {
+      if (activeBgLineObj.singer) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
 
-        if (activeLineObj.singer !== displaySingerBg?.name) {
-          // Fade out
+        if (activeBgLineObj.singer !== displaySingerBg?.name) {
           setIsSingerVisible(false);
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
           
-          // Wait for the requested transitionTiming duration, then fade in the new artist
           transitionTimerRef.current = setTimeout(() => {
             setDisplaySingerBg({
-              name: activeLineObj.singer,
-              color: activeLineObj.isGradient ? '#fff' : activeLineObj.color
+              name: activeBgLineObj.singer,
+              color: activeBgLineObj.isGradient ? '#fff' : activeBgLineObj.color
             });
             setIsSingerVisible(true);
           }, transitionTiming); 
@@ -131,13 +140,11 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
           setIsSingerVisible(true);
         }
       } else {
-        // Line exists but has NO singer (e.g. unassigned intro header)
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
         setIsSingerVisible(false);
       }
     } else {
-      // No active line (silence between valid parsed lines)
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
       
@@ -150,7 +157,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); 
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current); 
     };
-  }, [activePreviewIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded, displaySingerBg?.name, transitionTiming]);
+  }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, isPlayingCurrentSong, playState.isEnded, displaySingerBg?.name, transitionTiming]);
 
   return {
     lyricsViewMode, cycleViewMode, globalProgress, liveParsedLyrics, 

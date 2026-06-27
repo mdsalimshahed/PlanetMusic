@@ -1,6 +1,6 @@
 /* --- src/components/ModalLeft.css --- */
 .modal-left-col { 
-  flex: 1; 
+  flex: var(--dyn-modal-split, 50); 
   display: flex; 
   flex-direction: column; 
   overflow: hidden; 
@@ -43,7 +43,7 @@
 .modal-cover { 
   width: 140px; 
   height: 140px; 
-  border-radius: 16px; 
+  border-radius: 0; 
   box-shadow: 0 15px 40px rgba(0,0,0,0.6); 
   flex-shrink: 0; 
 }
@@ -66,21 +66,17 @@
 }
 
 .modal-header-info h2 { 
-  font-size: min(calc(var(--dyn-modal-font-size) * 0.8), 12cqi); 
+  font-size: clamp(20px, 9cqi, calc(var(--dyn-modal-font-size) * 0.8));
   font-weight: 800; 
-  line-height: 1.1; 
+  line-height: 1.15; 
   margin-bottom: 12px; 
   letter-spacing: -1px; 
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-wrap: break-word; 
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
+  word-break: break-word; 
 }
 
 .title-extra {
@@ -88,9 +84,9 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   letter-spacing: normal;
+  vertical-align: baseline;
 }
 
-/* NEW EXPLICIT TAG STYLING */
 .explicit-tag {
   display: inline-flex;
   align-items: center;
@@ -102,7 +98,8 @@
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  margin-left: 4px;
+  margin-left: 8px;
+  margin-right: 4px;
   vertical-align: middle;
   transform: translateY(-2px);
 }

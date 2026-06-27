@@ -6,6 +6,13 @@ import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mer
 export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
+  
+  // New Global Registry for Artists
+  const [globalArtistData, setGlobalArtistData] = useState(() => {
+    const stored = localStorage.getItem('globalArtistData');
+    return stored ? JSON.parse(stored) : { images: {}, colors: {} };
+  });
+
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
@@ -15,7 +22,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
   const basePalette = selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, featuredArtists) : {};
-  const masterPalette = { ...basePalette, ...customData.artistColors };
+  
+  // Master Palette now incorporates Global Colors as well
+  const masterPalette = { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
   const allPotentialSingers = Object.keys(masterPalette).filter(Boolean);
 
   useEffect(() => {
@@ -46,9 +55,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (!selectedSong) return;
     allPotentialSingers.forEach(async (singerName) => {
       const cleanName = singerName.trim();
-      if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName]) {
+      // Skip API fetch if we already have it globally or locally
+      if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName] && !globalArtistData.images?.[cleanName]) {
         setSingerImages(prev => ({ ...prev, [cleanName]: null }));
-        // Pass both track name and album name down to the API utility for article scanning
         const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName, selectedSong.trackName, selectedSong.collectionName);
         if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
       }
@@ -61,8 +70,14 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     setCustomData({ ...customData, [name]: finalValue });
   };
 
-  const handleImageChange = (singerName, url) => setCustomData(prev => ({ ...prev, artistImages: { ...prev.artistImages, [singerName]: cleanImageUrl(url) } }));
-  const handleColorChange = (singerName, colorHex) => setCustomData(prev => ({ ...prev, artistColors: { ...prev.artistColors, [singerName]: colorHex } }));
+  const handleImageChange = (singerName, url) => {
+    const cleanUrl = cleanImageUrl(url);
+    setCustomData(prev => ({ ...prev, artistImages: { ...prev.artistImages, [singerName]: cleanUrl } }));
+  };
+  
+  const handleColorChange = (singerName, colorHex) => {
+    setCustomData(prev => ({ ...prev, artistColors: { ...prev.artistColors, [singerName]: colorHex } }));
+  };
 
   const handleLocalFileChange = async (e) => {
     const file = e.target.files[0];
@@ -96,6 +111,15 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   };
 
   const saveImageManager = () => {
+    // 1. Update the Global Registry with the values just saved for this song
+    const newGlobal = {
+      images: { ...globalArtistData.images, ...customData.artistImages },
+      colors: { ...globalArtistData.colors, ...customData.artistColors }
+    };
+    localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
+    setGlobalArtistData(newGlobal);
+
+    // 2. Save explicitly to the specific song
     updateSongInLibrary({ ...selectedSong, artistImages: customData.artistImages, artistColors: customData.artistColors });
     setIsImageManagerOpen(false);
   };
@@ -120,7 +144,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   return {
     isEditing, setIsEditing, isImageManagerOpen, setIsImageManagerOpen,
     customData, setCustomData, singerImages, masterPalette, allPotentialSingers,
-    trackNameData, releaseType, highResArt, finalLinks,
+    trackNameData, releaseType, highResArt, finalLinks, globalArtistData,
     handleDataChange, handleImageChange, handleColorChange, handleLocalFileChange, handleClearLocal,
     saveData, saveImageManager
   };

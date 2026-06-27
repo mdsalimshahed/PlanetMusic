@@ -2,12 +2,14 @@
 .modal-backdrop {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;
   display: flex; align-items: flex-start; justify-content: center;
-  padding: 5vh 24px 24px 24px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
+  padding: 0; /* Removed padding to make it touch the edges */
+  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
 }
 
 .modal-window {
-  width: 1250px; height: 600px; max-width: 95vw; max-height: calc(100vh - 140px); 
-  border-radius: 24px; position: relative; overflow: hidden; display: flex;
+  width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; 
+  border-radius: 0; /* Removed border-radius */
+  position: relative; overflow: hidden; display: flex;
   flex-direction: column; animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -25,12 +27,12 @@
 @keyframes modalPop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 .close-btn {
-  position: absolute; top: 20px; right: 24px; color: white; width: 40px; height: 40px;
+  position: absolute; top: 24px; right: 32px; color: white; width: 40px; height: 40px;
   border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 16px;
 }
 
 .modal-two-column-layout {
-  display: flex; height: calc(100% - 50px); margin-top: 50px; gap: 32px; padding: 0 40px 24px 40px; overflow: hidden;
+  display: flex; height: calc(100% - 90px); margin-top: 60px; gap: 40px; padding: 0 60px 40px 60px; overflow: hidden;
 }
 
 /* --- Notification Pop-up --- */

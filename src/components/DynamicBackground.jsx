@@ -3,7 +3,8 @@ import React from 'react';
 
 const DynamicBackground = ({
   allPotentialSingers, selectedSong, customData, singerImages, highResArt, 
-  currentSingerBg, masterPalette, isSingerVisible, settings
+  currentSingerBg, masterPalette, isSingerVisible, settings, globalArtistData,
+  liveParsedLyrics
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
 
@@ -11,24 +12,28 @@ const DynamicBackground = ({
   const isMulti = activeNames.length > 1;
 
   // Helper to get who belongs in which cell
-  // cell 0: Top-Left, 1: Top-Right, 2: Bottom-Left, 3: Bottom-Right
   const getArtistForCell = (cellIndex) => {
     if (!isMulti) return null;
     if (activeNames.length === 2) {
-      // Diagonal placement for 2 artists
       return (cellIndex === 0 || cellIndex === 3) ? activeNames[0] : activeNames[1];
     }
-    // Expand dynamically if 3 or more artists are singing at once
     return activeNames[cellIndex % activeNames.length];
   };
+
+  // Extract all unique singer combinations that appear in the song
+  const uniqueSingerCombos = Array.from(new Set(liveParsedLyrics?.map(l => l.singer).filter(Boolean) || []));
+  
+  // If the current singer background has a name not in the lyrics (e.g. fallback or manual), ensure it's in the list
+  if (currentSingerBg?.name && !uniqueSingerCombos.includes(currentSingerBg.name)) {
+    uniqueSingerCombos.push(currentSingerBg.name);
+  }
 
   return (
     <div className="dynamic-background-contained">
       
       {/* FULL SCREEN LAYER (Single Artist) */}
       {allPotentialSingers.map(singerName => {
-        // EXPLICITLY REMOVED highResArt fallback here
-        const finalImgUrl = customData.artistImages?.[singerName] || singerImages[singerName];
+        const finalImgUrl = customData.artistImages?.[singerName] || globalArtistData?.images?.[singerName] || singerImages[singerName];
         if (!finalImgUrl) return null;
 
         const isActive = activeNames.length === 1 && activeNames[0] === singerName;
@@ -48,8 +53,7 @@ const DynamicBackground = ({
           return (
             <div key={`cell-${cellIdx}`} className="matrix-cell">
               {allPotentialSingers.map(singerName => {
-                // EXPLICITLY REMOVED highResArt fallback here
-                const finalImgUrl = customData.artistImages?.[singerName] || singerImages[singerName];
+                const finalImgUrl = customData.artistImages?.[singerName] || globalArtistData?.images?.[singerName] || singerImages[singerName];
                 if (!finalImgUrl) return null;
 
                 const isActive = targetArtist === singerName;
@@ -64,25 +68,31 @@ const DynamicBackground = ({
         })}
       </div>
       
-      {/* SINGER NAME CORNER */}
-      <div className={`singer-name-corner ${isSingerVisible && currentSingerBg ? 'visible' : 'hidden'}`}>
-        {currentSingerBg?.name?.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
-          const trimmedPart = part.trim();
-          if (!trimmedPart) return null; 
-          
-          if (/^(?:&|,|and)$/i.test(trimmedPart)) {
-            const isComma = trimmedPart === ',';
-            return (
-              <span key={index} className="singer-name-separator">
-                {isComma ? `${trimmedPart} ` : ` ${trimmedPart} `}
-              </span>
-            );
-          }
-          
-          const individualColor = masterPalette[trimmedPart] || '#fff';
-          return <span key={index} style={{ color: individualColor }}>{trimmedPart}</span>;
-        })}
-      </div>
+      {/* SINGER NAME CORNER (Mapped out as separate elements for perfect crossfading) */}
+      {uniqueSingerCombos.map(comboName => {
+        const isActive = isSingerVisible && currentSingerBg?.name === comboName;
+        
+        return (
+          <div key={`name-corner-${comboName}`} className={`singer-name-corner ${isActive ? 'visible' : 'hidden'}`}>
+            {comboName.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
+              const trimmedPart = part.trim();
+              if (!trimmedPart) return null; 
+              
+              if (/^(?:&|,|and)$/i.test(trimmedPart)) {
+                const isComma = trimmedPart === ',';
+                return (
+                  <span key={index} className="singer-name-separator">
+                    {isComma ? `${trimmedPart} ` : ` ${trimmedPart} `}
+                  </span>
+                );
+              }
+              
+              const individualColor = masterPalette[trimmedPart] || '#fff';
+              return <span key={index} style={{ color: individualColor }}>{trimmedPart}</span>;
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -30,17 +30,28 @@ const SettingsTab = ({ settings, setSettings }) => {
             <label>Grid Gap ({settings.cardGap}px)</label>
             <input type="range" name="cardGap" min="8" max="64" value={settings.cardGap} onChange={handleChange} style={{'--progress': `${((settings.cardGap - 8) / 56) * 100}%`}} />
           </div>
+          <div className="setting-item">
+            <label>Modal Layout Split ({settings.modalSplitRatio}% Left)</label>
+            <input type="range" name="modalSplitRatio" min="20" max="80" value={settings.modalSplitRatio} onChange={handleChange} style={{'--progress': `${((settings.modalSplitRatio - 20) / 60) * 100}%`}} />
+          </div>
         </div>
 
         <div className="settings-card glass-panel">
           <h3>Visuals & Styling</h3>
 
-          {/* --- ARTIST TRANSITION TIMING SLIDER --- */}
+          <div className="setting-item">
+            <label>Image Anticipation Time ({settings.bgPreemptionTime}ms)</label>
+            <input type="range" name="bgPreemptionTime" min="0" max="2000" step="50" value={settings.bgPreemptionTime} onChange={handleChange} style={{'--progress': `${(settings.bgPreemptionTime / 2000) * 100}%`}} />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              How early the artist image begins appearing before their line begins.
+            </span>
+          </div>
+
           <div className="setting-item">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <label htmlFor="transitionSlider" style={{ marginBottom: 0 }}>Artist Transition Timing</label>
               <span id="transitionValueDisplay" style={{ fontSize: '14px', fontWeight: '500', color: 'var(--accent)' }}>
-                {localStorage.getItem('artistTransitionTime') || 150}ms
+                {localStorage.getItem('artistTransitionTime') || 0}ms
               </span>
             </div>
             <input 
@@ -49,7 +60,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               min="0" 
               max="1000" 
               step="10" 
-              defaultValue={localStorage.getItem('artistTransitionTime') || 150}
+              defaultValue={localStorage.getItem('artistTransitionTime') || 0}
               onChange={(e) => {
                 const val = parseInt(e.target.value, 10);
                 localStorage.setItem('artistTransitionTime', val);
@@ -60,7 +71,7 @@ const SettingsTab = ({ settings, setSettings }) => {
                 window.dispatchEvent(new CustomEvent('updateTransitionTime', { detail: val }));
               }}
               style={{
-                '--progress': `${(parseInt(localStorage.getItem('artistTransitionTime') || 150) / 1000) * 100}%`
+                '--progress': `${(parseInt(localStorage.getItem('artistTransitionTime') || 0) / 1000) * 100}%`
               }}
             />
             <span className="setting-desc" style={{ marginTop: '8px' }}>

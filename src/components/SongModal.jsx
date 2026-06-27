@@ -12,9 +12,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   
+  // Passed `settings` to access the bgPreemptionTime slider
   const displayProps = useLyricsDisplay(
     selectedSong, songDataProps.customData, songDataProps.masterPalette, 
-    null, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack
+    null, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
 
   const syncProps = useSyncWorkspace(
