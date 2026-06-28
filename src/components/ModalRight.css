@@ -17,7 +17,7 @@
 .singer-watermark { 
   position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
   object-fit: cover; 
-  object-position: 50% 10%; /* Forces the crop to pin to the top, keeping faces visible */
+  object-position: 50% 10%;
   transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, filter 0.4s ease-in-out; 
   will-change: opacity, transform, filter; 
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
@@ -141,7 +141,8 @@
 
 /* General Lyrics Layout */
 .live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display { position: relative; z-index: 1; }
-.lyrics-display { white-space: pre-wrap; font-size: 15px; line-height: 1.8; color: rgba(255, 255, 255, 0.95); overflow-y: auto; flex-grow: 1; padding-right: 8px; }
+/* Added shadow to plain lyrics view */
+.lyrics-display { white-space: pre-wrap; font-size: 15px; line-height: 1.8; color: rgba(255, 255, 255, 0.95); overflow-y: auto; flex-grow: 1; padding-right: 8px; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
 .lyrics-display::-webkit-scrollbar { width: 6px; }
 .lyrics-display::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
@@ -166,10 +167,12 @@
 .live-lyrics-preview::-webkit-scrollbar { width: 6px; }
 .live-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
+/* Added base dark shadow to inactive lines */
 .preview-line { 
   font-size: var(--dyn-live-sync-font-size, 34px); 
   font-weight: 700; 
   color: rgba(255, 255, 255, 0.3); 
+  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
   transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease; 
   line-height: 1.4; 
   width: 100%; 
@@ -184,14 +187,17 @@
   color: rgba(255, 255, 255, 0.6); 
   opacity: 0.8; 
 }
+/* Enhanced active shadow with deep black layer behind the glow */
 .preview-line.active { 
   color: rgba(255, 255, 255, 1); 
   opacity: 1;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
+  text-shadow: 0 4px 10px rgba(0,0,0,0.9), 0 0 20px rgba(255, 255, 255, 0.5); 
 }
 
 /* Focused View */
 .focused-lyrics-preview { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 40px; position: relative; }
+
+/* Added base dark shadow */
 .focused-line { 
   position: absolute; 
   top: 50%;
@@ -203,6 +209,7 @@
   font-weight: 900; 
   line-height: 1.4; 
   color: white; 
+  text-shadow: 0 4px 10px rgba(0,0,0,0.8);
   white-space: pre-wrap; 
   word-wrap: break-word; 
   opacity: 0; 
@@ -211,14 +218,15 @@
   pointer-events: none; 
   will-change: opacity, transform;
 }
+/* Enhanced active shadow */
 .focused-line.active { 
   opacity: 1; 
   transform: translate(-50%, -50%); 
   pointer-events: auto; 
   cursor: pointer; 
-  text-shadow: 0 0 30px rgba(255, 255, 255, 0.4); 
+  text-shadow: 0 6px 15px rgba(0,0,0,0.9), 0 0 30px rgba(255, 255, 255, 0.4); 
 }
-.focused-line.active:hover { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+.focused-line.active:hover { color: var(--accent); text-shadow: 0 6px 15px rgba(0,0,0,0.9), 0 0 30px var(--accent-glow); }
 
 /* Focused View Fixed Adlib Container */
 .focused-adlibs-container {
@@ -241,6 +249,7 @@
   text-align: center;
   white-space: nowrap;
   opacity: 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.8);
   transform: translate(-50%, calc(-50% + 20px)) rotate(var(--adlib-rot, 0deg));
   transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), text-shadow 0.3s ease, color 0.3s ease;
   pointer-events: none;
@@ -262,7 +271,8 @@
 rt.sync-pronunciation { font-size: 11px; color: inherit; opacity: 0.6; font-style: italic; }
 .primary-text { display: block; }
 rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease, text-shadow 0.3s ease; }
-.preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+/* Added shadow to pronunciation text */
+.preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text { color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.5); }
 .sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
 
 .no-lyrics-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 200px; gap: 20px; text-align: center; color: var(--text-subdued); }

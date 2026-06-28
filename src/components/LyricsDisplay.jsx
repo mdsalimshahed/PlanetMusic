@@ -6,8 +6,9 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
-  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
-  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
+  // Added strong black drop shadows to pronunciation text
+  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
+  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
 
   let parsedChunks = null;
   if (typeof pronString === 'string') {
@@ -71,10 +72,15 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
       let style = {};
       if (isCharActive) {
-          if (isGradient) style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
-          else style = { color: activeColor, textShadow: `0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
+          // Stacked a dark hard shadow before the color glow
+          if (isGradient) {
+              style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
+          } else {
+              style = { color: activeColor, textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
+          }
       } else {
-          style = { color: 'rgba(255, 255, 255, 0.2)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
+          // Ensure inactive text also has a shadow so it doesn't vanish on white backgrounds
+          style = { color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
       }
 
       const isParenthesis = /([()\[\]{}]+)/.test(c.char);
@@ -458,7 +464,7 @@ const LyricsDisplay = ({
                     }
 
                     return (
-                      <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: inlineColor }}>
+                      <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' } : { color: inlineColor }}>
                           {seg.text}
                       </span>
                     );
