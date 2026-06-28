@@ -8,10 +8,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   
-  // Track active markdown characters across lines (supports multi-line formatting!)
   let activeCounts = {}; 
 
-  // Normalizes markers so `_**` and `**_` match perfectly as the same combination
   const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
@@ -20,7 +18,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
-      activeCounts = {}; // Reset active formatting whenever a new section header begins
+      activeCounts = {}; 
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -29,7 +27,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const parsedTokens = [];
         const explicitArtists = [];
 
-        // Accurately capture nested start and end markers wrapping a name, ignoring inner text
         const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
@@ -85,7 +82,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     const parts = cleanHtmlLine.split(regex);
     let currentText = '';
 
-    // Logic to smartly toggle overlapping/nested tags based on character frequency
     const applyMarkerChunk = (chunk) => {
         const chunkCounts = {};
         for (let char of chunk) {
@@ -97,9 +93,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             const chk = chunkCounts[char];
 
             if (act >= chk) {
-                activeCounts[char] = act - chk; // It's a closing tag, subtract count
+                activeCounts[char] = act - chk; 
             } else {
-                activeCounts[char] = act + chk; // It's an opening tag, add count
+                activeCounts[char] = act + chk; 
             }
         }
     };
@@ -110,7 +106,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         for (let char of chars) {
             str += char.repeat(activeCounts[char]);
         }
-        return str; // Yields a perfectly normalized format string (e.g., "**_")
+        return str; 
     };
 
     parts.forEach(part => {
@@ -169,8 +165,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             const subParts = cleanSegText.split(punctRegex);
             subParts.forEach(part => {
                 if (!part) return;
-                if (punctRegex.test(part)) finalSegments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '' });
-                else finalSegments.push({ text: part, color: segColor, isGradient: segIsGradient, gradient: segGradient });
+                if (punctRegex.test(part)) finalSegments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '', artists: [] });
+                else finalSegments.push({ text: part, color: segColor, isGradient: segIsGradient, gradient: segGradient, artists: artists });
             });
         }
     });
@@ -251,17 +247,52 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
     let end = null;
     let wordSync = null;
     let pronunciation = null;
+    let isSplit = false;
+    let adlibs = undefined;
 
     if (bestMatchIdx !== -1) {
-      start = lrcSyncData[bestMatchIdx].start;
-      end = lrcSyncData[bestMatchIdx].end;
+      const matchedNode = lrcSyncData[bestMatchIdx];
+      start = matchedNode.start;
+      end = matchedNode.end;
       if (highestScore > 90) {
-        wordSync = lrcSyncData[bestMatchIdx].wordSync;
+        wordSync = matchedNode.wordSync;
       }
       
-      // Preserve existing pronunciation ONLY if the raw text matches exactly!
-      if (geniusLine.text === lrcSyncData[bestMatchIdx].text) {
-        pronunciation = lrcSyncData[bestMatchIdx].pronunciation;
+      if (geniusLine.text === matchedNode.text) {
+        pronunciation = matchedNode.pronunciation;
+        isSplit = matchedNode.isSplit || false;
+        
+        if (matchedNode.adlibs) {
+          adlibs = matchedNode.adlibs.map(adlib => {
+            const adlibSegments = [];
+            const adlibArtistsSet = new Set();
+            let currentPos = 0;
+            
+            for (const seg of geniusLine.segments) {
+                const segChars = Array.from(seg.text);
+                const segStart = currentPos;
+                const segEnd = currentPos + segChars.length;
+                const overlapStart = Math.max(adlib.charStart, segStart);
+                const overlapEnd = Math.min(adlib.charEnd, segEnd);
+                if (overlapStart < overlapEnd) {
+                    adlibSegments.push({
+                        ...seg,
+                        text: segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('')
+                    });
+                    if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                }
+                currentPos = segEnd;
+            }
+            
+            const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
+
+            return {
+              ...adlib,
+              segments: adlibSegments,
+              singer: derivedSinger
+            };
+          });
+        }
       }
 
       currentLrcIdx = bestMatchIdx + 1; 
@@ -272,7 +303,9 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       start,
       end,
       wordSync,
-      pronunciation
+      pronunciation,
+      isSplit,
+      adlibs
     };
   });
 
@@ -353,8 +386,8 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       const subParts = text.split(punctRegex);
       subParts.forEach(part => {
           if (!part) return;
-          if (punctRegex.test(part)) segments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '' });
-          else segments.push({ text: part, color: defColor, isGradient: false, gradient: '' });
+          if (punctRegex.test(part)) segments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '', artists: [] });
+          else segments.push({ text: part, color: defColor, isGradient: false, gradient: '', artists: [defaultArtist] });
       });
 
       syncData.push({

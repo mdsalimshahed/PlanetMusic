@@ -60,7 +60,7 @@ const LyricsDisplay = ({
     if (html) {
       e.preventDefault();
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
+      tempDiv.innerHTML = html.replace(/<o:p> <\/o:p>/g, '');
       
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
@@ -165,12 +165,33 @@ const LyricsDisplay = ({
 
         const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
         const isParenthesis = /([()\[\]{}]+)/.test(c.char);
-        const activeColor = isPunct ? '#fbbf24' : (c.seg?.color || '#ffffff');
-        const isGradient = !isPunct && c.seg?.isGradient;
+        
+        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+        let isGradient = false;
+        let gradientStyle = '';
+
+        if (!isPunct && c.seg) {
+            let targetArtists = c.seg.artists;
+
+            if (targetArtists && targetArtists.length > 0) {
+                if (targetArtists.length > 1) {
+                    isGradient = true;
+                    const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+                    const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+                    gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+                } else {
+                    activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+                }
+            } else {
+                activeColor = c.seg.color || '#ffffff';
+                isGradient = c.seg.isGradient || false;
+                gradientStyle = c.seg.gradient || '';
+            }
+        }
 
         let style = {};
         if (isCharActive) {
-            if (isGradient) style = { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
+            if (isGradient) style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
             else style = { color: activeColor, textShadow: `0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
         } else {
             style = { color: 'rgba(255, 255, 255, 0.2)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
@@ -355,11 +376,28 @@ const LyricsDisplay = ({
           {liveParsedLyrics.length > 0 ? (
             liveParsedLyrics.map((line, i) => (
               <div key={i}>
-                {line.segments ? line.segments.map((seg, idx) => (
-                    <span key={idx} style={seg.isGradient ? { backgroundImage: seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: seg.color }}>
-                        {seg.text}
-                    </span>
-                )) : line.text}
+                {line.segments ? line.segments.map((seg, idx) => {
+                    let inlineColor = seg.color;
+                    let inlineIsGradient = seg.isGradient;
+                    let inlineGradient = seg.gradient;
+                    
+                    if (seg.artists && seg.artists.length > 0) {
+                      if (seg.artists.length > 1) {
+                          inlineIsGradient = true;
+                          const c1 = masterPalette[seg.artists[0]] || '#ffffff';
+                          const c2 = masterPalette[seg.artists[1]] || '#ffffff';
+                          inlineGradient = `linear-gradient(90deg, ${c1}, ${c2})`;
+                      } else {
+                          inlineColor = masterPalette[seg.artists[0]] || '#ffffff';
+                      }
+                    }
+
+                    return (
+                      <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: inlineColor }}>
+                          {seg.text}
+                      </span>
+                    );
+                }) : line.text}
               </div>
             ))
           ) : (

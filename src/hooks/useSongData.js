@@ -26,7 +26,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   // Master Palette now incorporates Global Colors as well
   const masterPalette = { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
   
-  // FIX: Only consider singers that are actively present in the song's base palette (from track info or lyrics)
+  // Only consider singers that are actively present in the song's base palette (from track info or lyrics)
   const allPotentialSingers = Object.keys(basePalette).filter(Boolean);
 
   useEffect(() => {
@@ -113,7 +113,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   };
 
   const saveImageManager = () => {
-    // 1. Update the Global Registry with the values just saved for this song
     const newGlobal = {
       images: { ...globalArtistData.images, ...customData.artistImages },
       colors: { ...globalArtistData.colors, ...customData.artistColors }
@@ -121,8 +120,19 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
     setGlobalArtistData(newGlobal);
 
-    // 2. Save explicitly to the specific song
-    updateSongInLibrary({ ...selectedSong, artistImages: customData.artistImages, artistColors: customData.artistColors });
+    // Re-merge sync data so the stored timestamps/ad-libs properly inherit the newly saved colors
+    let updatedSyncData = selectedSong.syncData;
+    if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
+       const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
+       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
+    }
+
+    updateSongInLibrary({ 
+      ...selectedSong, 
+      artistImages: customData.artistImages, 
+      artistColors: customData.artistColors,
+      syncData: updatedSyncData
+    });
     setIsImageManagerOpen(false);
   };
 

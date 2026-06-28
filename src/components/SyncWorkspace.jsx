@@ -1,17 +1,83 @@
 /* --- src/components/SyncWorkspace.jsx --- */
 import React from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
+import { quickTransliterate } from '../transliterator';
 
 const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncProgress, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
   syncAudioRef, syncAudioSrc, handleSyncTimeUpdate, setIsSyncPlaying, activeLineRef,
-  workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
+  workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette
 }) => {
   
   const handleAudioLoaded = (e) => {
     if (e.target.readyState > 0) {
       setSyncDuration(e.target.duration || 0);
+    }
+  };
+
+  const localHandleSplitAdlibs = async (lineIndex) => {
+    const data = [...syncData];
+    const line = data[lineIndex];
+    const lineChars = Array.from(line.text);
+    const adlibs = [];
+    
+    let inAdlib = false;
+    let charStart = 0;
+    let adlibText = '';
+    
+    for (let i = 0; i < lineChars.length; i++) {
+        if (lineChars[i] === '(' && !inAdlib) {
+            inAdlib = true;
+            charStart = i;
+            adlibText = '(';
+        } else if (inAdlib) {
+            adlibText += lineChars[i];
+            if (lineChars[i] === ')') {
+                inAdlib = false;
+                const charEnd = i + 1;
+                
+                const adlibSegments = [];
+                const adlibArtistsSet = new Set();
+                let currentPos = 0;
+                
+                for (const seg of line.segments) {
+                    const segChars = Array.from(seg.text);
+                    const segStart = currentPos;
+                    const segEnd = currentPos + segChars.length;
+                    const overlapStart = Math.max(charStart, segStart);
+                    const overlapEnd = Math.min(charEnd, segEnd);
+                    if (overlapStart < overlapEnd) {
+                        adlibSegments.push({
+                            ...seg,
+                            text: segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('')
+                        });
+                        if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                    }
+                    currentPos = segEnd;
+                }
+
+                const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+                const pron = await quickTransliterate(adlibText);
+
+                adlibs.push({
+                  text: adlibText,
+                  charStart,
+                  charEnd,
+                  start: null,
+                  end: null,
+                  segments: adlibSegments,
+                  singer: derivedSinger,
+                  pronunciation: pron ? JSON.stringify([{ type: 'foreign', text: adlibText, trans: pron }]) : null
+                });
+            }
+        }
+    }
+    
+    if (adlibs.length > 0) {
+      line.isSplit = true;
+      line.adlibs = adlibs;
+      handleSplitAdlibs(lineIndex, data);
     }
   };
 
@@ -56,10 +122,31 @@ const SyncWorkspace = ({
     const renderColoredChar = (c, cIdx) => {
         const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
         const isParenthesis = /([()\[\]{}]+)/.test(c.char);
-        const activeColor = isPunct ? '#fbbf24' : (c.seg?.color || '#ffffff');
-        const isGradient = !isPunct && c.seg?.isGradient;
+        
+        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+        let isGradient = false;
+        let gradientStyle = '';
 
-        const style = isGradient ? { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
+        if (!isPunct && c.seg) {
+            let targetArtists = c.seg.artists;
+
+            if (targetArtists && targetArtists.length > 0) {
+                if (targetArtists.length > 1) {
+                    isGradient = true;
+                    const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+                    const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+                    gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+                } else {
+                    activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+                }
+            } else {
+                activeColor = c.seg.color || '#ffffff';
+                isGradient = c.seg.isGradient || false;
+                gradientStyle = c.seg.gradient || '';
+            }
+        }
+
+        const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
         
         if (isMain && line.isSplit) {
           const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
@@ -197,7 +284,7 @@ const SyncWorkspace = ({
                     onClick={(e) => { 
                       e.stopPropagation(); 
                       if (line.isSplit) handleUndoSplit(item.lineIndex);
-                      else handleSplitAdlibs(item.lineIndex);
+                      else localHandleSplitAdlibs(item.lineIndex);
                     }}
                   >
                     {line.isSplit ? 'Undo Split' : 'Split Adlibs'}
