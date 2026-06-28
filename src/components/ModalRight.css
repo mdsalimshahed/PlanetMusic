@@ -153,44 +153,61 @@
 .lyrics-textarea::-webkit-scrollbar-thumb { background: rgba(179, 136, 235, 0.3); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: rgba(179, 136, 235, 0.6); }
 
-/* Live View */
+/* Live View - Adjusted padding and mask */
 .live-lyrics-preview { 
   flex-grow: 1; 
   overflow-y: auto; 
   overflow-x: hidden; 
   display: flex; 
   flex-direction: column; 
-  gap: 16px; 
-  padding: 40px 20px; 
+  gap: 24px; 
+  padding: 40px 20px; /* Reverted to 40px to prevent the extreme dead center behavior at edges */
   scroll-behavior: smooth; 
+  /* Reduced mask intensity so edge lyrics aren't aggressively cut off */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.live-lyrics-preview::-webkit-scrollbar { width: 6px; }
-.live-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+.live-lyrics-preview::-webkit-scrollbar { 
+  display: none; 
+}
 
-/* Added base dark shadow to inactive lines */
+/* Inactive Live Lines - Brightened for visibility */
 .preview-line { 
   font-size: var(--dyn-live-sync-font-size, 34px); 
   font-weight: 700; 
-  color: rgba(255, 255, 255, 0.3); 
+  color: rgba(255, 255, 255, 0.5); /* Boosted base color brightness */
   text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-  transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease; 
+  transition: color 0.5s ease, opacity 0.5s ease, filter 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.5s ease; 
   line-height: 1.4; 
   width: 100%; 
   white-space: pre-wrap; 
   word-wrap: break-word; 
   cursor: pointer; 
   margin: 0; 
-  opacity: 0.4;
-  will-change: color, opacity;
+  opacity: 0.6; /* Substantially increased visibility (was 0.3) */
+  filter: blur(0.8px); /* Lowered blur so text remains crisp */
+  transform: scale(0.95);
+  transform-origin: left center;
+  will-change: color, opacity, transform, filter, text-shadow;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
+
 .preview-line:hover { 
-  color: rgba(255, 255, 255, 0.6); 
-  opacity: 0.8; 
+  color: rgba(255, 255, 255, 0.8); 
+  opacity: 0.9; 
+  filter: blur(0px);
+  transform: scale(0.98);
 }
-/* Enhanced active shadow with deep black layer behind the glow */
+
+/* Active Live Lines */
 .preview-line.active { 
   color: rgba(255, 255, 255, 1); 
   opacity: 1;
+  filter: blur(0px);
+  transform: scale(1);
   text-shadow: 0 4px 10px rgba(0,0,0,0.9), 0 0 20px rgba(255, 255, 255, 0.5); 
 }
 
