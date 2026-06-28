@@ -6,14 +6,14 @@
   left: 60px;
   /* Dynamically calculate width to match the exact size of the left column */
   width: calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100));
-  min-width: 350px; /* Safety fallback so it doesn't crush into nothingness */
-  height: 80px;
-  padding: 0 20px;
-  border-radius: 500px;
+  min-width: 350px; 
+  height: 96px; /* Slightly taller to gracefully accommodate the two-row layout */
+  padding: 10px 24px;
+  border-radius: 24px; /* More modern, pill-like rounded rectangle instead of pure oval */
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  gap: 16px;
+  gap: 4px;
   z-index: 10000;
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
   animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -24,20 +24,36 @@
   to { bottom: 24px; opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* --- Row Structural Layout --- */
+.player-top-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 0;
+}
+
+.player-bottom-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+}
+
 /* --- Left: Info & Interactive Art --- */
 .player-info {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex: 1; /* Changed to exactly 1 so it shares space fairly */
-  min-width: 0; /* Crucial: Allows the text container to shrink and trigger ellipsis */
-  max-width: 35%; /* Prevents exceptionally long names from stealing the seek bar's space */
+  gap: 14px;
+  flex: 1;
+  min-width: 0; 
+  max-width: calc(100% - 100px); /* Prevents exceptionally long names from breaking layout */
 }
 
 .album-art-container {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 44px; /* Scaled down slightly to fit the top row */
+  height: 44px;
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
@@ -70,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   color: white;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -83,51 +99,24 @@
 
 .player-text {
   overflow: hidden;
-  width: 100%; /* Ensures the text div properly respects the flex container bounds */
+  width: 100%; 
 }
 
 .player-text h4 {
   font-size: 15px; 
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
   white-space: nowrap; 
-  overflow: hidden; /* Restored to prevent overlapping */
-  text-overflow: ellipsis; /* Restored to add '...' instead of overlapping */
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 .player-text p {
   font-size: 13px; 
   color: var(--text-subdued);
   white-space: nowrap; 
-  overflow: hidden; /* Restored to prevent overlapping */
-  text-overflow: ellipsis; /* Restored to add '...' instead of overlapping */
-}
-
-/* --- Center: Wide Seek Bar --- */
-.player-center-controls {
-  flex: 2; /* Gives the seek bar priority over the remaining space */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 8px; /* Significantly reduced padding to pull the volume icon closer and give the bar more room */
-  min-width: 120px;
-}
-
-.player-progress-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.time-text {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-subdued);
-  min-width: 35px;
-  text-align: center;
-  font-variant-numeric: tabular-nums; 
-  flex-shrink: 0; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 /* --- Right: Small Volume & Close --- */
@@ -227,8 +216,8 @@
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -237,7 +226,6 @@
   font-size: 14px;
   transition: all 0.2s;
   flex-shrink: 0;
-  margin-left: 8px;
 }
 
 .close-player:hover {
@@ -247,15 +235,31 @@
 }
 
 /* --- Universal Custom Sliders --- */
+.time-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-subdued);
+  min-width: 35px;
+  text-align: center;
+  font-variant-numeric: tabular-nums; 
+  flex-shrink: 0; 
+}
+
 .custom-slider {
   -webkit-appearance: none;
-  background: rgba(255, 255, 255, 0.2);
-  background-image: linear-gradient(white, white);
-  background-size: var(--progress, 0%) 100%;
+  appearance: none;
+  background: transparent; 
+  height: 24px; /* MASSIVE invisible hitbox */
+  
+  /* Draws the 4px track strictly in the vertical center */
+  background-image: linear-gradient(white, white), linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+  background-size: var(--progress, 0%) 4px, 100% 4px;
+  background-position: left center, left center;
   background-repeat: no-repeat;
-  height: 4px;
-  border-radius: 2px;
+  
   cursor: pointer;
+  border-radius: 2px;
+  margin: 0;
 }
 
 .progress-slider {
@@ -268,7 +272,6 @@
   width: 100px; 
   min-width: 100px; 
   flex-shrink: 0; 
-  height: 4px; 
   transform: rotate(-90deg);
   transform-origin: center;
   margin: 0;
@@ -280,16 +283,21 @@
   box-shadow: none;
   border: none;
   background: transparent;
+  height: 24px;
 }
 
-/* Base thumb settings */
+/* Perfect mathematical centering logic replacing translateY */
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
+  appearance: none;
   height: 12px;
   width: 12px;
   border-radius: 50%;
   background: white;
-  margin-top: -4px; 
+  
+  /* (24px Track Height - 12px Thumb Height) / 2 = 6px Top Margin */
+  margin-top: 6px; 
+  
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   transition: transform 0.1s ease;
 }
@@ -298,10 +306,11 @@
 .volume-slider::-webkit-slider-thumb {
   width: 14px; 
   height: 14px;
-  margin-top: -5px; 
+  /* (24px Track Height - 14px Thumb Height) / 2 = 5px Top Margin */
+  margin-top: 5px; 
 }
 
 .custom-slider:hover::-webkit-slider-thumb {
-  transform: scale(1.2);
+  transform: scale(1.2); /* translateY removed entirely to prevent offset bugs */
   background: var(--accent);
 }

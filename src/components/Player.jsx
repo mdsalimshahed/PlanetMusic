@@ -100,6 +100,36 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     else audioRef.current.play();
   };
 
+  // --- Universal Keyboard Shortcuts ---
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const activeTag = document.activeElement?.tagName?.toLowerCase();
+      if (activeTag === 'input' || activeTag === 'textarea') return;
+      if (!audioRef.current || !currentTrack) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault(); 
+        togglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        const newTime = Math.max(0, audioRef.current.currentTime - 5);
+        audioRef.current.currentTime = newTime;
+        setProgress(newTime);
+        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: newTime }));
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        const maxTime = duration || audioRef.current.duration;
+        const newTime = Math.min(maxTime, audioRef.current.currentTime + 5);
+        audioRef.current.currentTime = newTime;
+        setProgress(newTime);
+        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: newTime }));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, duration, currentTrack]);
+
   useEffect(() => {
     let animationFrameId;
     
@@ -169,54 +199,54 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
         onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
       />
 
-      <div className="player-info">
-        <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
-          <img 
-            src={currentTrack.artworkUrl100?.replace('100x100', '100x100')} 
-            alt="Album art" 
-            className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
-          />
-          <div className={`play-overlay ${!isPlaying ? 'show-play' : ''}`}>
-            {isPlaying ? '⏸' : '▶'}
+      <div className="player-top-row">
+        <div className="player-info">
+          <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
+            <img 
+              src={currentTrack.artworkUrl100?.replace('100x100', '100x100')} 
+              alt="Album art" 
+              className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
+            />
+            <div className={`play-overlay ${!isPlaying ? 'show-play' : ''}`}>
+              {isPlaying ? '⏸' : '▶'}
+            </div>
+          </div>
+          <div className="player-text">
+            <h4 title={currentTrack.trackName}>{currentTrack.trackName}</h4>
+            <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
           </div>
         </div>
-        <div className="player-text">
-          <h4 title={currentTrack.trackName}>{currentTrack.trackName}</h4>
-          <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
+
+        <div className="player-right-controls">
+          <div className="volume-container">
+            <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
+            <div className="volume-slider-wrapper">
+              <div className="volume-tooltip">{Math.round(volume * 100)}%</div>
+              <input 
+                type="range" 
+                className="custom-slider volume-slider" 
+                min="0" max="1" step="0.01" 
+                value={volume} 
+                onChange={handleVolumeChange} 
+                style={{ '--progress': `${volume * 100}%` }}
+              />
+            </div>
+          </div>
+          <button className="close-player" onClick={closePlayer}>✕</button>
         </div>
       </div>
       
-      <div className="player-center-controls">
-        <div className="player-progress-container">
-          <span className="time-text">{formatTime(progress)}</span>
-          <input 
-            type="range" 
-            className="custom-slider progress-slider" 
-            min="0" max={duration || 100} 
-            value={progress} 
-            onChange={handleSeek} 
-            style={{ '--progress': `${(progress / (duration || 1)) * 100}%` }}
-          />
-          <span className="time-text">{formatTime(duration)}</span>
-        </div>
-      </div>
-
-      <div className="player-right-controls">
-        <div className="volume-container">
-          <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
-          <div className="volume-slider-wrapper">
-            <div className="volume-tooltip">{Math.round(volume * 100)}%</div>
-            <input 
-              type="range" 
-              className="custom-slider volume-slider vertical-slider" 
-              min="0" max="1" step="0.01" 
-              value={volume} 
-              onChange={handleVolumeChange} 
-              style={{ '--progress': `${volume * 100}%` }}
-            />
-          </div>
-        </div>
-        <button className="close-player" onClick={closePlayer}>✕</button>
+      <div className="player-bottom-row">
+        <span className="time-text">{formatTime(progress)}</span>
+        <input 
+          type="range" 
+          className="custom-slider progress-slider" 
+          min="0" max={duration || 100} 
+          value={progress} 
+          onChange={handleSeek} 
+          style={{ '--progress': `${(progress / (duration || 1)) * 100}%` }}
+        />
+        <span className="time-text">{formatTime(duration)}</span>
       </div>
     </div>
   );
