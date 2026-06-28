@@ -34,6 +34,10 @@ const SettingsTab = ({ settings, setSettings }) => {
             <label>Modal Layout Split ({settings.modalSplitRatio}% Left)</label>
             <input type="range" name="modalSplitRatio" min="20" max="80" value={settings.modalSplitRatio} onChange={handleChange} style={{'--progress': `${((settings.modalSplitRatio - 20) / 60) * 100}%`}} />
           </div>
+          <div className="setting-item">
+            <label>Modal Vertical Padding ({settings.modalPaddingY}vh)</label>
+            <input type="range" name="modalPaddingY" min="0" max="25" value={settings.modalPaddingY} onChange={handleChange} style={{'--progress': `${(settings.modalPaddingY / 25) * 100}%`}} />
+          </div>
         </div>
 
         <div className="settings-card glass-panel">

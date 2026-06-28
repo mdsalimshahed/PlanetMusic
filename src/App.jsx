@@ -20,6 +20,7 @@ const App = () => {
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
+      if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       return parsed;
     }
     return {
@@ -35,7 +36,8 @@ const App = () => {
       liveSyncFontSize: 34,
       focusedSyncFontSize: 42,
       modalSplitRatio: 50,
-      bgPreemptionTime: 400
+      bgPreemptionTime: 400,
+      modalPaddingY: 5
     };
   });
 
@@ -231,6 +233,7 @@ const App = () => {
     '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}px`,
     '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}px`,
     '--dyn-modal-split': settings.modalSplitRatio,
+    '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
   };
 
   const filteredLibrary = library.filter(song => {
