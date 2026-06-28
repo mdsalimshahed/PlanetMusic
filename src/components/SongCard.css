@@ -90,7 +90,7 @@
   gap: 6px;
 }
 
-/* Added explicit tag styling for the song card */
+/* Explicit tag styling for the song card */
 .explicit-tag {
   display: inline-flex;
   align-items: center;
@@ -139,4 +139,15 @@
   color: #000;
   border-color: var(--accent);
   box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* --- ADDED CARD WRAPPING SAFEGUARDS --- */
+@media (max-width: 480px) {
+  .song-card {
+    margin-bottom: 16px;
+  }
+  .save-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
 }
