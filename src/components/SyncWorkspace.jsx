@@ -124,13 +124,14 @@ const SyncWorkspace = ({
     const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
 
     const renderColoredChar = (c, cIdx) => {
+        const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
         const isParenthesis = /([()\[\]{}]+)/.test(c.char);
         
-        let activeColor = '#ffffff';
+        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
         let isGradient = false;
         let gradientStyle = '';
 
-        if (c.seg) {
+        if (!isPunct && c.seg) {
             let targetArtists = c.seg.artists;
 
             if (!targetArtists && line.singer) {
@@ -164,9 +165,35 @@ const SyncWorkspace = ({
         }
         
         if (isParenthesis && hasTransliteration) {
-            style.display = 'inline-block';
-            style.transform = 'scale(1.2) translateY(10%)';
-            style.margin = '0 2px';
+            let scaleParenthesis = false;
+            const char = c.char;
+            
+            // Only scale parentheses if they encompass or neighbor actual foreign text
+            if (char === '(' || char === '[' || char === '{') {
+                const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
+                for (let i = cIdx + 1; i < chars.length; i++) {
+                    if (chars[i].char === closing) break;
+                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
+                        scaleParenthesis = true;
+                        break;
+                    }
+                }
+            } else if (char === ')' || char === ']' || char === '}') {
+                const opening = char === ')' ? '(' : char === ']' ? '[' : '{';
+                for (let i = cIdx - 1; i >= 0; i--) {
+                    if (chars[i].char === opening) break;
+                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
+                        scaleParenthesis = true;
+                        break;
+                    }
+                }
+            }
+
+            if (scaleParenthesis) {
+                style.display = 'inline-block';
+                style.transform = 'scale(1.2) translateY(10%)';
+                style.margin = '0 2px';
+            }
         }
 
         return <span key={cIdx} style={style}>{c.char}</span>;

@@ -1,6 +1,58 @@
 /* --- src/components/LyricsDisplay.jsx --- */
 import React, { useState, useEffect } from 'react';
 
+const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, masterPalette, allPotentialSingers }) => {
+  const [pos, setPos] = useState({ top: '20%', left: '50%' });
+  
+  // Stringify the array so the useEffect dependency stays stable across re-renders
+  const singersStr = allPotentialSingers.join('|');
+
+  useEffect(() => {
+    if (isAdlibActive) {
+      const singersArray = singersStr.split('|');
+      const activeNames = adlib.singer ? adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
+      
+      let topMin = 15, topMax = 85, leftMin = 10, leftMax = 90;
+      
+      if (activeNames.length === 1 && singersArray.length > 1) {
+          const sIndex = singersArray.indexOf(activeNames[0]);
+          if (sIndex === 0) { 
+              if (Math.random() > 0.5) { topMin = 15; topMax = 40; leftMin = 10; leftMax = 40; }
+              else { topMin = 60; topMax = 85; leftMin = 60; leftMax = 90; }
+          } else { 
+              if (Math.random() > 0.5) { topMin = 15; topMax = 40; leftMin = 60; leftMax = 90; }
+              else { topMin = 60; topMax = 85; leftMin = 10; leftMax = 40; }
+          }
+      } else {
+          const quad = Math.floor(Math.random() * 4);
+          if (quad === 0) { topMin = 15; topMax = 40; leftMin = 10; leftMax = 40; }
+          else if (quad === 1) { topMin = 15; topMax = 40; leftMin = 60; leftMax = 90; }
+          else if (quad === 2) { topMin = 60; topMax = 85; leftMin = 10; leftMax = 40; }
+          else { topMin = 60; topMax = 85; leftMin = 60; leftMax = 90; }
+      }
+      
+      const top = Math.floor(Math.random() * (topMax - topMin) + topMin);
+      const left = Math.floor(Math.random() * (leftMax - leftMin) + leftMin);
+      setPos({ top: `${top}%`, left: `${left}%` });
+    }
+    // Only depend on strings/booleans to prevent rapid recalculations (flickering)
+  }, [isAdlibActive, adlib.singer, singersStr]);
+
+  return (
+    <div 
+      className={`floating-adlib ${isAdlibActive ? 'active' : ''}`}
+      style={{ 
+        top: pos.top, 
+        left: pos.left,
+        transform: isAdlibActive ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.9)'
+      }}
+      onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
+    >
+      {renderLine(adlib, adlib, isAdlibActive, true, false)}
+    </div>
+  );
+};
+
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
   lyricsViewMode, liveParsedLyrics, activePreviewIndex,
@@ -13,7 +65,7 @@ const LyricsDisplay = ({
     if (html) {
       e.preventDefault();
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html.replace(/<o:p> <\/o:p>/g, '');
+      tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
       
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
@@ -50,20 +102,6 @@ const LyricsDisplay = ({
 
   const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
   const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
-
-  // Calculate adlibs currently active for deterministic rendering
-  const activeAdlibs = [];
-  if (hasValidSyncData && lyricsViewMode === 'focused') {
-      selectedSong.syncData.forEach(node => {
-          if (node?.isSplit && node.adlibs) {
-              node.adlibs.forEach(adlib => {
-                  if (adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true)) {
-                      activeAdlibs.push(adlib);
-                  }
-              });
-          }
-      });
-  }
 
   const renderLine = (lineObj, savedNode, isActive, isFocused = false, isKaraoke = false) => {
     const pronString = savedNode?.pronunciation;
@@ -130,11 +168,14 @@ const LyricsDisplay = ({
             isCharActive = (c.startTime !== undefined ? globalProgress >= c.startTime : isActive);
         }
 
-        let activeColor = '#ffffff';
+        const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
+        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
+        
+        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
         let isGradient = false;
         let gradientStyle = '';
 
-        if (c.seg) {
+        if (!isPunct && c.seg) {
             let targetArtists = c.seg.artists;
 
             if (targetArtists && targetArtists.length > 0) {
@@ -161,11 +202,36 @@ const LyricsDisplay = ({
             style = { color: 'rgba(255, 255, 255, 0.2)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
         }
 
-        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
         if (isParenthesis && hasTransliteration) {
-            style.display = 'inline-block';
-            style.transform = 'scale(1.2) translateY(10%)';
-            style.margin = '0 2px';
+            let scaleParenthesis = false;
+            const char = c.char;
+            
+            // Only scale parentheses if they encompass or neighbor actual foreign text
+            if (char === '(' || char === '[' || char === '{') {
+                const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
+                for (let i = cIdx + 1; i < chars.length; i++) {
+                    if (chars[i].char === closing) break;
+                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
+                        scaleParenthesis = true;
+                        break;
+                    }
+                }
+            } else if (char === ')' || char === ']' || char === '}') {
+                const opening = char === ')' ? '(' : char === ']' ? '[' : '{';
+                for (let i = cIdx - 1; i >= 0; i--) {
+                    if (chars[i].char === opening) break;
+                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
+                        scaleParenthesis = true;
+                        break;
+                    }
+                }
+            }
+
+            if (scaleParenthesis) {
+                style.display = 'inline-block';
+                style.transform = 'scale(1.2) translateY(10%)';
+                style.margin = '0 2px';
+            }
         }
 
         return <span key={cIdx} style={style}>{c.char}</span>;
@@ -237,6 +303,20 @@ const LyricsDisplay = ({
         );
     }
   };
+
+  // Calculate adlibs currently active for deterministic rendering
+  const activeAdlibs = [];
+  if (hasValidSyncData && lyricsViewMode === 'focused') {
+      selectedSong.syncData.forEach(node => {
+          if (node?.isSplit && node.adlibs) {
+              node.adlibs.forEach(adlib => {
+                  if (adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true)) {
+                      activeAdlibs.push(adlib);
+                  }
+              });
+          }
+      });
+  }
 
   return (
     <>
