@@ -43,8 +43,8 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
-  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
-  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
+  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.4s ease, text-shadow 0.4s ease', textAlign: 'center', marginTop: '4px' };
+  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.4)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.4s ease, text-shadow 0.4s ease', textAlign: 'center', marginTop: '4px' };
 
   let parsedChunks = null;
   if (typeof pronString === 'string') {
@@ -75,23 +75,21 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
       let isAdlib = false;
       let isAdlibActive = false;
+      let isAdlibVisible = true;
 
       if (savedNode?.isSplit && !isFocused) {
           const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
           if (adlib) {
               isAdlib = true;
-              isAdlibActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
+              isAdlibVisible = adlib.start !== null && localProgress >= adlib.start;
+              const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
+              isAdlibActive = isAdlibVisible && localProgress <= endTime;
           }
       }
 
       let isCharActive = isActive;
-      let isHiddenAdlib = false;
-
       if (isAdlib) {
           isCharActive = isAdlibActive;
-          if (isActive && !isAdlibActive) {
-              isHiddenAdlib = true;
-          }
       }
 
       const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
@@ -119,12 +117,14 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           }
       }
 
-      let style = { transition: 'color 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease' };
+      let style = { transition: 'color 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease' };
 
-      if (isHiddenAdlib) {
+      if (isAdlib && !isAdlibVisible) {
           style.opacity = 0;
           style.transform = 'translateY(8px)';
           style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
+          style.color = 'rgba(255, 255, 255, 0.4)';
+          style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
       } else if (isCharActive) {
           if (isAdlib) {
               style.opacity = 1;
@@ -141,12 +141,21 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
               style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80`;
           }
       } else {
-          style.color = 'rgba(255, 255, 255, 0.2)';
-          style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
           if (isAdlib) {
               style.opacity = 1;
               style.transform = 'translateY(0px)';
               style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
+          }
+          
+          if (isGradient) {
+              style.backgroundImage = gradientStyle;
+              style.WebkitBackgroundClip = 'text';
+              style.WebkitTextFillColor = 'transparent';
+              // CRITICAL FIX: Ensure inactive state has absolutely no color and no blur
+              style.filter = 'grayscale(100%) opacity(40%)'; 
+          } else {
+              style.color = 'rgba(255, 255, 255, 0.4)';
+              style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
           }
       }
 
@@ -177,7 +186,7 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
           if (scaleParenthesis) {
               style.display = 'inline-block';
-              if (isHiddenAdlib) {
+              if (isAdlib && !isAdlibVisible) {
                   style.transform = 'scale(1.2) translateY(8px)';
               } else {
                   style.transform = 'scale(1.2) translateY(10%)';
@@ -201,41 +210,46 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
           if (renderedText.every(c => c === null)) return null;
 
-          // Apply our word grouping failsafe
           const groupedText = groupWords(renderedText, chunkChars);
 
           let chunkIsActive = isActive;
           let isChunkAdlib = false;
           let isChunkAdlibActive = false;
+          let isChunkAdlibVisible = true;
 
           if (savedNode?.isSplit && !isFocused) {
              const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
              if (adlib) {
                  isChunkAdlib = true;
-                 isChunkAdlibActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
+                 isChunkAdlibVisible = adlib.start !== null && localProgress >= adlib.start;
+                 const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
+                 isChunkAdlibActive = isChunkAdlibVisible && localProgress <= endTime;
              }
           }
 
-          let isHiddenChunkAdlib = false;
           if (isChunkAdlib) {
               chunkIsActive = isChunkAdlibActive;
-              if (isActive && !isChunkAdlibActive) {
-                  isHiddenChunkAdlib = true;
-              }
           }
 
           let currentPronStyle = chunkIsActive ? { ...activePronStyle } : { ...inactivePronStyle };
-          
-          if (isHiddenChunkAdlib) {
+
+          if (isChunkAdlib && !isChunkAdlibVisible) {
               currentPronStyle.opacity = 0;
               currentPronStyle.transform = 'translateY(8px)';
-              currentPronStyle.display = 'inline-block';
-              currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, color 0.4s ease';
-          } else if (isChunkAdlib) {
+              currentPronStyle.filter = 'grayscale(100%)';
+          } else if (chunkIsActive) {
+              currentPronStyle.opacity = 0.9;
               currentPronStyle.transform = 'translateY(0px)';
-              currentPronStyle.display = 'inline-block';
-              currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, color 0.4s ease';
+              currentPronStyle.filter = 'grayscale(0%)';
+          } else {
+              currentPronStyle.opacity = 0.4;
+              currentPronStyle.transform = 'translateY(0px)';
+              // CRITICAL FIX: Ensure chunks revert to grey when inactive
+              currentPronStyle.filter = 'grayscale(100%)';
           }
+          
+          currentPronStyle.display = 'inline-block';
+          currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease';
 
           if (chunk.type === 'foreign' && chunk.trans) {
               const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
@@ -259,11 +273,9 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
       );
   } else {
       const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
-      
-      // Apply our word grouping failsafe
       const groupedChars = groupWords(renderedChars, chars);
-      
-      const blockPronStyle = { ...(isActive ? activePronStyle : inactivePronStyle), marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+      // Ensure block pronunciation strings accurately revert to grey
+      const blockPronStyle = { ...(isActive ? activePronStyle : { ...activePronStyle, opacity: 0.4, filter: 'grayscale(100%)' }), marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
       let displayPronString = pronString;
       if (pronString) displayPronString = pronString.replace(/[()\[\]{}]/g, '');
 
@@ -276,7 +288,6 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
   }
 };
 
-// High-performance memoized wrapper isolating time updates
 const LyricLineWrapper = React.memo(({ 
   lineObj, savedNode, isMainActive, viewMode, 
   activePreviewRef, handleLineClick, masterPalette 
@@ -284,13 +295,13 @@ const LyricLineWrapper = React.memo(({
   const [localProgress, setLocalProgress] = useState(0);
 
   useEffect(() => {
-      const needsUpdates = (viewMode === 'live' && savedNode?.isSplit);
+      const needsUpdates = (viewMode === 'live' && (savedNode?.isSplit || isMainActive));
       if (!needsUpdates) return;
       
       const handleTime = (e) => setLocalProgress(e.detail);
       window.addEventListener('globalTimeUpdate', handleTime);
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, [viewMode, savedNode?.isSplit]);
+  }, [viewMode, savedNode?.isSplit, isMainActive]);
 
   const seekTarget = savedNode ? savedNode.start : null;
 
@@ -308,7 +319,11 @@ const LyricLineWrapper = React.memo(({
 
   let isVisuallyActive = isMainActive;
   if (viewMode === 'live' && savedNode?.isSplit) {
-      const adlibActive = savedNode.adlibs?.some(a => localProgress >= a.start && (a.end !== null ? localProgress <= a.end : true));
+      const adlibActive = savedNode.adlibs?.some(a => {
+          if (a.start === null) return false;
+          const endTime = a.end !== null ? a.end : a.start + 5;
+          return localProgress >= a.start && localProgress <= endTime;
+      });
       if (adlibActive) isVisuallyActive = true;
   }
 
@@ -324,7 +339,6 @@ const LyricLineWrapper = React.memo(({
   );
 });
 
-// Memoized container for tracking and rendering focused adlibs cleanly
 const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette }) => {
   const [time, setTime] = useState(0);
   
@@ -334,7 +348,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, []);
 
-  // Recalculates dynamically every time the song loads for true randomization
   const adlibPlacements = useMemo(() => {
       const placements = new Map();
       if (!syncData) return placements;
@@ -342,12 +355,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       syncData.forEach((node) => {
           if (node?.isSplit && node.adlibs) {
               const parentArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
-              
-              const parentLen = node.text ? node.text.length : 20;
-              const horizontalSpread = Math.min(35, parentLen * 0.8); 
-              
-              const maxLeft = Math.max(10, 50 - horizontalSpread - 5); 
-              const minRight = Math.min(90, 50 + horizontalSpread + 5);
 
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
@@ -356,12 +363,10 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   const randX = Math.random();
                   const randY = Math.random();
                   const quadRand = Math.random();
-                  
                   const rot = (randRot * 20) - 10; 
                   
                   const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
                   const primaryAdlibSinger = adlibNames[0];
-
                   let quad = Math.floor(quadRand * 4); 
 
                   if (parentArtists.length > 1 && primaryAdlibSinger) {
@@ -375,20 +380,21 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       }
                   }
                   
+                  // CRITICAL FIX: Safe Isolation Corners
+                  // Mathematically guarantees that a 30vw adlib at any edge cannot cross into the center
                   let top, left;
                   if (quad === 0) { 
-                      top = 15 + (randY * 15); 
-                      left = 10 + (randX * (maxLeft - 10)); 
+                      top = 12 + (randY * 15); // Safely floating 12% to 27% (Far above the center)
+                      left = 15 + (randX * 15); // Strict 15% to 30% bound
                   } else if (quad === 1) { 
-                      top = 15 + (randY * 15); 
-                      left = minRight + (randX * (90 - minRight)); 
+                      top = 12 + (randY * 15); 
+                      left = 70 + (randX * 15); // Strict 70% to 85% bound
                   } else if (quad === 2) { 
-                      top = 70 + (randY * 15); 
-                      left = 10 + (randX * (maxLeft - 10));
+                      top = 73 + (randY * 15); // Safely floating 73% to 88% (Far below the center)
+                      left = 15 + (randX * 15); 
                   } else { 
-                      top = 65 + (randY * 10); 
-                      const adjustedMinRight = Math.min(75, minRight);
-                      left = adjustedMinRight + (randX * (85 - adjustedMinRight));
+                      top = 68 + (randY * 12); // Pushed up slightly to avoid artist watermark
+                      left = 65 + (randX * 15); 
                   }
 
                   placements.set(`adlib-${adlib.start}-${j}`, { rot, top, left });
@@ -448,7 +454,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       </div>
   );
 });
-
 
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
