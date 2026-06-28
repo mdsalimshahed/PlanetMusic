@@ -6,7 +6,6 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
-  // Added strong black drop shadows to pronunciation text
   const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
   const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
 
@@ -72,14 +71,12 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
       let style = {};
       if (isCharActive) {
-          // Stacked a dark hard shadow before the color glow
           if (isGradient) {
               style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
           } else {
               style = { color: activeColor, textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
           }
       } else {
-          // Ensure inactive text also has a shadow so it doesn't vanish on white backgrounds
           style = { color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
       }
 
@@ -247,6 +244,15 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
           if (node?.isSplit && node.adlibs) {
               const parentArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
               
+              // Dynamic Boundary Heuristic: Estimate the main line's visual footprint
+              const parentLen = node.text ? node.text.length : 20;
+              // Larger strings create a wider dead zone in the center (up to 35% offset horizontally)
+              const horizontalSpread = Math.min(35, parentLen * 0.8); 
+              
+              // Define the absolute safe left/right edges protecting the main text
+              const maxLeft = Math.max(10, 50 - horizontalSpread - 5); 
+              const minRight = Math.min(90, 50 + horizontalSpread + 5);
+
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
                   
@@ -254,13 +260,12 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   const seed2 = getSeededRandom(adlib.start + j + 1);
                   const seed3 = getSeededRandom(adlib.start + j + 2);
                   
-                  // Increased rotation: between -10deg and +10deg
                   const rot = (seed1 * 20) - 10;
                   
                   const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
                   const primaryAdlibSinger = adlibNames[0];
 
-                  let quad = Math.floor(seed2 * 4); // Default to random quadrant
+                  let quad = Math.floor(seed2 * 4); 
 
                   // Map quadrant to the background grid positions derived from the parent line
                   if (parentArtists.length > 1 && primaryAdlibSinger) {
@@ -274,19 +279,22 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       }
                   }
                   
+                  // Calculate dynamic safe zones guaranteeing no overlap
                   let top, left;
                   if (quad === 0) { // Top Left
-                      top = 20 + (seed3 * 15); // 20% to 35%
-                      left = 20 + (seed1 * 15); // 20% to 35%
+                      top = 15 + (seed3 * 12); // Safely above the vertical 30% mark
+                      left = 10 + (seed1 * (maxLeft - 10)); // Restrict to the left of the dynamic dead zone
                   } else if (quad === 1) { // Top Right
-                      top = 20 + (seed3 * 15); // 20% to 35%
-                      left = 65 + (seed1 * 15); // 65% to 80%
+                      top = 15 + (seed3 * 12); 
+                      left = minRight + (seed1 * (90 - minRight)); // Restrict to the right of the dynamic dead zone
                   } else if (quad === 2) { // Bottom Left
-                      top = 65 + (seed3 * 15); // 65% to 80%
-                      left = 20 + (seed1 * 15); // 20% to 35%
-                  } else { // Bottom Right (Constrained vertically to avoid corner artist text)
-                      top = 60 + (seed3 * 10); // 60% to 70%
-                      left = 60 + (seed1 * 15); // 60% to 75%
+                      top = 73 + (seed3 * 12); // Safely below the vertical 70% mark
+                      left = 10 + (seed1 * (maxLeft - 10));
+                  } else { // Bottom Right
+                      top = 63 + (seed3 * 12); // Stays high enough to clear the artist name at bottom right
+                      // Prevent pushing too far right to avoid hitting the artist corner UI
+                      const adjustedMinRight = Math.min(75, minRight);
+                      left = adjustedMinRight + (seed1 * (75 - adjustedMinRight));
                   }
 
                   placements.set(`adlib-${adlib.start}-${j}`, { rot, top, left });
