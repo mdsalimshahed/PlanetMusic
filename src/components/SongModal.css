@@ -56,29 +56,26 @@
   100% { transform: scale(1); opacity: 1; } 
 }
 
-/* Completely hidden to prevent any overlapping issues */
 .close-btn {
   display: none !important; 
 }
 
-/* Modal vertical padding controlled by settings */
 .modal-two-column-layout {
   display: flex; 
   height: calc(100vh - (var(--dyn-modal-padding-y, 5vh) * 2)); 
   margin-top: var(--dyn-modal-padding-y, 5vh); 
   margin-bottom: var(--dyn-modal-padding-y, 5vh); 
-  gap: 40px; 
-  padding: 0 60px; 
+  gap: clamp(20px, 4vw, 40px); 
+  padding: 0 clamp(20px, 5vw, 60px); 
   overflow: hidden;
 }
 
-/* --- Notification Pop-up --- */
 .notification-popup {
   position: absolute;
   bottom: 24px;
-  left: 40px;
+  left: clamp(20px, 4vw, 40px);
   z-index: 100;
-  padding: 16px 20px;
+  padding: clamp(12px, 1.5vw, 16px) clamp(16px, 2vw, 20px);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -104,7 +101,7 @@
 }
 
 .notification-content p {
-  font-size: 14px;
+  font-size: clamp(12px, 1.4vw, 14px);
   font-weight: 600;
   color: white;
   margin: 0;
@@ -136,4 +133,17 @@
 @keyframes notificationSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* --- MOBILE RESPONSIVE STACKING LAYOUT --- */
+@media (max-width: 900px) {
+  .modal-two-column-layout {
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    margin: 0;
+    gap: 24px;
+    overflow-y: auto; /* Allows the entire left & right column to scroll vertically like a webpage */
+    overflow-x: hidden;
+  }
 }

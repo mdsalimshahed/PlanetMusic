@@ -1,5 +1,6 @@
 /* --- src/components/Player.jsx --- */
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { getAudioFile } from '../db';
 import './Player.css';
 
@@ -10,17 +11,14 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
+const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState('');
-  
-  // Clean neutral white fallback
   const [accentColor, setAccentColor] = useState('#ffffff'); 
-  
   const [pendingSeek, setPendingSeek] = useState(null);
   
   const [volume, setVolume] = useState(() => {
@@ -28,11 +26,31 @@ const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
 
+  // Responsive Portal States
+  const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
+  const [slotNode, setSlotNode] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsStacked(window.innerWidth <= 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Poll for the Mobile Injection Slot whenever the modal opens
+  useEffect(() => {
+    if (selectedSong && isStacked) {
+      setTimeout(() => {
+        setSlotNode(document.getElementById('mobile-player-slot'));
+      }, 50);
+    } else {
+      setSlotNode(null);
+    }
+  }, [selectedSong, isStacked]);
+
   const emitPlayState = (playing, ended = false) => {
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
-  // --- Dynamic Color Extraction ---
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
 
@@ -71,14 +89,12 @@ const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
           setAccentColor(`rgb(${r}, ${g}, ${b})`);
         }
       } catch (e) {
-        console.warn("Could not extract album color due to CORS limitations. Falling back to white.");
         setAccentColor('#ffffff'); 
       }
     };
     img.onerror = () => setAccentColor('#ffffff');
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
-
 
   useEffect(() => {
     if (!currentTrack) {
@@ -248,21 +264,13 @@ const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
 
   if (!currentTrack) return null;
 
-  return (
+  // The purely visual Player UI
+  const playerUI = (
     <div 
-      className="global-player glass-panel-heavy" 
+      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''}`} 
       onClick={openModal}
       style={{ '--player-accent': accentColor, cursor: 'pointer' }}
     >
-      <audio 
-        ref={audioRef}
-        src={audioSrc} 
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
-        onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
-        onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
-      />
-
       <div className="player-top-row">
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
@@ -313,6 +321,21 @@ const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
         <span className="time-text">{formatTime(duration)}</span>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      <audio 
+        ref={audioRef}
+        src={audioSrc} 
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
+        onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
+        onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
+      />
+      {/* Portals the UI seamlessly into the Left Column on mobile without unmounting the audio */}
+      {slotNode ? createPortal(playerUI, slotNode) : playerUI}
+    </>
   );
 };
 

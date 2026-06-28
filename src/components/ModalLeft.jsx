@@ -14,12 +14,10 @@ const ModalLeft = ({
   
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
 
-  // Bulletproof close function that works even if props aren't passed down properly
   const handleCloseModal = () => {
     if (setSelectedSong) {
       setSelectedSong(null);
     } else {
-      // Failsafe: Triggers the hidden original close button from SongModal.jsx
       const hiddenCloseBtn = document.querySelector('.close-btn');
       if (hiddenCloseBtn) hiddenCloseBtn.click();
     }
@@ -157,8 +155,10 @@ const ModalLeft = ({
           </div>
         </div>
 
+        {/* The injection slot for the Player Portal on Mobile */}
+        <div id="mobile-player-slot"></div>
+
         <div className="bottom-actions">
-          {/* Vault actions safely isolated to the far left */}
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
               <span>🗑</span> Remove from Vault
@@ -170,7 +170,6 @@ const ModalLeft = ({
             }}>+ Add to Vault</button>
           )}
 
-          {/* Dashboard return safely isolated to the far right */}
           <button className="return-dashboard-btn" onClick={handleCloseModal}>
             Return to Dashboard ➔
           </button>

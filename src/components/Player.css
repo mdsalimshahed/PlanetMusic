@@ -5,8 +5,8 @@
   left: 60px;
   width: calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100));
   min-width: 350px; 
-  height: 96px; 
-  padding: 10px 24px;
+  height: clamp(80px, 10vw, 96px); 
+  padding: 10px clamp(16px, 2.5vw, 24px);
   border-radius: 24px; 
   display: flex;
   flex-direction: column;
@@ -18,6 +18,19 @@
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 10px 30px color-mix(in srgb, var(--player-accent, transparent) 10%, transparent);
   animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* CRITICAL FIX: Transforms the player into a native inline element inside the Left Column */
+.global-player.stacked {
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-top: 16px;
+  transform: none !important;
+  animation: none !important;
+  z-index: 10;
 }
 
 .global-player:hover {
@@ -60,8 +73,8 @@
 
 .album-art-container {
   position: relative;
-  width: 44px; 
-  height: 44px;
+  width: clamp(36px, 5vw, 44px); 
+  height: clamp(36px, 5vw, 44px);
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
@@ -100,7 +113,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: clamp(14px, 2vw, 18px);
   color: white;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -117,7 +130,7 @@
 }
 
 .player-text h4 {
-  font-size: 15px; 
+  font-size: clamp(13px, 1.5vw, 15px); 
   font-weight: 700;
   color: white;
   margin-bottom: 0px;
@@ -127,7 +140,7 @@
 }
 
 .player-text p {
-  font-size: 13px; 
+  font-size: clamp(11px, 1.3vw, 13px); 
   color: var(--text-subdued);
   white-space: nowrap; 
   overflow: hidden; 
@@ -153,7 +166,7 @@
 }
 
 .volume-icon {
-  font-size: 18px;
+  font-size: clamp(14px, 2vw, 18px);
   color: var(--text-subdued);
   transition: color 0.2s;
 }
@@ -224,14 +237,14 @@
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
-  width: 32px;
-  height: 32px;
+  width: clamp(28px, 3.5vw, 32px);
+  height: clamp(28px, 3.5vw, 32px);
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: clamp(12px, 1.4vw, 14px);
   transition: all 0.2s;
   flex-shrink: 0;
 }
@@ -242,9 +255,8 @@
   transform: scale(1.1);
 }
 
-/* --- Universal Custom Sliders --- */
 .time-text {
-  font-size: 11px;
+  font-size: clamp(9px, 1.2vw, 11px);
   font-weight: 500;
   color: var(--text-subdued);
   min-width: 35px;
@@ -253,14 +265,12 @@
   flex-shrink: 0; 
 }
 
-/* The actual input holding the drag event */
 .custom-slider {
   -webkit-appearance: none;
   appearance: none;
-  background-color: transparent !important; /* CRITICAL: Must be color, not shorthand, to preserve image */
-  height: 32px; /* Massive 32px invisible hitbox */
+  background-color: transparent !important; 
+  height: 32px; 
   
-  /* Draws the 4px track strictly in the vertical center of the input */
   background-image: 
     linear-gradient(var(--player-accent, white), var(--player-accent, white)), 
     linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
@@ -290,9 +300,6 @@
   padding: 0;
 }
 
-/* CRITICAL: The internal track must also be 32px tall 
-   otherwise webkit browsers refuse to expand the drag zone 
-*/
 .custom-slider::-webkit-slider-runnable-track {
   -webkit-appearance: none;
   box-shadow: none;
@@ -309,10 +316,7 @@
   width: 14px;
   border-radius: 50%;
   background: white;
-  
-  /* (32px Track - 14px Thumb) / 2 = 9px Top Margin to mathematically perfectly center the dot */
   margin-top: 9px; 
-  
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   transition: transform 0.1s ease, background-color 0.3s ease;
 }
@@ -321,4 +325,13 @@
   transform: scale(1.2); 
   background: var(--player-accent, white) !important;
   box-shadow: 0 0 15px color-mix(in srgb, var(--player-accent, transparent) 80%, transparent) !important;
+}
+
+@media (max-width: 900px) {
+  .global-player:not(.stacked) {
+    left: 20px;
+    right: 20px;
+    width: auto;
+    min-width: unset;
+  }
 }

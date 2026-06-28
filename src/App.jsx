@@ -153,18 +153,13 @@ const App = () => {
     if (library.length === 0) return alert("Your vault is empty! Add songs before exporting.");
     
     const optimizedLibrary = library.map(song => {
-      const optimizedSong = { 
-        ...song,
-        lyrics: song.lyrics || "",
-        syncData: song.syncData || []
-      };
+      const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
       delete optimizedSong.artworkUrl30;
       delete optimizedSong.artworkUrl60;
       delete optimizedSong.trackCensoredName;
       delete optimizedSong.collectionCensoredName;
       delete optimizedSong.artistViewUrl;
       delete optimizedSong.trackViewUrl;
-      
       return optimizedSong;
     });
 
@@ -191,15 +186,11 @@ const App = () => {
       try {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
-
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
-            if (existingIdx >= 0) {
-              newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
-            } else {
-              newLibrary.push(newSong);
-            }
+            if (existingIdx >= 0) newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
+            else newLibrary.push(newSong);
           });
         };
 
@@ -223,15 +214,16 @@ const App = () => {
     event.target.value = null; 
   };
 
+  // --- FULLY RESPONSIVE FLUID TYPOGRAPHY ---
   const dynamicStyles = {
-    '--dyn-card-font-size': `${settings.cardFontSize}px`,
-    '--dyn-modal-font-size': `${settings.modalFontSize}px`,
-    '--dyn-card-width': `${settings.cardWidth}px`,
-    '--dyn-card-padding': `${settings.cardPadding}px`,
-    '--dyn-card-gap': `${settings.cardGap}px`,
+    '--dyn-card-font-size': `clamp(12px, 1.2vw, ${settings.cardFontSize}px)`,
+    '--dyn-modal-font-size': `clamp(24px, 4vw, ${settings.modalFontSize}px)`,
+    '--dyn-card-width': `clamp(120px, 15vw, ${settings.cardWidth}px)`,
+    '--dyn-card-padding': `clamp(8px, 1vw, ${settings.cardPadding}px)`,
+    '--dyn-card-gap': `clamp(12px, 1.5vw, ${settings.cardGap}px)`,
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
-    '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}px`,
-    '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}px`,
+    '--dyn-live-sync-font-size': `clamp(16px, 4vw, ${settings.liveSyncFontSize}px)`,
+    '--dyn-focused-sync-font-size': `clamp(20px, 5vw, ${settings.focusedSyncFontSize}px)`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
   };
@@ -350,10 +342,10 @@ const App = () => {
       <Player 
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 
+        selectedSong={selectedSong}
         setSelectedSong={setSelectedSong} 
       />
 
-      {/* Confirmation Dialog Overlay */}
       {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
