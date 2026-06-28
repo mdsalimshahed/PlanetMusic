@@ -182,7 +182,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
         </div>
         <div className="player-text">
           <h4 title={currentTrack.trackName}>{currentTrack.trackName}</h4>
-          <p>{currentTrack.artistName}</p>
+          <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
         </div>
       </div>
       
@@ -202,15 +202,20 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
       </div>
 
       <div className="player-right-controls">
-        <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
-        <input 
-          type="range" 
-          className="custom-slider volume-slider" 
-          min="0" max="1" step="0.01" 
-          value={volume} 
-          onChange={handleVolumeChange} 
-          style={{ '--progress': `${volume * 100}%` }}
-        />
+        <div className="volume-container">
+          <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
+          <div className="volume-slider-wrapper">
+            <div className="volume-tooltip">{Math.round(volume * 100)}%</div>
+            <input 
+              type="range" 
+              className="custom-slider volume-slider vertical-slider" 
+              min="0" max="1" step="0.01" 
+              value={volume} 
+              onChange={handleVolumeChange} 
+              style={{ '--progress': `${volume * 100}%` }}
+            />
+          </div>
+        </div>
         <button className="close-player" onClick={closePlayer}>✕</button>
       </div>
     </div>

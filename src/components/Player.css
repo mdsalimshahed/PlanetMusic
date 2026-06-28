@@ -29,8 +29,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex: 1.2;
-  min-width: 0; /* Crucial: Allows the text to truncate instead of pushing out the seek bar */
+  flex: 1; /* Changed to exactly 1 so it shares space fairly */
+  min-width: 0; /* Crucial: Allows the text container to shrink and trigger ellipsis */
+  max-width: 35%; /* Prevents exceptionally long names from stealing the seek bar's space */
 }
 
 .album-art-container {
@@ -82,40 +83,41 @@
 
 .player-text {
   overflow: hidden;
+  width: 100%; /* Ensures the text div properly respects the flex container bounds */
 }
 
 .player-text h4 {
-  font-size: 14px;
+  font-size: 15px; 
   font-weight: 700;
   margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; 
+  overflow: hidden; /* Restored to prevent overlapping */
+  text-overflow: ellipsis; /* Restored to add '...' instead of overlapping */
 }
 
 .player-text p {
-  font-size: 12px;
+  font-size: 13px; 
   color: var(--text-subdued);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; 
+  overflow: hidden; /* Restored to prevent overlapping */
+  text-overflow: ellipsis; /* Restored to add '...' instead of overlapping */
 }
 
 /* --- Center: Wide Seek Bar --- */
 .player-center-controls {
-  flex: 2; 
+  flex: 2; /* Gives the seek bar priority over the remaining space */
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 120px; /* Ensure it maintains a minimum presence */
+  padding: 0 8px; /* Significantly reduced padding to pull the volume icon closer and give the bar more room */
+  min-width: 120px;
 }
 
 .player-progress-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 500px;
 }
 
 .time-text {
@@ -125,7 +127,7 @@
   min-width: 35px;
   text-align: center;
   font-variant-numeric: tabular-nums; 
-  flex-shrink: 0; /* Prevents the time text from shrinking */
+  flex-shrink: 0; 
 }
 
 /* --- Right: Small Volume & Close --- */
@@ -134,21 +136,99 @@
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  flex-shrink: 0; /* Ensures the close/volume buttons don't get squished */
+  flex-shrink: 0; 
+}
+
+/* --- Vertical Volume Hover Control --- */
+.volume-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
 }
 
 .volume-icon {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text-subdued);
-  margin-right: -4px;
+  transition: color 0.2s;
+}
+
+.volume-container:hover .volume-icon {
+  color: white;
+}
+
+/* The popup box containing the rotated slider */
+.volume-slider-wrapper {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(15, 15, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  width: 32px; 
+  height: 120px; 
+  padding: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  z-index: 100;
+}
+
+.volume-container:hover .volume-slider-wrapper {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip for displaying current volume percentage */
+.volume-tooltip {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: black;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Show tooltip when hovering over the wrapper */
+.volume-slider-wrapper:hover .volume-tooltip {
+  opacity: 1;
+}
+
+/* Invisible bridge so mouse hover doesn't break when moving up */
+.volume-container::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  right: -10px;
+  bottom: 0;
+  z-index: -1;
 }
 
 .close-player {
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -180,11 +260,19 @@
 
 .progress-slider {
   flex: 1;
-  width: 100%; /* Forces the slider to fill the flex item's width */
+  width: 100%; 
 }
 
+/* Rotated CSS setup explicitly for volume */
 .volume-slider {
-  width: 60px; 
+  width: 100px; 
+  min-width: 100px; 
+  flex-shrink: 0; 
+  height: 4px; 
+  transform: rotate(-90deg);
+  transform-origin: center;
+  margin: 0;
+  padding: 0;
 }
 
 .custom-slider::-webkit-slider-runnable-track {
@@ -194,6 +282,7 @@
   background: transparent;
 }
 
+/* Base thumb settings */
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 12px;
@@ -203,6 +292,13 @@
   margin-top: -4px; 
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   transition: transform 0.1s ease;
+}
+
+/* Volume-specific thumb override */
+.volume-slider::-webkit-slider-thumb {
+  width: 14px; 
+  height: 14px;
+  margin-top: -5px; 
 }
 
 .custom-slider:hover::-webkit-slider-thumb {
