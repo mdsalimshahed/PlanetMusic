@@ -197,7 +197,9 @@ const LyricLineWrapper = React.memo(({
               className={`focused-line ${isMainActive ? 'active' : ''}`}
               onClick={() => handleLineClick(seekTarget)}
           >
-              {renderLine(lineObj, savedNode, isMainActive, true, localProgress, masterPalette)}
+              {/* CRITICAL FIX: Hardcode 'true' for isActive. CSS opacity handles the hiding, 
+                  preventing the text from flashing white during the fade out. */}
+              {renderLine(lineObj, savedNode, true, true, localProgress, masterPalette)}
           </div>
       );
   }
@@ -230,15 +232,10 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, []);
 
-  // Pre-calculate positions once per song load to completely prevent frame-jittering/teleporting
+  // Recalculates dynamically every time the song loads for true randomization
   const adlibPlacements = useMemo(() => {
       const placements = new Map();
       if (!syncData) return placements;
-
-      const getSeededRandom = (seed) => {
-          const x = Math.sin(seed * 12.9898) * 43758.5453;
-          return x - Math.floor(x);
-      };
 
       syncData.forEach((node) => {
           if (node?.isSplit && node.adlibs) {
@@ -246,7 +243,7 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
               
               // Dynamic Boundary Heuristic: Estimate the main line's visual footprint
               const parentLen = node.text ? node.text.length : 20;
-              // Larger strings create a wider dead zone in the center (up to 35% offset horizontally)
+              // Larger strings create a wider dead zone in the center
               const horizontalSpread = Math.min(35, parentLen * 0.8); 
               
               // Define the absolute safe left/right edges protecting the main text
@@ -256,45 +253,47 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
                   
-                  const seed1 = getSeededRandom(adlib.start + j);
-                  const seed2 = getSeededRandom(adlib.start + j + 1);
-                  const seed3 = getSeededRandom(adlib.start + j + 2);
+                  // True randomization every playback
+                  const randRot = Math.random();
+                  const randX = Math.random();
+                  const randY = Math.random();
+                  const quadRand = Math.random();
                   
-                  const rot = (seed1 * 20) - 10;
+                  const rot = (randRot * 20) - 10; // -10 to +10 degree chaotic tilt
                   
                   const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
                   const primaryAdlibSinger = adlibNames[0];
 
-                  let quad = Math.floor(seed2 * 4); 
+                  let quad = Math.floor(quadRand * 4); // Default to random 4-quadrant
 
-                  // Map quadrant to the background grid positions derived from the parent line
+                  // Override quadrant if artist mapping exists
                   if (parentArtists.length > 1 && primaryAdlibSinger) {
                       const idx = parentArtists.indexOf(primaryAdlibSinger);
                       if (idx !== -1) {
                           if (parentArtists.length === 2) {
-                              quad = (idx === 0) ? ((seed2 > 0.5) ? 0 : 3) : ((seed2 > 0.5) ? 1 : 2);
+                              quad = (idx === 0) ? ((quadRand > 0.5) ? 0 : 3) : ((quadRand > 0.5) ? 1 : 2);
                           } else {
                               quad = idx % 4;
                           }
                       }
                   }
                   
-                  // Calculate dynamic safe zones guaranteeing no overlap
+                  // Apply 4-Quadrant Chaotic Layout WITH Dynamic Safe Zones
                   let top, left;
-                  if (quad === 0) { // Top Left
-                      top = 15 + (seed3 * 12); // Safely above the vertical 30% mark
-                      left = 10 + (seed1 * (maxLeft - 10)); // Restrict to the left of the dynamic dead zone
-                  } else if (quad === 1) { // Top Right
-                      top = 15 + (seed3 * 12); 
-                      left = minRight + (seed1 * (90 - minRight)); // Restrict to the right of the dynamic dead zone
-                  } else if (quad === 2) { // Bottom Left
-                      top = 73 + (seed3 * 12); // Safely below the vertical 70% mark
-                      left = 10 + (seed1 * (maxLeft - 10));
-                  } else { // Bottom Right
-                      top = 63 + (seed3 * 12); // Stays high enough to clear the artist name at bottom right
+                  if (quad === 0) { // Top Left Quadrant
+                      top = 15 + (randY * 15); 
+                      left = 10 + (randX * (maxLeft - 10)); // Restrict to the left of the dynamic dead zone
+                  } else if (quad === 1) { // Top Right Quadrant
+                      top = 15 + (randY * 15); 
+                      left = minRight + (randX * (90 - minRight)); // Restrict to the right of the dynamic dead zone
+                  } else if (quad === 2) { // Bottom Left Quadrant
+                      top = 70 + (randY * 15); 
+                      left = 10 + (randX * (maxLeft - 10));
+                  } else { // Bottom Right Quadrant
+                      top = 65 + (randY * 10); 
                       // Prevent pushing too far right to avoid hitting the artist corner UI
                       const adjustedMinRight = Math.min(75, minRight);
-                      left = adjustedMinRight + (seed1 * (75 - adjustedMinRight));
+                      left = adjustedMinRight + (randX * (85 - adjustedMinRight));
                   }
 
                   placements.set(`adlib-${adlib.start}-${j}`, { rot, top, left });
@@ -349,7 +348,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   }}
                   onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
               >
-                  {/* Passing 'true' permanently stops inline DOM style recalculations mid-transition, perfectly killing the jitter */}
                   {renderLine(adlib, adlib, true, true, time, masterPalette)}
               </div>
           ))}

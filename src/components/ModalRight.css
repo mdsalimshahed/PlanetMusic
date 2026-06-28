@@ -161,9 +161,8 @@
   display: flex; 
   flex-direction: column; 
   gap: 24px; 
-  padding: 40px 20px; /* Reverted to 40px to prevent the extreme dead center behavior at edges */
+  padding: 40px 20px; 
   scroll-behavior: smooth; 
-  /* Reduced mask intensity so edge lyrics aren't aggressively cut off */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
   scrollbar-width: none;
@@ -177,7 +176,7 @@
 .preview-line { 
   font-size: var(--dyn-live-sync-font-size, 34px); 
   font-weight: 700; 
-  color: rgba(255, 255, 255, 0.5); /* Boosted base color brightness */
+  color: rgba(255, 255, 255, 0.5); 
   text-shadow: 0 2px 6px rgba(0,0,0,0.8);
   transition: color 0.5s ease, opacity 0.5s ease, filter 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.5s ease; 
   line-height: 1.4; 
@@ -186,8 +185,8 @@
   word-wrap: break-word; 
   cursor: pointer; 
   margin: 0; 
-  opacity: 0.6; /* Substantially increased visibility (was 0.3) */
-  filter: blur(0.8px); /* Lowered blur so text remains crisp */
+  opacity: 0.6; 
+  filter: blur(0.8px); 
   transform: scale(0.95);
   transform-origin: left center;
   will-change: color, opacity, transform, filter, text-shadow;
@@ -259,15 +258,21 @@
   pointer-events: none;
 }
 
+/* Bulletproof failsafes added to adlib lines to prevent edge bleeding */
 .focused-adlib-line {
   position: absolute;
   top: var(--adlib-top, 50%);
   left: var(--adlib-left, 50%);
-  font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.75);
+  font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.65); /* Scaled down slightly to respect hierarchy */
   font-weight: 800;
   line-height: 1.4;
   text-align: center;
-  white-space: nowrap;
+  
+  /* CRITICAL FIX: Allows long ad-libs to stack into multiple lines instead of stabbing the edge of the screen */
+  white-space: pre-wrap; 
+  word-wrap: break-word;
+  max-width: 80vw;
+  
   opacity: 0;
   text-shadow: 0 4px 10px rgba(0,0,0,0.8);
   transform: translate(-50%, calc(-50% + 20px)) rotate(var(--adlib-rot, 0deg));
