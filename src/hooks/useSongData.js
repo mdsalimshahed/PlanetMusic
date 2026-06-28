@@ -25,7 +25,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   
   // Master Palette now incorporates Global Colors as well
   const masterPalette = { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
-  const allPotentialSingers = Object.keys(masterPalette).filter(Boolean);
+  
+  // FIX: Only consider singers that are actively present in the song's base palette (from track info or lyrics)
+  const allPotentialSingers = Object.keys(basePalette).filter(Boolean);
 
   useEffect(() => {
     if (selectedSong) {

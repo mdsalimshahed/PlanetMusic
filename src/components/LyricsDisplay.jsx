@@ -1,12 +1,11 @@
 /* --- src/components/LyricsDisplay.jsx --- */
 import React, { useState, useEffect } from 'react';
 
-const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, masterPalette }) => {
+const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, masterPalette, allPotentialSingers }) => {
   const [pos, setPos] = useState({ top: '20%', left: '50%' });
 
   useEffect(() => {
     if (isAdlibActive) {
-      const allPotentialSingers = Object.keys(masterPalette || {}).filter(Boolean);
       const activeNames = adlib.singer ? adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
       
       let topMin = 15, topMax = 85, leftMin = 10, leftMax = 90;
@@ -32,7 +31,7 @@ const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, mast
       const left = Math.floor(Math.random() * (leftMax - leftMin) + leftMin);
       setPos({ top: `${top}%`, left: `${left}%` });
     }
-  }, [isAdlibActive, adlib.singer, masterPalette]);
+  }, [isAdlibActive, adlib.singer, masterPalette, allPotentialSingers]);
 
   return (
     <div 
@@ -53,7 +52,7 @@ const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
   lyricsViewMode, liveParsedLyrics, activePreviewIndex,
   activePreviewRef, handleLineClick, selectedSong, globalProgress,
-  debugInfo, masterPalette
+  debugInfo, masterPalette, allPotentialSingers
 }) => {
 
   const handlePaste = (e) => {
@@ -343,6 +342,7 @@ const LyricsDisplay = ({
                       handleLineClick={handleLineClick} 
                       renderLine={renderLine} 
                       masterPalette={masterPalette}
+                      allPotentialSingers={allPotentialSingers}
                     />
                   );
                 })}
