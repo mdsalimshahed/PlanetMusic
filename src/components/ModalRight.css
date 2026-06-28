@@ -219,22 +219,37 @@
 }
 .focused-line.active:hover { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
 
-/* Focused View Floating Adlibs */
-.floating-adlib {
+/* Focused View Fixed Adlib Container */
+.focused-adlibs-container {
   position: absolute;
-  font-size: var(--dyn-focused-sync-font-size, 42px);
-  font-weight: 900;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.focused-adlib-line {
+  font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.75);
+  font-weight: 800;
   line-height: 1.4;
   text-align: center;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
   pointer-events: none;
-  z-index: 10;
 }
-.floating-adlib.active {
+
+.focused-adlib-line.active {
   opacity: 1;
-  transform: scale(1);
+  transform: translateY(0);
   pointer-events: auto;
   cursor: pointer;
 }

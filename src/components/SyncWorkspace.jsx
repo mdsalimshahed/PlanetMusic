@@ -48,11 +48,15 @@ const SyncWorkspace = ({
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
                     if (overlapStart < overlapEnd) {
+                        const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
-                            text: segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('')
+                            text: overlapText
                         });
-                        if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]*$/;
+                        if (!isOnlyPunctuationOrSpace.test(overlapText)) {
+                            if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                        }
                     }
                     currentPos = segEnd;
                 }
@@ -120,15 +124,18 @@ const SyncWorkspace = ({
     const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
 
     const renderColoredChar = (c, cIdx) => {
-        const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
         const isParenthesis = /([()\[\]{}]+)/.test(c.char);
         
-        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+        let activeColor = '#ffffff';
         let isGradient = false;
         let gradientStyle = '';
 
-        if (!isPunct && c.seg) {
+        if (c.seg) {
             let targetArtists = c.seg.artists;
+
+            if (!targetArtists && line.singer) {
+                targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
+            }
 
             if (targetArtists && targetArtists.length > 0) {
                 if (targetArtists.length > 1) {

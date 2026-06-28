@@ -127,7 +127,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const finalSegments = [];
     const lineArtistsSet = new Set();
-    const punctRegex = /([.,!?;:"'()\[\]{}\-—–¿¡«»“”‘’]+)/;
     const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]*$/;
 
     lineSegments.forEach(seg => {
@@ -162,11 +161,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const cleanSegText = seg.text.replace(/[_*~]+/g, '');
 
         if (cleanSegText.length > 0) {
-            const subParts = cleanSegText.split(punctRegex);
-            subParts.forEach(part => {
-                if (!part) return;
-                if (punctRegex.test(part)) finalSegments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '', artists: [] });
-                else finalSegments.push({ text: part, color: segColor, isGradient: segIsGradient, gradient: segGradient, artists: artists });
+            finalSegments.push({ 
+                text: cleanSegText, 
+                color: segColor, 
+                isGradient: segIsGradient, 
+                gradient: segGradient, 
+                artists: artists 
             });
         }
     });
@@ -274,12 +274,18 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
                 const segEnd = currentPos + segChars.length;
                 const overlapStart = Math.max(adlib.charStart, segStart);
                 const overlapEnd = Math.min(adlib.charEnd, segEnd);
+                
                 if (overlapStart < overlapEnd) {
+                    const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                     adlibSegments.push({
                         ...seg,
-                        text: segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('')
+                        text: overlapText
                     });
-                    if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                    // ONLY adopt artists from segments containing letters/numbers (ignores bare parentheses)
+                    const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]*$/;
+                    if (!isOnlyPunctuationOrSpace.test(overlapText)) {
+                        if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                    }
                 }
                 currentPos = segEnd;
             }
@@ -348,7 +354,6 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
   const lines = lrcString.split('\n');
   const syncData = [];
   let plainTextLyrics = "";
-  const punctRegex = /([.,!?;:"'()\[\]{}\-—–¿¡«»“”‘’]+)/;
   const defColor = colorPalette[defaultArtist] || '#ffffff';
 
   lines.forEach(line => {
@@ -382,13 +387,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
         if (words.length > 0) wordSync = words;
       }
 
-      const segments = [];
-      const subParts = text.split(punctRegex);
-      subParts.forEach(part => {
-          if (!part) return;
-          if (punctRegex.test(part)) segments.push({ text: part, color: '#fbbf24', isGradient: false, gradient: '', artists: [] });
-          else segments.push({ text: part, color: defColor, isGradient: false, gradient: '', artists: [defaultArtist] });
-      });
+      const segments = [{ text: text, color: defColor, isGradient: false, gradient: '', artists: [defaultArtist] }];
 
       syncData.push({
         start: startTime,

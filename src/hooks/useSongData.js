@@ -1,5 +1,5 @@
 /* --- src/hooks/useSongData.js --- */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../db';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../utils/songHelpers';
 
@@ -7,7 +7,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   
-  // New Global Registry for Artists
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
@@ -17,17 +16,24 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
 
-  const trackNameData = selectedSong ? parseTrackName(selectedSong.trackName) : { mainTitle: '', extras: [], featuredArtists: [] };
+  // Memoize derivations to prevent layout thrashing and object-reference updates across 60fps renders
+  const trackNameStr = selectedSong?.trackName || '';
+  const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
   const featuredArtists = trackNameData.featuredArtists;
 
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-  const basePalette = selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, featuredArtists) : {};
   
-  // Master Palette now incorporates Global Colors as well
-  const masterPalette = { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
+  const basePalette = useMemo(() => {
+      return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
+  }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
   
-  // Only consider singers that are actively present in the song's base palette (from track info or lyrics)
-  const allPotentialSingers = Object.keys(basePalette).filter(Boolean);
+  const masterPalette = useMemo(() => {
+      return { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
+  }, [basePalette, globalArtistData.colors, customData.artistColors]);
+  
+  const allPotentialSingers = useMemo(() => {
+      return Object.keys(basePalette).filter(Boolean);
+  }, [basePalette]);
 
   useEffect(() => {
     if (selectedSong) {
@@ -57,13 +63,14 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (!selectedSong) return;
     allPotentialSingers.forEach(async (singerName) => {
       const cleanName = singerName.trim();
-      // Skip API fetch if we already have it globally or locally
       if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName] && !globalArtistData.images?.[cleanName]) {
         setSingerImages(prev => ({ ...prev, [cleanName]: null }));
         const imgUrl = await fetchSingerImage(selectedSong.artistName, cleanName, selectedSong.trackName, selectedSong.collectionName);
         if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
       }
     });
+  // Safely join the array to watch for true data modifications
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPotentialSingers.join('|'), selectedSong?.artistName, selectedSong?.trackName, selectedSong?.collectionName]);
 
   const handleDataChange = (e) => {
@@ -120,7 +127,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
     setGlobalArtistData(newGlobal);
 
-    // Re-merge sync data so the stored timestamps/ad-libs properly inherit the newly saved colors
     let updatedSyncData = selectedSong.syncData;
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
        const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
