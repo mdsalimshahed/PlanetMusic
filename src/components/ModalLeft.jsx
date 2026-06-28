@@ -148,7 +148,9 @@ const ModalLeft = ({
 
         <div className="bottom-actions">
           {isSaved ? (
-            <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">🗑</button>
+            <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
+              <span>🗑</span> Remove from Vault
+            </button>
           ) : (
             <button className="edit-links-btn save-mode" onClick={(e) => {
               toggleLibrary(e, selectedSong);

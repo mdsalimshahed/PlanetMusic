@@ -163,8 +163,26 @@
 .toggle-view-btn:hover { background: var(--accent); color: black; }
 
 .bottom-actions { margin-top: auto; padding-top: 16px; display: flex; justify-content: flex-end; }
-.delete-icon-btn { background: transparent; border: none; color: rgba(255, 255, 255, 0.3); font-size: 20px; cursor: pointer; transition: all 0.2s ease; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.delete-icon-btn:hover { background: rgba(250, 36, 60, 0.1); color: #FA243C; transform: scale(1.1); }
+.delete-icon-btn { 
+  background: rgba(250, 36, 60, 0.15); 
+  border: 1px solid rgba(250, 36, 60, 0.3); 
+  color: #FA243C; 
+  font-size: 14px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  padding: 10px 20px; 
+  border-radius: 500px; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+.delete-icon-btn:hover { 
+  background: #FA243C; 
+  color: white; 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
+}
 .search-google-btn { background: rgba(255, 255, 255, 0.15); text-decoration: none; display: inline-flex; align-items: center; font-weight: bold; }
 .search-google-btn:hover { background: white; color: black; }
 

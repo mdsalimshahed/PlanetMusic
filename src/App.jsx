@@ -56,6 +56,7 @@ const App = () => {
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [songToRemove, setSongToRemove] = useState(null);
 
   useEffect(() => {
     if (settings.persistentMemory) {
@@ -116,11 +117,22 @@ const App = () => {
     const isSaved = library.some((s) => s.trackId === song.trackId);
     
     if (isSaved) {
-      setLibrary(library.filter((s) => s.trackId !== song.trackId));
-      if (selectedSong?.trackId === song.trackId) setSelectedSong(null);
+      setSongToRemove(song);
     } else {
       setLibrary([...library, song]);
     }
+  };
+
+  const confirmRemove = () => {
+    if (songToRemove) {
+      setLibrary(library.filter((s) => s.trackId !== songToRemove.trackId));
+      if (selectedSong?.trackId === songToRemove.trackId) setSelectedSong(null);
+      setSongToRemove(null);
+    }
+  };
+
+  const cancelRemove = () => {
+    setSongToRemove(null);
   };
 
   const updateSongInLibrary = (updatedSong) => {
@@ -333,6 +345,20 @@ const App = () => {
       />
 
       <Player currentTrack={currentTrack} setCurrentTrack={setCurrentTrack} />
+
+      {/* Confirmation Dialog Overlay */}
+      {songToRemove && (
+        <div className="confirm-overlay" onClick={cancelRemove}>
+          <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+            <h3>Remove Song?</h3>
+            <p>Are you sure you want to delete <strong>{songToRemove.trackName}</strong> from your Vault? This action cannot be undone.</p>
+            <div className="confirm-actions">
+              <button className="confirm-btn cancel" onClick={cancelRemove}>Cancel</button>
+              <button className="confirm-btn delete" onClick={confirmRemove}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
