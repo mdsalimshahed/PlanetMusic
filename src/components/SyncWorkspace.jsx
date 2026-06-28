@@ -5,7 +5,8 @@ import { formatPreciseTime } from '../utils/songHelpers';
 const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncProgress, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
-  syncAudioRef, syncAudioSrc, handleSyncTimeUpdate, setIsSyncPlaying, activeLineRef
+  syncAudioRef, syncAudioSrc, handleSyncTimeUpdate, setIsSyncPlaying, activeLineRef,
+  workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
 }) => {
   
   const handleAudioLoaded = (e) => {
@@ -14,9 +15,9 @@ const SyncWorkspace = ({
     }
   };
 
-  const renderWorkspaceLine = (line) => {
+  const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
-    const segments = line.segments || [];
+    const segments = line.segments || [{ text: line.text }];
 
     const pronStyle = { 
         fontSize: '0.55em', 
@@ -44,38 +45,59 @@ const SyncWorkspace = ({
 
     const chars = [];
     segments.forEach(seg => {
-        for (let char of seg.text) {
+        const segChars = Array.from(seg.text);
+        segChars.forEach(char => {
             chars.push({ char, seg });
-        }
+        });
     });
+
+    const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
 
     const renderColoredChar = (c, cIdx) => {
         const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
-        const activeColor = isPunct ? '#fbbf24' : (c.seg.color || '#ffffff');
-        const isGradient = !isPunct && c.seg.isGradient;
+        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
+        const activeColor = isPunct ? '#fbbf24' : (c.seg?.color || '#ffffff');
+        const isGradient = !isPunct && c.seg?.isGradient;
 
         const style = isGradient ? { backgroundImage: c.seg.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
+        
+        if (isMain && line.isSplit) {
+          const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+          if (isAdlibChar) {
+             style.opacity = 0.2;
+             style.textDecoration = 'line-through';
+          }
+        }
+        
+        if (isParenthesis && hasTransliteration) {
+            style.display = 'inline-block';
+            style.transform = 'scale(1.2) translateY(10%)';
+            style.margin = '0 2px';
+        }
+
         return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
     if (parsedChunks) {
         let charOffset = 0;
         const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
-            const chunkLen = chunk.text.length;
+            const chunkLen = Array.from(chunk.text).length;
+            const firstCharIdx = charOffset;
             const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
             charOffset += chunkLen;
 
-            const renderedText = chunkChars.map((c, i) => renderColoredChar(c, i));
-
+            const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
+            
             if (chunk.type === 'foreign' && chunk.trans) {
+                const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
                 return (
-                    <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
+                    <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
                         <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
-                        <span style={pronStyle}>{chunk.trans}</span>
+                        <span style={pronStyle}>{cleanTrans}</span>
                     </span>
                 );
             } else {
-                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom' }}>{renderedText}</span>;
+                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
             }
         });
 
@@ -87,11 +109,16 @@ const SyncWorkspace = ({
     } else {
         const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
         const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
+        
+        let displayPronString = pronString;
+        if (pronString) {
+             displayPronString = pronString.replace(/[()\[\]{}]/g, '');
+        }
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{renderedChars}</span>
-                {pronString && <div style={blockPronStyle}>{pronString}</div>}
+                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }}>{renderedChars}</span>
+                {displayPronString && <div style={blockPronStyle}>{displayPronString}</div>}
             </div>
         );
     }
@@ -128,23 +155,54 @@ const SyncWorkspace = ({
       </div>
 
       <div className="sync-lines-container">
-        {syncData.map((line, i) => {
+        {workspaceLines.map((item, i) => {
+          const isMain = item.type === 'main';
+          const line = item.ref;
+          const isActive = i === activeSyncIndex;
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
-          const isActive = i === activeSyncIndex;
+          
+          const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
+          
+          let isAdlibPlaying = false;
+          if (!isMain && line.start !== null) {
+            const boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
+            isAdlibPlaying = syncProgress >= line.start && syncProgress <= boundedEnd;
+          }
           
           return (
             <div 
               key={i}
               ref={isActive ? activeLineRef : null}
-              className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''}`}
+              className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib' : ''} ${isAdlibPlaying ? 'adlib-playing' : ''}`}
               onClick={() => {
                 setActiveSyncIndex(i);
-                if (line.start !== null && syncAudioRef.current) syncAudioRef.current.currentTime = line.start;
+                if (!isMain && (line.start === null || line.end === null)) {
+                  setLoopRange({ start: item.parentRef.start, end: item.parentRef.end || (item.parentRef.start + 5) });
+                  if (syncAudioRef.current) syncAudioRef.current.currentTime = item.parentRef.start;
+                  if (!isSyncPlaying) toggleSyncPlay();
+                } else if (line.start !== null && syncAudioRef.current) {
+                  setLoopRange(null);
+                  syncAudioRef.current.currentTime = line.start;
+                  if (!isMain) setConstrainedEnd(item.parentRef.end || item.parentRef.start + 5);
+                  else setConstrainedEnd(null);
+                }
               }}
             >
-              <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px' }}>
-                {renderWorkspaceLine(line)}
+              <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
+                {renderWorkspaceLine(line, isMain)}
+                {isMain && hasParentheses && (
+                  <button 
+                    className={`action-split-btn ${line.isSplit ? 'undo' : ''}`} 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      if (line.isSplit) handleUndoSplit(item.lineIndex);
+                      else handleSplitAdlibs(item.lineIndex);
+                    }}
+                  >
+                    {line.isSplit ? 'Undo Split' : 'Split Adlibs'}
+                  </button>
+                )}
               </div>
               <span className="sync-time">{formatPreciseTime(line.start)} - {formatPreciseTime(line.end)}</span>
             </div>

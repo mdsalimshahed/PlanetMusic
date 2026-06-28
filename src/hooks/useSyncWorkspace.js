@@ -1,7 +1,7 @@
 /* --- src/hooks/useSyncWorkspace.js --- */
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../db';
-import { getBulkPronunciations } from '../transliterator';
+import { getBulkPronunciations, quickTransliterate } from '../transliterator';
 import { parseLyrics, mergeSyncWithGenius, fetchYouLyrics, fetchLRCLIB, parseLRC } from '../utils/songHelpers';
 
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification) => {
@@ -17,6 +17,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [syncAudioSrc, setSyncAudioSrc] = useState('');
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
+  const [constrainedEnd, setConstrainedEnd] = useState(null);
+  const [loopRange, setLoopRange] = useState(null);
 
   const syncAudioRef = useRef(null);
   const activeLineRef = useRef(null);
@@ -25,11 +27,29 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   useEffect(() => { activeIdxRef.current = activeSyncIndex; syncDataRef.current = syncData; }, [activeSyncIndex, syncData]);
 
+  const workspaceLines = useMemo(() => {
+    const lines = [];
+    syncData.forEach((line, i) => {
+      lines.push({ type: 'main', lineIndex: i, ref: line });
+      if (line.isSplit && line.adlibs) {
+        line.adlibs.forEach((adlib, j) => {
+          lines.push({ type: 'adlib', lineIndex: i, adlibIndex: j, ref: adlib, parentRef: line });
+        });
+      }
+    });
+    return lines;
+  }, [syncData]);
+
+  const workspaceLinesRef = useRef(workspaceLines);
+  useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
+
   useEffect(() => {
     if (selectedSong) {
       setIsSyncMode(false);
       setPlaybackRate(1.0);
       setDebugInfo({ source: 'Local Vault / Cache', rawData: null });
+      setConstrainedEnd(null);
+      setLoopRange(null);
     }
   }, [selectedSong]);
 
@@ -64,30 +84,93 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   useEffect(() => {
     if (!isSyncMode) return;
     const handleKeyDown = (e) => {
+      
+      if (e.code === 'Space') {
+        if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+        e.preventDefault();
+        if (syncAudioRef.current) {
+          if (syncAudioRef.current.paused) syncAudioRef.current.play().catch(err => console.log(err));
+          else syncAudioRef.current.pause();
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (syncAudioRef.current) {
+          syncAudioRef.current.currentTime = Math.max(0, syncAudioRef.current.currentTime - 1);
+        }
+        return;
+      }
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (syncAudioRef.current) {
+          syncAudioRef.current.currentTime += 1;
+        }
+        return;
+      }
+
       const currentIdx = activeIdxRef.current;
+      const wLines = workspaceLinesRef.current;
+      if (!wLines[currentIdx]) return;
+      const currentItem = wLines[currentIdx];
       const data = [...syncDataRef.current];
-      const currentLine = data[currentIdx];
+      
+      let itemToMutate;
+      if (currentItem.type === 'main') itemToMutate = data[currentItem.lineIndex];
+      else itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
+
+      const time = syncAudioRef.current?.currentTime || 0;
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (currentLine.start === null) currentLine.start = syncAudioRef.current?.currentTime || 0;
-        else if (currentLine.end === null) {
-          currentLine.end = syncAudioRef.current?.currentTime || 0;
-          if (currentIdx < data.length - 1) setActiveSyncIndex(currentIdx + 1);
-        } else if (currentIdx < data.length - 1) setActiveSyncIndex(currentIdx + 1);
+        if (itemToMutate.start === null) itemToMutate.start = time;
+        else if (itemToMutate.end === null) {
+          let newEnd = time;
+          
+          if (newEnd < itemToMutate.start) newEnd = itemToMutate.start;
+          
+          if (currentItem.type === 'adlib' && currentItem.parentRef.end !== null && newEnd > currentItem.parentRef.end) {
+            newEnd = currentItem.parentRef.end;
+          }
+          
+          itemToMutate.end = newEnd;
+          
+          if (currentItem.type === 'adlib') setLoopRange(null);
+          
+          let nextIdx = currentIdx + 1;
+          while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
+          if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+
+        } else {
+          let nextIdx = currentIdx + 1;
+          while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
+          if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+        }
         setSyncData(data);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (currentLine.end !== null) {
-          currentLine.end = null;
-          if (syncAudioRef.current) syncAudioRef.current.currentTime = currentLine.start;
-        } else if (currentLine.start !== null) {
-          currentLine.start = null;
-          const prevEnd = currentIdx > 0 ? data[currentIdx - 1].end : 0;
-          if (syncAudioRef.current) syncAudioRef.current.currentTime = prevEnd || 0;
-        } else if (currentIdx > 0) {
-          setActiveSyncIndex(currentIdx - 1);
-          if (syncAudioRef.current) syncAudioRef.current.currentTime = data[currentIdx - 1].start || 0;
+        if (itemToMutate.end !== null) {
+          itemToMutate.end = null;
+          if (currentItem.type === 'adlib') {
+            setLoopRange({ start: currentItem.parentRef.start, end: currentItem.parentRef.end });
+          }
+          if (syncAudioRef.current) syncAudioRef.current.currentTime = itemToMutate.start;
+        } else if (itemToMutate.start !== null) {
+          itemToMutate.start = null;
+          let prevIdx = currentIdx - 1;
+          while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
+          const prevItem = prevIdx >= 0 ? wLines[prevIdx].ref : null;
+          if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem?.end || prevItem?.start || 0;
+        } else {
+          let prevIdx = currentIdx - 1;
+          while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
+          if (prevIdx >= 0) {
+            setActiveSyncIndex(prevIdx);
+            const prevItem = wLines[prevIdx].ref;
+            if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem.start || 0;
+          }
         }
         setSyncData(data);
       }
@@ -95,6 +178,74 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSyncMode]);
+
+  const handleSplitAdlibs = async (lineIndex) => {
+    const data = [...syncDataRef.current];
+    const line = data[lineIndex];
+    const lineChars = Array.from(line.text);
+    const adlibs = [];
+    
+    let inAdlib = false;
+    let charStart = 0;
+    let adlibText = '';
+    
+    for (let i = 0; i < lineChars.length; i++) {
+        if (lineChars[i] === '(' && !inAdlib) {
+            inAdlib = true;
+            charStart = i;
+            adlibText = '(';
+        } else if (inAdlib) {
+            adlibText += lineChars[i];
+            if (lineChars[i] === ')') {
+                inAdlib = false;
+                const charEnd = i + 1;
+                
+                const adlibSegments = [];
+                let currentPos = 0;
+                for (const seg of line.segments) {
+                    const segChars = Array.from(seg.text);
+                    const segStart = currentPos;
+                    const segEnd = currentPos + segChars.length;
+                    const overlapStart = Math.max(charStart, segStart);
+                    const overlapEnd = Math.min(charEnd, segEnd);
+                    if (overlapStart < overlapEnd) {
+                        adlibSegments.push({
+                            ...seg,
+                            text: segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('')
+                        });
+                    }
+                    currentPos = segEnd;
+                }
+
+                const pron = await quickTransliterate(adlibText);
+                adlibs.push({
+                  text: adlibText,
+                  charStart,
+                  charEnd,
+                  start: null,
+                  end: null,
+                  segments: adlibSegments,
+                  singer: line.singer,
+                  pronunciation: pron ? JSON.stringify([{ type: 'foreign', text: adlibText, trans: pron }]) : null
+                });
+            }
+        }
+    }
+    
+    if (adlibs.length > 0) {
+      line.isSplit = true;
+      line.adlibs = adlibs;
+      setSyncData(data);
+    }
+  };
+
+  const handleUndoSplit = (lineIndex) => {
+    const data = [...syncDataRef.current];
+    data[lineIndex].isSplit = false;
+    delete data[lineIndex].adlibs;
+    setSyncData(data);
+    setLoopRange(null);
+  };
 
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
@@ -105,7 +256,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     let initialData = [];
 
     if (selectedSong.syncData?.length === parsedLines.length) {
-      initialData = parsedLines.map((line, i) => ({ ...line, pronunciation: selectedSong.syncData[i].pronunciation || null, start: selectedSong.syncData[i].start, end: selectedSong.syncData[i].end }));
+      initialData = parsedLines.map((line, i) => ({ ...line, pronunciation: selectedSong.syncData[i].pronunciation || null, start: selectedSong.syncData[i].start, end: selectedSong.syncData[i].end, isSplit: selectedSong.syncData[i].isSplit || false, adlibs: selectedSong.syncData[i].adlibs || undefined }));
     } else if (selectedSong.syncData?.some(l => l.start !== null)) {
       const salvagedData = mergeSyncWithGenius(selectedSong.syncData, customData.lyrics, selectedSong.artistName, masterPalette);
       initialData = salvagedData.map((line) => ({ ...line, pronunciation: line.pronunciation || null }));
@@ -209,7 +360,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       targetData = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette).map(l => ({...l, start: null, end: null, pronunciation: null}));
     }
 
-    // Always translate everything, passing the full text strings
     const linesToTranslate = targetData.map(l => l.text);
 
     const pronunciations = await getBulkPronunciations(linesToTranslate, (current, total) => {
@@ -239,27 +389,82 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const autoTrackSyncPlayback = (time) => {
-    const isRecording = syncDataRef.current[activeIdxRef.current]?.start !== null && syncDataRef.current[activeIdxRef.current]?.end === null;
-    if (isRecording) return;
-    const newIdx = syncDataRef.current.findIndex((line, i) => {
-      const nextLine = syncDataRef.current[i + 1];
-      if (line.start === null) return false;
-      return time >= line.start && (line.end !== null ? time <= line.end : true) && (nextLine?.start !== null ? time < nextLine.start : true);
-    });
-    if (newIdx !== -1 && newIdx !== activeIdxRef.current) setActiveSyncIndex(newIdx);
+    const wLines = workspaceLinesRef.current;
+    const currentItem = wLines[activeIdxRef.current];
+    if (currentItem?.ref.start !== null && currentItem?.ref.end === null) return; 
+    
+    let newIdx = -1;
+    for (let i = 0; i < wLines.length; i++) {
+      const item = wLines[i];
+      if (item.type !== 'main') continue; 
+      
+      let nextMainItem = null;
+      for (let j = i + 1; j < wLines.length; j++) {
+        if (wLines[j].type === 'main') {
+          nextMainItem = wLines[j];
+          break;
+        }
+      }
+      
+      if (item.ref.start === null) continue;
+      
+      const matches = time >= item.ref.start && 
+             (item.ref.end !== null ? time <= item.ref.end : true) && 
+             (nextMainItem?.ref.start !== null ? time < nextMainItem.ref.start : true);
+             
+      if (matches) {
+        newIdx = i;
+        break;
+      }
+    }
+    
+    if (newIdx !== -1 && newIdx !== activeIdxRef.current) {
+      if (currentItem?.type === 'adlib' && wLines[newIdx].lineIndex === currentItem.lineIndex) {
+        return; 
+      }
+      setActiveSyncIndex(newIdx);
+    }
   };
 
   const handleSyncTimeUpdate = () => {
     const time = syncAudioRef.current?.currentTime || 0;
     setSyncProgress(time);
-    if (isSyncPlaying) autoTrackSyncPlayback(time);
+
+    const wLines = workspaceLinesRef.current;
+    const currentItem = wLines[activeIdxRef.current];
+    
+    if (currentItem?.type === 'adlib' && currentItem.ref.start !== null && currentItem.ref.end === null) {
+      if (currentItem.parentRef.end !== null && time >= currentItem.parentRef.end) {
+         const data = [...syncDataRef.current];
+         const itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
+         itemToMutate.end = currentItem.parentRef.end;
+         setSyncData(data);
+         setLoopRange(null);
+         
+         let nextIdx = activeIdxRef.current + 1;
+         while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
+         if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+      }
+    }
+
+    if (loopRange) {
+      if (time >= loopRange.end && syncAudioRef.current) {
+        syncAudioRef.current.currentTime = loopRange.start;
+      }
+    } else if (constrainedEnd !== null && time >= constrainedEnd) {
+      syncAudioRef.current.pause();
+      setIsSyncPlaying(false);
+      setConstrainedEnd(null);
+    } else if (isSyncPlaying) {
+      autoTrackSyncPlayback(time);
+    }
   };
 
   const handleSyncSeek = (e) => {
     const time = Number(e.target.value);
     if (syncAudioRef.current) syncAudioRef.current.currentTime = time;
     setSyncProgress(time);
-    autoTrackSyncPlayback(time);
+    if (!loopRange) autoTrackSyncPlayback(time);
   };
 
   const handleSpeedChange = (e) => setPlaybackRate(parseFloat(e.target.value));
@@ -268,6 +473,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     isSyncMode, setIsSyncMode, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncProgress, syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, saveSyncData, handleAutoSyncDatabases, handleTranslate, toggleSyncPlay, handleSyncSeek,
-    handleSpeedChange, handleSyncTimeUpdate
+    handleSpeedChange, handleSyncTimeUpdate, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
   };
 };

@@ -1,5 +1,7 @@
 /* --- src/transliterator.js --- */
 
+const translationCache = new Map();
+
 const stripHtmlAndBrackets = (text) => {
   if (!text) return '';
   return text
@@ -27,10 +29,18 @@ const getGooglePronunciation = async (text) => {
   }
 };
 
+export const quickTransliterate = async (text) => {
+  const clean = stripHtmlAndBrackets(text);
+  if (!clean) return null;
+  if (translationCache.has(clean)) return translationCache.get(clean);
+  const res = await getGooglePronunciation(clean);
+  translationCache.set(clean, res);
+  return res;
+};
+
 export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
   
-  // Regex defines English/Roman letters, numbers, punctuation, spaces, and symbols.
   const isRomanChar = (char) => /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
   
   for (let i = 0; i < linesArray.length; i++) {
@@ -47,7 +57,6 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
       continue;
     }
 
-    // 1. Split line into logical chunks
     const chunks = [];
     let currentType = null;
     let currentText = '';
@@ -71,22 +80,25 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
 
     let hasForeign = false;
 
-    // 2. Transliterate ONLY the foreign chunks
     for (let j = 0; j < chunks.length; j++) {
       if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
         hasForeign = true;
-        const trans = await getGooglePronunciation(chunks[j].text.trim());
+        const textKey = chunks[j].text.trim();
+        let trans = translationCache.get(textKey);
+        
+        if (!trans) {
+          trans = await getGooglePronunciation(textKey);
+          translationCache.set(textKey, trans);
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
         chunks[j].trans = trans || null;
-        // Small delay to prevent API rate limiting
-        await new Promise(resolve => setTimeout(resolve, 50));
       }
     }
 
-    // 3. Save as a structured JSON string to map perfectly in the UI
     if (hasForeign) {
       results.push(JSON.stringify(chunks));
     } else {
-      results.push(null); // It's a purely English line, skip transliteration entirely
+      results.push(null);
     }
 
     if (onProgress) onProgress(i + 1, linesArray.length);

@@ -17,7 +17,6 @@
 .singer-watermark { 
   position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
   object-fit: cover; 
-  /* Reinstated buttery smooth fading */
   transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, filter 0.4s ease-in-out; 
   will-change: opacity, transform, filter; 
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
@@ -62,16 +61,10 @@
 .img-manager-preview { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.1); }
 .img-manager-input { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 14px; border-radius: 8px; color: white; font-size: 13px; transition: border-color 0.2s ease; }
 .img-manager-input:focus { outline: none; border-color: var(--accent); }
-
-/* Color Picker Extensions */
 .img-manager-controls { display: flex; align-items: center; gap: 12px; }
 .img-manager-color-picker { -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; padding: 0; background: transparent; overflow: hidden; }
 .img-manager-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
 .img-manager-color-picker::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
-
-/* --- NATIVE RUBY CHUNKED LYRICS ENGINE CSS --- */
-.sync-text-chunks { display: inline; white-space: pre-wrap; }
-ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wrap; }
 
 /* Sync Workspace */
 .sync-mode-container { display: flex; flex-direction: column; height: 100%; gap: 16px; animation: fadeIn 0.3s ease; }
@@ -89,10 +82,54 @@ ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wr
 .sync-line.active { background: rgba(179, 136, 235, 0.2); border-color: var(--accent); transform: scale(1.02); box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2; position: relative; }
 .sync-line.recording .sync-time { color: #fbbf24; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
 .sync-line.synced .sync-time { color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.3); }
-.sync-text { font-size: 14px; line-height: 1.4; color: rgba(255,255,255,0.9); flex: 1; padding-right: 12px; pointer-events: none; }
-.sync-time { font-family: monospace; font-size: 11px; color: rgba(255,255,255,0.3); pointer-events: none; white-space: nowrap; }
 
-/* Speed Control Deck */
+.sync-line.nested-adlib {
+  margin-left: 32px;
+  border-left: 2px solid var(--accent);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.sync-line.nested-adlib.adlib-playing {
+  background: rgba(179, 136, 235, 0.15);
+  border-left: 3px solid var(--accent);
+  box-shadow: inset 4px 0 15px rgba(179, 136, 235, 0.25);
+}
+.sync-line.nested-adlib.adlib-playing .sync-text {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.action-split-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-left: 12px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.action-split-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: black;
+}
+.action-split-btn.undo {
+  background: rgba(250, 36, 60, 0.1);
+  border-color: rgba(250, 36, 60, 0.3);
+  color: #FA243C;
+}
+.action-split-btn.undo:hover {
+  background: #FA243C;
+  border-color: #FA243C;
+  color: white;
+}
+
+.sync-text { font-size: 14px; line-height: 1.4; color: rgba(255,255,255,0.9); pointer-events: none; }
+.sync-time { font-family: monospace; font-size: 11px; color: rgba(255,255,255,0.3); pointer-events: none; white-space: nowrap; flex-shrink: 0; }
+
 .sync-speed-deck { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; margin-bottom: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; }
 .speed-label-container { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
 .speed-label-container strong { color: var(--accent); font-family: monospace; font-size: 14px; }
@@ -114,7 +151,7 @@ ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wr
 .lyrics-textarea::-webkit-scrollbar-thumb { background: rgba(179, 136, 235, 0.3); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: rgba(179, 136, 235, 0.6); }
 
-/* --- Live Lyrics View (Static Sizing Fixes Layout Thrashing) --- */
+/* Live View */
 .live-lyrics-preview { 
   flex-grow: 1; 
   overflow-y: auto; 
@@ -152,7 +189,7 @@ ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wr
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
 }
 
-/* Focused Lyrics View (Fixed Transform Rendering Bug) */
+/* Focused View */
 .focused-lyrics-preview { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 40px; position: relative; }
 .focused-line { 
   position: absolute; 
@@ -182,18 +219,34 @@ ruby.lyric-chunk { ruby-position: under; ruby-align: center; white-space: pre-wr
 }
 .focused-line.active:hover { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
 
-/* Debug Lyrics View */
+/* Focused View Floating Adlibs */
+.floating-adlib {
+  position: absolute;
+  font-size: var(--dyn-focused-sync-font-size, 42px);
+  font-weight: 900;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+  z-index: 10;
+}
+.floating-adlib.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Debug View */
 .debug-lyrics-preview { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 20px; display: flex; flex-direction: column; }
 .debug-lyrics-preview::-webkit-scrollbar { width: 6px; }
 .debug-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 .debug-json { white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: monospace; font-size: 12px; line-height: 1.5; background: rgba(0,0,0,0.5); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 0; }
 
-/* Typography & Visuals */
-.sync-text-wrapper { display: flex; flex-direction: column; flex: 1; padding-right: 12px; pointer-events: none; }
 rt.sync-pronunciation { font-size: 11px; color: inherit; opacity: 0.6; font-style: italic; }
 .primary-text { display: block; }
-
-/* Ruby Text Formatting */
 rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease, text-shadow 0.3s ease; }
 .preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
 .sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
