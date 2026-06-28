@@ -1,6 +1,43 @@
 /* --- src/components/LyricsDisplay.jsx --- */
 import React, { useState, useEffect, useMemo } from 'react';
 
+// Failsafe to identify characters that do not use spaces to break (Chinese/Japanese)
+const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
+
+// Reassembles individual character spans into unbreakable "word" blocks
+const groupWords = (elements, charData) => {
+  const words = [];
+  let currentWord = [];
+  
+  for (let i = 0; i < elements.length; i++) {
+    if (!elements[i]) {
+      if (currentWord.length > 0) {
+        words.push(<span key={`w-${i}`} style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+        currentWord = [];
+      }
+      words.push(elements[i]);
+      continue;
+    }
+    
+    const char = charData[i].char;
+    // Break the group on spaces, tabs, newlines, or Chinese/Japanese characters
+    if (/\s/.test(char) || isCJ(char)) {
+      if (currentWord.length > 0) {
+        words.push(<span key={`w-${i}`} style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+        currentWord = [];
+      }
+      words.push(elements[i]); 
+    } else {
+      currentWord.push(elements[i]);
+    }
+  }
+  
+  if (currentWord.length > 0) {
+    words.push(<span key="w-end" style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+  }
+  return words;
+};
+
 // Pure renderer detached from state for raw performance
 const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, masterPalette) => {
   const pronString = savedNode?.pronunciation;
@@ -36,11 +73,24 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           return null;
       }
 
-      let isCharActive = isActive;
+      let isAdlib = false;
+      let isAdlibActive = false;
+
       if (savedNode?.isSplit && !isFocused) {
           const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
           if (adlib) {
-              isCharActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
+              isAdlib = true;
+              isAdlibActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
+          }
+      }
+
+      let isCharActive = isActive;
+      let isHiddenAdlib = false;
+
+      if (isAdlib) {
+          isCharActive = isAdlibActive;
+          if (isActive && !isAdlibActive) {
+              isHiddenAdlib = true;
           }
       }
 
@@ -69,15 +119,35 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           }
       }
 
-      let style = {};
-      if (isCharActive) {
+      let style = { transition: 'color 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease' };
+
+      if (isHiddenAdlib) {
+          style.opacity = 0;
+          style.transform = 'translateY(8px)';
+          style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
+      } else if (isCharActive) {
+          if (isAdlib) {
+              style.opacity = 1;
+              style.transform = 'translateY(0px)';
+              style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
+          }
           if (isGradient) {
-              style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))` };
+              style.backgroundImage = gradientStyle;
+              style.WebkitBackgroundClip = 'text';
+              style.WebkitTextFillColor = 'transparent';
+              style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))`;
           } else {
-              style = { color: activeColor, textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80` };
+              style.color = activeColor;
+              style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80`;
           }
       } else {
-          style = { color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
+          style.color = 'rgba(255, 255, 255, 0.2)';
+          style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
+          if (isAdlib) {
+              style.opacity = 1;
+              style.transform = 'translateY(0px)';
+              style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
+          }
       }
 
       const isParenthesis = /([()\[\]{}]+)/.test(c.char);
@@ -107,7 +177,11 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
           if (scaleParenthesis) {
               style.display = 'inline-block';
-              style.transform = 'scale(1.2) translateY(10%)';
+              if (isHiddenAdlib) {
+                  style.transform = 'scale(1.2) translateY(8px)';
+              } else {
+                  style.transform = 'scale(1.2) translateY(10%)';
+              }
               style.margin = '0 2px';
           }
       }
@@ -127,26 +201,52 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
           if (renderedText.every(c => c === null)) return null;
 
+          // Apply our word grouping failsafe
+          const groupedText = groupWords(renderedText, chunkChars);
+
           let chunkIsActive = isActive;
+          let isChunkAdlib = false;
+          let isChunkAdlibActive = false;
+
           if (savedNode?.isSplit && !isFocused) {
              const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
              if (adlib) {
-                 chunkIsActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
+                 isChunkAdlib = true;
+                 isChunkAdlibActive = adlib.start !== null && localProgress >= adlib.start && (adlib.end !== null ? localProgress <= adlib.end : true);
              }
           }
 
-          const currentPronStyle = chunkIsActive ? activePronStyle : inactivePronStyle;
+          let isHiddenChunkAdlib = false;
+          if (isChunkAdlib) {
+              chunkIsActive = isChunkAdlibActive;
+              if (isActive && !isChunkAdlibActive) {
+                  isHiddenChunkAdlib = true;
+              }
+          }
+
+          let currentPronStyle = chunkIsActive ? { ...activePronStyle } : { ...inactivePronStyle };
+          
+          if (isHiddenChunkAdlib) {
+              currentPronStyle.opacity = 0;
+              currentPronStyle.transform = 'translateY(8px)';
+              currentPronStyle.display = 'inline-block';
+              currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, color 0.4s ease';
+          } else if (isChunkAdlib) {
+              currentPronStyle.transform = 'translateY(0px)';
+              currentPronStyle.display = 'inline-block';
+              currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, color 0.4s ease';
+          }
 
           if (chunk.type === 'foreign' && chunk.trans) {
               const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
               return (
                   <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
-                      <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
+                      <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
                       <span style={currentPronStyle}>{cleanTrans}</span>
                   </span>
               );
           } else {
-              return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
+              return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span>;
           }
       });
 
@@ -159,13 +259,17 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
       );
   } else {
       const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
+      
+      // Apply our word grouping failsafe
+      const groupedChars = groupWords(renderedChars, chars);
+      
       const blockPronStyle = { ...(isActive ? activePronStyle : inactivePronStyle), marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
       let displayPronString = pronString;
       if (pronString) displayPronString = pronString.replace(/[()\[\]{}]/g, '');
 
       return (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }}>{renderedChars}</span>
+              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{groupedChars}</span>
               {displayPronString && <div style={blockPronStyle}>{displayPronString}</div>}
           </div>
       );
@@ -197,8 +301,6 @@ const LyricLineWrapper = React.memo(({
               className={`focused-line ${isMainActive ? 'active' : ''}`}
               onClick={() => handleLineClick(seekTarget)}
           >
-              {/* CRITICAL FIX: Hardcode 'true' for isActive. CSS opacity handles the hiding, 
-                  preventing the text from flashing white during the fade out. */}
               {renderLine(lineObj, savedNode, true, true, localProgress, masterPalette)}
           </div>
       );
@@ -241,32 +343,27 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
           if (node?.isSplit && node.adlibs) {
               const parentArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
               
-              // Dynamic Boundary Heuristic: Estimate the main line's visual footprint
               const parentLen = node.text ? node.text.length : 20;
-              // Larger strings create a wider dead zone in the center
               const horizontalSpread = Math.min(35, parentLen * 0.8); 
               
-              // Define the absolute safe left/right edges protecting the main text
               const maxLeft = Math.max(10, 50 - horizontalSpread - 5); 
               const minRight = Math.min(90, 50 + horizontalSpread + 5);
 
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
                   
-                  // True randomization every playback
                   const randRot = Math.random();
                   const randX = Math.random();
                   const randY = Math.random();
                   const quadRand = Math.random();
                   
-                  const rot = (randRot * 20) - 10; // -10 to +10 degree chaotic tilt
+                  const rot = (randRot * 20) - 10; 
                   
                   const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
                   const primaryAdlibSinger = adlibNames[0];
 
-                  let quad = Math.floor(quadRand * 4); // Default to random 4-quadrant
+                  let quad = Math.floor(quadRand * 4); 
 
-                  // Override quadrant if artist mapping exists
                   if (parentArtists.length > 1 && primaryAdlibSinger) {
                       const idx = parentArtists.indexOf(primaryAdlibSinger);
                       if (idx !== -1) {
@@ -278,20 +375,18 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       }
                   }
                   
-                  // Apply 4-Quadrant Chaotic Layout WITH Dynamic Safe Zones
                   let top, left;
-                  if (quad === 0) { // Top Left Quadrant
+                  if (quad === 0) { 
                       top = 15 + (randY * 15); 
-                      left = 10 + (randX * (maxLeft - 10)); // Restrict to the left of the dynamic dead zone
-                  } else if (quad === 1) { // Top Right Quadrant
+                      left = 10 + (randX * (maxLeft - 10)); 
+                  } else if (quad === 1) { 
                       top = 15 + (randY * 15); 
-                      left = minRight + (randX * (90 - minRight)); // Restrict to the right of the dynamic dead zone
-                  } else if (quad === 2) { // Bottom Left Quadrant
+                      left = minRight + (randX * (90 - minRight)); 
+                  } else if (quad === 2) { 
                       top = 70 + (randY * 15); 
                       left = 10 + (randX * (maxLeft - 10));
-                  } else { // Bottom Right Quadrant
+                  } else { 
                       top = 65 + (randY * 10); 
-                      // Prevent pushing too far right to avoid hitting the artist corner UI
                       const adjustedMinRight = Math.min(75, minRight);
                       left = adjustedMinRight + (randX * (85 - adjustedMinRight));
                   }
@@ -311,7 +406,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   if (adlib.start === null) return;
                   const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
                   
-                  // Mount slightly before and unmount slightly after to allow CSS transitions to execute properly
                   const isNear = time >= (adlib.start - 0.5) && time <= (endTime + 0.5);
                   const isActive = time >= adlib.start && time <= endTime;
                   
