@@ -1,36 +1,64 @@
 /* --- src/components/SongModal.css --- */
 .modal-backdrop {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;
-  display: flex; align-items: flex-start; justify-content: center;
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  z-index: 9999;
+  display: flex; 
+  align-items: flex-start; 
+  justify-content: center;
   padding: 0; 
-  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(12px);
 }
 
 .modal-window {
-  width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; 
+  width: 100vw; 
+  height: 100vh; 
+  max-width: 100vw; 
+  max-height: 100vh; 
   border-radius: 0; 
-  position: relative; overflow: hidden; display: flex;
-  flex-direction: column; animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative; 
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column; 
+  animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal-dynamic-bg {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
   filter: brightness(0.2) saturate(120%); 
-  transition: opacity 0.8s ease-in-out; z-index: 0; pointer-events: none;
+  transition: opacity 0.8s ease-in-out; 
+  z-index: 0; 
+  pointer-events: none;
 }
 
 .modal-content-wrapper {
-  position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; 
+  position: relative; 
+  z-index: 1; 
+  width: 100%; 
+  height: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden; 
   background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));
 }
 
-@keyframes modalPop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes modalPop { 
+  0% { transform: scale(0.9); opacity: 0; } 
+  100% { transform: scale(1); opacity: 1; } 
+}
 
+/* Completely hidden to prevent any overlapping issues */
 .close-btn {
-  position: absolute; 
-  top: max(24px, var(--dyn-modal-padding-y, 5vh)); 
-  right: 32px; color: white; width: 40px; height: 40px;
-  border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 16px;
+  display: none !important; 
 }
 
 /* Modal vertical padding controlled by settings */

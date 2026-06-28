@@ -4,7 +4,7 @@ import { formatTime, formatDate, parseTrackName } from '../utils/songHelpers';
 import './ModalLeft.css';
 
 const ModalLeft = ({
-  selectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
+  selectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
   handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
@@ -13,6 +13,17 @@ const ModalLeft = ({
 }) => {
   
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
+
+  // Bulletproof close function that works even if props aren't passed down properly
+  const handleCloseModal = () => {
+    if (setSelectedSong) {
+      setSelectedSong(null);
+    } else {
+      // Failsafe: Triggers the hidden original close button from SongModal.jsx
+      const hiddenCloseBtn = document.querySelector('.close-btn');
+      if (hiddenCloseBtn) hiddenCloseBtn.click();
+    }
+  };
 
   return (
     <div className="modal-left-col">
@@ -147,6 +158,7 @@ const ModalLeft = ({
         </div>
 
         <div className="bottom-actions">
+          {/* Vault actions safely isolated to the far left */}
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
               <span>🗑</span> Remove from Vault
@@ -154,9 +166,14 @@ const ModalLeft = ({
           ) : (
             <button className="edit-links-btn save-mode" onClick={(e) => {
               toggleLibrary(e, selectedSong);
-              handleAutoSyncDatabases(true); // Automatically fetch from database after adding
+              handleAutoSyncDatabases(true); 
             }}>+ Add to Vault</button>
           )}
+
+          {/* Dashboard return safely isolated to the far right */}
+          <button className="return-dashboard-btn" onClick={handleCloseModal}>
+            Return to Dashboard ➔
+          </button>
         </div>
       </div>
     </div>
