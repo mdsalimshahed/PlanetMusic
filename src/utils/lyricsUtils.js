@@ -8,7 +8,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   
-  let activeCounts = {}; 
+  let activeTags = []; 
 
   const normalizeMarker = (m) => m.split('').sort().join('');
 
@@ -18,7 +18,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
-      activeCounts = {}; 
+      activeTags = []; // Reset active tags on new section
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -82,41 +82,44 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     const parts = cleanHtmlLine.split(regex);
     let currentText = '';
 
-    const applyMarkerChunk = (chunk) => {
-        const chunkCounts = {};
-        for (let char of chunk) {
-            chunkCounts[char] = (chunkCounts[char] || 0) + 1;
-        }
+    const applyMarkerChunk = (chunk, prevText, nextText) => {
+        const prevChar = prevText.slice(-1);
+        const nextChar = nextText.charAt(0);
+        
+        const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
+        const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
 
-        for (let char in chunkCounts) {
-            const act = activeCounts[char] || 0;
-            const chk = chunkCounts[char];
-
-            if (act >= chk) {
-                activeCounts[char] = act - chk; 
+        if (isOpeningBoundary && !isClosingBoundary) {
+            activeTags.push(chunk);
+        } else if (isClosingBoundary && !isOpeningBoundary) {
+            const idx = activeTags.lastIndexOf(chunk);
+            if (idx > -1) activeTags.splice(idx, 1);
+        } else {
+            // Toggle fallback for ambiguous boundaries
+            const idx = activeTags.lastIndexOf(chunk);
+            if (idx > -1) {
+                activeTags.splice(idx, 1);
             } else {
-                activeCounts[char] = act + chk; 
+                activeTags.push(chunk);
             }
         }
     };
 
     const getActiveMarkerString = () => {
-        let str = '';
-        const chars = Object.keys(activeCounts).sort();
-        for (let char of chars) {
-            str += char.repeat(activeCounts[char]);
-        }
-        return str; 
+        const uniqueTags = [...new Set(activeTags)];
+        return normalizeMarker(uniqueTags.join('')); 
     };
 
-    parts.forEach(part => {
-        if (/^[_*~]+$/.test(part)) {
+    parts.forEach((part, index) => {
+        if (index % 2 === 1) { // It's a marker
             if (currentText) {
                 lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
                 currentText = '';
             }
-            applyMarkerChunk(part);
-        } else if (part) {
+            const prevText = parts[index - 1] || '';
+            const nextText = parts[index + 1] || '';
+            applyMarkerChunk(part, prevText, nextText);
+        } else if (part) { // It's text
             currentText += part;
         }
     });
@@ -281,7 +284,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
                         ...seg,
                         text: overlapText
                     });
-                    // ONLY adopt artists from segments containing letters/numbers (ignores bare parentheses)
                     const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]*$/;
                     if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                         if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
