@@ -228,30 +228,37 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, []);
 
-  const activeAdlibs = [];
+  const visibleAdlibs = [];
   if (syncData) {
       syncData.forEach(node => {
           if (node?.isSplit && node.adlibs) {
-              node.adlibs.forEach(adlib => {
-                  if (adlib.start !== null && time >= adlib.start && (adlib.end !== null ? time <= adlib.end : true)) {
-                      activeAdlibs.push(adlib);
+              node.adlibs.forEach((adlib, j) => {
+                  if (adlib.start === null) return;
+                  const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
+                  
+                  // Mount slightly before and unmount slightly after to allow CSS transitions to execute properly!
+                  const isNear = time >= (adlib.start - 0.5) && time <= (endTime + 0.5);
+                  const isActive = time >= adlib.start && time <= endTime;
+                  
+                  if (isNear) {
+                      visibleAdlibs.push({ adlib, isActive, key: `adlib-${adlib.start}-${j}` });
                   }
               });
           }
       });
   }
 
-  if (activeAdlibs.length === 0) return null;
+  if (visibleAdlibs.length === 0) return null;
 
   return (
       <div className="focused-adlibs-container">
-          {activeAdlibs.map((adlib, j) => (
+          {visibleAdlibs.map(({ adlib, isActive, key }) => (
               <div 
-                  key={`adlib-${adlib.start}-${j}`} 
-                  className="focused-adlib-line active"
+                  key={key} 
+                  className={`focused-adlib-line ${isActive ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
               >
-                  {renderLine(adlib, adlib, true, true, time, masterPalette)}
+                  {renderLine(adlib, adlib, isActive, true, time, masterPalette)}
               </div>
           ))}
       </div>
