@@ -10,13 +10,16 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-const Player = ({ currentTrack, setCurrentTrack }) => {
+const Player = ({ currentTrack, setCurrentTrack, setSelectedSong }) => {
   const audioRef = useRef(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState('');
+  
+  // Clean neutral white fallback
+  const [accentColor, setAccentColor] = useState('#ffffff'); 
   
   const [pendingSeek, setPendingSeek] = useState(null);
   
@@ -28,6 +31,54 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   const emitPlayState = (playing, ended = false) => {
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
+
+  // --- Dynamic Color Extraction ---
+  useEffect(() => {
+    if (!currentTrack || !currentTrack.artworkUrl100) return;
+
+    const img = new Image();
+    img.crossOrigin = "Anonymous"; 
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let r = 0, g = 0, b = 0, count = 0;
+        
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
+            r += data[i];
+            g += data[i+1];
+            b += data[i+2];
+            count++;
+          }
+        }
+        
+        if (count > 0) {
+          r = Math.floor(r / count);
+          g = Math.floor(g / count);
+          b = Math.floor(b / count);
+          
+          const boost = 30; 
+          r = Math.min(255, r + boost);
+          g = Math.min(255, g + boost);
+          b = Math.min(255, b + boost);
+
+          setAccentColor(`rgb(${r}, ${g}, ${b})`);
+        }
+      } catch (e) {
+        console.warn("Could not extract album color due to CORS limitations. Falling back to white.");
+        setAccentColor('#ffffff'); 
+      }
+    };
+    img.onerror = () => setAccentColor('#ffffff');
+    img.src = currentTrack.artworkUrl100;
+  }, [currentTrack?.artworkUrl100]);
+
 
   useEffect(() => {
     if (!currentTrack) {
@@ -94,13 +145,19 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
     }
   }, [volume]);
 
-  const togglePlay = () => {
+  const togglePlay = (e) => {
+    if (e) e.stopPropagation();
     if (!audioRef.current) return;
     if (isPlaying) audioRef.current.pause();
     else audioRef.current.play();
   };
 
-  // --- Universal Keyboard Shortcuts ---
+  const openModal = () => {
+    if (currentTrack && setSelectedSong) {
+      setSelectedSong(currentTrack);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement?.tagName?.toLowerCase();
@@ -164,6 +221,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   };
 
   const handleSeek = (e) => {
+    e.stopPropagation();
     const time = Number(e.target.value);
     if (audioRef.current) {
       audioRef.current.currentTime = time;
@@ -175,12 +233,14 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   };
 
   const handleVolumeChange = (e) => {
+    e.stopPropagation();
     const vol = Number(e.target.value);
     setVolume(vol);
     localStorage.setItem('playerVolume', vol);
   };
 
-  const closePlayer = () => {
+  const closePlayer = (e) => {
+    e.stopPropagation();
     setCurrentTrack(null);
     setIsPlaying(false);
     emitPlayState(false, true);
@@ -189,7 +249,11 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
   if (!currentTrack) return null;
 
   return (
-    <div className="global-player glass-panel-heavy">
+    <div 
+      className="global-player glass-panel-heavy" 
+      onClick={openModal}
+      style={{ '--player-accent': accentColor, cursor: 'pointer' }}
+    >
       <audio 
         ref={audioRef}
         src={audioSrc} 
@@ -217,11 +281,11 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
           </div>
         </div>
 
-        <div className="player-right-controls">
+        <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
             <div className="volume-slider-wrapper">
-              <div className="volume-tooltip">{Math.round(volume * 100)}%</div>
+              <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>{Math.round(volume * 100)}%</div>
               <input 
                 type="range" 
                 className="custom-slider volume-slider" 
@@ -236,7 +300,7 @@ const Player = ({ currentTrack, setCurrentTrack }) => {
         </div>
       </div>
       
-      <div className="player-bottom-row">
+      <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text">{formatTime(progress)}</span>
         <input 
           type="range" 

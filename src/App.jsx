@@ -347,7 +347,11 @@ const App = () => {
         settings={settings}
       />
 
-      <Player currentTrack={currentTrack} setCurrentTrack={setCurrentTrack} />
+      <Player 
+        currentTrack={currentTrack} 
+        setCurrentTrack={setCurrentTrack} 
+        setSelectedSong={setSelectedSong} 
+      />
 
       {/* Confirmation Dialog Overlay */}
       {songToRemove && (

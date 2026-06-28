@@ -2,21 +2,26 @@
 .global-player {
   position: fixed;
   bottom: 24px;
-  /* Bind left offset to the modal's left padding */
   left: 60px;
-  /* Dynamically calculate width to match the exact size of the left column */
   width: calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100));
   min-width: 350px; 
-  height: 96px; /* Slightly taller to gracefully accommodate the two-row layout */
+  height: 96px; 
   padding: 10px 24px;
-  border-radius: 24px; /* More modern, pill-like rounded rectangle instead of pure oval */
+  border-radius: 24px; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 4px;
   z-index: 10000;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+  
+  border: 1px solid color-mix(in srgb, var(--player-accent, rgba(255,255,255,0.1)) 20%, transparent);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 10px 30px color-mix(in srgb, var(--player-accent, transparent) 10%, transparent);
   animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.global-player:hover {
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 25px color-mix(in srgb, var(--player-accent, transparent) 25%, transparent);
 }
 
 @keyframes slideUpPlayer {
@@ -24,13 +29,17 @@
   to { bottom: 24px; opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* --- Row Structural Layout --- */
 .player-top-row {
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
   min-height: 0;
+  pointer-events: none; 
+}
+
+.player-top-row > * {
+  pointer-events: auto;
 }
 
 .player-bottom-row {
@@ -40,25 +49,30 @@
   gap: 12px;
 }
 
-/* --- Left: Info & Interactive Art --- */
 .player-info {
   display: flex;
   align-items: center;
   gap: 14px;
   flex: 1;
   min-width: 0; 
-  max-width: calc(100% - 100px); /* Prevents exceptionally long names from breaking layout */
+  max-width: calc(100% - 100px); 
 }
 
 .album-art-container {
   position: relative;
-  width: 44px; /* Scaled down slightly to fit the top row */
+  width: 44px; 
   height: 44px;
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 10px color-mix(in srgb, var(--player-accent, transparent) 40%, transparent);
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.album-art-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 15px color-mix(in srgb, var(--player-accent, transparent) 60%, transparent);
 }
 
 .album-art {
@@ -105,6 +119,7 @@
 .player-text h4 {
   font-size: 15px; 
   font-weight: 700;
+  color: white;
   margin-bottom: 0px;
   white-space: nowrap; 
   overflow: hidden; 
@@ -119,7 +134,6 @@
   text-overflow: ellipsis; 
 }
 
-/* --- Right: Small Volume & Close --- */
 .player-right-controls {
   display: flex;
   align-items: center;
@@ -128,7 +142,6 @@
   flex-shrink: 0; 
 }
 
-/* --- Vertical Volume Hover Control --- */
 .volume-container {
   position: relative;
   display: flex;
@@ -146,10 +159,9 @@
 }
 
 .volume-container:hover .volume-icon {
-  color: white;
+  color: var(--player-accent, white) !important;
 }
 
-/* The popup box containing the rotated slider */
 .volume-slider-wrapper {
   position: absolute;
   bottom: calc(100% + 8px);
@@ -177,13 +189,11 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Tooltip for displaying current volume percentage */
 .volume-tooltip {
   position: absolute;
   top: -28px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent);
   color: black;
   padding: 4px 8px;
   border-radius: 6px;
@@ -191,17 +201,15 @@
   font-weight: 700;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, background-color 0.4s ease;
   white-space: nowrap;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Show tooltip when hovering over the wrapper */
 .volume-slider-wrapper:hover .volume-tooltip {
   opacity: 1;
 }
 
-/* Invisible bridge so mouse hover doesn't break when moving up */
 .volume-container::before {
   content: '';
   position: absolute;
@@ -229,7 +237,7 @@
 }
 
 .close-player:hover {
-  background: var(--accent);
+  background: var(--player-accent, white) !important;
   color: black;
   transform: scale(1.1);
 }
@@ -245,21 +253,26 @@
   flex-shrink: 0; 
 }
 
+/* The actual input holding the drag event */
 .custom-slider {
   -webkit-appearance: none;
   appearance: none;
-  background: transparent; 
-  height: 24px; /* MASSIVE invisible hitbox */
+  background-color: transparent !important; /* CRITICAL: Must be color, not shorthand, to preserve image */
+  height: 32px; /* Massive 32px invisible hitbox */
   
-  /* Draws the 4px track strictly in the vertical center */
-  background-image: linear-gradient(white, white), linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
-  background-size: var(--progress, 0%) 4px, 100% 4px;
-  background-position: left center, left center;
-  background-repeat: no-repeat;
+  /* Draws the 4px track strictly in the vertical center of the input */
+  background-image: 
+    linear-gradient(var(--player-accent, white), var(--player-accent, white)), 
+    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+  background-size: var(--progress, 0%) 4px, 100% 4px !important;
+  background-position: left center, left center !important;
+  background-repeat: no-repeat !important;
   
   cursor: pointer;
   border-radius: 2px;
   margin: 0;
+  outline: none;
+  transition: background-image 0.4s ease;
 }
 
 .progress-slider {
@@ -267,7 +280,6 @@
   width: 100%; 
 }
 
-/* Rotated CSS setup explicitly for volume */
 .volume-slider {
   width: 100px; 
   min-width: 100px; 
@@ -278,39 +290,35 @@
   padding: 0;
 }
 
+/* CRITICAL: The internal track must also be 32px tall 
+   otherwise webkit browsers refuse to expand the drag zone 
+*/
 .custom-slider::-webkit-slider-runnable-track {
   -webkit-appearance: none;
   box-shadow: none;
   border: none;
-  background: transparent;
-  height: 24px;
+  background: transparent; 
+  height: 32px; 
+  cursor: pointer;
 }
 
-/* Perfect mathematical centering logic replacing translateY */
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 12px;
-  width: 12px;
+  height: 14px;
+  width: 14px;
   border-radius: 50%;
   background: white;
   
-  /* (24px Track Height - 12px Thumb Height) / 2 = 6px Top Margin */
-  margin-top: 6px; 
+  /* (32px Track - 14px Thumb) / 2 = 9px Top Margin to mathematically perfectly center the dot */
+  margin-top: 9px; 
   
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  transition: transform 0.1s ease;
-}
-
-/* Volume-specific thumb override */
-.volume-slider::-webkit-slider-thumb {
-  width: 14px; 
-  height: 14px;
-  /* (24px Track Height - 14px Thumb Height) / 2 = 5px Top Margin */
-  margin-top: 5px; 
+  transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
 .custom-slider:hover::-webkit-slider-thumb {
-  transform: scale(1.2); /* translateY removed entirely to prevent offset bugs */
-  background: var(--accent);
+  transform: scale(1.2); 
+  background: var(--player-accent, white) !important;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--player-accent, transparent) 80%, transparent) !important;
 }
