@@ -60,7 +60,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [customData.lyrics, customData.artistColors, selectedSong]);
 
   const cycleViewMode = () => setLyricsViewMode(prev => 
-    prev === 'live' ? 'focused' : prev === 'focused' ? 'karaoke' : prev === 'karaoke' ? 'debug' : prev === 'debug' ? 'plain' : 'live'
+    prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   );
 
   const handleLineClick = (startTime) => {
@@ -97,7 +97,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }
 
   useEffect(() => {
-    if (!isSyncMode && !isEditing && !isImageManagerOpen && ['live', 'focused', 'karaoke'].includes(lyricsViewMode) && activePreviewRef.current) {
+    if (!isSyncMode && !isEditing && !isImageManagerOpen && ['live', 'focused'].includes(lyricsViewMode) && activePreviewRef.current) {
       const container = activePreviewRef.current.parentElement;
       const offsetTop = activePreviewRef.current.offsetTop;
       

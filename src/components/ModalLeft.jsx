@@ -131,9 +131,7 @@ const ModalLeft = ({
                     {hasValidSyncData && !isSyncLoading && (
                       <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
                         {lyricsViewMode === 'live' ? '🎯 Show Focused Sync' : 
-                         lyricsViewMode === 'focused' ? '🎤 Show Karaoke Sync' : 
-                         lyricsViewMode === 'karaoke' ? '🐛 Show Debug View' : 
-                         lyricsViewMode === 'debug' ? '📄 Show Plain Text' : '✨ Show Live Sync'}
+                         lyricsViewMode === 'focused' ? '📄 Show Plain Text' : '✨ Show Live Sync'}
                       </button>
                     )}
                   </>

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, masterPalette, allPotentialSingers }) => {
   const [pos, setPos] = useState({ top: '20%', left: '50%' });
   
-  // Stringify the array so the useEffect dependency stays stable across re-renders
   const singersStr = allPotentialSingers.join('|');
 
   useEffect(() => {
@@ -35,7 +34,6 @@ const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, mast
       const left = Math.floor(Math.random() * (leftMax - leftMin) + leftMin);
       setPos({ top: `${top}%`, left: `${left}%` });
     }
-    // Only depend on strings/booleans to prevent rapid recalculations (flickering)
   }, [isAdlibActive, adlib.singer, singersStr]);
 
   return (
@@ -48,7 +46,7 @@ const FloatingAdlib = ({ adlib, isAdlibActive, handleLineClick, renderLine, mast
       }}
       onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
     >
-      {renderLine(adlib, adlib, isAdlibActive, true, false)}
+      {renderLine(adlib, adlib, isAdlibActive, true)}
     </div>
   );
 };
@@ -57,7 +55,7 @@ const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
   lyricsViewMode, liveParsedLyrics, activePreviewIndex,
   activePreviewRef, handleLineClick, selectedSong, globalProgress,
-  debugInfo, masterPalette, allPotentialSingers
+  masterPalette, allPotentialSingers
 }) => {
 
   const handlePaste = (e) => {
@@ -103,10 +101,22 @@ const LyricsDisplay = ({
   const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
   const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.2)', textShadow: 'none', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.1s ease', textAlign: 'center', marginTop: '4px' };
 
-  const renderLine = (lineObj, savedNode, isActive, isFocused = false, isKaraoke = false) => {
+  const activeAdlibs = [];
+  if (hasValidSyncData && lyricsViewMode === 'focused') {
+      selectedSong.syncData.forEach(node => {
+          if (node?.isSplit && node.adlibs) {
+              node.adlibs.forEach(adlib => {
+                  if (adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true)) {
+                      activeAdlibs.push(adlib);
+                  }
+              });
+          }
+      });
+  }
+
+  const renderLine = (lineObj, savedNode, isActive, isFocused = false) => {
     const pronString = savedNode?.pronunciation;
     const segments = lineObj.segments || [];
-    const wordSync = savedNode?.wordSync;
 
     let parsedChunks = null;
     if (typeof pronString === 'string') {
@@ -128,27 +138,6 @@ const LyricsDisplay = ({
         });
     });
 
-    if (isKaraoke && wordSync && wordSync.length > 0) {
-        let charOffset = 0;
-        let lastStartTime = wordSync.length > 0 ? wordSync[0].start : 0;
-        
-        wordSync.forEach(wordObj => {
-            const wordChars = Array.from(wordObj.text);
-            for (let i = 0; i < wordChars.length; i++) {
-                if (chars[charOffset]) {
-                    chars[charOffset].startTime = wordObj.start;
-                    lastStartTime = wordObj.start;
-                }
-                charOffset++;
-            }
-        });
-        
-        while (charOffset < chars.length) {
-            if (chars[charOffset]) chars[charOffset].startTime = lastStartTime;
-            charOffset++;
-        }
-    }
-
     const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
 
     const renderColoredChar = (c, cIdx) => {
@@ -157,19 +146,16 @@ const LyricsDisplay = ({
         }
 
         let isCharActive = isActive;
-        if (savedNode?.isSplit && !isKaraoke && !isFocused) {
+        if (savedNode?.isSplit && !isFocused) {
             const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
             if (adlib) {
                 isCharActive = adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true);
             } else {
                 isCharActive = savedNode.start !== null && globalProgress >= savedNode.start && (savedNode.end !== null ? globalProgress <= savedNode.end : true);
             }
-        } else if (isKaraoke) {
-            isCharActive = (c.startTime !== undefined ? globalProgress >= c.startTime : isActive);
         }
 
         const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
-        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
         
         let activeColor = isPunct ? '#fbbf24' : '#ffffff';
         let isGradient = false;
@@ -202,11 +188,11 @@ const LyricsDisplay = ({
             style = { color: 'rgba(255, 255, 255, 0.2)', transition: 'color 0.1s ease, text-shadow 0.1s ease' };
         }
 
+        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
         if (isParenthesis && hasTransliteration) {
             let scaleParenthesis = false;
             const char = c.char;
             
-            // Only scale parentheses if they encompass or neighbor actual foreign text
             if (char === '(' || char === '[' || char === '{') {
                 const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
                 for (let i = cIdx + 1; i < chars.length; i++) {
@@ -252,16 +238,13 @@ const LyricsDisplay = ({
             if (renderedText.every(c => c === null)) return null;
 
             let chunkIsActive = isActive;
-            if (savedNode?.isSplit && !isKaraoke && !isFocused) {
+            if (savedNode?.isSplit && !isFocused) {
                const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
                if (adlib) {
                    chunkIsActive = adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true);
                } else {
                    chunkIsActive = savedNode.start !== null && globalProgress >= savedNode.start && (savedNode.end !== null ? globalProgress <= savedNode.end : true);
                }
-            } else if (isKaraoke) {
-               const c = chars[firstCharIdx];
-               chunkIsActive = c && c.startTime !== undefined ? globalProgress >= c.startTime : isActive;
             }
 
             const currentPronStyle = chunkIsActive ? activePronStyle : inactivePronStyle;
@@ -304,20 +287,6 @@ const LyricsDisplay = ({
     }
   };
 
-  // Calculate adlibs currently active for deterministic rendering
-  const activeAdlibs = [];
-  if (hasValidSyncData && lyricsViewMode === 'focused') {
-      selectedSong.syncData.forEach(node => {
-          if (node?.isSplit && node.adlibs) {
-              node.adlibs.forEach(adlib => {
-                  if (adlib.start !== null && globalProgress >= adlib.start && (adlib.end !== null ? globalProgress <= adlib.end : true)) {
-                      activeAdlibs.push(adlib);
-                  }
-              });
-          }
-      });
-  }
-
   return (
     <>
       {isEditing ? (
@@ -329,36 +298,6 @@ const LyricsDisplay = ({
           className="lyrics-textarea"
           placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!" 
         />
-      ) : hasValidSyncData && lyricsViewMode === 'debug' ? (
-        <div className="debug-lyrics-preview">
-          <h3 style={{ color: 'white', marginBottom: '8px' }}>
-            SOURCE: <span style={{ color: '#fbbf24' }}>{debugInfo.source}</span>
-          </h3>
-          <h4 style={{ color: '#b388eb', marginTop: '16px', marginBottom: '8px' }}>RAW API DATA:</h4>
-          <pre className="debug-json" style={{ color: '#9ca3af' }}>{JSON.stringify(debugInfo.rawData, null, 2)}</pre>
-          <h4 style={{ color: '#b388eb', marginTop: '24px', marginBottom: '8px' }}>PARSED SYNCDATA OUTPUT:</h4>
-          <pre className="debug-json" style={{ color: '#4ade80' }}>{JSON.stringify(selectedSong.syncData, null, 2)}</pre>
-        </div>
-      ) : hasValidSyncData && lyricsViewMode === 'karaoke' ? (
-        <div className="live-lyrics-preview">
-          {liveParsedLyrics.map((line, i) => {
-            const isActive = i === activePreviewIndex;
-            const savedNode = selectedSong.syncData[i];
-            const seekTarget = savedNode ? savedNode.start : null;
-
-            return (
-              <div 
-                key={i} 
-                ref={isActive ? activePreviewRef : null}
-                className={`preview-line ${isActive ? 'active' : ''}`}
-                onClick={() => handleLineClick(seekTarget)}
-                style={{ cursor: seekTarget !== null ? 'pointer' : 'default' }}
-              >
-                {renderLine(line, savedNode, isActive, false, true)}
-              </div>
-            );
-          })}
-        </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div className="live-lyrics-preview">
           {liveParsedLyrics.map((line, i) => {
@@ -376,7 +315,7 @@ const LyricsDisplay = ({
                 onClick={() => handleLineClick(seekTarget)}
                 style={{ cursor: seekTarget !== null ? 'pointer' : 'default' }}
               >
-                {renderLine(line, savedNode, isLineVisuallyActive, false, false)}
+                {renderLine(line, savedNode, isLineVisuallyActive, false)}
               </div>
             );
           })}
@@ -395,7 +334,7 @@ const LyricsDisplay = ({
                 className={`focused-line ${isActive ? 'active' : ''}`}
                 onClick={() => handleLineClick(seekTarget)}
               >
-                {renderLine(line, savedNode, isActive, true, false)}
+                {renderLine(line, savedNode, isActive, true)}
               </div>
             );
           })}
@@ -407,7 +346,7 @@ const LyricsDisplay = ({
                 className="focused-adlib-line active"
                 onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
               >
-                {renderLine(adlib, adlib, true, true, false)}
+                {renderLine(adlib, adlib, true, true)}
               </div>
             ))}
           </div>
