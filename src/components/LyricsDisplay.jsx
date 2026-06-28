@@ -177,7 +177,6 @@ const LyricLineWrapper = React.memo(({
   const [localProgress, setLocalProgress] = useState(0);
 
   useEffect(() => {
-      // Only attach rapid time listeners to lines that actually have ad-libs needing live tracking
       const needsUpdates = (viewMode === 'live' && savedNode?.isSplit);
       if (!needsUpdates) return;
       
@@ -228,6 +227,12 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, []);
 
+  // Pseudo-random generator to create a stable random rotation/placement for each specific adlib
+  const getSeededRandom = (seed) => {
+      const x = Math.sin(seed * 12.9898) * 43758.5453;
+      return x - Math.floor(x);
+  };
+
   const visibleAdlibs = [];
   if (syncData) {
       syncData.forEach(node => {
@@ -241,7 +246,35 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   const isActive = time >= adlib.start && time <= endTime;
                   
                   if (isNear) {
-                      visibleAdlibs.push({ adlib, isActive, key: `adlib-${adlib.start}-${j}` });
+                      const seed1 = getSeededRandom(adlib.start + j);
+                      const seed2 = getSeededRandom(adlib.start + j + 1);
+                      const seed3 = getSeededRandom(adlib.start + j + 2);
+                      
+                      // Increased rotation: between -10deg and +10deg
+                      const rot = (seed1 * 20) - 10;
+                      
+                      // Quadrant system to avoid middle lyrics and artist name at bottom right
+                      const quad = Math.floor(seed2 * 4);
+                      let top, left;
+                      
+                      if (quad === 0) { // Top Left
+                          top = 20 + (seed3 * 10); // 20% to 30%
+                          left = 25 + (seed1 * 15); // 25% to 40%
+                      } else if (quad === 1) { // Top Right
+                          top = 20 + (seed3 * 10); // 20% to 30%
+                          left = 60 + (seed1 * 15); // 60% to 75%
+                      } else if (quad === 2) { // Bottom Left
+                          top = 70 + (seed3 * 10); // 70% to 80%
+                          left = 25 + (seed1 * 15); // 25% to 40%
+                      } else { // Bottom Right (Constrained to avoid artist corner)
+                          top = 65 + (seed3 * 10); // 65% to 75%
+                          left = 55 + (seed1 * 15); // 55% to 70%
+                      }
+
+                      visibleAdlibs.push({ 
+                        adlib, isActive, rot, top, left, 
+                        key: `adlib-${adlib.start}-${j}` 
+                      });
                   }
               });
           }
@@ -252,10 +285,15 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
 
   return (
       <div className="focused-adlibs-container">
-          {visibleAdlibs.map(({ adlib, isActive, key }) => (
+          {visibleAdlibs.map(({ adlib, isActive, rot, top, left, key }) => (
               <div 
                   key={key} 
                   className={`focused-adlib-line ${isActive ? 'active' : ''}`}
+                  style={{ 
+                      '--adlib-rot': `${rot}deg`,
+                      '--adlib-top': `${top}%`,
+                      '--adlib-left': `${left}%`
+                  }}
                   onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
               >
                   {renderLine(adlib, adlib, isActive, true, time, masterPalette)}
