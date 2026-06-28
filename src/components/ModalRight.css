@@ -17,6 +17,7 @@
 .singer-watermark { 
   position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
   object-fit: cover; 
+  object-position: 50% 10%; /* Forces the crop to pin to the top, keeping faces visible */
   transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, filter 0.4s ease-in-out; 
   will-change: opacity, transform, filter; 
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);

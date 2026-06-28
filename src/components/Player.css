@@ -2,40 +2,41 @@
 .global-player {
   position: fixed;
   bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 95%;
-  max-width: 900px;
+  /* Bind left offset to the modal's left padding */
+  left: 60px;
+  /* Dynamically calculate width to match the exact size of the left column */
+  width: calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100));
+  min-width: 350px; /* Safety fallback so it doesn't crush into nothingness */
   height: 80px;
-  padding: 0 24px;
+  padding: 0 20px;
   border-radius: 500px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   z-index: 10000;
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1);
   animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes slideUpPlayer {
-  from { bottom: -100px; opacity: 0; transform: translate(-50%, 20px) scale(0.9); }
-  to { bottom: 24px; opacity: 1; transform: translate(-50%, 0) scale(1); }
+  from { bottom: -100px; opacity: 0; transform: translateY(20px) scale(0.9); }
+  to { bottom: 24px; opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* --- Left: Info & Interactive Art --- */
 .player-info {
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex: 1;
-  min-width: 200px;
+  gap: 12px;
+  flex: 1.2;
+  min-width: 0; /* Crucial: Allows the text to truncate instead of pushing out the seek bar */
 }
 
 .album-art-container {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
@@ -84,7 +85,7 @@
 }
 
 .player-text h4 {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   margin-bottom: 2px;
   white-space: nowrap;
@@ -93,7 +94,7 @@
 }
 
 .player-text p {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-subdued);
   white-space: nowrap;
   overflow: hidden;
@@ -106,12 +107,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 120px; /* Ensure it maintains a minimum presence */
 }
 
 .player-progress-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   max-width: 500px;
 }
@@ -123,20 +125,20 @@
   min-width: 35px;
   text-align: center;
   font-variant-numeric: tabular-nums; 
+  flex-shrink: 0; /* Prevents the time text from shrinking */
 }
 
 /* --- Right: Small Volume & Close --- */
 .player-right-controls {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  min-width: 180px;
+  flex-shrink: 0; /* Ensures the close/volume buttons don't get squished */
 }
 
 .volume-icon {
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text-subdued);
   margin-right: -4px;
 }
@@ -145,17 +147,17 @@
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   transition: all 0.2s;
   flex-shrink: 0;
-  margin-left: 12px;
+  margin-left: 8px;
 }
 
 .close-player:hover {
@@ -164,7 +166,7 @@
   transform: scale(1.1);
 }
 
-/* --- Universal Custom Sliders (Now with filled progression) --- */
+/* --- Universal Custom Sliders --- */
 .custom-slider {
   -webkit-appearance: none;
   background: rgba(255, 255, 255, 0.2);
@@ -178,10 +180,11 @@
 
 .progress-slider {
   flex: 1;
+  width: 100%; /* Forces the slider to fill the flex item's width */
 }
 
 .volume-slider {
-  width: 70px; 
+  width: 60px; 
 }
 
 .custom-slider::-webkit-slider-runnable-track {
