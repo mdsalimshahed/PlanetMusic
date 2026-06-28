@@ -1,5 +1,5 @@
 /* --- src/components/LyricsDisplay.jsx --- */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 // Pure renderer detached from state for raw performance
 const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, masterPalette) => {
@@ -227,11 +227,68 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, []);
 
-  // Pseudo-random generator to create a stable random rotation/placement for each specific adlib
-  const getSeededRandom = (seed) => {
-      const x = Math.sin(seed * 12.9898) * 43758.5453;
-      return x - Math.floor(x);
-  };
+  // Pre-calculate positions once per song load to completely prevent frame-jittering/teleporting
+  const adlibPlacements = useMemo(() => {
+      const placements = new Map();
+      if (!syncData) return placements;
+
+      const getSeededRandom = (seed) => {
+          const x = Math.sin(seed * 12.9898) * 43758.5453;
+          return x - Math.floor(x);
+      };
+
+      syncData.forEach((node) => {
+          if (node?.isSplit && node.adlibs) {
+              const parentArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
+              
+              node.adlibs.forEach((adlib, j) => {
+                  if (adlib.start === null) return;
+                  
+                  const seed1 = getSeededRandom(adlib.start + j);
+                  const seed2 = getSeededRandom(adlib.start + j + 1);
+                  const seed3 = getSeededRandom(adlib.start + j + 2);
+                  
+                  // Increased rotation: between -10deg and +10deg
+                  const rot = (seed1 * 20) - 10;
+                  
+                  const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
+                  const primaryAdlibSinger = adlibNames[0];
+
+                  let quad = Math.floor(seed2 * 4); // Default to random quadrant
+
+                  // Map quadrant to the background grid positions derived from the parent line
+                  if (parentArtists.length > 1 && primaryAdlibSinger) {
+                      const idx = parentArtists.indexOf(primaryAdlibSinger);
+                      if (idx !== -1) {
+                          if (parentArtists.length === 2) {
+                              quad = (idx === 0) ? ((seed2 > 0.5) ? 0 : 3) : ((seed2 > 0.5) ? 1 : 2);
+                          } else {
+                              quad = idx % 4;
+                          }
+                      }
+                  }
+                  
+                  let top, left;
+                  if (quad === 0) { // Top Left
+                      top = 20 + (seed3 * 15); // 20% to 35%
+                      left = 20 + (seed1 * 15); // 20% to 35%
+                  } else if (quad === 1) { // Top Right
+                      top = 20 + (seed3 * 15); // 20% to 35%
+                      left = 65 + (seed1 * 15); // 65% to 80%
+                  } else if (quad === 2) { // Bottom Left
+                      top = 65 + (seed3 * 15); // 65% to 80%
+                      left = 20 + (seed1 * 15); // 20% to 35%
+                  } else { // Bottom Right (Constrained vertically to avoid corner artist text)
+                      top = 60 + (seed3 * 10); // 60% to 70%
+                      left = 60 + (seed1 * 15); // 60% to 75%
+                  }
+
+                  placements.set(`adlib-${adlib.start}-${j}`, { rot, top, left });
+              });
+          }
+      });
+      return placements;
+  }, [syncData]);
 
   const visibleAdlibs = [];
   if (syncData) {
@@ -246,35 +303,17 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   const isActive = time >= adlib.start && time <= endTime;
                   
                   if (isNear) {
-                      const seed1 = getSeededRandom(adlib.start + j);
-                      const seed2 = getSeededRandom(adlib.start + j + 1);
-                      const seed3 = getSeededRandom(adlib.start + j + 2);
-                      
-                      // Increased rotation: between -10deg and +10deg
-                      const rot = (seed1 * 20) - 10;
-                      
-                      // Quadrant system to avoid middle lyrics and artist name at bottom right
-                      const quad = Math.floor(seed2 * 4);
-                      let top, left;
-                      
-                      if (quad === 0) { // Top Left
-                          top = 20 + (seed3 * 10); // 20% to 30%
-                          left = 25 + (seed1 * 15); // 25% to 40%
-                      } else if (quad === 1) { // Top Right
-                          top = 20 + (seed3 * 10); // 20% to 30%
-                          left = 60 + (seed1 * 15); // 60% to 75%
-                      } else if (quad === 2) { // Bottom Left
-                          top = 70 + (seed3 * 10); // 70% to 80%
-                          left = 25 + (seed1 * 15); // 25% to 40%
-                      } else { // Bottom Right (Constrained to avoid artist corner)
-                          top = 65 + (seed3 * 10); // 65% to 75%
-                          left = 55 + (seed1 * 15); // 55% to 70%
+                      const key = `adlib-${adlib.start}-${j}`;
+                      const placement = adlibPlacements.get(key);
+                      if (placement) {
+                          visibleAdlibs.push({ 
+                            adlib, isActive, 
+                            rot: placement.rot, 
+                            top: placement.top, 
+                            left: placement.left, 
+                            key 
+                          });
                       }
-
-                      visibleAdlibs.push({ 
-                        adlib, isActive, rot, top, left, 
-                        key: `adlib-${adlib.start}-${j}` 
-                      });
                   }
               });
           }
