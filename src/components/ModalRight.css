@@ -217,6 +217,9 @@
   transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), text-shadow 0.3s ease, color 0.3s ease; 
   pointer-events: none; 
   will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 /* Enhanced active shadow */
 .focused-line.active { 
@@ -253,6 +256,10 @@
   transform: translate(-50%, calc(-50% + 20px)) rotate(var(--adlib-rot, 0deg));
   transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), text-shadow 0.3s ease, color 0.3s ease;
   pointer-events: none;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 .focused-adlib-line.active {

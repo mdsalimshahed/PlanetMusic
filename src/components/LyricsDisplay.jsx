@@ -304,7 +304,7 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   if (adlib.start === null) return;
                   const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
                   
-                  // Mount slightly before and unmount slightly after to allow CSS transitions to execute properly!
+                  // Mount slightly before and unmount slightly after to allow CSS transitions to execute properly
                   const isNear = time >= (adlib.start - 0.5) && time <= (endTime + 0.5);
                   const isActive = time >= adlib.start && time <= endTime;
                   
@@ -341,7 +341,8 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   }}
                   onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
               >
-                  {renderLine(adlib, adlib, isActive, true, time, masterPalette)}
+                  {/* Passing 'true' permanently stops inline DOM style recalculations mid-transition, perfectly killing the jitter */}
+                  {renderLine(adlib, adlib, true, true, time, masterPalette)}
               </div>
           ))}
       </div>
