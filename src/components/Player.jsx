@@ -16,7 +16,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-  const lastSecondRef = useRef(-1);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -209,38 +208,42 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
-  // CRITICAL FIX: Safe 60fps RequestAnimationFrame Loop. 
-  // Millisecond exact accuracy because the DOM is now cached in memory!
+  // CRITICAL FLICKER FIX: Separates the UI updates from the Lyrics sync updates.
+  // The lyrics sync at 50ms precision, but the progress bar rigidly ticks exactly once per second.
   useEffect(() => {
-    let animationFrameId;
+    let intervalId;
+    let lastSecond = -1;
     
     const tick = () => {
       if (audioRef.current && isPlaying) {
         const time = audioRef.current.currentTime;
         window.currentAudioTime = time;
         
-        if (progressBarRef.current) {
-          progressBarRef.current.value = time;
-          const dur = duration || audioRef.current.duration || 1;
-          progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
-        }
-        
         const currentSecond = Math.floor(time);
-        if (currentSecond !== lastSecondRef.current && currentTimeRef.current) {
-          currentTimeRef.current.innerText = formatTime(time);
-          lastSecondRef.current = currentSecond;
+        
+        // Block UI repaints entirely unless a full second has actually passed
+        if (currentSecond !== lastSecond) {
+          if (progressBarRef.current) {
+            progressBarRef.current.value = time;
+            const dur = duration || audioRef.current.duration || 1;
+            progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
+          }
+          if (currentTimeRef.current) {
+            currentTimeRef.current.innerText = formatTime(time);
+          }
+          lastSecond = currentSecond;
         }
 
+        // Fire global update for lyrics dynamically in the background at 50ms interval
         window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
       }
-      animationFrameId = requestAnimationFrame(tick);
     };
 
     if (isPlaying) {
-      animationFrameId = requestAnimationFrame(tick);
+      intervalId = setInterval(tick, 50);
     }
 
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => clearInterval(intervalId);
   }, [isPlaying, duration]);
 
   const handleLoadedMetadata = () => {

@@ -20,7 +20,6 @@
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
-/* CRITICAL FIX: Transforms the player into a native inline element inside the Left Column */
 .global-player.stacked {
   position: relative !important;
   bottom: auto !important;
@@ -282,7 +281,7 @@
   border-radius: 2px;
   margin: 0;
   outline: none;
-  transition: background-image 0.4s ease;
+  /* CRITICAL FIX: Removed transition to prevent CSS interpolation glitches on hard 1-second ticks */
 }
 
 .progress-slider {
