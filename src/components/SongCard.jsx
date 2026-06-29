@@ -9,15 +9,13 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
   useEffect(() => {
     if (!highResArt) return;
 
-    const img = new Image();
+    let img = new Image();
     img.crossOrigin = 'Anonymous';
-    img.src = highResArt;
     
     img.onload = () => {
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d', { willReadFrequently: true });
       
-      // CRITICAL RAM FIX: Render to a tiny micro-canvas to extract averages without bloating memory
       canvas.width = 5; 
       canvas.height = 5;
       context.drawImage(img, 0, 0, 5, 5);
@@ -40,8 +38,20 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         setBgColor(`linear-gradient(to bottom, rgba(${r}, ${g}, ${b}, 0.6), rgba(5, 5, 16, 0.95))`);
       } catch (e) {
         console.warn('Could not extract color due to CORS restrictions');
+      } finally {
+        img.onload = null;
+        img.onerror = null;
+        img.src = '';
+        img = null;
       }
     };
+    img.onerror = () => {
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
+      img = null;
+    };
+    img.src = highResArt;
   }, [highResArt]);
 
   return (
@@ -55,6 +65,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           src={highResArt}
           alt={song.trackName}
           className="artwork"
+          loading="lazy"
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         <div className="artwork-overlay">

@@ -55,7 +55,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
 
-    const img = new Image();
+    let img = new Image();
     img.crossOrigin = "Anonymous"; 
     img.onload = () => {
       try {
@@ -91,9 +91,20 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
       } catch (e) {
         setAccentColor('#ffffff'); 
+      } finally {
+        img.onload = null;
+        img.onerror = null;
+        img.src = '';
+        img = null;
       }
     };
-    img.onerror = () => setAccentColor('#ffffff');
+    img.onerror = () => {
+      setAccentColor('#ffffff');
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
+      img = null;
+    };
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
@@ -102,6 +113,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       setAudioSrc('');
       setPendingSeek(null); 
       emitPlayState(false, true);
+      window.currentAudioTime = 0;
       if (progressBarRef.current) progressBarRef.current.value = 0;
       if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
       return;
@@ -139,6 +151,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       } else {
         if (audioRef.current && time !== null) {
           audioRef.current.currentTime = time;
+          window.currentAudioTime = time;
           if (!isPlaying) {
             audioRef.current.play()
               .then(() => { setIsPlaying(true); emitPlayState(true, false); })
@@ -180,11 +193,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         togglePlay();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 5);
+        const newTime = Math.max(0, audioRef.current.currentTime - 5);
+        audioRef.current.currentTime = newTime;
+        window.currentAudioTime = newTime;
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         const maxTime = duration || audioRef.current.duration;
-        audioRef.current.currentTime = Math.min(maxTime, audioRef.current.currentTime + 5);
+        const newTime = Math.min(maxTime, audioRef.current.currentTime + 5);
+        audioRef.current.currentTime = newTime;
+        window.currentAudioTime = newTime;
       }
     };
 
@@ -192,51 +209,47 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
-  // CRITICAL PERFECT OPTIMIZATION: Hybrid Throttle Loop
+  // CRITICAL FLICKER FIX: Replaced RequestAnimationFrame with a stable 50ms (20fps) setInterval loop.
+  // This guarantees silky smooth visuals without overlapping logic loops causing frantic flashing.
   useEffect(() => {
-    let animationFrameId;
-    let lastDispatchTime = 0;
+    let intervalId;
     let lastSecond = -1;
     
-    const tick = (now) => {
+    const tick = () => {
       if (audioRef.current && isPlaying) {
         const time = audioRef.current.currentTime;
+        window.currentAudioTime = time;
         
-        // 60fps - Buttery smooth sliding progress bar via CSS
         if (progressBarRef.current) {
           progressBarRef.current.value = time;
           const dur = duration || audioRef.current.duration || 1;
           progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
         }
         
-        // 1fps - Text string only updates DOM when the second actually changes
         const currentSecond = Math.floor(time);
         if (currentSecond !== lastSecond && currentTimeRef.current) {
           currentTimeRef.current.innerText = formatTime(time);
           lastSecond = currentSecond;
         }
 
-        // 20fps - Lyric Sync engine checks state every 50ms (Solves CPU thermal throttling)
-        if (now - lastDispatchTime > 50) {
-          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
-          lastDispatchTime = now;
-        }
+        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
       }
-      animationFrameId = requestAnimationFrame(tick);
     };
 
     if (isPlaying) {
-      animationFrameId = requestAnimationFrame(tick);
+      intervalId = setInterval(tick, 50);
     }
 
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => clearInterval(intervalId);
   }, [isPlaying, duration]);
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
+      window.currentAudioTime = audioRef.current.currentTime;
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
+        window.currentAudioTime = pendingSeek;
         audioRef.current.play()
           .then(() => { setIsPlaying(true); emitPlayState(true, false); })
           .catch(() => {});
@@ -250,6 +263,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const time = Number(e.target.value);
     if (audioRef.current) {
       audioRef.current.currentTime = time;
+      window.currentAudioTime = time;
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }

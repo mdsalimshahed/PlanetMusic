@@ -26,8 +26,10 @@
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
   mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
 }
-.active-watermark { z-index: 1; opacity: 1; visibility: visible; transition: opacity 0.6s ease-in-out, visibility 0s linear 0s; }
-.inactive-watermark { opacity: 0 !important; z-index: 0; visibility: hidden; }
+
+/* CRITICAL FIX: Proper CSS override hierarchy to ensure background images successfully render */
+.active-watermark { z-index: 1; opacity: 1 !important; visibility: visible !important; transition: opacity 0.6s ease-in-out, visibility 0s linear 0s !important; }
+.inactive-watermark { opacity: 0 !important; z-index: 0; visibility: hidden !important; transition: opacity 0.6s ease-in-out, visibility 0s linear 0.6s !important; }
 
 /* Matrix Layer Styles */
 .matrix-watermark-container {
@@ -37,8 +39,9 @@
   grid-template-rows: 1fr 1fr;
   transition: opacity 0.4s ease-in-out;
 }
-.active-matrix { opacity: 1; pointer-events: auto; }
-.inactive-matrix { opacity: 0; pointer-events: none; }
+
+.active-matrix { opacity: 1 !important; pointer-events: auto; visibility: visible !important; transition: opacity 0.4s ease-in-out, visibility 0s linear 0s !important; }
+.inactive-matrix { opacity: 0 !important; pointer-events: none; visibility: hidden !important; transition: opacity 0.4s ease-in-out, visibility 0s linear 0.4s !important; }
 
 .matrix-cell { position: relative; width: 100%; height: 100%; overflow: hidden; }
 
@@ -156,28 +159,27 @@
 }
 .focused-adlib-line.active { opacity: 1; transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)); pointer-events: auto; cursor: pointer; }
 
-/* CRITICAL GPU FIX: Stripped filter and transition cascades from the adlib-nodes completely */
+/* Inline Adlib Nodes */
 .adlib-node {
   display: inline-block;
-  transition: opacity 0.3s ease, transform 0.3s ease !important;
-  will-change: opacity, transform;
+  transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease !important;
+  will-change: opacity, transform, filter;
   backface-visibility: hidden;
 }
 .adlib-node.adlib-hidden {
   opacity: 0 !important;
   transform: translate3d(0, 8px, 0) !important;
+  filter: grayscale(100%) !important;
 }
 .adlib-node.adlib-visible {
-  opacity: 1 !important;
+  opacity: 0.6 !important;
   transform: translate3d(0, 0, 0) !important;
-  color: rgba(255, 255, 255, 0.4) !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.4) !important;
-  background-image: none !important;
+  filter: grayscale(100%) !important;
 }
 .adlib-node.adlib-active {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
+  filter: grayscale(0%) !important;
 }
 
 .debug-lyrics-preview { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 20px; display: flex; flex-direction: column; }

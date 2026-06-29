@@ -15,15 +15,11 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     return stored !== null ? parseInt(stored, 10) : 0; 
   });
   
-  const activePreviewRef = useRef(null);
   const silenceTimerRef = useRef(null);
   const transitionTimerRef = useRef(null);
   const previousTrackId = useRef(null);
 
-  const [activePreviewIndex, setActivePreviewIndex] = useState(-1);
   const [bgActiveIndex, setBgActiveIndex] = useState(-1);
-
-  const activeIdxRef = useRef(-1);
   const bgIdxRef = useRef(-1);
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
@@ -42,6 +38,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     };
   }, []);
 
+  // Background artist image switching loop
   useEffect(() => {
     const handleGlobalTime = (e) => {
       const time = e.detail;
@@ -49,30 +46,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
       
       if (validSync && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong && !playState.isEnded) {
-        
-        let newActiveIndex = activeIdxRef.current;
-        const cNode = newActiveIndex >= 0 ? selectedSong.syncData[newActiveIndex] : null;
-        const nNode = newActiveIndex >= 0 ? selectedSong.syncData[newActiveIndex + 1] : null;
-        
-        const stillInCurrent = cNode && cNode.start !== null && time >= cNode.start &&
-             (cNode.end !== null ? time <= cNode.end : true) &&
-             (nNode && nNode.start !== null ? time < nNode.start : true);
-             
-        if (!stillInCurrent) {
-            newActiveIndex = selectedSong.syncData.findIndex((savedNode, i) => {
-              if (!savedNode || savedNode.start === null) return false;
-              const nextNode = selectedSong.syncData[i + 1];
-              const isStarted = time >= savedNode.start;
-              const isBeforeEnd = savedNode.end !== null ? time <= savedNode.end : true;
-              const isBeforeNext = nextNode && nextNode.start !== null ? time < nextNode.start : true;
-              return isStarted && isBeforeEnd && isBeforeNext;
-            });
-        }
-
-        if (newActiveIndex !== activeIdxRef.current) {
-          activeIdxRef.current = newActiveIndex;
-          setActivePreviewIndex(newActiveIndex);
-        }
 
         let newBgIndex = bgIdxRef.current;
         const cbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex] : null;
@@ -110,9 +83,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       setLyricsViewMode('live');
       setDisplaySingerBg(null);
       setIsSingerVisible(false);
-      activeIdxRef.current = -1;
       bgIdxRef.current = -1;
-      setActivePreviewIndex(-1);
       setBgActiveIndex(-1);
     }
   }, [selectedSong]);
@@ -124,26 +95,14 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [customData.lyrics, customData.artistColors, selectedSong, masterPalette]);
 
-  // CRITICAL CPU FIX: Stabilize function reference to prevent React.memo failures
   const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
     prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   ), []);
 
-  // CRITICAL CPU FIX: Stabilize function reference to prevent 100+ lines from re-rendering simultaneously
   const handleLineClick = useCallback((startTime) => {
     if (startTime === null || isSyncMode || isEditing || isImageManagerOpen) return;
     window.dispatchEvent(new CustomEvent('globalSeekRequest', { detail: { time: startTime, track: selectedSong } }));
   }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong]);
-
-  useEffect(() => {
-    if (!isSyncMode && !isEditing && !isImageManagerOpen && ['live', 'focused'].includes(lyricsViewMode) && activePreviewRef.current) {
-      const container = activePreviewRef.current.parentElement;
-      const offsetTop = activePreviewRef.current.offsetTop;
-      
-      const scrollPos = offsetTop - (container.clientHeight / 2) + (activePreviewRef.current.clientHeight / 2);
-      container.scrollTo({ top: scrollPos, behavior: 'smooth' });
-    }
-  }, [activePreviewIndex, isSyncMode, isEditing, isImageManagerOpen, lyricsViewMode]);
 
   useEffect(() => {
     if (!selectedSong) return;
@@ -202,6 +161,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   return {
     lyricsViewMode, cycleViewMode, liveParsedLyrics, 
     currentSingerBg: displaySingerBg, isSingerVisible,
-    activePreviewIndex, activePreviewRef, handleLineClick, hasValidSyncData
+    handleLineClick, hasValidSyncData
   };
 };

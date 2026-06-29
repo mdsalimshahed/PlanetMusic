@@ -35,12 +35,12 @@ const groupWords = (elements, charData) => {
   return words;
 };
 
-const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
+// Pure DOM render function (Bypasses active states entirely so React renders it statically ONCE)
+const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
-  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px' };
-  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.4)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px' };
+  const basePronStyle = { fontSize: '0.55em', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px', display: 'inline-block', transition: 'opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease' };
 
   let parsedChunks = null;
   if (typeof pronString === 'string') {
@@ -69,13 +69,11 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
           return null;
       }
 
-      let isAdlib = false;
       let adlibProps = {};
 
       if (savedNode?.isSplit && !isFocused) {
           const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
           if (adlib && adlib.start !== null) {
-              isAdlib = true;
               adlibProps = {
                   className: 'adlib-node adlib-hidden',
                   'data-start': adlib.start,
@@ -108,28 +106,16 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
       }
 
       let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-      let isCharActive = isActive || isAdlib;
 
-      if (isCharActive) {
-          if (isGradient) {
-              style.backgroundImage = gradientStyle;
-              style.WebkitBackgroundClip = 'text';
-              style.WebkitTextFillColor = 'transparent';
-              style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))`;
-          } else {
-              style.color = activeColor;
-              style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80`;
-          }
+      // Render it out in FULL COLOR always. The parent's CSS class handles dimming/grayscale dynamically
+      if (isGradient) {
+          style.backgroundImage = gradientStyle;
+          style.WebkitBackgroundClip = 'text';
+          style.WebkitTextFillColor = 'transparent';
+          style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused?'30px':'20px'} rgba(255,255,255,0.4))`;
       } else {
-          if (isGradient) {
-              style.backgroundImage = gradientStyle;
-              style.WebkitBackgroundClip = 'text';
-              style.WebkitTextFillColor = 'transparent';
-              style.filter = 'grayscale(100%) opacity(40%)'; 
-          } else {
-              style.color = 'rgba(255, 255, 255, 0.4)';
-              style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
-          }
+          style.color = activeColor;
+          style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80`;
       }
 
       const isParenthesis = /([()\[\]{}]+)/.test(c.char);
@@ -170,7 +156,6 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
       const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
           const chunkLen = Array.from(chunk.text).length;
           const firstCharIdx = charOffset;
-          chunk.charStart = firstCharIdx;
           const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
           charOffset += chunkLen;
 
@@ -179,13 +164,10 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
 
           const groupedText = groupWords(renderedText, chunkChars);
 
-          let isChunkAdlib = false;
           let adlibProps = {};
-
           if (savedNode?.isSplit && !isFocused) {
              const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
              if (adlib && adlib.start !== null) {
-                 isChunkAdlib = true;
                  adlibProps = {
                      className: 'adlib-node adlib-hidden',
                      'data-start': adlib.start,
@@ -194,28 +176,12 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
              }
           }
 
-          let chunkIsActive = isActive; // Safely base this only on the main active state
-          let currentPronStyle = chunkIsActive ? { ...activePronStyle } : { ...inactivePronStyle };
-
-          // Delegate entirely to CSS if it's an ad-lib
-          if (!isChunkAdlib) {
-              if (chunkIsActive) {
-                  currentPronStyle.opacity = 0.9;
-                  currentPronStyle.transform = 'translate3d(0,0,0)';
-              } else {
-                  currentPronStyle.opacity = 0.4;
-                  currentPronStyle.transform = 'translate3d(0,0,0)';
-              }
-              currentPronStyle.transition = 'opacity 0.3s ease, transform 0.3s ease';
-          }
-          currentPronStyle.display = 'inline-block';
-
           if (chunk.type === 'foreign' && chunk.trans) {
               const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
               return (
                   <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
                       <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-                      <span {...adlibProps} style={currentPronStyle}>{cleanTrans}</span>
+                      <span {...adlibProps} className="pronunciation-text" style={basePronStyle}>{cleanTrans}</span>
                   </span>
               );
           } else {
@@ -233,7 +199,7 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
   } else {
       const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
       const groupedChars = groupWords(renderedChars, chars);
-      const blockPronStyle = { ...(isActive ? activePronStyle : { ...activePronStyle, opacity: 0.4, filter: 'grayscale(100%)' }), display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+      const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
       
       let displayPronString = pronString;
       if (pronString) displayPronString = pronString.replace(/[()\[\]{}]/g, '');
@@ -241,78 +207,32 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
       return (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
               <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{groupedChars}</span>
-              {displayPronString && <div style={blockPronStyle}>{displayPronString}</div>}
+              {displayPronString && <div className="pronunciation-text" style={blockPronStyle}>{displayPronString}</div>}
           </div>
       );
   }
 };
 
 const LyricLineWrapper = React.memo(({ 
-  lineObj, savedNode, isMainActive, viewMode, 
-  activePreviewRef, handleLineClick, masterPalette 
+  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette 
 }) => {
-  const lineRef = useRef(null);
-  
-  const cachedAdlibNodesRef = useRef([]);
+  const start = savedNode?.start !== null ? savedNode.start : 'NaN';
+  const end = savedNode?.end !== null ? savedNode.end : 'NaN';
 
-  useEffect(() => {
-    if (lineRef.current && savedNode?.isSplit) {
-      cachedAdlibNodesRef.current = Array.from(lineRef.current.querySelectorAll('.adlib-node'));
-    }
-  }, [lineObj, savedNode, isMainActive, viewMode, masterPalette]);
-
-  useEffect(() => {
-      if (viewMode !== 'live' && viewMode !== 'focused') return;
-      if (!savedNode?.isSplit && !isMainActive) return;
-      if (cachedAdlibNodesRef.current.length === 0) return;
-      
-      const handleTime = (e) => {
-          const time = e.detail;
-          
-          cachedAdlibNodesRef.current.forEach(node => {
-               const start = parseFloat(node.dataset.start);
-               const end = parseFloat(node.dataset.end);
-               if (isNaN(start)) return;
-  
-               if (time >= start && time <= end) {
-                   if (!node.classList.contains('adlib-active')) {
-                       node.classList.add('adlib-active');
-                       node.classList.remove('adlib-hidden', 'adlib-visible');
-                   }
-               } else if (time >= start) {
-                   if (!node.classList.contains('adlib-visible')) {
-                       node.classList.add('adlib-visible');
-                       node.classList.remove('adlib-hidden', 'adlib-active');
-                   }
-               } else {
-                   if (!node.classList.contains('adlib-hidden')) {
-                       node.classList.add('adlib-hidden');
-                       node.classList.remove('adlib-active', 'adlib-visible');
-                   }
-               }
-          });
-      };
-
-      window.addEventListener('globalTimeUpdate', handleTime);
-      return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, [viewMode, savedNode, isMainActive]);
-
-  const seekTarget = savedNode ? savedNode.start : null;
-
+  // CRITICAL FLICKER FIX: Component completely ignores React State. It only builds the DOM once.
   const renderedContent = useMemo(() => 
-    renderLine(lineObj, savedNode, isMainActive, viewMode === 'focused', masterPalette),
-    [lineObj, savedNode, isMainActive, viewMode, masterPalette]
+    renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette),
+    [lineObj, savedNode, viewMode, masterPalette]
   );
 
   return (
       <div 
-          ref={(node) => { 
-            lineRef.current = node; 
-            if (isMainActive && activePreviewRef) activePreviewRef.current = node; 
-          }}
-          className={`${viewMode === 'focused' ? 'focused-line' : 'preview-line'} ${isMainActive ? 'active' : ''}`}
-          onClick={() => handleLineClick(seekTarget)}
-          style={{ cursor: seekTarget !== null ? 'pointer' : 'default' }}
+          className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
+          data-start={start}
+          data-end={end}
+          data-next-start={nextStart}
+          onClick={() => handleLineClick(savedNode?.start)}
+          style={{ cursor: savedNode?.start !== null ? 'pointer' : 'default' }}
       >
           {renderedContent}
       </div>
@@ -320,9 +240,6 @@ const LyricLineWrapper = React.memo(({
 });
 
 const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette }) => {
-  const containerRef = useRef(null);
-  const cachedTrackNodesRef = useRef([]);
-
   const adlibsToRender = useMemo(() => {
       const items = [];
       if (!syncData) return items;
@@ -370,7 +287,7 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       left = 65 + (randX * 15); 
                   }
 
-                  const rendered = renderLine(adlib, adlib, true, true, masterPalette);
+                  const rendered = renderLine(adlib, adlib, true, masterPalette);
 
                   items.push({
                      key: `adlib-${adlib.start}-${j}`,
@@ -383,36 +300,11 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       });
       return items;
   }, [syncData, masterPalette]);
-  
-  useEffect(() => {
-    if (containerRef.current) {
-      cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line'));
-    }
-  }, [adlibsToRender]);
-
-  useEffect(() => {
-      const handleTime = (e) => {
-         const time = e.detail;
-         if (cachedTrackNodesRef.current.length === 0) return;
-         
-         cachedTrackNodesRef.current.forEach(node => {
-             const start = parseFloat(node.dataset.start);
-             const end = parseFloat(node.dataset.end);
-             if (time >= start && time <= end) {
-                 if (!node.classList.contains('active')) node.classList.add('active');
-             } else {
-                 if (node.classList.contains('active')) node.classList.remove('active');
-             }
-         });
-      };
-      window.addEventListener('globalTimeUpdate', handleTime);
-      return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, []);
 
   if (adlibsToRender.length === 0) return null;
 
   return (
-      <div className="focused-adlibs-container" ref={containerRef}>
+      <>
           {adlibsToRender.map(item => (
               <div 
                   key={item.key} 
@@ -429,15 +321,93 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   {item.rendered}
               </div>
           ))}
-      </div>
+      </>
   );
 });
 
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
-  lyricsViewMode, liveParsedLyrics, activePreviewIndex,
-  activePreviewRef, handleLineClick, selectedSong, masterPalette
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette
 }) => {
+  const containerRef = useRef(null);
+
+  // CRITICAL FIX: Central DOM Controller. Updates classes purely via JS bypassing all React States
+  useEffect(() => {
+    if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
+
+    const handleTime = (e) => {
+        const time = e.detail;
+        if (!containerRef.current) return;
+        
+        // --- Process Main Lyric Lines ---
+        const lines = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper'));
+        let newActiveIndex = -1;
+
+        for (let i = 0; i < lines.length; i++) {
+            const start = parseFloat(lines[i].dataset.start);
+            const end = parseFloat(lines[i].dataset.end);
+            const nextStart = parseFloat(lines[i].dataset.nextStart);
+
+            if (!isNaN(start) && time >= start) {
+                const isBeforeEnd = isNaN(end) || time <= end;
+                const isBeforeNext = isNaN(nextStart) || time < nextStart;
+                if (isBeforeEnd && isBeforeNext) {
+                    newActiveIndex = i;
+                }
+            }
+        }
+
+        lines.forEach((line, i) => {
+            if (i === newActiveIndex) {
+                if (!line.classList.contains('active')) {
+                    line.classList.add('active');
+                    
+                    if (lyricsViewMode === 'live') {
+                        const offsetTop = line.offsetTop;
+                        const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (line.clientHeight / 2);
+                        containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
+                    }
+                }
+            } else {
+                if (line.classList.contains('active')) line.classList.remove('active');
+            }
+        });
+
+        // --- Process All Sub-Adlibs ---
+        const adlibs = Array.from(containerRef.current.querySelectorAll('.adlib-node, .focused-adlib-line'));
+        adlibs.forEach(node => {
+            const aStart = parseFloat(node.dataset.start);
+            const aEnd = parseFloat(node.dataset.end);
+            if (isNaN(aStart)) return;
+
+            if (time >= aStart && time <= aEnd) {
+                if (!node.classList.contains('adlib-active') && !node.classList.contains('active')) {
+                    node.classList.add(node.classList.contains('focused-adlib-line') ? 'active' : 'adlib-active');
+                    node.classList.remove('adlib-hidden', 'adlib-visible');
+                }
+            } else if (time >= aStart && node.classList.contains('adlib-node')) { // Inline adlibs stay visible
+                if (!node.classList.contains('adlib-visible')) {
+                    node.classList.add('adlib-visible');
+                    node.classList.remove('adlib-hidden', 'adlib-active');
+                }
+            } else {
+                if (!node.classList.contains('adlib-hidden') && !node.classList.contains('focused-adlib-line')) {
+                    node.classList.add('adlib-hidden');
+                    node.classList.remove('adlib-active', 'adlib-visible');
+                } else if (node.classList.contains('focused-adlib-line') && node.classList.contains('active')) {
+                    node.classList.remove('active');
+                }
+            }
+        });
+    };
+
+    window.addEventListener('globalTimeUpdate', handleTime);
+    // Trigger initial snap instantly
+    const initialTime = window.currentAudioTime || 0;
+    handleTime({ detail: initialTime });
+
+    return () => window.removeEventListener('globalTimeUpdate', handleTime);
+  }, [lyricsViewMode]);
 
   const handlePaste = (e) => {
     const html = e.clipboardData.getData('text/html');
@@ -491,34 +461,50 @@ const LyricsDisplay = ({
           placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!" 
         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
-        <div className="live-lyrics-preview">
-          {liveParsedLyrics.map((line, i) => (
-            <LyricLineWrapper
-              key={i}
-              lineObj={line}
-              savedNode={selectedSong.syncData[i]}
-              isMainActive={i === activePreviewIndex}
-              viewMode="live"
-              activePreviewRef={activePreviewRef}
-              handleLineClick={handleLineClick}
-              masterPalette={masterPalette}
-            />
-          ))}
+        <div className="live-lyrics-preview" ref={containerRef}>
+          {liveParsedLyrics.map((line, i) => {
+            let nextStart = 'NaN';
+            for (let j = i + 1; j < selectedSong.syncData.length; j++) {
+                if (selectedSong.syncData[j].start !== null) {
+                    nextStart = selectedSong.syncData[j].start;
+                    break;
+                }
+            }
+            return (
+                <LyricLineWrapper
+                  key={i}
+                  lineObj={line}
+                  savedNode={selectedSong.syncData[i]}
+                  nextStart={nextStart}
+                  viewMode="live"
+                  handleLineClick={handleLineClick}
+                  masterPalette={masterPalette}
+                />
+            )
+          })}
         </div>
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (
-        <div className="focused-lyrics-preview">
-          {liveParsedLyrics.map((line, i) => (
-             <LyricLineWrapper
-                key={i}
-                lineObj={line}
-                savedNode={selectedSong.syncData[i]}
-                isMainActive={i === activePreviewIndex}
-                viewMode="focused"
-                activePreviewRef={activePreviewRef}
-                handleLineClick={handleLineClick}
-                masterPalette={masterPalette}
-             />
-          ))}
+        <div className="focused-lyrics-preview" ref={containerRef}>
+          {liveParsedLyrics.map((line, i) => {
+             let nextStart = 'NaN';
+             for (let j = i + 1; j < selectedSong.syncData.length; j++) {
+                 if (selectedSong.syncData[j].start !== null) {
+                     nextStart = selectedSong.syncData[j].start;
+                     break;
+                 }
+             }
+             return (
+                 <LyricLineWrapper
+                    key={i}
+                    lineObj={line}
+                    savedNode={selectedSong.syncData[i]}
+                    nextStart={nextStart}
+                    viewMode="focused"
+                    handleLineClick={handleLineClick}
+                    masterPalette={masterPalette}
+                 />
+             )
+          })}
           
           <FocusedAdlibsTracker 
              syncData={selectedSong.syncData}
