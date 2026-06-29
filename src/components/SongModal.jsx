@@ -12,7 +12,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   
-  // Passed `settings` to access the bgPreemptionTime slider
   const displayProps = useLyricsDisplay(
     selectedSong, songDataProps.customData, songDataProps.masterPalette, 
     null, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
@@ -25,8 +24,9 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   displayProps.isSyncMode = syncProps.isSyncMode;
 
+  // CRITICAL FIX: Ensure currentTrack is successfully passed down into the rendering pipeline
   const sharedProps = {
-    selectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, settings,
+    selectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
     ...songDataProps, ...displayProps, ...syncProps
   };
 
@@ -50,7 +50,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
             />
           </div>
 
-          {/* Dynamic Background Notification Popup */}
           {notification.show && (
             <div className="notification-popup">
               <div className="notification-content">

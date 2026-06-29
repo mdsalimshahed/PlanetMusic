@@ -14,13 +14,13 @@ const formatTime = (seconds) => {
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
   
-  // Progress is detached from React state for extreme performance
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
-  const [audioSrc, setAudioSrc] = useState('');
+  // CRITICAL FIX: Safe undefined fallback for React's URL loader
+  const [audioSrc, setAudioSrc] = useState(undefined);
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
   
@@ -110,7 +110,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   useEffect(() => {
     if (!currentTrack) {
-      setAudioSrc('');
+      setAudioSrc(undefined);
       setPendingSeek(null); 
       emitPlayState(false, true);
       window.currentAudioTime = 0;
@@ -209,8 +209,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
-  // CRITICAL FLICKER FIX: Replaced RequestAnimationFrame with a stable 50ms (20fps) setInterval loop.
-  // This guarantees silky smooth visuals without overlapping logic loops causing frantic flashing.
   useEffect(() => {
     let intervalId;
     let lastSecond = -1;
@@ -356,7 +354,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     <>
       <audio 
         ref={audioRef}
-        src={audioSrc} 
+        src={audioSrc || undefined} 
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
         onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}

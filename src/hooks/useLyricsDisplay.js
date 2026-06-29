@@ -1,10 +1,9 @@
 /* --- src/hooks/useLyricsDisplay.js --- */
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { parseLyrics } from '../utils/songHelpers';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
-  const [liveParsedLyrics, setLiveParsedLyrics] = useState([]);
   
   const [playState, setPlayState] = useState({ isPlaying: false, isEnded: false });
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
@@ -15,6 +14,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     return stored !== null ? parseInt(stored, 10) : 0; 
   });
   
+  const activePreviewRef = useRef(null);
   const silenceTimerRef = useRef(null);
   const transitionTimerRef = useRef(null);
   const previousTrackId = useRef(null);
@@ -24,6 +24,12 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
   const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000; 
+
+  // CRITICAL FIX: Computes directly during render, preventing out-of-sync states
+  const liveParsedLyrics = useMemo(() => {
+    if (!selectedSong) return [];
+    return parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
+  }, [customData.lyrics, selectedSong?.artistName, masterPalette]);
 
   useEffect(() => {
     const handlePlayState = (e) => setPlayState(e.detail);
@@ -38,7 +44,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     };
   }, []);
 
-  // Background artist image switching loop
   useEffect(() => {
     const handleGlobalTime = (e) => {
       const time = e.detail;
@@ -87,13 +92,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       setBgActiveIndex(-1);
     }
   }, [selectedSong]);
-
-  useEffect(() => {
-    if (selectedSong) {
-      const cleanedLiveLines = parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
-      setLiveParsedLyrics(cleanedLiveLines);
-    }
-  }, [customData.lyrics, customData.artistColors, selectedSong, masterPalette]);
 
   const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
     prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
@@ -161,6 +159,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   return {
     lyricsViewMode, cycleViewMode, liveParsedLyrics, 
     currentSingerBg: displaySingerBg, isSingerVisible,
-    handleLineClick, hasValidSyncData
+    activePreviewRef, handleLineClick, hasValidSyncData
   };
 };

@@ -35,8 +35,8 @@ const groupWords = (elements, charData) => {
   return words;
 };
 
-// Pure DOM render function (Bypasses active states entirely so React renders it statically ONCE)
-const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
+// Pure DOM render function
+const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
@@ -63,6 +63,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
   });
 
   const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
+  const currentTime = window.currentAudioTime || 0;
 
   const renderColoredChar = (c, cIdx) => {
       if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd)) {
@@ -74,10 +75,19 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
       if (savedNode?.isSplit && !isFocused) {
           const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
           if (adlib && adlib.start !== null) {
+              const start = adlib.start;
+              const end = adlib.end !== null ? adlib.end : start + 5;
+              
+              let initialClass = 'adlib-hidden';
+              if (isPlayingCurrentSong) {
+                  if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
+                  else if (currentTime > end) initialClass = 'adlib-visible';
+              }
+
               adlibProps = {
-                  className: 'adlib-node adlib-hidden',
-                  'data-start': adlib.start,
-                  'data-end': adlib.end !== null ? adlib.end : adlib.start + 5
+                  className: `adlib-node ${initialClass}`,
+                  'data-start': start,
+                  'data-end': end
               };
           }
       }
@@ -107,7 +117,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
 
       let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
 
-      // Render it out in FULL COLOR always. The parent's CSS class handles dimming/grayscale dynamically
       if (isGradient) {
           style.backgroundImage = gradientStyle;
           style.WebkitBackgroundClip = 'text';
@@ -168,10 +177,19 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
           if (savedNode?.isSplit && !isFocused) {
              const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
              if (adlib && adlib.start !== null) {
+                 const start = adlib.start;
+                 const end = adlib.end !== null ? adlib.end : start + 5;
+                 
+                 let initialClass = 'adlib-hidden';
+                 if (isPlayingCurrentSong) {
+                     if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
+                     else if (currentTime > end) initialClass = 'adlib-visible';
+                 }
+
                  adlibProps = {
-                     className: 'adlib-node adlib-hidden',
-                     'data-start': adlib.start,
-                     'data-end': adlib.end !== null ? adlib.end : adlib.start + 5
+                     className: `adlib-node ${initialClass}`,
+                     'data-start': start,
+                     'data-end': end
                  };
              }
           }
@@ -181,7 +199,8 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
               return (
                   <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
                       <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-                      <span {...adlibProps} className="pronunciation-text" style={basePronStyle}>{cleanTrans}</span>
+                      {/* CRITICAL FIX: Properly merges pronunciation-text with the dynamic adlib-node classes */}
+                      <span {...adlibProps} className={`pronunciation-text ${adlibProps.className || ''}`.trim()} style={basePronStyle}>{cleanTrans}</span>
                   </span>
               );
           } else {
@@ -214,15 +233,14 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette) => {
 };
 
 const LyricLineWrapper = React.memo(({ 
-  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette 
+  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong 
 }) => {
-  const start = savedNode?.start !== null ? savedNode.start : 'NaN';
-  const end = savedNode?.end !== null ? savedNode.end : 'NaN';
+  const start = savedNode?.start ?? 'NaN';
+  const end = savedNode?.end ?? 'NaN';
 
-  // CRITICAL FLICKER FIX: Component completely ignores React State. It only builds the DOM once.
   const renderedContent = useMemo(() => 
-    renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette),
-    [lineObj, savedNode, viewMode, masterPalette]
+    renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette, isPlayingCurrentSong),
+    [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
 
   return (
@@ -231,23 +249,27 @@ const LyricLineWrapper = React.memo(({
           data-start={start}
           data-end={end}
           data-next-start={nextStart}
-          onClick={() => handleLineClick(savedNode?.start)}
-          style={{ cursor: savedNode?.start !== null ? 'pointer' : 'default' }}
+          onClick={() => handleLineClick(start === 'NaN' ? null : start)}
+          style={{ cursor: start !== 'NaN' ? 'pointer' : 'default' }}
       >
           {renderedContent}
       </div>
   );
 });
 
-const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette }) => {
+const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
+  const containerRef = useRef(null);
+  const cachedTrackNodesRef = useRef([]);
+
   const adlibsToRender = useMemo(() => {
       const items = [];
       if (!syncData) return items;
+      
+      const currentTime = window.currentAudioTime || 0;
+      const allArtists = Object.keys(masterPalette); 
 
       syncData.forEach((node) => {
           if (node?.isSplit && node.adlibs) {
-              const parentArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
-
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
                   
@@ -261,11 +283,11 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   const primaryAdlibSinger = adlibNames[0];
                   let quad = Math.floor(quadRand * 4); 
 
-                  if (parentArtists.length > 1 && primaryAdlibSinger) {
-                      const idx = parentArtists.indexOf(primaryAdlibSinger);
+                  if (allArtists.length > 1 && primaryAdlibSinger) {
+                      const idx = allArtists.indexOf(primaryAdlibSinger);
                       if (idx !== -1) {
-                          if (parentArtists.length === 2) {
-                              quad = (idx === 0) ? ((quadRand > 0.5) ? 0 : 3) : ((quadRand > 0.5) ? 1 : 2);
+                          if (allArtists.length === 2) {
+                              quad = (idx === 0) ? ((quadRand > 0.5) ? 0 : 2) : ((quadRand > 0.5) ? 1 : 3);
                           } else {
                               quad = idx % 4;
                           }
@@ -287,28 +309,65 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       left = 65 + (randX * 15); 
                   }
 
-                  const rendered = renderLine(adlib, adlib, true, masterPalette);
+                  const rendered = renderLine(adlib, adlib, true, masterPalette, isPlayingCurrentSong);
+
+                  const start = adlib.start;
+                  const end = adlib.end !== null ? adlib.end : start + 5;
+                  const isActive = isPlayingCurrentSong && currentTime >= start && currentTime <= end;
 
                   items.push({
-                     key: `adlib-${adlib.start}-${j}`,
-                     start: adlib.start,
-                     end: adlib.end !== null ? adlib.end : adlib.start + 5,
-                     rot, top, left, rendered, adlib
+                     key: `adlib-${start}-${j}`,
+                     start,
+                     end,
+                     rot, top, left, rendered, adlib,
+                     initialClass: isActive ? 'active' : ''
                   });
               });
           }
       });
       return items;
-  }, [syncData, masterPalette]);
+  }, [syncData, masterPalette, isPlayingCurrentSong]);
+  
+  useEffect(() => {
+    if (containerRef.current) {
+      cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line'));
+    }
+  }, [adlibsToRender]);
+
+  useEffect(() => {
+      if (!isPlayingCurrentSong) {
+          if (cachedTrackNodesRef.current.length > 0) {
+              cachedTrackNodesRef.current.forEach(node => node.classList.remove('active'));
+          }
+          return;
+      }
+
+      const handleTime = (e) => {
+         const time = e.detail;
+         if (cachedTrackNodesRef.current.length === 0) return;
+         
+         cachedTrackNodesRef.current.forEach(node => {
+             const start = parseFloat(node.dataset.start);
+             const end = parseFloat(node.dataset.end);
+             if (time >= start && time <= end) {
+                 if (!node.classList.contains('active')) node.classList.add('active');
+             } else {
+                 if (node.classList.contains('active')) node.classList.remove('active');
+             }
+         });
+      };
+      window.addEventListener('globalTimeUpdate', handleTime);
+      return () => window.removeEventListener('globalTimeUpdate', handleTime);
+  }, [isPlayingCurrentSong]);
 
   if (adlibsToRender.length === 0) return null;
 
   return (
-      <>
+      <div className="focused-adlibs-container" ref={containerRef}>
           {adlibsToRender.map(item => (
               <div 
                   key={item.key} 
-                  className="focused-adlib-line"
+                  className={`focused-adlib-line ${item.initialClass}`}
                   data-start={item.start}
                   data-end={item.end}
                   style={{ 
@@ -321,25 +380,27 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                   {item.rendered}
               </div>
           ))}
-      </>
+      </div>
   );
 });
 
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
-  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack
 }) => {
   const containerRef = useRef(null);
+  
+  const isPlayingCurrentSong = !currentTrack || currentTrack?.trackId === selectedSong?.trackId;
 
-  // CRITICAL FIX: Central DOM Controller. Updates classes purely via JS bypassing all React States
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
 
     const handleTime = (e) => {
+        if (!isPlayingCurrentSong) return;
+
         const time = e.detail;
         if (!containerRef.current) return;
         
-        // --- Process Main Lyric Lines ---
         const lines = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper'));
         let newActiveIndex = -1;
 
@@ -373,7 +434,6 @@ const LyricsDisplay = ({
             }
         });
 
-        // --- Process All Sub-Adlibs ---
         const adlibs = Array.from(containerRef.current.querySelectorAll('.adlib-node, .focused-adlib-line'));
         adlibs.forEach(node => {
             const aStart = parseFloat(node.dataset.start);
@@ -385,7 +445,7 @@ const LyricsDisplay = ({
                     node.classList.add(node.classList.contains('focused-adlib-line') ? 'active' : 'adlib-active');
                     node.classList.remove('adlib-hidden', 'adlib-visible');
                 }
-            } else if (time >= aStart && node.classList.contains('adlib-node')) { // Inline adlibs stay visible
+            } else if (time >= aStart && node.classList.contains('adlib-node')) { 
                 if (!node.classList.contains('adlib-visible')) {
                     node.classList.add('adlib-visible');
                     node.classList.remove('adlib-hidden', 'adlib-active');
@@ -402,12 +462,27 @@ const LyricsDisplay = ({
     };
 
     window.addEventListener('globalTimeUpdate', handleTime);
-    // Trigger initial snap instantly
-    const initialTime = window.currentAudioTime || 0;
-    handleTime({ detail: initialTime });
+    
+    if (isPlayingCurrentSong) {
+        const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
+        handleTime({ detail: initialTime });
+    } else {
+        if (containerRef.current) {
+            const lines = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper.active'));
+            lines.forEach(line => line.classList.remove('active'));
+            
+            const adlibs = Array.from(containerRef.current.querySelectorAll('.adlib-active, .adlib-visible, .focused-adlib-line.active'));
+            adlibs.forEach(node => {
+                node.classList.remove('adlib-active', 'adlib-visible', 'active');
+                if (node.classList.contains('adlib-node')) {
+                    node.classList.add('adlib-hidden');
+                }
+            });
+        }
+    }
 
     return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, [lyricsViewMode]);
+  }, [lyricsViewMode, isPlayingCurrentSong, currentTrack]);
 
   const handlePaste = (e) => {
     const html = e.clipboardData.getData('text/html');
@@ -464,9 +539,10 @@ const LyricsDisplay = ({
         <div className="live-lyrics-preview" ref={containerRef}>
           {liveParsedLyrics.map((line, i) => {
             let nextStart = 'NaN';
-            for (let j = i + 1; j < selectedSong.syncData.length; j++) {
-                if (selectedSong.syncData[j].start !== null) {
-                    nextStart = selectedSong.syncData[j].start;
+            const syncList = selectedSong?.syncData || [];
+            for (let j = i + 1; j < syncList.length; j++) {
+                if (syncList[j]?.start != null) {
+                    nextStart = syncList[j].start;
                     break;
                 }
             }
@@ -474,11 +550,12 @@ const LyricsDisplay = ({
                 <LyricLineWrapper
                   key={i}
                   lineObj={line}
-                  savedNode={selectedSong.syncData[i]}
+                  savedNode={syncList[i]}
                   nextStart={nextStart}
                   viewMode="live"
                   handleLineClick={handleLineClick}
                   masterPalette={masterPalette}
+                  isPlayingCurrentSong={isPlayingCurrentSong}
                 />
             )
           })}
@@ -487,9 +564,10 @@ const LyricsDisplay = ({
         <div className="focused-lyrics-preview" ref={containerRef}>
           {liveParsedLyrics.map((line, i) => {
              let nextStart = 'NaN';
-             for (let j = i + 1; j < selectedSong.syncData.length; j++) {
-                 if (selectedSong.syncData[j].start !== null) {
-                     nextStart = selectedSong.syncData[j].start;
+             const syncList = selectedSong?.syncData || [];
+             for (let j = i + 1; j < syncList.length; j++) {
+                 if (syncList[j]?.start != null) {
+                     nextStart = syncList[j].start;
                      break;
                  }
              }
@@ -497,19 +575,21 @@ const LyricsDisplay = ({
                  <LyricLineWrapper
                     key={i}
                     lineObj={line}
-                    savedNode={selectedSong.syncData[i]}
+                    savedNode={syncList[i]}
                     nextStart={nextStart}
                     viewMode="focused"
                     handleLineClick={handleLineClick}
                     masterPalette={masterPalette}
+                    isPlayingCurrentSong={isPlayingCurrentSong}
                  />
              )
           })}
           
           <FocusedAdlibsTracker 
-             syncData={selectedSong.syncData}
+             syncData={selectedSong?.syncData}
              handleLineClick={handleLineClick}
              masterPalette={masterPalette}
+             isPlayingCurrentSong={isPlayingCurrentSong}
           />
         </div>
       ) : (

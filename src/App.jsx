@@ -214,7 +214,6 @@ const App = () => {
     event.target.value = null; 
   };
 
-  // --- FULLY RESPONSIVE FLUID TYPOGRAPHY ---
   const dynamicStyles = {
     '--dyn-card-font-size': `clamp(12px, 1.2vw, ${settings.cardFontSize}px)`,
     '--dyn-modal-font-size': `clamp(24px, 4vw, ${settings.modalFontSize}px)`,
@@ -329,6 +328,7 @@ const App = () => {
       </main>
 
       <SongModal 
+        key={selectedSong ? selectedSong.trackId : 'modal-empty'}
         selectedSong={selectedSong}
         setSelectedSong={setSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}

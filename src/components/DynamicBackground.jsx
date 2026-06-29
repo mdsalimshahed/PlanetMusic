@@ -7,23 +7,28 @@ const DynamicBackground = ({
   liveParsedLyrics
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
+  
+  const allArtists = Object.keys(masterPalette);
 
-  const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
+  // CRITICAL FIX: Sort active names globally so Left/Right sides NEVER flip mid-song
+  const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
+    .filter(Boolean)
+    .map(s => s.trim())
+    .sort((a, b) => allArtists.indexOf(a) - allArtists.indexOf(b)) || [];
+    
   const isMulti = activeNames.length > 1;
 
-  // Helper to get who belongs in which cell
+  // CRITICAL FIX: Map Artist 0 to Left (Cell 0, 2) and Artist 1 to Right (Cell 1, 3)
   const getArtistForCell = (cellIndex) => {
     if (!isMulti) return null;
     if (activeNames.length === 2) {
-      return (cellIndex === 0 || cellIndex === 3) ? activeNames[0] : activeNames[1];
+      return (cellIndex % 2 === 0) ? activeNames[0] : activeNames[1];
     }
     return activeNames[cellIndex % activeNames.length];
   };
 
-  // Extract all unique singer combinations that appear in the song
   const uniqueSingerCombos = Array.from(new Set(liveParsedLyrics?.map(l => l.singer).filter(Boolean) || []));
   
-  // If the current singer background has a name not in the lyrics (e.g. fallback or manual), ensure it's in the list
   if (currentSingerBg?.name && !uniqueSingerCombos.includes(currentSingerBg.name)) {
     uniqueSingerCombos.push(currentSingerBg.name);
   }
