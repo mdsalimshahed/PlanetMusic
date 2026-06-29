@@ -22,6 +22,12 @@
   padding: 0;
 }
 
+html, body {
+  /* Prevent pull-to-refresh and scroll bouncing that causes URL bar to glitch */
+  overscroll-behavior: none; 
+  overscroll-behavior-y: none;
+}
+
 body {
   background-color: var(--base-bg);
   color: var(--text-base);
@@ -71,8 +77,13 @@ body {
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   width: 100vw;
+  /* Fallback for older browsers, modern dynamic viewport for mobile */
+  height: 100vh;
+  height: 100dvh;
+  /* Force GPU acceleration to prevent background flicker */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .main-content {
@@ -167,6 +178,7 @@ body {
 
 .empty-message {
   height: 40vh;
+  height: 40dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -285,7 +297,6 @@ body {
   }
   
   .content-scroll-area {
-    /* Significantly increased bottom padding taking mobile browser bounds into consideration */
     padding: 24px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
   }
 

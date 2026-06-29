@@ -4,7 +4,9 @@
   top: 0; 
   left: 0; 
   width: 100vw; 
+  /* Dynamic viewport to prevent resizing jumps */
   height: 100vh; 
+  height: 100dvh;
   z-index: 9999;
   display: flex; 
   align-items: flex-start; 
@@ -16,15 +18,20 @@
 
 .modal-window {
   width: 100vw; 
-  height: 100vh; 
   max-width: 100vw; 
-  max-height: 100vh; 
+  height: 100vh;
+  height: 100dvh; 
+  max-height: 100vh;
+  max-height: 100dvh; 
   border-radius: 0; 
   position: relative; 
   overflow: hidden; 
   display: flex;
   flex-direction: column; 
   animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Force GPU to stop inner children repaints */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .modal-dynamic-bg {
@@ -63,6 +70,7 @@
 .modal-two-column-layout {
   display: flex; 
   height: calc(100vh - (var(--dyn-modal-padding-y, 5vh) * 2)); 
+  height: calc(100dvh - (var(--dyn-modal-padding-y, 5vh) * 2)); 
   margin-top: var(--dyn-modal-padding-y, 5vh); 
   margin-bottom: var(--dyn-modal-padding-y, 5vh); 
   gap: clamp(20px, 4vw, 40px); 
@@ -140,7 +148,7 @@
   .modal-two-column-layout {
     flex-direction: column;
     height: 100vh;
-    /* Extra generous bottom padding guarantees content escapes browser address bars */
+    height: 100dvh;
     padding: 20px 20px calc(140px + env(safe-area-inset-bottom, 20px)) 20px;
     margin: 0;
     gap: 24px;
