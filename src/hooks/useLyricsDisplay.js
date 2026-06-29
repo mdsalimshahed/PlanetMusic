@@ -25,7 +25,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
   const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000; 
 
-  // CRITICAL FIX: Computes directly during render, preventing out-of-sync states
   const liveParsedLyrics = useMemo(() => {
     if (!selectedSong) return [];
     return parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);

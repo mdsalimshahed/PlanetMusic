@@ -199,7 +199,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
               return (
                   <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
                       <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-                      {/* CRITICAL FIX: Properly merges pronunciation-text with the dynamic adlib-node classes */}
                       <span {...adlibProps} className={`pronunciation-text ${adlibProps.className || ''}`.trim()} style={basePronStyle}>{cleanTrans}</span>
                   </span>
               );
@@ -390,7 +389,19 @@ const LyricsDisplay = ({
 }) => {
   const containerRef = useRef(null);
   
+  // CRITICAL OPTIMIZATION: Cache nodes explicitly to eliminate CPU blocking
+  const cachedLinesRef = useRef([]);
+  const cachedAdlibsRef = useRef([]);
+
   const isPlayingCurrentSong = !currentTrack || currentTrack?.trackId === selectedSong?.trackId;
+
+  // Rebuild the DOM cache only when the lines strictly render or swap
+  useEffect(() => {
+    if (containerRef.current) {
+        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper'));
+        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node'));
+    }
+  }, [liveParsedLyrics, lyricsViewMode]);
 
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
@@ -399,9 +410,9 @@ const LyricsDisplay = ({
         if (!isPlayingCurrentSong) return;
 
         const time = e.detail;
-        if (!containerRef.current) return;
         
-        const lines = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper'));
+        // Loop over purely cached array - eliminates all DOM queries!
+        const lines = cachedLinesRef.current;
         let newActiveIndex = -1;
 
         for (let i = 0; i < lines.length; i++) {
@@ -423,7 +434,7 @@ const LyricsDisplay = ({
                 if (!line.classList.contains('active')) {
                     line.classList.add('active');
                     
-                    if (lyricsViewMode === 'live') {
+                    if (lyricsViewMode === 'live' && containerRef.current) {
                         const offsetTop = line.offsetTop;
                         const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (line.clientHeight / 2);
                         containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
@@ -434,28 +445,27 @@ const LyricsDisplay = ({
             }
         });
 
-        const adlibs = Array.from(containerRef.current.querySelectorAll('.adlib-node, .focused-adlib-line'));
+        // Loop over isolated adlibs to bypass DOM queries
+        const adlibs = cachedAdlibsRef.current;
         adlibs.forEach(node => {
             const aStart = parseFloat(node.dataset.start);
             const aEnd = parseFloat(node.dataset.end);
             if (isNaN(aStart)) return;
 
             if (time >= aStart && time <= aEnd) {
-                if (!node.classList.contains('adlib-active') && !node.classList.contains('active')) {
-                    node.classList.add(node.classList.contains('focused-adlib-line') ? 'active' : 'adlib-active');
+                if (!node.classList.contains('adlib-active')) {
+                    node.classList.add('adlib-active');
                     node.classList.remove('adlib-hidden', 'adlib-visible');
                 }
-            } else if (time >= aStart && node.classList.contains('adlib-node')) { 
+            } else if (time >= aStart) { 
                 if (!node.classList.contains('adlib-visible')) {
                     node.classList.add('adlib-visible');
                     node.classList.remove('adlib-hidden', 'adlib-active');
                 }
             } else {
-                if (!node.classList.contains('adlib-hidden') && !node.classList.contains('focused-adlib-line')) {
+                if (!node.classList.contains('adlib-hidden')) {
                     node.classList.add('adlib-hidden');
                     node.classList.remove('adlib-active', 'adlib-visible');
-                } else if (node.classList.contains('focused-adlib-line') && node.classList.contains('active')) {
-                    node.classList.remove('active');
                 }
             }
         });
@@ -467,18 +477,13 @@ const LyricsDisplay = ({
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTime({ detail: initialTime });
     } else {
-        if (containerRef.current) {
-            const lines = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper.active'));
-            lines.forEach(line => line.classList.remove('active'));
-            
-            const adlibs = Array.from(containerRef.current.querySelectorAll('.adlib-active, .adlib-visible, .focused-adlib-line.active'));
-            adlibs.forEach(node => {
-                node.classList.remove('adlib-active', 'adlib-visible', 'active');
-                if (node.classList.contains('adlib-node')) {
-                    node.classList.add('adlib-hidden');
-                }
-            });
-        }
+        cachedLinesRef.current.forEach(line => line.classList.remove('active'));
+        cachedAdlibsRef.current.forEach(node => {
+            node.classList.remove('adlib-active', 'adlib-visible');
+            if (!node.classList.contains('adlib-hidden')) {
+                node.classList.add('adlib-hidden');
+            }
+        });
     }
 
     return () => window.removeEventListener('globalTimeUpdate', handleTime);
