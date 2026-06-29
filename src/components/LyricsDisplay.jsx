@@ -1,10 +1,8 @@
 /* --- src/components/LyricsDisplay.jsx --- */
 import React, { useEffect, useMemo, useRef } from 'react';
 
-// Failsafe to identify characters that do not use spaces to break (Chinese/Japanese)
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 
-// Reassembles individual character spans into unbreakable "word" blocks
 const groupWords = (elements, charData) => {
   const words = [];
   let currentWord = [];
@@ -37,7 +35,6 @@ const groupWords = (elements, charData) => {
   return words;
 };
 
-// Pure renderer detached from state for raw performance
 const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
@@ -111,7 +108,7 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
       }
 
       let style = {};
-      let isCharActive = isActive || isAdlib; // Force active inline styles if it's an adlib so CSS can toggle it over perfectly
+      let isCharActive = isActive || isAdlib;
 
       if (isCharActive) {
           if (isGradient) {
@@ -242,18 +239,25 @@ const LyricLineWrapper = React.memo(({
   activePreviewRef, handleLineClick, masterPalette 
 }) => {
   const lineRef = useRef(null);
+  
+  // CRITICAL CPU FIX: Cache DOM nodes into an array to prevent 60fps DOM querying
+  const cachedAdlibNodesRef = useRef([]);
 
-  // CRITICAL FIX: Pure DOM Cache Mutation, completely bypassing React State Renders
+  useEffect(() => {
+    if (lineRef.current && savedNode?.isSplit) {
+      cachedAdlibNodesRef.current = Array.from(lineRef.current.querySelectorAll('.adlib-node'));
+    }
+  }, [lineObj, savedNode, isMainActive, viewMode, masterPalette]);
+
   useEffect(() => {
       if (viewMode !== 'live' && viewMode !== 'focused') return;
       if (!savedNode?.isSplit && !isMainActive) return;
+      if (cachedAdlibNodesRef.current.length === 0) return;
       
       const handleTime = (e) => {
           const time = e.detail;
-          if (!lineRef.current) return;
           
-          const adlibs = lineRef.current.querySelectorAll('.adlib-node');
-          adlibs.forEach(node => {
+          cachedAdlibNodesRef.current.forEach(node => {
                const start = parseFloat(node.dataset.start);
                const end = parseFloat(node.dataset.end);
                if (isNaN(start)) return;
@@ -283,7 +287,6 @@ const LyricLineWrapper = React.memo(({
 
   const seekTarget = savedNode ? savedNode.start : null;
 
-  // Cache the heavily parsed lyrics line once
   const renderedContent = useMemo(() => 
     renderLine(lineObj, savedNode, isMainActive, viewMode === 'focused', masterPalette),
     [lineObj, savedNode, isMainActive, viewMode, masterPalette]
@@ -306,8 +309,8 @@ const LyricLineWrapper = React.memo(({
 
 const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette }) => {
   const containerRef = useRef(null);
+  const cachedTrackNodesRef = useRef([]);
 
-  // Pre-calculate all random positions strictly ONCE per song
   const adlibsToRender = useMemo(() => {
       const items = [];
       if (!syncData) return items;
@@ -369,13 +372,19 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       return items;
   }, [syncData, masterPalette]);
   
-  // CRITICAL FIX: Pure DOM Cache Mutation for floating adlibs
+  useEffect(() => {
+    if (containerRef.current) {
+      cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line'));
+    }
+  }, [adlibsToRender]);
+
+  // CRITICAL CPU FIX: Utilize cached array for 60fps loop 
   useEffect(() => {
       const handleTime = (e) => {
          const time = e.detail;
-         if (!containerRef.current) return;
-         const nodes = containerRef.current.querySelectorAll('.focused-adlib-line');
-         nodes.forEach(node => {
+         if (cachedTrackNodesRef.current.length === 0) return;
+         
+         cachedTrackNodesRef.current.forEach(node => {
              const start = parseFloat(node.dataset.start);
              const end = parseFloat(node.dataset.end);
              if (time >= start && time <= end) {

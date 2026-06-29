@@ -14,8 +14,11 @@ const formatTime = (seconds) => {
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
   
+  // Progress is detached from React state for extreme performance
+  const progressBarRef = useRef(null);
+  const currentTimeRef = useRef(null);
+  
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState('');
   const [accentColor, setAccentColor] = useState('#ffffff'); 
@@ -26,7 +29,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
 
-  // Responsive Portal States
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
 
@@ -36,7 +38,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Poll for the Mobile Injection Slot whenever the modal opens
   useEffect(() => {
     if (selectedSong && isStacked) {
       setTimeout(() => {
@@ -60,11 +61,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       try {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+        canvas.width = 5;
+        canvas.height = 5;
+        ctx.drawImage(img, 0, 0, 5, 5);
         
-        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
         
         for (let i = 0; i < data.length; i += 4) {
@@ -101,17 +102,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       setAudioSrc('');
       setPendingSeek(null); 
       emitPlayState(false, true);
+      if (progressBarRef.current) progressBarRef.current.value = 0;
+      if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
       return;
     }
 
     const loadAudio = async () => {
       if (currentTrack.customLinks?.hasLocal) {
         const file = await getAudioFile(currentTrack.trackId);
-        if (file) {
-          setAudioSrc(URL.createObjectURL(file)); 
-        } else {
-          setAudioSrc(currentTrack.previewUrl);
-        }
+        setAudioSrc(file ? URL.createObjectURL(file) : currentTrack.previewUrl);
       } else {
         setAudioSrc(currentTrack.previewUrl);
       }
@@ -156,9 +155,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   }, [currentTrack, isPlaying, setCurrentTrack]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
+    if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
   const togglePlay = (e) => {
@@ -169,9 +166,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   };
 
   const openModal = () => {
-    if (currentTrack && setSelectedSong) {
-      setSelectedSong(currentTrack);
-    }
+    if (currentTrack && setSelectedSong) setSelectedSong(currentTrack);
   };
 
   useEffect(() => {
@@ -185,17 +180,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         togglePlay();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        const newTime = Math.max(0, audioRef.current.currentTime - 5);
-        audioRef.current.currentTime = newTime;
-        setProgress(newTime);
-        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: newTime }));
+        audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 5);
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         const maxTime = duration || audioRef.current.duration;
-        const newTime = Math.min(maxTime, audioRef.current.currentTime + 5);
-        audioRef.current.currentTime = newTime;
-        setProgress(newTime);
-        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: newTime }));
+        audioRef.current.currentTime = Math.min(maxTime, audioRef.current.currentTime + 5);
       }
     };
 
@@ -203,14 +192,35 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
+  // CRITICAL PERFECT OPTIMIZATION: Hybrid Throttle Loop
   useEffect(() => {
     let animationFrameId;
+    let lastDispatchTime = 0;
+    let lastSecond = -1;
     
-    const tick = () => {
+    const tick = (now) => {
       if (audioRef.current && isPlaying) {
         const time = audioRef.current.currentTime;
-        setProgress(time);
-        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
+        
+        // 60fps - Buttery smooth sliding progress bar via CSS
+        if (progressBarRef.current) {
+          progressBarRef.current.value = time;
+          const dur = duration || audioRef.current.duration || 1;
+          progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
+        }
+        
+        // 1fps - Text string only updates DOM when the second actually changes
+        const currentSecond = Math.floor(time);
+        if (currentSecond !== lastSecond && currentTimeRef.current) {
+          currentTimeRef.current.innerText = formatTime(time);
+          lastSecond = currentSecond;
+        }
+
+        // 20fps - Lyric Sync engine checks state every 50ms (Solves CPU thermal throttling)
+        if (now - lastDispatchTime > 50) {
+          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
+          lastDispatchTime = now;
+        }
       }
       animationFrameId = requestAnimationFrame(tick);
     };
@@ -220,12 +230,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     }
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isPlaying]);
+  }, [isPlaying, duration]);
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
-      
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         audioRef.current.play()
@@ -244,7 +253,13 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-    setProgress(time);
+    
+    if (progressBarRef.current) {
+      progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
+    }
+    if (currentTimeRef.current) {
+      currentTimeRef.current.innerText = formatTime(time);
+    }
     window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
   };
 
@@ -264,7 +279,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   if (!currentTrack) return null;
 
-  // The purely visual Player UI
   const playerUI = (
     <div 
       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''}`} 
@@ -309,14 +323,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       </div>
       
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
-        <span className="time-text">{formatTime(progress)}</span>
+        <span className="time-text" ref={currentTimeRef}>0:00</span>
         <input 
           type="range" 
           className="custom-slider progress-slider" 
+          ref={progressBarRef}
           min="0" max={duration || 100} 
-          value={progress} 
+          defaultValue="0"
           onChange={handleSeek} 
-          style={{ '--progress': `${(progress / (duration || 1)) * 100}%` }}
+          style={{ '--progress': `0%` }}
         />
         <span className="time-text">{formatTime(duration)}</span>
       </div>
@@ -333,7 +348,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
         onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
       />
-      {/* Portals the UI seamlessly into the Left Column on mobile without unmounting the audio */}
       {slotNode ? createPortal(playerUI, slotNode) : playerUI}
     </>
   );

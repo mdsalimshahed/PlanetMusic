@@ -15,14 +15,15 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
     
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext('2d', { willReadFrequently: true });
       
-      canvas.width = 50; 
-      canvas.height = 50;
-      context.drawImage(img, 0, 0, 50, 50);
+      // CRITICAL RAM FIX: Render to a tiny micro-canvas to extract averages without bloating memory
+      canvas.width = 5; 
+      canvas.height = 5;
+      context.drawImage(img, 0, 0, 5, 5);
       
       try {
-        const data = context.getImageData(0, 0, 50, 50).data;
+        const data = context.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0;
         const pixelCount = data.length / 4;
         

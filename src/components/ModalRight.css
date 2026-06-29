@@ -15,21 +15,22 @@
   transform: translateZ(0);
 }
 
-/* Background Layers - Heavily Optimized for Mobile GPUs */
+/* Background Layers - Optimized to purge inactive images from GPU Memory */
 .dynamic-background-contained { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; pointer-events: none; border-radius: 0; }
 .singer-watermark { 
   position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
   object-fit: cover; 
   object-position: 50% 10%;
-  /* CRITICAL FIX: Removed heavy filter transitions. Only opacity is animated now to prevent device overheating */
-  transition: opacity 0.6s ease-in-out; 
+  /* Notice: Filter is removed entirely to prevent mobile GPU thermal throttling */
+  transition: opacity 0.6s ease-in-out, visibility 0s linear 0.6s; 
   will-change: opacity; 
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
   mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
 }
-.active-watermark { z-index: 1; opacity: 1; }
-.inactive-watermark { opacity: 0 !important; z-index: 0; }
+.active-watermark { z-index: 1; opacity: 1; visibility: visible; transition: opacity 0.6s ease-in-out, visibility 0s linear 0s; }
+.inactive-watermark { opacity: 0 !important; z-index: 0; visibility: hidden; }
 
+/* Matrix Layer Styles */
 .matrix-watermark-container {
   position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
   display: grid;
@@ -43,9 +44,9 @@
 .matrix-cell { position: relative; width: 100%; height: 100%; overflow: hidden; }
 
 /* Singer Names */
-.singer-name-corner { position: absolute; bottom: 32px; right: 32px; z-index: 2; pointer-events: none; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0; font-size: clamp(20px, 3vw, 28px); font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out, filter 0.4s ease-in-out; filter: blur(0px);will-change: opacity, transform, filter; }
-.singer-name-corner.visible { opacity: 0.9; transform: translate3d(0,0,0) scale(1); filter: blur(0px); }
-.singer-name-corner.hidden { opacity: 0; transform: translate3d(0,10px,0) scale(0.98); filter: blur(2px); }
+.singer-name-corner { position: absolute; bottom: 32px; right: 32px; z-index: 2; pointer-events: none; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0; font-size: clamp(20px, 3vw, 28px); font-weight: 800; letter-spacing: -0.5px; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; will-change: opacity, transform; }
+.singer-name-corner.visible { opacity: 0.9; transform: translate3d(0,0,0) scale(1); }
+.singer-name-corner.hidden { opacity: 0; transform: translate3d(0,10px,0) scale(0.98); }
 .singer-name-separator { color: rgba(255, 255, 255, 1) !important; text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); font-weight: 600; white-space: pre-wrap; }
 
 /* Image Manager */
