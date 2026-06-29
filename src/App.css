@@ -285,13 +285,19 @@ body {
   }
   
   .content-scroll-area {
-    padding: 24px 20px 120px 20px;
+    /* Significantly increased bottom padding taking mobile browser bounds into consideration */
+    padding: 24px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
   }
 
   .section-title {
     font-size: 22px;
     margin-bottom: 20px;
     text-align: center;
+  }
+  
+  .track-grid {
+    column-width: 150px; 
+    column-gap: 16px;
   }
 }
 

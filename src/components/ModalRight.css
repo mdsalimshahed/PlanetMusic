@@ -241,7 +241,6 @@
   pointer-events: none;
 }
 
-/* CRITICAL FIX: Ensure ad-libs STRICTLY wrap to 40% width. Combined with mathematical boundaries, they can never bleed. */
 .focused-adlib-line {
   position: absolute;
   top: var(--adlib-top, 50%);
@@ -254,7 +253,7 @@
   word-break: normal; 
   overflow-wrap: break-word; 
   
-  max-width: 40%; /* Strict maximum boundary relative to canvas */
+  max-width: 40%; 
   
   opacity: 0;
   transform: translate(-50%, calc(-50% + 20px)) rotate(var(--adlib-rot, 0deg));
@@ -291,11 +290,23 @@ rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-wei
 @media (max-width: 900px) {
   .modal-right-col {
     flex: none !important;
-    width: 100% !important; /* Force true full width */
-    height: auto !important; /* Allow the aspect ratio to naturally govern the height */
-    aspect-ratio: 1 / 1 !important; /* Guarantees mathematically perfect 1:1 scaling */
-    max-height: none !important; /* Remove height restrictions */
+    width: 100% !important; 
+    height: auto !important; 
+    aspect-ratio: 1 / 1 !important; 
+    max-height: none !important; 
     border-radius: 16px !important;
-    margin-bottom: 40px; 
+    
+    /* Adds bottom spacing, ensuring it escapes underneath the mobile browser safe areas */
+    margin-bottom: calc(60px + env(safe-area-inset-bottom, 20px)) !important;
+  }
+  
+  .preview-line {
+    font-size: calc(var(--dyn-live-sync-font-size, 34px) * 0.75);
+  }
+  .focused-line {
+    font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.75);
+  }
+  .focused-adlib-line {
+    max-width: 80vw; 
   }
 }

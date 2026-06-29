@@ -140,10 +140,11 @@
   .modal-two-column-layout {
     flex-direction: column;
     height: 100vh;
-    padding: 20px;
+    /* Extra generous bottom padding guarantees content escapes browser address bars */
+    padding: 20px 20px calc(140px + env(safe-area-inset-bottom, 20px)) 20px;
     margin: 0;
     gap: 24px;
-    overflow-y: auto; /* Allows the entire left & right column to scroll vertically like a webpage */
+    overflow-y: auto; 
     overflow-x: hidden;
   }
 }
