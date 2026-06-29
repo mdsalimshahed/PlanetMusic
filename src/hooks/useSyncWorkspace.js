@@ -87,14 +87,13 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
   }, [activeSyncIndex, isSyncMode]);
 
-  // CRITICAL FIX: Fully corrected tracking algorithm to respect the first/last lines and unsynced focus states
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
 
     const currentItem = wLines[activeIdxRef.current];
     
-    // Do not auto-track or steal focus if the user is focused on an unsynced line (waiting to record it)
+    // Do not auto-track or steal focus if the user is waiting to record an unsynced line
     if (currentItem && (currentItem.ref.start === null || (currentItem.ref.start !== null && currentItem.ref.end === null))) {
       return; 
     }
@@ -113,33 +112,32 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
         }
       }
       
+      // CRITICAL FIX: Ensure highlight drops when time > line.end
       if (time >= item.ref.start) {
-        if (nextStart !== null) {
-            if (time < nextStart) {
+        if (nextStart === null || time < nextStart) {
+            if (item.ref.end !== null && time > item.ref.end) {
+                newIdx = -1;
+            } else {
                 newIdx = i;
-                break;
             }
-        } else {
-            // It's the absolute last synced line, lock focus to it
-            newIdx = i;
             break;
         }
       }
     }
     
-    // If the audio is before the very first synced line, focus the first main line
     if (newIdx === -1) {
         for (let i = 0; i < wLines.length; i++) {
             if (wLines[i].type === 'main') {
-                newIdx = i;
+                if (wLines[i].ref.start === null) {
+                    newIdx = i;
+                }
                 break;
             }
         }
     }
     
-    if (newIdx !== -1 && newIdx !== activeIdxRef.current) {
-      // Prevent stealing focus if the user is editing an adlib within the current line
-      if (currentItem?.type === 'adlib' && wLines[newIdx].lineIndex === currentItem.lineIndex) {
+    if (newIdx !== activeIdxRef.current) {
+      if (newIdx !== -1 && currentItem?.type === 'adlib' && wLines[newIdx].lineIndex === currentItem.lineIndex) {
         return; 
       }
       setActiveSyncIndex(newIdx);
@@ -229,7 +227,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
       const currentIdx = activeIdxRef.current;
       const wLines = workspaceLinesRef.current;
+      
       if (!wLines[currentIdx]) return;
+      
       const currentItem = wLines[currentIdx];
       const data = [...syncDataRef.current];
       
