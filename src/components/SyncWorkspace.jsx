@@ -1,20 +1,52 @@
 /* --- src/components/SyncWorkspace.jsx --- */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
 import { quickTransliterate } from '../transliterator';
 
 const SyncWorkspace = ({
-  syncData, activeSyncIndex, setActiveSyncIndex, syncProgress, syncDuration, setSyncDuration,
+  syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
-  syncAudioRef, syncAudioSrc, handleSyncTimeUpdate, setIsSyncPlaying, activeLineRef,
+  syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef,
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette
 }) => {
   
+  const progressSliderRef = useRef(null);
+  const preciseTimeRef = useRef(null);
+  const containerRef = useRef(null);
+
   const handleAudioLoaded = (e) => {
     if (e.target.readyState > 0) {
       setSyncDuration(e.target.duration || 0);
     }
   };
+
+  useEffect(() => {
+    const handleWorkspaceTime = (e) => {
+      const time = e.detail;
+      
+      if (progressSliderRef.current) progressSliderRef.current.value = time;
+      if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
+
+      if (containerRef.current) {
+        const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
+        for (let i = 0; i < adlibNodes.length; i++) {
+          const node = adlibNodes[i];
+          const start = parseFloat(node.dataset.start);
+          const end = parseFloat(node.dataset.end);
+          if (!isNaN(start)) {
+            if (time >= start && time <= end) {
+              if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
+            } else {
+              if (node.classList.contains('adlib-playing')) node.classList.remove('adlib-playing');
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
+    return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
+  }, []);
 
   const localHandleSplitAdlibs = async (lineIndex) => {
     const data = [...syncData];
@@ -168,7 +200,6 @@ const SyncWorkspace = ({
             let scaleParenthesis = false;
             const char = c.char;
             
-            // Only scale parentheses if they encompass or neighbor actual foreign text
             if (char === '(' || char === '[' || char === '{') {
                 const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
                 for (let i = cIdx + 1; i < chars.length; i++) {
@@ -249,11 +280,13 @@ const SyncWorkspace = ({
     <div className="sync-mode-container">
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>{isSyncPlaying ? '⏸' : '▶'}</button>
-        <span className="precise-time">{formatPreciseTime(syncProgress)}</span>
+        <span className="precise-time" ref={preciseTimeRef}>00:00.000</span>
         <input 
           type="range" className="custom-slider sync-slider" 
           min="0" max={syncDuration || 1} step="0.001" 
-          value={syncProgress} onChange={handleSyncSeek} 
+          defaultValue="0"
+          ref={progressSliderRef}
+          onChange={handleSyncSeek} 
         />
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
@@ -275,27 +308,27 @@ const SyncWorkspace = ({
         </div>
       </div>
 
-      <div className="sync-lines-container">
+      <div className="sync-lines-container" ref={containerRef}>
         {workspaceLines.map((item, i) => {
           const isMain = item.type === 'main';
           const line = item.ref;
           const isActive = i === activeSyncIndex;
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
-          
           const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
           
-          let isAdlibPlaying = false;
-          if (!isMain && line.start !== null) {
-            const boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
-            isAdlibPlaying = syncProgress >= line.start && syncProgress <= boundedEnd;
+          let boundedEnd = Number.MAX_VALUE;
+          if (!isMain) {
+            boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
           
           return (
             <div 
               key={i}
               ref={isActive ? activeLineRef : null}
-              className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib' : ''} ${isAdlibPlaying ? 'adlib-playing' : ''}`}
+              className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
+              data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
+              data-end={!isMain ? boundedEnd : 'NaN'}
               onClick={() => {
                 setActiveSyncIndex(i);
                 if (!isMain && (line.start === null || line.end === null)) {
@@ -334,7 +367,6 @@ const SyncWorkspace = ({
       <audio 
         ref={syncAudioRef} 
         src={syncAudioSrc}
-        onTimeUpdate={handleSyncTimeUpdate}
         onLoadedMetadata={handleAudioLoaded}
         onDurationChange={handleAudioLoaded}
         onEnded={() => setIsSyncPlaying(false)}
