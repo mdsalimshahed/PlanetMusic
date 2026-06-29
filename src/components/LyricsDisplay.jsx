@@ -35,7 +35,6 @@ const groupWords = (elements, charData) => {
   return words;
 };
 
-// Pure DOM render function
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
@@ -265,48 +264,43 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
       if (!syncData) return items;
       
       const currentTime = window.currentAudioTime || 0;
-      const allArtists = Object.keys(masterPalette); 
 
       syncData.forEach((node) => {
           if (node?.isSplit && node.adlibs) {
+              const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i)
+                  .filter(Boolean)
+                  .map(s => s.trim()) || [];
+                  
+              const cols = Math.max(2, lineActiveNames.length);
+
               node.adlibs.forEach((adlib, j) => {
                   if (adlib.start === null) return;
                   
                   const randRot = Math.random();
                   const randX = Math.random();
                   const randY = Math.random();
-                  const quadRand = Math.random();
                   const rot = (randRot * 20) - 10; 
                   
                   const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
                   const primaryAdlibSinger = adlibNames[0];
-                  let quad = Math.floor(quadRand * 4); 
+                  
+                  let col = 0;
+                  const row = Math.random() > 0.5 ? 0 : 1;
 
-                  if (allArtists.length > 1 && primaryAdlibSinger) {
-                      const idx = allArtists.indexOf(primaryAdlibSinger);
+                  if (lineActiveNames.length > 0 && primaryAdlibSinger) {
+                      const idx = lineActiveNames.indexOf(primaryAdlibSinger);
                       if (idx !== -1) {
-                          if (allArtists.length === 2) {
-                              quad = (idx === 0) ? ((quadRand > 0.5) ? 0 : 2) : ((quadRand > 0.5) ? 1 : 3);
-                          } else {
-                              quad = idx % 4;
-                          }
+                          col = (idx - row + lineActiveNames.length) % lineActiveNames.length;
+                      } else {
+                          col = Math.floor(Math.random() * cols);
                       }
+                  } else {
+                      col = Math.floor(Math.random() * cols);
                   }
                   
-                  let top, left;
-                  if (quad === 0) { 
-                      top = 12 + (randY * 15);
-                      left = 15 + (randX * 15); 
-                  } else if (quad === 1) { 
-                      top = 12 + (randY * 15); 
-                      left = 70 + (randX * 15); 
-                  } else if (quad === 2) { 
-                      top = 73 + (randY * 15); 
-                      left = 15 + (randX * 15); 
-                  } else { 
-                      top = 68 + (randY * 12); 
-                      left = 65 + (randX * 15); 
-                  }
+                  const top = row === 0 ? 12 + (randY * 15) : 68 + (randY * 15);
+                  const colCenter = (col + 0.5) * (100 / cols);
+                  const left = colCenter + (randX * 20 - 10); 
 
                   const rendered = renderLine(adlib, adlib, true, masterPalette, isPlayingCurrentSong);
 
@@ -329,32 +323,46 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
   
   useEffect(() => {
     if (containerRef.current) {
-      cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line'));
+      cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line')).map(node => ({
+          node,
+          start: parseFloat(node.dataset.start),
+          end: parseFloat(node.dataset.end),
+          isActive: node.classList.contains('active')
+      }));
     }
   }, [adlibsToRender]);
 
   useEffect(() => {
       if (!isPlayingCurrentSong) {
           if (cachedTrackNodesRef.current.length > 0) {
-              cachedTrackNodesRef.current.forEach(node => node.classList.remove('active'));
+              cachedTrackNodesRef.current.forEach(item => {
+                  if (item.isActive) {
+                      item.node.classList.remove('active');
+                      item.isActive = false;
+                  }
+              });
           }
           return;
       }
 
       const handleTime = (e) => {
          const time = e.detail;
-         if (cachedTrackNodesRef.current.length === 0) return;
+         const nodes = cachedTrackNodesRef.current;
          
-         cachedTrackNodesRef.current.forEach(node => {
-             const start = parseFloat(node.dataset.start);
-             const end = parseFloat(node.dataset.end);
-             if (time >= start && time <= end) {
-                 if (!node.classList.contains('active')) node.classList.add('active');
-             } else {
-                 if (node.classList.contains('active')) node.classList.remove('active');
+         for (let i = 0; i < nodes.length; i++) {
+             const item = nodes[i];
+             const shouldBeActive = time >= item.start && time <= item.end;
+             
+             if (shouldBeActive && !item.isActive) {
+                 item.node.classList.add('active');
+                 item.isActive = true;
+             } else if (!shouldBeActive && item.isActive) {
+                 item.node.classList.remove('active');
+                 item.isActive = false;
              }
-         });
+         }
       };
+      
       window.addEventListener('globalTimeUpdate', handleTime);
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
   }, [isPlayingCurrentSong]);
@@ -389,17 +397,27 @@ const LyricsDisplay = ({
 }) => {
   const containerRef = useRef(null);
   
-  // CRITICAL OPTIMIZATION: Cache nodes explicitly to eliminate CPU blocking
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
 
   const isPlayingCurrentSong = !currentTrack || currentTrack?.trackId === selectedSong?.trackId;
 
-  // Rebuild the DOM cache only when the lines strictly render or swap
   useEffect(() => {
     if (containerRef.current) {
-        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper'));
-        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node'));
+        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
+            node,
+            start: parseFloat(node.dataset.start),
+            end: parseFloat(node.dataset.end),
+            nextStart: parseFloat(node.dataset.nextStart),
+            isActive: node.classList.contains('active')
+        }));
+
+        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
+            node,
+            start: parseFloat(node.dataset.start),
+            end: parseFloat(node.dataset.end),
+            state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
+        }));
     }
   }, [liveParsedLyrics, lyricsViewMode]);
 
@@ -410,65 +428,66 @@ const LyricsDisplay = ({
         if (!isPlayingCurrentSong) return;
 
         const time = e.detail;
-        
-        // Loop over purely cached array - eliminates all DOM queries!
         const lines = cachedLinesRef.current;
         let newActiveIndex = -1;
 
+        // CRITICAL FIX: The loop breaks instantly upon finding the target, erasing massive CPU overhead
         for (let i = 0; i < lines.length; i++) {
-            const start = parseFloat(lines[i].dataset.start);
-            const end = parseFloat(lines[i].dataset.end);
-            const nextStart = parseFloat(lines[i].dataset.nextStart);
+            const { start, end, nextStart } = lines[i];
 
             if (!isNaN(start) && time >= start) {
                 const isBeforeEnd = isNaN(end) || time <= end;
                 const isBeforeNext = isNaN(nextStart) || time < nextStart;
                 if (isBeforeEnd && isBeforeNext) {
                     newActiveIndex = i;
+                    break; 
                 }
             }
         }
 
-        lines.forEach((line, i) => {
-            if (i === newActiveIndex) {
-                if (!line.classList.contains('active')) {
-                    line.classList.add('active');
-                    
-                    if (lyricsViewMode === 'live' && containerRef.current) {
-                        const offsetTop = line.offsetTop;
-                        const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (line.clientHeight / 2);
-                        containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
-                    }
+        for (let i = 0; i < lines.length; i++) {
+            const item = lines[i];
+            const shouldBeActive = (i === newActiveIndex);
+            
+            if (shouldBeActive && !item.isActive) {
+                item.node.classList.add('active');
+                item.isActive = true;
+                
+                if (lyricsViewMode === 'live' && containerRef.current) {
+                    const offsetTop = item.node.offsetTop;
+                    const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
+                    containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
                 }
-            } else {
-                if (line.classList.contains('active')) line.classList.remove('active');
+            } else if (!shouldBeActive && item.isActive) {
+                item.node.classList.remove('active');
+                item.isActive = false;
             }
-        });
+        }
 
-        // Loop over isolated adlibs to bypass DOM queries
         const adlibs = cachedAdlibsRef.current;
-        adlibs.forEach(node => {
-            const aStart = parseFloat(node.dataset.start);
-            const aEnd = parseFloat(node.dataset.end);
-            if (isNaN(aStart)) return;
+        for (let i = 0; i < adlibs.length; i++) {
+            const item = adlibs[i];
+            if (isNaN(item.start)) continue;
 
-            if (time >= aStart && time <= aEnd) {
-                if (!node.classList.contains('adlib-active')) {
-                    node.classList.add('adlib-active');
-                    node.classList.remove('adlib-hidden', 'adlib-visible');
+            let targetState = 'hidden';
+            if (time >= item.start && time <= item.end) targetState = 'active';
+            else if (time >= item.start) targetState = 'visible';
+
+            if (item.state !== targetState) {
+                const cl = item.node.classList;
+                if (targetState === 'active') {
+                    cl.add('adlib-active');
+                    cl.remove('adlib-hidden', 'adlib-visible');
+                } else if (targetState === 'visible') {
+                    cl.add('adlib-visible');
+                    cl.remove('adlib-hidden', 'adlib-active');
+                } else {
+                    cl.add('adlib-hidden');
+                    cl.remove('adlib-active', 'adlib-visible');
                 }
-            } else if (time >= aStart) { 
-                if (!node.classList.contains('adlib-visible')) {
-                    node.classList.add('adlib-visible');
-                    node.classList.remove('adlib-hidden', 'adlib-active');
-                }
-            } else {
-                if (!node.classList.contains('adlib-hidden')) {
-                    node.classList.add('adlib-hidden');
-                    node.classList.remove('adlib-active', 'adlib-visible');
-                }
+                item.state = targetState;
             }
-        });
+        }
     };
 
     window.addEventListener('globalTimeUpdate', handleTime);
@@ -477,11 +496,17 @@ const LyricsDisplay = ({
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTime({ detail: initialTime });
     } else {
-        cachedLinesRef.current.forEach(line => line.classList.remove('active'));
-        cachedAdlibsRef.current.forEach(node => {
-            node.classList.remove('adlib-active', 'adlib-visible');
-            if (!node.classList.contains('adlib-hidden')) {
-                node.classList.add('adlib-hidden');
+        cachedLinesRef.current.forEach(item => {
+            if (item.isActive) {
+                item.node.classList.remove('active');
+                item.isActive = false;
+            }
+        });
+        cachedAdlibsRef.current.forEach(item => {
+            if (item.state !== 'hidden') {
+                item.node.classList.add('adlib-hidden');
+                item.node.classList.remove('adlib-active', 'adlib-visible');
+                item.state = 'hidden';
             }
         });
     }

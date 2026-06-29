@@ -7,24 +7,21 @@ const DynamicBackground = ({
   liveParsedLyrics
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
-  
-  const allArtists = Object.keys(masterPalette);
 
-  // CRITICAL FIX: Sort active names globally so Left/Right sides NEVER flip mid-song
+  // CRITICAL FIX: Extract sequence exactly as it appears in the active line's heading
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
-    .map(s => s.trim())
-    .sort((a, b) => allArtists.indexOf(a) - allArtists.indexOf(b)) || [];
+    .map(s => s.trim()) || [];
     
   const isMulti = activeNames.length > 1;
+  const cols = Math.max(2, activeNames.length);
 
-  // CRITICAL FIX: Map Artist 0 to Left (Cell 0, 2) and Artist 1 to Right (Cell 1, 3)
+  // CRITICAL FIX: Row 0 goes sequential. Row 1 uses a left-shift to avoid column overlap.
   const getArtistForCell = (cellIndex) => {
-    if (!isMulti) return null;
-    if (activeNames.length === 2) {
-      return (cellIndex % 2 === 0) ? activeNames[0] : activeNames[1];
-    }
-    return activeNames[cellIndex % activeNames.length];
+    if (activeNames.length === 0) return null;
+    const row = Math.floor(cellIndex / cols);
+    const col = cellIndex % cols;
+    return activeNames[(col + row) % activeNames.length];
   };
 
   const uniqueSingerCombos = Array.from(new Set(liveParsedLyrics?.map(l => l.singer).filter(Boolean) || []));
@@ -50,9 +47,12 @@ const DynamicBackground = ({
         return <img key={`full-${singerName}`} src={finalImgUrl} alt="" className={`singer-watermark full-screen-watermark ${imgClass}`} style={style} />;
       })}
 
-      {/* MATRIX LAYER (Multi Artist) */}
-      <div className={`matrix-watermark-container ${isSingerVisible && isMulti ? 'active-matrix' : 'inactive-matrix'}`}>
-        {[0, 1, 2, 3].map(cellIdx => {
+      {/* MATRIX LAYER (Multi Artist dynamically expands based on sequence length) */}
+      <div 
+        className={`matrix-watermark-container ${isSingerVisible && isMulti ? 'active-matrix' : 'inactive-matrix'}`}
+        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+      >
+        {Array.from({ length: cols * 2 }).map((_, cellIdx) => {
           const targetArtist = getArtistForCell(cellIdx);
 
           return (
@@ -73,7 +73,7 @@ const DynamicBackground = ({
         })}
       </div>
       
-      {/* SINGER NAME CORNER (Mapped out as separate elements for perfect crossfading) */}
+      {/* SINGER NAME CORNER */}
       {uniqueSingerCombos.map(comboName => {
         const isActive = isSingerVisible && currentSingerBg?.name === comboName;
         

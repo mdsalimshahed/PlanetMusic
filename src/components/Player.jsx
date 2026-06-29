@@ -16,10 +16,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
+  const lastSecondRef = useRef(-1);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
-  // CRITICAL FIX: Safe undefined fallback for React's URL loader
   const [audioSrc, setAudioSrc] = useState(undefined);
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
@@ -209,9 +209,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
+  // CRITICAL FIX: Safe 60fps RequestAnimationFrame Loop. 
+  // Millisecond exact accuracy because the DOM is now cached in memory!
   useEffect(() => {
-    let intervalId;
-    let lastSecond = -1;
+    let animationFrameId;
     
     const tick = () => {
       if (audioRef.current && isPlaying) {
@@ -225,20 +226,21 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
         
         const currentSecond = Math.floor(time);
-        if (currentSecond !== lastSecond && currentTimeRef.current) {
+        if (currentSecond !== lastSecondRef.current && currentTimeRef.current) {
           currentTimeRef.current.innerText = formatTime(time);
-          lastSecond = currentSecond;
+          lastSecondRef.current = currentSecond;
         }
 
         window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
       }
+      animationFrameId = requestAnimationFrame(tick);
     };
 
     if (isPlaying) {
-      intervalId = setInterval(tick, 50);
+      animationFrameId = requestAnimationFrame(tick);
     }
 
-    return () => clearInterval(intervalId);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [isPlaying, duration]);
 
   const handleLoadedMetadata = () => {
@@ -301,7 +303,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
             <img 
-              src={currentTrack.artworkUrl100?.replace('100x100', '100x100')} 
+              src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
               alt="Album art" 
               className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
             />
