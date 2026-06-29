@@ -107,7 +107,7 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
           }
       }
 
-      let style = {};
+      let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
       let isCharActive = isActive || isAdlib;
 
       if (isCharActive) {
@@ -194,8 +194,21 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
              }
           }
 
-          let chunkIsActive = isActive || isChunkAdlib;
+          let chunkIsActive = isActive; // Safely base this only on the main active state
           let currentPronStyle = chunkIsActive ? { ...activePronStyle } : { ...inactivePronStyle };
+
+          // Delegate entirely to CSS if it's an ad-lib
+          if (!isChunkAdlib) {
+              if (chunkIsActive) {
+                  currentPronStyle.opacity = 0.9;
+                  currentPronStyle.transform = 'translate3d(0,0,0)';
+              } else {
+                  currentPronStyle.opacity = 0.4;
+                  currentPronStyle.transform = 'translate3d(0,0,0)';
+              }
+              currentPronStyle.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          }
+          currentPronStyle.display = 'inline-block';
 
           if (chunk.type === 'foreign' && chunk.trans) {
               const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
@@ -240,7 +253,6 @@ const LyricLineWrapper = React.memo(({
 }) => {
   const lineRef = useRef(null);
   
-  // CRITICAL CPU FIX: Cache DOM nodes into an array to prevent 60fps DOM querying
   const cachedAdlibNodesRef = useRef([]);
 
   useEffect(() => {
@@ -378,7 +390,6 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
     }
   }, [adlibsToRender]);
 
-  // CRITICAL CPU FIX: Utilize cached array for 60fps loop 
   useEffect(() => {
       const handleTime = (e) => {
          const time = e.detail;

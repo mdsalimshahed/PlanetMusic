@@ -15,13 +15,12 @@
   transform: translateZ(0);
 }
 
-/* Background Layers - Optimized to purge inactive images from GPU Memory */
+/* Background Layers */
 .dynamic-background-contained { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; pointer-events: none; border-radius: 0; }
 .singer-watermark { 
   position: absolute; top: 0; left: 0; height: 100%; width: 100%; 
   object-fit: cover; 
   object-position: 50% 10%;
-  /* Notice: Filter is removed entirely to prevent mobile GPU thermal throttling */
   transition: opacity 0.6s ease-in-out, visibility 0s linear 0.6s; 
   will-change: opacity; 
   -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
@@ -157,22 +156,20 @@
 }
 .focused-adlib-line.active { opacity: 1; transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)); pointer-events: auto; cursor: pointer; }
 
-/* CRITICAL FIX: Performance Utility Classes for Ad-lib rendering */
+/* CRITICAL GPU FIX: Stripped filter and transition cascades from the adlib-nodes completely */
 .adlib-node {
   display: inline-block;
-  transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease !important;
-  will-change: opacity, transform, filter;
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
+  will-change: opacity, transform;
   backface-visibility: hidden;
 }
 .adlib-node.adlib-hidden {
   opacity: 0 !important;
   transform: translate3d(0, 8px, 0) !important;
-  filter: grayscale(100%) !important;
 }
 .adlib-node.adlib-visible {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
-  filter: grayscale(100%) !important;
   color: rgba(255, 255, 255, 0.4) !important;
   text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.4) !important;
@@ -181,7 +178,6 @@
 .adlib-node.adlib-active {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
-  filter: grayscale(0%) !important;
 }
 
 .debug-lyrics-preview { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 20px; display: flex; flex-direction: column; }
@@ -191,7 +187,7 @@
 
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
 .primary-text { display: block; }
-rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s ease, text-shadow 0.3s ease; }
+rt.pronunciation-text { font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: opacity 0.3s ease, transform 0.3s ease; }
 .preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text { color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.5); }
 .sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
 

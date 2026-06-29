@@ -1,5 +1,5 @@
 /* --- src/hooks/useLyricsDisplay.js --- */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { parseLyrics } from '../utils/songHelpers';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
@@ -23,7 +23,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const [activePreviewIndex, setActivePreviewIndex] = useState(-1);
   const [bgActiveIndex, setBgActiveIndex] = useState(-1);
 
-  // Refs for tracking indices without causing closures or re-renders
   const activeIdxRef = useRef(-1);
   const bgIdxRef = useRef(-1);
 
@@ -43,7 +42,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     };
   }, []);
 
-  // Extremely efficient time tracker: only updates React state when the active line actually changes
   useEffect(() => {
     const handleGlobalTime = (e) => {
       const time = e.detail;
@@ -56,7 +54,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         const cNode = newActiveIndex >= 0 ? selectedSong.syncData[newActiveIndex] : null;
         const nNode = newActiveIndex >= 0 ? selectedSong.syncData[newActiveIndex + 1] : null;
         
-        // Fast-path: Check if we are still within the bounds of the currently active line
         const stillInCurrent = cNode && cNode.start !== null && time >= cNode.start &&
              (cNode.end !== null ? time <= cNode.end : true) &&
              (nNode && nNode.start !== null ? time < nNode.start : true);
@@ -127,14 +124,16 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [customData.lyrics, customData.artistColors, selectedSong, masterPalette]);
 
-  const cycleViewMode = () => setLyricsViewMode(prev => 
+  // CRITICAL CPU FIX: Stabilize function reference to prevent React.memo failures
+  const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
     prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
-  );
+  ), []);
 
-  const handleLineClick = (startTime) => {
+  // CRITICAL CPU FIX: Stabilize function reference to prevent 100+ lines from re-rendering simultaneously
+  const handleLineClick = useCallback((startTime) => {
     if (startTime === null || isSyncMode || isEditing || isImageManagerOpen) return;
     window.dispatchEvent(new CustomEvent('globalSeekRequest', { detail: { time: startTime, track: selectedSong } }));
-  };
+  }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong]);
 
   useEffect(() => {
     if (!isSyncMode && !isEditing && !isImageManagerOpen && ['live', 'focused'].includes(lyricsViewMode) && activePreviewRef.current) {
