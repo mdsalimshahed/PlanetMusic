@@ -26,6 +26,8 @@ html, body {
   /* Prevent pull-to-refresh and scroll bouncing that causes URL bar to glitch */
   overscroll-behavior: none; 
   overscroll-behavior-y: none;
+  height: 100%;
+  overflow: hidden; /* Locks outer body so internal areas can scroll safely */
 }
 
 body {
@@ -33,7 +35,14 @@ body {
   color: var(--text-base);
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
-  overflow: hidden; 
+}
+
+/* Hardware acceleration for all glass panels to prevent backdrop-filter flashing */
+.glass-panel, .glass-panel-heavy, .glass-panel-light, .glass-button {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .glass-panel {
@@ -59,6 +68,7 @@ body {
 .glass-button {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border: 1px solid var(--glass-highlight);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -67,7 +77,7 @@ body {
 .glass-button:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
 }
 
 .text-glow {
@@ -78,12 +88,9 @@ body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  /* Fallback for older browsers, modern dynamic viewport for mobile */
-  height: 100vh;
-  height: 100dvh;
-  /* Force GPU acceleration to prevent background flicker */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  /* Use dynamic viewport height to handle mobile URL bar gracefully */
+  height: 100dvh; 
+  overflow: hidden;
 }
 
 .main-content {
@@ -92,7 +99,7 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 10;
-  overflow: hidden;
+  min-height: 0; /* CRITICAL: Allows inner scroll area to actually scroll */
 }
 
 .search-container {
@@ -100,6 +107,7 @@ body {
   display: flex;
   justify-content: flex-start;
   z-index: 30;
+  flex-shrink: 0;
 }
 
 .search-box {
@@ -107,6 +115,7 @@ body {
   align-items: center;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   border-radius: 500px;
   padding: 0 24px;
@@ -150,7 +159,9 @@ body {
 .content-scroll-area {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Ensures smooth native scrolling on iOS */
   padding: 32px 40px 100px 40px; 
+  min-height: 0;
 }
 
 .content-scroll-area::-webkit-scrollbar {
@@ -178,7 +189,6 @@ body {
 
 .empty-message {
   height: 40vh;
-  height: 40dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -205,7 +215,7 @@ body {
 /* --- Confirmation Modal --- */
 .confirm-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -214,6 +224,9 @@ body {
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.2s ease;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .confirm-dialog {

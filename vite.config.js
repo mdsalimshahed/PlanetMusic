@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    host: true
+  },
   css: {
     // Ensures CSS is processed but not over‑optimized
     devSourcemap: true,

@@ -1,5 +1,5 @@
 /* --- src/components/LyricsDisplay.jsx --- */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 // Failsafe to identify characters that do not use spaces to break (Chinese/Japanese)
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
@@ -20,7 +20,6 @@ const groupWords = (elements, charData) => {
     }
     
     const char = charData[i].char;
-    // Break the group on spaces, tabs, newlines, or Chinese/Japanese characters
     if (/\s/.test(char) || isCJ(char)) {
       if (currentWord.length > 0) {
         words.push(<span key={`w-${i}`} style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
@@ -39,12 +38,12 @@ const groupWords = (elements, charData) => {
 };
 
 // Pure renderer detached from state for raw performance
-const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, masterPalette) => {
+const renderLine = (lineObj, savedNode, isActive, isFocused, masterPalette) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
 
-  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', opacity: 0.9, textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.4s ease, text-shadow 0.4s ease', textAlign: 'center', marginTop: '4px' };
-  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.4)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', transition: 'color 0.4s ease, text-shadow 0.4s ease', textAlign: 'center', marginTop: '4px' };
+  const activePronStyle = { fontSize: '0.55em', color: '#ffffff', textShadow: '0 2px 6px rgba(0,0,0,0.9)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px' };
+  const inactivePronStyle = { fontSize: '0.55em', color: 'rgba(255, 255, 255, 0.4)', textShadow: '0 2px 4px rgba(0,0,0,0.6)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px' };
 
   let parsedChunks = null;
   if (typeof pronString === 'string') {
@@ -74,33 +73,27 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
       }
 
       let isAdlib = false;
-      let isAdlibActive = false;
-      let isAdlibVisible = true;
+      let adlibProps = {};
 
       if (savedNode?.isSplit && !isFocused) {
           const adlib = savedNode.adlibs?.find(a => cIdx >= a.charStart && cIdx < a.charEnd);
-          if (adlib) {
+          if (adlib && adlib.start !== null) {
               isAdlib = true;
-              isAdlibVisible = adlib.start !== null && localProgress >= adlib.start;
-              const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
-              isAdlibActive = isAdlibVisible && localProgress <= endTime;
+              adlibProps = {
+                  className: 'adlib-node adlib-hidden',
+                  'data-start': adlib.start,
+                  'data-end': adlib.end !== null ? adlib.end : adlib.start + 5
+              };
           }
       }
 
-      let isCharActive = isActive;
-      if (isAdlib) {
-          isCharActive = isAdlibActive;
-      }
-
       const isPunct = /([.,!?;:"'()\[\]{}\-—–~¿¡«»“”‘’]+)/.test(c.char);
-      
       let activeColor = isPunct ? '#fbbf24' : '#ffffff';
       let isGradient = false;
       let gradientStyle = '';
 
       if (!isPunct && c.seg) {
           let targetArtists = c.seg.artists;
-
           if (targetArtists && targetArtists.length > 0) {
               if (targetArtists.length > 1) {
                   isGradient = true;
@@ -117,20 +110,10 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
           }
       }
 
-      let style = { transition: 'color 0.4s ease, text-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease' };
+      let style = {};
+      let isCharActive = isActive || isAdlib; // Force active inline styles if it's an adlib so CSS can toggle it over perfectly
 
-      if (isAdlib && !isAdlibVisible) {
-          style.opacity = 0;
-          style.transform = 'translateY(8px)';
-          style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
-          style.color = 'rgba(255, 255, 255, 0.4)';
-          style.textShadow = '0 2px 4px rgba(0,0,0,0.6)';
-      } else if (isCharActive) {
-          if (isAdlib) {
-              style.opacity = 1;
-              style.transform = 'translateY(0px)';
-              style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
-          }
+      if (isCharActive) {
           if (isGradient) {
               style.backgroundImage = gradientStyle;
               style.WebkitBackgroundClip = 'text';
@@ -141,17 +124,10 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
               style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused?'30px':'20px'} ${activeColor}80`;
           }
       } else {
-          if (isAdlib) {
-              style.opacity = 1;
-              style.transform = 'translateY(0px)';
-              style.display = c.char.trim() === '' ? 'inline' : 'inline-block';
-          }
-          
           if (isGradient) {
               style.backgroundImage = gradientStyle;
               style.WebkitBackgroundClip = 'text';
               style.WebkitTextFillColor = 'transparent';
-              // CRITICAL FIX: Ensure inactive state has absolutely no color and no blur
               style.filter = 'grayscale(100%) opacity(40%)'; 
           } else {
               style.color = 'rgba(255, 255, 255, 0.4)';
@@ -169,8 +145,7 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
               for (let i = cIdx + 1; i < chars.length; i++) {
                   if (chars[i].char === closing) break;
                   if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-                      scaleParenthesis = true;
-                      break;
+                      scaleParenthesis = true; break;
                   }
               }
           } else if (char === ')' || char === ']' || char === '}') {
@@ -178,24 +153,19 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
               for (let i = cIdx - 1; i >= 0; i--) {
                   if (chars[i].char === opening) break;
                   if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-                      scaleParenthesis = true;
-                      break;
+                      scaleParenthesis = true; break;
                   }
               }
           }
 
           if (scaleParenthesis) {
               style.display = 'inline-block';
-              if (isAdlib && !isAdlibVisible) {
-                  style.transform = 'scale(1.2) translateY(8px)';
-              } else {
-                  style.transform = 'scale(1.2) translateY(10%)';
-              }
+              style.transform = 'scale(1.2) translateY(10%)';
               style.margin = '0 2px';
           }
       }
 
-      return <span key={cIdx} style={style}>{c.char}</span>;
+      return <span key={cIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
   if (parsedChunks) {
@@ -212,51 +182,30 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
 
           const groupedText = groupWords(renderedText, chunkChars);
 
-          let chunkIsActive = isActive;
           let isChunkAdlib = false;
-          let isChunkAdlibActive = false;
-          let isChunkAdlibVisible = true;
+          let adlibProps = {};
 
           if (savedNode?.isSplit && !isFocused) {
              const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
-             if (adlib) {
+             if (adlib && adlib.start !== null) {
                  isChunkAdlib = true;
-                 isChunkAdlibVisible = adlib.start !== null && localProgress >= adlib.start;
-                 const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
-                 isChunkAdlibActive = isChunkAdlibVisible && localProgress <= endTime;
+                 adlibProps = {
+                     className: 'adlib-node adlib-hidden',
+                     'data-start': adlib.start,
+                     'data-end': adlib.end !== null ? adlib.end : adlib.start + 5
+                 };
              }
           }
 
-          if (isChunkAdlib) {
-              chunkIsActive = isChunkAdlibActive;
-          }
-
+          let chunkIsActive = isActive || isChunkAdlib;
           let currentPronStyle = chunkIsActive ? { ...activePronStyle } : { ...inactivePronStyle };
-
-          if (isChunkAdlib && !isChunkAdlibVisible) {
-              currentPronStyle.opacity = 0;
-              currentPronStyle.transform = 'translateY(8px)';
-              currentPronStyle.filter = 'grayscale(100%)';
-          } else if (chunkIsActive) {
-              currentPronStyle.opacity = 0.9;
-              currentPronStyle.transform = 'translateY(0px)';
-              currentPronStyle.filter = 'grayscale(0%)';
-          } else {
-              currentPronStyle.opacity = 0.4;
-              currentPronStyle.transform = 'translateY(0px)';
-              // CRITICAL FIX: Ensure chunks revert to grey when inactive
-              currentPronStyle.filter = 'grayscale(100%)';
-          }
-          
-          currentPronStyle.display = 'inline-block';
-          currentPronStyle.transition = 'opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease';
 
           if (chunk.type === 'foreign' && chunk.trans) {
               const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
               return (
                   <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
                       <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-                      <span style={currentPronStyle}>{cleanTrans}</span>
+                      <span {...adlibProps} style={currentPronStyle}>{cleanTrans}</span>
                   </span>
               );
           } else {
@@ -274,8 +223,8 @@ const renderLine = (lineObj, savedNode, isActive, isFocused, localProgress, mast
   } else {
       const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
       const groupedChars = groupWords(renderedChars, chars);
-      // Ensure block pronunciation strings accurately revert to grey
-      const blockPronStyle = { ...(isActive ? activePronStyle : { ...activePronStyle, opacity: 0.4, filter: 'grayscale(100%)' }), marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+      const blockPronStyle = { ...(isActive ? activePronStyle : { ...activePronStyle, opacity: 0.4, filter: 'grayscale(100%)' }), display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+      
       let displayPronString = pronString;
       if (pronString) displayPronString = pronString.replace(/[()\[\]{}]/g, '');
 
@@ -292,65 +241,76 @@ const LyricLineWrapper = React.memo(({
   lineObj, savedNode, isMainActive, viewMode, 
   activePreviewRef, handleLineClick, masterPalette 
 }) => {
-  const [localProgress, setLocalProgress] = useState(0);
+  const lineRef = useRef(null);
 
+  // CRITICAL FIX: Pure DOM Cache Mutation, completely bypassing React State Renders
   useEffect(() => {
-      const needsUpdates = (viewMode === 'live' && (savedNode?.isSplit || isMainActive));
-      if (!needsUpdates) return;
+      if (viewMode !== 'live' && viewMode !== 'focused') return;
+      if (!savedNode?.isSplit && !isMainActive) return;
       
-      const handleTime = (e) => setLocalProgress(e.detail);
+      const handleTime = (e) => {
+          const time = e.detail;
+          if (!lineRef.current) return;
+          
+          const adlibs = lineRef.current.querySelectorAll('.adlib-node');
+          adlibs.forEach(node => {
+               const start = parseFloat(node.dataset.start);
+               const end = parseFloat(node.dataset.end);
+               if (isNaN(start)) return;
+  
+               if (time >= start && time <= end) {
+                   if (!node.classList.contains('adlib-active')) {
+                       node.classList.add('adlib-active');
+                       node.classList.remove('adlib-hidden', 'adlib-visible');
+                   }
+               } else if (time >= start) {
+                   if (!node.classList.contains('adlib-visible')) {
+                       node.classList.add('adlib-visible');
+                       node.classList.remove('adlib-hidden', 'adlib-active');
+                   }
+               } else {
+                   if (!node.classList.contains('adlib-hidden')) {
+                       node.classList.add('adlib-hidden');
+                       node.classList.remove('adlib-active', 'adlib-visible');
+                   }
+               }
+          });
+      };
+
       window.addEventListener('globalTimeUpdate', handleTime);
       return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, [viewMode, savedNode?.isSplit, isMainActive]);
+  }, [viewMode, savedNode, isMainActive]);
 
   const seekTarget = savedNode ? savedNode.start : null;
 
-  if (viewMode === 'focused') {
-      return (
-          <div 
-              ref={isMainActive ? activePreviewRef : null}
-              className={`focused-line ${isMainActive ? 'active' : ''}`}
-              onClick={() => handleLineClick(seekTarget)}
-          >
-              {renderLine(lineObj, savedNode, true, true, localProgress, masterPalette)}
-          </div>
-      );
-  }
-
-  let isVisuallyActive = isMainActive;
-  if (viewMode === 'live' && savedNode?.isSplit) {
-      const adlibActive = savedNode.adlibs?.some(a => {
-          if (a.start === null) return false;
-          const endTime = a.end !== null ? a.end : a.start + 5;
-          return localProgress >= a.start && localProgress <= endTime;
-      });
-      if (adlibActive) isVisuallyActive = true;
-  }
+  // Cache the heavily parsed lyrics line once
+  const renderedContent = useMemo(() => 
+    renderLine(lineObj, savedNode, isMainActive, viewMode === 'focused', masterPalette),
+    [lineObj, savedNode, isMainActive, viewMode, masterPalette]
+  );
 
   return (
       <div 
-          ref={isMainActive ? activePreviewRef : null}
-          className={`preview-line ${isVisuallyActive ? 'active' : ''}`}
+          ref={(node) => { 
+            lineRef.current = node; 
+            if (isMainActive && activePreviewRef) activePreviewRef.current = node; 
+          }}
+          className={`${viewMode === 'focused' ? 'focused-line' : 'preview-line'} ${isMainActive ? 'active' : ''}`}
           onClick={() => handleLineClick(seekTarget)}
           style={{ cursor: seekTarget !== null ? 'pointer' : 'default' }}
       >
-          {renderLine(lineObj, savedNode, isVisuallyActive, false, localProgress, masterPalette)}
+          {renderedContent}
       </div>
   );
 });
 
 const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette }) => {
-  const [time, setTime] = useState(0);
-  
-  useEffect(() => {
-      const handleTime = (e) => setTime(e.detail);
-      window.addEventListener('globalTimeUpdate', handleTime);
-      return () => window.removeEventListener('globalTimeUpdate', handleTime);
-  }, []);
+  const containerRef = useRef(null);
 
-  const adlibPlacements = useMemo(() => {
-      const placements = new Map();
-      if (!syncData) return placements;
+  // Pre-calculate all random positions strictly ONCE per song
+  const adlibsToRender = useMemo(() => {
+      const items = [];
+      if (!syncData) return items;
 
       syncData.forEach((node) => {
           if (node?.isSplit && node.adlibs) {
@@ -380,75 +340,73 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
                       }
                   }
                   
-                  // CRITICAL FIX: Safe Isolation Corners
-                  // Mathematically guarantees that a 30vw adlib at any edge cannot cross into the center
                   let top, left;
                   if (quad === 0) { 
-                      top = 12 + (randY * 15); // Safely floating 12% to 27% (Far above the center)
-                      left = 15 + (randX * 15); // Strict 15% to 30% bound
+                      top = 12 + (randY * 15);
+                      left = 15 + (randX * 15); 
                   } else if (quad === 1) { 
                       top = 12 + (randY * 15); 
-                      left = 70 + (randX * 15); // Strict 70% to 85% bound
+                      left = 70 + (randX * 15); 
                   } else if (quad === 2) { 
-                      top = 73 + (randY * 15); // Safely floating 73% to 88% (Far below the center)
+                      top = 73 + (randY * 15); 
                       left = 15 + (randX * 15); 
                   } else { 
-                      top = 68 + (randY * 12); // Pushed up slightly to avoid artist watermark
+                      top = 68 + (randY * 12); 
                       left = 65 + (randX * 15); 
                   }
 
-                  placements.set(`adlib-${adlib.start}-${j}`, { rot, top, left });
+                  const rendered = renderLine(adlib, adlib, true, true, masterPalette);
+
+                  items.push({
+                     key: `adlib-${adlib.start}-${j}`,
+                     start: adlib.start,
+                     end: adlib.end !== null ? adlib.end : adlib.start + 5,
+                     rot, top, left, rendered, adlib
+                  });
               });
           }
       });
-      return placements;
-  }, [syncData]);
+      return items;
+  }, [syncData, masterPalette]);
+  
+  // CRITICAL FIX: Pure DOM Cache Mutation for floating adlibs
+  useEffect(() => {
+      const handleTime = (e) => {
+         const time = e.detail;
+         if (!containerRef.current) return;
+         const nodes = containerRef.current.querySelectorAll('.focused-adlib-line');
+         nodes.forEach(node => {
+             const start = parseFloat(node.dataset.start);
+             const end = parseFloat(node.dataset.end);
+             if (time >= start && time <= end) {
+                 if (!node.classList.contains('active')) node.classList.add('active');
+             } else {
+                 if (node.classList.contains('active')) node.classList.remove('active');
+             }
+         });
+      };
+      window.addEventListener('globalTimeUpdate', handleTime);
+      return () => window.removeEventListener('globalTimeUpdate', handleTime);
+  }, []);
 
-  const visibleAdlibs = [];
-  if (syncData) {
-      syncData.forEach(node => {
-          if (node?.isSplit && node.adlibs) {
-              node.adlibs.forEach((adlib, j) => {
-                  if (adlib.start === null) return;
-                  const endTime = adlib.end !== null ? adlib.end : adlib.start + 5;
-                  
-                  const isNear = time >= (adlib.start - 0.5) && time <= (endTime + 0.5);
-                  const isActive = time >= adlib.start && time <= endTime;
-                  
-                  if (isNear) {
-                      const key = `adlib-${adlib.start}-${j}`;
-                      const placement = adlibPlacements.get(key);
-                      if (placement) {
-                          visibleAdlibs.push({ 
-                            adlib, isActive, 
-                            rot: placement.rot, 
-                            top: placement.top, 
-                            left: placement.left, 
-                            key 
-                          });
-                      }
-                  }
-              });
-          }
-      });
-  }
-
-  if (visibleAdlibs.length === 0) return null;
+  if (adlibsToRender.length === 0) return null;
 
   return (
-      <div className="focused-adlibs-container">
-          {visibleAdlibs.map(({ adlib, isActive, rot, top, left, key }) => (
+      <div className="focused-adlibs-container" ref={containerRef}>
+          {adlibsToRender.map(item => (
               <div 
-                  key={key} 
-                  className={`focused-adlib-line ${isActive ? 'active' : ''}`}
+                  key={item.key} 
+                  className="focused-adlib-line"
+                  data-start={item.start}
+                  data-end={item.end}
                   style={{ 
-                      '--adlib-rot': `${rot}deg`,
-                      '--adlib-top': `${top}%`,
-                      '--adlib-left': `${left}%`
+                      '--adlib-rot': `${item.rot}deg`,
+                      '--adlib-top': `${item.top}%`,
+                      '--adlib-left': `${item.left}%`
                   }}
-                  onClick={(e) => { e.stopPropagation(); handleLineClick(adlib.start); }}
+                  onClick={(e) => { e.stopPropagation(); handleLineClick(item.adlib.start); }}
               >
-                  {renderLine(adlib, adlib, true, true, time, masterPalette)}
+                  {item.rendered}
               </div>
           ))}
       </div>

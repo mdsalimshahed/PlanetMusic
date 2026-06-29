@@ -6,6 +6,10 @@
   overflow: hidden; 
   min-height: 0; 
   min-width: 0; 
+  /* Prevent layout shift repaints */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .modal-left-static { 
@@ -28,21 +32,27 @@
   padding-bottom: 120px; 
   min-height: 0; 
   min-width: 0;
+  -webkit-overflow-scrolling: touch;
 }
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
+/* CRITICAL FIX: Ensure the header is ALWAYS a row so the aspect ratio and aesthetic match */
 .modal-top { 
   display: flex; 
-  gap: clamp(16px, 3vw, 24px); 
+  flex-direction: row; 
+  gap: clamp(12px, 3vw, 24px); 
   align-items: flex-start; 
   flex-shrink: 0; 
   min-width: 0;
 }
 
+/* CRITICAL FIX: Lock the aspect ratio to 1:1 and let the height scale automatically */
 .modal-cover { 
-  width: clamp(100px, 15vw, 140px); 
-  height: clamp(100px, 15vw, 140px); 
+  width: clamp(80px, 25vw, 140px); 
+  height: auto; 
+  aspect-ratio: 1 / 1; 
+  object-fit: cover;
   border-radius: 0; 
   box-shadow: 0 15px 40px rgba(0,0,0,0.6); 
   flex-shrink: 0; 
@@ -52,6 +62,9 @@
   flex: 1; 
   min-width: 0; 
   container-type: inline-size; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .modal-type { 
@@ -63,6 +76,9 @@
   color: var(--text-base); 
   opacity: 0.8; 
   display: block; 
+  white-space: nowrap; /* Stops genre tags from breaking awkwardly into two lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .modal-header-info h2 { 
@@ -108,7 +124,7 @@
   display: flex; 
   align-items: center; 
   flex-wrap: wrap; 
-  gap: 8px 12px; 
+  gap: 6px 10px; /* Tighter spacing for narrow screens */
   font-size: clamp(12px, 1.4vw, 15px); 
   color: rgba(255,255,255,0.7); 
   margin-bottom: 24px; 
@@ -168,6 +184,8 @@
   display: flex; 
   justify-content: space-between; 
   align-items: center;
+  flex-wrap: wrap; 
+  gap: 12px;
 }
 
 .return-dashboard-btn {
@@ -241,6 +259,24 @@
   }
   .modal-left-scrollable {
     padding-bottom: 0px; 
-    overflow: visible; /* Defer scrolling strictly to the parent modal container */
+    overflow: visible; 
+  }
+}
+
+@media (max-width: 550px) {
+  /* Keeps the grid functional, just allows it to shrink tighter */
+  .modal-details {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .bottom-actions {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .bottom-actions > button {
+    width: 100%;
+    justify-content: center;
   }
 }
