@@ -37,14 +37,15 @@
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* CRITICAL FIX: Ensure the header is ALWAYS a row so the aspect ratio and aesthetic match */
+/* CRITICAL FIX: Ensure the header aligns vertically while clipping max-height */
 .modal-top { 
   display: flex; 
   flex-direction: row; 
   gap: clamp(12px, 3vw, 24px); 
-  align-items: flex-start; 
+  align-items: center; 
   flex-shrink: 0; 
   min-width: 0;
+  max-height: clamp(80px, 25vw, 140px);
 }
 
 /* CRITICAL FIX: Lock the aspect ratio to 1:1 and let the height scale automatically */
@@ -65,6 +66,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .modal-type { 
@@ -76,24 +79,27 @@
   color: var(--text-base); 
   opacity: 0.8; 
   display: block; 
-  white-space: nowrap; /* Stops genre tags from breaking awkwardly into two lines */
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
+/* Let the title fully render within its space, scrolling only if absolutely necessary */
 .modal-header-info h2 { 
-  font-size: var(--dyn-modal-font-size);
+  font-size: clamp(16px, 8cqw, var(--dyn-modal-font-size));
   font-weight: 800; 
   line-height: 1.15; 
   margin-bottom: 12px; 
   letter-spacing: -1px; 
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
   word-break: break-word; 
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-shrink: 1;
 }
+
+.modal-header-info h2::-webkit-scrollbar { width: 4px; }
+.modal-header-info h2::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
 .title-extra {
   font-size: 0.65em;
@@ -127,8 +133,9 @@
   gap: 6px 10px; /* Tighter spacing for narrow screens */
   font-size: clamp(12px, 1.4vw, 15px); 
   color: rgba(255,255,255,0.7); 
-  margin-bottom: 24px; 
+  margin-bottom: 0; 
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .modal-artist-row strong { 

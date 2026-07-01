@@ -112,7 +112,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
         }
       }
       
-      // CRITICAL FIX: Ensure highlight drops when time > line.end
       if (time >= item.ref.start) {
         if (nextStart === null || time < nextStart) {
             if (item.ref.end !== null && time > item.ref.end) {
@@ -162,11 +161,15 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
              const itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
              itemToMutate.end = currentItem.parentRef.end;
              setSyncData(data);
+             syncDataRef.current = data;
              setLoopRange(null);
              
              let nextIdx = activeIdxRef.current + 1;
              while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
-             if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+             if (nextIdx < wLines.length) {
+                 setActiveSyncIndex(nextIdx);
+                 activeIdxRef.current = nextIdx;
+             }
           }
         }
 
@@ -257,14 +260,22 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           
           let nextIdx = currentIdx + 1;
           while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
-          if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+          if (nextIdx < wLines.length) {
+            setActiveSyncIndex(nextIdx);
+            activeIdxRef.current = nextIdx; // INSTANT UPDATE PREVENTS DOUBLE JUMP
+          }
 
         } else {
           let nextIdx = currentIdx + 1;
           while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
-          if (nextIdx < wLines.length) setActiveSyncIndex(nextIdx);
+          if (nextIdx < wLines.length) {
+            setActiveSyncIndex(nextIdx);
+            activeIdxRef.current = nextIdx; // INSTANT UPDATE
+          }
         }
         setSyncData(data);
+        syncDataRef.current = data; // INSTANT UPDATE
+
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (itemToMutate.end !== null) {
@@ -284,11 +295,13 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
           if (prevIdx >= 0) {
             setActiveSyncIndex(prevIdx);
+            activeIdxRef.current = prevIdx; // INSTANT UPDATE ALLOWS RECURSIVE DELETIONS
             const prevItem = wLines[prevIdx].ref;
             if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem.start || 0;
           }
         }
         setSyncData(data);
+        syncDataRef.current = data; // INSTANT UPDATE
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -361,6 +374,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       line.isSplit = true;
       line.adlibs = adlibs;
       setSyncData(data);
+      syncDataRef.current = data;
     }
   };
 
@@ -369,6 +383,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     data[lineIndex].isSplit = false;
     delete data[lineIndex].adlibs;
     setSyncData(data);
+    syncDataRef.current = data;
     setLoopRange(null);
   };
 
