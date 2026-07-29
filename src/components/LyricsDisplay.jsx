@@ -3,17 +3,20 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 
-// CRITICAL FIX: Sanitizes transliteration strings to replace special modifier letters 
+// Sanitizes transliteration strings to replace special modifier letters 
 // and Arabic punctuation with standard Latin equivalents supported by the Outfit font.
 const normalizeTrans = (str) => {
   if (!str) return '';
   return str
     .replace(/[()\[\]{}]/g, '')
-    .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'") // Replaces half rings (hamza/ain) with standard apostrophe
-    .replace(/،/g, ',') // Arabic comma
-    .replace(/؟/g, '?') // Arabic question mark
-    .replace(/؛/g, ';'); // Arabic semicolon
+    .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'") 
+    .replace(/،/g, ',') 
+    .replace(/؟/g, '?') 
+    .replace(/؛/g, ';'); 
 };
+
+// Auto-detect RTL languages (Arabic, Hebrew, Persian, etc.)
+const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
 
 const groupWords = (elements, charData) => {
   const words = [];
@@ -49,6 +52,7 @@ const groupWords = (elements, charData) => {
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation;
   const segments = lineObj.segments || [];
+  const isRTL = isRTLLanguage(lineObj.text);
 
   const basePronStyle = { fontSize: '0.55em', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: '4px', display: 'inline-block', transition: 'opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease' };
 
@@ -166,31 +170,93 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       return <span key={cIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
-  // Render everything normally in a line to preserve proper native Bidi text flow
-  const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
-  const groupedChars = groupWords(renderedChars, chars);
-
-  // Force left alignment dynamically unless specifically centered in focused mode
-  const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
-         
-  let displayPronString = pronString;
-  
-  // Combine all translated chunks into a single sentence and normalize the font
   if (parsedChunks) {
-      displayPronString = parsedChunks.map(chunk => {
-          const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
-          return normalizeTrans(textToUse);
-      }).join('');
-  } else if (pronString) {
-      displayPronString = normalizeTrans(pronString);
-  }
+      let charOffset = 0;
+      const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
+          const chunkLen = Array.from(chunk.text).length;
+          const firstCharIdx = charOffset;
+          const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
+          charOffset += chunkLen;
 
-  return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{groupedChars}</span>
-          {displayPronString && <div className="pronunciation-text" style={blockPronStyle} dir="ltr">{displayPronString}</div>}
-      </div>
-  );
+          const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
+          if (renderedText.every(c => c === null)) return null;
+          const groupedText = groupWords(renderedText, chunkChars);
+
+          let adlibProps = {};
+          if (savedNode?.isSplit && !isFocused) {
+             const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
+             if (adlib && adlib.start !== null) {
+                 const start = adlib.start;
+                 const end = adlib.end !== null ? adlib.end : start + 5;
+                                   
+                 let initialClass = 'adlib-hidden';
+                 if (isPlayingCurrentSong) {
+                     if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
+                     else if (currentTime > end) initialClass = 'adlib-visible';
+                 }
+                 adlibProps = {
+                     className: `adlib-node ${initialClass}`,
+                     'data-start': start,
+                     'data-end': end
+                 };
+             }
+          }
+
+          if (isRTL) {
+              // RTL: Return just the text here, transliteration will be built at the bottom
+              return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span>;
+          } else {
+              // LTR: Standard chunk-by-chunk stacking
+              if (chunk.type === 'foreign' && chunk.trans) {
+                  const cleanTrans = normalizeTrans(chunk.trans);
+                  return (
+                      <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
+                          <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
+                          <span {...adlibProps} className={`pronunciation-text ${adlibProps.className || ''}`.trim()} style={basePronStyle} dir="ltr">{cleanTrans}</span>
+                      </span>
+                  );
+              } else {
+                  return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span>;
+              }
+          }
+      });
+
+      let displayPronString = null;
+      if (isRTL) {
+          // Construct the full sentence ONLY for RTL languages
+          displayPronString = parsedChunks.map(chunk => {
+              const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
+              return normalizeTrans(textToUse);
+          }).join('');
+      }
+
+      const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+
+      // CRITICAL FIX: Flex container stays LTR so flex-start means left. The span itself is given dir="auto" and textAlign="left".
+      return (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
+              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', verticalAlign: 'bottom', textAlign: isFocused ? 'center' : 'left' }} dir="auto">
+                  {renderedChunks}
+              </span>
+              {displayPronString && <div className="pronunciation-text" style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+          </div>
+      );
+  } else {
+      const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
+      const groupedChars = groupWords(renderedChars, chars);
+
+      const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+             
+      let displayPronString = pronString;
+      if (pronString) displayPronString = normalizeTrans(pronString);
+
+      return (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
+              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', textAlign: isFocused ? 'center' : 'left' }} dir="auto">{groupedChars}</span>
+              {displayPronString && <div className="pronunciation-text" style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+          </div>
+      );
+  }
 };
 
 const LyricLineWrapper = React.memo(({ 
@@ -629,7 +695,7 @@ const LyricsDisplay = ({
         <div className="lyrics-display">
           {liveParsedLyrics.length > 0 ? (
             liveParsedLyrics.map((line, i) => (
-              <div key={i} dir="auto" style={{ textAlign: 'start' }}>
+              <div key={i} style={{ textAlign: 'left' }}>
                 {line.segments ? line.segments.map((seg, idx) => {
                     let inlineColor = seg.color;
                     let inlineIsGradient = seg.isGradient;

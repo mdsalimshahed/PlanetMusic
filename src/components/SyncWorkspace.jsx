@@ -1,6 +1,7 @@
 /* --- src/components/SyncWorkspace.jsx --- */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
+import { quickTransliterate } from '../transliterator';
 
 const normalizeTrans = (str) => {
   if (!str) return '';
@@ -12,7 +13,10 @@ const normalizeTrans = (str) => {
     .replace(/؛/g, ';'); 
 };
 
-const SyncWorkspace = ({
+// Auto-detect RTL languages (Arabic, Hebrew, Persian, etc.)
+const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
+
+export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
   syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef,
@@ -113,9 +117,79 @@ const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
+  const localHandleSplitAdlibs = async (lineIndex) => {
+    const data = [...syncData];
+    const line = data[lineIndex];
+    const lineChars = Array.from(line.text);
+    const adlibs = [];
+         
+    let inAdlib = false;
+    let charStart = 0;
+    let adlibText = '';
+         
+    for (let i = 0; i < lineChars.length; i++) {
+        if (lineChars[i] === '(' && !inAdlib) {
+            inAdlib = true;
+            charStart = i;
+            adlibText = '(';
+        } else if (inAdlib) {
+            adlibText += lineChars[i];
+            if (lineChars[i] === ')') {
+                inAdlib = false;
+                const charEnd = i + 1;
+                                 
+                const adlibSegments = [];
+                const adlibArtistsSet = new Set();
+                let currentPos = 0;
+                                 
+                for (const seg of line.segments) {
+                    const segChars = Array.from(seg.text);
+                    const segStart = currentPos;
+                    const segEnd = currentPos + segChars.length;
+                    const overlapStart = Math.max(charStart, segStart);
+                    const overlapEnd = Math.min(charEnd, segEnd);
+                    if (overlapStart < overlapEnd) {
+                        const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
+                        adlibSegments.push({
+                            ...seg,
+                            text: overlapText
+                        });
+                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
+                        if (!isOnlyPunctuationOrSpace.test(overlapText)) {
+                            if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
+                        }
+                    }
+                    currentPos = segEnd;
+                }
+                const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+
+                const pron = await quickTransliterate(adlibText);
+
+                adlibs.push({
+                  text: adlibText,
+                  charStart,
+                  charEnd,
+                  start: null,
+                  end: null,
+                  segments: adlibSegments,
+                  singer: derivedSinger,
+                  pronunciation: pron ? JSON.stringify([{ type: 'foreign', text: adlibText, trans: pron }]) : null
+                });
+            }
+        }
+    }
+         
+    if (adlibs.length > 0) {
+      line.isSplit = true;
+      line.adlibs = adlibs;
+      handleSplitAdlibs(lineIndex, data);
+    }
+  };
+
   const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
     const segments = line.segments || [{ text: line.text }];
+    const isRTL = isRTLLanguage(line.text);
 
     const pronStyle = { 
          fontSize: '0.55em', 
@@ -225,26 +299,66 @@ const SyncWorkspace = ({
         return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
-    const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
-    const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
-             
-    let displayPronString = pronString;
-    
     if (parsedChunks) {
-        displayPronString = parsedChunks.map(chunk => {
-            const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
-            return normalizeTrans(textToUse);
-        }).join('');
-    } else if (pronString) { 
-         displayPronString = normalizeTrans(pronString);
-    }
+        let charOffset = 0;
+        const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
+            const chunkLen = Array.from(chunk.text).length;
+            const firstCharIdx = charOffset;
+            const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
+            charOffset += chunkLen;
 
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', width: '100%' }} dir="auto">
-            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }}>{renderedChars}</span>
-            {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
-        </div>
-    );
+            const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
+            
+            if (isRTL) {
+                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
+            } else {
+                if (chunk.type === 'foreign' && chunk.trans) {
+                    const cleanTrans = normalizeTrans(chunk.trans);
+                    return (
+                        <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
+                            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
+                            <span style={pronStyle} dir="ltr">{cleanTrans}</span>
+                        </span>
+                    );
+                } else {
+                    return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
+                }
+            }
+        });
+
+        let displayPronString = null;
+        if (isRTL) {
+            displayPronString = parsedChunks.map(chunk => {
+                const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
+                return normalizeTrans(textToUse);
+            }).join('');
+        }
+
+        const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
+
+        // CRITICAL FIX: Flex container stays LTR, forcing span and pron container to align left locally 
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
+                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', verticalAlign: 'bottom', textAlign: 'left' }} dir="auto">{renderedChunks}</span>
+                {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+            </div>
+        );
+    } else {
+        const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
+        const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
+                 
+        let displayPronString = pronString;
+        if (pronString) { 
+             displayPronString = normalizeTrans(pronString);
+        }
+
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
+                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block', textAlign: 'left' }} dir="auto">{renderedChars}</span>
+                {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+            </div>
+        );
+    }
   };
 
   return (
@@ -333,7 +447,7 @@ const SyncWorkspace = ({
                     onClick={(e) => {
                        e.stopPropagation();
                        if (line.isSplit) handleUndoSplit(item.lineIndex); 
-                      else handleSplitAdlibs(item.lineIndex);
+                      else localHandleSplitAdlibs(item.lineIndex);
                     }}
                   >
                     {line.isSplit ? 'Undo Split' : 'Split Adlibs'}
