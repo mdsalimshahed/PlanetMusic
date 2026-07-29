@@ -9,17 +9,35 @@ const ModalLeft = ({
   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
-  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen
-}) => {
+  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
 
-  const handleCloseModal = () => {
-    if (setSelectedSong) {
-      setSelectedSong(null);
-    } else {
-      const hiddenCloseBtn = document.querySelector('.close-btn');
-      if (hiddenCloseBtn) hiddenCloseBtn.click();
+  // Safely trigger cancel/unsaved-changes prompt before closing modal or returning to dashboard
+  const handleProtectedAction = (actionCallback) => {
+    if (isTranslationManagerOpen) {
+      const workspaceElement = document.querySelector('.tw-container');
+      if (workspaceElement) {
+        const cancelBtn = workspaceElement.querySelector('.tw-btn-cancel');
+        if (cancelBtn) {
+          cancelBtn.click();
+          // Check if workspace is still active (user clicked 'Cancel' on unsaved prompt)
+          const isStillActive = document.querySelector('.tw-container');
+          if (isStillActive) return;
+        }
+      }
     }
+    if (actionCallback) actionCallback();
+  };
+
+  const handleCloseModal = () => {
+    handleProtectedAction(() => {
+      if (setSelectedSong) {
+        setSelectedSong(null);
+      } else {
+        const hiddenCloseBtn = document.querySelector('.close-btn');
+        if (hiddenCloseBtn) hiddenCloseBtn.click();
+      }
+    });
   };
 
   return (
@@ -43,7 +61,6 @@ const ModalLeft = ({
             </div>
           </div>
         </div>
-
         <div className="modal-details glass-panel-light">
           {featuredArtists.length > 0 && (
             <div className="detail-item">
@@ -55,7 +72,6 @@ const ModalLeft = ({
           <div className="detail-item"><label>Track Number</label><p>{selectedSong.trackNumber ? `${selectedSong.trackNumber} of ${selectedSong.trackCount || '?'}` : 'N/A'}</p></div>
         </div>
       </div>
-
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
           <div className="links-header"><label>Listen on Platforms</label></div>
@@ -82,10 +98,8 @@ const ModalLeft = ({
             </div>
           )}
         </div>
-
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
-                     
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
               <div className="instruction-row"><span><strong>1.</strong> Press <strong> </strong> to set Start Time</span></div>
@@ -93,11 +107,9 @@ const ModalLeft = ({
               <div className="instruction-row subtle"><span><em>(Press <strong> </strong> anytime to rewind)</em></span></div>
             </div>
           )}
-
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
-                // Replaces buttons purely for semantic clarity if needed, though TranslationWorkspace has its own save/cancel
-                <button className="edit-links-btn save-mode" onClick={() => setIsTranslationManagerOpen(false)}>Close Editor</button>
+                <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>Close Editor</button>
             ) : isSyncMode ? (
               <>
                 <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>  Cancel Sync</button>
@@ -127,20 +139,20 @@ const ModalLeft = ({
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? '  Parsing Engine...' : hasValidSyncData ? '  Edit Timings' : '  Manual Sync'}
                     </button>
-                                         
+                    
                     <button 
-                       className="edit-links-btn" 
-                       onClick={() => setIsTranslationManagerOpen(true)}
-                    >
+                        className="edit-links-btn" 
+                        onClick={() => setIsTranslationManagerOpen(true)}
+                    > 
                        Edit Translation
                     </button>
-                                         
+                    
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>  Manage Artists</button>
-                                         
+                    
                     {hasValidSyncData && !isSyncLoading && (
                       <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
                         {lyricsViewMode === 'live' ? '  Show Focused Sync' : 
-                          lyricsViewMode === 'focused' ? '  Show Plain Text' : '  Show Live Sync'}
+                           lyricsViewMode === 'focused' ? '  Show Plain Text' : '  Show Live Sync'}
                       </button>
                     )}
                   </>
@@ -154,24 +166,22 @@ const ModalLeft = ({
             )}
           </div>
         </div>
-
         {/* The injection slot for the Player Portal on Mobile */}
         <div id="mobile-player-slot"></div>
-
         <div className="bottom-actions">
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
               <span> </span> Remove from Vault
             </button>
           ) : (
-            <button className="edit-links-btn save-mode" onClick={(e) => {
-              toggleLibrary(e, selectedSong);
+            <button className="edit-links-btn save-mode" onClick={(e) => { 
+              toggleLibrary(e, selectedSong); 
               handleAutoSyncDatabases(true); 
-             }}>+ Add to Vault</button>
+              }}>+ Add to Vault</button>
           )}
           <button className="return-dashboard-btn" onClick={handleCloseModal}>
-            Return to Dashboard 
-           </button>
+            Return to Dashboard
+            </button>
         </div>
       </div>
     </div>

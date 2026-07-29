@@ -14,7 +14,7 @@ export const normalizeTrans = (str) => {
 
 const cleanTranslationText = (text) => {
   if (!text) return '';
-  return text
+  return String(text)
     .replace(/[()]/g, '')
     .trim()
     .replace(/[\.\!\?\u3002\uff0e\uff01\uff1f]+$/g, '')
@@ -53,11 +53,11 @@ const groupWords = (elements, charData) => {
 };
 
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
-  const pronString = savedNode?.pronunciation;
+  const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
   const segments = lineObj.segments || [];
-  const isRTL = isRTLLanguage(lineObj.text);
+  const isRTL = isRTLLanguage(lineObj.text || '');
 
-  const displayTranslation = cleanTranslationText(savedNode?.translation);
+  const displayTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
 
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
   const basePronStyle = {
@@ -270,7 +270,8 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
                       try { aTrans = JSON.parse(aPron).map(c=>c.trans||c.text).join(''); } catch(e){}
                   } else { aTrans = aPron; }
               }
-              const adlibTranslation = cleanTranslationText(chunk.adlibObj?.translation);
+              let adlibTranslation = chunk.adlibObj?.translation || '';
+              if (adlibTranslation) adlibTranslation = String(adlibTranslation).replace(/[()]/g, '').trim();
 
               let adlibProps = {};
               if (savedNode?.isSplit && !isFocused && chunk.adlibObj?.start !== null) {
@@ -292,7 +293,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
               return {
                   type: chunk.type,
                   jsx: (
-                      <span key={chunkIdx} style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', marginLeft: '28px', marginRight: '8px' }}>
+                      <span key={chunkIdx} style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', marginLeft: '16px', marginRight: '4px' }}>
                           {adlibTranslation && (
                               <span {...adlibProps} className={`chunk-translation ${transClass} ${adlibProps.className || ''}`.trim()} dir="ltr">
                                   {adlibTranslation}
@@ -363,19 +364,31 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       shouldRenderBlockPron = true;
   }
 
-  const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'start', wordSpacing: '4px', lineHeight: '1.4' };
+  // Force left-alignment for live sync view even when text direction is RTL
+  const lineTextAlign = isFocused ? 'center' : 'left';
+  const blockPronStyle = { 
+      ...basePronStyle, 
+      marginTop: '8px', 
+      display: 'block', 
+      textAlign: lineTextAlign, 
+      wordSpacing: '4px', 
+      lineHeight: '1.4' 
+  };
 
   return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'start', width: '100%' }}>
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'block', width: '100%', textAlign: isFocused ? 'center' : 'start' }} dir="auto">
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%' }}>
+          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: 'ltr' }}>
               
               {leadingJsx.length > 0 && <span className="leading-adlibs">{leadingJsx}</span>}
               
-              <span className="core-chunks" style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 4px', maxWidth: '100%' }}>
-                  {displayTranslation && (
-                      <span className={`chunk-translation ${transClass}`} dir="ltr">{displayTranslation}</span>
-                  )}
-                  <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>
+              {/* Core Main Lyrics Container with Translation */}
+              <span className="core-chunks" style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 4px' }}>
+                  {displayTranslation ? (
+                      <span className={`chunk-translation ${transClass}`} dir="ltr">
+                          {displayTranslation}
+                      </span>
+                  ) : null}
+                  <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }} dir="auto">
                       {coreJsx}
                   </span>
               </span>

@@ -19,7 +19,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
-  
   const syncAudioRef = useRef(null);
   const activeLineRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
@@ -110,7 +109,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   useSyncKeyboard({
     isSyncMode, syncAudioRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-    loopRangeRef // CRITICAL FIX: Ensure parameter is explicitly passed down
+    loopRangeRef
   });
 
   const { 
@@ -123,29 +122,74 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     setLoopRange, setDebugInfo
   });
 
+  // CRITICAL FIX: Preserves translations, pronunciations, and ad-libs when opening sync mode
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
     setCurrentTrack(null);
     setIsSyncLoading(true);
-    
+
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
-    
-    if (sourceData?.length === parsedLines.length) {
-      initialData = parsedLines.map((line, i) => ({ ...line, pronunciation: sourceData[i].pronunciation || null, start: sourceData[i].start, end: sourceData[i].end, isSplit: sourceData[i].isSplit || false, adlibs: sourceData[i].adlibs || undefined }));
-    } else if (sourceData?.some(l => l.start !== null)) {
-      const salvagedData = mergeSyncWithGenius(sourceData, customData.lyrics, selectedSong.artistName, masterPalette);
-      initialData = salvagedData.map((line) => ({ ...line, pronunciation: line.pronunciation || null }));
+
+    if (sourceData && sourceData.length > 0) {
+      initialData = parsedLines.map((line, i) => {
+        const existingNode = sourceData[i] || {};
+        return {
+          ...line,
+          translation: existingNode.translation || line.translation || '',
+          pronunciation: existingNode.pronunciation || line.pronunciation || null,
+          start: existingNode.start !== undefined ? existingNode.start : null,
+          end: existingNode.end !== undefined ? existingNode.end : null,
+          isSplit: existingNode.isSplit || false,
+          adlibs: existingNode.adlibs || undefined
+        };
+      });
     } else {
-      initialData = parsedLines.map((line) => ({ ...line, pronunciation: null, start: null, end: null }));
+      initialData = parsedLines.map((line) => ({ 
+        ...line, 
+        translation: '',
+        pronunciation: null, 
+        start: null, 
+        end: null 
+      }));
     }
-    
+
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
     setIsSyncMode(true);
     setIsSyncLoading(false);
+  };
+
+  // EXPLICIT REFRESH: Only clears and resets lyrics data when the user confirms
+  const handleRefreshLyrics = () => {
+    if (!window.confirm("Are you sure you want to refresh lyrics? This will reset all timings, translations, and split ad-libs for this song.")) return;
+
+    const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
+    const resetData = parsedLines.map(line => ({
+      ...line,
+      translation: '',
+      pronunciation: null,
+      start: null,
+      end: null,
+      isSplit: false,
+      adlibs: undefined
+    }));
+
+    setSyncData(resetData);
+    syncDataRef.current = resetData;
+    
+    updateSongInLibrary({
+      ...selectedSong,
+      syncData: resetData,
+      autoSyncData: null
+    });
+
+    if (setNotification) {
+      setNotification({ show: true, message: 'Lyrics data refreshed and cleared!', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 2000);
+    }
   };
 
   const saveSyncData = () => {
@@ -171,7 +215,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, playbackRate, debugInfo,
-    syncAudioRef, activeLineRef, startSyncMode, saveSyncData, handleAutoSyncDatabases, handleTranslate, toggleSyncPlay, handleSyncSeek,
+    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, saveSyncData, handleAutoSyncDatabases, handleTranslate, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
   };
 };
