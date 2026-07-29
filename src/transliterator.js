@@ -64,16 +64,27 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
   const isRomanChar = (char) => /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 
   for (let i = 0; i < linesArray.length; i++) {
+    
+    // CRITICAL FIX: We create a helper function that yields the main thread for 15ms.
+    // This allows React to physically paint the DOM and animate the progress bar, 
+    // ensuring the UI doesn't freeze when pulling instantly from the local cache.
+    const updateProgress = async () => {
+      if (onProgress) {
+        onProgress(i + 1, linesArray.length);
+        await new Promise(resolve => setTimeout(resolve, 15));
+      }
+    };
+
     if (!linesArray[i]) {
       results.push(null);
-      if (onProgress) onProgress(i + 1, linesArray.length);
+      await updateProgress();
       continue;
     }
 
     const cleanLine = stripHtmlAndBrackets(linesArray[i]);
     if (!cleanLine) {
       results.push(null);
-      if (onProgress) onProgress(i + 1, linesArray.length);
+      await updateProgress();
       continue;
     }
 
@@ -109,7 +120,6 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
           trans = await getGooglePronunciation(textKey);
           translationCache.set(textKey, trans);
           saveTranslationCache();
-          await new Promise(resolve => setTimeout(resolve, 50));
         }
         chunks[j].trans = trans || null;
       }
@@ -120,7 +130,9 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     } else {
       results.push(null);
     }
-    if (onProgress) onProgress(i + 1, linesArray.length);
+    
+    await updateProgress();
   }
+  
   return results;
 };
