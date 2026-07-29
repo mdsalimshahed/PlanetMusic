@@ -13,16 +13,17 @@ const formatTime = (seconds) => {
 
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceRef = useRef(null);
   
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-  
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState(undefined);
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
-  
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
@@ -30,6 +31,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
+
+  // CRITICAL FIX: Track the play state globally so when the Modal unmounts and remounts, 
+  // the EQ instantly knows the audio is already actively playing.
+  useEffect(() => {
+    window.globalIsAudioPlaying = isPlaying;
+  }, [isPlaying]);
 
   useEffect(() => {
     const handleResize = () => setIsStacked(window.innerWidth <= 900);
@@ -51,9 +58,45 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
+  // --- WEB AUDIO API INIT FOR REAL-TIME EQUALIZER ---
+  const initWebAudio = () => {
+    try {
+      if (!audioCtxRef.current && audioRef.current) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtxRef.current = new AudioContext();
+        analyserRef.current = audioCtxRef.current.createAnalyser();
+        analyserRef.current.fftSize = 128; // Gives us exactly 64 frequency bins
+        
+        window.globalAudioAnalyser = analyserRef.current;
+        window.globalFreqData = new Uint8Array(analyserRef.current.frequencyBinCount);
+        
+        // The source node connects the audio element to the analyser
+        sourceRef.current = audioCtxRef.current.createMediaElementSource(audioRef.current);
+        sourceRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(audioCtxRef.current.destination);
+      }
+      if (audioCtxRef.current?.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+    } catch (e) {
+      console.warn("Web Audio API could not initialize:", e);
+    }
+  };
+
+  const attemptPlay = async () => {
+    if (!audioRef.current) return;
+    initWebAudio();
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+      emitPlayState(true, false);
+    } catch (err) {
+      console.log("Autoplay prevented:", err);
+    }
+  };
+
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
-
     let img = new Image();
     img.crossOrigin = "Anonymous"; 
     img.onload = () => {
@@ -63,10 +106,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         canvas.width = 5;
         canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
-        
+                 
         const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
-        
+                 
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
             r += data[i];
@@ -75,17 +118,16 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             count++;
           }
         }
-        
+                 
         if (count > 0) {
           r = Math.floor(r / count);
           g = Math.floor(g / count);
           b = Math.floor(b / count);
-          
+                     
           const boost = 30; 
           r = Math.min(255, r + boost);
           g = Math.min(255, g + boost);
           b = Math.min(255, b + boost);
-
           setAccentColor(`rgb(${r}, ${g}, ${b})`);
         }
       } catch (e) {
@@ -109,8 +151,14 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   useEffect(() => {
     if (!currentTrack) {
+      // CRITICAL FIX: Explicitly pause the hardware audio buffer so it stops playing instantly
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       setAudioSrc(undefined);
       setPendingSeek(null); 
+      setIsPlaying(false);
       emitPlayState(false, true);
       window.currentAudioTime = 0;
       if (progressBarRef.current) progressBarRef.current.value = 0;
@@ -133,9 +181,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     if (audioSrc && audioRef.current) {
       audioRef.current.volume = volume;
       if (pendingSeek === null) {
-        audioRef.current.play()
-          .then(() => { setIsPlaying(true); emitPlayState(true, false); })
-          .catch(err => console.log("Autoplay prevented:", err));
+        attemptPlay();
       }
     }
   }, [audioSrc]);
@@ -143,7 +189,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
-      
+             
       if (!currentTrack || currentTrack.trackId !== track.trackId) {
         setCurrentTrack(track);
         setPendingSeek(time); 
@@ -152,16 +198,14 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           audioRef.current.currentTime = time;
           window.currentAudioTime = time;
           if (!isPlaying) {
-            audioRef.current.play()
-              .then(() => { setIsPlaying(true); emitPlayState(true, false); })
-              .catch(() => {});
+            attemptPlay();
           } else {
             emitPlayState(true, false);
           }
         }
       }
     };
-    
+         
     window.addEventListener('globalSeekRequest', handleSeekRequest);
     return () => window.removeEventListener('globalSeekRequest', handleSeekRequest);
   }, [currentTrack, isPlaying, setCurrentTrack]);
@@ -174,7 +218,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     if (e) e.stopPropagation();
     if (!audioRef.current) return;
     if (isPlaying) audioRef.current.pause();
-    else audioRef.current.play();
+    else attemptPlay();
   };
 
   const openModal = () => {
@@ -185,6 +229,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
+
       if (!audioRef.current || !currentTrack) return;
 
       if (e.code === 'Space') {
@@ -203,25 +248,21 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         window.currentAudioTime = newTime;
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
-  // CRITICAL FLICKER FIX: Separates the UI updates from the Lyrics sync updates.
-  // The lyrics sync at 50ms precision, but the progress bar rigidly ticks exactly once per second.
   useEffect(() => {
     let intervalId;
     let lastSecond = -1;
-    
+         
     const tick = () => {
       if (audioRef.current && isPlaying) {
         const time = audioRef.current.currentTime;
         window.currentAudioTime = time;
-        
+                 
         const currentSecond = Math.floor(time);
-        
-        // Block UI repaints entirely unless a full second has actually passed
+                 
         if (currentSecond !== lastSecond) {
           if (progressBarRef.current) {
             progressBarRef.current.value = time;
@@ -233,8 +274,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           }
           lastSecond = currentSecond;
         }
-
-        // Fire global update for lyrics dynamically in the background at 50ms interval
         window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
       }
     };
@@ -242,7 +281,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     if (isPlaying) {
       intervalId = setInterval(tick, 50);
     }
-
     return () => clearInterval(intervalId);
   }, [isPlaying, duration]);
 
@@ -253,9 +291,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         window.currentAudioTime = pendingSeek;
-        audioRef.current.play()
-          .then(() => { setIsPlaying(true); emitPlayState(true, false); })
-          .catch(() => {});
+        attemptPlay();
         setPendingSeek(null); 
       }
     }
@@ -270,7 +306,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-    
+         
     if (progressBarRef.current) {
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
@@ -289,14 +325,16 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   const closePlayer = (e) => {
     e.stopPropagation();
+    if (audioRef.current) {
+      audioRef.current.pause(); // CRITICAL FIX: Explicit hardware pause
+    }
     setCurrentTrack(null);
     setIsPlaying(false);
     emitPlayState(false, true);
   };
 
-  if (!currentTrack) return null;
-
-  const playerUI = (
+  // We conditionally render the UI based on whether there's an active track.
+  const playerUI = currentTrack ? (
     <div 
       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''}`} 
       onClick={openModal}
@@ -311,7 +349,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
             />
             <div className={`play-overlay ${!isPlaying ? 'show-play' : ''}`}>
-              {isPlaying ? '⏸' : '▶'}
+              {isPlaying ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              )}
             </div>
           </div>
           <div className="player-text">
@@ -322,7 +364,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
-            <span className="volume-icon">{volume === 0 ? '🔇' : volume < 0.5 ? '🔉' : '🔊'}</span>
+            <span className="volume-icon">
+              {volume === 0 ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+              ) : volume < 0.5 ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              )}
+            </span>
             <div className="volume-slider-wrapper">
               <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>{Math.round(volume * 100)}%</div>
               <input 
@@ -335,10 +385,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               />
             </div>
           </div>
-          <button className="close-player" onClick={closePlayer}>✕</button>
+          <button className="close-player" onClick={closePlayer} title="Close Player">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
       </div>
-      
+             
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text" ref={currentTimeRef}>0:00</span>
         <input 
@@ -353,19 +408,20 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         <span className="time-text">{formatTime(duration)}</span>
       </div>
     </div>
-  );
+  ) : null;
 
   return (
     <>
       <audio 
         ref={audioRef}
+        crossOrigin="anonymous"
         src={audioSrc || undefined} 
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
         onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
         onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
       />
-      {slotNode ? createPortal(playerUI, slotNode) : playerUI}
+      {playerUI && (slotNode ? createPortal(playerUI, slotNode) : playerUI)}
     </>
   );
 };

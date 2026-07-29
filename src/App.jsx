@@ -21,6 +21,7 @@ const App = () => {
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
+      if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
       return parsed;
     }
     return {
@@ -37,19 +38,18 @@ const App = () => {
       focusedSyncFontSize: 42,
       modalSplitRatio: 50,
       bgPreemptionTime: 400,
-      modalPaddingY: 5
+      modalPaddingY: 5,
+      eqFadeOutTime: 500
     };
   });
 
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
-  
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
-  
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
@@ -92,7 +92,7 @@ const App = () => {
           `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
         );
         const data = await response.json();
-        
+                 
         const sortedResults = data.results.sort((a, b) => {
           const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
           const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
@@ -117,7 +117,7 @@ const App = () => {
   const toggleLibrary = (e, song) => {
     e.stopPropagation(); 
     const isSaved = library.some((s) => s.trackId === song.trackId);
-    
+         
     if (isSaved) {
       setSongToRemove(song);
     } else {
@@ -151,7 +151,7 @@ const App = () => {
 
   const handleExport = () => {
     if (library.length === 0) return alert("Your vault is empty! Add songs before exporting.");
-    
+         
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
       delete optimizedSong.artworkUrl30;
@@ -167,7 +167,7 @@ const App = () => {
     const jsonString = JSON.stringify(exportData, null, 2); 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+         
     const a = document.createElement('a');
     a.href = url;
     a.download = 'PlanetMusic_Backup.json';
@@ -186,6 +186,7 @@ const App = () => {
       try {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
+
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -240,7 +241,6 @@ const App = () => {
   return (
     <div className="app-layout" style={dynamicStyles}>
       <Background />
-
       <Topbar 
         activeTab={activeTab} 
         setActiveTab={handleTabSwitch} 
@@ -253,7 +253,7 @@ const App = () => {
         {activeTab !== 'settings' && (
           <div className="search-container glass-panel-light">
             <form onSubmit={handleSearchSubmit} className="search-box glass-input">
-              <span className="search-icon">🔎</span>
+              <span className="search-icon"> </span>
               <input
                 type="text"
                 placeholder={activeTab === 'search' ? "Search for artists, songs, or albums..." : "Search your vault..."}
@@ -343,7 +343,7 @@ const App = () => {
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 
         selectedSong={selectedSong}
-        setSelectedSong={setSelectedSong} 
+        setSelectedSong={setSelectedSong}
       />
 
       {songToRemove && (

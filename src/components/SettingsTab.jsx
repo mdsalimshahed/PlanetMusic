@@ -14,7 +14,7 @@ const SettingsTab = ({ settings, setSettings }) => {
   return (
     <section className="view-section settings-tab-container">
       <h3 className="section-title text-glow">System Preferences</h3>
-      
+             
       <div className="settings-grid">
         <div className="settings-card glass-panel">
           <h3>Layout & Sizing</h3>
@@ -42,12 +42,20 @@ const SettingsTab = ({ settings, setSettings }) => {
 
         <div className="settings-card glass-panel">
           <h3>Visuals & Styling</h3>
-
           <div className="setting-item">
             <label>Image Anticipation Time ({settings.bgPreemptionTime}ms)</label>
             <input type="range" name="bgPreemptionTime" min="0" max="2000" step="50" value={settings.bgPreemptionTime} onChange={handleChange} style={{'--progress': `${(settings.bgPreemptionTime / 2000) * 100}%`}} />
             <span className="setting-desc" style={{ marginTop: '8px' }}>
               How early the artist image begins appearing before their line begins.
+            </span>
+          </div>
+
+          {/* ADDED EQUALIZER SETTING HERE */}
+          <div className="setting-item">
+            <label>Equalizer Fade-Out Time ({settings.eqFadeOutTime}ms)</label>
+            <input type="range" name="eqFadeOutTime" min="100" max="2000" step="100" value={settings.eqFadeOutTime} onChange={handleChange} style={{'--progress': `${((settings.eqFadeOutTime - 100) / 1900) * 100}%`}} />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              How smoothly the equalizer bars fall down when playback is paused.
             </span>
           </div>
 
@@ -68,10 +76,10 @@ const SettingsTab = ({ settings, setSettings }) => {
               onChange={(e) => {
                 const val = parseInt(e.target.value, 10);
                 localStorage.setItem('artistTransitionTime', val);
-                
+                                 
                 document.getElementById('transitionValueDisplay').innerText = `${val}ms`;
                 e.target.style.setProperty('--progress', `${(val / 1000) * 100}%`);
-                
+                                 
                 window.dispatchEvent(new CustomEvent('updateTransitionTime', { detail: val }));
               }}
               style={{
@@ -82,7 +90,6 @@ const SettingsTab = ({ settings, setSettings }) => {
               Lower is snappier (0ms = instant). Adjusts the fade gap between singer changes.
             </span>
           </div>
-
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
             <input type="range" name="bgImageOpacity" min="0" max="1" step="0.05" value={settings.bgImageOpacity ?? 0.25} onChange={handleChange} style={{'--progress': `${(settings.bgImageOpacity ?? 0.25) * 100}%`}} />
@@ -103,6 +110,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             <label>Focused View Line Size ({settings.focusedSyncFontSize}px)</label>
             <input type="range" name="focusedSyncFontSize" min="24" max="80" value={settings.focusedSyncFontSize} onChange={handleChange} style={{'--progress': `${((settings.focusedSyncFontSize - 24) / 56) * 100}%`}} />
           </div>
+          
           <div className="setting-item toggle-item">
             <label>Enable Rounded Corners</label>
             <input type="checkbox" name="isRounded" checked={settings.isRounded} onChange={handleChange} />

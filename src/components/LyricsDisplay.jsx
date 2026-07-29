@@ -385,12 +385,53 @@ const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPale
 
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,
-  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
+  isPlaying, settings
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-  const isPlayingCurrentSong = !currentTrack || currentTrack?.trackId === selectedSong?.trackId;
+  const eqBarsRef = useRef([]);
+  
+  // CRITICAL FIX: Ensure the play state strict-checks matching track data so cross-song bleed never occurs
+  const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
+
+  // Real-time Audio EQ Loop
+  useEffect(() => {
+    let rafId;
+    const fadeOutTime = settings?.eqFadeOutTime ?? 500;
+    
+    const renderEQ = () => {
+      // Because we use isPlayingCurrentSong, the EQ will safely fall to the flat-line 'else' block 
+      // when a user explores lyrics belonging to a different song.
+      if (isPlaying && isPlayingCurrentSong && window.globalAudioAnalyser && window.globalFreqData) {
+        window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
+        const bars = eqBarsRef.current;
+        for (let i = 0; i < bars.length; i++) {
+          if (bars[i]) {
+            const raw = window.globalFreqData[i];
+            const scale = 0.05 + (raw / 255) * 0.95;
+            
+            bars[i].style.transition = 'transform 0.05s ease-out';
+            bars[i].style.transform = `scaleY(${scale})`;
+          }
+        }
+      } else {
+        // If playback stops or the songs don't match, smoothly animate all bars back down using the user's setting
+        const bars = eqBarsRef.current;
+        for (let i = 0; i < bars.length; i++) {
+          if (bars[i] && bars[i].style.transform !== 'scaleY(0.05)') {
+            bars[i].style.transition = `transform ${fadeOutTime}ms ease-out`;
+            bars[i].style.transform = `scaleY(0.05)`;
+          }
+        }
+      }
+      rafId = requestAnimationFrame(renderEQ);
+    };
+    renderEQ();
+    return () => cancelAnimationFrame(rafId);
+  }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
+
 
   useEffect(() => {
     if (containerRef.current) {
@@ -408,7 +449,6 @@ const LyricsDisplay = ({
             state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
         }));
     }
-  // NEW: Dependency added for selectedSong?.syncData so that DOM cache reliably resets when switching Sync toggle states
   }, [liveParsedLyrics, lyricsViewMode, selectedSong?.syncData]);
 
   useEffect(() => {
@@ -653,6 +693,19 @@ const LyricsDisplay = ({
               <p>No lyrics found in your Vault.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Floating Animated Equalizer - Tied Directly to Real Audio Frequencies */}
+      {!isEditing && (
+        <div className={`lyrics-equalizer`}>
+          {Array.from({ length: 60 }).map((_, i) => (
+            <div
+              key={i}
+              className="eq-bar"
+              ref={(el) => eqBarsRef.current[i] = el}
+            />
+          ))}
         </div>
       )}
     </>

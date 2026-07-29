@@ -313,7 +313,7 @@
 .adlib-node.adlib-visible {
   opacity: 0.6 !important;
   transform: translate3d(0, 0, 0) !important;
-  filter: grayscale(0%) !important; /* CRITICAL FIX: Changed from 100% to 0% so colors persist */
+  filter: grayscale(0%) !important;
 }
 .adlib-node.adlib-active {
   opacity: 1 !important;
@@ -358,4 +358,33 @@ rt.pronunciation-text {
   .preview-line { font-size: calc(var(--dyn-live-sync-font-size, 34px) * 0.75); }
   .focused-line { font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.75); }
   .focused-adlib-line { max-width: 80vw; }
+}
+
+/* --- Lyrics Equalizer (Real-Time Audio) --- */
+.lyrics-equalizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.eq-bar {
+  width: 8px;
+  background: #ffffff;
+  border-radius: 4px 4px 0 0;
+  height: 100%;
+  flex-shrink: 0;
+  transform: scaleY(0.05);
+  transform-origin: bottom;
+  will-change: transform;
 }
