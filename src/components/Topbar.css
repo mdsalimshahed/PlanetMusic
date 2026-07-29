@@ -21,19 +21,33 @@
   gap: 12px;
 }
 
+/* --- DYNAMIC LOGO COLOR ANIMATION --- */
+@keyframes dynamicGradientPulse {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.logo-icon, .logo-text {
+  /* Matches the vibrant palette from the fluid background */
+  background: linear-gradient(270deg, #ff0a54, #ff7000, #ffc300, #00f5d4, #00bbf9, #f15bb5, #ff0a54);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: dynamicGradientPulse 10s ease infinite;
+}
+
 .logo-icon {
   font-size: 28px;
-  filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
 }
 
 .logo-text {
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.5px;
-  background: linear-gradient(135deg, #fff, #b388eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
+/* ------------------------------------ */
 
 /* Right Side Grouping */
 .topbar-right {
@@ -124,18 +138,21 @@
   }
   
   .topbar-divider {
-    display: none; /* Safely hides layout barrier when wrapped */
+    display: none;
   }
 }
 
+/* Safely hides layout barrier when wrapped */
 @media (max-width: 480px) {
   .topbar-right {
     justify-content: center;
   }
+  
   .nav-menu {
     justify-content: center;
     width: 100%;
   }
+  
   .topbar-tools {
     justify-content: center;
     width: 100%;

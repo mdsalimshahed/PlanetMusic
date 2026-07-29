@@ -1,27 +1,57 @@
-.ambient-background {
+/* --- src/components/Background.css --- */
+.falling-fluid-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
   overflow: hidden;
-  background: var(--base-bg);
+  z-index: -1;
+  background-color: #030308; /* Deep dark background to make colors pop */
+  pointer-events: none;
 }
 
-.orb {
+.fluid-drops-container {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  animation: float 20s infinite ease-in-out alternate;
-  opacity: 0.6;
+  inset: -30%; /* Bleed outside bounds so drops don't clip at edges */
+  /* Heavy blur merges the hard edges into a liquid mesh */
+  filter: blur(60px); 
+  /* Screen blend mode forces overlapping colors to mix brightly */
+  mix-blend-mode: screen; 
+  opacity: 0.85;
 }
 
-.orb-1 { width: 600px; height: 600px; background: #4a00e0; top: -100px; left: -100px; }
-.orb-2 { width: 500px; height: 500px; background: #8e2de2; bottom: -50px; right: -50px; animation-delay: -5s; }
-.orb-3 { width: 400px; height: 400px; background: #00c6ff; top: 40%; left: 40%; animation-delay: -10s; opacity: 0.4; }
+.fluid-drop {
+  position: absolute;
+  top: -50vh; /* Start well above the screen */
+  border-radius: 50%;
+  will-change: transform;
+  animation-name: fallAndMix;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
 
-@keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(100px, 50px) scale(1.2); }
+@keyframes fallAndMix {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.8) rotate(0deg);
+  }
+  33% {
+    /* Drift horizontally using the random CSS variable */
+    transform: translate3d(var(--sway-target), 70vh, 0) scale(1.2) rotate(120deg);
+  }
+  66% {
+    transform: translate3d(calc(var(--sway-target) * -0.5), 140vh, 0) scale(0.9) rotate(240deg);
+  }
+  100% {
+    /* End well below the screen */
+    transform: translate3d(0, 220vh, 0) scale(1.1) rotate(360deg);
+  }
+}
+
+.fluid-glass-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.85) 100%);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
 }

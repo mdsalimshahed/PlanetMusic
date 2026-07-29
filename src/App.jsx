@@ -245,7 +245,8 @@ const App = () => {
 
   return (
     <div className="app-layout" style={dynamicStyles}>
-      <Background />
+      <Background songs={library} />      
+      
       <Topbar 
         activeTab={activeTab} 
         setActiveTab={handleTabSwitch} 
