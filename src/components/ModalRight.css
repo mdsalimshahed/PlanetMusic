@@ -1,4 +1,5 @@
 /* --- src/components/ModalRight.css --- */
+
 .modal-right-col {
   flex: calc(100 - var(--dyn-modal-split, 50));
   aspect-ratio: 1 / 1;
@@ -141,13 +142,11 @@
   margin-bottom: 24px; line-height: 1.5; background: rgba(255,200,0,0.1);
   padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;
 }
-
 .image-manager-list { display: flex; flex-direction: column; gap: 16px; }
 .image-manager-row {
   display: flex; flex-direction: column; padding: 16px; border-radius: 12px;
   background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 .img-manager-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .img-manager-name {
   font-weight: 800; font-size: clamp(13px, 1.5vw, 15px); text-decoration: none;
@@ -155,19 +154,16 @@
   transition: background 0.2s ease;
 }
 .img-manager-name:hover { background: rgba(255, 255, 255, 0.2); }
-
 .img-manager-preview {
   width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.1);
 }
-
 .img-manager-input {
   width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px 14px; border-radius: 8px; color: white; font-size: clamp(11px, 1.3vw, 13px);
   transition: border-color 0.2s ease;
 }
 .img-manager-input:focus { outline: none; border-color: var(--accent); }
-
 .img-manager-controls { display: flex; align-items: center; gap: 12px; }
 .img-manager-color-picker {
   -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%;
@@ -181,14 +177,12 @@
   display: flex; flex-direction: column; height: 100%; gap: 16px;
   animation: fadeIn 0.3s ease;
 }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .sync-player {
   display: flex; align-items: center; gap: 12px; padding: 12px 20px;
   border-radius: 500px; background: rgba(0, 0, 0, 0.4);
 }
-
 .sync-play-btn {
   background: rgba(255, 255, 255, 0.1);
   color: white;
@@ -200,7 +194,6 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   transition: all 0.2s ease;
 }
-
 .sync-play-btn:hover {
   transform: scale(1.1);
   background: var(--workspace-accent, var(--accent));
@@ -208,27 +201,22 @@
   color: black;
   box-shadow: 0 4px 15px var(--workspace-accent-glow, rgba(179, 136, 235, 0.4));
 }
-
 .precise-time {
   font-family: monospace; font-size: clamp(10px, 1.2vw, 12px);
   color: var(--text-subdued); min-width: 65px; text-align: center;
   font-variant-numeric: tabular-nums;
 }
-
 .sync-slider { flex: 1; }
-
 .sync-lines-container {
   flex-grow: 1; position: relative; overflow-y: auto; overflow-x: hidden;
   display: flex; flex-direction: column; gap: 8px; padding: 12px;
   -webkit-overflow-scrolling: touch;
 }
-
 .sync-lines-container::-webkit-scrollbar { width: 6px; }
 .sync-lines-container::-webkit-scrollbar-thumb {
   background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.3));
   border-radius: 10px;
 }
-
 .sync-line {
   display: flex; justify-content: space-between; align-items: center;
   padding: 10px 14px; margin: 2px 4px; border-radius: 8px;
@@ -241,7 +229,6 @@
   border-color: var(--workspace-accent, var(--accent));
   transform: scale(1.02); box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2; position: relative;
 }
-
 .sync-line.recording .sync-time { color: #fbbf24; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
 .sync-line.synced .sync-time { color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.3); }
 
@@ -250,7 +237,6 @@
   border-left: 2px solid var(--workspace-accent, var(--accent));
   background: rgba(0, 0, 0, 0.3);
 }
-
 .sync-line.nested-adlib.adlib-playing {
   background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.15));
   border-left: 3px solid var(--workspace-accent, var(--accent));
@@ -268,10 +254,8 @@
   border-color: var(--workspace-accent, var(--accent));
   color: black;
 }
-
 .action-split-btn.undo { background: rgba(250, 36, 60, 0.1); border-color: rgba(250, 36, 60, 0.3); color: #FA243C; }
 .action-split-btn.undo:hover { background: #FA243C; border-color: #FA243C; color: white; }
-
 .sync-text { font-size: clamp(12px, 1.4vw, 14px); line-height: 1.4; color: rgba(255,255,255,0.9); pointer-events: none; }
 .sync-time {
   font-family: monospace; font-size: clamp(9px, 1.2vw, 11px);
@@ -282,22 +266,19 @@
   display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; margin-bottom: 14px;
   background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;
 }
-
 .speed-label-container { display: flex; justify-content: space-between; align-items: center; font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.7); }
 .speed-label-container strong {
   color: var(--workspace-accent, var(--accent));
   font-family: monospace; font-size: clamp(12px, 1.4vw, 14px);
 }
-
 .speed-reset-btn {
   background: rgba(255, 255, 255, 0.1); border: none; color: white;
   padding: 2px 8px; border-radius: 4px; font-size: clamp(9px, 1.2vw, 11px); cursor: pointer; transition: background 0.2s;
 }
 .speed-reset-btn:hover { background: rgba(255, 255, 255, 0.2); }
-
 .speed-slider { width: 100%; margin: 4px 0; }
-
 .speed-ticks { display: flex; justify-content: space-between; font-size: clamp(8px, 1vw, 10px); color: rgba(255, 255, 255, 0.3); padding: 0 2px; font-family: monospace; }
+
 
 /* General Lyrics Layout */
 .live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
@@ -326,9 +307,10 @@
 .live-lyrics-preview {
   flex-grow: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; 
   gap: var(--dyn-live-sync-gap, 16px);
-  padding: clamp(16px, 3vw, 24px) 20px; scroll-behavior: smooth;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+  padding: 120px 20px clamp(40px, 8vw, 80px) 20px; 
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
   scrollbar-width: none; -ms-overflow-style: none;
 }
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
@@ -348,7 +330,6 @@
   flex-grow: 1; display: flex; align-items: center; justify-content: center;
   overflow: hidden; padding: 40px; position: relative;
 }
-
 .focused-line {
   position: absolute; top: 50%; left: 50%; width: 100%; padding: 0 40px; text-align: center;
   font-size: var(--dyn-focused-sync-font-size, 42px); font-weight: 900; line-height: 1.4;
@@ -362,7 +343,6 @@
 .focused-adlibs-container {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;
 }
-
 .focused-adlib-line {
   position: absolute; top: var(--adlib-top, 50%); left: var(--adlib-left, 50%);
   font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.65); font-weight: 800; line-height: 1.4; text-align: center;
@@ -383,19 +363,23 @@
   backface-visibility: hidden;
 }
 
-.adlib-node.adlib-hidden {
+/* FIX: Ensure nested transliteration in hidden ad-libs is completely invisible */
+.adlib-node.adlib-hidden,
+.adlib-node.adlib-hidden .pronunciation-text {
   opacity: 0 !important;
   transform: translate3d(0, 8px, 0) !important;
   filter: grayscale(100%) !important;
 }
 
-.adlib-node.adlib-visible {
+.adlib-node.adlib-visible,
+.adlib-node.adlib-visible .pronunciation-text {
   opacity: 0.6 !important;
   transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
 }
 
-.adlib-node.adlib-active {
+.adlib-node.adlib-active,
+.adlib-node.adlib-active .pronunciation-text {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
@@ -406,7 +390,6 @@
 }
 .debug-lyrics-preview::-webkit-scrollbar { width: 6px; }
 .debug-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
-
 .debug-json {
   white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: monospace;
   font-size: clamp(10px, 1.2vw, 12px); line-height: 1.5; background: rgba(0,0,0,0.5);
@@ -414,16 +397,37 @@
 }
 
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
-
 .primary-text { display: block; width: 100%; box-sizing: border-box; }
 
-rt.pronunciation-text {
-  font-size: var(--dyn-translit-font-size, 0.55em); color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; transition: opacity 0.3s ease, transform 0.3s ease;
+/* Transliteration Text Styling */
+rt.pronunciation-text,
+.pronunciation-text {
+  font-size: var(--dyn-translit-font-size, 0.55em);
+  color: inherit;
+  opacity: 0.8;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
-.preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text {
-  color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.5);
+.preview-line.active rt.pronunciation-text, 
+.focused-line.active rt.pronunciation-text,
+.focused-line.active .pronunciation-text {
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* Transliteration Fade DOWN in Focused Mode when active */
+.focused-line .pronunciation-text {
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+}
+.focused-line.active .pronunciation-text {
+  opacity: 0.85;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
 }
 
 .sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
@@ -444,6 +448,7 @@ rt.pronunciation-text {
   .focused-adlib-line { max-width: 80vw; }
 }
 
+
 /* --- Lyrics Equalizer (Real-Time Audio) --- */
 .lyrics-equalizer {
   position: absolute;
@@ -461,7 +466,6 @@ rt.pronunciation-text {
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
-
 .eq-bar {
   width: 8px;
   background: #ffffff;
@@ -473,6 +477,7 @@ rt.pronunciation-text {
   transition: transform 0.05s ease-out; 
   will-change: transform;
 }
+
 
 /* --- Translation Overlay Styles --- */
 .chunk-translation {
@@ -503,19 +508,16 @@ rt.pronunciation-text {
 .chunk-translation.adlib-node {
   transform: translate(-50%, -100%) !important;
 }
-
 .chunk-translation.adlib-node.adlib-hidden {
   opacity: 0 !important;
   transform: translate(-50%, calc(-100% + 8px)) !important;
   filter: grayscale(100%) !important;
 }
-
 .chunk-translation.adlib-node.adlib-visible {
   opacity: 0.6 !important;
   transform: translate(-50%, -100%) !important;
   filter: grayscale(0%) !important;
 }
-
 .chunk-translation.adlib-node.adlib-active {
   opacity: 1 !important;
   transform: translate(-50%, -100%) !important;
@@ -540,14 +542,68 @@ rt.pronunciation-text {
   visibility: hidden;
   transition: opacity 0.4s ease, visibility 0s linear 0.4s;
 }
-
 .preview-line.active .live-translation {
   opacity: 0.9;
   visibility: visible;
   transition: opacity 0.4s ease, visibility 0s linear 0s;
 }
-
 .focused-translation {
   opacity: 0.95;
   visibility: visible;
+}
+
+
+/* --- FADE UP ANIMATION FOR TRANSLATED TEXT (FOCUSED VIEW MODE) --- */
+
+/* Main lyrics line stays 100% visible */
+.focused-line .main-lyrics-layer {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* Base Translation Container (Positioned atop main lyrics line) */
+.chunk-translation.focused-translation {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  width: max-content;
+  max-width: 95%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  margin-top: calc(-1 * var(--dyn-trans-top-padding, 8px));
+  box-sizing: border-box;
+
+  /* Strict Font Size from Settings */
+  font-size: var(--dyn-trans-font-size, 0.55em) !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  
+  /* Initial state: Hidden and slightly offset down */
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s linear;
+}
+
+/* TRIGGER FADE UP ANIMATION WHEN FOCUSED LINE IS ACTIVE */
+.focused-line.active .chunk-translation.focused-translation {
+  animation: fadeUpTranslation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* KEYFRAME: TRANSLATION FADES UP INTO PLACE ABOVE MAIN LINE */
+@keyframes fadeUpTranslation {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, calc(-100% + 12px));
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -100%);
+  }
 }

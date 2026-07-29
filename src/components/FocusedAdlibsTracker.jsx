@@ -5,6 +5,7 @@ import { normalizeTrans } from './LyricsLineRenderer';
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
+
   const adlibsToRender = useMemo(() => {
       const items = [];
       if (!syncData) return items;
@@ -38,7 +39,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                           col = Math.floor(Math.random() * cols);
                       }
                   } else {
-                      col = Math.floor(Math.random() * cols);
+                          col = Math.floor(Math.random() * cols);
                   }
                   
                   const top = row === 0 ? 12 + (randY * 15) : 68 + (randY * 15);
@@ -55,12 +56,16 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                               try { aTrans = JSON.parse(aPron).map(c=>c.trans||c.text).join(''); } catch(e){}
                           } else { aTrans = aPron; }
                       }
+
                       let adlibTranslation = adlibObj?.translation || '';
                       if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
+
                       const basePronStyle = { fontSize: 'var(--dyn-translit-font-size, 0.55em)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center', marginTop: 'var(--dyn-translit-bottom-padding, 4px)', display: 'inline-block' };
+
                       const segs = adlibObj.segments || [{ text: adlibObj.text }];
                       const renderedChars = [];
                       let charIdxCounter = 0;
+
                       segs.forEach((seg) => {
                           let defaultColor = seg.color || '#ffffff';
                           if (seg.artists && seg.artists.length > 0) {
@@ -71,6 +76,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                                   defaultColor = masterPalette[activeSingerName];
                               }
                           }
+
                           Array.from(seg.text).forEach((char) => {
                               const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(char);
                               const activeColor = isPunct ? '#fbbf24' : defaultColor;
@@ -81,10 +87,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                               );
                           });
                       });
+
                       return (
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
                               {adlibTranslation && (
-                                  <span className="chunk-translation focused-translation" dir="ltr">
+                                  /* CRITICAL FIX: Removed 'focused-translation' so it doesn't inherit the glitch animation's invisibility */
+                                  <span className="chunk-translation" style={{ opacity: 1, visibility: 'visible' }} dir="ltr">
                                       {adlibTranslation}
                                   </span>
                               )}
@@ -95,10 +103,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                           </div>
                       );
                   };
+
                   const rendered = renderAdlibPure(adlib);
                   const start = adlib.start;
                   const end = adlib.end !== null ? adlib.end : start + 5;
                   const isActive = isPlayingCurrentSong && currentTime >= start && currentTime <= end;
+
                   items.push({
                      key: `adlib-${start}-${j}`,
                      start,
@@ -135,6 +145,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           }
           return;
       }
+
       const handleTime = (e) => {
          const time = e.detail;
          const nodes = cachedTrackNodesRef.current;
@@ -158,6 +169,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   }, [isPlayingCurrentSong]);
 
   if (adlibsToRender.length === 0) return null;
+
   return (
       <div className="focused-adlibs-container" ref={containerRef}>
           {adlibsToRender.map(item => (
