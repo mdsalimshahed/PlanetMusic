@@ -1,6 +1,26 @@
 /* --- src/transliterator.js --- */
 
-const translationCache = new Map();
+// Initialize memory from local storage to keep past translations completely permanent
+const getInitialCache = () => {
+  try {
+    const stored = localStorage.getItem('globalTranslationCache');
+    if (stored) return new Map(JSON.parse(stored));
+  } catch (e) {
+    console.error("Failed to parse translation cache", e);
+  }
+  return new Map();
+};
+
+const translationCache = getInitialCache();
+
+// Helper to save cache back to local storage
+const saveTranslationCache = () => {
+  try {
+    localStorage.setItem('globalTranslationCache', JSON.stringify(Array.from(translationCache.entries())));
+  } catch (e) {
+    console.warn("Translation cache size limit reached", e);
+  }
+};
 
 const stripHtmlAndBrackets = (text) => {
   if (!text) return '';
@@ -13,7 +33,6 @@ const stripHtmlAndBrackets = (text) => {
 
 const getGooglePronunciation = async (text) => {
   if (!text || text === '') return null;
-
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
@@ -33,16 +52,17 @@ export const quickTransliterate = async (text) => {
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return null;
   if (translationCache.has(clean)) return translationCache.get(clean);
+  
   const res = await getGooglePronunciation(clean);
   translationCache.set(clean, res);
+  saveTranslationCache();
   return res;
 };
 
 export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
-  
   const isRomanChar = (char) => /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
-  
+
   for (let i = 0; i < linesArray.length; i++) {
     if (!linesArray[i]) {
       results.push(null);
@@ -79,16 +99,16 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     }
 
     let hasForeign = false;
-
     for (let j = 0; j < chunks.length; j++) {
       if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
         hasForeign = true;
         const textKey = chunks[j].text.trim();
         let trans = translationCache.get(textKey);
-        
+                 
         if (!trans) {
           trans = await getGooglePronunciation(textKey);
           translationCache.set(textKey, trans);
+          saveTranslationCache();
           await new Promise(resolve => setTimeout(resolve, 50));
         }
         chunks[j].trans = trans || null;
@@ -100,9 +120,7 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     } else {
       results.push(null);
     }
-
     if (onProgress) onProgress(i + 1, linesArray.length);
   }
-  
   return results;
 };

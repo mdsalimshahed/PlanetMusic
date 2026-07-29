@@ -9,24 +9,30 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
-
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   
-  const displayProps = useLyricsDisplay(
-    selectedSong, songDataProps.customData, songDataProps.masterPalette, 
-    null, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
-  );
-
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification
   );
 
+  // FIX: Added a ternary operator to handle when selectedSong is null
+  const effectiveSong = selectedSong ? {
+      ...selectedSong,
+      syncData: syncProps.isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData
+  } : null;
+
+  const displayProps = useLyricsDisplay(
+    effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
+    syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
+  );
+
   displayProps.isSyncMode = syncProps.isSyncMode;
 
-  // CRITICAL FIX: Ensure currentTrack is successfully passed down into the rendering pipeline
   const sharedProps = {
-    selectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
+    selectedSong: effectiveSong,
+    realSelectedSong: selectedSong,
+    isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
     ...songDataProps, ...displayProps, ...syncProps
   };
 
@@ -36,18 +42,18 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
       <div className="modal-window glass-panel" onClick={(e) => e.stopPropagation()}>
         <img src={songDataProps.highResArt} alt="" className="modal-dynamic-bg" aria-hidden="true" />
-        
+                 
         <div className="modal-content-wrapper">
-          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✕</button>
-          
+          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}> </button>
+                     
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
             <ModalRight 
-              {...sharedProps} 
-              syncAudioRef={syncProps.syncAudioRef} 
-              activeLineRef={syncProps.activeLineRef} 
-              activePreviewRef={displayProps.activePreviewRef} 
-            />
+               {...sharedProps}
+               syncAudioRef={syncProps.syncAudioRef}
+               activeLineRef={syncProps.activeLineRef}
+               activePreviewRef={displayProps.activePreviewRef} 
+             />
           </div>
 
           {notification.show && (
@@ -63,7 +69,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>

@@ -24,4 +24,4 @@ const ModalRight = (props) => {
   );
 };
 
-export default ModalRight;
+export default ModalRight; 
