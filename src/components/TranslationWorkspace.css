@@ -33,6 +33,7 @@
 .tw-header-actions {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .tw-btn {
@@ -46,11 +47,86 @@
     background: rgba(255,255,255,0.1);
     color: white;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.tw-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-.tw-btn-save { background: var(--accent); color: black; border-color: var(--accent); }
-.tw-btn-save:hover { filter: brightness(1.2); background: var(--accent); }
+.tw-btn:hover:not(:disabled) { 
+    background: rgba(255,255,255,0.2); 
+    transform: translateY(-2px); 
+}
+
+.tw-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.tw-btn-loading {
+    background: rgba(179, 136, 235, 0.2) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+}
+
+.tw-btn-save { 
+    background: var(--accent); 
+    color: black; 
+    border-color: var(--accent); 
+}
+
+.tw-btn-save:hover:not(:disabled) { 
+    filter: brightness(1.2); 
+    background: var(--accent); 
+}
+
+/* Success Banner Indicator */
+.tw-success-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    border-radius: 12px;
+    color: #4ade80;
+    font-size: 13px;
+    font-weight: 500;
+    animation: slideDownFade 0.3s ease-out forwards;
+}
+
+.tw-success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #4ade80;
+    color: black;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Spinner indicator */
+.tw-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: twSpin 0.8s linear infinite;
+    display: inline-block;
+}
+
+@keyframes twSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
 .tw-list {
     flex-grow: 1;
@@ -74,7 +150,14 @@
     background: rgba(0,0,0,0.3);
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+}
+
+/* Highlight Active Translating Row */
+.tw-row-active {
+    border-color: var(--accent) !important;
+    background: rgba(179, 136, 235, 0.12) !important;
+    box-shadow: 0 0 15px rgba(179, 136, 235, 0.25);
 }
 
 .tw-row-adlib {
@@ -112,7 +195,9 @@
 }
 
 .tw-input:focus { outline: none; border-color: var(--accent); }
+
 .tw-translation-input { height: 100%; min-height: 60px; }
+
 .tw-translit-input { color: var(--accent); font-weight: 500; font-family: monospace; letter-spacing: 0.5px; }
 
 .tw-col-actions {
@@ -136,7 +221,22 @@
     transition: all 0.2s;
 }
 
-.tw-refetch-btn:hover { background: var(--accent); color: black; border-color: var(--accent); transform: rotate(45deg); }
+.tw-refetch-btn:hover:not(:disabled) { 
+    background: var(--accent); 
+    color: black; 
+    border-color: var(--accent); 
+    transform: rotate(45deg); 
+}
+
+.tw-refetch-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tw-refetch-active {
+    background: rgba(179, 136, 235, 0.2) !important;
+    border-color: var(--accent) !important;
+}
 
 @media (max-width: 900px) {
     .tw-row {

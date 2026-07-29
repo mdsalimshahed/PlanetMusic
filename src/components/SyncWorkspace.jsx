@@ -2,16 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
 import { quickTransliterate } from '../transliterator';
-
-const normalizeTrans = (str) => {
-  if (!str) return '';
-  return str
-    .replace(/[()\[\]{}]/g, '')
-    .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'") 
-    .replace(/،/g, ',') 
-    .replace(/؟/g, '?') 
-    .replace(/؛/g, ';'); 
-};
+import { normalizeTrans } from './LyricsLineRenderer';
 
 export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
@@ -36,10 +27,10 @@ export const SyncWorkspace = ({
         canvas.width = 5;
         canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
-                 
+        
         const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
-                 
+        
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
             r += data[i];
@@ -48,12 +39,12 @@ export const SyncWorkspace = ({
             count++;
           }
         }
-                 
+        
         if (count > 0) {
           r = Math.floor(r / count);
           g = Math.floor(g / count);
           b = Math.floor(b / count);
-                     
+          
           const boost = 30; 
           r = Math.min(255, r + boost);
           g = Math.min(255, g + boost);
@@ -88,7 +79,7 @@ export const SyncWorkspace = ({
   useEffect(() => {
     const handleWorkspaceTime = (e) => {
       const time = e.detail;
-             
+      
       if (progressSliderRef.current) progressSliderRef.current.value = time;
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
 
@@ -98,7 +89,6 @@ export const SyncWorkspace = ({
           const node = adlibNodes[i];
           const start = parseFloat(node.dataset.start);
           const end = parseFloat(node.dataset.end);
-
           if (!isNaN(start)) {
             if (time >= start && time <= end) {
               if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
@@ -118,11 +108,11 @@ export const SyncWorkspace = ({
     const line = data[lineIndex];
     const lineChars = Array.from(line.text);
     const adlibs = [];
-         
+    
     let inAdlib = false;
     let charStart = 0;
     let adlibText = '';
-         
+    
     for (let i = 0; i < lineChars.length; i++) {
         if (lineChars[i] === '(' && !inAdlib) {
             inAdlib = true;
@@ -133,11 +123,11 @@ export const SyncWorkspace = ({
             if (lineChars[i] === ')') {
                 inAdlib = false;
                 const charEnd = i + 1;
-                                 
+                
                 const adlibSegments = [];
                 const adlibArtistsSet = new Set();
                 let currentPos = 0;
-                                 
+                
                 for (const seg of line.segments) {
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
@@ -158,9 +148,7 @@ export const SyncWorkspace = ({
                     currentPos = segEnd;
                 }
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
-
                 const pronData = await quickTransliterate(adlibText);
-
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -174,7 +162,7 @@ export const SyncWorkspace = ({
             }
         }
     }
-         
+    
     if (adlibs.length > 0) {
       line.isSplit = true;
       line.adlibs = adlibs;
@@ -185,23 +173,21 @@ export const SyncWorkspace = ({
   const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
     const segments = line.segments || [{ text: line.text }];
+    
+    const pronStyle = {
+          fontSize: '0.55em',
+          color: '#ffffff',
+          opacity: 1,
+          textShadow: 'none',
+          fontWeight: '800',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+         textAlign: 'left',
+         marginTop: '4px'
+     };
 
-    const pronStyle = { 
-         fontSize: '0.55em', 
-         color: '#ffffff', 
-         opacity: 1, 
-         textShadow: 'none', 
-         fontWeight: '800', 
-         textTransform: 'uppercase', 
-         letterSpacing: '0.5px', 
-        textAlign: 'left', 
-        marginTop: '4px' 
-    };
-
-    // Safe strict JSON parser correctly shields raw data from rendering in Workspace
     let parsedChunks = null;
     let fullTrans = null;
-
     if (typeof pronString === 'string') {
         const cleanPron = pronString.trim();
         if (cleanPron.startsWith('{')) {
@@ -227,7 +213,7 @@ export const SyncWorkspace = ({
 
     const renderColoredChar = (c, cIdx) => {
         const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
-                 
+        
         let activeColor = isPunct ? '#fbbf24' : '#ffffff';
         let isGradient = false;
         let gradientStyle = '';
@@ -237,7 +223,6 @@ export const SyncWorkspace = ({
             if (!targetArtists && line.singer) {
                 targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
             }
-
             if (targetArtists && targetArtists.length > 0) {
                 if (targetArtists.length > 1) {
                     isGradient = true;
@@ -255,7 +240,7 @@ export const SyncWorkspace = ({
         }
 
         const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-                 
+        
         if (isMain && line.isSplit) {
           const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
           if (isAdlibChar) {
@@ -269,14 +254,15 @@ export const SyncWorkspace = ({
 
     const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
     const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
-             
+    
     let displayPronString = null;
     
-    // Fallback strictly pulls safe parsed string so workspace stays perfectly clean
     if (fullTrans) {
         displayPronString = normalizeTrans(fullTrans);
     } else if (parsedChunks) {
-        displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || '')).join('');
+        // CRITICAL FIX: Restored fallback to c.text 
+        // This ensures spaces and English words are preserved in the transliteration string
+        displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).join('');
     } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
         displayPronString = normalizeTrans(pronString);
     }
@@ -291,10 +277,10 @@ export const SyncWorkspace = ({
 
   return (
     <div className="sync-mode-container" style={{ 
-      '--workspace-accent': accentColor, 
-      '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
-      '--player-accent': accentColor 
-    }}>
+       '--workspace-accent': accentColor,
+       '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
+       '--player-accent': accentColor 
+     }}>
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>
           {isSyncPlaying ? (
@@ -305,12 +291,12 @@ export const SyncWorkspace = ({
         </button>
         <span className="precise-time" ref={preciseTimeRef}>00:00.000</span>
         <input 
-           type="range" className="custom-slider sync-slider" 
-           min="0" max={syncDuration || 1} step="0.001" 
-           defaultValue="0"
+            type="range" className="custom-slider sync-slider" 
+            min="0" max={syncDuration || 1} step="0.001" 
+            defaultValue="0"
           ref={progressSliderRef}
-          onChange={handleSyncSeek} 
-         />
+          onChange={handleSyncSeek}
+          />
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
 
@@ -322,10 +308,10 @@ export const SyncWorkspace = ({
           )}
         </div>
         <input 
-           type="range" className="custom-slider speed-slider" 
-           min="0.5" max="2.0" step="0.05" 
-           value={playbackRate} onChange={handleSpeedChange} 
-         />
+            type="range" className="custom-slider speed-slider" 
+            min="0.5" max="2.0" step="0.05" 
+            value={playbackRate} onChange={handleSpeedChange} 
+          />
         <div className="speed-ticks">
           <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
         </div>
@@ -339,12 +325,12 @@ export const SyncWorkspace = ({
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
           const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
-                     
+          
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
-                     
+          
           return (
             <div 
               key={i}
@@ -354,27 +340,32 @@ export const SyncWorkspace = ({
               data-end={!isMain ? boundedEnd : 'NaN'}
               onClick={() => {
                 setActiveSyncIndex(i);
-
-                if (!isMain && (line.start === null || line.end === null)) {
-                  setLoopRange({ start: item.parentRef.start, end: item.parentRef.end || (item.parentRef.start + 5) });
-                  if (syncAudioRef.current) syncAudioRef.current.currentTime = item.parentRef.start;
-                  if (!isSyncPlaying) toggleSyncPlay();
+                
+                if (!isMain) {
+                  const pStart = item.parentRef.start;
+                  if (pStart !== null) {
+                    const pEnd = item.parentRef.end !== null ? item.parentRef.end : (pStart + 5);
+                    setLoopRange({ start: pStart, end: pEnd });
+                    setConstrainedEnd(null);
+                    if (syncAudioRef.current) syncAudioRef.current.currentTime = pStart;
+                    if (!isSyncPlaying) toggleSyncPlay();
+                  }
                 } else if (line.start !== null && syncAudioRef.current) {
                   setLoopRange(null);
+                  setConstrainedEnd(null);
                   syncAudioRef.current.currentTime = line.start;
-                  if (!isMain) setConstrainedEnd(item.parentRef.end || item.parentRef.start + 5);
-                  else setConstrainedEnd(null);
                 }
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
                 {renderWorkspaceLine(line, isMain)}
+                
                 {isMain && hasParentheses && (
                   <button 
                     className={`action-split-btn ${line.isSplit ? 'undo' : ''}`} 
                     onClick={(e) => {
-                       e.stopPropagation();
-                       if (line.isSplit) handleUndoSplit(item.lineIndex); 
+                      e.stopPropagation();
+                      if (line.isSplit) handleUndoSplit(item.lineIndex);
                       else localHandleSplitAdlibs(item.lineIndex);
                     }}
                   >
@@ -382,6 +373,7 @@ export const SyncWorkspace = ({
                   </button>
                 )}
               </div>
+              
               <span className="sync-time">{formatPreciseTime(line.start)} - {formatPreciseTime(line.end)}</span>
             </div>
           );
@@ -389,9 +381,9 @@ export const SyncWorkspace = ({
       </div>
 
       <audio 
-         ref={syncAudioRef} 
-         src={syncAudioSrc || undefined} 
-        onLoadedMetadata={handleAudioLoaded}
+          ref={syncAudioRef} 
+          src={syncAudioSrc || undefined}
+         onLoadedMetadata={handleAudioLoaded}
         onDurationChange={handleAudioLoaded}
         onEnded={() => setIsSyncPlaying(false)}
         onPlay={() => setIsSyncPlaying(true)}
