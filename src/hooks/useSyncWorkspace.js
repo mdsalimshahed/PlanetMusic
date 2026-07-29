@@ -48,9 +48,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const workspaceLinesRef = useRef(workspaceLines);
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
+  // CRITICAL FIX: Only reset the workspace if the actual physical TRACK changes.
+  // Previously, ANY background update to the song object wiped out the entire workspace.
+  const prevTrackRef = useRef(null);
   useEffect(() => {
-    if (selectedSong) {
+    if (selectedSong && selectedSong.trackId !== prevTrackRef.current) {
+      prevTrackRef.current = selectedSong.trackId;
       setIsSyncMode(false);
+      setIsShowingAutoSync(false);
       setPlaybackRate(1.0);
       setDebugInfo({ source: 'Local Vault / Cache', rawData: null });
       setConstrainedEnd(null);
@@ -347,7 +352,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
                     currentPos = segEnd;
                 }
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+
                 const pron = await quickTransliterate(adlibText);
+
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -555,7 +562,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const saveSyncData = () => {
-    updateSongInLibrary({ ...selectedSong, syncData, lyrics: customData.lyrics });
+    updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
   };

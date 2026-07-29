@@ -3,6 +3,18 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 
+// CRITICAL FIX: Sanitizes transliteration strings to replace special modifier letters 
+// and Arabic punctuation with standard Latin equivalents supported by the Outfit font.
+const normalizeTrans = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/[()\[\]{}]/g, '')
+    .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'") // Replaces half rings (hamza/ain) with standard apostrophe
+    .replace(/،/g, ',') // Arabic comma
+    .replace(/؟/g, '?') // Arabic question mark
+    .replace(/؛/g, ';'); // Arabic semicolon
+};
+
 const groupWords = (elements, charData) => {
   const words = [];
   let currentWord = [];
@@ -154,73 +166,31 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       return <span key={cIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
+  // Render everything normally in a line to preserve proper native Bidi text flow
+  const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
+  const groupedChars = groupWords(renderedChars, chars);
+
+  // Force left alignment dynamically unless specifically centered in focused mode
+  const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
+         
+  let displayPronString = pronString;
+  
+  // Combine all translated chunks into a single sentence and normalize the font
   if (parsedChunks) {
-      let charOffset = 0;
-      const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
-          const chunkLen = Array.from(chunk.text).length;
-          const firstCharIdx = charOffset;
-          const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
-          charOffset += chunkLen;
-
-          const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
-          if (renderedText.every(c => c === null)) return null;
-          const groupedText = groupWords(renderedText, chunkChars);
-
-          let adlibProps = {};
-          if (savedNode?.isSplit && !isFocused) {
-             const adlib = savedNode.adlibs?.find(a => firstCharIdx >= a.charStart && firstCharIdx < a.charEnd);
-             if (adlib && adlib.start !== null) {
-                 const start = adlib.start;
-                 const end = adlib.end !== null ? adlib.end : start + 5;
-                                   
-                 let initialClass = 'adlib-hidden';
-                 if (isPlayingCurrentSong) {
-                     if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
-                     else if (currentTime > end) initialClass = 'adlib-visible';
-                 }
-                 adlibProps = {
-                     className: `adlib-node ${initialClass}`,
-                     'data-start': start,
-                     'data-end': end
-                 };
-             }
-          }
-
-          if (chunk.type === 'foreign' && chunk.trans) {
-              const cleanTrans = chunk.trans.replace(/[()\[\]{}]/g, '');
-              return (
-                  <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
-                      <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-                      <span {...adlibProps} className={`pronunciation-text ${adlibProps.className || ''}`.trim()} style={basePronStyle}>{cleanTrans}</span>
-                  </span>
-              );
-          } else {
-              return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span>;
-          }
-      });
-      return (
-          <div style={{ textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', verticalAlign: 'bottom' }}>
-                  {renderedChunks}
-              </span>
-          </div>
-      );
-  } else {
-      const renderedChars = chars.map((c, i) => renderColoredChar(c, i));
-      const groupedChars = groupWords(renderedChars, chars);
-
-      const blockPronStyle = { ...basePronStyle, marginTop: '8px', display: 'block', textAlign: isFocused ? 'center' : 'left', wordSpacing: '4px', lineHeight: '1.4' };
-             
-      let displayPronString = pronString;
-      if (pronString) displayPronString = pronString.replace(/[()\[\]{}]/g, '');
-
-      return (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
-              <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{groupedChars}</span>
-              {displayPronString && <div className="pronunciation-text" style={blockPronStyle}>{displayPronString}</div>}
-          </div>
-      );
+      displayPronString = parsedChunks.map(chunk => {
+          const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
+          return normalizeTrans(textToUse);
+      }).join('');
+  } else if (pronString) {
+      displayPronString = normalizeTrans(pronString);
   }
+
+  return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: isFocused ? 'center' : 'left', width: '100%' }}>
+          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }}>{groupedChars}</span>
+          {displayPronString && <div className="pronunciation-text" style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+      </div>
+  );
 };
 
 const LyricLineWrapper = React.memo(({ 
@@ -393,7 +363,6 @@ const LyricsDisplay = ({
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
   
-  // CRITICAL FIX: Ensure the play state strict-checks matching track data so cross-song bleed never occurs
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
   // Real-time Audio EQ Loop
@@ -402,8 +371,6 @@ const LyricsDisplay = ({
     const fadeOutTime = settings?.eqFadeOutTime ?? 500;
     
     const renderEQ = () => {
-      // Because we use isPlayingCurrentSong, the EQ will safely fall to the flat-line 'else' block 
-      // when a user explores lyrics belonging to a different song.
       if (isPlaying && isPlayingCurrentSong && window.globalAudioAnalyser && window.globalFreqData) {
         window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
         const bars = eqBarsRef.current;
@@ -417,7 +384,6 @@ const LyricsDisplay = ({
           }
         }
       } else {
-        // If playback stops or the songs don't match, smoothly animate all bars back down using the user's setting
         const bars = eqBarsRef.current;
         for (let i = 0; i < bars.length; i++) {
           if (bars[i] && bars[i].style.transform !== 'scaleY(0.05)') {
@@ -663,7 +629,7 @@ const LyricsDisplay = ({
         <div className="lyrics-display">
           {liveParsedLyrics.length > 0 ? (
             liveParsedLyrics.map((line, i) => (
-              <div key={i}>
+              <div key={i} dir="auto" style={{ textAlign: 'start' }}>
                 {line.segments ? line.segments.map((seg, idx) => {
                     let inlineColor = seg.color;
                     let inlineIsGradient = seg.isGradient;
