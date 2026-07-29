@@ -226,6 +226,11 @@ const App = () => {
     '--dyn-focused-sync-font-size': `clamp(20px, 5vw, ${settings.focusedSyncFontSize}px)`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
+    '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
+    '--dyn-trans-top-padding': `${settings.translationTopPadding ?? 8}px`,
+    '--dyn-translit-bottom-padding': `${settings.transliterationBottomPadding ?? 4}px`,
+    '--dyn-trans-font-size': `${settings.translationFontSize ?? 0.55}em`,
+    '--dyn-translit-font-size': `${settings.transliterationFontSize ?? 0.55}em`,
   };
 
   const filteredLibrary = library.filter(song => {

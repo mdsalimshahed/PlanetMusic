@@ -6,7 +6,7 @@ import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mer
 export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
-  
+  const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
@@ -16,7 +16,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
 
-  // Memoize derivations to prevent layout thrashing and object-reference updates across 60fps renders
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
   const featuredArtists = trackNameData.featuredArtists;
@@ -26,11 +25,11 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const basePalette = useMemo(() => {
       return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
   }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
-  
+
   const masterPalette = useMemo(() => {
       return { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
   }, [basePalette, globalArtistData.colors, customData.artistColors]);
-  
+
   const allPotentialSingers = useMemo(() => {
       return Object.keys(basePalette).filter(Boolean);
   }, [basePalette]);
@@ -42,6 +41,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         previousTrackId.current = selectedSong.trackId;
         setIsEditing(false);
         setIsImageManagerOpen(false);
+        setIsTranslationManagerOpen(false);
         setSingerImages({});
       }
 
@@ -69,7 +69,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         if (imgUrl) setSingerImages(prev => ({ ...prev, [cleanName]: imgUrl }));
       }
     });
-  // Safely join the array to watch for true data modifications
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPotentialSingers.join('|'), selectedSong?.artistName, selectedSong?.trackName, selectedSong?.collectionName]);
 
@@ -83,7 +82,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     const cleanUrl = cleanImageUrl(url);
     setCustomData(prev => ({ ...prev, artistImages: { ...prev.artistImages, [singerName]: cleanUrl } }));
   };
-  
+
   const handleColorChange = (singerName, colorHex) => {
     setCustomData(prev => ({ ...prev, artistColors: { ...prev.artistColors, [singerName]: colorHex } }));
   };
@@ -108,9 +107,10 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
+
     updateSongInLibrary({ 
-      ...selectedSong, 
-      customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
+       ...selectedSong, 
+       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
       artistImages: customData.artistImages,
       artistColors: customData.artistColors,
@@ -134,9 +134,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     }
 
     updateSongInLibrary({ 
-      ...selectedSong, 
-      artistImages: customData.artistImages, 
-      artistColors: customData.artistColors,
+       ...selectedSong, 
+       artistImages: customData.artistImages, 
+       artistColors: customData.artistColors,
       syncData: updatedSyncData
     });
     setIsImageManagerOpen(false);
@@ -149,18 +149,18 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  
+
   const searchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`) : '';
   const ytSearchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`) : '';
   
   const finalLinks = {
-    spotify: customData.spotify || `https://open.spotify.com/search/$${searchQuery}`,
+    spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
     deezer: customData.deezer || `https://www.deezer.com/search/${searchQuery}`,
   };
 
   return {
-    isEditing, setIsEditing, isImageManagerOpen, setIsImageManagerOpen,
+    isEditing, setIsEditing, isImageManagerOpen, setIsImageManagerOpen, isTranslationManagerOpen, setIsTranslationManagerOpen,
     customData, setCustomData, singerImages, masterPalette, allPotentialSingers,
     trackNameData, releaseType, highResArt, finalLinks, globalArtistData,
     handleDataChange, handleImageChange, handleColorChange, handleLocalFileChange, handleClearLocal,

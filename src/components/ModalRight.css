@@ -31,7 +31,6 @@
    mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
 }
 
-/* CRITICAL FIX: Proper CSS override hierarchy to ensure background images successfully render */
 .active-watermark {
   z-index: 1;
   opacity: 1 !important;
@@ -285,8 +284,9 @@
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: rgba(179, 136, 235, 0.6); }
 
 .live-lyrics-preview {
-   flex-grow: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: clamp(16px, 3vw, 24px);
-   padding: clamp(20px, 4vw, 40px) 20px; scroll-behavior: smooth;
+   flex-grow: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; 
+   gap: var(--dyn-live-sync-gap, 16px);
+   padding: clamp(16px, 3vw, 24px) 20px; scroll-behavior: smooth;
    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
    mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
    scrollbar-width: none; -ms-overflow-style: none;
@@ -294,7 +294,7 @@
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
 
 .preview-line {
-   font-size: var(--dyn-live-sync-font-size, 34px); font-weight: 700; line-height: 1.4; width: 100%;
+   font-size: var(--dyn-live-sync-font-size, 34px); font-weight: 700; line-height: 1.2; width: 100%;
    white-space: pre-wrap; word-break: normal; overflow-wrap: break-word; cursor: pointer; margin: 0;
    opacity: 0.4; transform: translate3d(0,0,0) scale(0.95); transform-origin: left center;
    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -370,7 +370,7 @@
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
 .primary-text { display: block; }
 rt.pronunciation-text {
-  font-size: 0.5em; color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px;
+  font-size: var(--dyn-translit-font-size, 0.55em); color: inherit; opacity: 0.8; font-weight: 700; letter-spacing: 2px;
   text-transform: uppercase; transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .preview-line.active rt.pronunciation-text, .focused-line.active rt.pronunciation-text {
@@ -420,5 +420,81 @@ rt.pronunciation-text {
   flex-shrink: 0;
   transform: scaleY(0.05);
   transform-origin: bottom;
+  transition: transform 0.05s ease-out; 
   will-change: transform;
+}
+
+/* --- Translation Overlay Styles --- */
+.chunk-translation {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: var(--dyn-trans-font-size, 0.55em);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  line-height: 1.2;
+  width: max-content;
+  max-width: 80vw;
+  white-space: normal;
+  pointer-events: none;
+  z-index: 10;
+  margin-top: calc(-1 * var(--dyn-trans-top-padding, 8px));
+}
+
+/* AD-LIB OVERRIDE FIX: Forces translate(-50%, -100%) so ad-lib translations keep identical centering and top position */
+.chunk-translation.adlib-node {
+  transform: translate(-50%, -100%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-hidden {
+  opacity: 0 !important;
+  transform: translate(-50%, calc(-100% + 8px)) !important;
+  filter: grayscale(100%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-visible {
+  opacity: 0.6 !important;
+  transform: translate(-50%, -100%) !important;
+  filter: grayscale(0%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-active {
+  opacity: 1 !important;
+  transform: translate(-50%, -100%) !important;
+  filter: grayscale(0%) !important;
+}
+
+.block-translation {
+  font-size: var(--dyn-trans-font-size, 0.55em);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: inherit;
+  line-height: 1.4;
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.live-translation {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.preview-line.active .live-translation {
+  opacity: 0.9;
+  visibility: visible;
+  transition: opacity 0.4s ease, visibility 0s linear 0s;
+}
+
+.focused-translation {
+  opacity: 0.95;
+  visibility: visible;
 }

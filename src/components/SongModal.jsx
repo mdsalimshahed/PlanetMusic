@@ -1,5 +1,5 @@
 /* --- src/components/SongModal.jsx --- */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import ModalLeft from './ModalLeft';
 import ModalRight from './ModalRight';
 import { useSongData } from '../hooks/useSongData';
@@ -16,11 +16,13 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification
   );
 
-  // FIX: Added a ternary operator to handle when selectedSong is null
-  const effectiveSong = selectedSong ? {
-      ...selectedSong,
-      syncData: syncProps.isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData
-  } : null;
+  // CRITICAL FIX: useMemo prevents effectiveSong from becoming a new object during notification re-renders
+  const effectiveSong = useMemo(() => {
+    return selectedSong ? {
+        ...selectedSong,
+        syncData: syncProps.isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData
+    } : null;
+  }, [selectedSong, syncProps.isShowingAutoSync]);
 
   const displayProps = useLyricsDisplay(
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
@@ -33,6 +35,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     selectedSong: effectiveSong,
     realSelectedSong: selectedSong,
     isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
+    setNotification,
     ...songDataProps, ...displayProps, ...syncProps
   };
 
@@ -41,7 +44,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   return (
     <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
       <div className="modal-window glass-panel" onClick={(e) => e.stopPropagation()}>
-        <img src={songDataProps.highResArt} alt="" className="modal-dynamic-bg" aria-hidden="true" />
+        <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
                  
         <div className="modal-content-wrapper">
           <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}> </button>

@@ -1,8 +1,22 @@
 /* --- src/hooks/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../db';
-import { getBulkPronunciations, quickTransliterate } from '../transliterator';
+import { formatPreciseTime } from '../utils/songHelpers';
+import { quickTransliterate, getBulkPronunciations } from '../transliterator';
 import { parseLyrics, mergeSyncWithGenius, fetchYouLyrics, fetchLRCLIB, parseLRC } from '../utils/songHelpers';
+
+const normalizeTrans = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/[()\[\]{}]/g, '')
+    .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'") 
+    .replace(/،/g, ',') 
+    .replace(/؟/g, '?') 
+    .replace(/؛/g, ';'); 
+};
+
+// Auto-detect RTL languages (Arabic, Hebrew, Persian, etc.)
+const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
 
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
@@ -14,7 +28,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
-  const [syncAudioSrc, setSyncAudioSrc] = useState('');
+  const [syncAudioSrc, setSyncAudioSrc] = useState(undefined); // FIX: Default to undefined to prevent empty string warnings
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
@@ -48,8 +62,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const workspaceLinesRef = useRef(workspaceLines);
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
-  // CRITICAL FIX: Only reset the workspace if the actual physical TRACK changes.
-  // Previously, ANY background update to the song object wiped out the entire workspace.
   const prevTrackRef = useRef(null);
   useEffect(() => {
     if (selectedSong && selectedSong.trackId !== prevTrackRef.current) {
@@ -353,7 +365,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
                 }
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
 
-                const pron = await quickTransliterate(adlibText);
+                const pronData = await quickTransliterate(adlibText);
 
                 adlibs.push({
                   text: adlibText,
@@ -363,7 +375,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
                   end: null,
                   segments: adlibSegments,
                   singer: derivedSinger,
-                  pronunciation: pron ? JSON.stringify([{ type: 'foreign', text: adlibText, trans: pron }]) : null
+                  pronunciation: pronData.transliteration ? JSON.stringify({ full: pronData.transliteration, chunks: [{ type: 'foreign', text: adlibText, trans: pronData.transliteration }] }) : null
                 });
             }
         }
@@ -540,11 +552,20 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
     
     const linesToTranslate = targetData.map(l => l.text);
-    const pronunciations = await getBulkPronunciations(linesToTranslate, (current, total) => {
-      setNotification({ show: true, message: `Translating line ${current} of ${total}...`, progress: Math.round((current/total)*100) });
-    });
     
-    targetData = targetData.map((line, i) => ({ ...line, pronunciation: pronunciations[i] || line.pronunciation }));
+    // FALSE flag uses memory cache for the main button
+    const results = await getBulkPronunciations(linesToTranslate, (current, total) => {
+      setNotification({ show: true, message: `Translating line ${current} of ${total}...`, progress: Math.round((current/total)*100) });
+    }, false);
+    
+    targetData = targetData.map((line, i) => {
+        const res = results[i];
+        return {
+            ...line,
+            translation: res && res.translation ? res.translation : line.translation,
+            pronunciation: res && res.pronunciation ? res.pronunciation : line.pronunciation
+        };
+    });
     
     // Update the visual workspace if active
     if (isSyncMode) updateWorkspaceData(targetData);

@@ -13,9 +13,6 @@ const normalizeTrans = (str) => {
     .replace(/؛/g, ';'); 
 };
 
-// Auto-detect RTL languages (Arabic, Hebrew, Persian, etc.)
-const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
-
 export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
@@ -28,7 +25,6 @@ export const SyncWorkspace = ({
   const containerRef = useRef(null);
   const [accentColor, setAccentColor] = useState('var(--accent)');
 
-  // Extract the dominant color of the album art to match the player window
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
     let img = new Image();
@@ -163,7 +159,7 @@ export const SyncWorkspace = ({
                 }
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
 
-                const pron = await quickTransliterate(adlibText);
+                const pronData = await quickTransliterate(adlibText);
 
                 adlibs.push({
                   text: adlibText,
@@ -173,7 +169,7 @@ export const SyncWorkspace = ({
                   end: null,
                   segments: adlibSegments,
                   singer: derivedSinger,
-                  pronunciation: pron ? JSON.stringify([{ type: 'foreign', text: adlibText, trans: pron }]) : null
+                  pronunciation: pronData.transliteration ? JSON.stringify({ full: pronData.transliteration, chunks: [{ type: 'foreign', text: adlibText, trans: pronData.transliteration }] }) : null
                 });
             }
         }
@@ -189,7 +185,6 @@ export const SyncWorkspace = ({
   const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
     const segments = line.segments || [{ text: line.text }];
-    const isRTL = isRTLLanguage(line.text);
 
     const pronStyle = { 
          fontSize: '0.55em', 
@@ -203,15 +198,22 @@ export const SyncWorkspace = ({
         marginTop: '4px' 
     };
 
+    // Safe strict JSON parser correctly shields raw data from rendering in Workspace
     let parsedChunks = null;
+    let fullTrans = null;
+
     if (typeof pronString === 'string') {
-        try {
-            const parsed = JSON.parse(pronString);
-            if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type) {
-                parsedChunks = parsed;
-            }
-        } catch (e) {
-            parsedChunks = null;
+        const cleanPron = pronString.trim();
+        if (cleanPron.startsWith('{')) {
+            try {
+                const parsed = JSON.parse(cleanPron);
+                parsedChunks = parsed.chunks;
+                fullTrans = parsed.full;
+            } catch(e) {}
+        } else if (cleanPron.startsWith('[')) {
+            try {
+                parsedChunks = JSON.parse(cleanPron);
+            } catch(e) {}
         }
     }
 
@@ -223,11 +225,8 @@ export const SyncWorkspace = ({
         });
     });
 
-    const hasTransliteration = (parsedChunks && parsedChunks.some(chunk => chunk.type === 'foreign' && chunk.trans)) || !!pronString;
-
     const renderColoredChar = (c, cIdx) => {
         const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
-        const isParenthesis = /([()\[\]{}]+)/.test(c.char);
                  
         let activeColor = isPunct ? '#fbbf24' : '#ffffff';
         let isGradient = false;
@@ -264,101 +263,30 @@ export const SyncWorkspace = ({
              style.textDecoration = 'line-through';
           }
         }
-                 
-        if (isParenthesis && hasTransliteration) {
-            let scaleParenthesis = false;
-            const char = c.char;
-                         
-            if (char === '(' || char === '[' || char === '{') {
-                const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
-                for (let i = cIdx + 1; i < chars.length; i++) {
-                    if (chars[i].char === closing) break;
-                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-                        scaleParenthesis = true;
-                        break;
-                    }
-                }
-            } else if (char === ')' || char === ']' || char === '}') {
-                const opening = char === ')' ? '(' : char === ']' ? '[' : '{';
-                for (let i = cIdx - 1; i >= 0; i--) {
-                    if (chars[i].char === opening) break;
-                    if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-                        scaleParenthesis = true;
-                        break;
-                    }
-                }
-            }
-
-            if (scaleParenthesis) {
-                style.display = 'inline-block';
-                style.transform = 'scale(1.2) translateY(10%)';
-                style.margin = '0 2px';
-            }
-        }
 
         return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
-    if (parsedChunks) {
-        let charOffset = 0;
-        const renderedChunks = parsedChunks.map((chunk, chunkIdx) => {
-            const chunkLen = Array.from(chunk.text).length;
-            const firstCharIdx = charOffset;
-            const chunkChars = chars.slice(charOffset, charOffset + chunkLen);
-            charOffset += chunkLen;
-
-            const renderedText = chunkChars.map((c, i) => renderColoredChar(c, firstCharIdx + i));
-            
-            if (isRTL) {
-                return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
-            } else {
-                if (chunk.type === 'foreign' && chunk.trans) {
-                    const cleanTrans = normalizeTrans(chunk.trans);
-                    return (
-                        <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle' }}>
-                            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
-                            <span style={pronStyle} dir="ltr">{cleanTrans}</span>
-                        </span>
-                    );
-                } else {
-                    return <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{renderedText}</span>;
-                }
-            }
-        });
-
-        let displayPronString = null;
-        if (isRTL) {
-            displayPronString = parsedChunks.map(chunk => {
-                const textToUse = chunk.type === 'foreign' && chunk.trans ? chunk.trans : chunk.text;
-                return normalizeTrans(textToUse);
-            }).join('');
-        }
-
-        const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
-
-        // CRITICAL FIX: Flex container stays LTR, forcing span and pron container to align left locally 
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', verticalAlign: 'bottom', textAlign: 'left' }} dir="auto">{renderedChunks}</span>
-                {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
-            </div>
-        );
-    } else {
-        const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
-        const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
-                 
-        let displayPronString = pronString;
-        if (pronString) { 
-             displayPronString = normalizeTrans(pronString);
-        }
-
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-                <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block', textAlign: 'left' }} dir="auto">{renderedChars}</span>
-                {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
-            </div>
-        );
+    const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
+    const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
+             
+    let displayPronString = null;
+    
+    // Fallback strictly pulls safe parsed string so workspace stays perfectly clean
+    if (fullTrans) {
+        displayPronString = normalizeTrans(fullTrans);
+    } else if (parsedChunks) {
+        displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || '')).join('');
+    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+        displayPronString = normalizeTrans(pronString);
     }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', width: '100%' }}>
+            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block', textAlign: 'left' }} dir="auto">{renderedChars}</span>
+            {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+        </div>
+    );
   };
 
   return (
@@ -462,7 +390,7 @@ export const SyncWorkspace = ({
 
       <audio 
          ref={syncAudioRef} 
-         src={syncAudioSrc}
+         src={syncAudioSrc || undefined} 
         onLoadedMetadata={handleAudioLoaded}
         onDurationChange={handleAudioLoaded}
         onEnded={() => setIsSyncPlaying(false)}

@@ -9,7 +9,7 @@ const ModalLeft = ({
   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
-  handleAutoSyncDatabases, isLrcFetching, handleTranslate, isTranslating, isShowingAutoSync
+  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
 
@@ -86,7 +86,7 @@ const ModalLeft = ({
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
                      
-          {isSyncMode && (
+          {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
               <div className="instruction-row"><span><strong>1.</strong> Press <strong> </strong> to set Start Time</span></div>
               <div className="instruction-row"><span><strong>2.</strong> Press <strong> </strong> to set End Time <em>(Auto advances)</em></span></div>
@@ -95,7 +95,10 @@ const ModalLeft = ({
           )}
 
           <div className="action-buttons-grid">
-            {isSyncMode ? (
+            {isTranslationManagerOpen ? (
+                // Replaces buttons purely for semantic clarity if needed, though TranslationWorkspace has its own save/cancel
+                <button className="edit-links-btn save-mode" onClick={() => setIsTranslationManagerOpen(false)}>Close Editor</button>
+            ) : isSyncMode ? (
               <>
                 <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>  Cancel Sync</button>
                 <button className="edit-links-btn save-mode" onClick={saveSyncData}>  Save Timings</button>
@@ -113,7 +116,7 @@ const ModalLeft = ({
                 <button 
                   className="edit-links-btn" 
                   onClick={() => handleAutoSyncDatabases()} 
-                  disabled={isLrcFetching || isSyncLoading || isTranslating}
+                  disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? '  Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '  Show Manual Sync' : '  Show Auto-Sync') : '  Auto-Sync Lyrics')}
@@ -121,17 +124,15 @@ const ModalLeft = ({
                 
                 {customData.lyrics ? (
                   <>
-                    <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching || isTranslating} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
+                    <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? '  Parsing Engine...' : hasValidSyncData ? '  Edit Timings' : '  Manual Sync'}
                     </button>
                                          
                     <button 
                        className="edit-links-btn" 
-                       onClick={handleTranslate} 
-                       disabled={isTranslating || isSyncLoading || isLrcFetching}
-                      style={{ opacity: isTranslating ? 0.6 : 1, cursor: isTranslating ? 'wait' : 'pointer' }}
+                       onClick={() => setIsTranslationManagerOpen(true)}
                     >
-                      {isTranslating ? '  Translating...' : '  Translate Lyrics'}
+                       Edit Translation
                     </button>
                                          
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>  Manage Artists</button>

@@ -50,7 +50,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             </span>
           </div>
 
-          {/* ADDED EQUALIZER SETTING HERE */}
           <div className="setting-item">
             <label>Equalizer Fade-Out Time ({settings.eqFadeOutTime}ms)</label>
             <input type="range" name="eqFadeOutTime" min="100" max="2000" step="100" value={settings.eqFadeOutTime} onChange={handleChange} style={{'--progress': `${((settings.eqFadeOutTime - 100) / 1900) * 100}%`}} />
@@ -121,6 +120,90 @@ const SettingsTab = ({ settings, setSettings }) => {
               <input type="range" name="borderRadius" min="4" max="50" value={settings.borderRadius} onChange={handleChange} style={{'--progress': `${((settings.borderRadius - 4) / 46) * 100}%`}} />
             </div>
           )}
+        </div>
+
+        {/* NEW CARD: Lyrics Styling & Padding */}
+        <div className="settings-card glass-panel">
+          <h3>Lyrics Styling & Padding</h3>
+
+          <div className="setting-item">
+            <label>Live Sync Line Gap ({settings.liveSyncLineGap ?? 16}px)</label>
+            <input 
+              type="range" 
+              name="liveSyncLineGap" 
+              min="4" 
+              max="40" 
+              step="1" 
+              value={settings.liveSyncLineGap ?? 16} 
+              onChange={handleChange} 
+              style={{'--progress': `${(((settings.liveSyncLineGap ?? 16) - 4) / 36) * 100}%`}} 
+            />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              Adjusts vertical spacing between lines in the Live Sync view.
+            </span>
+          </div>
+
+          <div className="setting-item">
+            <label>Translation Top Padding ({settings.translationTopPadding ?? 8}px)</label>
+            <input 
+              type="range" 
+              name="translationTopPadding" 
+              min="0" 
+              max="30" 
+              step="1" 
+              value={settings.translationTopPadding ?? 8} 
+              onChange={handleChange} 
+              style={{'--progress': `${((settings.translationTopPadding ?? 8) / 30) * 100}%`}} 
+            />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              Distance floating translation text sits above the main lyrics line.
+            </span>
+          </div>
+
+          <div className="setting-item">
+            <label>Transliteration Bottom Padding ({settings.transliterationBottomPadding ?? 4}px)</label>
+            <input 
+              type="range" 
+              name="transliterationBottomPadding" 
+              min="0" 
+              max="30" 
+              step="1" 
+              value={settings.transliterationBottomPadding ?? 4} 
+              onChange={handleChange} 
+              style={{'--progress': `${((settings.transliterationBottomPadding ?? 4) / 30) * 100}%`}} 
+            />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              Distance transliteration text sits below the main lyrics line.
+            </span>
+          </div>
+
+          <div className="setting-item">
+            <label>Translation Font Size ({settings.translationFontSize ?? 0.55}em)</label>
+            <input 
+              type="range" 
+              name="translationFontSize" 
+              min="0.3" 
+              max="1.0" 
+              step="0.05" 
+              value={settings.translationFontSize ?? 0.55} 
+              onChange={handleChange} 
+              style={{'--progress': `${(((settings.translationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}} 
+            />
+          </div>
+
+          <div className="setting-item">
+            <label>Transliteration Font Size ({settings.transliterationFontSize ?? 0.55}em)</label>
+            <input 
+              type="range" 
+              name="transliterationFontSize" 
+              min="0.3" 
+              max="1.0" 
+              step="0.05" 
+              value={settings.transliterationFontSize ?? 0.55} 
+              onChange={handleChange} 
+              style={{'--progress': `${(((settings.transliterationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}} 
+            />
+          </div>
         </div>
 
         <div className="settings-card glass-panel">
