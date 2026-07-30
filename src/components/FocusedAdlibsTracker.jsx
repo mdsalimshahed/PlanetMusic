@@ -20,17 +20,19 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const [gridPositions, setGridPositions] = useState({});
 
   // ------------------------------------------------------------------
-  // GRAPH-BASED OCCUPIED GRID POINT PLACEMENT ENGINE
+  // GRAPH-BASED OCCUPIED GRID POINT PLACEMENT ENGINE (WITH CANVAS BOUNDS CLAMP)
   // ------------------------------------------------------------------
   const computeGraphPositions = () => {
     const parentContainer = containerRef.current?.parentElement;
     const activeFocusedLine = document.querySelector('.focused-line.active');
-
     if (!parentContainer) return;
 
     const canvasWidth = parentContainer.clientWidth;
     const canvasHeight = parentContainer.clientHeight;
     if (canvasWidth === 0 || canvasHeight === 0) return;
+
+    // Outer safe perimeter margin to completely prevent clipping off canvas edges
+    const marginPx = 16; 
 
     // 1. Calculate Main Lyrics Occupied Box on Graph Paper
     let occupiedBox = {
@@ -43,7 +45,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     if (activeFocusedLine) {
       const parentRect = parentContainer.getBoundingClientRect();
       const lineRect = activeFocusedLine.getBoundingClientRect();
-
       const translationEl = activeFocusedLine.querySelector('.chunk-translation, .focused-translation');
       const transliterationEl = activeFocusedLine.querySelector('.pronunciation-text');
 
@@ -54,13 +55,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         const transRect = translationEl.getBoundingClientRect();
         topY = Math.min(topY, transRect.top - parentRect.top);
       }
-
       if (transliterationEl) {
         const translitRect = transliterationEl.getBoundingClientRect();
         bottomY = Math.max(bottomY, translitRect.bottom - parentRect.top);
       }
 
-      const paddingPx = 48; // Safe perimeter buffer
+      const paddingPx = 36; // Safe perimeter buffer around main line
       occupiedBox = {
         left: Math.max(0, lineRect.left - parentRect.left - paddingPx),
         right: Math.min(canvasWidth, lineRect.right - parentRect.left + paddingPx),
@@ -72,14 +72,14 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const claimedBoxes = [occupiedBox];
     const newGridPositions = {};
 
-    // 2. Iterate through ad-libs and place them in their designated Quadrant without overlap
+    // 2. Iterate through ad-libs and place them safely inside canvas bounds
     Object.keys(adlibDomRefs.current).forEach((key) => {
       const domEl = adlibDomRefs.current[key];
       if (!domEl) return;
 
       const adlibRect = domEl.getBoundingClientRect();
-      const adlibW = adlibRect.width || 120;
-      const adlibH = adlibRect.height || 60;
+      const adlibW = Math.min(adlibRect.width || 120, canvasWidth - (marginPx * 2));
+      const adlibH = adlibRect.height || 50;
 
       // Extract quadrant column & row targeting metadata
       const targetCol = parseInt(domEl.dataset.col || '0', 10);
@@ -98,16 +98,16 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
       if (targetRow === 0) {
         // Upper Quadrant Candidates (Row 0)
-        const safeUpperY = Math.max(12, occupiedBox.top - adlibH - 45);
+        const safeUpperY = Math.max(marginPx, occupiedBox.top - adlibH - 20);
         candidatePoints.push({ x: targetCenterX - adlibW / 2, y: safeUpperY });
-        candidatePoints.push({ x: Math.max(colMinX + 10, targetCenterX - adlibW / 2 - 25), y: safeUpperY - 15 });
-        candidatePoints.push({ x: Math.min(colMaxX - adlibW - 10, targetCenterX - adlibW / 2 + 25), y: safeUpperY - 15 });
+        candidatePoints.push({ x: Math.max(colMinX + marginPx, targetCenterX - adlibW / 2 - 20), y: Math.max(marginPx, safeUpperY - 10) });
+        candidatePoints.push({ x: Math.min(colMaxX - adlibW - marginPx, targetCenterX - adlibW / 2 + 20), y: Math.max(marginPx, safeUpperY - 10) });
       } else {
         // Lower Quadrant Candidates (Row 1)
-        const safeLowerY = Math.min(canvasHeight - adlibH - 12, occupiedBox.bottom + 45);
+        const safeLowerY = Math.min(canvasHeight - adlibH - marginPx, occupiedBox.bottom + 20);
         candidatePoints.push({ x: targetCenterX - adlibW / 2, y: safeLowerY });
-        candidatePoints.push({ x: Math.max(colMinX + 10, targetCenterX - adlibW / 2 - 25), y: safeLowerY + 15 });
-        candidatePoints.push({ x: Math.min(colMaxX - adlibW - 10, targetCenterX - adlibW / 2 + 25), y: safeLowerY + 15 });
+        candidatePoints.push({ x: Math.max(colMinX + marginPx, targetCenterX - adlibW / 2 - 20), y: Math.min(canvasHeight - adlibH - marginPx, safeLowerY + 10) });
+        candidatePoints.push({ x: Math.min(colMaxX - adlibW - marginPx, targetCenterX - adlibW / 2 + 20), y: Math.min(canvasHeight - adlibH - marginPx, safeLowerY + 10) });
       }
 
       if (seedVal > 0.5) {
@@ -118,11 +118,15 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
       // Check Grid Collision against Occupied Box & other claimed ad-libs
       for (const pt of candidatePoints) {
+        // Strict boundary clamp to guarantee ad-lib stays 100% inside canvas area
+        const clampedX = Math.max(marginPx, Math.min(canvasWidth - adlibW - marginPx, pt.x));
+        const clampedY = Math.max(marginPx, Math.min(canvasHeight - adlibH - marginPx, pt.y));
+
         const testBox = {
-          left: pt.x,
-          right: pt.x + adlibW,
-          top: pt.y,
-          bottom: pt.y + adlibH
+          left: clampedX,
+          right: clampedX + adlibW,
+          top: clampedY,
+          bottom: clampedY + adlibH
         };
 
         const intersects = claimedBoxes.some((b) => {
@@ -135,21 +139,21 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         });
 
         if (!intersects) {
-          selectedPoint = pt;
+          selectedPoint = { x: clampedX, y: clampedY };
           claimedBoxes.push(testBox);
           break;
         }
       }
 
-      // Fallback: Clamp strictly inside targeted column & safely outside occupied box
+      // Fallback: Clamp strictly inside canvas & outside occupied box
       if (!selectedPoint) {
         const fallbackY = targetRow === 1
-          ? Math.min(canvasHeight - adlibH - 10, occupiedBox.bottom + 35)
-          : Math.max(10, occupiedBox.top - adlibH - 35);
+          ? Math.min(canvasHeight - adlibH - marginPx, occupiedBox.bottom + 20)
+          : Math.max(marginPx, occupiedBox.top - adlibH - 20);
 
         const clampedX = Math.max(
-          colMinX + 10,
-          Math.min(colMaxX - adlibW - 10, targetCenterX - adlibW / 2)
+          marginPx,
+          Math.min(canvasWidth - adlibW - marginPx, targetCenterX - adlibW / 2)
         );
 
         selectedPoint = { x: clampedX, y: fallbackY };
@@ -162,7 +166,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       }
 
       // Convert final Graph Coordinates into Percentages
-      const topPct = (selectedPoint.y / canvasHeight) * 100;
+      const topPct = ((selectedPoint.y + adlibH / 2) / canvasHeight) * 100;
       const leftPct = ((selectedPoint.x + adlibW / 2) / canvasWidth) * 100;
 
       newGridPositions[key] = { top: topPct, left: leftPct };
@@ -173,12 +177,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
   useLayoutEffect(() => {
     if (!isPlayingCurrentSong) return;
-
     computeGraphPositions();
-
     const handleResize = () => computeGraphPositions();
     window.addEventListener('resize', handleResize);
-
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -208,8 +209,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const seedBase = `${node.text}-${adlib.start}-${j}`;
           const randRot = pseudoRandom(seedBase + '-rot');
           const rowSeed = pseudoRandom(seedBase + '-row');
-          const rot = (randRot * 16) - 8;
 
+          const rot = (randRot * 12) - 6; // Subtle rotation to prevent edge spill
           const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
           const primaryAdlibSinger = adlibNames[0];
 
@@ -257,6 +258,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
               } else { aTrans = aPron; }
             }
+
             let adlibTranslation = adlibObj?.translation || '';
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
 
@@ -274,7 +276,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const renderedSegments = [];
             let charIdxCounter = 0;
 
-            // EXACT ROOT LOGIC FROM TranslationRow & LyricsLineRenderer
             segs.forEach((seg, segIdx) => {
               let inlineColor = seg.color || '#ffffff';
               let inlineIsGradient = seg.isGradient || false;
@@ -360,6 +361,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         });
       }
     });
+
     return items;
   }, [syncData, masterPalette, isPlayingCurrentSong, gridPositions]);
 
@@ -388,14 +390,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       }
       return;
     }
+
     const handleTime = (e) => {
       const time = e.detail;
       const nodes = cachedTrackNodesRef.current;
-
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
-
         if (shouldBeActive && !item.isActive) {
           item.node.classList.add('active');
           item.isActive = true;

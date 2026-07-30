@@ -40,15 +40,15 @@ const SettingsTab = ({ settings, setSettings }) => {
           </div>
           <div className="setting-item">
             <label>Live Sync Line Gap ({settings.liveSyncLineGap ?? 16}px)</label>
-            <input
-                type="range"
-                name="liveSyncLineGap"
-                min="4"
-                max="100"
-                step="1"
-                value={settings.liveSyncLineGap ?? 16}
-                onChange={handleChange}
-                style={{'--progress': `${(((settings.liveSyncLineGap ?? 16) - 4) / 96) * 100}%`}}
+            <input 
+                type="range" 
+                name="liveSyncLineGap" 
+                min="4" 
+                max="100" 
+                step="1" 
+                value={settings.liveSyncLineGap ?? 16} 
+                onChange={handleChange} 
+                style={{'--progress': `${(((settings.liveSyncLineGap ?? 16) - 4) / 96) * 100}%`}} 
               />
             <span className="setting-desc" style={{ marginTop: '8px' }}>
               Adjusts vertical spacing between lines in the Live Sync view.
@@ -125,6 +125,13 @@ const SettingsTab = ({ settings, setSettings }) => {
             <label>Focused View Line Size ({settings.focusedSyncFontSize}px)</label>
             <input type="range" name="focusedSyncFontSize" min="24" max="80" value={settings.focusedSyncFontSize} onChange={handleChange} style={{'--progress': `${((settings.focusedSyncFontSize - 24) / 56) * 100}%`}} />
           </div>
+          <div className="setting-item">
+            <label>Focused View Ad-Lib Size ({settings.focusedAdlibFontSize ?? 28}px)</label>
+            <input type="range" name="focusedAdlibFontSize" min="12" max="60" value={settings.focusedAdlibFontSize ?? 28} onChange={handleChange} style={{'--progress': `${(((settings.focusedAdlibFontSize ?? 28) - 12) / 48) * 100}%`}} />
+            <span className="setting-desc" style={{ marginTop: '8px' }}>
+              Controls the font size of floating ad-libs in Focused view.
+            </span>
+          </div>
           
           <div className="setting-item toggle-item">
             <label>Enable Rounded Corners</label>
@@ -162,28 +169,28 @@ const SettingsTab = ({ settings, setSettings }) => {
           </div>
           <div className="setting-item">
             <label>Translation Font Size ({settings.translationFontSize ?? 0.55}em)</label>
-            <input
-                type="range"
-                name="translationFontSize"
-                min="0.3"
-                max="1.0"
-                step="0.05"
-                value={settings.translationFontSize ?? 0.55}
-                onChange={handleChange}
-                style={{'--progress': `${(((settings.translationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}}
+            <input 
+                type="range" 
+                name="translationFontSize" 
+                min="0.3" 
+                max="1.0" 
+                step="0.05" 
+                value={settings.translationFontSize ?? 0.55} 
+                onChange={handleChange} 
+                style={{'--progress': `${(((settings.translationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}} 
               />
           </div>
           <div className="setting-item">
             <label>Translation Top Padding ({settings.translationTopPadding ?? 8}px)</label>
-            <input
-                type="range"
-                name="translationTopPadding"
-                min="0"
-                max="30"
-                step="1"
-                value={settings.translationTopPadding ?? 8}
-                onChange={handleChange}
-                style={{'--progress': `${((settings.translationTopPadding ?? 8) / 30) * 100}%`}}
+            <input 
+                type="range" 
+                name="translationTopPadding" 
+                min="0" 
+                max="30" 
+                step="1" 
+                value={settings.translationTopPadding ?? 8} 
+                onChange={handleChange} 
+                style={{'--progress': `${((settings.translationTopPadding ?? 8) / 30) * 100}%`}} 
               />
             <span className="setting-desc" style={{ marginTop: '8px' }}>
               Distance floating translation text sits above the main lyrics line.
@@ -212,34 +219,33 @@ const SettingsTab = ({ settings, setSettings }) => {
           </div>
           <div className="setting-item">
             <label>Transliteration Font Size ({settings.transliterationFontSize ?? 0.55}em)</label>
-            <input
-                type="range"
-                name="transliterationFontSize"
-                min="0.3"
-                max="1.0"
-                step="0.05"
-                value={settings.transliterationFontSize ?? 0.55}
-                onChange={handleChange}
-                style={{'--progress': `${(((settings.transliterationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}}
+            <input 
+                type="range" 
+                name="transliterationFontSize" 
+                min="0.3" 
+                max="1.0" 
+                step="0.05" 
+                value={settings.transliterationFontSize ?? 0.55} 
+                onChange={handleChange} 
+                style={{'--progress': `${(((settings.transliterationFontSize ?? 0.55) - 0.3) / 0.7) * 100}%`}} 
               />
           </div>
           <div className="setting-item">
             <label>Transliteration Bottom Padding ({settings.transliterationBottomPadding ?? 4}px)</label>
-            <input
-                type="range"
-                name="transliterationBottomPadding"
-                min="0"
-                max="30"
-                step="1"
-                value={settings.transliterationBottomPadding ?? 4}
-                onChange={handleChange}
-                style={{'--progress': `${((settings.transliterationBottomPadding ?? 4) / 30) * 100}%`}}
+            <input 
+                type="range" 
+                name="transliterationBottomPadding" 
+                min="0" 
+                max="30" 
+                step="1" 
+                value={settings.transliterationBottomPadding ?? 4} 
+                onChange={handleChange} 
+                style={{'--progress': `${((settings.transliterationBottomPadding ?? 4) / 30) * 100}%`}} 
               />
             <span className="setting-desc" style={{ marginTop: '8px' }}>
               Distance transliteration text sits below the main lyrics line.
             </span>
           </div>
-
         </div>
 
         <div className="settings-card glass-panel">

@@ -17,6 +17,7 @@ const App = () => {
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 34;
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
+      if (parsed.focusedAdlibFontSize === undefined) parsed.focusedAdlibFontSize = 28;
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
@@ -42,6 +43,7 @@ const App = () => {
       bgImageOpacity: 0.25,
       liveSyncFontSize: 34,
       focusedSyncFontSize: 42,
+      focusedAdlibFontSize: 28,
       modalSplitRatio: 50,
       bgPreemptionTime: 400,
       modalPaddingY: 5,
@@ -65,7 +67,6 @@ const App = () => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -148,8 +149,6 @@ const App = () => {
     setSongToRemove(null);
   };
 
-  // --- CRITICAL FIX HERE ---
-  // When a song in the library gets updated, update currentTrack state if it's actively playing
   const updateSongInLibrary = (updatedSong) => {
     setLibrary(prevLibrary => {
       const exists = prevLibrary.some(s => s.trackId === updatedSong.trackId);
@@ -162,7 +161,6 @@ const App = () => {
 
     setSelectedSong(updatedSong);
 
-    // Synchronize currentTrack so player modal clicks always load the latest translations
     setCurrentTrack(prevTrack => {
       if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
         return { ...prevTrack, ...updatedSong };
@@ -202,6 +200,7 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -246,6 +245,7 @@ const App = () => {
     
     '--dyn-live-sync-font-size': `clamp(16px, 4vw, ${settings.liveSyncFontSize}px)`,
     '--dyn-focused-sync-font-size': `clamp(20px, 5vw, ${settings.focusedSyncFontSize}px)`,
+    '--dyn-focused-adlib-font-size': `clamp(12px, 3.5vw, ${settings.focusedAdlibFontSize ?? 28}px)`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
     '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
