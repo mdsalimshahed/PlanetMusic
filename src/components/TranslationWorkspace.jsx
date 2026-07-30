@@ -1,5 +1,4 @@
 /* --- src/components/TranslationWorkspace.jsx --- */
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { parseLyrics } from '../utils/songHelpers';
 import { getBulkPronunciations } from '../transliterator';
@@ -15,7 +14,6 @@ const TranslationWorkspace = ({
   const [activeTranslatingIndex, setActiveTranslatingIndex] = useState(-1);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [translateProgress, setTranslateProgress] = useState({ current: 0, total: 0 });
-
   const [confirmModalState, setConfirmModalState] = useState({
     isOpen: false,
     title: '',
@@ -24,7 +22,6 @@ const TranslationWorkspace = ({
     cancelText: 'Cancel',
     onConfirm: () => {}
   });
-
   const importFileInputRef = useRef(null);
   const activeRowRef = useRef(null);
   const listContainerRef = useRef(null);
@@ -56,15 +53,10 @@ const TranslationWorkspace = ({
     sourceData.forEach((line, i) => {
         let mainText = line.text;
         const parsedLineObj = parsedLyricsColorMap[i] || null;
-        if (line.isSplit && line.adlibs) {
-            line.adlibs.forEach(a => {
-                mainText = mainText.replace(a.text, '');
-            });
-            mainText = mainText.replace(/\s+/g, ' ').trim();
-        }
+        
         let pron = line.pronunciation || '';
         let displayPron = pron;
-                 
+                          
         if (typeof pron === 'string') {
             if (pron.startsWith('{')) {
                 try {
@@ -91,7 +83,7 @@ const TranslationWorkspace = ({
             line.adlibs.forEach((adlib, j) => {
                 let aPron = adlib.pronunciation || '';
                 let aDisplayPron = aPron;
-                                 
+                                                  
                 if (typeof aPron === 'string') {
                     if (aPron.startsWith('{')) {
                         try {
@@ -196,9 +188,18 @@ const TranslationWorkspace = ({
   };
 
   const fetchSingleLine = async (line) => {
-    const textToTranslate = line.displayText.replace(/[()]/g, '').trim();
+    let textToTranslate = line.displayText;
+    
+    if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
+      line.adlibs.forEach(a => {
+        textToTranslate = textToTranslate.replace(a.text, '');
+      });
+      textToTranslate = textToTranslate.replace(/\s+/g, ' ').trim();
+    }
+    
+    textToTranslate = textToTranslate.replace(/[()]/g, '').trim();
     if (!textToTranslate) return null;
-         
+              
     try {
       const resArr = await getBulkPronunciations([textToTranslate], null);
       return resArr?.[0] || null;
@@ -222,13 +223,15 @@ const TranslationWorkspace = ({
        return;
      }
      if (workspaceData.length === 0) return;
-           
+                 
      cancelTranslationRef.current = false;
      setIsTranslatingAll(true);
      setShowSuccessBanner(false);
      setTranslateProgress({ current: 0, total: workspaceData.length });
      setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
-           
+                 
+     const lineTranslationCache = new Map();
+
      let currentData = [...workspaceData];
      for (let i = 0; i < currentData.length; i++) {
          if (cancelTranslationRef.current) break;
@@ -241,7 +244,25 @@ const TranslationWorkspace = ({
             message: `Translating line ${i + 1} of ${currentData.length}...`,
             progress: progressPct
           });
-         const res = await fetchSingleLine(line);
+
+         let textKey = line.displayText;
+         if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
+           line.adlibs.forEach(a => {
+             textKey = textKey.replace(a.text, '');
+           });
+         }
+         const cacheKey = textKey.replace(/[()]/g, '').trim().toLowerCase();
+         let res = null;
+
+         if (cacheKey && lineTranslationCache.has(cacheKey)) {
+             res = lineTranslationCache.get(cacheKey);
+         } else {
+             res = await fetchSingleLine(line);
+             if (res && cacheKey) {
+                 lineTranslationCache.set(cacheKey, res);
+             }
+         }
+
          if (cancelTranslationRef.current) break;
          if (res) {
              let newTrans = res.translation !== undefined ? res.translation : line.translation;
@@ -265,9 +286,12 @@ const TranslationWorkspace = ({
              };
              setWorkspaceData([...currentData]);
          }
-         await new Promise(r => setTimeout(r, 120));
+         
+         if (!lineTranslationCache.has(cacheKey)) {
+           await new Promise(r => setTimeout(r, 120));
+         }
      }
-           
+                 
      const completedAll = !cancelTranslationRef.current;
      setIsTranslatingAll(false);
      setActiveTranslatingIndex(-1);
@@ -286,16 +310,16 @@ const TranslationWorkspace = ({
      setActiveTranslatingIndex(index);
      setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
      const line = workspaceData[index];
-           
+                 
      const res = await fetchSingleLine(line);
      if (res) {
          const newData = [...workspaceData];
          let newTrans = res.translation !== undefined ? res.translation : newData[index].translation;
          if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-                   
+                             
          newData[index].translation = newTrans;
          newData[index].pronunciation = res.pronunciation || newData[index].pronunciation;
-                   
+                             
          if (res.pronunciation) {
              try {
                  const p = JSON.parse(res.pronunciation);
@@ -307,7 +331,7 @@ const TranslationWorkspace = ({
          }
          setWorkspaceData(newData);
      }
-           
+                 
      setActiveTranslatingIndex(-1);
      setNotification({ show: true, message: 'Line translated!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 1500);
@@ -317,7 +341,7 @@ const TranslationWorkspace = ({
      const newData = [...workspaceData];
      if (field === 'displayPron') {
          newData[index].displayPron = value;
-                   
+                             
          let currentPron = newData[index].pronunciation;
          if (currentPron && currentPron.startsWith('{')) {
              try {
@@ -364,10 +388,10 @@ const TranslationWorkspace = ({
      cancelTranslationRef.current = true;
      let sourceData = selectedSong.syncData || selectedSong.autoSyncData || [];
      const newSyncData = JSON.parse(JSON.stringify(sourceData));
-           
+                 
      workspaceData.forEach(item => {
          const meta = item._meta;
-                   
+                             
          let finalPron = item.pronunciation;
          if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
              try {
@@ -380,7 +404,6 @@ const TranslationWorkspace = ({
          } else {
              finalPron = item.displayPron;
          }
-
          if (meta.isAdlib) {
              if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
                  const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
@@ -402,7 +425,7 @@ const TranslationWorkspace = ({
         syncData: newSyncData,
         autoSyncData: selectedSong.autoSyncData ? newSyncData : selectedSong.autoSyncData
      });
-           
+                 
      setIsTranslationManagerOpen(false);
      setNotification({ show: true, message: 'Workspace changes saved!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 2000);
@@ -410,7 +433,7 @@ const TranslationWorkspace = ({
 
   const handleExport = () => {
      const textContent = workspaceData.map(line => 
-           `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+            `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
      ).join('\n');
      const blob = new Blob([textContent], { type: 'text/plain' });
      const url = URL.createObjectURL(blob);
@@ -484,12 +507,12 @@ const TranslationWorkspace = ({
     event.target.value = null;
   };
 
-  const renderTextWithYellowPunctuation = (text, baseStyle = {}) => {
+  const renderTextWithYellowPunctuation = (text, baseStyle = {}, isAdlibChar = false) => {
     if (!text) return null;
     const parts = text.split(/([.,!?;:"'()\[\]{}\- ]+)/);
     return parts.map((part, pIdx) => {
       const isPunct = /^[.,!?;:"'()\[\]{}\- ]+$/.test(part);
-      if (isPunct) {
+      if (isPunct && !isAdlibChar) {
         return (
           <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
             {part}
@@ -501,7 +524,10 @@ const TranslationWorkspace = ({
   };
 
   const renderColoredOriginalText = (line) => {
+    const isMainAndSplit = !line._meta.isAdlib && line.isSplit && line.adlibs;
+
     if (line.segments && line.segments.length > 0) {
+      let globalCharIndex = 0;
       return line.segments.map((seg, idx) => {
         let inlineColor = seg.color || '#ffffff';
         let inlineIsGradient = seg.isGradient || false;
@@ -516,30 +542,72 @@ const TranslationWorkspace = ({
             inlineColor = masterPalette[seg.artists[0]] || inlineColor;
           }
         }
-        const segStyle = inlineIsGradient ? {
-          backgroundImage: inlineGradient,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        } : {
-          color: inlineColor
-        };
+
+        const segChars = Array.from(seg.text);
+        const charElements = segChars.map((char) => {
+          const cIdx = globalCharIndex++;
+          const isAdlibChar = isMainAndSplit && line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+          
+          let segStyle = inlineIsGradient ? {
+            backgroundImage: inlineGradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          } : {
+            color: inlineColor
+          };
+
+          if (isAdlibChar) {
+            segStyle = {
+              ...segStyle,
+              opacity: 0.35,
+              textDecoration: 'line-through 2px white',
+              textDecorationColor: '#ffffff'
+            };
+          }
+
+          return (
+            <React.Fragment key={cIdx}>
+              {renderTextWithYellowPunctuation(char, segStyle, isAdlibChar)}
+            </React.Fragment>
+          );
+        });
+
+        return <React.Fragment key={idx}>{charElements}</React.Fragment>;
+      });
+    }
+
+    const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
+    
+    if (isMainAndSplit) {
+      const chars = Array.from(line.displayText);
+      return chars.map((char, cIdx) => {
+        const isAdlibChar = line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+        let baseStyle = { color: defaultColor };
+        if (isAdlibChar) {
+          baseStyle = {
+            ...baseStyle,
+            opacity: 0.35,
+            textDecoration: 'line-through 2px white',
+            textDecorationColor: '#ffffff'
+          };
+        }
         return (
-          <React.Fragment key={idx}>
-            {renderTextWithYellowPunctuation(seg.text, segStyle)}
+          <React.Fragment key={cIdx}>
+            {renderTextWithYellowPunctuation(char, baseStyle, isAdlibChar)}
           </React.Fragment>
         );
       });
     }
-    const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
-    return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor });
+
+    return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor }, false);
   };
 
   if (isLoading) return <div className="tw-container"><p>Loading workspace...</p></div>;
 
   return (
-    <div className="tw-container"> 
-       <ConfirmModal 
-          isOpen={confirmModalState.isOpen}
+    <div className="tw-container">
+        <ConfirmModal 
+           isOpen={confirmModalState.isOpen}
           title={confirmModalState.title}
           message={confirmModalState.message}
           confirmText={confirmModalState.confirmText}
@@ -550,7 +618,7 @@ const TranslationWorkspace = ({
        <div className="tw-header glass-panel">
            <div className="tw-header-actions full-width-actions">
                <button 
-                  className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+                   className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
                   onClick={handleTranslateAll}
                >
                  {isTranslatingAll ? (
@@ -563,7 +631,7 @@ const TranslationWorkspace = ({
                  )}
                </button>
                <button 
-                  className="tw-btn"
+                   className="tw-btn"
                   onClick={handleRefreshWorkspace}
                   disabled={isTranslatingAll}
                   title="Wipe all translation and transliteration fields"
@@ -571,11 +639,11 @@ const TranslationWorkspace = ({
                >
                  Refresh Lyrics
                </button>
-               
+                               
                <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>Export Text</button>
-               
+                               
                <input 
-                  type="file"
+                   type="file"
                   accept=".txt,text/plain"
                   ref={importFileInputRef}
                   style={{ display: 'none' }}
@@ -587,29 +655,28 @@ const TranslationWorkspace = ({
                <div className="tw-header-spacer"></div>
                <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
                <button 
-                  className="tw-btn tw-btn-save"
+                   className="tw-btn tw-btn-save"
                   onClick={handleSave}
                 >
                  Save Changes
                </button>
            </div>
        </div>
-
        {showSuccessBanner && (
          <div className="tw-success-banner">
             <span className="tw-success-icon">✓</span>
             <span>All lines translated successfully! Click <strong>Save Changes</strong> to apply to lyrics.</span>
          </div>
        )}
-               
+                       
        <div className="tw-list glass-panel-light" ref={listContainerRef}>
           {workspaceData.map((line, idx) => {
              const isAdlib = line._meta.isAdlib;
              const isTranslating = activeTranslatingIndex === idx;
              return (
                  <div 
-                    key={idx} 
-                    ref={isTranslating ? activeRowRef : null}
+                     key={idx} 
+                     ref={isTranslating ? activeRowRef : null}
                    className={`tw-row ${isAdlib ? 'tw-row-adlib' : ''} ${isTranslating ? 'tw-row-active' : ''}`}
                  >
                     <div className="tw-col tw-col-left">
@@ -617,7 +684,7 @@ const TranslationWorkspace = ({
                          {renderColoredOriginalText(line)}
                        </div>
                        <input 
-                           className="tw-input tw-translit-input"
+                            className="tw-input tw-translit-input"
                            value={line.displayPron || ''}
                            onChange={(e) => handleChange(idx, 'displayPron', e.target.value)}
                            placeholder="Transliteration..."
@@ -627,7 +694,7 @@ const TranslationWorkspace = ({
                     </div>
                     <div className="tw-col tw-col-right">
                        <textarea 
-                           className="tw-input tw-translation-input"
+                            className="tw-input tw-translation-input"
                            value={line.translation || ''}
                            onChange={(e) => handleChange(idx, 'translation', e.target.value)}
                           placeholder="English Translation..."
@@ -637,7 +704,7 @@ const TranslationWorkspace = ({
                     </div>
                     <div className="tw-col-actions">
                        <button 
-                          className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}
+                           className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}
                           onClick={() => handleRefetch(idx)}
                           disabled={isTranslatingAll}
                          title="Re-fetch from Google Translate"
