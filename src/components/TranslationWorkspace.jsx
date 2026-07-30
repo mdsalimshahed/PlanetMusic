@@ -49,14 +49,24 @@ const TranslationWorkspace = ({
   }, [customData?.lyrics, selectedSong?.artistName, masterPalette]);
 
   const loadSourceWorkspaceData = () => {
-    let sourceData = selectedSong.syncData || selectedSong.autoSyncData || [];
+    let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
+    if ((!sourceData || sourceData.length === 0) && customData?.lyrics) {
+      sourceData = parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette).map(l => ({
+        ...l,
+        start: null,
+        end: null,
+        translation: '',
+        pronunciation: null
+      }));
+    }
+    if (!sourceData) sourceData = [];
+
     const mapped = [];
     sourceData.forEach((line, i) => {
         let mainText = line.text;
         const parsedLineObj = parsedLyricsColorMap[i] || null;
         let pron = line.pronunciation || '';
         let displayPron = pron;
-
         if (typeof pron === 'string') {
             if (pron.startsWith('{')) {
                 try {
@@ -84,7 +94,6 @@ const TranslationWorkspace = ({
             line.adlibs.forEach((adlib, j) => {
                 let aPron = adlib.pronunciation || '';
                 let aDisplayPron = aPron;
-
                 if (typeof aPron === 'string') {
                     if (aPron.startsWith('{')) {
                         try {
@@ -120,7 +129,7 @@ const TranslationWorkspace = ({
     setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron }))));
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSong?.trackId, parsedLyricsColorMap]);
+  }, [selectedSong?.trackId, selectedSong?.syncData, selectedSong?.autoSyncData]);
 
   const hasUnsavedChanges = useMemo(() => {
     const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron })));
@@ -216,7 +225,6 @@ const TranslationWorkspace = ({
     setTimeout(() => setNotification({ show: false }), 1500);
   };
 
-  // --- STANDARD TRANSLATE ALL ---
   const handleTranslateAll = async () => {
      if (isTranslatingAll) {
        stopTranslationProcess();
@@ -228,8 +236,10 @@ const TranslationWorkspace = ({
      setShowSuccessBanner(false);
      setTranslateProgress({ current: 0, total: workspaceData.length });
      setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
+
      const lineTranslationCache = new Map();
      let currentData = [...workspaceData];
+
      for (let i = 0; i < currentData.length; i++) {
          if (cancelTranslationRef.current) break;
          const line = currentData[i];
@@ -241,6 +251,7 @@ const TranslationWorkspace = ({
             message: `Translating line ${i + 1} of ${currentData.length}...`,
             progress: progressPct
           });
+
          let textKey = line.displayText;
          if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
            line.adlibs.forEach(a => {
@@ -249,6 +260,7 @@ const TranslationWorkspace = ({
          }
          const cacheKey = textKey.replace(/[()]/g, '').trim().toLowerCase();
          let res = null;
+
          if (cacheKey && lineTranslationCache.has(cacheKey)) {
              res = lineTranslationCache.get(cacheKey);
          } else {
@@ -257,7 +269,9 @@ const TranslationWorkspace = ({
                  lineTranslationCache.set(cacheKey, res);
              }
          }
+
          if (cancelTranslationRef.current) break;
+
          if (res) {
              let newTrans = res.translation !== undefined ? res.translation : line.translation;
              if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
@@ -280,10 +294,12 @@ const TranslationWorkspace = ({
              };
              setWorkspaceData([...currentData]);
          }
+
          if (!lineTranslationCache.has(cacheKey)) {
            await new Promise(r => setTimeout(r, 120));
          }
      }
+
      const completedAll = !cancelTranslationRef.current;
      setIsTranslatingAll(false);
      setActiveTranslatingId(null);
@@ -298,7 +314,6 @@ const TranslationWorkspace = ({
      }
   };
 
-  // --- CONTEXT TRANSLATION (ONE BATCHED GOOGLE API REQUEST FOR UP TO 3 LINES) ---
   const handleTranslateWithContext = async () => {
     if (isTranslatingAll) {
       stopTranslationProcess();
@@ -310,13 +325,13 @@ const TranslationWorkspace = ({
     setShowSuccessBanner(false);
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Starting Context Translation...', progress: 0 });
+
     let currentData = [...workspaceData];
     let i = 0;
 
     while (i < currentData.length) {
       if (cancelTranslationRef.current) break;
 
-      // Handle orphan or leading adlib rows individually
       if (currentData[i]._meta.isAdlib) {
         const adlibRes = await fetchSingleLine(currentData[i]);
         if (adlibRes) {
@@ -341,7 +356,6 @@ const TranslationWorkspace = ({
         continue;
       }
 
-      // Collect up to 3 MAIN lines for the context batch
       const mainBatchIndices = [];
       const adlibIndicesToProcess = [];
       let ptr = i;
@@ -376,23 +390,18 @@ const TranslationWorkspace = ({
         return text.replace(/[()]/g, '').trim();
       });
 
-      // 1. Fetch 3-line main context batch in a SINGLE API call
       try {
         const combinedText = cleanMainTexts.join('\n');
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(combinedText)}`;
         const response = await fetch(url);
         const data = await response.json();
-
         let combinedTranslation = '';
         if (data && data[0]) {
           data[0].forEach(item => {
             if (item[0]) combinedTranslation += item[0];
           });
         }
-
         const translatedLines = combinedTranslation.split('\n').map(l => l.trim());
-
-        // Fetch pronunciations for chunk mapping
         const batchPronunciations = await getBulkPronunciations(cleanMainTexts, null);
 
         if (cancelTranslationRef.current) break;
@@ -401,10 +410,8 @@ const TranslationWorkspace = ({
           if (currentData[targetIdx]) {
             let newTrans = translatedLines[bIdx] !== undefined ? translatedLines[bIdx] : (batchPronunciations[bIdx]?.translation || currentData[targetIdx].translation);
             if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-
             let displayPron = currentData[targetIdx].displayPron;
             let finalPron = batchPronunciations[bIdx]?.pronunciation || currentData[targetIdx].pronunciation;
-
             if (batchPronunciations[bIdx]?.pronunciation) {
               try {
                 const p = JSON.parse(batchPronunciations[bIdx].pronunciation);
@@ -414,7 +421,6 @@ const TranslationWorkspace = ({
               displayPron = '';
               finalPron = '';
             }
-
             currentData[targetIdx] = {
               ...currentData[targetIdx],
               translation: newTrans,
@@ -428,7 +434,6 @@ const TranslationWorkspace = ({
         console.error("Context batch translation error:", err);
       }
 
-      // 2. Fetch ad-libs individually
       for (const aIdx of adlibIndicesToProcess) {
         if (cancelTranslationRef.current) break;
         const adlibLine = currentData[aIdx];
@@ -453,6 +458,7 @@ const TranslationWorkspace = ({
           setWorkspaceData([...currentData]);
         }
       }
+
       i = ptr;
       await new Promise(r => setTimeout(r, 150));
     }
@@ -546,51 +552,68 @@ const TranslationWorkspace = ({
 
   const handleSave = () => {
      cancelTranslationRef.current = true;
-     let sourceData = selectedSong.syncData || selectedSong.autoSyncData || [];
+     
+     let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
+     if ((!sourceData || sourceData.length === 0) && customData?.lyrics) {
+       sourceData = parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette).map(l => ({
+         ...l,
+         start: null,
+         end: null,
+         translation: '',
+         pronunciation: null
+       }));
+     }
+     if (!sourceData) sourceData = [];
+
      const newSyncData = JSON.parse(JSON.stringify(sourceData));
+
      workspaceData.forEach(item => {
          const meta = item._meta;
          let finalPron = item.pronunciation;
          if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
              try {
                  let p = JSON.parse(finalPron);
-                 p.full = item.displayPron;
+                 p.full = item.displayPron || '';
                  finalPron = JSON.stringify(p);
              } catch(e) {
-                 finalPron = item.displayPron;
+                 finalPron = item.displayPron || '';
              }
          } else {
-             finalPron = item.displayPron;
+             finalPron = item.displayPron || '';
          }
+
          if (meta.isAdlib) {
              if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
                  const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
                  if (target) {
-                     target.translation = item.translation;
+                     target.translation = item.translation || '';
                      target.pronunciation = finalPron;
                  }
              }
          } else {
              const target = newSyncData[meta.lineIndex];
              if (target) {
-                 target.translation = item.translation;
+                 target.translation = item.translation || '';
                  target.pronunciation = finalPron;
              }
          }
      });
-     updateSongInLibrary({
+
+     const updatedSong = {
         ...selectedSong,
         syncData: newSyncData,
         autoSyncData: selectedSong.autoSyncData ? newSyncData : selectedSong.autoSyncData
-     });
+     };
+
+     updateSongInLibrary(updatedSong);
      setIsTranslationManagerOpen(false);
-     setNotification({ show: true, message: 'Workspace changes saved!', progress: 100 });
+     setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 2000);
   };
 
   const handleExport = () => {
      const textContent = workspaceData.map(line => 
-              `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+               `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
      ).join('\n');
      const blob = new Blob([textContent], { type: 'text/plain' });
      const url = URL.createObjectURL(blob);
@@ -754,7 +777,7 @@ const TranslationWorkspace = ({
 
   return (
     <div className="tw-container">
-        <ConfirmModal
+        <ConfirmModal 
           isOpen={confirmModalState.isOpen}
           title={confirmModalState.title}
           message={confirmModalState.message}
@@ -763,6 +786,7 @@ const TranslationWorkspace = ({
           onConfirm={confirmModalState.onConfirm}
           onCancel={() => setConfirmModalState(prev => ({ ...prev, isOpen: false }))}
         />
+
         <div className="tw-header glass-panel">
             <div className="tw-header-actions full-width-actions">
                 <button 
@@ -778,6 +802,7 @@ const TranslationWorkspace = ({
                     'Translate All'
                   )}
                 </button>
+
                 <button 
                   className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
                   onClick={handleTranslateWithContext}
@@ -785,6 +810,7 @@ const TranslationWorkspace = ({
                 >
                   Translate with Context
                 </button>
+
                 <button 
                   className="tw-btn"
                   onClick={handleRefreshWorkspace}
@@ -807,8 +833,11 @@ const TranslationWorkspace = ({
                 <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll}>
                   Import Text
                 </button>
+
                 <div className="tw-header-spacer"></div>
+
                 <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
+
                 <button 
                   className="tw-btn tw-btn-save"
                   onClick={handleSave}
@@ -829,6 +858,7 @@ const TranslationWorkspace = ({
            {workspaceData.map((line, idx) => {
               const isAdlib = line._meta.isAdlib;
               const isTranslating = activeTranslatingId === line.rowId;
+
               return (
                   <div 
                     key={line.rowId}
@@ -848,6 +878,7 @@ const TranslationWorkspace = ({
                           style={{ textAlign: 'left' }}
                         />
                      </div>
+
                      <div className="tw-col tw-col-right">
                         <textarea 
                           className="tw-input tw-translation-input"
@@ -858,6 +889,7 @@ const TranslationWorkspace = ({
                           style={{ textAlign: 'left' }}
                         />
                      </div>
+
                      <div className="tw-col-actions">
                         <button 
                           className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}

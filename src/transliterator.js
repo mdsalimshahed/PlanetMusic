@@ -1,4 +1,5 @@
 /* --- src/transliterator.js --- */
+
 // Clear legacy memory caches from localStorage
 try {
   localStorage.removeItem('globalTranslationCache');
@@ -20,10 +21,10 @@ const getGoogleData = async (text) => {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     const data = await response.json();
-              
+    
     let translation = '';
     let transliteration = '';
-              
+    
     if (data && data[0]) {
       for (let i = 0; i < data[0].length; i++) {
         if (data[0][i][0] && data[0][i][1]) {
@@ -54,17 +55,17 @@ export const quickTransliterate = async (text) => {
   return await getGoogleData(clean);
 };
 
-// Detect Brahmic / Indic scripts ONLY
-export const isIndicScript = (text) => {
-  return /[\u0900-\u0DFF\u0E80-\u0EFF]/.test(text || '');
+const isSpacedScript = (text) => {
+  return !/[\u4e00-\u9fa5\u3040-\u30ff]/.test(text || '');
+};
+
+const isRomanChar = (char) => {
+  if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
+  return /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 };
 
 export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
-  const isRomanChar = (char) => {
-    if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
-    return /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
-  };
 
   for (let i = 0; i < linesArray.length; i++) {
     const updateProgress = async () => {
@@ -91,34 +92,42 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     const fullTrans = fullData.transliteration || '';
     const chunks = [];
 
-    // --- INDIC-ONLY WORD MAPPING PATH ---
-    if (isIndicScript(cleanLine)) {
-      // Clean punctuation from each transliterated word so punctuation isn't duplicated underneath
+    // --- SPACE-SEPARATED SCRIPT PATH (Indic, Korean, Cyrillic, Arabic, etc.) ---
+    if (isSpacedScript(cleanLine)) {
+      // Clean leading and trailing punctuation from transliterated words so punctuation doesn't duplicate
       const transWords = fullTrans
         .split(/\s+/)
         .filter(Boolean)
         .map(w => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim());
-
-      let transWordIdx = 0;
+      
       const tokens = cleanLine.split(/(\s+)/);
+      let wordIndex = 0;
 
       for (const token of tokens) {
         if (!token) continue;
+
         if (/^\s+$/.test(token)) {
           chunks.push({ type: 'en', text: token, trans: '' });
         } else {
           const isEnToken = Array.from(token).every(c => isRomanChar(c));
+          let currentTrans = transWords[wordIndex] || '';
+
+          // Punctuation-only check: don't attach transliterations to stray punctuation marks
+          if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
+            chunks.push({ type: 'en', text: token, trans: '' });
+            continue;
+          }
+
           if (isEnToken) {
             chunks.push({ type: 'en', text: token, trans: '' });
           } else {
-            const pairedTrans = transWords[transWordIdx] || '';
-            chunks.push({ type: 'foreign', text: token, trans: pairedTrans });
-            transWordIdx++;
+            chunks.push({ type: 'foreign', text: token, trans: currentTrans });
           }
+          wordIndex++;
         }
       }
     } else {
-      // --- ORIGINAL CHARACTER/CHUNK PATH FOR KOREAN, JAPANESE, CHINESE, RTL, LATIN ---
+      // --- UNSPACED SCRIPT PATH (Chinese / Japanese Fallback) ---
       let currentType = null;
       let currentText = '';
 
@@ -135,12 +144,10 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
           currentText = char;
         }
       }
-
       if (currentText) {
         chunks.push({ type: currentType, text: currentText });
       }
 
-      // Fetch individual sub-chunk transliterations
       for (let j = 0; j < chunks.length; j++) {
         if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
           const textKey = chunks[j].text.trim();
@@ -149,12 +156,12 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
           cleanChunkTrans = cleanChunkTrans.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim();
           chunks[j].trans = cleanChunkTrans;
         } else {
-          chunks[j].trans = ''; 
+          chunks[j].trans = '';
         }
       }
     }
 
-    let hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
+    const hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
     if (hasForeign) {
       results.push({
         translation: fullData.translation,
@@ -166,7 +173,7 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
         pronunciation: null
       });
     }
-              
+
     await updateProgress();
   }
 

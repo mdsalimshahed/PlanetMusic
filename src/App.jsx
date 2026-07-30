@@ -10,7 +10,6 @@ import SettingsTab from './components/SettingsTab';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('search');
-
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
@@ -23,7 +22,7 @@ const App = () => {
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
       
-      // New Translation/Transliteration Settings
+      // Translation/Transliteration Settings
       if (parsed.translationColor === undefined) parsed.translationColor = '#ffffff';
       if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
@@ -58,12 +57,10 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
-
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
@@ -110,7 +107,7 @@ const App = () => {
         const sortedResults = data.results.sort((a, b) => {
           const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
           const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
-          return isBExplicit - isAExplicit; 
+          return isBExplicit - isAExplicit;
         });
 
         setSearchResults(sortedResults);
@@ -129,7 +126,7 @@ const App = () => {
   };
 
   const toggleLibrary = (e, song) => {
-    e.stopPropagation(); 
+    if (e) e.stopPropagation();
     const isSaved = library.some((s) => s.trackId === song.trackId);
     
     if (isSaved) {
@@ -151,6 +148,8 @@ const App = () => {
     setSongToRemove(null);
   };
 
+  // --- CRITICAL FIX HERE ---
+  // When a song in the library gets updated, update currentTrack state if it's actively playing
   const updateSongInLibrary = (updatedSong) => {
     setLibrary(prevLibrary => {
       const exists = prevLibrary.some(s => s.trackId === updatedSong.trackId);
@@ -160,7 +159,16 @@ const App = () => {
         return [...prevLibrary, updatedSong];
       }
     });
+
     setSelectedSong(updatedSong);
+
+    // Synchronize currentTrack so player modal clicks always load the latest translations
+    setCurrentTrack(prevTrack => {
+      if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
+        return { ...prevTrack, ...updatedSong };
+      }
+      return prevTrack;
+    });
   };
 
   const handleExport = () => {
@@ -178,7 +186,7 @@ const App = () => {
     });
 
     const exportData = { library: optimizedLibrary, settings: settings };
-    const jsonString = JSON.stringify(exportData, null, 2); 
+    const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     
@@ -194,7 +202,6 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -226,7 +233,7 @@ const App = () => {
       }
     };
     reader.readAsText(file);
-    event.target.value = null; 
+    event.target.value = null;
   };
 
   const dynamicStyles = {
@@ -361,7 +368,7 @@ const App = () => {
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
         toggleLibrary={toggleLibrary}
         updateSongInLibrary={updateSongInLibrary}
-        setCurrentTrack={setCurrentTrack} 
+        setCurrentTrack={setCurrentTrack}
         currentTrack={currentTrack}
         settings={settings}
       />
