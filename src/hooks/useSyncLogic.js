@@ -1,7 +1,7 @@
 /* --- src/hooks/useSyncLogic.js --- */
 import { useEffect } from 'react';
 import { quickTransliterate, getBulkPronunciations } from '../transliterator';
-import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics, mergeSyncWithGenius } from '../utils/songHelpers';
+import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../utils/songHelpers';
 
 // ------------------------------------------------------------------
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking
@@ -11,8 +11,7 @@ export const useSyncEngine = ({
   workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
   syncDataRef, updateWorkspaceData,
   loopRangeRef, setLoopRange,
-  constrainedEndRef, setConstrainedEnd
-}) => {
+  constrainedEndRef, setConstrainedEnd }) => {
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
@@ -119,12 +118,12 @@ export const useSyncEngine = ({
 };
 
 // ------------------------------------------------------------------
-// 2. KEYBOARD: Handles all manual syncing and spacebar controls
+// 2. KEYBOARD: Handles manual syncing and spacebar controls
 // ------------------------------------------------------------------
 export const useSyncKeyboard = ({
   isSyncMode, syncAudioRef, activeIdxRef, workspaceLinesRef,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-  loopRangeRef // CRITICAL FIX: Passed this missing ref in
+  loopRangeRef
 }) => {
   useEffect(() => {
     if (!isSyncMode) return;
@@ -133,7 +132,6 @@ export const useSyncKeyboard = ({
         if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
         e.preventDefault();
         if (syncAudioRef.current) {
-          // Now loopRangeRef is properly defined, preventing the silent ReferenceError
           if (loopRangeRef && loopRangeRef.current && syncAudioRef.current.currentTime >= loopRangeRef.current.end) {
               syncAudioRef.current.currentTime = loopRangeRef.current.start;
           }
@@ -220,7 +218,8 @@ export const useSyncKeyboard = ({
           if (prevIdx >= 0) {
             setActiveSyncIndex(prevIdx);
             activeIdxRef.current = prevIdx;
-             const prevItem = wLines[prevIdx].ref;
+            
+            const prevItem = wLines[prevIdx].ref;
             if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem.start || 0;
           }
         }
@@ -234,15 +233,14 @@ export const useSyncKeyboard = ({
 };
 
 // ------------------------------------------------------------------
-// 3. ACTIONS: Handles DB fetching, Bulk Translating, and Ad-lib Splitting
+// 3. ACTIONS: DB Fetching, Bulk Translating, Ad-lib Splitting, & Auto Mapping
 // ------------------------------------------------------------------
 export const useSyncActions = ({
   selectedSong, isSaved, customData, setCustomData, masterPalette,
   updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
   isSyncMode, setSyncData, syncDataRef, setNotification,
   setIsLrcFetching, setIsTranslating, updateWorkspaceData,
-  setLoopRange, setDebugInfo
-}) => {
+  setLoopRange, setDebugInfo }) => {
 
   const handleSplitAdlibs = async (lineIndex) => {
     const data = [...syncDataRef.current];
@@ -319,6 +317,145 @@ export const useSyncActions = ({
     setLoopRange(null);
   };
 
+  // --- STRICT FORWARD SEQUENTIAL MAPPING ALGORITHM ---
+  const handleMapAutoSync = () => {
+    if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
+      return alert("No Auto-Sync data available to map from!");
+    }
+
+    const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
+    if (autoData.length === 0) {
+      return alert("Auto-Sync data contains no timing points.");
+    }
+
+    const parsedLines = parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
+    if (parsedLines.length === 0) {
+      return alert("No manual lyrics available to map.");
+    }
+
+    const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const updatedSyncData = parsedLines.map((line, i) => {
+      const existing = selectedSong?.syncData?.[i] || {};
+      return {
+        ...line,
+        translation: existing.translation || '',
+        pronunciation: existing.pronunciation || null,
+        start: null,
+        end: null,
+        isSplit: existing.isSplit || false,
+        adlibs: existing.adlibs || undefined
+      };
+    });
+
+    let autoPointer = 0;
+    let manualPointer = 0;
+
+    // STRICT FORWARD SEQUENTIAL POINTER LOOP
+    while (manualPointer < updatedSyncData.length && autoPointer < autoData.length) {
+      const manualLine = updatedSyncData[manualPointer];
+      const cleanManual = normalize(manualLine.text);
+
+      if (!cleanManual) {
+        manualPointer++;
+        continue;
+      }
+
+      // Look ahead up to 5 auto lines from the CURRENT pointer only
+      let matchedAutoIdx = -1;
+      let highestScore = 0;
+
+      for (let a = autoPointer; a < Math.min(autoPointer + 5, autoData.length); a++) {
+        const cleanAuto = normalize(autoData[a].text);
+        if (!cleanAuto) continue;
+
+        let score = 0;
+        if (cleanManual === cleanAuto) {
+          score = 100;
+        } else if (cleanAuto.includes(cleanManual) || cleanManual.includes(cleanAuto)) {
+          score = 60 + (Math.min(cleanManual.length, cleanAuto.length) / Math.max(cleanManual.length, cleanAuto.length)) * 40;
+        }
+
+        if (score > highestScore && score > 35) {
+          highestScore = score;
+          matchedAutoIdx = a;
+        }
+      }
+
+      if (matchedAutoIdx !== -1) {
+        const targetAutoLine = autoData[matchedAutoIdx];
+
+        // Check if NEXT manual lines ALSO belong to this same auto line duration block
+        const manualGroup = [manualPointer];
+        let nextManual = manualPointer + 1;
+
+        while (nextManual < updatedSyncData.length) {
+          const cleanNextManual = normalize(updatedSyncData[nextManual].text);
+          if (!cleanNextManual) {
+            nextManual++;
+            continue;
+          }
+
+          // If next manual line matches this same auto block text or auto text contains both
+          const cleanAutoText = normalize(targetAutoLine.text);
+          if (cleanAutoText.includes(cleanNextManual) && !cleanAutoText.startsWith(cleanManual)) {
+            manualGroup.push(nextManual);
+            nextManual++;
+          } else {
+            break;
+          }
+        }
+
+        const blockStart = targetAutoLine.start;
+        const blockEnd = targetAutoLine.end !== null ? targetAutoLine.end : blockStart + 5;
+        const blockDuration = Math.max(0.5, blockEnd - blockStart);
+
+        if (manualGroup.length === 1) {
+          updatedSyncData[manualPointer].start = blockStart;
+          updatedSyncData[manualPointer].end = blockEnd;
+        } else {
+          // Proportionally split block timing based on character lengths
+          let totalChars = 0;
+          const charCounts = manualGroup.map(idx => {
+            const len = Array.from(updatedSyncData[idx].text.trim()).length || 1;
+            totalChars += len;
+            return len;
+          });
+
+          let accTime = blockStart;
+          manualGroup.forEach((mIdx, pos) => {
+            const ratio = charCounts[pos] / totalChars;
+            const dur = blockDuration * ratio;
+
+            updatedSyncData[mIdx].start = Math.round(accTime * 1000) / 1000;
+            accTime += dur;
+            updatedSyncData[mIdx].end = Math.round(accTime * 1000) / 1000;
+          });
+        }
+
+        // ADVANCE POINTERS STRICTLY FORWARD
+        manualPointer = manualGroup[manualGroup.length - 1] + 1;
+        autoPointer = matchedAutoIdx + 1;
+      } else {
+        // If current manual line doesn't match upcoming auto lines, advance manual pointer
+        manualPointer++;
+      }
+    }
+
+    updateSongInLibrary({
+      ...selectedSong,
+      syncData: updatedSyncData
+    });
+
+    if (isSyncMode) {
+      setSyncData(updatedSyncData);
+      syncDataRef.current = updatedSyncData;
+    }
+
+    setNotification({ show: true, message: 'Sequentially mapped Auto-Sync timings to Manual Lyrics!', progress: 100 });
+    setTimeout(() => setNotification({ show: false }), 2500);
+  };
+
   const handleAutoSyncDatabases = async (forceSync = false) => {
     if (!isSaved && !forceSync) return alert("Please add to Vault first before auto-syncing!");
     
@@ -385,25 +522,23 @@ export const useSyncActions = ({
         return setIsLrcFetching(false);
       }
       if (finalSyncData) {
-        if (customData.lyrics) {
-          finalSyncData = mergeSyncWithGenius(finalSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
-          finalPlainText = customData.lyrics;
-        }
-        
+        const hasManualLyrics = Boolean(customData.lyrics && customData.lyrics.trim());
         const hasManualSync = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
-        const newSyncData = hasManualSync ? selectedSong.syncData : finalSyncData;
-        updateSongInLibrary({ ...selectedSong, autoSyncData: finalSyncData, syncData: newSyncData, lyrics: finalPlainText });
-        setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         
-        setIsShowingAutoSync(true);
-        if (isSyncMode) {
-          setSyncData(finalSyncData);
-          syncDataRef.current = finalSyncData;
+        let newSyncData = hasManualSync ? selectedSong.syncData : (hasManualLyrics ? selectedSong.syncData : finalSyncData);
+        let saveLyrics = hasManualLyrics ? customData.lyrics : finalPlainText;
+
+        updateSongInLibrary({ ...selectedSong, autoSyncData: finalSyncData, syncData: newSyncData, lyrics: saveLyrics });
+        if (!hasManualLyrics) {
+          setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         }
-        setNotification({ show: true, message: hasWordSync ? '  Word-by-word sync found!' : 'Auto-sync successful!', progress: 100 });
+        
+        setNotification({ show: true, message: hasWordSync ? 'Word-by-word sync found!' : 'Auto-sync successful!', progress: 100 });
       } else {
-        updateSongInLibrary({ ...selectedSong, lyrics: finalPlainText });
-        setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
+        if (!customData.lyrics) {
+          updateSongInLibrary({ ...selectedSong, lyrics: finalPlainText });
+          setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
+        }
         setNotification({ show: true, message: 'Imported plain lyrics.', progress: 100 });
       }
     } catch (error) {
@@ -443,7 +578,7 @@ export const useSyncActions = ({
     
     const results = await getBulkPronunciations(linesToTranslate, (current, total) => {
       setNotification({ show: true, message: `Translating line ${current} of ${total}...`, progress: Math.round((current/total)*100) });
-    }, false);
+    });
     
     targetData = targetData.map((line, i) => {
         const res = results[i];
@@ -467,5 +602,5 @@ export const useSyncActions = ({
     setIsTranslating(false);
   };
 
-  return { handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate };
+  return { handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync };
 };

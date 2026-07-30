@@ -1,7 +1,7 @@
 /* --- src/hooks/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../db';
-import { parseLyrics, mergeSyncWithGenius } from '../utils/songHelpers';
+import { parseLyrics } from '../utils/songHelpers';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic';
 
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification) => {
@@ -113,8 +113,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   });
 
   const { 
-    handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate 
-  } = useSyncActions({
+     handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync 
+   } = useSyncActions({
     selectedSong, isSaved, customData, setCustomData, masterPalette,
     updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
     isSyncMode, setSyncData, syncDataRef, setNotification,
@@ -122,37 +122,35 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     setLoopRange, setDebugInfo
   });
 
-  // CRITICAL FIX: Preserves translations, pronunciations, and ad-libs when opening sync mode
+  // CRITICAL RULE: If manual lyrics exist, Sync Workspace MUST default to them with blank timings
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
     setCurrentTrack(null);
     setIsSyncLoading(true);
 
-    const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
+    const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
+    const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
+    
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
-
-    if (sourceData && sourceData.length > 0) {
+    
+    if (hasManualText) {
+      // Manual lyrics exist: Default to manual lines, preserving manual timings if present, otherwise blank!
       initialData = parsedLines.map((line, i) => {
-        const existingNode = sourceData[i] || {};
+        const existingNode = selectedSong?.syncData?.[i] || {};
         return {
           ...line,
-          translation: existingNode.translation || line.translation || '',
-          pronunciation: existingNode.pronunciation || line.pronunciation || null,
+          translation: existingNode.translation || '',
+          pronunciation: existingNode.pronunciation || null,
           start: existingNode.start !== undefined ? existingNode.start : null,
           end: existingNode.end !== undefined ? existingNode.end : null,
           isSplit: existingNode.isSplit || false,
           adlibs: existingNode.adlibs || undefined
         };
       });
-    } else {
-      initialData = parsedLines.map((line) => ({ 
-        ...line, 
-        translation: '',
-        pronunciation: null, 
-        start: null, 
-        end: null 
-      }));
+    } else if (sourceData && sourceData.length > 0) {
+      // Fallback: No manual lyrics, use database/auto lyrics
+      initialData = sourceData.map((node) => ({ ...node }));
     }
 
     setSyncData(initialData);
@@ -162,10 +160,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     setIsSyncLoading(false);
   };
 
-  // EXPLICIT REFRESH: Only clears and resets lyrics data when the user confirms
   const handleRefreshLyrics = () => {
     if (!window.confirm("Are you sure you want to refresh lyrics? This will reset all timings, translations, and split ad-libs for this song.")) return;
-
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
     const resetData = parsedLines.map(line => ({
       ...line,
@@ -176,16 +172,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       isSplit: false,
       adlibs: undefined
     }));
-
     setSyncData(resetData);
     syncDataRef.current = resetData;
-    
+         
     updateSongInLibrary({
       ...selectedSong,
       syncData: resetData,
       autoSyncData: null
     });
-
     if (setNotification) {
       setNotification({ show: true, message: 'Lyrics data refreshed and cleared!', progress: 100 });
       setTimeout(() => setNotification({ show: false }), 2000);
@@ -215,7 +209,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, playbackRate, debugInfo,
-    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, saveSyncData, handleAutoSyncDatabases, handleTranslate, toggleSyncPlay, handleSyncSeek,
+    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
   };
 };

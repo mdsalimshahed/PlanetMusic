@@ -1,16 +1,17 @@
 /* --- src/components/SyncWorkspace.jsx --- */
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
 import { quickTransliterate } from '../transliterator';
 import { normalizeTrans } from './LyricsLineRenderer';
+
+const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
 
 export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
   syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef,
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
-  selectedSong
-}) => {
+  selectedSong }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
@@ -82,7 +83,6 @@ export const SyncWorkspace = ({
       
       if (progressSliderRef.current) progressSliderRef.current.value = time;
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
-
       if (containerRef.current) {
         const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
         for (let i = 0; i < adlibNodes.length; i++) {
@@ -173,114 +173,205 @@ export const SyncWorkspace = ({
   const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
     const segments = line.segments || [{ text: line.text }];
+    const isRTL = isRTLLanguage(line.text);
     
     const pronStyle = {
-          fontSize: '0.55em',
-          color: '#ffffff',
-          opacity: 1,
-          textShadow: 'none',
-          fontWeight: '800',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-         textAlign: 'left',
-         marginTop: '4px'
-     };
+      fontSize: '0.55em',
+      color: '#ffffff',
+      opacity: 0.85,
+      textShadow: 'none',
+      fontWeight: '800',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+      textAlign: 'center',
+      marginTop: '4px',
+      display: 'inline-block'
+    };
 
     let parsedChunks = null;
     let fullTrans = null;
+
     if (typeof pronString === 'string') {
-        const cleanPron = pronString.trim();
-        if (cleanPron.startsWith('{')) {
-            try {
-                const parsed = JSON.parse(cleanPron);
-                parsedChunks = parsed.chunks;
-                fullTrans = parsed.full;
-            } catch(e) {}
-        } else if (cleanPron.startsWith('[')) {
-            try {
-                parsedChunks = JSON.parse(cleanPron);
-            } catch(e) {}
-        }
+      const cleanPron = pronString.trim();
+      if (cleanPron.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(cleanPron);
+          parsedChunks = parsed.chunks;
+          fullTrans = parsed.full;
+        } catch(e) {}
+      } else if (cleanPron.startsWith('[')) {
+        try {
+          parsedChunks = JSON.parse(cleanPron);
+        } catch(e) {}
+      }
     }
 
     const chars = [];
+    let gIdx = 0;
     segments.forEach(seg => {
-        const segChars = Array.from(seg.text);
-        segChars.forEach(char => {
-            chars.push({ char, seg });
-        });
+      const segChars = Array.from(seg.text);
+      segChars.forEach(char => {
+        chars.push({ char, seg, globalIndex: gIdx++ });
+      });
     });
 
     const renderColoredChar = (c, cIdx) => {
-        const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
-        
-        let activeColor = isPunct ? '#fbbf24' : '#ffffff';
-        let isGradient = false;
-        let gradientStyle = '';
+      const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
+      let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+      let isGradient = false;
+      let gradientStyle = '';
 
-        if (!isPunct && c.seg) {
-            let targetArtists = c.seg.artists;
-            if (!targetArtists && line.singer) {
-                targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-            }
-            if (targetArtists && targetArtists.length > 0) {
-                if (targetArtists.length > 1) {
-                    isGradient = true;
-                    const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-                    const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-                    gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-                } else {
-                    activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-                }
-            } else {
-                activeColor = c.seg.color || '#ffffff';
-                isGradient = c.seg.isGradient || false;
-                gradientStyle = c.seg.gradient || '';
-            }
+      if (!isPunct && c.seg) {
+        let targetArtists = c.seg.artists;
+        if (!targetArtists && line.singer) {
+          targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
         }
-
-        const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-        
-        if (isMain && line.isSplit) {
-          const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
-          if (isAdlibChar) {
-             style.opacity = 0.2;
-             style.textDecoration = 'line-through';
+        if (targetArtists && targetArtists.length > 0) {
+          if (targetArtists.length > 1) {
+            isGradient = true;
+            const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+            const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+            gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+          } else {
+            activeColor = masterPalette[targetArtists[0]] || '#ffffff';
           }
+        } else {
+          activeColor = c.seg.color || '#ffffff';
+          isGradient = c.seg.isGradient || false;
+          gradientStyle = c.seg.gradient || '';
         }
+      }
 
-        return <span key={cIdx} style={style}>{c.char}</span>;
+      const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
+      
+      if (isMain && line.isSplit) {
+        const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+        if (isAdlibChar) {
+          style.opacity = 0.2;
+          style.textDecoration = 'line-through';
+        }
+      }
+
+      return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
     const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
-    const blockPronStyle = { ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left', wordSpacing: '4px', lineHeight: '1.4' };
-    
-    let displayPronString = null;
-    
+
+    let fullTransText = '';
     if (fullTrans) {
-        displayPronString = normalizeTrans(fullTrans);
+      fullTransText = normalizeTrans(fullTrans);
     } else if (parsedChunks) {
-        // CRITICAL FIX: Restored fallback to c.text 
-        // This ensures spaces and English words are preserved in the transliteration string
-        displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).join('');
+      fullTransText = parsedChunks.map(c => normalizeTrans(c.trans || (isRTL ? c.text : ''))).join(' ').trim();
     } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-        displayPronString = normalizeTrans(pronString);
+      fullTransText = normalizeTrans(pronString);
     }
 
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'start', width: '100%' }}>
-            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block', textAlign: 'left' }} dir="auto">{renderedChars}</span>
-            {displayPronString && <div style={blockPronStyle} dir="ltr">{displayPronString}</div>}
+    // SPECIAL HANDLING FOR ADLIB LINES (!isMain): Render as single unbroken block
+    if (!isMain) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
+          <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
+            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }} dir="ltr">
+              {renderedChars}
+            </span>
+            {fullTransText ? (
+              <span className="pronunciation-text" style={pronStyle} dir="ltr">
+                {fullTransText}
+              </span>
+            ) : null}
+          </span>
         </div>
+      );
+    }
+
+    // FOR MAIN LINES: Process chunks
+    let activeParsedChunks = parsedChunks;
+    if (!activeParsedChunks) {
+      activeParsedChunks = [{ type: 'main', trans: '', text: line.text }];
+    }
+
+    let alignedChunks = [];
+    let pChunkIndex = 0;
+    let currentPChunk = activeParsedChunks[0];
+    let currentPChunkConsumed = 0;
+    let i = 0;
+
+    while (i < chars.length) {
+      if (!currentPChunk) {
+        alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
+        i++;
+        continue;
+      }
+      let chunkChars = [];
+      const targetLen = Array.from(currentPChunk.text || '').length;
+      while (currentPChunkConsumed < targetLen && i < chars.length) {
+        chunkChars.push(chars[i]);
+        currentPChunkConsumed++;
+        i++;
+      }
+      if (chunkChars.length > 0) {
+        alignedChunks.push({
+          type: currentPChunk.type,
+          trans: currentPChunk.trans,
+          chars: chunkChars,
+          isMain: true
+        });
+      }
+      if (currentPChunkConsumed >= targetLen) {
+        pChunkIndex++;
+        currentPChunk = activeParsedChunks[pChunkIndex];
+        currentPChunkConsumed = 0;
+      }
+    }
+
+    const renderedChunksJSX = alignedChunks.map((chunk, chunkIdx) => {
+      const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
+
+      if (isRTL) {
+        return (
+          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>
+            {renderedText}
+          </span>
+        );
+      }
+
+      if (chunk.type === 'foreign' && chunk.trans) {
+        const cleanTrans = normalizeTrans(chunk.trans);
+        return (
+          <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 2px' }}>
+            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
+            <span className="pronunciation-text" style={pronStyle} dir="ltr">{cleanTrans}</span>
+          </span>
+        );
+      } else {
+        return (
+          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom', display: 'inline-block' }}>
+            {renderedText}
+          </span>
+        );
+      }
+    });
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
+        <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-flex', alignItems: 'baseline', textAlign: 'left' }} dir={isRTL ? "rtl" : "ltr"}>
+          {renderedChunksJSX}
+        </span>
+        {isRTL && fullTransText && (
+          <span className="pronunciation-text" style={{ ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left' }} dir="ltr">
+            {fullTransText}
+          </span>
+        )}
+      </div>
     );
   };
 
   return (
-    <div className="sync-mode-container" style={{ 
-       '--workspace-accent': accentColor,
-       '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
-       '--player-accent': accentColor 
-     }}>
+    <div className="sync-mode-container" style={{
+        '--workspace-accent': accentColor,
+        '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
+        '--player-accent': accentColor
+      }}>
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>
           {isSyncPlaying ? (
@@ -291,12 +382,12 @@ export const SyncWorkspace = ({
         </button>
         <span className="precise-time" ref={preciseTimeRef}>00:00.000</span>
         <input 
-            type="range" className="custom-slider sync-slider" 
-            min="0" max={syncDuration || 1} step="0.001" 
-            defaultValue="0"
-          ref={progressSliderRef}
-          onChange={handleSyncSeek}
-          />
+          type="range" className="custom-slider sync-slider" 
+          min="0" max={syncDuration || 1} step="0.001" 
+          defaultValue="0" 
+          ref={progressSliderRef} 
+          onChange={handleSyncSeek} 
+        />
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
 
@@ -308,10 +399,10 @@ export const SyncWorkspace = ({
           )}
         </div>
         <input 
-            type="range" className="custom-slider speed-slider" 
-            min="0.5" max="2.0" step="0.05" 
-            value={playbackRate} onChange={handleSpeedChange} 
-          />
+          type="range" className="custom-slider speed-slider" 
+          min="0.5" max="2.0" step="0.05" 
+          value={playbackRate} onChange={handleSpeedChange} 
+        />
         <div className="speed-ticks">
           <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
         </div>
@@ -333,8 +424,8 @@ export const SyncWorkspace = ({
           
           return (
             <div 
-              key={i}
-              ref={isActive ? activeLineRef : null}
+              key={i} 
+              ref={isActive ? activeLineRef : null} 
               className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
               data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
               data-end={!isMain ? boundedEnd : 'NaN'}
@@ -381,13 +472,13 @@ export const SyncWorkspace = ({
       </div>
 
       <audio 
-          ref={syncAudioRef} 
-          src={syncAudioSrc || undefined}
-         onLoadedMetadata={handleAudioLoaded}
-        onDurationChange={handleAudioLoaded}
-        onEnded={() => setIsSyncPlaying(false)}
-        onPlay={() => setIsSyncPlaying(true)}
-        onPause={() => setIsSyncPlaying(false)}
+        ref={syncAudioRef} 
+        src={syncAudioSrc || undefined} 
+        onLoadedMetadata={handleAudioLoaded} 
+        onDurationChange={handleAudioLoaded} 
+        onEnded={() => setIsSyncPlaying(false)} 
+        onPlay={() => setIsSyncPlaying(true)} 
+        onPause={() => setIsSyncPlaying(false)} 
       />
     </div>
   );

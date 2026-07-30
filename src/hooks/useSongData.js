@@ -1,4 +1,5 @@
 /* --- src/hooks/useSongData.js --- */
+
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../db';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../utils/songHelpers';
@@ -11,25 +12,19 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
   });
-
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
-
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
   const featuredArtists = trackNameData.featuredArtists;
-
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-  
   const basePalette = useMemo(() => {
       return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
   }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
-
   const masterPalette = useMemo(() => {
       return { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
   }, [basePalette, globalArtistData.colors, customData.artistColors]);
-
   const allPotentialSingers = useMemo(() => {
       return Object.keys(basePalette).filter(Boolean);
   }, [basePalette]);
@@ -44,7 +39,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setIsTranslationManagerOpen(false);
         setSingerImages({});
       }
-
       const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
       setCustomData({
         spotify: selectedSong.customLinks?.spotify || '',
@@ -107,14 +101,18 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
-
-    updateSongInLibrary({ 
-       ...selectedSong, 
-       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
+    let updatedAutoSyncData = selectedSong.autoSyncData;
+    if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
+      updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
+    }
+    updateSongInLibrary({
+      ...selectedSong,
+      customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
       artistImages: customData.artistImages,
       artistColors: customData.artistColors,
-      syncData: updatedSyncData
+      syncData: updatedSyncData,
+      autoSyncData: updatedAutoSyncData
     });
     setIsEditing(false);
   };
@@ -126,18 +124,22 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     };
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
     setGlobalArtistData(newGlobal);
-
+    
+    const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
     let updatedSyncData = selectedSong.syncData;
-    if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
-       const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
+    if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) { 
        updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
-
-    updateSongInLibrary({ 
-       ...selectedSong, 
-       artistImages: customData.artistImages, 
-       artistColors: customData.artistColors,
-      syncData: updatedSyncData
+    let updatedAutoSyncData = selectedSong.autoSyncData;
+    if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
+       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
+    }
+    updateSongInLibrary({
+      ...selectedSong,
+      artistImages: customData.artistImages,
+      artistColors: customData.artistColors,
+      syncData: updatedSyncData,
+      autoSyncData: updatedAutoSyncData
     });
     setIsImageManagerOpen(false);
   };
@@ -145,14 +147,11 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const isSingle = selectedSong?.trackCount === 1 || selectedSong?.collectionName === selectedSong?.trackName;
   const releaseType = isSingle ? 'Single' : selectedSong?.collectionName || 'Single';
   const highResArt = selectedSong?.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
-  
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
   const searchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`) : '';
   const ytSearchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`) : '';
-  
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,

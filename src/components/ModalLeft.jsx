@@ -9,10 +9,10 @@ const ModalLeft = ({
   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
-  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen }) => {
+  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
+  handleMapAutoSync }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
 
-  // Safely trigger cancel/unsaved-changes prompt before closing modal or returning to dashboard
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
       const workspaceElement = document.querySelector('.tw-container');
@@ -20,7 +20,6 @@ const ModalLeft = ({
         const cancelBtn = workspaceElement.querySelector('.tw-btn-cancel');
         if (cancelBtn) {
           cancelBtn.click();
-          // Check if workspace is still active (user clicked 'Cancel' on unsaved prompt)
           const isStillActive = document.querySelector('.tw-container');
           if (isStillActive) return;
         }
@@ -39,6 +38,8 @@ const ModalLeft = ({
       }
     });
   };
+
+  const hasAutoSyncAvailable = Boolean(selectedSong?.autoSyncData && selectedSong.autoSyncData.length > 0);
 
   return (
     <div className="modal-left-col">
@@ -113,6 +114,19 @@ const ModalLeft = ({
             ) : isSyncMode ? (
               <>
                 <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>  Cancel Sync</button>
+
+                {/* SHOW MAP BUTTON ONLY WHEN IN SYNC WORKSPACE */}
+                {hasAutoSyncAvailable && (
+                  <button 
+                    className="edit-links-btn" 
+                    onClick={handleMapAutoSync}
+                    style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24' }}
+                    title="Sequentially split and map Auto-Sync timings onto Manual Lyrics based on line length"
+                  >
+                    Map Sync Data from Auto
+                  </button>
+                )}
+
                 <button className="edit-links-btn save-mode" onClick={saveSyncData}>  Save Timings</button>
               </>
             ) : isEditing ? (
@@ -126,33 +140,33 @@ const ModalLeft = ({
               <>
                 <button className="edit-links-btn" onClick={() => setIsEditing(true)}>  Edit Info</button>
                 <button 
-                  className="edit-links-btn" 
-                  onClick={() => handleAutoSyncDatabases()} 
-                  disabled={isLrcFetching || isSyncLoading}
+                   className="edit-links-btn"
+                   onClick={() => handleAutoSyncDatabases()}
+                   disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? '  Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '  Show Manual Sync' : '  Show Auto-Sync') : '  Auto-Sync Lyrics')}
                 </button>
-                
+                                 
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? '  Parsing Engine...' : hasValidSyncData ? '  Edit Timings' : '  Manual Sync'}
                     </button>
-                    
+                                         
                     <button 
-                        className="edit-links-btn" 
-                        onClick={() => setIsTranslationManagerOpen(true)}
-                    > 
-                       Edit Translation
+                         className="edit-links-btn"
+                         onClick={() => setIsTranslationManagerOpen(true)}
+                    >
+                        Edit Translation
                     </button>
-                    
+                                         
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>  Manage Artists</button>
-                    
+                                         
                     {hasValidSyncData && !isSyncLoading && (
                       <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
                         {lyricsViewMode === 'live' ? '  Show Focused Sync' : 
-                           lyricsViewMode === 'focused' ? '  Show Plain Text' : '  Show Live Sync'}
+                            lyricsViewMode === 'focused' ? '  Show Plain Text' : '  Show Live Sync'}
                       </button>
                     )}
                   </>
@@ -166,7 +180,6 @@ const ModalLeft = ({
             )}
           </div>
         </div>
-        {/* The injection slot for the Player Portal on Mobile */}
         <div id="mobile-player-slot"></div>
         <div className="bottom-actions">
           {isSaved ? (
@@ -175,9 +188,9 @@ const ModalLeft = ({
             </button>
           ) : (
             <button className="edit-links-btn save-mode" onClick={(e) => { 
-              toggleLibrary(e, selectedSong); 
-              handleAutoSyncDatabases(true); 
-              }}>+ Add to Vault</button>
+               toggleLibrary(e, selectedSong); 
+               handleAutoSyncDatabases(true); 
+               }}>+ Add to Vault</button>
           )}
           <button className="return-dashboard-btn" onClick={handleCloseModal}>
             Return to Dashboard

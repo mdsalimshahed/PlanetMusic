@@ -217,7 +217,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         continue;
       }
       let chunkChars = [];
-      const targetLen = Array.from(currentPChunk.text).length;
+      const targetLen = Array.from(currentPChunk.text || '').length;
       while (currentPChunkConsumed < targetLen && i < chars.length) {
         let isAdlibNext = savedNode?.isSplit ? savedNode.adlibs?.some(a => i >= a.charStart && i < a.charEnd) : false;
         if (isAdlibNext) break;
