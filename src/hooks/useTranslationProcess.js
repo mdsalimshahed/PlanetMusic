@@ -101,7 +101,9 @@ export const useTranslationProcess = ({
     try {
       const sourceLang = line.lang || 'auto';
       const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
-      const resArr = await getBulkPronunciations([textToTranslate], null);
+      
+      // Pass the target language into the phonetic transliterator algorithm
+      const resArr = await getBulkPronunciations([textToTranslate], null, sourceLang);
       const res = resArr?.[0] || {};
 
       return {
@@ -373,6 +375,7 @@ export const useTranslationProcess = ({
         }
 
         // Fetch pronunciations sequentially for this group, moving the highlight as it progresses
+        // Passes `lang` to instruct the number generator which target language it's translating to.
         const batchPronunciations = await getBulkPronunciations(cleanTexts, (current, total) => {
            const currentIdx = current - 1;
            if (items[currentIdx]) {
@@ -384,7 +387,7 @@ export const useTranslationProcess = ({
              message: `Transliterating [${lang}] (${current}/${total})...`,
              progress: Math.round((current / total) * 100)
            });
-        });
+        }, lang);
 
         if (cancelTranslationRef.current) break;
 
