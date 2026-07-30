@@ -10,6 +10,48 @@ const formatAdlibPronunciation = (adlibText, displayPron) => {
   });
 };
 
+const normalizeForComparison = (str) =>
+  String(str || '')
+    .toLowerCase()
+    .replace(/[\p{P}\p{S}\s]/gu, '')
+    .trim();
+
+const fetchGoogleWithLang = async (text, sl = 'auto') => {
+  if (!text) return { translation: '', transliteration: null, srcLang: 'auto' };
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    let translation = '';
+    let transliteration = '';
+    let srcLang = data?.[2] || 'auto';
+
+    if (data && data[0]) {
+      for (let i = 0; i < data[0].length; i++) {
+        if (data[0][i][0] && data[0][i][1]) {
+          translation += data[0][i][0];
+        }
+      }
+      const last = data[0][data[0].length - 1];
+      if (last && (last[2] || last[3]) && !last[1]) {
+        transliteration = last[2] || last[3] || '';
+      } else if (data[0].length > 1) {
+        const possibleRom = data[0].find(item => item[2] || item[3]);
+        if (possibleRom) transliteration = possibleRom[2] || possibleRom[3];
+      }
+    }
+    return {
+      translation: translation.trim(),
+      transliteration: transliteration ? transliteration.trim() : null,
+      srcLang
+    };
+  } catch (error) {
+    console.warn("Google Translate API error:", error);
+    return { translation: '', transliteration: null, srcLang: sl || 'auto' };
+  }
+};
+
 export const useTranslationProcess = ({
   workspaceData,
   setWorkspaceData,
@@ -52,9 +94,17 @@ export const useTranslationProcess = ({
     }
     textToTranslate = textToTranslate.replace(/[()]/g, '').trim();
     if (!textToTranslate) return null;
+
     try {
+      const sourceLang = line.lang || 'auto';
+      const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
       const resArr = await getBulkPronunciations([textToTranslate], null);
-      return resArr?.[0] || null;
+      const res = resArr?.[0] || {};
+      return {
+        ...res,
+        translation: rawData.translation || res.translation || '',
+        srcLang: rawData.srcLang || sourceLang
+      };
     } catch (e) {
       console.error("Single line fetch error:", e);
       return null;
@@ -73,7 +123,7 @@ export const useTranslationProcess = ({
     setConfirmModalState({
       isOpen: true,
       title: "Wipe All Translations",
-      message: "Are you sure you want to refresh lyrics? This will wipe out all translation and transliteration fields.",
+      message: "Are you sure you want to refresh lyrics? This will wipe out all translation, transliteration, and reset language tags to auto.",
       confirmText: "Wipe Fields",
       cancelText: "Cancel",
       onConfirm: () => {
@@ -85,7 +135,8 @@ export const useTranslationProcess = ({
           ...line,
           translation: '',
           displayPron: '',
-          pronunciation: ''
+          pronunciation: '',
+          lang: 'auto'
         }));
         setWorkspaceData(wipedData);
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
@@ -113,6 +164,19 @@ export const useTranslationProcess = ({
     for (let i = 0; i < currentData.length; i++) {
       if (cancelTranslationRef.current) break;
       const line = currentData[i];
+
+      // RULE: Skip already tagged 'en' lines
+      if (line.lang === 'en') {
+        currentData[i] = {
+          ...currentData[i],
+          translation: '',
+          displayPron: '',
+          pronunciation: ''
+        };
+        setWorkspaceData([...currentData]);
+        continue;
+      }
+
       setActiveTranslatingId(line.rowId);
       setTranslateProgress({ current: i + 1, total: currentData.length });
       const progressPct = Math.round(((i + 1) / currentData.length) * 100);
@@ -141,30 +205,43 @@ export const useTranslationProcess = ({
 
       if (cancelTranslationRef.current) break;
       if (res) {
-        let newTrans = res.translation !== undefined ? res.translation : line.translation;
-        if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+        let rawTransText = res.translation !== undefined ? String(res.translation).replace(/[()]/g, '').trim() : '';
+        const normOriginal = normalizeForComparison(line.displayText);
+        const normTranslated = normalizeForComparison(rawTransText);
+
+        // RULE: If translation yields same as main lyrics, set lang to "en" and leave fields blank
+        const isEnglishMatch = normOriginal.length > 0 && normOriginal === normTranslated;
+        const finalLang = isEnglishMatch ? 'en' : (res.srcLang || line.lang || 'auto');
+
         let displayPron = line.displayPron;
         let finalPron = res.pronunciation || line.pronunciation;
 
-        if (res.pronunciation) {
-          try {
-            const p = JSON.parse(res.pronunciation);
-            displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-          } catch (e) {}
-        } else if (res.translation && !/[^\x00-\x7F]/.test(line.displayText)) {
+        if (isEnglishMatch || finalLang === 'en') {
+          rawTransText = '';
           displayPron = '';
           finalPron = '';
-        }
+        } else {
+          if (res.pronunciation) {
+            try {
+              const p = JSON.parse(res.pronunciation);
+              displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+            } catch (e) {}
+          } else if (rawTransText && !/[^\x00-\x7F]/.test(line.displayText)) {
+            displayPron = '';
+            finalPron = '';
+          }
 
-        if (line._meta.isAdlib) {
-          finalPron = formatAdlibPronunciation(line.displayText, displayPron);
+          if (line._meta.isAdlib) {
+            finalPron = formatAdlibPronunciation(line.displayText, displayPron);
+          }
         }
 
         currentData[i] = {
           ...currentData[i],
-          translation: newTrans,
+          translation: rawTransText,
           pronunciation: finalPron,
-          displayPron: displayPron
+          displayPron: displayPron,
+          lang: finalLang
         };
         setWorkspaceData([...currentData]);
       }
@@ -203,24 +280,46 @@ export const useTranslationProcess = ({
     let i = 0;
     while (i < currentData.length) {
       if (cancelTranslationRef.current) break;
+
+      // RULE: Skip already tagged 'en' lines
+      if (currentData[i].lang === 'en') {
+        currentData[i] = {
+          ...currentData[i],
+          translation: '',
+          displayPron: '',
+          pronunciation: ''
+        };
+        setWorkspaceData([...currentData]);
+        i++;
+        continue;
+      }
+
       if (currentData[i]._meta.isAdlib) {
         const adlibRes = await fetchSingleLine(currentData[i]);
         if (adlibRes) {
-          let newTrans = adlibRes.translation ? String(adlibRes.translation).replace(/[()]/g, '').trim() : '';
+          let rawTransText = adlibRes.translation ? String(adlibRes.translation).replace(/[()]/g, '').trim() : '';
+          const normOrig = normalizeForComparison(currentData[i].displayText);
+          const normTrans = normalizeForComparison(rawTransText);
+
+          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+          const finalLang = isEnglishMatch ? 'en' : (adlibRes.srcLang || currentData[i].lang || 'auto');
+
           let displayPron = '';
-          if (adlibRes.pronunciation) {
+          if (!isEnglishMatch && adlibRes.pronunciation) {
             try {
               const p = JSON.parse(adlibRes.pronunciation);
               displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
             } catch(e) {}
           }
-          let finalPron = formatAdlibPronunciation(currentData[i].displayText, displayPron);
+
+          let finalPron = isEnglishMatch ? '' : formatAdlibPronunciation(currentData[i].displayText, displayPron);
 
           currentData[i] = {
             ...currentData[i],
-            translation: newTrans || currentData[i].translation,
-            pronunciation: finalPron || currentData[i].pronunciation,
-            displayPron: displayPron || currentData[i].displayPron
+            translation: isEnglishMatch ? '' : (rawTransText || currentData[i].translation),
+            pronunciation: isEnglishMatch ? '' : (finalPron || currentData[i].pronunciation),
+            displayPron: isEnglishMatch ? '' : (displayPron || currentData[i].displayPron),
+            lang: finalLang
           };
           setWorkspaceData([...currentData]);
         }
@@ -232,6 +331,10 @@ export const useTranslationProcess = ({
       const adlibIndicesToProcess = [];
       let ptr = i;
       while (ptr < currentData.length && mainBatchIndices.length < 3) {
+        if (currentData[ptr].lang === 'en') {
+          ptr++;
+          continue;
+        }
         if (!currentData[ptr]._meta.isAdlib) {
           mainBatchIndices.push(ptr);
         } else {
@@ -239,7 +342,10 @@ export const useTranslationProcess = ({
         }
         ptr++;
       }
-      if (mainBatchIndices.length === 0) break;
+      if (mainBatchIndices.length === 0) {
+        i = ptr > i ? ptr : i + 1;
+        continue;
+      }
 
       setActiveTranslatingId(currentData[mainBatchIndices[0]].rowId);
       const lastProcessedIdx = ptr - 1;
@@ -262,10 +368,13 @@ export const useTranslationProcess = ({
 
       try {
         const combinedText = cleanMainTexts.join('\n');
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(combinedText)}`;
+        const firstLineLang = currentData[mainBatchIndices[0]].lang || 'auto';
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(firstLineLang)}&tl=en&dt=t&q=${encodeURIComponent(combinedText)}`;
         const response = await fetch(url);
         const data = await response.json();
         let combinedTranslation = '';
+        let detectedLang = data?.[2] || firstLineLang;
+
         if (data && data[0]) {
           data[0].forEach(item => {
             if (item[0]) combinedTranslation += item[0];
@@ -277,24 +386,40 @@ export const useTranslationProcess = ({
         if (cancelTranslationRef.current) break;
         mainBatchIndices.forEach((targetIdx, bIdx) => {
           if (currentData[targetIdx]) {
-            let newTrans = translatedLines[bIdx] !== undefined ? translatedLines[bIdx] : (batchPronunciations[bIdx]?.translation || currentData[targetIdx].translation);
-            if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+            let rawTransText = translatedLines[bIdx] !== undefined ? translatedLines[bIdx] : (batchPronunciations[bIdx]?.translation || currentData[targetIdx].translation);
+            if (rawTransText) rawTransText = String(rawTransText).replace(/[()]/g, '').trim();
+
+            const normOrig = normalizeForComparison(cleanMainTexts[bIdx]);
+            const normTrans = normalizeForComparison(rawTransText);
+
+            const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+            const finalLang = isEnglishMatch ? 'en' : (detectedLang || currentData[targetIdx].lang || 'auto');
+
             let displayPron = currentData[targetIdx].displayPron;
             let finalPron = batchPronunciations[bIdx]?.pronunciation || currentData[targetIdx].pronunciation;
-            if (batchPronunciations[bIdx]?.pronunciation) {
-              try {
-                const p = JSON.parse(batchPronunciations[bIdx].pronunciation);
-                displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-              } catch (e) {}
-            } else if (newTrans && !/[^\x00-\x7F]/.test(currentData[targetIdx].displayText)) {
+
+            if (isEnglishMatch || finalLang === 'en') {
+              rawTransText = '';
               displayPron = '';
               finalPron = '';
+            } else {
+              if (batchPronunciations[bIdx]?.pronunciation) {
+                try {
+                  const p = JSON.parse(batchPronunciations[bIdx].pronunciation);
+                  displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+                } catch (e) {}
+              } else if (rawTransText && !/[^\x00-\x7F]/.test(currentData[targetIdx].displayText)) {
+                displayPron = '';
+                finalPron = '';
+              }
             }
+
             currentData[targetIdx] = {
               ...currentData[targetIdx],
-              translation: newTrans,
+              translation: rawTransText,
               pronunciation: finalPron,
-              displayPron: displayPron
+              displayPron: displayPron,
+              lang: finalLang
             };
           }
         });
@@ -308,22 +433,30 @@ export const useTranslationProcess = ({
         const adlibLine = currentData[aIdx];
         const res = await fetchSingleLine(adlibLine);
         if (res) {
-          let newTrans = res.translation !== undefined ? res.translation : adlibLine.translation;
-          if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+          let rawTransText = res.translation !== undefined ? res.translation : adlibLine.translation;
+          if (rawTransText) rawTransText = String(rawTransText).replace(/[()]/g, '').trim();
+
+          const normOrig = normalizeForComparison(adlibLine.displayText);
+          const normTrans = normalizeForComparison(rawTransText);
+
+          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+          const finalLang = isEnglishMatch ? 'en' : (res.srcLang || adlibLine.lang || 'auto');
+
           let displayPron = adlibLine.displayPron;
-          if (res.pronunciation) {
+          if (!isEnglishMatch && res.pronunciation) {
             try {
               const p = JSON.parse(res.pronunciation);
               displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
             } catch (e) {}
           }
-          let finalPron = formatAdlibPronunciation(adlibLine.displayText, displayPron);
+          let finalPron = isEnglishMatch ? '' : formatAdlibPronunciation(adlibLine.displayText, displayPron);
 
           currentData[aIdx] = {
             ...currentData[aIdx],
-            translation: newTrans,
-            pronunciation: finalPron,
-            displayPron: displayPron
+            translation: isEnglishMatch ? '' : rawTransText,
+            pronunciation: isEnglishMatch ? '' : finalPron,
+            displayPron: isEnglishMatch ? '' : displayPron,
+            lang: finalLang
           };
           setWorkspaceData([...currentData]);
         }
@@ -353,20 +486,30 @@ export const useTranslationProcess = ({
     const res = await fetchSingleLine(line);
     if (res) {
       const newData = [...workspaceData];
-      let newTrans = res.translation !== undefined ? res.translation : newData[index].translation;
-      if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-      newData[index].translation = newTrans;
+      let rawTransText = res.translation !== undefined ? res.translation : newData[index].translation;
+      if (rawTransText) rawTransText = String(rawTransText).replace(/[()]/g, '').trim();
+
+      const normOrig = normalizeForComparison(line.displayText);
+      const normTrans = normalizeForComparison(rawTransText);
+
+      const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+      const finalLang = isEnglishMatch ? 'en' : (res.srcLang || line.lang || 'auto');
 
       let displayPron = '';
-      if (res.pronunciation) {
+      if (!isEnglishMatch && res.pronunciation) {
         try {
           const p = JSON.parse(res.pronunciation);
           displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
         } catch (e) {}
       }
-      newData[index].displayPron = displayPron;
 
-      if (line._meta.isAdlib) {
+      newData[index].lang = finalLang;
+      newData[index].translation = isEnglishMatch ? '' : rawTransText;
+      newData[index].displayPron = isEnglishMatch ? '' : displayPron;
+
+      if (isEnglishMatch) {
+        newData[index].pronunciation = '';
+      } else if (line._meta.isAdlib) {
         newData[index].pronunciation = formatAdlibPronunciation(line.displayText, displayPron);
       } else {
         newData[index].pronunciation = res.pronunciation || '';

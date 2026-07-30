@@ -46,9 +46,9 @@
     white-space: nowrap;
 }
 
-.tw-btn:hover:not(:disabled) { 
-    background: rgba(255,255,255,0.2); 
-    transform: translateY(-2px); 
+.tw-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
 }
 
 .tw-btn:disabled {
@@ -62,17 +62,16 @@
     color: #fbbf24 !important;
 }
 
-.tw-btn-save { 
-    background: #fbbf24 !important; 
-    color: black !important; 
-    border-color: #fbbf24 !important; 
+.tw-btn-save {
+    background: #fbbf24 !important;
+    color: black !important;
+    border-color: #fbbf24 !important;
 }
 
-.tw-btn-save:hover:not(:disabled) { 
-    filter: brightness(1.15); 
+.tw-btn-save:hover:not(:disabled) {
+    filter: brightness(1.15);
 }
 
-/* Success Banner Indicator */
 .tw-success-banner {
     display: flex;
     align-items: center;
@@ -105,7 +104,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Spinner indicator */
 .tw-spinner {
     width: 14px;
     height: 14px;
@@ -147,9 +145,7 @@
     transition: all 0.3s ease;
 }
 
-/* Highlight Active Translating Row - Yellow */
-.tw-row.tw-row-active,
-.tw-row-active {
+.tw-row.tw-row-active, .tw-row-active {
     border: 1.5px solid #fbbf24 !important;
     background: rgba(251, 191, 36, 0.15) !important;
     box-shadow: 0 0 18px rgba(251, 191, 36, 0.4) !important;
@@ -163,6 +159,35 @@
 
 .tw-col { display: flex; flex-direction: column; gap: 8px; }
 
+.tw-original-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.tw-lang-tag-input {
+    width: 44px;
+    height: 22px;
+    background: rgba(179, 136, 235, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: lowercase;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.tw-lang-tag-input:focus {
+    background: var(--accent);
+    color: black;
+    box-shadow: 0 0 8px var(--accent);
+}
+
 .tw-original-text {
     font-size: 14px;
     font-weight: 600;
@@ -171,10 +196,6 @@
     text-align: left !important;
     direction: ltr !important;
     unicode-bidi: isolate;
-}
-
-.tw-empty-subrow {
-    height: 0;
 }
 
 .tw-input {
@@ -193,19 +214,19 @@
     direction: ltr !important;
 }
 
-.tw-input:focus { 
-    outline: none !important; 
-    border-color: #fbbf24 !important; 
+.tw-input:focus {
+    outline: none !important;
+    border-color: #fbbf24 !important;
     box-shadow: 0 0 8px rgba(251, 191, 36, 0.3) !important;
 }
 
 .tw-translation-input { height: 100%; min-height: 60px; }
 
-.tw-translit-input { 
-    color: #fbbf24 !important; 
-    font-weight: 500; 
-    font-family: monospace; 
-    letter-spacing: 0.5px; 
+.tw-translit-input {
+    color: #fbbf24 !important;
+    font-weight: 500;
+    font-family: monospace;
+    letter-spacing: 0.5px;
 }
 
 .tw-col-actions {
@@ -229,11 +250,11 @@
     transition: all 0.2s;
 }
 
-.tw-refetch-btn:hover:not(:disabled) { 
-    background: #fbbf24 !important; 
-    color: black !important; 
-    border-color: #fbbf24 !important; 
-    transform: rotate(45deg); 
+.tw-refetch-btn:hover:not(:disabled) {
+    background: #fbbf24 !important;
+    color: black !important;
+    border-color: #fbbf24 !important;
+    transform: rotate(45deg);
 }
 
 .tw-refetch-btn:disabled {

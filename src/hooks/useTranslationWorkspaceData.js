@@ -2,7 +2,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { parseLyrics } from '../utils/songHelpers';
 
-// Helper to construct JSON pronunciation string for ad-libs so LyricsLineRenderer can parse it
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return '';
   return JSON.stringify({
@@ -38,7 +37,8 @@ export const useTranslationWorkspaceData = ({
         start: null,
         end: null,
         translation: '',
-        pronunciation: null
+        pronunciation: null,
+        lang: 'auto'
       }));
     }
     if (!sourceData) sourceData = [];
@@ -62,14 +62,17 @@ export const useTranslationWorkspaceData = ({
           } catch (e) {}
         }
       }
+
+      const isEn = line.lang === 'en';
       mapped.push({
         ...line,
         rowId: `main-${i}`,
         segments: parsedLineObj?.segments || line.segments,
         displayText: mainText || line.text,
-        translation: line.translation || '',
-        pronunciation: pron,
-        displayPron: displayPron,
+        translation: isEn ? '' : (line.translation || ''),
+        pronunciation: isEn ? '' : pron,
+        displayPron: isEn ? '' : displayPron,
+        lang: line.lang || 'auto',
         _meta: { isAdlib: false, lineIndex: i }
       });
 
@@ -90,14 +93,16 @@ export const useTranslationWorkspaceData = ({
               } catch (e) {}
             }
           }
+          const isAdlibEn = adlib.lang === 'en';
           mapped.push({
             ...adlib,
             rowId: `adlib-${i}-${j}`,
             segments: adlib.segments,
             displayText: adlib.text,
-            translation: adlib.translation || '',
-            pronunciation: aPron,
-            displayPron: aDisplayPron,
+            translation: isAdlibEn ? '' : (adlib.translation || ''),
+            pronunciation: isAdlibEn ? '' : aPron,
+            displayPron: isAdlibEn ? '' : aDisplayPron,
+            lang: adlib.lang || 'auto',
             _meta: { isAdlib: true, lineIndex: i, adlibIndex: j }
           });
         });
@@ -109,19 +114,32 @@ export const useTranslationWorkspaceData = ({
   useEffect(() => {
     const loaded = loadSourceWorkspaceData();
     setWorkspaceData(loaded);
-    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron }))));
+    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang }))));
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSong?.trackId, selectedSong?.syncData, selectedSong?.autoSyncData]);
 
   const hasUnsavedChanges = useMemo(() => {
-    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron })));
+    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang })));
     return currentSnapshot !== initialDataSnapshot;
   }, [workspaceData, initialDataSnapshot]);
 
   const handleChange = (index, field, value) => {
     const newData = [...workspaceData];
-    if (field === 'displayPron') {
+    if (field === 'lang') {
+      const cleanLang = value.toLowerCase().trim();
+      newData[index].lang = cleanLang;
+      // RULE: If language tag is set to "en", wipe translation & transliteration fields
+      if (cleanLang === 'en') {
+        newData[index].translation = '';
+        newData[index].displayPron = '';
+        newData[index].pronunciation = '';
+      }
+    } else if (field === 'displayPron') {
+      // If manually typing transliteration on an "en" line, change tag away from "en"
+      if (newData[index].lang === 'en' && value) {
+        newData[index].lang = 'auto';
+      }
       newData[index].displayPron = value;
       let currentPron = newData[index].pronunciation;
 
@@ -138,6 +156,12 @@ export const useTranslationWorkspaceData = ({
       } else {
         newData[index].pronunciation = value;
       }
+    } else if (field === 'translation') {
+      // If manually typing translation on an "en" line, change tag away from "en"
+      if (newData[index].lang === 'en' && value) {
+        newData[index].lang = 'auto';
+      }
+      newData[index].translation = value;
     } else {
       newData[index][field] = value;
     }
@@ -153,7 +177,8 @@ export const useTranslationWorkspaceData = ({
         start: null,
         end: null,
         translation: '',
-        pronunciation: null
+        pronunciation: null,
+        lang: 'auto'
       }));
     }
     if (!sourceData) sourceData = [];
@@ -161,39 +186,45 @@ export const useTranslationWorkspaceData = ({
 
     workspaceData.forEach(item => {
       const meta = item._meta;
-      let finalPron = item.pronunciation;
+      const isEn = item.lang === 'en';
+      let finalPron = isEn ? '' : item.pronunciation;
+      let finalTrans = isEn ? '' : (item.translation || '');
 
-      if (meta.isAdlib) {
-        if (item.displayPron) {
-          finalPron = formatAdlibPronunciation(item.displayText, item.displayPron);
+      if (!isEn) {
+        if (meta.isAdlib) {
+          if (item.displayPron) {
+            finalPron = formatAdlibPronunciation(item.displayText, item.displayPron);
+          } else {
+            finalPron = null;
+          }
+        } else if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
+          try {
+            let p = JSON.parse(finalPron);
+            p.full = item.displayPron || '';
+            finalPron = JSON.stringify(p);
+          } catch (e) {
+            finalPron = item.displayPron || '';
+          }
         } else {
-          finalPron = null;
-        }
-      } else if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
-        try {
-          let p = JSON.parse(finalPron);
-          p.full = item.displayPron || '';
-          finalPron = JSON.stringify(p);
-        } catch (e) {
           finalPron = item.displayPron || '';
         }
-      } else {
-        finalPron = item.displayPron || '';
       }
 
       if (meta.isAdlib) {
         if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
           const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
           if (target) {
-            target.translation = item.translation || '';
+            target.translation = finalTrans;
             target.pronunciation = finalPron;
+            target.lang = item.lang || 'auto';
           }
         }
       } else {
         const target = newSyncData[meta.lineIndex];
         if (target) {
-          target.translation = item.translation || '';
+          target.translation = finalTrans;
           target.pronunciation = finalPron;
+          target.lang = item.lang || 'auto';
         }
       }
     });
@@ -211,7 +242,7 @@ export const useTranslationWorkspaceData = ({
 
   const handleExport = () => {
     const textContent = workspaceData.map(line =>
-      `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+      `[lang: ${line.lang || 'auto'}]\n${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
     ).join('\n');
     const blob = new Blob([textContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -238,8 +269,16 @@ export const useTranslationWorkspaceData = ({
         let importedCount = 0;
 
         blocks.forEach((block, blockIdx) => {
-          const lines = block.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+          let lines = block.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
           if (lines.length === 0) return;
+
+          let importedLang = 'auto';
+          if (lines[0].startsWith('[lang:') && lines[0].endsWith(']')) {
+            importedLang = lines[0].replace('[lang:', '').replace(']', '').trim();
+            lines.shift();
+          }
+          if (lines.length === 0) return;
+
           const originalText = lines[0];
           let importedPron = '';
           let importedTrans = '';
@@ -259,10 +298,14 @@ export const useTranslationWorkspaceData = ({
           }
 
           if (targetIndex !== -1) {
-            newData[targetIndex].translation = importedTrans;
-            newData[targetIndex].displayPron = importedPron;
+            const isEn = importedLang === 'en';
+            newData[targetIndex].lang = importedLang;
+            newData[targetIndex].translation = isEn ? '' : importedTrans;
+            newData[targetIndex].displayPron = isEn ? '' : importedPron;
 
-            if (newData[targetIndex]._meta.isAdlib) {
+            if (isEn) {
+              newData[targetIndex].pronunciation = '';
+            } else if (newData[targetIndex]._meta.isAdlib) {
               newData[targetIndex].pronunciation = formatAdlibPronunciation(newData[targetIndex].displayText, importedPron);
             } else {
               let currentPron = newData[targetIndex].pronunciation;

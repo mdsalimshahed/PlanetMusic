@@ -107,8 +107,17 @@ const TranslationRow = ({
       className={`tw-row ${isAdlib ? 'tw-row-adlib' : ''} ${isTranslating ? 'tw-row-active' : ''}`}
     >
       <div className="tw-col tw-col-left">
-        <div className="tw-original-text" dir="ltr" style={{ textAlign: 'left' }}>
-          {renderColoredOriginalText()}
+        <div className="tw-original-header" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <input
+            type="text"
+            className="tw-lang-tag-input"
+            value={line.lang || 'auto'}
+            onChange={(e) => handleChange(idx, 'lang', e.target.value.toLowerCase().trim())}
+            title="Language Tag (e.g. auto, ko, ja, en, es)"
+          />
+          <div className="tw-original-text" dir="ltr" style={{ textAlign: 'left', flex: 1 }}>
+            {renderColoredOriginalText()}
+          </div>
         </div>
         <input
           className="tw-input tw-translit-input"
