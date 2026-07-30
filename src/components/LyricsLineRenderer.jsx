@@ -3,11 +3,15 @@ import React, { useMemo } from 'react';
 
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 
+// Expanded punctuation matcher that includes Unicode punctuation (e.g. Arabic comma '،', Arabic question mark '؟')
+const isPunctuationChar = (char) => /^[\p{P}\p{S}\s]+$/u.test(char);
+
 export const normalizeTrans = (str) => {
   if (!str) return '';
   return str
     .replace(/[()\[\]{}]/g, '')
     .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'")
+    .replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
 };
@@ -17,7 +21,7 @@ const cleanTranslationText = (text) => {
   return String(text)
     .replace(/[()]/g, '')
     .trim()
-    .replace(/[\.\!\?\u3002\uff0e\uff01\uff1f]+$/g, '')
+    .replace(/[\p{P}\p{S}]+$/gu, '') // FIXED: Uses clean Unicode character property escapes without invalid backslash escapes
     .trim();
 };
 
@@ -26,6 +30,7 @@ const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test
 const groupWords = (elements, charData) => {
   const words = [];
   let currentWord = [];
+
   for (let i = 0; i < elements.length; i++) {
     if (!elements[i]) {
       if (currentWord.length > 0) {
@@ -35,6 +40,7 @@ const groupWords = (elements, charData) => {
       words.push(elements[i]);
       continue;
     }
+
     const char = charData[i].char;
     if (/\s/.test(char) || isCJ(char)) {
       if (currentWord.length > 0) {
@@ -46,9 +52,11 @@ const groupWords = (elements, charData) => {
       currentWord.push(elements[i]);
     }
   }
+
   if (currentWord.length > 0) {
     words.push(<span key="w-end" style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
   }
+
   return words;
 };
 
@@ -56,22 +64,19 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
   const segments = lineObj.segments || [];
   const isRTL = isRTLLanguage(lineObj.text || '');
-  
+
   let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
-  
   const normalizeForMatch = (str) => 
-    String(str || '')
+     String(str || '')
       .toLowerCase()
       .replace(/[\p{P}\p{S}\s]/gu, '')
       .trim();
 
   const cleanMainText = normalizeForMatch(lineObj?.text);
   const cleanTransText = normalizeForMatch(rawTranslation);
-
   const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
 
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
-
   const basePronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
     fontWeight: '800',
@@ -135,7 +140,8 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       }
     }
 
-    const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
+    // Unicode-aware punctuation check: turns commas, Arabic commas (،), question marks (؟), etc. yellow
+    const isPunct = isPunctuationChar(c.char);
     let activeColor = isPunct ? '#fbbf24' : '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
@@ -230,7 +236,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   const renderedAllChunks = alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return { type: chunk.type, jsx: null };
-
     const groupedText = groupWords(renderedText, chunk.chars);
 
     if (isRTL) {
@@ -252,26 +257,25 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         let adlibRawTranslation = cleanTranslationText(chunk.adlibObj?.translation || '');
         const cleanAdlibMain = normalizeForMatch(chunk.adlibObj?.text);
         const cleanAdlibTrans = normalizeForMatch(adlibRawTranslation);
-        
+                 
         let adlibTranslation = (cleanAdlibMain && cleanAdlibMain === cleanAdlibTrans) ? '' : adlibRawTranslation;
-
         let adlibProps = {};
+
         if (savedNode?.isSplit && !isFocused && chunk.adlibObj?.start !== null) {
           const start = chunk.adlibObj.start;
           const end = chunk.adlibObj.end !== null ? chunk.adlibObj.end : start + 5;
-
           let initialClass = 'adlib-hidden';
           if (isPlayingCurrentSong) {
             if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
             else if (currentTime > end) initialClass = 'adlib-visible';
           }
-
           adlibProps = {
             className: `adlib-node ${initialClass}`,
             'data-start': start,
             'data-end': end
           };
         }
+
         return {
           type: chunk.type,
           jsx: (
@@ -299,7 +303,9 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
           jsx: (
             <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 2px' }}>
               <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
-              <span className="pronunciation-text" style={basePronStyle} dir="ltr">{cleanTrans}</span>
+              {cleanTrans ? (
+                <span className="pronunciation-text" style={basePronStyle} dir="ltr">{cleanTrans}</span>
+              ) : null}
             </span>
           )
         };
@@ -324,6 +330,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   let leadingJsx = [];
   let coreJsx = [];
   let trailingJsx = [];
+
   if (firstMainIdx === -1) {
     coreJsx = renderedAllChunks.map(c => c.jsx).filter(Boolean);
   } else {
@@ -340,7 +347,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     shouldRenderBlockPron = isRTL;
   } else if (parsedChunks) {
     if (isRTL) {
-      displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).join(' ');
+      displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
       shouldRenderBlockPron = true;
     }
   } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
@@ -362,26 +369,20 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%' }}>
       <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr' }}>
         {leadingJsx.length > 0 && <span className="leading-adlibs">{leadingJsx}</span>}
-
         <span className="core-chunks" style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 4px' }}>
-          
           {/* FLOATING TRANSLATION */}
           {displayTranslation ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr">
+            <span className={`chunk-translation ${transClass}`} dir="ltr"> 
                {displayTranslation}
             </span>
           ) : null}
-
           {/* MAIN LYRICS TEXT LINE */}
           <span className="main-lyrics-layer" style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }} dir="auto">
             {coreJsx}
           </span>
-
         </span>
-
         {trailingJsx.length > 0 && <span className="trailing-adlibs">{trailingJsx}</span>}
       </span>
-
       {/* RTL BLOCK PRONUNCIATION */}
       {shouldRenderBlockPron && displayPronString && (
         <div className="pronunciation-text" style={blockPronStyle} dir="ltr">
@@ -393,14 +394,14 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 };
 
 export const LyricLineWrapper = React.memo(({
-  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong
-}) => {
+  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
   const renderedContent = useMemo(() =>
     renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette, isPlayingCurrentSong),
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
+
   return (
     <div
       className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}

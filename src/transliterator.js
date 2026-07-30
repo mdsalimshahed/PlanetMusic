@@ -1,5 +1,4 @@
 /* --- src/transliterator.js --- */
-
 // Clear legacy memory caches from localStorage
 try {
   localStorage.removeItem('globalTranslationCache');
@@ -21,10 +20,10 @@ const getGoogleData = async (text) => {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     const data = await response.json();
-         
+              
     let translation = '';
     let transliteration = '';
-         
+              
     if (data && data[0]) {
       for (let i = 0; i < data[0].length; i++) {
         if (data[0][i][0] && data[0][i][1]) {
@@ -39,10 +38,10 @@ const getGoogleData = async (text) => {
         if (possibleRom) transliteration = possibleRom[2] || possibleRom[3];
       }
     }
-    return { 
-       translation: translation.trim(), 
-       transliteration: transliteration ? transliteration.trim() : null 
-     };
+    return {
+      translation: translation.trim(),
+      transliteration: transliteration ? transliteration.trim() : null
+    };
   } catch (error) {
     console.warn("Google Translate API error:", error);
     return { translation: '', transliteration: null };
@@ -62,7 +61,6 @@ export const isIndicScript = (text) => {
 
 export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
-  
   const isRomanChar = (char) => {
     if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
     return /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
@@ -95,9 +93,13 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
 
     // --- INDIC-ONLY WORD MAPPING PATH ---
     if (isIndicScript(cleanLine)) {
-      const transWords = fullTrans.split(/\s+/).filter(Boolean);
-      let transWordIdx = 0;
+      // Clean punctuation from each transliterated word so punctuation isn't duplicated underneath
+      const transWords = fullTrans
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(w => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim());
 
+      let transWordIdx = 0;
       const tokens = cleanLine.split(/(\s+)/);
 
       for (const token of tokens) {
@@ -133,16 +135,19 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
           currentText = char;
         }
       }
+
       if (currentText) {
         chunks.push({ type: currentType, text: currentText });
       }
 
-      // Fetch individual sub-chunk transliterations so Korean words do NOT repeat full line text!
+      // Fetch individual sub-chunk transliterations
       for (let j = 0; j < chunks.length; j++) {
         if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
           const textKey = chunks[j].text.trim();
           const chunkData = await quickTransliterate(textKey);
-          chunks[j].trans = chunkData.transliteration || chunks[j].text;
+          let cleanChunkTrans = chunkData.transliteration || chunks[j].text;
+          cleanChunkTrans = cleanChunkTrans.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim();
+          chunks[j].trans = cleanChunkTrans;
         } else {
           chunks[j].trans = ''; 
         }
@@ -150,7 +155,6 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     }
 
     let hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
-
     if (hasForeign) {
       results.push({
         translation: fullData.translation,
@@ -162,7 +166,7 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
         pronunciation: null
       });
     }
-         
+              
     await updateProgress();
   }
 

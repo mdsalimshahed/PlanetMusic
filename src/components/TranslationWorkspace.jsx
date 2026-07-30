@@ -11,7 +11,7 @@ const TranslationWorkspace = ({
   const [initialDataSnapshot, setInitialDataSnapshot] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isTranslatingAll, setIsTranslatingAll] = useState(false);
-  const [activeTranslatingIndex, setActiveTranslatingIndex] = useState(-1);
+  const [activeTranslatingId, setActiveTranslatingId] = useState(null);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [translateProgress, setTranslateProgress] = useState({ current: 0, total: 0 });
   const [confirmModalState, setConfirmModalState] = useState({
@@ -22,19 +22,20 @@ const TranslationWorkspace = ({
     cancelText: 'Cancel',
     onConfirm: () => {}
   });
+
   const importFileInputRef = useRef(null);
   const activeRowRef = useRef(null);
   const listContainerRef = useRef(null);
   const cancelTranslationRef = useRef(false);
 
   useEffect(() => {
-    if (activeTranslatingIndex !== -1 && activeRowRef.current) {
+    if (activeTranslatingId !== null && activeRowRef.current) {
       activeRowRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [activeTranslatingIndex]);
+  }, [activeTranslatingId]);
 
   useEffect(() => {
     return () => {
@@ -53,10 +54,10 @@ const TranslationWorkspace = ({
     sourceData.forEach((line, i) => {
         let mainText = line.text;
         const parsedLineObj = parsedLyricsColorMap[i] || null;
-        
+                 
         let pron = line.pronunciation || '';
         let displayPron = pron;
-                          
+                                   
         if (typeof pron === 'string') {
             if (pron.startsWith('{')) {
                 try {
@@ -72,6 +73,7 @@ const TranslationWorkspace = ({
         }
         mapped.push({
            ...line,
+           rowId: `main-${i}`,
            segments: parsedLineObj?.segments || line.segments,
            displayText: mainText || line.text,
            translation: line.translation || '',
@@ -79,11 +81,12 @@ const TranslationWorkspace = ({
            displayPron: displayPron,
            _meta: { isAdlib: false, lineIndex: i }
         });
+
         if (line.isSplit && line.adlibs) {
             line.adlibs.forEach((adlib, j) => {
                 let aPron = adlib.pronunciation || '';
                 let aDisplayPron = aPron;
-                                                  
+                                                                   
                 if (typeof aPron === 'string') {
                     if (aPron.startsWith('{')) {
                         try {
@@ -99,6 +102,7 @@ const TranslationWorkspace = ({
                 }
                 mapped.push({
                     ...adlib,
+                    rowId: `adlib-${i}-${j}`,
                     segments: adlib.segments,
                     displayText: adlib.text,
                     translation: adlib.translation || '',
@@ -172,7 +176,7 @@ const TranslationWorkspace = ({
         setConfirmModalState(prev => ({ ...prev, isOpen: false }));
         cancelTranslationRef.current = true;
         setIsTranslatingAll(false);
-        setActiveTranslatingIndex(-1);
+        setActiveTranslatingId(null);
         const wipedData = workspaceData.map(line => ({
           ...line,
           translation: '',
@@ -189,17 +193,15 @@ const TranslationWorkspace = ({
 
   const fetchSingleLine = async (line) => {
     let textToTranslate = line.displayText;
-    
     if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
       line.adlibs.forEach(a => {
         textToTranslate = textToTranslate.replace(a.text, '');
       });
       textToTranslate = textToTranslate.replace(/\s+/g, ' ').trim();
     }
-    
     textToTranslate = textToTranslate.replace(/[()]/g, '').trim();
     if (!textToTranslate) return null;
-              
+
     try {
       const resArr = await getBulkPronunciations([textToTranslate], null);
       return resArr?.[0] || null;
@@ -212,31 +214,31 @@ const TranslationWorkspace = ({
   const stopTranslationProcess = () => {
     cancelTranslationRef.current = true;
     setIsTranslatingAll(false);
-    setActiveTranslatingIndex(-1);
+    setActiveTranslatingId(null);
     setNotification({ show: true, message: 'Translation stopped.', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 1500);
   };
 
+  // --- STANDARD TRANSLATE ALL ---
   const handleTranslateAll = async () => {
      if (isTranslatingAll) {
        stopTranslationProcess();
        return;
      }
      if (workspaceData.length === 0) return;
-                 
+
      cancelTranslationRef.current = false;
      setIsTranslatingAll(true);
      setShowSuccessBanner(false);
      setTranslateProgress({ current: 0, total: workspaceData.length });
      setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
-                 
-     const lineTranslationCache = new Map();
 
+     const lineTranslationCache = new Map();
      let currentData = [...workspaceData];
      for (let i = 0; i < currentData.length; i++) {
          if (cancelTranslationRef.current) break;
          const line = currentData[i];
-         setActiveTranslatingIndex(i);
+         setActiveTranslatingId(line.rowId);
          setTranslateProgress({ current: i + 1, total: currentData.length });
          const progressPct = Math.round(((i + 1) / currentData.length) * 100);
          setNotification({
@@ -244,7 +246,6 @@ const TranslationWorkspace = ({
             message: `Translating line ${i + 1} of ${currentData.length}...`,
             progress: progressPct
           });
-
          let textKey = line.displayText;
          if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
            line.adlibs.forEach(a => {
@@ -253,7 +254,6 @@ const TranslationWorkspace = ({
          }
          const cacheKey = textKey.replace(/[()]/g, '').trim().toLowerCase();
          let res = null;
-
          if (cacheKey && lineTranslationCache.has(cacheKey)) {
              res = lineTranslationCache.get(cacheKey);
          } else {
@@ -262,7 +262,6 @@ const TranslationWorkspace = ({
                  lineTranslationCache.set(cacheKey, res);
              }
          }
-
          if (cancelTranslationRef.current) break;
          if (res) {
              let newTrans = res.translation !== undefined ? res.translation : line.translation;
@@ -286,15 +285,15 @@ const TranslationWorkspace = ({
              };
              setWorkspaceData([...currentData]);
          }
-         
+                   
          if (!lineTranslationCache.has(cacheKey)) {
            await new Promise(r => setTimeout(r, 120));
          }
      }
-                 
+
      const completedAll = !cancelTranslationRef.current;
      setIsTranslatingAll(false);
-     setActiveTranslatingIndex(-1);
+     setActiveTranslatingId(null);
      if (completedAll) {
        setShowSuccessBanner(true);
        if (listContainerRef.current) {
@@ -306,20 +305,188 @@ const TranslationWorkspace = ({
      }
   };
 
+  // --- CONTEXT TRANSLATION (STRICT 3 MAIN LINES BATCH, ADLIBS NEVER STARTING POINTS) ---
+  const handleTranslateWithContext = async () => {
+    if (isTranslatingAll) {
+      stopTranslationProcess();
+      return;
+    }
+    if (workspaceData.length === 0) return;
+
+    cancelTranslationRef.current = false;
+    setIsTranslatingAll(true);
+    setShowSuccessBanner(false);
+    setTranslateProgress({ current: 0, total: workspaceData.length });
+    setNotification({ show: true, message: 'Starting Context Translation...', progress: 0 });
+
+    let currentData = [...workspaceData];
+    let i = 0;
+
+    while (i < currentData.length) {
+      if (cancelTranslationRef.current) break;
+
+      // Handle orphan or leading adlib rows individually without making them a context batch starting point
+      if (currentData[i]._meta.isAdlib) {
+        const adlibRes = await fetchSingleLine(currentData[i]);
+        if (adlibRes) {
+          let newTrans = adlibRes.translation ? String(adlibRes.translation).replace(/[()]/g, '').trim() : '';
+          let displayPron = '';
+          let finalPron = adlibRes.pronunciation || '';
+          if (adlibRes.pronunciation) {
+            try {
+              const p = JSON.parse(adlibRes.pronunciation);
+              displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+            } catch(e) {}
+          }
+          currentData[i] = {
+            ...currentData[i],
+            translation: newTrans || currentData[i].translation,
+            pronunciation: finalPron || currentData[i].pronunciation,
+            displayPron: displayPron || currentData[i].displayPron
+          };
+          setWorkspaceData([...currentData]);
+        }
+        i++;
+        continue;
+      }
+
+      // Collect up to 3 MAIN lines for the context batch sent to Google API
+      const mainBatchIndices = [];
+      const adlibIndicesToProcess = [];
+
+      let ptr = i;
+      while (ptr < currentData.length && mainBatchIndices.length < 3) {
+        if (!currentData[ptr]._meta.isAdlib) {
+          mainBatchIndices.push(ptr);
+        } else {
+          adlibIndicesToProcess.push(ptr);
+        }
+        ptr++;
+      }
+
+      if (mainBatchIndices.length === 0) break;
+
+      setActiveTranslatingId(currentData[mainBatchIndices[0]].rowId);
+
+      const lastProcessedIdx = ptr - 1;
+      setTranslateProgress({ current: lastProcessedIdx + 1, total: currentData.length });
+      const progressPct = Math.round(((lastProcessedIdx + 1) / currentData.length) * 100);
+      setNotification({
+        show: true,
+        message: `Translating context batch (${lastProcessedIdx + 1}/${currentData.length})...`,
+        progress: progressPct
+      });
+
+      // Payload consists ONLY of up to 3 main lines
+      const cleanMainTexts = mainBatchIndices.map(idx => {
+        const line = currentData[idx];
+        let text = line.displayText;
+        if (line.isSplit && line.adlibs) {
+          line.adlibs.forEach(a => { text = text.replace(a.text, ''); });
+        }
+        return text.replace(/[()]/g, '').trim();
+      });
+
+      // 1. Fetch 3-line main context batch from Google API
+      try {
+        const batchResults = await getBulkPronunciations(cleanMainTexts, null);
+        if (cancelTranslationRef.current) break;
+
+        if (batchResults && Array.isArray(batchResults)) {
+          batchResults.forEach((res, bIdx) => {
+            const targetIdx = mainBatchIndices[bIdx];
+            if (res && currentData[targetIdx]) {
+              let newTrans = res.translation !== undefined ? res.translation : currentData[targetIdx].translation;
+              if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+
+              let displayPron = currentData[targetIdx].displayPron;
+              let finalPron = res.pronunciation || currentData[targetIdx].pronunciation;
+
+              if (res.pronunciation) {
+                try {
+                  const p = JSON.parse(res.pronunciation);
+                  displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+                } catch(e) {}
+              } else if (res.translation && !/[^\x00-\x7F]/.test(currentData[targetIdx].displayText)) {
+                displayPron = '';
+                finalPron = '';
+              }
+
+              currentData[targetIdx] = {
+                ...currentData[targetIdx],
+                translation: newTrans,
+                pronunciation: finalPron,
+                displayPron: displayPron
+              };
+            }
+          });
+          setWorkspaceData([...currentData]);
+        }
+      } catch (err) {
+        console.error("Context batch translation error:", err);
+      }
+
+      // 2. Fetch ad-libs individually so they never inflate the 3-line context request
+      for (const aIdx of adlibIndicesToProcess) {
+        if (cancelTranslationRef.current) break;
+        const adlibLine = currentData[aIdx];
+        const res = await fetchSingleLine(adlibLine);
+        if (res) {
+          let newTrans = res.translation !== undefined ? res.translation : adlibLine.translation;
+          if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+
+          let displayPron = adlibLine.displayPron;
+          let finalPron = res.pronunciation || adlibLine.pronunciation;
+
+          if (res.pronunciation) {
+            try {
+              const p = JSON.parse(res.pronunciation);
+              displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+            } catch(e) {}
+          }
+
+          currentData[aIdx] = {
+            ...currentData[aIdx],
+            translation: newTrans,
+            pronunciation: finalPron,
+            displayPron: displayPron
+          };
+          setWorkspaceData([...currentData]);
+        }
+      }
+
+      i = ptr;
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    const completedAll = !cancelTranslationRef.current;
+    setIsTranslatingAll(false);
+    setActiveTranslatingId(null);
+    if (completedAll) {
+      setShowSuccessBanner(true);
+      if (listContainerRef.current) {
+        listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      setNotification({ show: true, message: 'Context Translation complete! Ready to Save.', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 2000);
+      setTimeout(() => setShowSuccessBanner(false), 4000);
+    }
+  };
+
   const handleRefetch = async (index) => {
-     setActiveTranslatingIndex(index);
-     setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
      const line = workspaceData[index];
-                 
+     setActiveTranslatingId(line.rowId);
+     setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
+
      const res = await fetchSingleLine(line);
      if (res) {
          const newData = [...workspaceData];
          let newTrans = res.translation !== undefined ? res.translation : newData[index].translation;
          if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-                             
+
          newData[index].translation = newTrans;
          newData[index].pronunciation = res.pronunciation || newData[index].pronunciation;
-                             
+
          if (res.pronunciation) {
              try {
                  const p = JSON.parse(res.pronunciation);
@@ -331,8 +498,8 @@ const TranslationWorkspace = ({
          }
          setWorkspaceData(newData);
      }
-                 
-     setActiveTranslatingIndex(-1);
+
+     setActiveTranslatingId(null);
      setNotification({ show: true, message: 'Line translated!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 1500);
   };
@@ -341,7 +508,7 @@ const TranslationWorkspace = ({
      const newData = [...workspaceData];
      if (field === 'displayPron') {
          newData[index].displayPron = value;
-                             
+
          let currentPron = newData[index].pronunciation;
          if (currentPron && currentPron.startsWith('{')) {
              try {
@@ -388,10 +555,10 @@ const TranslationWorkspace = ({
      cancelTranslationRef.current = true;
      let sourceData = selectedSong.syncData || selectedSong.autoSyncData || [];
      const newSyncData = JSON.parse(JSON.stringify(sourceData));
-                 
+
      workspaceData.forEach(item => {
          const meta = item._meta;
-                             
+
          let finalPron = item.pronunciation;
          if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
              try {
@@ -404,6 +571,7 @@ const TranslationWorkspace = ({
          } else {
              finalPron = item.displayPron;
          }
+
          if (meta.isAdlib) {
              if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
                  const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
@@ -420,12 +588,13 @@ const TranslationWorkspace = ({
              }
          }
      });
+
      updateSongInLibrary({
         ...selectedSong,
         syncData: newSyncData,
         autoSyncData: selectedSong.autoSyncData ? newSyncData : selectedSong.autoSyncData
      });
-                 
+
      setIsTranslationManagerOpen(false);
      setNotification({ show: true, message: 'Workspace changes saved!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 2000);
@@ -433,7 +602,7 @@ const TranslationWorkspace = ({
 
   const handleExport = () => {
      const textContent = workspaceData.map(line => 
-            `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+             `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
      ).join('\n');
      const blob = new Blob([textContent], { type: 'text/plain' });
      const url = URL.createObjectURL(blob);
@@ -525,7 +694,6 @@ const TranslationWorkspace = ({
 
   const renderColoredOriginalText = (line) => {
     const isMainAndSplit = !line._meta.isAdlib && line.isSplit && line.adlibs;
-
     if (line.segments && line.segments.length > 0) {
       let globalCharIndex = 0;
       return line.segments.map((seg, idx) => {
@@ -542,12 +710,11 @@ const TranslationWorkspace = ({
             inlineColor = masterPalette[seg.artists[0]] || inlineColor;
           }
         }
-
         const segChars = Array.from(seg.text);
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
           const isAdlibChar = isMainAndSplit && line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
-          
+                     
           let segStyle = inlineIsGradient ? {
             backgroundImage: inlineGradient,
             WebkitBackgroundClip: 'text',
@@ -555,7 +722,6 @@ const TranslationWorkspace = ({
           } : {
             color: inlineColor
           };
-
           if (isAdlibChar) {
             segStyle = {
               ...segStyle,
@@ -564,20 +730,17 @@ const TranslationWorkspace = ({
               textDecorationColor: '#ffffff'
             };
           }
-
           return (
             <React.Fragment key={cIdx}>
               {renderTextWithYellowPunctuation(char, segStyle, isAdlibChar)}
             </React.Fragment>
           );
         });
-
         return <React.Fragment key={idx}>{charElements}</React.Fragment>;
       });
     }
-
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
-    
+         
     if (isMainAndSplit) {
       const chars = Array.from(line.displayText);
       return chars.map((char, cIdx) => {
@@ -598,7 +761,6 @@ const TranslationWorkspace = ({
         );
       });
     }
-
     return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor }, false);
   };
 
@@ -606,120 +768,127 @@ const TranslationWorkspace = ({
 
   return (
     <div className="tw-container">
-        <ConfirmModal 
-           isOpen={confirmModalState.isOpen}
+        <ConfirmModal
+          isOpen={confirmModalState.isOpen}
           title={confirmModalState.title}
           message={confirmModalState.message}
           confirmText={confirmModalState.confirmText}
           cancelText={confirmModalState.cancelText}
           onConfirm={confirmModalState.onConfirm}
           onCancel={() => setConfirmModalState(prev => ({ ...prev, isOpen: false }))}
-       />
-       <div className="tw-header glass-panel">
-           <div className="tw-header-actions full-width-actions">
-               <button 
-                   className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+        />
+        <div className="tw-header glass-panel">
+            <div className="tw-header-actions full-width-actions">
+                <button 
+                  className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
                   onClick={handleTranslateAll}
-               >
-                 {isTranslatingAll ? (
-                   <>
-                     <span className="tw-spinner"></span>
-                     <span>Stop Translation ({translateProgress.current}/{translateProgress.total})</span>
-                   </>
-                 ) : (
-                   'Translate All'
-                 )}
-               </button>
-               <button 
-                   className="tw-btn"
+                >
+                  {isTranslatingAll ? (
+                    <>
+                      <span className="tw-spinner"></span>
+                      <span>Stop Translation ({translateProgress.current}/{translateProgress.total})</span>
+                    </>
+                  ) : (
+                    'Translate All'
+                  )}
+                </button>
+                <button 
+                  className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+                  onClick={handleTranslateWithContext}
+                  style={{ background: 'rgba(179, 136, 235, 0.2)', borderColor: 'var(--accent)', color: 'var(--accent)' }}
+                >
+                  Translate with Context
+                </button>
+                <button 
+                  className="tw-btn"
                   onClick={handleRefreshWorkspace}
                   disabled={isTranslatingAll}
                   title="Wipe all translation and transliteration fields"
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
-               >
-                 Refresh Lyrics
-               </button>
-                               
-               <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>Export Text</button>
-                               
-               <input 
-                   type="file"
+                >
+                  Refresh Lyrics
+                </button>
+                                               
+                <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>Export Text</button>
+                                               
+                <input 
+                  type="file"
                   accept=".txt,text/plain"
                   ref={importFileInputRef}
                   style={{ display: 'none' }}
                   onChange={handleImportText}
-               />
-               <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll}>
-                 Import Text
-               </button>
-               <div className="tw-header-spacer"></div>
-               <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
-               <button 
-                   className="tw-btn tw-btn-save"
+                />
+                <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll}>
+                  Import Text
+                </button>
+                <div className="tw-header-spacer"></div>
+                <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
+                <button 
+                  className="tw-btn tw-btn-save"
                   onClick={handleSave}
                 >
-                 Save Changes
-               </button>
-           </div>
-       </div>
-       {showSuccessBanner && (
-         <div className="tw-success-banner">
-            <span className="tw-success-icon">✓</span>
-            <span>All lines translated successfully! Click <strong>Save Changes</strong> to apply to lyrics.</span>
-         </div>
-       )}
-                       
-       <div className="tw-list glass-panel-light" ref={listContainerRef}>
-          {workspaceData.map((line, idx) => {
-             const isAdlib = line._meta.isAdlib;
-             const isTranslating = activeTranslatingIndex === idx;
-             return (
-                 <div 
-                     key={idx} 
-                     ref={isTranslating ? activeRowRef : null}
-                   className={`tw-row ${isAdlib ? 'tw-row-adlib' : ''} ${isTranslating ? 'tw-row-active' : ''}`}
-                 >
-                    <div className="tw-col tw-col-left">
-                       <div className="tw-original-text" dir="ltr" style={{ textAlign: 'left' }}>
-                         {renderColoredOriginalText(line)}
-                       </div>
-                       <input 
-                            className="tw-input tw-translit-input"
-                           value={line.displayPron || ''}
-                           onChange={(e) => handleChange(idx, 'displayPron', e.target.value)}
-                           placeholder="Transliteration..."
-                           dir="ltr"
-                           style={{ textAlign: 'left' }}
-                       />
-                    </div>
-                    <div className="tw-col tw-col-right">
-                       <textarea 
-                            className="tw-input tw-translation-input"
-                           value={line.translation || ''}
-                           onChange={(e) => handleChange(idx, 'translation', e.target.value)}
+                  Save Changes
+                </button>
+            </div>
+        </div>
+        {showSuccessBanner && (
+          <div className="tw-success-banner">
+             <span className="tw-success-icon">✓</span>
+             <span>All lines translated successfully! Click <strong>Save Changes</strong> to apply to lyrics.</span>
+          </div>
+        )}
+                               
+        <div className="tw-list glass-panel-light" ref={listContainerRef}>
+           {workspaceData.map((line, idx) => {
+              const isAdlib = line._meta.isAdlib;
+              const isTranslating = activeTranslatingId === line.rowId;
+              return (
+                  <div 
+                    key={line.rowId}
+                    ref={isTranslating ? activeRowRef : null}
+                    className={`tw-row ${isAdlib ? 'tw-row-adlib' : ''} ${isTranslating ? 'tw-row-active' : ''}`}
+                  >
+                     <div className="tw-col tw-col-left">
+                        <div className="tw-original-text" dir="ltr" style={{ textAlign: 'left' }}>
+                          {renderColoredOriginalText(line)}
+                        </div>
+                        <input 
+                          className="tw-input tw-translit-input"
+                          value={line.displayPron || ''}
+                          onChange={(e) => handleChange(idx, 'displayPron', e.target.value)}
+                          placeholder="Transliteration..."
+                          dir="ltr"
+                          style={{ textAlign: 'left' }}
+                        />
+                     </div>
+                     <div className="tw-col tw-col-right">
+                        <textarea 
+                          className="tw-input tw-translation-input"
+                          value={line.translation || ''}
+                          onChange={(e) => handleChange(idx, 'translation', e.target.value)}
                           placeholder="English Translation..."
                           dir="ltr"
                           style={{ textAlign: 'left' }}
-                       />
-                    </div>
-                    <div className="tw-col-actions">
-                       <button 
-                           className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}
+                        />
+                     </div>
+                     <div className="tw-col-actions">
+                        <button 
+                          className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}
                           onClick={() => handleRefetch(idx)}
                           disabled={isTranslatingAll}
-                         title="Re-fetch from Google Translate"
-                       >
-                           {isTranslating ? (
-                             <span className="tw-spinner"></span>
-                           ) : (
-                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
-                           )}
-                       </button>
-                    </div>
-                 </div>
-             );
-          })}
-       </div>
+                          title="Re-fetch from Google Translate"
+                        >
+                            {isTranslating ? (
+                              <span className="tw-spinner"></span>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+                            )}
+                        </button>
+                     </div>
+                  </div>
+              );
+           })}
+        </div>
     </div>
   );
 };
