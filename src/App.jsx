@@ -10,7 +10,7 @@ import SettingsTab from './components/SettingsTab';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('search');
-  
+
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
@@ -22,6 +22,13 @@ const App = () => {
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
+      
+      // New Translation/Transliteration Settings
+      if (parsed.translationColor === undefined) parsed.translationColor = '#ffffff';
+      if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
+      if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
+      if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
+      
       return parsed;
     }
     return {
@@ -39,17 +46,24 @@ const App = () => {
       modalSplitRatio: 50,
       bgPreemptionTime: 400,
       modalPaddingY: 5,
-      eqFadeOutTime: 500
+      eqFadeOutTime: 500,
+      
+      translationColor: '#ffffff',
+      translationOpacity: 0.9,
+      transliterationColor: '#ffffff',
+      transliterationOpacity: 0.8
     };
   });
 
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
+
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
@@ -92,7 +106,7 @@ const App = () => {
           `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
         );
         const data = await response.json();
-                 
+        
         const sortedResults = data.results.sort((a, b) => {
           const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
           const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
@@ -117,7 +131,7 @@ const App = () => {
   const toggleLibrary = (e, song) => {
     e.stopPropagation(); 
     const isSaved = library.some((s) => s.trackId === song.trackId);
-         
+    
     if (isSaved) {
       setSongToRemove(song);
     } else {
@@ -151,7 +165,7 @@ const App = () => {
 
   const handleExport = () => {
     if (library.length === 0) return alert("Your vault is empty! Add songs before exporting.");
-         
+    
     const optimizedLibrary = library.map(song => {
       const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
       delete optimizedSong.artworkUrl30;
@@ -167,7 +181,7 @@ const App = () => {
     const jsonString = JSON.stringify(exportData, null, 2); 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-         
+    
     const a = document.createElement('a');
     a.href = url;
     a.download = 'PlanetMusic_Backup.json';
@@ -222,14 +236,21 @@ const App = () => {
     '--dyn-card-padding': `clamp(8px, 1vw, ${settings.cardPadding}px)`,
     '--dyn-card-gap': `clamp(12px, 1.5vw, ${settings.cardGap}px)`,
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
+    
     '--dyn-live-sync-font-size': `clamp(16px, 4vw, ${settings.liveSyncFontSize}px)`,
     '--dyn-focused-sync-font-size': `clamp(20px, 5vw, ${settings.focusedSyncFontSize}px)`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
     '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
+    
+    '--dyn-trans-color': settings.translationColor ?? '#ffffff',
+    '--dyn-trans-opacity': settings.translationOpacity ?? 0.9,
     '--dyn-trans-top-padding': `${settings.translationTopPadding ?? 8}px`,
-    '--dyn-translit-bottom-padding': `${settings.transliterationBottomPadding ?? 4}px`,
     '--dyn-trans-font-size': `${settings.translationFontSize ?? 0.55}em`,
+    
+    '--dyn-translit-color': settings.transliterationColor ?? '#ffffff',
+    '--dyn-translit-opacity': settings.transliterationOpacity ?? 0.8,
+    '--dyn-translit-bottom-padding': `${settings.transliterationBottomPadding ?? 4}px`,
     '--dyn-translit-font-size': `${settings.transliterationFontSize ?? 0.55}em`,
   };
 
@@ -245,7 +266,7 @@ const App = () => {
 
   return (
     <div className="app-layout" style={dynamicStyles}>
-      <Background songs={library} />      
+      <Background songs={library} />
       
       <Topbar 
         activeTab={activeTab} 
@@ -259,7 +280,7 @@ const App = () => {
         {activeTab !== 'settings' && (
           <div className="search-container glass-panel-light">
             <form onSubmit={handleSearchSubmit} className="search-box glass-input">
-              <span className="search-icon"> </span>
+              <span className="search-icon">🔍</span>
               <input
                 type="text"
                 placeholder={activeTab === 'search' ? "Search for artists, songs, or albums..." : "Search your vault..."}

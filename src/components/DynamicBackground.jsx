@@ -8,7 +8,6 @@ const DynamicBackground = ({
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
 
-  // CRITICAL FIX: Extract sequence exactly as it appears in the active line's heading
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
@@ -16,7 +15,6 @@ const DynamicBackground = ({
   const isMulti = activeNames.length > 1;
   const cols = Math.max(2, activeNames.length);
 
-  // CRITICAL FIX: Row 0 goes sequential. Row 1 uses a left-shift to avoid column overlap.
   const getArtistForCell = (cellIndex) => {
     if (activeNames.length === 0) return null;
     const row = Math.floor(cellIndex / cols);
@@ -25,7 +23,6 @@ const DynamicBackground = ({
   };
 
   const uniqueSingerCombos = Array.from(new Set(liveParsedLyrics?.map(l => l.singer).filter(Boolean) || []));
-  
   if (currentSingerBg?.name && !uniqueSingerCombos.includes(currentSingerBg.name)) {
     uniqueSingerCombos.push(currentSingerBg.name);
   }
@@ -44,7 +41,7 @@ const DynamicBackground = ({
         
         const style = isCurrentSingerActive ? { opacity: opacityVal } : {};
 
-        return <img key={`full-${singerName}`} src={finalImgUrl} alt="" className={`singer-watermark full-screen-watermark ${imgClass}`} style={style} />;
+        return <img key={`full-${singerName}`} src={finalImgUrl} loading="lazy" decoding="async" alt="" className={`singer-watermark full-screen-watermark ${imgClass}`} style={style} />;
       })}
 
       {/* MATRIX LAYER (Multi Artist dynamically expands based on sequence length) */}
@@ -54,7 +51,7 @@ const DynamicBackground = ({
       >
         {Array.from({ length: cols * 2 }).map((_, cellIdx) => {
           const targetArtist = getArtistForCell(cellIdx);
-
+          
           return (
             <div key={`cell-${cellIdx}`} className="matrix-cell">
               {allPotentialSingers.map(singerName => {
@@ -64,9 +61,10 @@ const DynamicBackground = ({
                 const isActive = targetArtist === singerName;
                 const isCurrentSingerActive = isSingerVisible && isMulti && isActive;
                 const imgClass = isCurrentSingerActive ? 'active-watermark' : 'inactive-watermark';
+                
                 const style = isCurrentSingerActive ? { opacity: opacityVal } : {};
 
-                return <img key={`matrix-${cellIdx}-${singerName}`} src={finalImgUrl} alt="" className={`singer-watermark matrix-cell-img ${imgClass}`} style={style} />;
+                return <img key={`matrix-${cellIdx}-${singerName}`} src={finalImgUrl} loading="lazy" decoding="async" alt="" className={`singer-watermark matrix-cell-img ${imgClass}`} style={style} />;
               })}
             </div>
           );
@@ -81,7 +79,7 @@ const DynamicBackground = ({
           <div key={`name-corner-${comboName}`} className={`singer-name-corner ${isActive ? 'visible' : 'hidden'}`}>
             {comboName.split(/(\s*(?:&|,|\band\b)\s*)/i).map((part, index) => {
               const trimmedPart = part.trim();
-              if (!trimmedPart) return null; 
+              if (!trimmedPart) return null;
               
               if (/^(?:&|,|and)$/i.test(trimmedPart)) {
                 const isComma = trimmedPart === ',';

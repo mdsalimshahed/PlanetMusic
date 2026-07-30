@@ -12,24 +12,30 @@ const LyricsDisplay = ({
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
+
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
+  // OPTIMIZED EQUALIZER: Throttled to ~30 FPS to prevent phone overheating
   useEffect(() => {
     let rafId;
+    let lastEqDraw = 0;
     const fadeOutTime = settings?.eqFadeOutTime ?? 500;
     
-    const renderEQ = () => {
+    const renderEQ = (timestamp) => {
       if (isPlaying && isPlayingCurrentSong && window.globalAudioAnalyser && window.globalFreqData) {
-        window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
-        const bars = eqBarsRef.current;
-        for (let i = 0; i < bars.length; i++) {
-          if (bars[i]) {
-            const raw = window.globalFreqData[i];
-            const scale = 0.05 + (raw / 255) * 0.95;
-            
-            bars[i].style.transition = 'transform 0.05s ease-out';
-            bars[i].style.transform = `scaleY(${scale})`;
+        if (timestamp - lastEqDraw > 33) {
+          window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
+          const bars = eqBarsRef.current;
+          for (let i = 0; i < bars.length; i++) {
+            if (bars[i]) {
+              const raw = window.globalFreqData[i];
+              const scale = 0.05 + (raw / 255) * 0.95;
+              
+              bars[i].style.transition = 'transform 0.05s ease-out';
+              bars[i].style.transform = `scaleY(${scale})`;
+            }
           }
+          lastEqDraw = timestamp;
         }
       } else {
         const bars = eqBarsRef.current;
@@ -42,7 +48,7 @@ const LyricsDisplay = ({
       }
       rafId = requestAnimationFrame(renderEQ);
     };
-    renderEQ();
+    rafId = requestAnimationFrame(renderEQ);
     return () => cancelAnimationFrame(rafId);
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
 
@@ -108,6 +114,7 @@ const LyricsDisplay = ({
         for (let i = 0; i < adlibs.length; i++) {
             const item = adlibs[i];
             if (isNaN(item.start)) continue;
+
             let targetState = 'hidden';
             if (time >= item.start && time <= item.end) targetState = 'active';
             else if (time >= item.start) targetState = 'visible';
@@ -165,6 +172,7 @@ const LyricsDisplay = ({
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
+
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
@@ -176,8 +184,10 @@ const LyricsDisplay = ({
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
             let wrapped = innerText.trim();
+
             if (isItalic) wrapped = `_${wrapped}_`;
             if (isBold) wrapped = `**${wrapped}**`;
+
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
 
@@ -188,6 +198,7 @@ const LyricsDisplay = ({
       };
       
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
+
       const textarea = e.target;
       const newVal = (customData.lyrics || '').substring(0, textarea.selectionStart) + markdownText + (customData.lyrics || '').substring(textarea.selectionEnd);
       handleDataChange({ target: { name: 'lyrics', value: newVal } });
@@ -248,11 +259,11 @@ const LyricsDisplay = ({
                  }
              }
              return (
-                 <LyricLineWrapper 
-                    key={i} 
-                    lineObj={line} 
-                    savedNode={syncList[i]} 
-                    nextStart={nextStart}
+                 <LyricLineWrapper
+                     key={i}
+                     lineObj={line}
+                     savedNode={syncList[i]}
+                     nextStart={nextStart}
                     viewMode="focused"
                     handleLineClick={handleLineClick}
                     masterPalette={masterPalette}

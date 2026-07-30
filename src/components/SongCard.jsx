@@ -4,11 +4,11 @@ import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [bgColor, setBgColor] = useState('');
+  
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
 
   useEffect(() => {
     if (!highResArt) return;
-
     let img = new Image();
     img.crossOrigin = 'Anonymous';
     
@@ -66,6 +66,8 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           alt={song.trackName}
           className="artwork"
           loading="lazy"
+          decoding="async"
+          fetchpriority="low"
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         <div className="artwork-overlay">
@@ -98,7 +100,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           title={isSaved ? "Remove from Orbit" : "Add to Orbit"}
         >
           {isSaved ? (
-            <><span>★</span> In Orbit</>
+            <><span>✓</span> In Orbit</>
           ) : (
             <><span>+</span> Add to Orbit</>
           )}

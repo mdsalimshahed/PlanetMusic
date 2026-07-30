@@ -115,3 +115,46 @@ input[type=checkbox] {
   accent-color: var(--accent);
   cursor: pointer;
 }
+
+/* NEW: Custom styling for the color picker */
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.color-picker-input {
+  -webkit-appearance: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  transition: border-color 0.2s ease;
+}
+
+.color-picker-input:hover {
+  border-color: var(--accent);
+}
+
+.color-picker-input::-webkit-color-swatch-wrapper {
+  padding: 3px;
+}
+
+.color-picker-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+.color-preview-value {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--text-subdued);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  text-transform: uppercase;
+}

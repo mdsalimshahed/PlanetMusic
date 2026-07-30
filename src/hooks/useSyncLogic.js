@@ -11,10 +11,13 @@ export const useSyncEngine = ({
   workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
   syncDataRef, updateWorkspaceData,
   loopRangeRef, setLoopRange,
-  constrainedEndRef, setConstrainedEnd }) => {
+  constrainedEndRef, setConstrainedEnd
+}) => {
+
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
+
     const currentItem = wLines[activeIdxRef.current];
     
     if (currentItem && (currentItem.ref.start === null || (currentItem.ref.start !== null && currentItem.ref.end === null))) {
@@ -22,6 +25,7 @@ export const useSyncEngine = ({
     }
     
     let newIdx = -1;
+
     for (let i = 0; i < wLines.length; i++) {
       const item = wLines[i];
       if (item.type !== 'main' || item.ref.start === null) continue;
@@ -65,12 +69,20 @@ export const useSyncEngine = ({
     }
   };
 
+  // OPTIMIZED: Added timestamp throttler to prevent heavy UI spam
   useEffect(() => {
     let animationFrameId;
-    const syncTick = () => {
+    let lastDispatchTime = 0;
+    
+    const syncTick = (timestamp) => {
       if (syncAudioRef.current && isSyncPlaying) {
         const time = syncAudioRef.current.currentTime;
-        window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
+        
+        if (timestamp - lastDispatchTime > 33) {
+           window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
+           lastDispatchTime = timestamp;
+        }
+
         const wLines = workspaceLinesRef.current;
         const currentItem = wLines[activeIdxRef.current];
         
@@ -110,6 +122,7 @@ export const useSyncEngine = ({
         animationFrameId = requestAnimationFrame(syncTick);
       }
     };
+
     if (isSyncPlaying) {
       animationFrameId = requestAnimationFrame(syncTick);
     }
@@ -127,6 +140,7 @@ export const useSyncKeyboard = ({
 }) => {
   useEffect(() => {
     if (!isSyncMode) return;
+
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
         if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
@@ -141,6 +155,7 @@ export const useSyncKeyboard = ({
         }
         return;
       }
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         if (syncAudioRef.current) {
@@ -240,7 +255,8 @@ export const useSyncActions = ({
   updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
   isSyncMode, setSyncData, syncDataRef, setNotification,
   setIsLrcFetching, setIsTranslating, updateWorkspaceData,
-  setLoopRange, setDebugInfo }) => {
+  setLoopRange, setDebugInfo
+}) => {
 
   const handleSplitAdlibs = async (lineIndex) => {
     const data = [...syncDataRef.current];
@@ -271,8 +287,10 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
+
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
+
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
@@ -286,8 +304,11 @@ export const useSyncActions = ({
                     }
                     currentPos = segEnd;
                 }
+
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+
                 const pronData = await quickTransliterate(adlibText);
+
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -317,7 +338,6 @@ export const useSyncActions = ({
     setLoopRange(null);
   };
 
-  // --- STRICT FORWARD SEQUENTIAL MAPPING ALGORITHM ---
   const handleMapAutoSync = () => {
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
@@ -351,7 +371,6 @@ export const useSyncActions = ({
     let autoPointer = 0;
     let manualPointer = 0;
 
-    // STRICT FORWARD SEQUENTIAL POINTER LOOP
     while (manualPointer < updatedSyncData.length && autoPointer < autoData.length) {
       const manualLine = updatedSyncData[manualPointer];
       const cleanManual = normalize(manualLine.text);
@@ -361,21 +380,18 @@ export const useSyncActions = ({
         continue;
       }
 
-      // Look ahead up to 5 auto lines from the CURRENT pointer only
       let matchedAutoIdx = -1;
       let highestScore = 0;
 
       for (let a = autoPointer; a < Math.min(autoPointer + 5, autoData.length); a++) {
         const cleanAuto = normalize(autoData[a].text);
         if (!cleanAuto) continue;
-
         let score = 0;
         if (cleanManual === cleanAuto) {
           score = 100;
         } else if (cleanAuto.includes(cleanManual) || cleanManual.includes(cleanAuto)) {
           score = 60 + (Math.min(cleanManual.length, cleanAuto.length) / Math.max(cleanManual.length, cleanAuto.length)) * 40;
         }
-
         if (score > highestScore && score > 35) {
           highestScore = score;
           matchedAutoIdx = a;
@@ -384,19 +400,15 @@ export const useSyncActions = ({
 
       if (matchedAutoIdx !== -1) {
         const targetAutoLine = autoData[matchedAutoIdx];
-
-        // Check if NEXT manual lines ALSO belong to this same auto line duration block
         const manualGroup = [manualPointer];
         let nextManual = manualPointer + 1;
-
+        
         while (nextManual < updatedSyncData.length) {
           const cleanNextManual = normalize(updatedSyncData[nextManual].text);
           if (!cleanNextManual) {
             nextManual++;
             continue;
           }
-
-          // If next manual line matches this same auto block text or auto text contains both
           const cleanAutoText = normalize(targetAutoLine.text);
           if (cleanAutoText.includes(cleanNextManual) && !cleanAutoText.startsWith(cleanManual)) {
             manualGroup.push(nextManual);
@@ -414,7 +426,6 @@ export const useSyncActions = ({
           updatedSyncData[manualPointer].start = blockStart;
           updatedSyncData[manualPointer].end = blockEnd;
         } else {
-          // Proportionally split block timing based on character lengths
           let totalChars = 0;
           const charCounts = manualGroup.map(idx => {
             const len = Array.from(updatedSyncData[idx].text.trim()).length || 1;
@@ -426,18 +437,14 @@ export const useSyncActions = ({
           manualGroup.forEach((mIdx, pos) => {
             const ratio = charCounts[pos] / totalChars;
             const dur = blockDuration * ratio;
-
             updatedSyncData[mIdx].start = Math.round(accTime * 1000) / 1000;
             accTime += dur;
             updatedSyncData[mIdx].end = Math.round(accTime * 1000) / 1000;
           });
         }
-
-        // ADVANCE POINTERS STRICTLY FORWARD
         manualPointer = manualGroup[manualGroup.length - 1] + 1;
         autoPointer = matchedAutoIdx + 1;
       } else {
-        // If current manual line doesn't match upcoming auto lines, advance manual pointer
         manualPointer++;
       }
     }
@@ -451,7 +458,7 @@ export const useSyncActions = ({
       setSyncData(updatedSyncData);
       syncDataRef.current = updatedSyncData;
     }
-
+    
     setNotification({ show: true, message: 'Sequentially mapped Auto-Sync timings to Manual Lyrics!', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 2500);
   };
@@ -479,6 +486,7 @@ export const useSyncActions = ({
       }
       return;
     }
+
     setIsLrcFetching(true);
     setNotification({ show: true, message: 'Fetching from databases...', progress: null });
     
@@ -488,6 +496,7 @@ export const useSyncActions = ({
       let hasWordSync = false;
       let finalSource = 'None';
       let finalRawData = null;
+
       const youData = await fetchYouLyrics(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
       let youParsed = null;
       let youHasWordSync = false;
@@ -496,6 +505,7 @@ export const useSyncActions = ({
         youParsed = parseLRC(youData.syncedLyrics, selectedSong.artistName, masterPalette);
         youHasWordSync = youParsed.syncData.some(line => line.wordSync?.length > 0);
       }
+
       if (youHasWordSync) {
         finalSyncData = youParsed.syncData; finalPlainText = youParsed.plainTextLyrics; hasWordSync = true; finalSource = 'YouLyrics API'; finalRawData = youData;
       } else {
@@ -503,6 +513,7 @@ export const useSyncActions = ({
         if (lrcData?.syncedLyrics) {
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync?.length > 0);
+
           if (lrcHasWordSync || !youParsed) {
             finalSyncData = lrcParsed.syncData; finalPlainText = lrcParsed.plainTextLyrics; hasWordSync = lrcHasWordSync; finalSource = 'LRCLIB API'; finalRawData = lrcData;
           } else {
@@ -515,12 +526,15 @@ export const useSyncActions = ({
           else if (lrcData?.plainLyrics) { finalPlainText = lrcData.plainLyrics; finalSource = 'LRCLIB API (Plain Text)'; finalRawData = lrcData; }
         }
       }
+
       setDebugInfo({ source: finalSource, rawData: finalRawData });
+
       if (!finalSyncData && !finalPlainText) {
         setNotification({ show: false });
         alert("No lyrics found in databases.");
         return setIsLrcFetching(false);
       }
+
       if (finalSyncData) {
         const hasManualLyrics = Boolean(customData.lyrics && customData.lyrics.trim());
         const hasManualSync = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
@@ -529,6 +543,7 @@ export const useSyncActions = ({
         let saveLyrics = hasManualLyrics ? customData.lyrics : finalPlainText;
 
         updateSongInLibrary({ ...selectedSong, autoSyncData: finalSyncData, syncData: newSyncData, lyrics: saveLyrics });
+        
         if (!hasManualLyrics) {
           setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         }
@@ -541,6 +556,7 @@ export const useSyncActions = ({
         }
         setNotification({ show: true, message: 'Imported plain lyrics.', progress: 100 });
       }
+
     } catch (error) {
       console.error(error); alert("Error fetching lyrics.");
       setNotification({ show: false });

@@ -16,9 +16,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
-  
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState(undefined);
@@ -28,7 +28,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
-
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
 
@@ -106,10 +105,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         canvas.width = 5;
         canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
-                 
+        
         const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
-                 
+        
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
             r += data[i];
@@ -118,12 +117,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             count++;
           }
         }
-                 
+        
         if (count > 0) {
           r = Math.floor(r / count);
           g = Math.floor(g / count);
           b = Math.floor(b / count);
-                     
+          
           const boost = 30; 
           r = Math.min(255, r + boost);
           g = Math.min(255, g + boost);
@@ -151,13 +150,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   useEffect(() => {
     if (!currentTrack) {
-      // CRITICAL FIX: Explicitly pause the hardware audio buffer so it stops playing instantly
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
       setAudioSrc(undefined);
-      setPendingSeek(null); 
+      setPendingSeek(null);
       setIsPlaying(false);
       emitPlayState(false, true);
       window.currentAudioTime = 0;
@@ -165,7 +163,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
       return;
     }
-
     const loadAudio = async () => {
       if (currentTrack.customLinks?.hasLocal) {
         const file = await getAudioFile(currentTrack.trackId);
@@ -189,7 +186,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
-             
+      
       if (!currentTrack || currentTrack.trackId !== track.trackId) {
         setCurrentTrack(track);
         setPendingSeek(time); 
@@ -205,7 +202,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
       }
     };
-         
+    
     window.addEventListener('globalSeekRequest', handleSeekRequest);
     return () => window.removeEventListener('globalSeekRequest', handleSeekRequest);
   }, [currentTrack, isPlaying, setCurrentTrack]);
@@ -229,9 +226,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
-
       if (!audioRef.current || !currentTrack) return;
-
       if (e.code === 'Space') {
         e.preventDefault(); 
         togglePlay();
@@ -252,17 +247,19 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
+  // OPTIMIZED AUDIO TRACKING: Replaced setInterval with throttled requestAnimationFrame
   useEffect(() => {
-    let intervalId;
+    let animationFrameId;
     let lastSecond = -1;
-         
-    const tick = () => {
+    let lastEventTime = 0;
+    
+    const tick = (timestamp) => {
       if (audioRef.current && isPlaying) {
         const time = audioRef.current.currentTime;
         window.currentAudioTime = time;
-                 
+        
         const currentSecond = Math.floor(time);
-                 
+        
         if (currentSecond !== lastSecond) {
           if (progressBarRef.current) {
             progressBarRef.current.value = time;
@@ -274,14 +271,22 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           }
           lastSecond = currentSecond;
         }
-        window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
+
+        // Throttle global event dispatch to ~30 FPS to save CPU battery on mobile
+        if (timestamp - lastEventTime > 33) {
+          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
+          lastEventTime = timestamp;
+        }
+      }
+      if (isPlaying) {
+        animationFrameId = requestAnimationFrame(tick);
       }
     };
 
     if (isPlaying) {
-      intervalId = setInterval(tick, 50);
+      animationFrameId = requestAnimationFrame(tick);
     }
-    return () => clearInterval(intervalId);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [isPlaying, duration]);
 
   const handleLoadedMetadata = () => {
@@ -306,7 +311,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-         
+    
     if (progressBarRef.current) {
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
@@ -326,14 +331,13 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const closePlayer = (e) => {
     e.stopPropagation();
     if (audioRef.current) {
-      audioRef.current.pause(); // CRITICAL FIX: Explicit hardware pause
+      audioRef.current.pause(); 
     }
     setCurrentTrack(null);
     setIsPlaying(false);
     emitPlayState(false, true);
   };
 
-  // We conditionally render the UI based on whether there's an active track.
   const playerUI = currentTrack ? (
     <div 
       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''}`} 
@@ -361,7 +365,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
           </div>
         </div>
-
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">
@@ -393,7 +396,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           </button>
         </div>
       </div>
-             
+      
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text" ref={currentTimeRef}>0:00</span>
         <input 

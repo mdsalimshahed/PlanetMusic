@@ -54,10 +54,9 @@ const TranslationWorkspace = ({
     sourceData.forEach((line, i) => {
         let mainText = line.text;
         const parsedLineObj = parsedLyricsColorMap[i] || null;
-                 
         let pron = line.pronunciation || '';
         let displayPron = pron;
-                                   
+
         if (typeof pron === 'string') {
             if (pron.startsWith('{')) {
                 try {
@@ -81,12 +80,11 @@ const TranslationWorkspace = ({
            displayPron: displayPron,
            _meta: { isAdlib: false, lineIndex: i }
         });
-
         if (line.isSplit && line.adlibs) {
             line.adlibs.forEach((adlib, j) => {
                 let aPron = adlib.pronunciation || '';
                 let aDisplayPron = aPron;
-                                                                   
+
                 if (typeof aPron === 'string') {
                     if (aPron.startsWith('{')) {
                         try {
@@ -201,7 +199,6 @@ const TranslationWorkspace = ({
     }
     textToTranslate = textToTranslate.replace(/[()]/g, '').trim();
     if (!textToTranslate) return null;
-
     try {
       const resArr = await getBulkPronunciations([textToTranslate], null);
       return resArr?.[0] || null;
@@ -226,13 +223,11 @@ const TranslationWorkspace = ({
        return;
      }
      if (workspaceData.length === 0) return;
-
      cancelTranslationRef.current = false;
      setIsTranslatingAll(true);
      setShowSuccessBanner(false);
      setTranslateProgress({ current: 0, total: workspaceData.length });
      setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
-
      const lineTranslationCache = new Map();
      let currentData = [...workspaceData];
      for (let i = 0; i < currentData.length; i++) {
@@ -285,12 +280,10 @@ const TranslationWorkspace = ({
              };
              setWorkspaceData([...currentData]);
          }
-                   
          if (!lineTranslationCache.has(cacheKey)) {
            await new Promise(r => setTimeout(r, 120));
          }
      }
-
      const completedAll = !cancelTranslationRef.current;
      setIsTranslatingAll(false);
      setActiveTranslatingId(null);
@@ -305,27 +298,25 @@ const TranslationWorkspace = ({
      }
   };
 
-  // --- CONTEXT TRANSLATION (STRICT 3 MAIN LINES BATCH, ADLIBS NEVER STARTING POINTS) ---
+  // --- CONTEXT TRANSLATION (ONE BATCHED GOOGLE API REQUEST FOR UP TO 3 LINES) ---
   const handleTranslateWithContext = async () => {
     if (isTranslatingAll) {
       stopTranslationProcess();
       return;
     }
     if (workspaceData.length === 0) return;
-
     cancelTranslationRef.current = false;
     setIsTranslatingAll(true);
     setShowSuccessBanner(false);
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Starting Context Translation...', progress: 0 });
-
     let currentData = [...workspaceData];
     let i = 0;
 
     while (i < currentData.length) {
       if (cancelTranslationRef.current) break;
 
-      // Handle orphan or leading adlib rows individually without making them a context batch starting point
+      // Handle orphan or leading adlib rows individually
       if (currentData[i]._meta.isAdlib) {
         const adlibRes = await fetchSingleLine(currentData[i]);
         if (adlibRes) {
@@ -350,11 +341,11 @@ const TranslationWorkspace = ({
         continue;
       }
 
-      // Collect up to 3 MAIN lines for the context batch sent to Google API
+      // Collect up to 3 MAIN lines for the context batch
       const mainBatchIndices = [];
       const adlibIndicesToProcess = [];
-
       let ptr = i;
+
       while (ptr < currentData.length && mainBatchIndices.length < 3) {
         if (!currentData[ptr]._meta.isAdlib) {
           mainBatchIndices.push(ptr);
@@ -367,7 +358,6 @@ const TranslationWorkspace = ({
       if (mainBatchIndices.length === 0) break;
 
       setActiveTranslatingId(currentData[mainBatchIndices[0]].rowId);
-
       const lastProcessedIdx = ptr - 1;
       setTranslateProgress({ current: lastProcessedIdx + 1, total: currentData.length });
       const progressPct = Math.round(((lastProcessedIdx + 1) / currentData.length) * 100);
@@ -377,7 +367,6 @@ const TranslationWorkspace = ({
         progress: progressPct
       });
 
-      // Payload consists ONLY of up to 3 main lines
       const cleanMainTexts = mainBatchIndices.map(idx => {
         const line = currentData[idx];
         let text = line.displayText;
@@ -387,46 +376,59 @@ const TranslationWorkspace = ({
         return text.replace(/[()]/g, '').trim();
       });
 
-      // 1. Fetch 3-line main context batch from Google API
+      // 1. Fetch 3-line main context batch in a SINGLE API call
       try {
-        const batchResults = await getBulkPronunciations(cleanMainTexts, null);
+        const combinedText = cleanMainTexts.join('\n');
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(combinedText)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        let combinedTranslation = '';
+        if (data && data[0]) {
+          data[0].forEach(item => {
+            if (item[0]) combinedTranslation += item[0];
+          });
+        }
+
+        const translatedLines = combinedTranslation.split('\n').map(l => l.trim());
+
+        // Fetch pronunciations for chunk mapping
+        const batchPronunciations = await getBulkPronunciations(cleanMainTexts, null);
+
         if (cancelTranslationRef.current) break;
 
-        if (batchResults && Array.isArray(batchResults)) {
-          batchResults.forEach((res, bIdx) => {
-            const targetIdx = mainBatchIndices[bIdx];
-            if (res && currentData[targetIdx]) {
-              let newTrans = res.translation !== undefined ? res.translation : currentData[targetIdx].translation;
-              if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
+        mainBatchIndices.forEach((targetIdx, bIdx) => {
+          if (currentData[targetIdx]) {
+            let newTrans = translatedLines[bIdx] !== undefined ? translatedLines[bIdx] : (batchPronunciations[bIdx]?.translation || currentData[targetIdx].translation);
+            if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
 
-              let displayPron = currentData[targetIdx].displayPron;
-              let finalPron = res.pronunciation || currentData[targetIdx].pronunciation;
+            let displayPron = currentData[targetIdx].displayPron;
+            let finalPron = batchPronunciations[bIdx]?.pronunciation || currentData[targetIdx].pronunciation;
 
-              if (res.pronunciation) {
-                try {
-                  const p = JSON.parse(res.pronunciation);
-                  displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-                } catch(e) {}
-              } else if (res.translation && !/[^\x00-\x7F]/.test(currentData[targetIdx].displayText)) {
-                displayPron = '';
-                finalPron = '';
-              }
-
-              currentData[targetIdx] = {
-                ...currentData[targetIdx],
-                translation: newTrans,
-                pronunciation: finalPron,
-                displayPron: displayPron
-              };
+            if (batchPronunciations[bIdx]?.pronunciation) {
+              try {
+                const p = JSON.parse(batchPronunciations[bIdx].pronunciation);
+                displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+              } catch(e) {}
+            } else if (newTrans && !/[^\x00-\x7F]/.test(currentData[targetIdx].displayText)) {
+              displayPron = '';
+              finalPron = '';
             }
-          });
-          setWorkspaceData([...currentData]);
-        }
+
+            currentData[targetIdx] = {
+              ...currentData[targetIdx],
+              translation: newTrans,
+              pronunciation: finalPron,
+              displayPron: displayPron
+            };
+          }
+        });
+        setWorkspaceData([...currentData]);
       } catch (err) {
         console.error("Context batch translation error:", err);
       }
 
-      // 2. Fetch ad-libs individually so they never inflate the 3-line context request
+      // 2. Fetch ad-libs individually
       for (const aIdx of adlibIndicesToProcess) {
         if (cancelTranslationRef.current) break;
         const adlibLine = currentData[aIdx];
@@ -434,17 +436,14 @@ const TranslationWorkspace = ({
         if (res) {
           let newTrans = res.translation !== undefined ? res.translation : adlibLine.translation;
           if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-
           let displayPron = adlibLine.displayPron;
           let finalPron = res.pronunciation || adlibLine.pronunciation;
-
           if (res.pronunciation) {
             try {
               const p = JSON.parse(res.pronunciation);
               displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
             } catch(e) {}
           }
-
           currentData[aIdx] = {
             ...currentData[aIdx],
             translation: newTrans,
@@ -454,7 +453,6 @@ const TranslationWorkspace = ({
           setWorkspaceData([...currentData]);
         }
       }
-
       i = ptr;
       await new Promise(r => setTimeout(r, 150));
     }
@@ -477,16 +475,13 @@ const TranslationWorkspace = ({
      const line = workspaceData[index];
      setActiveTranslatingId(line.rowId);
      setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
-
      const res = await fetchSingleLine(line);
      if (res) {
          const newData = [...workspaceData];
          let newTrans = res.translation !== undefined ? res.translation : newData[index].translation;
          if (newTrans) newTrans = String(newTrans).replace(/[()]/g, '').trim();
-
          newData[index].translation = newTrans;
          newData[index].pronunciation = res.pronunciation || newData[index].pronunciation;
-
          if (res.pronunciation) {
              try {
                  const p = JSON.parse(res.pronunciation);
@@ -498,7 +493,6 @@ const TranslationWorkspace = ({
          }
          setWorkspaceData(newData);
      }
-
      setActiveTranslatingId(null);
      setNotification({ show: true, message: 'Line translated!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 1500);
@@ -508,7 +502,6 @@ const TranslationWorkspace = ({
      const newData = [...workspaceData];
      if (field === 'displayPron') {
          newData[index].displayPron = value;
-
          let currentPron = newData[index].pronunciation;
          if (currentPron && currentPron.startsWith('{')) {
              try {
@@ -555,10 +548,8 @@ const TranslationWorkspace = ({
      cancelTranslationRef.current = true;
      let sourceData = selectedSong.syncData || selectedSong.autoSyncData || [];
      const newSyncData = JSON.parse(JSON.stringify(sourceData));
-
      workspaceData.forEach(item => {
          const meta = item._meta;
-
          let finalPron = item.pronunciation;
          if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
              try {
@@ -571,7 +562,6 @@ const TranslationWorkspace = ({
          } else {
              finalPron = item.displayPron;
          }
-
          if (meta.isAdlib) {
              if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
                  const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
@@ -588,13 +578,11 @@ const TranslationWorkspace = ({
              }
          }
      });
-
      updateSongInLibrary({
         ...selectedSong,
         syncData: newSyncData,
         autoSyncData: selectedSong.autoSyncData ? newSyncData : selectedSong.autoSyncData
      });
-
      setIsTranslationManagerOpen(false);
      setNotification({ show: true, message: 'Workspace changes saved!', progress: 100 });
      setTimeout(() => setNotification({ show: false }), 2000);
@@ -602,7 +590,7 @@ const TranslationWorkspace = ({
 
   const handleExport = () => {
      const textContent = workspaceData.map(line => 
-             `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+              `${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
      ).join('\n');
      const blob = new Blob([textContent], { type: 'text/plain' });
      const url = URL.createObjectURL(blob);
@@ -714,7 +702,6 @@ const TranslationWorkspace = ({
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
           const isAdlibChar = isMainAndSplit && line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
-                     
           let segStyle = inlineIsGradient ? {
             backgroundImage: inlineGradient,
             WebkitBackgroundClip: 'text',
@@ -740,7 +727,6 @@ const TranslationWorkspace = ({
       });
     }
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
-         
     if (isMainAndSplit) {
       const chars = Array.from(line.displayText);
       return chars.map((char, cIdx) => {
@@ -808,9 +794,9 @@ const TranslationWorkspace = ({
                 >
                   Refresh Lyrics
                 </button>
-                                               
+                
                 <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>Export Text</button>
-                                               
+                
                 <input 
                   type="file"
                   accept=".txt,text/plain"
@@ -831,13 +817,14 @@ const TranslationWorkspace = ({
                 </button>
             </div>
         </div>
+
         {showSuccessBanner && (
           <div className="tw-success-banner">
              <span className="tw-success-icon">✓</span>
              <span>All lines translated successfully! Click <strong>Save Changes</strong> to apply to lyrics.</span>
           </div>
         )}
-                               
+
         <div className="tw-list glass-panel-light" ref={listContainerRef}>
            {workspaceData.map((line, idx) => {
               const isAdlib = line._meta.isAdlib;
