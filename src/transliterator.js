@@ -55,14 +55,18 @@ export const quickTransliterate = async (text) => {
   return await getGoogleData(clean);
 };
 
-// Check for Brahmic / Indic scripts (Bengali, Devanagari, Tamil, Telugu, Malayalam, Kannada, Gujarati, Gurmukhi, Sinhala)
+// Detect Brahmic / Indic scripts ONLY
 export const isIndicScript = (text) => {
   return /[\u0900-\u0DFF\u0E80-\u0EFF]/.test(text || '');
 };
 
 export const getBulkPronunciations = async (linesArray, onProgress) => {
   const results = [];
-  const isRomanChar = (char) => /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
+  
+  const isRomanChar = (char) => {
+    if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
+    return /^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
+  };
 
   for (let i = 0; i < linesArray.length; i++) {
     const updateProgress = async () => {
@@ -86,59 +90,71 @@ export const getBulkPronunciations = async (linesArray, onProgress) => {
     }
 
     const fullData = await quickTransliterate(cleanLine);
-
-    // CRITICAL FIX: If line contains Indic or complex scripts, preserve the whole string to avoid breaking diacritics
-    if (isIndicScript(cleanLine)) {
-      results.push({
-        translation: fullData.translation,
-        pronunciation: JSON.stringify({
-          full: fullData.transliteration,
-          isIndic: true,
-          chunks: [{ type: 'foreign', text: cleanLine, trans: fullData.transliteration }]
-        })
-      });
-      await updateProgress();
-      continue;
-    }
-
-    // Word/Chunk-level grouping for Latin + Asian mixed scripts (Chinese, Japanese, etc.)
+    const fullTrans = fullData.transliteration || '';
     const chunks = [];
-    let currentType = null;
-    let currentText = '';
 
-    for (const char of cleanLine) {
-      const type = isRomanChar(char) ? 'en' : 'foreign';
-      if (currentType === null) {
-        currentType = type;
-        currentText = char;
-      } else if (currentType === type) {
-        currentText += char;
-      } else {
+    // --- INDIC-ONLY WORD MAPPING PATH ---
+    if (isIndicScript(cleanLine)) {
+      const transWords = fullTrans.split(/\s+/).filter(Boolean);
+      let transWordIdx = 0;
+
+      const tokens = cleanLine.split(/(\s+)/);
+
+      for (const token of tokens) {
+        if (!token) continue;
+        if (/^\s+$/.test(token)) {
+          chunks.push({ type: 'en', text: token, trans: '' });
+        } else {
+          const isEnToken = Array.from(token).every(c => isRomanChar(c));
+          if (isEnToken) {
+            chunks.push({ type: 'en', text: token, trans: '' });
+          } else {
+            const pairedTrans = transWords[transWordIdx] || '';
+            chunks.push({ type: 'foreign', text: token, trans: pairedTrans });
+            transWordIdx++;
+          }
+        }
+      }
+    } else {
+      // --- ORIGINAL CHARACTER/CHUNK PATH FOR KOREAN, JAPANESE, CHINESE, RTL, LATIN ---
+      let currentType = null;
+      let currentText = '';
+
+      for (const char of cleanLine) {
+        const type = isRomanChar(char) ? 'en' : 'foreign';
+        if (currentType === null) {
+          currentType = type;
+          currentText = char;
+        } else if (currentType === type) {
+          currentText += char;
+        } else {
+          chunks.push({ type: currentType, text: currentText });
+          currentType = type;
+          currentText = char;
+        }
+      }
+      if (currentText) {
         chunks.push({ type: currentType, text: currentText });
-        currentType = type;
-        currentText = char;
       }
-    }
-    if (currentText) {
-      chunks.push({ type: currentType, text: currentText });
+
+      // Fetch individual sub-chunk transliterations so Korean words do NOT repeat full line text!
+      for (let j = 0; j < chunks.length; j++) {
+        if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
+          const textKey = chunks[j].text.trim();
+          const chunkData = await quickTransliterate(textKey);
+          chunks[j].trans = chunkData.transliteration || chunks[j].text;
+        } else {
+          chunks[j].trans = ''; 
+        }
+      }
     }
 
-    let hasForeign = false;
-    for (let j = 0; j < chunks.length; j++) {
-      if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
-        hasForeign = true;
-        const textKey = chunks[j].text.trim();
-        const chunkData = await quickTransliterate(textKey);
-        chunks[j].trans = chunkData.transliteration || chunks[j].text;
-      } else {
-        chunks[j].trans = ''; 
-      }
-    }
+    let hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
 
     if (hasForeign) {
       results.push({
         translation: fullData.translation,
-        pronunciation: JSON.stringify({ full: fullData.transliteration, chunks: chunks })
+        pronunciation: JSON.stringify({ full: fullTrans, chunks: chunks })
       });
     } else {
       results.push({

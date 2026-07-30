@@ -56,7 +56,20 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
   const segments = lineObj.segments || [];
   const isRTL = isRTLLanguage(lineObj.text || '');
-  const displayTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
+  
+  let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
+  
+  const normalizeForMatch = (str) => 
+    String(str || '')
+      .toLowerCase()
+      .replace(/[\p{P}\p{S}\s]/gu, '')
+      .trim();
+
+  const cleanMainText = normalizeForMatch(lineObj?.text);
+  const cleanTransText = normalizeForMatch(rawTranslation);
+
+  const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
+
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
 
   const basePronStyle = {
@@ -156,33 +169,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
     }
 
-    const isParenthesis = /([()\[\]{}]+)/.test(c.char);
-    if (isParenthesis && parsedChunks) {
-      let scaleParenthesis = false;
-      const char = c.char;
-      if (char === '(' || char === '[' || char === '{') {
-        const closing = char === '(' ? ')' : char === '[' ? ']' : '}';
-        for (let i = globalIdx + 1; i < chars.length; i++) {
-          if (chars[i].char === closing) break;
-          if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-            scaleParenthesis = true; break;
-          }
-        }
-      } else if (char === ')' || char === ']' || char === '}') {
-        const opening = char === ')' ? '(' : char === ']' ? '[' : '{';
-        for (let i = globalIdx - 1; i >= 0; i--) {
-          if (chars[i].char === opening) break;
-          if (!/^[\p{Script=Latin}\p{M}\p{N}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(chars[i].char)) {
-            scaleParenthesis = true; break;
-          }
-        }
-      }
-      if (scaleParenthesis) {
-        style.display = 'inline-block';
-        style.transform = 'scale(1.2) translateY(10%)';
-        style.margin = '0 2px';
-      }
-    }
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
@@ -246,8 +232,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     if (renderedText.every(c => c === null)) return { type: chunk.type, jsx: null };
 
     const groupedText = groupWords(renderedText, chunk.chars);
+
     if (isRTL) {
-      return { type: chunk.type, jsx: <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span> };
+      return {
+        type: chunk.type,
+        jsx: <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>{groupedText}</span>
+      };
     } else {
       if (chunk.type === 'adlib') {
         let aPron = chunk.adlibObj?.pronunciation;
@@ -259,8 +249,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
             try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
           } else { aTrans = aPron; }
         }
-        let adlibTranslation = chunk.adlibObj?.translation || '';
-        if (adlibTranslation) adlibTranslation = String(adlibTranslation).replace(/[()]/g, '').trim();
+        let adlibRawTranslation = cleanTranslationText(chunk.adlibObj?.translation || '');
+        const cleanAdlibMain = normalizeForMatch(chunk.adlibObj?.text);
+        const cleanAdlibTrans = normalizeForMatch(adlibRawTranslation);
+        
+        let adlibTranslation = (cleanAdlibMain && cleanAdlibMain === cleanAdlibTrans) ? '' : adlibRawTranslation;
+
         let adlibProps = {};
         if (savedNode?.isSplit && !isFocused && chunk.adlibObj?.start !== null) {
           const start = chunk.adlibObj.start;
@@ -298,12 +292,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         };
       }
 
-      if (chunk.type === 'foreign' && chunk.trans) {
+      if (chunk.type === 'foreign' && chunk.trans && chunk.trans.trim()) {
         const cleanTrans = normalizeTrans(chunk.trans);
         return {
           type: chunk.type,
           jsx: (
-            <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
+            <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 2px' }}>
               <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">{cleanTrans}</span>
             </span>
@@ -340,6 +334,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
+
   if (fullTrans) {
     displayPronString = normalizeTrans(fullTrans);
     shouldRenderBlockPron = isRTL;
@@ -365,7 +360,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%' }}>
-      <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: 'ltr' }}>
+      <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr' }}>
         {leadingJsx.length > 0 && <span className="leading-adlibs">{leadingJsx}</span>}
 
         <span className="core-chunks" style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 4px' }}>
@@ -387,6 +382,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         {trailingJsx.length > 0 && <span className="trailing-adlibs">{trailingJsx}</span>}
       </span>
 
+      {/* RTL BLOCK PRONUNCIATION */}
       {shouldRenderBlockPron && displayPronString && (
         <div className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {displayPronString}

@@ -183,7 +183,7 @@ export const SyncWorkspace = ({
       fontWeight: '800',
       textTransform: 'uppercase',
       letterSpacing: '0.5px',
-      textAlign: 'center',
+      textAlign: 'left',
       marginTop: '4px',
       display: 'inline-block'
     };
@@ -266,12 +266,11 @@ export const SyncWorkspace = ({
       fullTransText = normalizeTrans(pronString);
     }
 
-    // SPECIAL HANDLING FOR ADLIB LINES (!isMain): Render as single unbroken block
-    if (!isMain) {
+    if (!isMain || isRTL) {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-          <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom' }}>
-            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }} dir="ltr">
+          <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', verticalAlign: 'bottom' }}>
+            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }} dir={isRTL ? "rtl" : "ltr"}>
               {renderedChars}
             </span>
             {fullTransText ? (
@@ -284,7 +283,6 @@ export const SyncWorkspace = ({
       );
     }
 
-    // FOR MAIN LINES: Process chunks
     let activeParsedChunks = parsedChunks;
     if (!activeParsedChunks) {
       activeParsedChunks = [{ type: 'main', trans: '', text: line.text }];
@@ -327,14 +325,6 @@ export const SyncWorkspace = ({
     const renderedChunksJSX = alignedChunks.map((chunk, chunkIdx) => {
       const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
 
-      if (isRTL) {
-        return (
-          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>
-            {renderedText}
-          </span>
-        );
-      }
-
       if (chunk.type === 'foreign' && chunk.trans) {
         const cleanTrans = normalizeTrans(chunk.trans);
         return (
@@ -354,14 +344,9 @@ export const SyncWorkspace = ({
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-        <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-flex', alignItems: 'baseline', textAlign: 'left' }} dir={isRTL ? "rtl" : "ltr"}>
+        <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-flex', alignItems: 'baseline', textAlign: 'left' }} dir="ltr">
           {renderedChunksJSX}
         </span>
-        {isRTL && fullTransText && (
-          <span className="pronunciation-text" style={{ ...pronStyle, marginTop: '8px', display: 'block', textAlign: 'left' }} dir="ltr">
-            {fullTransText}
-          </span>
-        )}
       </div>
     );
   };
