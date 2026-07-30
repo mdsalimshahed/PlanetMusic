@@ -398,6 +398,17 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       }
     });
 
+    let displayPronString = null;
+    if (isRTL) {
+      if (fullTrans) {
+        displayPronString = normalizeTrans(fullTrans);
+      } else if (parsedChunks) {
+        displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
+      } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+        displayPronString = normalizeTrans(pronString);
+      }
+    }
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
         <span
@@ -418,6 +429,11 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         >
           {renderedBlocks}
         </span>
+        {displayPronString && (
+          <div className="pronunciation-text" style={{ ...basePronStyle, marginTop: '8px', display: 'block', textAlign: 'left' }} dir="ltr">
+            {displayPronString}
+          </div>
+        )}
       </div>
     );
   }
