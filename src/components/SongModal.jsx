@@ -9,6 +9,7 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
+  const [showAdlibDebug, setShowAdlibDebug] = useState(false); // Debug Overlay State
 
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
@@ -29,14 +30,14 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
     syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
-
+  
   displayProps.isSyncMode = syncProps.isSyncMode;
 
   const sharedProps = {
     selectedSong: effectiveSong,
     realSelectedSong: selectedSong,
     isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
-    setNotification,
+    setNotification, showAdlibDebug, setShowAdlibDebug,
     ...songDataProps, ...displayProps, ...syncProps
   };
 
@@ -48,7 +49,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
         
         <div className="modal-content-wrapper">
-          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✕</button>
+          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}> </button>
           
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
