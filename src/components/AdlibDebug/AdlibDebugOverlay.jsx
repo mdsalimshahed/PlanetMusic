@@ -3,27 +3,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import './AdlibDebugOverlay.css';
 import { calculateSafeAdlibPosition } from './adlibPlacementLogic';
 
-// Helper: Calculate the closest points and distance between two Axis-Aligned Bounding Boxes
 const getClosestPoints = (r1, r2) => {
   let x1, x2, y1, y2;
 
-  // X Axis
   if (r1.right < r2.left) {
     x1 = r1.right; x2 = r2.left;
   } else if (r1.left > r2.right) {
     x1 = r1.left; x2 = r2.right;
   } else {
-    // Overlapping in X, pick the midpoint of the overlap
     x1 = x2 = (Math.max(r1.left, r2.left) + Math.min(r1.right, r2.right)) / 2;
   }
 
-  // Y Axis
   if (r1.bottom < r2.top) {
     y1 = r1.bottom; y2 = r2.top;
   } else if (r1.top > r2.bottom) {
     y1 = r1.top; y2 = r2.bottom;
   } else {
-    // Overlapping in Y, pick the midpoint of the overlap
     y1 = y2 = (Math.max(r1.top, r2.top) + Math.min(r1.bottom, r2.bottom)) / 2;
   }
 
@@ -43,8 +38,9 @@ const AdlibDebugOverlay = ({
   const [distanceLines, setDistanceLines] = useState([]);
   const [distanceStats, setDistanceStats] = useState([]);
   const [layoutStats, setLayoutStats] = useState({ lyricsClipped: false, singerClipped: false });
+  const [safeZones, setSafeZones] = useState([]);
+  const [adlibCopies, setAdlibCopies] = useState([]);
   
-  // Track who is singing the currently active adlib
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
   const syncDataRef = useRef(selectedSong?.syncData || []);
   const prevAdlibSingersRef = useRef(null);
@@ -53,7 +49,6 @@ const AdlibDebugOverlay = ({
     syncDataRef.current = selectedSong?.syncData || [];
   }, [selectedSong?.syncData]);
 
-  // 1. Replicate the artist extraction logic
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
@@ -68,7 +63,6 @@ const AdlibDebugOverlay = ({
     return activeNames[(col + row) % activeNames.length];
   };
 
-  // Helper function to get mathematically precise bounds of TEXT only
   const getTightTextBounds = (element, overlayRect) => {
     let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
     let hasValidBounds = false;
@@ -108,13 +102,11 @@ const AdlibDebugOverlay = ({
     return null;
   };
 
-  // 2. Real-time DOM and Time tracking
   useEffect(() => {
     const trackActiveLyrics = () => {
       if (!overlayRef.current) return;
       
       const overlayRect = overlayRef.current.getBoundingClientRect();
-      // Calculate the safe bounds defined by the inner overflow: hidden container
       const previewContainer = document.querySelector('.focused-lyrics-preview') || overlayRef.current;
       const containerRect = previewContainer.getBoundingClientRect();
       
@@ -126,46 +118,77 @@ const AdlibDebugOverlay = ({
       const activeLine = document.querySelector('.focused-line.active');
       const newBoxes = [];
 
-      // A. Track the Main Lyrics Block tightly
       if (activeLine) {
         const tightBounds = getTightTextBounds(activeLine, overlayRect);
         if (tightBounds) {
-          newBoxes.push({
-            id: 'combined-bounds',
-            color: '#4ade80', // Bright Green
-            ...tightBounds
-          });
+          newBoxes.push({ id: 'combined-bounds', color: '#4ade80', ...tightBounds });
         }
       }
 
-      // B. Track the Singer Name Corner tightly
       const singerNameCorner = document.querySelector('.singer-name-corner.visible');
       if (singerNameCorner) {
         const tightBounds = getTightTextBounds(singerNameCorner, overlayRect);
         if (tightBounds) {
-          newBoxes.push({
-            id: 'singer-name-bounds',
-            color: '#f97316', // Orange
-            ...tightBounds
-          });
+          newBoxes.push({ id: 'singer-name-bounds', color: '#f97316', ...tightBounds });
         }
       }
 
-      // C. Track any currently active Adlibs tightly
       const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
+      
+      const newAdlibCopies = [];
+      let activeAdlibAABB_W = 0;
+      let activeAdlibAABB_H = 0;
+
       activeAdlibs.forEach((adlibNode, idx) => {
+        let aabbW = 0;
+        let aabbH = 0;
+        
         const tightBounds = getTightTextBounds(adlibNode, overlayRect);
         if (tightBounds) {
+          aabbW = tightBounds.width;
+          aabbH = tightBounds.height;
           newBoxes.push({
             id: `adlib-bounds-${idx}`,
-            color: '#eab308', // Yellow
-            datasetStart: parseFloat(adlibNode.dataset.start), // Stored for linking back to syncData
+            color: '#eab308',
+            datasetStart: parseFloat(adlibNode.dataset.start),
             ...tightBounds
           });
+        } else {
+          // Fallback if tightbounds fails
+          const r = adlibNode.getBoundingClientRect();
+          aabbW = r.width;
+          aabbH = r.height;
         }
+        
+        if (idx === 0) {
+          activeAdlibAABB_W = aabbW;
+          activeAdlibAABB_H = aabbH;
+        }
+
+        newAdlibCopies.push({
+          html: adlibNode.innerHTML,
+          width: adlibNode.offsetWidth,
+          height: adlibNode.offsetHeight,
+          rot: adlibNode.style.getPropertyValue('--adlib-rot') || '0deg',
+          aabbW,
+          aabbH
+        });
       });
 
-      // D. Calculate Closest Distances between Adlibs and other elements + Quadrant Checks + Collisions
+      setAdlibCopies(prev => {
+        if (prev.length !== newAdlibCopies.length) return newAdlibCopies;
+        if (prev.length > 0) {
+          if (prev[0].html !== newAdlibCopies[0].html || 
+              prev[0].width !== newAdlibCopies[0].width ||
+              prev[0].rot !== newAdlibCopies[0].rot ||
+              prev[0].aabbW !== newAdlibCopies[0].aabbW ||
+              prev[0].aabbH !== newAdlibCopies[0].aabbH) {
+              return newAdlibCopies;
+          }
+        }
+        return prev;
+      });
+
       const combinedBox = newBoxes.find(b => b.id === 'combined-bounds');
       const singerBox = newBoxes.find(b => b.id === 'singer-name-bounds');
       const adlibBoxes = newBoxes.filter(b => b.id.startsWith('adlib-bounds-'));
@@ -174,11 +197,11 @@ const AdlibDebugOverlay = ({
       const newStats = [];
       const colWidth = overlayRect.width / cols;
       const rowHeight = overlayRect.height / 2;
+      const midX = overlayRect.width / 2;
       
       let lyricsClipped = false;
       let singerClipped = false;
 
-      // Check if Main Lyrics box is clipping canvas
       if (combinedBox) {
         if (
           combinedBox.left < safeLeft ||
@@ -190,7 +213,6 @@ const AdlibDebugOverlay = ({
         }
       }
 
-      // Check if Singer Name box is clipping canvas
       if (singerBox) {
         if (
           singerBox.left < safeLeft ||
@@ -203,6 +225,127 @@ const AdlibDebugOverlay = ({
       }
 
       setLayoutStats({ lyricsClipped, singerClipped });
+
+      const time = window.currentAudioTime || 0;
+      let currentAdlibSingers = null;
+
+      if (syncDataRef.current) {
+        for (let i = 0; i < syncDataRef.current.length; i++) {
+          const line = syncDataRef.current[i];
+          if (line.isSplit && line.adlibs) {
+            for (let j = 0; j < line.adlibs.length; j++) {
+              const adlib = line.adlibs[j];
+              const start = adlib.start;
+              const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : 0);
+              
+              if (start !== null && time >= start && time <= end) {
+                currentAdlibSingers = adlib.singer;
+                break;
+              }
+            }
+          }
+          if (currentAdlibSingers) break;
+        }
+      }
+
+      const activeSingersList = currentAdlibSingers 
+        ? currentAdlibSingers.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) 
+        : [];
+
+      if (currentAdlibSingers !== prevAdlibSingersRef.current) {
+        prevAdlibSingersRef.current = currentAdlibSingers;
+        setActiveAdlibSingers(activeSingersList);
+      }
+
+      // --- CALCULATE QUADRANT-RESTRICTED SAFE ZONES AND CENTER-POINT INNER ZONES ---
+      const newSafeZones = [];
+      if (combinedBox) {
+        const baseZones = [];
+        
+        // Top Zone
+        if (combinedBox.top > safeTop) {
+          baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: safeTop, bottom: combinedBox.top });
+        }
+        
+        // Bottom Zone: Expanded to full width, capped vertically by the singer box
+        if (combinedBox.top + combinedBox.height < safeBottom) {
+          const bTop = combinedBox.top + combinedBox.height;
+          // Set the floor to the top of the singer box (or safeBottom if no singer box)
+          const bBottom = singerBox ? Math.min(singerBox.top, safeBottom) : safeBottom;
+          
+          if (bBottom > bTop) {
+            baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: bBottom });
+          }
+        }
+
+        const validCells = [];
+        if (!isMulti || activeSingersList.length === 0) {
+          validCells.push({ left: 0, right: overlayRect.width, top: 0, bottom: overlayRect.height });
+        } else {
+          for (let i = 0; i < cols * 2; i++) {
+            const row = Math.floor(i / cols);
+            const col = i % cols;
+            const artist = getArtistForCell(i);
+            
+            if (activeSingersList.includes(artist)) {
+              validCells.push({
+                left: col * colWidth,
+                right: (col + 1) * colWidth,
+                top: row * rowHeight,
+                bottom: (row + 1) * rowHeight
+              });
+            }
+          }
+        }
+
+        baseZones.forEach(bz => {
+          validCells.forEach(vc => {
+            // Intersect Base Zones with Valid Matrix Cells
+            const ixLeft = Math.max(bz.left, vc.left);
+            const ixRight = Math.min(bz.right, vc.right);
+            const ixTop = Math.max(bz.top, vc.top);
+            const ixBottom = Math.min(bz.bottom, vc.bottom);
+            
+            if (ixLeft < ixRight && ixTop < ixBottom) {
+              const szWidth = ixRight - ixLeft;
+              const szHeight = ixBottom - ixTop;
+              
+              let idealX = ixLeft + (szWidth / 2);
+              let idealY = ixTop + (szHeight / 2);
+              let innerZone = null;
+
+              // Calculate the Inner Safe Zone using AABB dimensions so bounding boxes don't clip
+              if (activeAdlibAABB_W > 0 && activeAdlibAABB_H > 0) {
+                const iLeft = ixLeft + activeAdlibAABB_W / 2;
+                const iTop = ixTop + activeAdlibAABB_H / 2;
+                const iWidth = szWidth - activeAdlibAABB_W;
+                const iHeight = szHeight - activeAdlibAABB_H;
+
+                if (iWidth >= 0 && iHeight >= 0) {
+                  innerZone = { left: iLeft, top: iTop, width: iWidth, height: iHeight };
+                  // Ensure ideal placement is clamped inside the safe inner zone bounds
+                  idealX = Math.max(iLeft, Math.min(iLeft + iWidth, idealX));
+                  idealY = Math.max(iTop, Math.min(iTop + iHeight, idealY));
+                }
+              }
+
+              newSafeZones.push({
+                id: `sz-${bz.type}-${Math.round(ixLeft)}-${Math.round(ixTop)}`,
+                top: ixTop,
+                left: ixLeft,
+                width: szWidth,
+                height: szHeight,
+                label: `${bz.type} Zone`,
+                idealX,
+                idealY,
+                innerZone
+              });
+            }
+          });
+        });
+      }
+      setSafeZones(newSafeZones);
+      // ---------------------------------------
 
       adlibBoxes.forEach((adlibBox, idx) => {
         let stat = { 
@@ -219,7 +362,6 @@ const AdlibDebugOverlay = ({
         const aRight = adlibBox.left + adlibBox.width;
         const aBottom = adlibBox.top + adlibBox.height;
 
-        // Check if adlib is bleeding out of the canvas (Clipping)
         if (
           adlibBox.left < safeLeft || 
           adlibBox.top < safeTop || 
@@ -229,7 +371,6 @@ const AdlibDebugOverlay = ({
           stat.isClippedOut = true;
         }
 
-        // Draw distance to combined layout and Check Collision
         if (combinedBox) {
           const pts = getClosestPoints(adlibBox, combinedBox);
           newLines.push({ id: `line-c-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: combinedBox.color });
@@ -248,7 +389,6 @@ const AdlibDebugOverlay = ({
           }
         }
 
-        // Draw distance to singer name and Check Collision
         if (singerBox) {
           const pts = getClosestPoints(adlibBox, singerBox);
           newLines.push({ id: `line-s-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: singerBox.color });
@@ -267,7 +407,6 @@ const AdlibDebugOverlay = ({
           }
         }
 
-        // Determine if placed in correct quadrant
         if (isMulti) {
           let matchedSinger = null;
           if (syncDataRef.current) {
@@ -303,37 +442,6 @@ const AdlibDebugOverlay = ({
         newStats.push(stat);
       });
 
-      // E. Check global audio time to find active adlibs for quadrant dimming
-      const time = window.currentAudioTime || 0;
-      let currentAdlibSingers = null;
-
-      if (syncDataRef.current) {
-        for (let i = 0; i < syncDataRef.current.length; i++) {
-          const line = syncDataRef.current[i];
-          if (line.isSplit && line.adlibs) {
-            for (let j = 0; j < line.adlibs.length; j++) {
-              const adlib = line.adlibs[j];
-              const start = adlib.start;
-              const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : 0);
-              
-              if (start !== null && time >= start && time <= end) {
-                currentAdlibSingers = adlib.singer;
-                break;
-              }
-            }
-          }
-          if (currentAdlibSingers) break;
-        }
-      }
-
-      if (currentAdlibSingers !== prevAdlibSingersRef.current) {
-        prevAdlibSingersRef.current = currentAdlibSingers;
-        const parsedSingers = currentAdlibSingers 
-          ? currentAdlibSingers.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) 
-          : [];
-        setActiveAdlibSingers(parsedSingers);
-      }
-
       setBoundingBoxes(newBoxes);
       setDistanceLines(newLines);
       setDistanceStats(newStats);
@@ -350,25 +458,6 @@ const AdlibDebugOverlay = ({
   return (
     <div className="adlib-debug-overlay" ref={overlayRef}>
       
-      {/* X/Y Graph Axes with Ticks (Center is 0,0) */}
-      <div className="debug-graph-axes">
-        <div className="debug-axis-x">
-          {[10, 20, 30, 40, 60, 70, 80, 90].map(pct => (
-            <div key={`x-${pct}`} className="debug-tick-x" style={{ left: `${pct}%` }}>
-              <span className="debug-tick-label-x">{pct - 50}</span>
-            </div>
-          ))}
-        </div>
-        <div className="debug-axis-y">
-          {[10, 20, 30, 40, 60, 70, 80, 90].map(pct => (
-            <div key={`y-${pct}`} className="debug-tick-y" style={{ top: `${pct}%` }}>
-              <span className="debug-tick-label-y">{pct - 50}</span>
-            </div>
-          ))}
-        </div>
-        <div className="debug-center-label">0,0</div>
-      </div>
-
       {/* SVG Layer for Distance Lines */}
       <svg className="debug-svg-layer">
         {distanceLines.map(line => (
@@ -390,7 +479,6 @@ const AdlibDebugOverlay = ({
         <div><strong>Active Adlib Singer:</strong> {activeAdlibSingers.length > 0 ? activeAdlibSingers.join(', ') : 'None'}</div>
         <div><strong>Layout Mode:</strong> {activeNames.length === 0 ? 'Idle' : (isMulti ? `Matrix (${cols}x2)` : 'Full Screen')}</div>
         
-        {/* Core Layout Canvas Bounds Checking */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px', marginTop: '6px' }}>
           <strong>Core Layout Status:</strong>{' '}
           {layoutStats.lyricsClipped ? (
@@ -443,7 +531,6 @@ const AdlibDebugOverlay = ({
         ))}
       </div>
 
-      {/* Render Full Screen Border if single artist */}
       {isSingerVisible && !isMulti && activeNames.length === 1 && (
         <div 
           className="debug-fullscreen-box"
@@ -452,7 +539,6 @@ const AdlibDebugOverlay = ({
         </div>
       )}
 
-      {/* Render Matrix Borders if multiple artists */}
       {isSingerVisible && isMulti && (
         <div 
           className="debug-matrix-grid" 
@@ -461,7 +547,6 @@ const AdlibDebugOverlay = ({
           {Array.from({ length: cols * 2 }).map((_, cellIdx) => {
             const targetArtist = getArtistForCell(cellIdx);
             const artistColor = masterPalette[targetArtist] || '#ff00ff';
-            
             const isDimmed = activeAdlibSingers.length > 0 && !activeAdlibSingers.includes(targetArtist);
             
             return (
@@ -475,6 +560,54 @@ const AdlibDebugOverlay = ({
           })}
         </div>
       )}
+
+      {/* Render Quadrant-Aware Safe Zones & Centered Adlib Ghost Copies */}
+      {safeZones.map(zone => (
+        <React.Fragment key={zone.id}>
+          <div
+            className="debug-safe-zone"
+            style={{
+              top: `${zone.top}px`,
+              left: `${zone.left}px`,
+              width: `${zone.width}px`,
+              height: `${zone.height}px`,
+            }}
+          >
+            <span className="debug-safe-zone-label">{zone.label}</span>
+          </div>
+
+          {/* Render the calculated Inner Safe Zone for Center Coordinates */}
+          {zone.innerZone && (
+            <div
+              className="debug-inner-safe-zone"
+              style={{
+                top: `${zone.innerZone.top}px`,
+                left: `${zone.innerZone.left}px`,
+                width: `${zone.innerZone.width}px`,
+                height: `${zone.innerZone.height}px`,
+              }}
+            >
+              <span className="debug-inner-safe-zone-label">Center-Point Safe Area</span>
+            </div>
+          )}
+
+          {/* Render only the white dashed AABB box at the ideal location */}
+          {adlibCopies.length > 0 && (
+            <div 
+              className="debug-adlib-copy-wrapper"
+              style={{ 
+                left: `${zone.idealX}px`, 
+                top: `${zone.idealY}px`, 
+                width: `${adlibCopies[0].aabbW}px`, 
+                height: `${adlibCopies[0].aabbH}px`,
+                transform: `translate(-50%, -50%)`
+              }}
+            >
+              <div className="debug-adlib-copy-box" />
+            </div>
+          )}
+        </React.Fragment>
+      ))}
 
       {/* Render Dynamic Bounding Boxes */}
       {boundingBoxes.map(box => (

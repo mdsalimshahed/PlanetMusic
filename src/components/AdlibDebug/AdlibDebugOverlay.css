@@ -7,80 +7,6 @@
     overflow: hidden;
 }
 
-/* X/Y Graph Axes Styling */
-.debug-graph-axes {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 10001;
-}
-
-.debug-axis-x {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.4);
-}
-
-.debug-axis-y {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 1px;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.4);
-}
-
-.debug-tick-x {
-    position: absolute;
-    top: -4px;
-    width: 1px;
-    height: 9px;
-    background: rgba(255, 255, 255, 0.4);
-}
-
-.debug-tick-y {
-    position: absolute;
-    left: -4px;
-    width: 9px;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.4);
-}
-
-/* Tick Numerical Labels */
-.debug-tick-label-x {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.7);
-    font-family: monospace;
-}
-
-.debug-tick-label-y {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.7);
-    font-family: monospace;
-}
-
-.debug-center-label {
-    position: absolute;
-    top: calc(50% + 4px);
-    left: calc(50% + 4px);
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.9);
-    font-family: monospace;
-    font-weight: bold;
-}
-
-/* SVG Line Layer */
 .debug-svg-layer {
     position: absolute;
     inset: 0;
@@ -104,7 +30,7 @@
     z-index: 10004;
     display: flex;
     flex-direction: column;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8); /* Ensures text is readable without a background */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
 .debug-hud-panel strong {
@@ -161,4 +87,62 @@
     align-items: flex-start;
     justify-content: flex-start;
     z-index: 10003;
+}
+
+/* Safe Zone Styles */
+.debug-safe-zone {
+    position: absolute;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px dashed rgba(74, 222, 128, 0.4);
+    box-sizing: border-box;
+    pointer-events: none;
+    display: block;
+    z-index: 10001; 
+}
+
+.debug-safe-zone-label {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    color: rgba(74, 222, 128, 0.7);
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Inner Safe Zone (Center Points Area) */
+.debug-inner-safe-zone {
+    position: absolute;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px dashed rgba(0, 255, 255, 0.5);
+    box-sizing: border-box;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    z-index: 10002;
+}
+
+.debug-inner-safe-zone-label {
+    color: rgba(0, 255, 255, 0.7);
+    font-family: monospace;
+    font-size: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 2px;
+}
+
+/* Box showing AABB */
+.debug-adlib-copy-wrapper {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10005;
+}
+
+.debug-adlib-copy-box {
+    position: absolute;
+    inset: 0;
+    border: 1px dashed #ffffff; /* White dashed unrotated AABB box */
+    z-index: 10006;
 }
