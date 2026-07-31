@@ -32,7 +32,8 @@ export const generateSafeAdlibPosition = (
   activeSingersList,
   masterNamesArray,
   seedKey,
-  globalIndex
+  globalIndex,
+  sessionSeed
 ) => {
   const container = document.querySelector('.focused-lyrics-preview');
   if (!container || !adlibElement) return { left: '50%', top: '50%', rot: 0 };
@@ -143,13 +144,31 @@ export const generateSafeAdlibPosition = (
     });
   });
 
-  // 5. CHAOTIC ALTERNATION: Pick a zone based on the globalIndex
+  // 5. CHAOTIC ALTERNATION: Strictly alternate Top/Bottom using globalIndex
   let targetArea;
   if (intersectedAreas.length > 0) {
-    intersectedAreas.sort((a, b) => (a.top - b.top) || (a.left - b.left));
-    const zoneOffset = Math.floor(pseudoRandom(seedKey + '-zone') * 10);
-    const zoneIndex = (globalIndex + zoneOffset) % intersectedAreas.length;
-    targetArea = intersectedAreas[zoneIndex];
+    const canvasMidY = containerRect.height / 2;
+    
+    // Group zones by screen half
+    const topZones = intersectedAreas.filter(a => a.top < canvasMidY).sort((a, b) => a.left - b.left);
+    const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY).sort((a, b) => a.left - b.left);
+
+    // Use sessionSeed to get a single constant offset for the entire song playback session
+    const sessionOffset = Math.floor(pseudoRandom(sessionSeed) * 10);
+    const effectiveIndex = globalIndex + sessionOffset;
+
+    if (topZones.length > 0 && bottomZones.length > 0) {
+      // Bouncing logic: Evens go Top, Odds go Bottom
+      if (effectiveIndex % 2 === 0) {
+        targetArea = topZones[Math.floor(effectiveIndex / 2) % topZones.length];
+      } else {
+        targetArea = bottomZones[Math.floor(effectiveIndex / 2) % bottomZones.length];
+      }
+    } else {
+      // Fallback: If only one half is available (e.g. lyrics take up whole bottom), cycle horizontally
+      intersectedAreas.sort((a, b) => (a.top - b.top) || (a.left - b.left));
+      targetArea = intersectedAreas[effectiveIndex % intersectedAreas.length];
+    }
   } else if (validCells.length > 0) {
     const fallback = validCells[Math.floor(pseudoRandom(seedKey + '-zone') * validCells.length)];
     targetArea = { ...fallback, width: fallback.right - fallback.left, height: fallback.bottom - fallback.top };
@@ -157,6 +176,7 @@ export const generateSafeAdlibPosition = (
     targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop };
   }
 
+  // Raw coordinate uniquely randomized for this specific adlib inside the chosen area
   const rawX = targetArea.left + (pseudoRandom(seedKey + '-x') * targetArea.width);
   const rawY = targetArea.top + (pseudoRandom(seedKey + '-y') * targetArea.height);
 

@@ -3,6 +3,17 @@ import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { normalizeTrans, renderFormattedTranslation } from './LyricsLineRenderer';
 import { generateSafeAdlibPosition } from './AdlibDebug/adlibPlacementLogic';
 
+// Deterministic pseudo-random float generator to keep rot/variation steady per ad-lib during a session
+const pseudoRandom = (seedStr) => {
+  let hash = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    hash = (hash << 5) - hash + seedStr.charCodeAt(i);
+    hash |= 0;
+  }
+  const x = Math.sin(hash++) * 10000;
+  return x - Math.floor(x);
+};
+
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
@@ -138,6 +149,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           items.push({
             key,
             globalIndex: globalAdlibCounter++, // Assign global sequence ID
+            sessionSeed, // Pass seed so the placement engine can offset chaotic jumping
             seedBase,
             start,
             end,
@@ -167,6 +179,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           end: dataItem.end,
           key: dataItem.key,
           globalIndex: dataItem.globalIndex,
+          sessionSeed: dataItem.sessionSeed,
           seedBase: dataItem.seedBase,
           isMulti: dataItem.isMulti,
           cols: dataItem.cols,
@@ -215,7 +228,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               item.activeSingersList,
               item.activeNames,
               item.seedBase,
-              item.globalIndex
+              item.globalIndex,
+              item.sessionSeed // Injected so offset coordinates lock for the session
             );
             
             item.node.style.setProperty('--adlib-left', newPos.left);
