@@ -196,14 +196,15 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     
     const currentTime = window.currentAudioTime || 0;
 
+    const globalSingers = Object.keys(masterPalette || {}).filter(Boolean);
+    const totalCols = Math.max(2, globalSingers.length);
+
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
         
-        // 1. REPLICATE EXACT BACKGROUND MATRIX LOGIC FROM DynamicBackground.jsx
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
         const isMulti = lineActiveNames.length > 1;
-        const totalCols = Math.max(2, lineActiveNames.length);
-        const totalCells = totalCols * 2; // DynamicBackground renders cols * 2 cells
+        const totalCells = totalCols * 2;
         
         const getArtistForCell = (cellIndex) => {
           if (lineActiveNames.length === 0) return null;
@@ -227,7 +228,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           let targetRow = 0;
           let targetCol = 0;
 
-          // 2. QUERY THE MATRIX: Find exactly which cells belong to this specific ad-lib singer
           let validCells = [];
           if (isMulti && primaryAdlibSinger) {
             for (let i = 0; i < totalCells; i++) {
@@ -237,14 +237,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             }
           }
 
-          // 3. ASSIGNMENT: Lock to specific valid cells, or free-reign if single artist
           if (validCells.length > 0) {
             const pickIndex = Math.floor(pseudoRandom(seedBase + '-cell') * validCells.length);
             const chosenCell = validCells[pickIndex];
             targetRow = Math.floor(chosenCell / totalCols);
             targetCol = chosenCell % totalCols;
           } else {
-            // Free reigns: fallback for solitary singers or unmapped artists
             targetRow = rowSeed > 0.5 ? 1 : 0;
             targetCol = Math.floor(pseudoRandom(seedBase + '-col') * totalCols);
           }
@@ -397,15 +395,19 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
   // Audio Playback Time Sync
   useEffect(() => {
+    const clearActiveNodes = () => {
+        if (cachedTrackNodesRef.current.length > 0) {
+            cachedTrackNodesRef.current.forEach(item => {
+                if (item.isActive) {
+                    item.node.classList.remove('active');
+                    item.isActive = false;
+                }
+            });
+        }
+    };
+
     if (!isPlayingCurrentSong) {
-      if (cachedTrackNodesRef.current.length > 0) {
-        cachedTrackNodesRef.current.forEach(item => {
-          if (item.isActive) {
-            item.node.classList.remove('active');
-            item.isActive = false;
-          }
-        });
-      }
+      clearActiveNodes();
       return;
     }
 
@@ -427,8 +429,19 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       }
     };
 
+    // CRITICAL FIX: Gracefully fade out any remaining floating adlibs when the song ends
+    const handlePlayState = (e) => {
+        if (e.detail.isEnded) {
+            clearActiveNodes();
+        }
+    };
+
     window.addEventListener('globalTimeUpdate', handleTime);
-    return () => window.removeEventListener('globalTimeUpdate', handleTime);
+    window.addEventListener('globalPlayState', handlePlayState);
+    return () => {
+        window.removeEventListener('globalTimeUpdate', handleTime);
+        window.removeEventListener('globalPlayState', handlePlayState);
+    };
   }, [isPlayingCurrentSong]);
 
   if (adlibsToRender.length === 0) return null;

@@ -26,6 +26,7 @@ const LyricsDisplay = ({
         if (timestamp - lastEqDraw > 33) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const bars = eqBarsRef.current;
+
           for (let i = 0; i < bars.length; i++) {
             if (bars[i]) {
               const raw = window.globalFreqData[i];
@@ -48,6 +49,7 @@ const LyricsDisplay = ({
       }
       rafId = requestAnimationFrame(renderEQ);
     };
+
     rafId = requestAnimationFrame(renderEQ);
     return () => cancelAnimationFrame(rafId);
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
@@ -73,6 +75,22 @@ const LyricsDisplay = ({
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
 
+    const clearAllActive = () => {
+        cachedLinesRef.current.forEach(item => {
+            if (item.isActive) {
+                item.node.classList.remove('active');
+                item.isActive = false;
+            }
+        });
+        cachedAdlibsRef.current.forEach(item => {
+            if (item.state !== 'hidden') {
+                item.node.classList.add('adlib-hidden');
+                item.node.classList.remove('adlib-active', 'adlib-visible');
+                item.state = 'hidden';
+            }
+        });
+    };
+
     const handleTime = (e) => {
         if (!isPlayingCurrentSong) return;
         const time = e.detail;
@@ -84,6 +102,7 @@ const LyricsDisplay = ({
             if (!isNaN(start) && time >= start) {
                 const isBeforeEnd = isNaN(end) || time <= end;
                 const isBeforeNext = isNaN(nextStart) || time < nextStart;
+
                 if (isBeforeEnd && isBeforeNext) {
                     newActiveIndex = i;
                     break; 
@@ -136,28 +155,28 @@ const LyricsDisplay = ({
         }
     };
 
+    // CRITICAL FIX: If the global player ends the song naturally, strip all active classes 
+    // so lyrics fade out gracefully instead of being stuck paused on the screen.
+    const handlePlayState = (e) => {
+        if (e.detail.isEnded) {
+            clearAllActive();
+        }
+    };
+
     window.addEventListener('globalTimeUpdate', handleTime);
+    window.addEventListener('globalPlayState', handlePlayState);
     
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTime({ detail: initialTime });
     } else {
-        cachedLinesRef.current.forEach(item => {
-            if (item.isActive) {
-                item.node.classList.remove('active');
-                item.isActive = false;
-            }
-        });
-        cachedAdlibsRef.current.forEach(item => {
-            if (item.state !== 'hidden') {
-                item.node.classList.add('adlib-hidden');
-                item.node.classList.remove('adlib-active', 'adlib-visible');
-                item.state = 'hidden';
-            }
-        });
+        clearAllActive();
     }
 
-    return () => window.removeEventListener('globalTimeUpdate', handleTime);
+    return () => {
+        window.removeEventListener('globalTimeUpdate', handleTime);
+        window.removeEventListener('globalPlayState', handlePlayState);
+    };
   }, [lyricsViewMode, isPlayingCurrentSong, currentTrack]);
 
   const handlePaste = (e) => {
@@ -172,7 +191,6 @@ const LyricsDisplay = ({
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
-
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
@@ -184,10 +202,8 @@ const LyricsDisplay = ({
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
             let wrapped = innerText.trim();
-
             if (isItalic) wrapped = `_${wrapped}_`;
             if (isBold) wrapped = `**${wrapped}**`;
-
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
 
@@ -198,7 +214,6 @@ const LyricsDisplay = ({
       };
       
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
-
       const textarea = e.target;
       const newVal = (customData.lyrics || '').substring(0, textarea.selectionStart) + markdownText + (customData.lyrics || '').substring(textarea.selectionEnd);
       handleDataChange({ target: { name: 'lyrics', value: newVal } });
@@ -264,10 +279,10 @@ const LyricsDisplay = ({
                      lineObj={line}
                      savedNode={syncList[i]}
                      nextStart={nextStart}
-                    viewMode="focused"
-                    handleLineClick={handleLineClick}
-                    masterPalette={masterPalette}
-                    isPlayingCurrentSong={isPlayingCurrentSong}
+                     viewMode="focused"
+                     handleLineClick={handleLineClick}
+                     masterPalette={masterPalette}
+                     isPlayingCurrentSong={isPlayingCurrentSong}
                  />
              )
           })}

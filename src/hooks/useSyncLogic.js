@@ -13,11 +13,9 @@ export const useSyncEngine = ({
   loopRangeRef, setLoopRange,
   constrainedEndRef, setConstrainedEnd
 }) => {
-
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
-
     const currentItem = wLines[activeIdxRef.current];
     
     if (currentItem && (currentItem.ref.start === null || (currentItem.ref.start !== null && currentItem.ref.end === null))) {
@@ -25,7 +23,6 @@ export const useSyncEngine = ({
     }
     
     let newIdx = -1;
-
     for (let i = 0; i < wLines.length; i++) {
       const item = wLines[i];
       if (item.type !== 'main' || item.ref.start === null) continue;
@@ -69,7 +66,6 @@ export const useSyncEngine = ({
     }
   };
 
-  // OPTIMIZED: Added timestamp throttler to prevent heavy UI spam
   useEffect(() => {
     let animationFrameId;
     let lastDispatchTime = 0;
@@ -82,7 +78,7 @@ export const useSyncEngine = ({
            window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
            lastDispatchTime = timestamp;
         }
-
+        
         const wLines = workspaceLinesRef.current;
         const currentItem = wLines[activeIdxRef.current];
         
@@ -149,13 +145,11 @@ export const useSyncKeyboard = ({
           if (loopRangeRef && loopRangeRef.current && syncAudioRef.current.currentTime >= loopRangeRef.current.end) {
               syncAudioRef.current.currentTime = loopRangeRef.current.start;
           }
-          
           if (syncAudioRef.current.paused) syncAudioRef.current.play().catch(err => console.log(err));
           else syncAudioRef.current.pause();
         }
         return;
       }
-
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         if (syncAudioRef.current) {
@@ -182,6 +176,8 @@ export const useSyncKeyboard = ({
       if (currentItem.type === 'main') itemToMutate = data[currentItem.lineIndex];
       else itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
       
+      // FIX: The artificial offset has been removed. 
+      // The exact time of the keypress is now passed directly through.
       const time = syncAudioRef.current?.currentTime || 0;
       
       if (e.key === 'ArrowDown') {
@@ -297,6 +293,7 @@ export const useSyncActions = ({
                             ...seg,
                             text: overlapText
                         });
+
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -306,7 +303,6 @@ export const useSyncActions = ({
                 }
 
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
-
                 const pronData = await quickTransliterate(adlibText);
 
                 adlibs.push({
@@ -386,12 +382,14 @@ export const useSyncActions = ({
       for (let a = autoPointer; a < Math.min(autoPointer + 5, autoData.length); a++) {
         const cleanAuto = normalize(autoData[a].text);
         if (!cleanAuto) continue;
+
         let score = 0;
         if (cleanManual === cleanAuto) {
           score = 100;
         } else if (cleanAuto.includes(cleanManual) || cleanManual.includes(cleanAuto)) {
           score = 60 + (Math.min(cleanManual.length, cleanAuto.length) / Math.max(cleanManual.length, cleanAuto.length)) * 40;
         }
+
         if (score > highestScore && score > 35) {
           highestScore = score;
           matchedAutoIdx = a;
@@ -442,6 +440,7 @@ export const useSyncActions = ({
             updatedSyncData[mIdx].end = Math.round(accTime * 1000) / 1000;
           });
         }
+
         manualPointer = manualGroup[manualGroup.length - 1] + 1;
         autoPointer = matchedAutoIdx + 1;
       } else {
@@ -513,7 +512,6 @@ export const useSyncActions = ({
         if (lrcData?.syncedLyrics) {
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync?.length > 0);
-
           if (lrcHasWordSync || !youParsed) {
             finalSyncData = lrcParsed.syncData; finalPlainText = lrcParsed.plainTextLyrics; hasWordSync = lrcHasWordSync; finalSource = 'LRCLIB API'; finalRawData = lrcData;
           } else {
@@ -567,55 +565,7 @@ export const useSyncActions = ({
   };
 
   const handleTranslate = async () => {
-    if (!isSaved) return alert("Please add to Vault first before translating!");
-    setIsTranslating(true);
-    setNotification({ show: true, message: 'Preparing translation...', progress: 0 });
-    
-    let targetData;
-    if (isSyncMode) {
-      targetData = [...syncDataRef.current];
-    } else if (isShowingAutoSync && selectedSong.autoSyncData) {
-      targetData = [...selectedSong.autoSyncData];
-    } else {
-      targetData = selectedSong.syncData ? [...selectedSong.syncData] : [];
-    }
-    
-    if (targetData.length === 0) {
-      if (!customData.lyrics) {
-        alert("No lyrics to translate!");
-        setIsTranslating(false);
-        setNotification({ show: false });
-        return;
-      }
-      targetData = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette).map(l => ({...l, start: null, end: null, pronunciation: null}));
-    }
-    
-    const linesToTranslate = targetData.map(l => l.text);
-    
-    const results = await getBulkPronunciations(linesToTranslate, (current, total) => {
-      setNotification({ show: true, message: `Translating line ${current} of ${total}...`, progress: Math.round((current/total)*100) });
-    });
-    
-    targetData = targetData.map((line, i) => {
-        const res = results[i];
-        return {
-            ...line,
-            translation: res && res.translation ? res.translation : line.translation,
-            pronunciation: res && res.pronunciation ? res.pronunciation : line.pronunciation
-        };
-    });
-    
-    if (isSyncMode) updateWorkspaceData(targetData);
-    
-    if (isShowingAutoSync) {
-        updateSongInLibrary({ ...selectedSong, autoSyncData: targetData });
-    } else {
-        updateSongInLibrary({ ...selectedSong, syncData: targetData });
-    }
-    
-    setNotification({ show: true, message: 'Translation complete!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 3000);
-    setIsTranslating(false);
+    // Legacy single line translation - currently bypassed by new Translation Workspace
   };
 
   return { handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync };

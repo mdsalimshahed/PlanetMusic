@@ -5,8 +5,6 @@ import { parseLyrics } from '../utils/songHelpers';
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
   
-  // CRITICAL FIX: The component initializes using the global tracking variable 
-  // to prevent it from defaulting to "paused" if mounted while audio is already running.
   const [playState, setPlayState] = useState({ 
     isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false, 
     isEnded: false 
@@ -16,18 +14,19 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   const [transitionTiming, setTransitionTiming] = useState(() => {
     const stored = localStorage.getItem('artistTransitionTime');
-    return stored !== null ? parseInt(stored, 10) : 0; 
-   });
+    return stored !== null ? parseInt(stored, 10) : 0;
+  });
 
   const activePreviewRef = useRef(null);
   const silenceTimerRef = useRef(null);
   const transitionTimerRef = useRef(null);
   const previousTrackId = useRef(null);
+
   const [bgActiveIndex, setBgActiveIndex] = useState(-1);
   const bgIdxRef = useRef(-1);
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
-  const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000; 
+  const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000;
 
   const liveParsedLyrics = useMemo(() => {
     if (!selectedSong) return [];
@@ -37,10 +36,10 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   useEffect(() => {
     const handlePlayState = (e) => setPlayState(e.detail);
     const handleTimingUpdate = (e) => setTransitionTiming(e.detail);
-         
+    
     window.addEventListener('globalPlayState', handlePlayState);
     window.addEventListener('updateTransitionTime', handleTimingUpdate);
-         
+    
     return () => {
       window.removeEventListener('globalPlayState', handlePlayState);
       window.removeEventListener('updateTransitionTime', handleTimingUpdate);
@@ -52,15 +51,15 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       const time = e.detail;
       const validSync = selectedSong?.syncData?.some(line => line.start !== null);
       const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
-             
+      
       if (validSync && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong && !playState.isEnded) {
         let newBgIndex = bgIdxRef.current;
         const cbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex] : null;
         const nbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex + 1] : null;
-
-        const stillInBg = cbNode && cbNode.start !== null && time >= (cbNode.start - preemptionTimeSec) && 
-             (cbNode.end !== null ? time <= cbNode.end : true) && 
-             (nbNode && nbNode.start !== null ? time < (nbNode.start - preemptionTimeSec) : true);
+        
+        const stillInBg = cbNode && cbNode.start !== null && time >= (cbNode.start - preemptionTimeSec) &&
+              (cbNode.end !== null ? time <= cbNode.end : true) &&
+              (nbNode && nbNode.start !== null ? time < (nbNode.start - preemptionTimeSec) : true);
 
         if (!stillInBg) {
             newBgIndex = selectedSong.syncData.findIndex((savedNode, i) => {
@@ -79,7 +78,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         }
       }
     };
-         
+    
     window.addEventListener('globalTimeUpdate', handleGlobalTime);
     return () => window.removeEventListener('globalTimeUpdate', handleGlobalTime);
   }, [selectedSong, currentTrack, isSyncMode, isEditing, isImageManagerOpen, playState.isEnded, preemptionTimeSec]);
@@ -95,8 +94,8 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [selectedSong]);
 
-  const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
-     prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
+  const cycleViewMode = useCallback(() => setLyricsViewMode(prev =>
+      prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   ), []);
 
   const handleLineClick = useCallback((startTime) => {
@@ -106,7 +105,18 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   useEffect(() => {
     if (!selectedSong) return;
-         
+
+    // FIX: Trigger the 2-second silence timer for a graceful fade when the song ends
+    if (playState.isEnded) {
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+        
+        silenceTimerRef.current = setTimeout(() => {
+            setIsSingerVisible(false);
+        }, 2000);
+        return;
+    }
+    
     if (!hasValidSyncData) {
       const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
       if (isPlayingCurrentSong && !playState.isEnded) {
@@ -119,7 +129,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
 
     const activeBgLineObj = liveParsedLyrics[bgActiveIndex];
-     
+    
     if (activeBgLineObj) {
       if (activeBgLineObj.singer) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
@@ -127,15 +137,16 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         if (activeBgLineObj.singer !== displaySingerBg?.name) {
           setIsSingerVisible(false);
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-                     
+          
           transitionTimerRef.current = setTimeout(() => {
             setDisplaySingerBg({
               name: activeBgLineObj.singer,
               color: activeBgLineObj.isGradient ? '#fff' : activeBgLineObj.color
             });
             setIsSingerVisible(true);
-          }, transitionTiming); 
-         } else {
+          }, transitionTiming);
+          
+        } else {
           setIsSingerVisible(true);
         }
       } else {
@@ -146,16 +157,16 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     } else {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-             
+      
       silenceTimerRef.current = setTimeout(() => {
         setIsSingerVisible(false);
-      }, 2000); 
-     }
-         
-     return () => { 
-       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current); 
-       if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current); 
-     };
+      }, 2000);
+    }
+    
+    return () => {
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    };
   }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming]);
 
   return {
