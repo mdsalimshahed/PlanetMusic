@@ -18,7 +18,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const sourceRef = useRef(null);
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-  
+
   const trackIdRef = useRef(null);
   const localRef = useRef(null);
 
@@ -27,6 +27,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const [audioSrc, setAudioSrc] = useState(undefined);
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
+
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
@@ -55,7 +56,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
-  // Listen for signals from the Sync Workspace to pause automatically
   useEffect(() => {
     const handlePauseGlobal = () => {
       if (audioRef.current && !audioRef.current.paused) {
@@ -95,7 +95,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     if (!audioRef.current) return;
     initWebAudio();
     try {
-      // If the Sync Workspace is active, we broadcast a signal to pause its audio
       window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
       await audioRef.current.play();
       setIsPlaying(true);
@@ -107,6 +106,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
+
     let img = new Image();
     img.crossOrigin = "Anonymous"; 
     img.onload = () => {
@@ -159,7 +159,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
-  // Player state protection - will not reset to 0:00 when closing modal
   useEffect(() => {
     if (!currentTrack) {
       if (audioRef.current) {
@@ -237,6 +236,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const togglePlay = (e) => {
     if (e) e.stopPropagation();
     if (!audioRef.current) return;
+
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -254,7 +254,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       if (activeTag === 'input' || activeTag === 'textarea') return;
       if (!audioRef.current || !currentTrack) return;
       
-      // We don't want global spacebar to trigger if the sync audio player is actively being used
       if (document.querySelector('.sync-mode-container')) return;
 
       if (e.code === 'Space') {
@@ -273,6 +272,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         window.currentAudioTime = newTime;
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
@@ -287,23 +287,24 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         const time = audioRef.current.currentTime;
         window.currentAudioTime = time;
         
-        const currentSecond = Math.floor(time);
-        
-        if (currentSecond !== lastSecond) {
+        // Update slider and emit global time at ~30 FPS for smooth rendering
+        if (timestamp - lastEventTime > 33) {
           if (progressBarRef.current) {
             progressBarRef.current.value = time;
             const dur = duration || audioRef.current.duration || 1;
             progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
           }
+          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
+          lastEventTime = timestamp;
+        }
+
+        // Only update raw text format once a second to avoid expensive repaints
+        const currentSecond = Math.floor(time);
+        if (currentSecond !== lastSecond) {
           if (currentTimeRef.current) {
             currentTimeRef.current.innerText = formatTime(time);
           }
           lastSecond = currentSecond;
-        }
-
-        if (timestamp - lastEventTime > 33) {
-          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
-          lastEventTime = timestamp;
         }
       }
       
@@ -394,7 +395,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
           </div>
         </div>
-
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">

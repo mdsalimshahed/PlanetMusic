@@ -15,24 +15,22 @@ const LyricsDisplay = ({
 
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
-  // OPTIMIZED EQUALIZER: Throttled to ~30 FPS to prevent phone overheating
+  // OPTIMIZED EQUALIZER: Direct transform updates via RAF, bypassing CSS transition thrashing
   useEffect(() => {
     let rafId;
     let lastEqDraw = 0;
-    const fadeOutTime = settings?.eqFadeOutTime ?? 500;
     
     const renderEQ = (timestamp) => {
       if (isPlaying && isPlayingCurrentSong && window.globalAudioAnalyser && window.globalFreqData) {
         if (timestamp - lastEqDraw > 33) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const bars = eqBarsRef.current;
-
           for (let i = 0; i < bars.length; i++) {
             if (bars[i]) {
               const raw = window.globalFreqData[i];
               const scale = 0.05 + (raw / 255) * 0.95;
               
-              bars[i].style.transition = 'transform 0.05s ease-out';
+              // Direct scale injection - bypassing layout thrashing
               bars[i].style.transform = `scaleY(${scale})`;
             }
           }
@@ -42,7 +40,6 @@ const LyricsDisplay = ({
         const bars = eqBarsRef.current;
         for (let i = 0; i < bars.length; i++) {
           if (bars[i] && bars[i].style.transform !== 'scaleY(0.05)') {
-            bars[i].style.transition = `transform ${fadeOutTime}ms ease-out`;
             bars[i].style.transform = `scaleY(0.05)`;
           }
         }
@@ -52,7 +49,7 @@ const LyricsDisplay = ({
 
     rafId = requestAnimationFrame(renderEQ);
     return () => cancelAnimationFrame(rafId);
-  }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
+  }, [isPlaying, isPlayingCurrentSong]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -63,6 +60,7 @@ const LyricsDisplay = ({
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
+
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -94,15 +92,15 @@ const LyricsDisplay = ({
     const handleTime = (e) => {
         if (!isPlayingCurrentSong) return;
         const time = e.detail;
+        
         const lines = cachedLinesRef.current;
-
         let newActiveIndex = -1;
+
         for (let i = 0; i < lines.length; i++) {
             const { start, end, nextStart } = lines[i];
             if (!isNaN(start) && time >= start) {
                 const isBeforeEnd = isNaN(end) || time <= end;
                 const isBeforeNext = isNaN(nextStart) || time < nextStart;
-
                 if (isBeforeEnd && isBeforeNext) {
                     newActiveIndex = i;
                     break; 
@@ -155,8 +153,6 @@ const LyricsDisplay = ({
         }
     };
 
-    // CRITICAL FIX: If the global player ends the song naturally, strip all active classes 
-    // so lyrics fade out gracefully instead of being stuck paused on the screen.
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
