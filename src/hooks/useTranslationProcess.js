@@ -150,7 +150,6 @@ export const useTranslationProcess = ({
     });
   };
 
-  // MASSIVE SPEED UP: Converted sequential loop to parallel Promise.all mapping
   const handleTranslateAll = async () => {
     if (isTranslatingAll) {
       stopTranslationProcess();
@@ -308,9 +307,8 @@ export const useTranslationProcess = ({
         return clean.length > 0 ? clean : ' '; 
       });
       
-      // FIX: Replace \n with an ellipsis delimiter. Google NMT reads through ellipsis naturally,
-      // preserving pronouns across sentences while still giving us a marker to split the lines later.
-      const combinedText = cleanTexts.join(' ... ');
+      // NEW DELIMITER LOGIC: Append [1], [2], etc. to each line.
+      const combinedText = cleanTexts.map((text, i) => `${text} [${i + 1}]`).join(' ');
       
       try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(lang)}&tl=en&dt=t`;
@@ -332,12 +330,30 @@ export const useTranslationProcess = ({
           });
         }
         
-        // Split cleanly back apart using the ellipsis marker
-        const translatedLines = combinedTranslation.split(/\s*(?:\.\.\.|…)\s*/).map(l => l.trim());
+        // Extract translated text using the bracketed markers
+        const translatedLines = new Array(items.length).fill(undefined);
+        // Regex matches any text up to a bracketed/parenthesized number: e.g. "Translated text [1]"
+        const regex = /(.*?)\s*[\[\(]\s*(\d+)\s*[\]\)]/g;
         
-        const isAligned = translatedLines.length === items.length;
+        let match;
+        let matchesFound = 0;
+        
+        while ((match = regex.exec(combinedTranslation)) !== null) {
+          const textPart = match[1].trim();
+          const lineIndex = parseInt(match[2], 10) - 1; // Convert 1-based back to 0-based
+          
+          if (lineIndex >= 0 && lineIndex < items.length) {
+            // Assign the text strictly to the line index Google indicated
+            if (translatedLines[lineIndex] === undefined) {
+                translatedLines[lineIndex] = textPart;
+                matchesFound++;
+            }
+          }
+        }
+        
+        const isAligned = matchesFound === items.length && !translatedLines.includes(undefined);
         if (!isAligned) {
-          console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} lines, got ${translatedLines.length}. Falling back to 1:1 independent translations to prevent layout offset.`);
+          console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} markers, found ${matchesFound}. Falling back to 1:1 translations.`);
         }
         
         const hasNumbersInBatch = cleanTexts.some(text => /\d/.test(text));
