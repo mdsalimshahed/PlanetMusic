@@ -16,10 +16,10 @@ const stripHtmlAndBrackets = (text) => {
     .trim();
 };
 
-const getGoogleData = async (text) => {
+const getGoogleData = async (text, sl = 'auto') => {
   if (!text || text === '') return { translation: '', transliteration: null };
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     const data = await response.json();
     
@@ -80,10 +80,10 @@ const fetchNumberTranslation = async (engWord, tl) => {
   }
 };
 
-export const quickTransliterate = async (text) => {
+export const quickTransliterate = async (text, sl = 'auto') => {
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return { translation: '', transliteration: null };
-  return await getGoogleData(clean);
+  return await getGoogleData(clean, sl);
 };
 
 const isSpacedScript = (text) => {
@@ -92,47 +92,44 @@ const isSpacedScript = (text) => {
 
 const isRomanChar = (char) => {
   if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
-  // Digits are natively treated as foreign so they receive phonetic transliteration blocks
   return /^[\p{Script=Latin}\p{M}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 };
 
+// MASSIVE SPEED UP: Converted the serial loop into a parallel Promise.all execution
 export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
-  const results = [];
-  for (let i = 0; i < linesArray.length; i++) {
-    const updateProgress = async () => {
-      if (onProgress) {
-        onProgress(i + 1, linesArray.length);
-        await new Promise(resolve => setTimeout(resolve, 15));
-      }
+  let completed = 0;
+  
+  const promises = linesArray.map(async (lineText) => {
+    const updateProgress = () => {
+      completed++;
+      if (onProgress) onProgress(completed, linesArray.length);
     };
 
-    if (!linesArray[i]) {
-      results.push(null);
-      await updateProgress();
-      continue;
+    if (!lineText) {
+      updateProgress();
+      return null;
     }
-
-    const cleanLine = stripHtmlAndBrackets(linesArray[i]);
+    
+    const cleanLine = stripHtmlAndBrackets(lineText);
     if (!cleanLine) {
-      results.push(null);
-      await updateProgress();
-      continue;
+      updateProgress();
+      return null;
     }
-
-    const fullData = await quickTransliterate(cleanLine);
+    
+    const fullData = await quickTransliterate(cleanLine, targetLang);
     const fullTrans = fullData.transliteration || '';
     const chunks = [];
-
-    // --- SPACE-SEPARATED SCRIPT PATH (Indic, Korean, Cyrillic, Arabic, etc.) ---
+    
     if (isSpacedScript(cleanLine)) {
       const transWords = fullTrans
         .split(/\s+/)
         .filter(Boolean)
         .map(w => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim());
-      
+        
       const tokens = cleanLine.split(/(\s+)/);
       let wordIndex = 0;
-
+      
+      // We process tokens sequentially since number translation requires sync alignment
       for (const token of tokens) {
         if (!token) continue;
         if (/^\s+$/.test(token)) {
@@ -140,24 +137,21 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
         } else {
           const isEnToken = Array.from(token).every(c => isRomanChar(c));
           let currentTrans = transWords[wordIndex] || '';
-
-          // Punctuation-only check: don't attach transliterations to stray punctuation marks
+          
           if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
             chunks.push({ type: 'en', text: token, trans: '' });
             continue;
           }
-
-          // NUMBER INTERCEPTOR
+          
           if (/^[\d,]+$/.test(token)) {
             const cleanNum = token.replace(/,/g, '');
             const engWord = numberToEnglishWords(cleanNum);
             let translatedNum = token;
-            if (engWord) {
+            if (engWord) { 
                translatedNum = await fetchNumberTranslation(engWord, targetLang);
             }
             chunks.push({ type: 'foreign', text: token, trans: translatedNum });
             
-            // Keep wordIndex in sync if Google natively echoed the digit in the translation
             if (transWords[wordIndex] === token) wordIndex++;
           } else if (isEnToken) {
             chunks.push({ type: 'en', text: token, trans: '' });
@@ -168,10 +162,9 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
         }
       }
     } else {
-      // --- UNSPACED SCRIPT PATH (Chinese / Japanese Fallback) ---
       let currentType = null;
       let currentText = '';
-
+      
       for (const char of cleanLine) {
         const type = isRomanChar(char) ? 'en' : 'foreign';
         if (currentType === null) {
@@ -188,22 +181,21 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       if (currentText) {
         chunks.push({ type: currentType, text: currentText });
       }
-
+      
       for (let j = 0; j < chunks.length; j++) {
         if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
           const textKey = chunks[j].text.trim();
           
-          // NUMBER INTERCEPTOR (Unspaced)
           if (/^[\d,]+$/.test(textKey)) {
             const cleanNum = textKey.replace(/,/g, '');
             const engWord = numberToEnglishWords(cleanNum);
             let translatedNum = textKey;
-            if (engWord) {
+            if (engWord) { 
                translatedNum = await fetchNumberTranslation(engWord, targetLang);
             }
             chunks[j].trans = translatedNum;
           } else {
-            const chunkData = await quickTransliterate(textKey);
+            const chunkData = await quickTransliterate(textKey, targetLang);
             let cleanChunkTrans = chunkData.transliteration || chunks[j].text;
             cleanChunkTrans = cleanChunkTrans.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim();
             chunks[j].trans = cleanChunkTrans;
@@ -213,20 +205,22 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
         }
       }
     }
-
+    
+    updateProgress();
+    
     const hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
     if (hasForeign) {
-      results.push({
+      return {
         translation: fullData.translation,
         pronunciation: JSON.stringify({ full: fullTrans, chunks: chunks })
-      });
+      };
     } else {
-      results.push({
+      return {
         translation: fullData.translation !== cleanLine ? fullData.translation : '', 
         pronunciation: null
-      });
+      };
     }
-    await updateProgress();
-  }
-  return results;
+  });
+
+  return await Promise.all(promises);
 };

@@ -25,12 +25,13 @@ const TranslationHeader = ({
           {isTranslatingAll ? (
             <>
               <span className="tw-spinner"></span>
-              <span>Stop Translation ({translateProgress.current}/{translateProgress.total})</span>
+              <span>Stop Translation</span>
             </>
           ) : (
             'Translate All'
           )}
         </button>
+        
         <button
           className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
           onClick={handleTranslateWithContext}
@@ -38,6 +39,7 @@ const TranslationHeader = ({
         >
           Translate with Context
         </button>
+        
         <button
           className="tw-btn"
           onClick={handleRefreshWorkspace}
@@ -47,11 +49,11 @@ const TranslationHeader = ({
         >
           Refresh Lyrics
         </button>
-
+        
         <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>
           Export Text
         </button>
-
+        
         <input
           type="file"
           accept=".txt,text/plain"
@@ -62,8 +64,9 @@ const TranslationHeader = ({
         <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll}>
           Import Text
         </button>
-
+        
         <div className="tw-header-spacer"></div>
+        
         <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
         <button
           className="tw-btn tw-btn-save"

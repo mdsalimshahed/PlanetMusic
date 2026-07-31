@@ -13,13 +13,18 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [syncData, setSyncData] = useState([]);
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
-  const [isSyncPlaying, setIsSyncPlaying] = useState(false);
+  
+  // Dedicated local playback states for the Sync Workspace
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
+  const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
+  
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
+  
   const syncAudioRef = useRef(null);
+  
   const activeLineRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
@@ -60,18 +65,22 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
   }, [selectedSong]);
 
+  // Load the dedicated local audio file or preview URL for the Sync Player
   useEffect(() => {
     const loadSyncAudio = async () => {
       if (isSyncMode && selectedSong) {
         if (customData.hasLocal) {
           const file = await getAudioFile(selectedSong.trackId);
           setSyncAudioSrc(file ? URL.createObjectURL(file) : selectedSong.previewUrl);
-        } else setSyncAudioSrc(selectedSong.previewUrl);
+        } else {
+          setSyncAudioSrc(selectedSong.previewUrl);
+        }
       }
     };
     loadSyncAudio();
   }, [isSyncMode, customData.hasLocal, selectedSong]);
 
+  // Apply volume and playback rate to the Sync Player
   useEffect(() => {
     if (isSyncMode && syncAudioRef.current) {
       const savedVolume = localStorage.getItem('playerVolume');
@@ -79,6 +88,17 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       syncAudioRef.current.playbackRate = playbackRate;
     }
   }, [isSyncMode, syncAudioSrc, playbackRate]);
+
+  // Pause the Sync Player if the Global Player attempts to play
+  useEffect(() => {
+    const handleGlobalPlay = () => {
+      if (syncAudioRef.current && !syncAudioRef.current.paused) {
+        syncAudioRef.current.pause();
+      }
+    };
+    window.addEventListener('globalPlayerDidPlay', handleGlobalPlay);
+    return () => window.removeEventListener('globalPlayerDidPlay', handleGlobalPlay);
+  }, []);
 
   useEffect(() => {
     if (isSyncMode && activeLineRef.current) {
@@ -112,9 +132,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     loopRangeRef
   });
 
-  const { 
-     handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync 
-   } = useSyncActions({
+  const {
+      handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync
+    } = useSyncActions({
     selectedSong, isSaved, customData, setCustomData, masterPalette,
     updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
     isSyncMode, setSyncData, syncDataRef, setNotification,
@@ -122,10 +142,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     setLoopRange, setDebugInfo
   });
 
-  // CRITICAL RULE: If manual lyrics exist, Sync Workspace MUST default to them with blank timings
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
-    setCurrentTrack(null);
+    
+    // Explicitly send a signal to auto-pause the Global Player when entering the workspace
+    window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
+    
     setIsSyncLoading(true);
 
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
@@ -135,7 +157,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
     
     if (hasManualText) {
-      // Manual lyrics exist: Default to manual lines, preserving manual timings if present, otherwise blank!
       initialData = parsedLines.map((line, i) => {
         const existingNode = selectedSong?.syncData?.[i] || {};
         return {
@@ -149,10 +170,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
         };
       });
     } else if (sourceData && sourceData.length > 0) {
-      // Fallback: No manual lyrics, use database/auto lyrics
       initialData = sourceData.map((node) => ({ ...node }));
     }
-
+    
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
@@ -174,7 +194,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }));
     setSyncData(resetData);
     syncDataRef.current = resetData;
-         
+    
     updateSongInLibrary({
       ...selectedSong,
       syncData: resetData,
@@ -204,7 +224,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
   };
 
-  const handleSpeedChange = (e) => setPlaybackRate(parseFloat(e.target.value));
+  const handleSpeedChange = (e) => {
+    setPlaybackRate(parseFloat(e.target.value));
+  };
 
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,

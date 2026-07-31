@@ -9,12 +9,14 @@ const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test
 export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
-  syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef,
+  syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
-  selectedSong }) => {
+  selectedSong
+}) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
+
   const [accentColor, setAccentColor] = useState('var(--accent)');
 
   useEffect(() => {
@@ -83,12 +85,14 @@ export const SyncWorkspace = ({
       
       if (progressSliderRef.current) progressSliderRef.current.value = time;
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
+
       if (containerRef.current) {
         const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
         for (let i = 0; i < adlibNodes.length; i++) {
           const node = adlibNodes[i];
           const start = parseFloat(node.dataset.start);
           const end = parseFloat(node.dataset.end);
+
           if (!isNaN(start)) {
             if (time >= start && time <= end) {
               if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
@@ -132,14 +136,17 @@ export const SyncWorkspace = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
+
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
+
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
                             text: overlapText
                         });
+
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -147,8 +154,10 @@ export const SyncWorkspace = ({
                     }
                     currentPos = segEnd;
                 }
+
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
                 const pronData = await quickTransliterate(adlibText);
+
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -190,7 +199,6 @@ export const SyncWorkspace = ({
 
     let parsedChunks = null;
     let fullTrans = null;
-
     if (typeof pronString === 'string') {
       const cleanPron = pronString.trim();
       if (cleanPron.startsWith('{')) {
@@ -226,6 +234,7 @@ export const SyncWorkspace = ({
         if (!targetArtists && line.singer) {
           targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
         }
+
         if (targetArtists && targetArtists.length > 0) {
           if (targetArtists.length > 1) {
             isGradient = true;
@@ -292,21 +301,24 @@ export const SyncWorkspace = ({
     let pChunkIndex = 0;
     let currentPChunk = activeParsedChunks[0];
     let currentPChunkConsumed = 0;
-    let i = 0;
 
+    let i = 0;
     while (i < chars.length) {
       if (!currentPChunk) {
         alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
         i++;
         continue;
       }
+
       let chunkChars = [];
       const targetLen = Array.from(currentPChunk.text || '').length;
+
       while (currentPChunkConsumed < targetLen && i < chars.length) {
         chunkChars.push(chars[i]);
         currentPChunkConsumed++;
         i++;
       }
+
       if (chunkChars.length > 0) {
         alignedChunks.push({
           type: currentPChunk.type,
@@ -315,6 +327,7 @@ export const SyncWorkspace = ({
           isMain: true
         });
       }
+
       if (currentPChunkConsumed >= targetLen) {
         pChunkIndex++;
         currentPChunk = activeParsedChunks[pChunkIndex];
@@ -357,6 +370,7 @@ export const SyncWorkspace = ({
         '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
         '--player-accent': accentColor
       }}>
+      
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>
           {isSyncPlaying ? (
@@ -369,8 +383,8 @@ export const SyncWorkspace = ({
         <input 
           type="range" className="custom-slider sync-slider" 
           min="0" max={syncDuration || 1} step="0.001" 
-          defaultValue="0" 
-          ref={progressSliderRef} 
+          defaultValue="0"
+          ref={progressSliderRef}
           onChange={handleSyncSeek} 
         />
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
@@ -410,7 +424,7 @@ export const SyncWorkspace = ({
           return (
             <div 
               key={i} 
-              ref={isActive ? activeLineRef : null} 
+              ref={isActive ? activeLineRef : null}
               className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
               data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
               data-end={!isMain ? boundedEnd : 'NaN'}
@@ -455,18 +469,20 @@ export const SyncWorkspace = ({
           );
         })}
       </div>
-
+      
       <audio 
-        ref={syncAudioRef} 
-        src={syncAudioSrc || undefined} 
-        onLoadedMetadata={handleAudioLoaded} 
-        onDurationChange={handleAudioLoaded} 
-        onEnded={() => setIsSyncPlaying(false)} 
-        onPlay={() => setIsSyncPlaying(true)} 
-        onPause={() => setIsSyncPlaying(false)} 
+        ref={syncAudioRef}
+        src={syncAudioSrc || undefined}
+        onLoadedMetadata={handleAudioLoaded}
+        onDurationChange={handleAudioLoaded}
+        onEnded={() => setIsSyncPlaying(false)}
+        onPlay={() => {
+          setIsSyncPlaying(true);
+          // Tell the global player to automatically pause when we press play here
+          window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
+        }}
+        onPause={() => setIsSyncPlaying(false)}
       />
     </div>
   );
 };
-
-export default SyncWorkspace;

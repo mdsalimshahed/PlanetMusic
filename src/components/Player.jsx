@@ -18,6 +18,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const sourceRef = useRef(null);
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
+  
+  const trackIdRef = useRef(null);
+  const localRef = useRef(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -28,14 +31,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
+
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
-
-  // CRITICAL FIX: Track the play state globally so when the Modal unmounts and remounts, 
-  // the EQ instantly knows the audio is already actively playing.
-  useEffect(() => {
-    window.globalIsAudioPlaying = isPlaying;
-  }, [isPlaying]);
 
   useEffect(() => {
     const handleResize = () => setIsStacked(window.innerWidth <= 900);
@@ -57,19 +55,30 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
-  // --- WEB AUDIO API INIT FOR REAL-TIME EQUALIZER ---
+  // Listen for signals from the Sync Workspace to pause automatically
+  useEffect(() => {
+    const handlePauseGlobal = () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        emitPlayState(false, false);
+      }
+    };
+    window.addEventListener('pauseGlobalPlayer', handlePauseGlobal);
+    return () => window.removeEventListener('pauseGlobalPlayer', handlePauseGlobal);
+  }, []);
+
   const initWebAudio = () => {
     try {
       if (!audioCtxRef.current && audioRef.current) {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtxRef.current = new AudioContext();
         analyserRef.current = audioCtxRef.current.createAnalyser();
-        analyserRef.current.fftSize = 128; // Gives us exactly 64 frequency bins
+        analyserRef.current.fftSize = 128;
         
         window.globalAudioAnalyser = analyserRef.current;
         window.globalFreqData = new Uint8Array(analyserRef.current.frequencyBinCount);
         
-        // The source node connects the audio element to the analyser
         sourceRef.current = audioCtxRef.current.createMediaElementSource(audioRef.current);
         sourceRef.current.connect(analyserRef.current);
         analyserRef.current.connect(audioCtxRef.current.destination);
@@ -86,6 +95,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     if (!audioRef.current) return;
     initWebAudio();
     try {
+      // If the Sync Workspace is active, we broadcast a signal to pause its audio
+      window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
       await audioRef.current.play();
       setIsPlaying(true);
       emitPlayState(true, false);
@@ -148,6 +159,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
+  // Player state protection - will not reset to 0:00 when closing modal
   useEffect(() => {
     if (!currentTrack) {
       if (audioRef.current) {
@@ -159,19 +171,30 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       setIsPlaying(false);
       emitPlayState(false, true);
       window.currentAudioTime = 0;
+      trackIdRef.current = null;
+      localRef.current = null;
       if (progressBarRef.current) progressBarRef.current.value = 0;
       if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
       return;
     }
-    const loadAudio = async () => {
-      if (currentTrack.customLinks?.hasLocal) {
-        const file = await getAudioFile(currentTrack.trackId);
-        setAudioSrc(file ? URL.createObjectURL(file) : currentTrack.previewUrl);
-      } else {
-        setAudioSrc(currentTrack.previewUrl);
-      }
-    };
-    loadAudio();
+
+    const trackId = currentTrack.trackId;
+    const hasLocal = currentTrack.customLinks?.hasLocal;
+
+    if (trackId !== trackIdRef.current || hasLocal !== localRef.current) {
+      trackIdRef.current = trackId;
+      localRef.current = hasLocal;
+
+      const loadAudio = async () => {
+        if (hasLocal) {
+          const file = await getAudioFile(trackId);
+          setAudioSrc(file ? URL.createObjectURL(file) : currentTrack.previewUrl);
+        } else {
+          setAudioSrc(currentTrack.previewUrl);
+        }
+      };
+      loadAudio();
+    }
   }, [currentTrack]);
 
   useEffect(() => {
@@ -214,8 +237,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const togglePlay = (e) => {
     if (e) e.stopPropagation();
     if (!audioRef.current) return;
-    if (isPlaying) audioRef.current.pause();
-    else attemptPlay();
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      emitPlayState(false, false);
+    } else attemptPlay();
   };
 
   const openModal = () => {
@@ -227,6 +253,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
       if (!audioRef.current || !currentTrack) return;
+      
+      // We don't want global spacebar to trigger if the sync audio player is actively being used
+      if (document.querySelector('.sync-mode-container')) return;
+
       if (e.code === 'Space') {
         e.preventDefault(); 
         togglePlay();
@@ -247,7 +277,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack]);
 
-  // OPTIMIZED AUDIO TRACKING: Replaced setInterval with throttled requestAnimationFrame
   useEffect(() => {
     let animationFrameId;
     let lastSecond = -1;
@@ -272,12 +301,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           lastSecond = currentSecond;
         }
 
-        // Throttle global event dispatch to ~30 FPS to save CPU battery on mobile
         if (timestamp - lastEventTime > 33) {
           window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
           lastEventTime = timestamp;
         }
       }
+      
       if (isPlaying) {
         animationFrameId = requestAnimationFrame(tick);
       }
@@ -365,6 +394,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
           </div>
         </div>
+
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">
@@ -388,6 +418,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               />
             </div>
           </div>
+          
           <button className="close-player" onClick={closePlayer} title="Close Player">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
