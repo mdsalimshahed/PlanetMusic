@@ -1,6 +1,6 @@
 /* --- src/components/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect, useState, useLayoutEffect } from 'react';
-import { normalizeTrans } from './LyricsLineRenderer';
+import { normalizeTrans, renderFormattedTranslation } from './LyricsLineRenderer';
 
 // Deterministic pseudo-random float generator to keep rot/variation steady per ad-lib
 const pseudoRandom = (seedStr) => {
@@ -347,13 +347,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                     }} 
                     dir="ltr"
                   >
-                    {adlibTranslation}
+                    {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }} dir="auto">
                   {renderedSegments}
                 </span>
-                {aTrans ? <span className="pronunciation-text" style={basePronStyle} dir="ltr">{normalizeTrans(aTrans)}</span> : null}
+                {aTrans ? <span className="pronunciation-text" style={basePronStyle} dir="ltr">{renderFormattedTranslation(normalizeTrans(aTrans))}</span> : null}
               </div>
             );
           };

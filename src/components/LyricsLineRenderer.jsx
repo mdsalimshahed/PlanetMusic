@@ -33,6 +33,27 @@ const cleanTranslationText = (text) => {
     .trim();
 };
 
+// NEW HELPER: Dynamically applies yellow color and glow to punctuation in translation/transliteration strings
+export const renderFormattedTranslation = (text) => {
+  if (!text) return null;
+  const parts = text.split(/([\p{P}\p{S}\s]+)/u);
+  
+  return parts.map((part, pIdx) => {
+    if (!part) return null;
+    const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
+    
+    // Only apply yellow to actual visible punctuation, not purely whitespace
+    if (isPunct && part.trim() !== '') {
+      return (
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
+          {part}
+        </span>
+      );
+    }
+    return <span key={pIdx}>{part}</span>;
+  });
+};
+
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
 
 const groupWords = (elements, charData) => {
@@ -100,6 +121,7 @@ const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderCo
   return alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
+    
     const groupedText = groupWords(renderedText, chunk.chars);
 
     if (isRTL) {
@@ -125,7 +147,7 @@ const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderCo
             <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
             {cleanTrans ? (
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-                {cleanTrans}
+                {renderFormattedTranslation(cleanTrans)}
               </span>
             ) : null}
           </span>
@@ -147,29 +169,32 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   const isRTL = isRTLLanguage(lineObj.text || '');
 
   let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
+  
   const normalizeForMatch = (str) =>
     String(str || '')
       .toLowerCase()
       .replace(/[\p{P}\p{S}\s]/gu, '')
       .trim();
-
+      
   const cleanMainText = normalizeForMatch(lineObj?.text);
   const cleanTransText = normalizeForMatch(rawTranslation);
   const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
 
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
+
   const basePronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
     fontWeight: '800',
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     textAlign: 'center',
-    marginTop: 'var(--dyn-transliterationBottomPadding, 4px)',
+    marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
     display: 'inline-block'
   };
 
   let parsedChunks = null;
   let fullTrans = null;
+
   if (typeof pronString === 'string') {
     const cleanPron = pronString.trim();
     if (cleanPron.startsWith('{')) {
@@ -208,10 +233,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
         let initialClass = 'adlib-hidden';
+
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
+
         adlibProps = {
           className: `adlib-node ${initialClass}`,
           'data-start': start,
@@ -244,6 +271,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -253,6 +281,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       style.color = activeColor;
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
     }
+
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
@@ -275,6 +304,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
       }
     });
+
     if (currentBlock) blocks.push(currentBlock);
 
     const renderedBlocks = blocks.map((blk, bIdx) => {
@@ -291,6 +321,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
         let aParsedChunks = null;
         let aFullTrans = null;
+
         if (adlib.pronunciation) {
           if (typeof adlib.pronunciation === 'string') {
             if (adlib.pronunciation.startsWith('{')) {
@@ -308,6 +339,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         }
 
         const adlibTranslation = cleanTranslationText(adlib.translation);
+
         const alignedAdlibJSX = alignChunksWithTransliteration(
           blk.chars,
           aParsedChunks,
@@ -334,7 +366,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
           >
             {adlibTranslation ? (
               <span className={`chunk-translation ${transClass}`} dir="ltr">
-                {adlibTranslation}
+                {renderFormattedTranslation(adlibTranslation)}
               </span>
             ) : null}
             <span
@@ -377,7 +409,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
           >
             {displayTranslation && bIdx === 0 ? (
               <span className={`chunk-translation ${transClass}`} dir="ltr">
-                {displayTranslation}
+                {renderFormattedTranslation(displayTranslation)}
               </span>
             ) : null}
             <span
@@ -431,7 +463,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         </span>
         {displayPronString && (
           <div className="pronunciation-text" style={{ ...basePronStyle, marginTop: '8px', display: 'block', textAlign: 'left' }} dir="ltr">
-            {displayPronString}
+            {renderFormattedTranslation(displayPronString)}
           </div>
         )}
       </div>
@@ -439,6 +471,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   }
 
   // --- STANDARD PATH (UNSPLIT / FOCUSED VIEW) ---
+
   const alignedJSX = alignChunksWithTransliteration(
     chars,
     parsedChunks,
@@ -450,6 +483,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -476,6 +510,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%' }}>
       <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%' }}>
+        
         <span
           className="core-chunks"
           style={{
@@ -493,7 +528,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         >
           {displayTranslation ? (
             <span className={`chunk-translation ${transClass}`} dir="ltr">
-              {displayTranslation}
+              {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
           <span
@@ -512,10 +547,11 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
             {alignedJSX}
           </span>
         </span>
+
       </span>
       {shouldRenderBlockPron && displayPronString && (
         <div className="pronunciation-text" style={blockPronStyle} dir="ltr">
-          {displayPronString}
+          {renderFormattedTranslation(displayPronString)}
         </div>
       )}
     </div>
@@ -527,6 +563,7 @@ export const LyricLineWrapper = React.memo(({
 }) => {
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
+
   const renderedContent = useMemo(() =>
     renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette, isPlayingCurrentSong),
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
