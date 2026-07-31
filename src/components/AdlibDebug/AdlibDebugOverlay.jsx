@@ -112,7 +112,17 @@ const AdlibDebugOverlay = ({
   useEffect(() => {
     const trackActiveLyrics = () => {
       if (!overlayRef.current) return;
+      
       const overlayRect = overlayRef.current.getBoundingClientRect();
+      // Calculate the safe bounds defined by the inner overflow: hidden container
+      const previewContainer = document.querySelector('.focused-lyrics-preview') || overlayRef.current;
+      const containerRect = previewContainer.getBoundingClientRect();
+      
+      const safeTop = containerRect.top - overlayRect.top;
+      const safeLeft = containerRect.left - overlayRect.left;
+      const safeRight = containerRect.right - overlayRect.left;
+      const safeBottom = containerRect.bottom - overlayRect.top;
+
       const activeLine = document.querySelector('.focused-line.active');
       const newBoxes = [];
 
@@ -171,10 +181,10 @@ const AdlibDebugOverlay = ({
       // Check if Main Lyrics box is clipping canvas
       if (combinedBox) {
         if (
-          combinedBox.left < 0 ||
-          combinedBox.top < 0 ||
-          (combinedBox.left + combinedBox.width) > overlayRect.width ||
-          (combinedBox.top + combinedBox.height) > overlayRect.height
+          combinedBox.left < safeLeft ||
+          combinedBox.top < safeTop ||
+          (combinedBox.left + combinedBox.width) > safeRight ||
+          (combinedBox.top + combinedBox.height) > safeBottom
         ) {
           lyricsClipped = true;
         }
@@ -183,10 +193,10 @@ const AdlibDebugOverlay = ({
       // Check if Singer Name box is clipping canvas
       if (singerBox) {
         if (
-          singerBox.left < 0 ||
-          singerBox.top < 0 ||
-          (singerBox.left + singerBox.width) > overlayRect.width ||
-          (singerBox.top + singerBox.height) > overlayRect.height
+          singerBox.left < safeLeft ||
+          singerBox.top < safeTop ||
+          (singerBox.left + singerBox.width) > safeRight ||
+          (singerBox.top + singerBox.height) > safeBottom
         ) {
           singerClipped = true;
         }
@@ -206,16 +216,15 @@ const AdlibDebugOverlay = ({
           isClippedOut: false
         };
 
-        // Coordinates for overlap checking
         const aRight = adlibBox.left + adlibBox.width;
         const aBottom = adlibBox.top + adlibBox.height;
 
-        // 1. Check if adlib is bleeding out of the canvas (Clipping)
+        // Check if adlib is bleeding out of the canvas (Clipping)
         if (
-          adlibBox.left < 0 || 
-          adlibBox.top < 0 || 
-          aRight > overlayRect.width || 
-          aBottom > overlayRect.height
+          adlibBox.left < safeLeft || 
+          adlibBox.top < safeTop || 
+          aRight > safeRight || 
+          aBottom > safeBottom
         ) {
           stat.isClippedOut = true;
         }
@@ -226,7 +235,6 @@ const AdlibDebugOverlay = ({
           newLines.push({ id: `line-c-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: combinedBox.color });
           stat.toLyrics = Math.round(pts.dist);
 
-          // AABB Intersection check (True if rectangles overlap)
           const cRight = combinedBox.left + combinedBox.width;
           const cBottom = combinedBox.top + combinedBox.height;
           
@@ -246,7 +254,6 @@ const AdlibDebugOverlay = ({
           newLines.push({ id: `line-s-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: singerBox.color });
           stat.toSinger = Math.round(pts.dist);
 
-          // AABB Intersection check for Singer Name Corner
           const sRight = singerBox.left + singerBox.width;
           const sBottom = singerBox.top + singerBox.height;
           
@@ -266,7 +273,6 @@ const AdlibDebugOverlay = ({
           if (syncDataRef.current) {
             for (const line of syncDataRef.current) {
               if (line.isSplit && line.adlibs) {
-                // Match the DOM node's dataset start time to the original syncData object
                 const found = line.adlibs.find(a => Math.abs(a.start - adlibBox.datasetStart) < 0.001);
                 if (found) {
                   matchedSinger = found.singer;
@@ -276,18 +282,15 @@ const AdlibDebugOverlay = ({
             }
           }
 
-          // Calculate physical center of the ad-lib bounding box
           const centerX = adlibBox.left + adlibBox.width / 2;
           const centerY = adlibBox.top + adlibBox.height / 2;
           
-          // Map to physical grid mathematically
           const physCol = Math.max(0, Math.min(cols - 1, Math.floor(centerX / colWidth)));
           const physRow = Math.max(0, Math.min(1, Math.floor(centerY / rowHeight)));
           const physCellIdx = physRow * cols + physCol;
           
           const quadrantArtist = getArtistForCell(physCellIdx);
           
-          // Compare mapped physical artist to actual singing artist
           if (matchedSinger && quadrantArtist) {
              const parsedSingers = matchedSinger.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
              stat.isCorrect = parsedSingers.includes(quadrantArtist);

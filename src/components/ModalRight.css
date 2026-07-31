@@ -136,13 +136,11 @@
 }
 
 .image-manager-title { margin-top: 0; margin-bottom: 8px; color: white; }
-
 .image-manager-sub {
   font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.8);
   margin-bottom: 24px; line-height: 1.5; background: rgba(255,200,0,0.1);
   padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;
 }
-
 .image-manager-list { display: flex; flex-direction: column; gap: 16px; }
 
 .image-manager-row {
@@ -172,16 +170,15 @@
 }
 
 .img-manager-input:focus { outline: none; border-color: var(--accent); }
-
 .img-manager-controls { display: flex; align-items: center; gap: 12px; }
 
 .img-manager-color-picker {
   -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%;
   cursor: pointer; padding: 0; background: transparent; overflow: hidden;
 }
-
 .img-manager-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
 .img-manager-color-picker::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
+
 
 /* Sync Workspace */
 .sync-mode-container {
@@ -221,7 +218,6 @@
   color: var(--text-subdued); min-width: 65px; text-align: center;
   font-variant-numeric: tabular-nums;
 }
-
 .sync-slider { flex: 1; }
 
 .sync-lines-container {
@@ -265,6 +261,7 @@
   border-left: 3px solid var(--workspace-accent, var(--accent));
   box-shadow: inset 4px 0 15px var(--workspace-accent-glow, rgba(179, 136, 235, 0.25));
 }
+
 .sync-line.nested-adlib.adlib-playing .sync-text { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); color: white; }
 
 .action-split-btn {
@@ -272,13 +269,11 @@
   color: white; padding: 4px 10px; border-radius: 50px; font-size: clamp(9px, 1.2vw, 11px);
   cursor: pointer; margin-left: 12px; transition: all 0.2s; flex-shrink: 0;
 }
-
 .action-split-btn:hover {
   background: var(--workspace-accent, var(--accent));
   border-color: var(--workspace-accent, var(--accent));
   color: black;
 }
-
 .action-split-btn.undo { background: rgba(250, 36, 60, 0.1); border-color: rgba(250, 36, 60, 0.3); color: #FA243C; }
 .action-split-btn.undo:hover { background: #FA243C; border-color: #FA243C; color: white; }
 
@@ -292,21 +287,19 @@
   display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; margin-bottom: 14px;
   background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;
 }
-
 .speed-label-container { display: flex; justify-content: space-between; align-items: center; font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.7); }
 .speed-label-container strong {
   color: var(--workspace-accent, var(--accent));
   font-family: monospace; font-size: clamp(12px, 1.4vw, 14px);
 }
-
 .speed-reset-btn {
   background: rgba(255, 255, 255, 0.1); border: none; color: white;
   padding: 2px 8px; border-radius: 4px; font-size: clamp(9px, 1.2vw, 11px); cursor: pointer; transition: background 0.2s;
 }
-
 .speed-reset-btn:hover { background: rgba(255, 255, 255, 0.2); }
 .speed-slider { width: 100%; margin: 4px 0; }
 .speed-ticks { display: flex; justify-content: space-between; font-size: clamp(8px, 1vw, 10px); color: rgba(255, 255, 255, 0.3); padding: 0 2px; font-family: monospace; }
+
 
 /* General Lyrics Layout */
 .live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
@@ -318,7 +311,6 @@
   color: rgba(255, 255, 255, 0.95); overflow-y: auto; flex-grow: 1; padding-right: 8px;
   text-shadow: 0 2px 6px rgba(0,0,0,0.8); -webkit-overflow-scrolling: touch;
 }
-
 .lyrics-display::-webkit-scrollbar { width: 6px; }
 .lyrics-display::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
@@ -327,7 +319,6 @@
   color: white; padding: 16px; border-radius: 12px; font-family: inherit; font-size: clamp(12px, 1.4vw, 14px);
   line-height: 1.6; resize: none; outline: none; transition: border-color 0.2s;
 }
-
 .lyrics-textarea:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(179, 136, 235, 0.2); }
 .lyrics-textarea::-webkit-scrollbar { width: 8px; }
 .lyrics-textarea::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
@@ -343,7 +334,6 @@
   mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
   scrollbar-width: none; -ms-overflow-style: none;
 }
-
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
 
 .preview-line {
@@ -356,7 +346,6 @@
 }
 
 .preview-line:hover { opacity: 0.8; transform: translate3d(0,0,0) scale(0.98); }
-
 .preview-line.active { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 
 .focused-lyrics-preview {
@@ -450,7 +439,6 @@
 
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
 .primary-text { display: block; width: 100%; box-sizing: border-box; }
-
 
 /* Transliteration Text Styling */
 rt.pronunciation-text, .pronunciation-text {
@@ -562,16 +550,19 @@ rt.pronunciation-text, .pronunciation-text {
 .chunk-translation.adlib-node {
   transform: translate(-50%, -100%) !important;
 }
+
 .chunk-translation.adlib-node.adlib-hidden {
   opacity: 0 !important;
   transform: translate(-50%, calc(-100% + 8px)) !important;
   filter: grayscale(100%) !important;
 }
+
 .chunk-translation.adlib-node.adlib-visible {
   opacity: 0.6 !important;
   transform: translate(-50%, -100%) !important;
   filter: grayscale(0%) !important;
 }
+
 .chunk-translation.adlib-node.adlib-active {
   opacity: 1 !important;
   transform: translate(-50%, -100%) !important;
@@ -609,34 +600,36 @@ rt.pronunciation-text, .pronunciation-text {
   visibility: visible;
 }
 
+
 /* --- FADE UP ANIMATION FOR TRANSLATED TEXT (FOCUSED VIEW MODE) --- */
+
 /* Main lyrics line stays 100% visible */
 .focused-line .main-lyrics-layer {
   opacity: 1 !important;
   filter: none !important;
 }
 
-/* Base Translation Container (Positioned atop main lyrics line) */
+/* Base Translation Container (Re-engineered to flow naturally in the flex container to prevent clipping) */
 .chunk-translation.focused-translation {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -100%);
-  width: max-content;
-  max-width: 95%;
+  position: relative; /* Forces container to respect boundaries */
+  display: block;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
   text-align: center;
   pointer-events: none;
   z-index: 10;
-  margin-top: calc(-1 * var(--dyn-trans-top-padding, 8px));
+  margin-top: 0;
+  margin-bottom: var(--dyn-trans-top-padding, 8px);
   box-sizing: border-box;
-  
   /* Strict Font Size from Settings */
   font-size: var(--dyn-trans-font-size, 0.55em) !important;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   line-height: 1.2;
-  
   /* Initial state: Hidden and slightly offset down */
   opacity: 0;
   visibility: hidden;
@@ -654,11 +647,11 @@ rt.pronunciation-text, .pronunciation-text {
   0% {
     opacity: 0;
     visibility: hidden;
-    transform: translate(-50%, calc(-100% + 12px));
+    transform: translateY(12px);
   }
   100% {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, -100%);
+    transform: translateY(0);
   }
 }
