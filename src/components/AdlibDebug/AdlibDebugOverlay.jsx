@@ -33,6 +33,9 @@ const AdlibDebugOverlay = ({
 }) => {
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
+  
+  // HUD UI States
+  const [isIdle, setIsIdle] = useState(true);
   const [boundingBoxes, setBoundingBoxes] = useState([]);
   const [radialLines, setRadialLines] = useState([]);
   const [distanceStats, setDistanceStats] = useState([]);
@@ -104,17 +107,29 @@ const AdlibDebugOverlay = ({
     const trackActiveLyrics = () => {
       if (!overlayRef.current) return;
       
+      const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
+      
+      // ZERO CPU IDLE CHECK: If there are no ad-libs on screen, immediately return!
+      setIsIdle(activeAdlibs.length === 0);
+      if (activeAdlibs.length === 0) {
+        setBoundingBoxes([]);
+        setRadialLines([]);
+        setDistanceStats([]);
+        setSafeZones([]);
+        setLayoutStats({ lyricsClipped: false, singerClipped: false });
+        rafRef.current = requestAnimationFrame(trackActiveLyrics);
+        return;
+      }
+
       const overlayRect = overlayRef.current.getBoundingClientRect();
       const previewContainer = document.querySelector('.focused-lyrics-preview') || overlayRef.current;
       const containerRect = previewContainer.getBoundingClientRect();
       
-      // True boundaries of the canvas
       const canvasTop = containerRect.top - overlayRect.top;
       const canvasLeft = containerRect.left - overlayRect.left;
       const canvasRight = containerRect.right - overlayRect.left;
       const canvasBottom = containerRect.bottom - overlayRect.top;
 
-      // Syncing Goldilocks Margin Math (For Adlib Safe Placement Zones)
       const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08);
       const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08);
       const LYRIC_PAD = 25;
@@ -143,8 +158,6 @@ const AdlibDebugOverlay = ({
           newBoxes.push({ id: 'singer-name-bounds', color: '#f97316', ...tightBounds });
         }
       }
-
-      const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
       
       activeAdlibs.forEach((adlibNode, idx) => {
         const tightBounds = getTightTextBounds(adlibNode, overlayRect);
@@ -191,7 +204,6 @@ const AdlibDebugOverlay = ({
       let lyricsClipped = false;
       let singerClipped = false;
 
-      // Core Layout Checks against TRUE CANVAS BOUNDARIES, not adlib margins
       if (combinedBox) {
         if (
           combinedBox.left < canvasLeft ||
@@ -343,7 +355,6 @@ const AdlibDebugOverlay = ({
         const centerY = adlibBox.top + adlibBox.height / 2;
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
-        // --- Verify Radial Clock Rotation (Mathematical Multiplicative) ---
         const actualRot = parseFloat(adlibBox.rotation) || 0;
         const rotMultiplier = (centerX - canvasMidX) / (canvasMidX || 1);
         const ySign = (centerY < canvasMidY) ? 1 : -1;
@@ -363,7 +374,6 @@ const AdlibDebugOverlay = ({
         
         stat.toCenter = distToCenter;
 
-        // Clip checks correctly verified against Goldilocks Safe Zones
         if (
           adlibBox.left < safeLeft || 
           adlibBox.top < safeTop || 
@@ -447,7 +457,6 @@ const AdlibDebugOverlay = ({
   return (
     <div className="adlib-debug-overlay" ref={overlayRef}>
       
-      {/* SVG Layer for Radial Clock Lines */}
       <svg className="debug-svg-layer">
         {radialLines.map(line => (
           <g key={line.id}>
@@ -456,89 +465,87 @@ const AdlibDebugOverlay = ({
               x2={line.x2} y2={line.y2} 
               stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
             />
-            {/* Center Canvas Dot */}
             <circle cx={line.x2} cy={line.y2} r="4" fill="#ff00ff" />
-            {/* Adlib Center Dot */}
             <circle cx={line.x1} cy={line.y1} r="3" fill="#ffffff" />
           </g>
         ))}
       </svg>
 
-      {/* HUD info panel */}
       <div className="debug-hud-panel">
         <div><strong>Current Singer(s):</strong> {currentSingerBg?.name || 'None'}</div>
         <div><strong>Active Adlib Singer:</strong> {activeAdlibSingers.length > 0 ? activeAdlibSingers.join(', ') : 'None'}</div>
         <div><strong>Layout Mode:</strong> {activeNames.length === 0 ? 'Idle' : (isMulti ? `Matrix (${cols}x2)` : 'Full Screen')}</div>
         
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px', marginTop: '6px' }}>
-          <strong>Core Layout Status:</strong>{' '}
-          {layoutStats.lyricsClipped ? (
-            <span style={{color: '#ef4444'}}>Lyrics Clipped</span>
-          ) : (
-            <span style={{color: '#4ade80'}}>Lyrics Safe</span>
-          )}{' | '}
-          {layoutStats.singerClipped ? (
-            <span style={{color: '#ef4444'}}>Name Clipped</span>
-          ) : (
-            <span style={{color: '#4ade80'}}>Name Safe</span>
-          )}
-        </div>
-
-        {distanceStats.length > 0 && distanceStats.map(stat => (
-          <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <div>
-              <strong>Adlib {stat.id + 1} Radial:</strong>
-              {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}° `}
-              {stat.isRotationCorrect ? (
-                <span style={{color: '#4ade80'}}>✔ Valid</span>
-              ) : (
-                <span style={{color: '#ef4444'}}>✘ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
-              )}
-            </div>
-            <div>
-              <strong>Placement:</strong> {isMulti ? (
-                stat.isCorrect ? (
-                  <span style={{color: '#4ade80'}}> Correct Quadrant</span>
-                ) : (
-                  <span style={{color: '#ef4444'}}> Wrong (in {stat.quadArtist}'s quad)</span>
-                )
-              ) : ' Full Screen'}
-            </div>
-            <div>
-              <strong>Status:</strong>{' '}
-              {stat.isCollidingWithLyrics ? (
-                <span style={{color: '#ef4444'}}>Lyrics Collision</span>
-              ) : (
-                <span style={{color: '#4ade80'}}>Safe from Lyrics</span>
-              )}{' | '}
-              {stat.isCollidingWithSinger ? (
-                <span style={{color: '#ef4444'}}>Name Collision</span>
-              ) : (
-                <span style={{color: '#4ade80'}}>Safe from Name</span>
-              )}{' | '}
-              {stat.isClippedOut ? (
-                <span style={{color: '#ef4444'}}>Clipped Bounds</span>
-              ) : (
-                <span style={{color: '#4ade80'}}>Inside Canvas</span>
-              )}
-            </div>
+        {isIdle ? (
+          <div style={{ color: '#4ade80', marginTop: '10px', fontSize: '13px' }}>
+            <strong>Status:</strong> Idle (Calculations Paused)
           </div>
-        ))}
+        ) : (
+          <>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px', marginTop: '6px' }}>
+              <strong>Core Layout Status:</strong>{' '}
+              {layoutStats.lyricsClipped ? (
+                <span style={{color: '#ef4444'}}>Lyrics Clipped</span>
+              ) : (
+                <span style={{color: '#4ade80'}}>Lyrics Safe</span>
+              )}{' | '}
+              {layoutStats.singerClipped ? (
+                <span style={{color: '#ef4444'}}>Name Clipped</span>
+              ) : (
+                <span style={{color: '#4ade80'}}>Name Safe</span>
+              )}
+            </div>
+
+            {distanceStats.length > 0 && distanceStats.map(stat => (
+              <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <div>
+                  <strong>Adlib {stat.id + 1} Radial:</strong>
+                  {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}° `}
+                  {stat.isRotationCorrect ? (
+                    <span style={{color: '#4ade80'}}>✔ Valid</span>
+                  ) : (
+                    <span style={{color: '#ef4444'}}>✘ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
+                  )}
+                </div>
+                <div>
+                  <strong>Placement:</strong> {isMulti ? (
+                    stat.isCorrect ? (
+                      <span style={{color: '#4ade80'}}> Correct Quadrant</span>
+                    ) : (
+                      <span style={{color: '#ef4444'}}> Wrong (in {stat.quadArtist}'s quad)</span>
+                    )
+                  ) : ' Full Screen'}
+                </div>
+                <div>
+                  <strong>Status:</strong>{' '}
+                  {stat.isCollidingWithLyrics ? (
+                    <span style={{color: '#ef4444'}}>Lyrics Collision</span>
+                  ) : (
+                    <span style={{color: '#4ade80'}}>Safe from Lyrics</span>
+                  )}{' | '}
+                  {stat.isCollidingWithSinger ? (
+                    <span style={{color: '#ef4444'}}>Name Collision</span>
+                  ) : (
+                    <span style={{color: '#4ade80'}}>Safe from Name</span>
+                  )}{' | '}
+                  {stat.isClippedOut ? (
+                    <span style={{color: '#ef4444'}}>Clipped Bounds</span>
+                  ) : (
+                    <span style={{color: '#4ade80'}}>Inside Canvas</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {isSingerVisible && !isMulti && activeNames.length === 1 && (
-        <div 
-          className="debug-fullscreen-box"
-          style={{ borderColor: masterPalette[activeNames[0]] || '#ff00ff' }}
-        >
-        </div>
+        <div className="debug-fullscreen-box" style={{ borderColor: masterPalette[activeNames[0]] || '#ff00ff' }}></div>
       )}
 
       {isSingerVisible && isMulti && (
-        <div 
-          className="debug-matrix-grid" 
-          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-        >
+        <div className="debug-matrix-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
           {Array.from({ length: cols * 2 }).map((_, cellIdx) => {
             const targetArtist = getArtistForCell(cellIdx);
             const artistColor = masterPalette[targetArtist] || '#ff00ff';
@@ -556,35 +563,22 @@ const AdlibDebugOverlay = ({
         </div>
       )}
 
-      {/* Render Quadrant-Aware Safe Zones */}
       {safeZones.map(zone => (
         <React.Fragment key={zone.id}>
           <div
             className="debug-safe-zone"
-            style={{
-              top: `${zone.top}px`,
-              left: `${zone.left}px`,
-              width: `${zone.width}px`,
-              height: `${zone.height}px`,
-            }}
+            style={{ top: `${zone.top}px`, left: `${zone.left}px`, width: `${zone.width}px`, height: `${zone.height}px` }}
           >
             <span className="debug-safe-zone-label">{zone.label}</span>
           </div>
         </React.Fragment>
       ))}
 
-      {/* Render Dynamic Bounding Boxes */}
       {boundingBoxes.map(box => (
         <div
           key={box.id}
           className="debug-bounding-box"
-          style={{
-            top: `${box.top}px`,
-            left: `${box.left}px`,
-            width: `${box.width}px`,
-            height: `${box.height}px`,
-            borderColor: box.color
-          }}
+          style={{ top: `${box.top}px`, left: `${box.left}px`, width: `${box.width}px`, height: `${box.height}px`, borderColor: box.color }}
         />
       ))}
       

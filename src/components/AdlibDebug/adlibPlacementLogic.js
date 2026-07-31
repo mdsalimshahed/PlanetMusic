@@ -1,7 +1,7 @@
 /* --- src/components/AdlibDebug/adlibPlacementLogic.js --- */
 
-// Deterministic pseudo-random generator so ad-libs always appear in the exact same spot on replays
-const pseudoRandom = (seedStr) => {
+// Deterministic pseudo-random generator
+export const pseudoRandom = (seedStr) => {
   let hash = 0;
   for (let i = 0; i < seedStr.length; i++) {
     hash = (hash << 5) - hash + seedStr.charCodeAt(i);
@@ -11,8 +11,8 @@ const pseudoRandom = (seedStr) => {
   return x - Math.floor(x);
 };
 
-// Helper to get coordinates relative to the preview container
-const getRelativeRect = (element, containerRect) => {
+// Exported so the tracker can do JIT DOM reading outside of the loop
+export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
   const rect = element.getBoundingClientRect();
   return {
@@ -26,7 +26,11 @@ const getRelativeRect = (element, containerRect) => {
 };
 
 export const generateSafeAdlibPosition = (
-  adlibElement,
+  adlibWidth,
+  adlibHeight,
+  containerRect,
+  cBox,
+  sBox,
   isMulti,
   cols,
   activeSingersList,
@@ -35,19 +39,6 @@ export const generateSafeAdlibPosition = (
   globalIndex,
   sessionSeed
 ) => {
-  const container = document.querySelector('.focused-lyrics-preview');
-  if (!container || !adlibElement) return { left: '50%', top: '50%', rot: 0 };
-
-  const containerRect = container.getBoundingClientRect();
-  const lyricsNode = document.querySelector('.focused-line.active');
-  const singerNode = document.querySelector('.singer-name-corner.visible');
-
-  const cBox = getRelativeRect(lyricsNode, containerRect);
-  const sBox = getRelativeRect(singerNode, containerRect);
-
-  const adlibWidth = adlibElement.offsetWidth;
-  const adlibHeight = adlibElement.offsetHeight;
-
   // 1. The Goldilocks Margins
   const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08); 
   const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08); 
@@ -149,23 +140,19 @@ export const generateSafeAdlibPosition = (
   if (intersectedAreas.length > 0) {
     const canvasMidY = containerRect.height / 2;
     
-    // Group zones by screen half
     const topZones = intersectedAreas.filter(a => a.top < canvasMidY).sort((a, b) => a.left - b.left);
     const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY).sort((a, b) => a.left - b.left);
 
-    // Use sessionSeed to get a single constant offset for the entire song playback session
     const sessionOffset = Math.floor(pseudoRandom(sessionSeed) * 10);
     const effectiveIndex = globalIndex + sessionOffset;
 
     if (topZones.length > 0 && bottomZones.length > 0) {
-      // Bouncing logic: Evens go Top, Odds go Bottom
       if (effectiveIndex % 2 === 0) {
         targetArea = topZones[Math.floor(effectiveIndex / 2) % topZones.length];
       } else {
         targetArea = bottomZones[Math.floor(effectiveIndex / 2) % bottomZones.length];
       }
     } else {
-      // Fallback: If only one half is available (e.g. lyrics take up whole bottom), cycle horizontally
       intersectedAreas.sort((a, b) => (a.top - b.top) || (a.left - b.left));
       targetArea = intersectedAreas[effectiveIndex % intersectedAreas.length];
     }
@@ -176,7 +163,6 @@ export const generateSafeAdlibPosition = (
     targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop };
   }
 
-  // Raw coordinate uniquely randomized for this specific adlib inside the chosen area
   const rawX = targetArea.left + (pseudoRandom(seedKey + '-x') * targetArea.width);
   const rawY = targetArea.top + (pseudoRandom(seedKey + '-y') * targetArea.height);
 
@@ -184,20 +170,10 @@ export const generateSafeAdlibPosition = (
   const centerX = containerRect.width / 2;
   const centerY = containerRect.height / 2;
   
-  // X-Axis (-1 for Left, +1 for Right)
   const rotMultiplier = (rawX - centerX) / (centerX || 1); 
-  
-  // Y-Axis (+1 for Top half, -1 for Bottom half) [DOM coordinates inverted to Cartesian]
   const ySign = (rawY < centerY) ? 1 : -1;
-  
-  // MULTIPLICATION LOGIC:
-  // Top-Left (- * +) = -
-  // Top-Right (+ * +) = +
-  // Bottom-Left (- * -) = +
-  // Bottom-Right (+ * -) = -
   const baseRot = rotMultiplier * ySign * 18;
   
-  // Add a slight organic variation (±4 degrees)
   const randRotVar = (pseudoRandom(seedKey + '-rotvar') * 8) - 4;
   const finalRot = baseRot + randRotVar;
 

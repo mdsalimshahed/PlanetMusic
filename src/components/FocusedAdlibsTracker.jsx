@@ -1,25 +1,24 @@
 /* --- src/components/FocusedAdlibsTracker.jsx --- */
-import React, { useMemo, useRef, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { normalizeTrans, renderFormattedTranslation } from './LyricsLineRenderer';
-import { generateSafeAdlibPosition } from './AdlibDebug/adlibPlacementLogic';
+import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from './AdlibDebug/adlibPlacementLogic';
 
-// Deterministic pseudo-random float generator to keep rot/variation steady per ad-lib during a session
-const pseudoRandom = (seedStr) => {
-  let hash = 0;
-  for (let i = 0; i < seedStr.length; i++) {
-    hash = (hash << 5) - hash + seedStr.charCodeAt(i);
-    hash |= 0;
-  }
-  const x = Math.sin(hash++) * 10000;
-  return x - Math.floor(x);
-};
+// GLOBAL CACHE: Persists calculated ad-lib positions in memory even if you go to the dashboard!
+// Only clears mathematically if window size or song lyrics change.
+const adlibPlacementCache = new Map();
 
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
 
-  // Generate a unique seed for this specific playback session.
-  const [sessionSeed] = useState(() => Math.random().toString(36).substring(2, 9));
+  // Generate a totally stable session seed based directly on the lyrics.
+  // If the lyrics remain the same, the seed is identical (persists across dashboard returns).
+  // If lyrics change, the seed changes automatically, naturally wiping the cache!
+  const sessionSeed = useMemo(() => {
+    if (!syncData || syncData.length === 0) return 'empty_seed';
+    const textHash = syncData.map(d => d.text).join('').substring(0, 50);
+    return `seed_${Math.floor(pseudoRandom(textHash) * 100000)}`;
+  }, [syncData]);
 
   // ------------------------------------------------------------------
   // AD-LIB COMPILATION & RENDER GENERATOR
@@ -28,7 +27,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const items = [];
     if (!syncData) return items;
 
-    let globalAdlibCounter = 0; // Tracks consecutive sequence across the entire song
+    let globalAdlibCounter = 0; 
 
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
@@ -44,7 +43,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
-          // Standard rich-text formatting
           const renderAdlibPure = (adlibObj) => {
             let aPron = adlibObj?.pronunciation;
             let aTrans = '';
@@ -127,14 +125,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                       marginBottom: '6px',
                       maxWidth: '100%',
                       width: 'max-content',
-                      whiteSpace: 'pre' // Force no wrap
+                      whiteSpace: 'pre'
                     }}
                     dir="ltr"
                   >
                     {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
-                {/* FORCED NO-WRAP PREVENTS AABB MATH FROM DISTORTING */}
                 <span className="primary-text" style={{ whiteSpace: 'pre', display: 'inline-block' }} dir="auto">
                   {renderedSegments}
                 </span>
@@ -148,8 +145,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           items.push({
             key,
-            globalIndex: globalAdlibCounter++, // Assign global sequence ID
-            sessionSeed, // Pass seed so the placement engine can offset chaotic jumping
+            globalIndex: globalAdlibCounter++, 
+            sessionSeed, 
             seedBase,
             start,
             end,
@@ -165,10 +162,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
-  // ------------------------------------------------------------------
-  // HIGH-PERFORMANCE DOM CACHING & PLACEMENT ENGINE
-  // ------------------------------------------------------------------
-  
+  // Update DOM Ref cache quietly when components mount
   useEffect(() => {
     if (containerRef.current) {
       cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line')).map((node, i) => {
@@ -185,13 +179,15 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           cols: dataItem.cols,
           activeSingersList: dataItem.activeSingersList,
           activeNames: dataItem.activeNames,
-          isActive: node.classList.contains('active'),
-          isPlaced: false 
+          isActive: node.classList.contains('active')
         };
       });
     }
   }, [adlibsToRender]);
 
+  // ------------------------------------------------------------------
+  // JIT (JUST-IN-TIME) PLACEMENT CACHE ENGINE - ZERO IDLE CPU USAGE
+  // ------------------------------------------------------------------
   useEffect(() => {
     const clearActiveNodes = () => {
       if (cachedTrackNodesRef.current.length > 0) {
@@ -199,7 +195,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           if (item.isActive) {
             item.node.classList.remove('active');
             item.isActive = false;
-            item.isPlaced = false; 
           }
         });
       }
@@ -220,38 +215,62 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
         if (shouldBeActive && !item.isActive) {
           
-          if (!item.isPlaced) {
-            const newPos = generateSafeAdlibPosition(
-              item.node,
-              item.isMulti,
-              item.cols,
-              item.activeSingersList,
-              item.activeNames,
-              item.seedBase,
-              item.globalIndex,
-              item.sessionSeed // Injected so offset coordinates lock for the session
-            );
-            
-            item.node.style.setProperty('--adlib-left', newPos.left);
-            item.node.style.setProperty('--adlib-top', newPos.top);
-            item.node.style.setProperty('--adlib-rot', `${newPos.rot}deg`);
-            item.isPlaced = true;
+          // Use Browser Memory Cache mapping Window Size + Unique Adlib Key
+          const cacheKey = `${item.sessionSeed}_${item.key}_${window.innerWidth}x${window.innerHeight}`;
+          let pos = adlibPlacementCache.get(cacheKey);
+
+          // JIT Calculation ONLY if missing from memory cache
+          if (!pos) {
+            const container = containerRef.current?.parentElement;
+            if (container) {
+              const containerRect = container.getBoundingClientRect();
+              
+              // Only measuring the exact lyric line currently active
+              const lyricsNode = container.querySelector('.focused-line.active');
+              const singerNode = container.querySelector('.singer-name-corner.visible');
+              
+              const cBox = getRelativeRect(lyricsNode, containerRect);
+              const sBox = getRelativeRect(singerNode, containerRect);
+
+              pos = generateSafeAdlibPosition(
+                item.node.offsetWidth || 150,
+                item.node.offsetHeight || 40,
+                containerRect,
+                cBox,
+                sBox,
+                item.isMulti,
+                item.cols,
+                item.activeSingersList,
+                item.activeNames,
+                item.seedBase,
+                item.globalIndex,
+                item.sessionSeed
+              );
+              
+              // Cache it so it never runs math again for this screen size!
+              adlibPlacementCache.set(cacheKey, pos);
+            }
+          }
+
+          // Apply variables instantly
+          if (pos) {
+            item.node.style.setProperty('--adlib-left', pos.left);
+            item.node.style.setProperty('--adlib-top', pos.top);
+            item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
           }
 
           item.node.classList.add('active');
           item.isActive = true;
+
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;
-          item.isPlaced = false;
         }
       }
     };
 
     const handlePlayState = (e) => {
-      if (e.detail.isEnded) {
-        clearActiveNodes();
-      }
+      if (e.detail.isEnded) clearActiveNodes();
     };
 
     window.addEventListener('globalTimeUpdate', handleTime);
@@ -273,9 +292,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           className="focused-adlib-line"
           data-start={item.start}
           data-end={item.end}
-          data-global-index={item.globalIndex} // Pass index so HUD can read it
+          data-global-index={item.globalIndex}
           style={{
-            '--adlib-rot': '0deg', // Initializes flat so math can measure it correctly
+            '--adlib-rot': '0deg', 
             '--adlib-top': '50%',
             '--adlib-left': '50%',
             maxWidth: 'none',
