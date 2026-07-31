@@ -1,7 +1,6 @@
 /* --- src/components/AdlibDebug/AdlibDebugOverlay.jsx --- */
 import React, { useEffect, useRef, useState } from 'react';
 import './AdlibDebugOverlay.css';
-import { calculateSafeAdlibPosition } from './adlibPlacementLogic';
 
 const getClosestPoints = (r1, r2) => {
   let x1, x2, y1, y2;
@@ -154,7 +153,6 @@ const AdlibDebugOverlay = ({
             ...tightBounds
           });
         } else {
-          // Fallback if tightbounds fails
           const r = adlibNode.getBoundingClientRect();
           aabbW = r.width;
           aabbH = r.height;
@@ -166,10 +164,6 @@ const AdlibDebugOverlay = ({
         }
 
         newAdlibCopies.push({
-          html: adlibNode.innerHTML,
-          width: adlibNode.offsetWidth,
-          height: adlibNode.offsetHeight,
-          rot: adlibNode.style.getPropertyValue('--adlib-rot') || '0deg',
           aabbW,
           aabbH
         });
@@ -178,10 +172,7 @@ const AdlibDebugOverlay = ({
       setAdlibCopies(prev => {
         if (prev.length !== newAdlibCopies.length) return newAdlibCopies;
         if (prev.length > 0) {
-          if (prev[0].html !== newAdlibCopies[0].html || 
-              prev[0].width !== newAdlibCopies[0].width ||
-              prev[0].rot !== newAdlibCopies[0].rot ||
-              prev[0].aabbW !== newAdlibCopies[0].aabbW ||
+          if (prev[0].aabbW !== newAdlibCopies[0].aabbW ||
               prev[0].aabbH !== newAdlibCopies[0].aabbH) {
               return newAdlibCopies;
           }
@@ -197,7 +188,6 @@ const AdlibDebugOverlay = ({
       const newStats = [];
       const colWidth = overlayRect.width / cols;
       const rowHeight = overlayRect.height / 2;
-      const midX = overlayRect.width / 2;
       
       let lyricsClipped = false;
       let singerClipped = false;
@@ -267,14 +257,16 @@ const AdlibDebugOverlay = ({
           baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: safeTop, bottom: combinedBox.top });
         }
         
-        // Bottom Zone: Expanded to full width, capped vertically by the singer box
+        // Bottom Zone
         if (combinedBox.top + combinedBox.height < safeBottom) {
           const bTop = combinedBox.top + combinedBox.height;
-          // Set the floor to the top of the singer box (or safeBottom if no singer box)
-          const bBottom = singerBox ? Math.min(singerBox.top, safeBottom) : safeBottom;
           
-          if (bBottom > bTop) {
-            baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: bBottom });
+          if (singerBox && singerBox.top < safeBottom) {
+            if (singerBox.top > bTop) {
+              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: singerBox.top });
+            }
+          } else {
+            baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: safeBottom });
           }
         }
 
@@ -300,7 +292,6 @@ const AdlibDebugOverlay = ({
 
         baseZones.forEach(bz => {
           validCells.forEach(vc => {
-            // Intersect Base Zones with Valid Matrix Cells
             const ixLeft = Math.max(bz.left, vc.left);
             const ixRight = Math.min(bz.right, vc.right);
             const ixTop = Math.max(bz.top, vc.top);
@@ -310,11 +301,8 @@ const AdlibDebugOverlay = ({
               const szWidth = ixRight - ixLeft;
               const szHeight = ixBottom - ixTop;
               
-              let idealX = ixLeft + (szWidth / 2);
-              let idealY = ixTop + (szHeight / 2);
               let innerZone = null;
 
-              // Calculate the Inner Safe Zone using AABB dimensions so bounding boxes don't clip
               if (activeAdlibAABB_W > 0 && activeAdlibAABB_H > 0) {
                 const iLeft = ixLeft + activeAdlibAABB_W / 2;
                 const iTop = ixTop + activeAdlibAABB_H / 2;
@@ -323,9 +311,6 @@ const AdlibDebugOverlay = ({
 
                 if (iWidth >= 0 && iHeight >= 0) {
                   innerZone = { left: iLeft, top: iTop, width: iWidth, height: iHeight };
-                  // Ensure ideal placement is clamped inside the safe inner zone bounds
-                  idealX = Math.max(iLeft, Math.min(iLeft + iWidth, idealX));
-                  idealY = Math.max(iTop, Math.min(iTop + iHeight, idealY));
                 }
               }
 
@@ -336,8 +321,6 @@ const AdlibDebugOverlay = ({
                 width: szWidth,
                 height: szHeight,
                 label: `${bz.type} Zone`,
-                idealX,
-                idealY,
                 innerZone
               });
             }
@@ -345,7 +328,6 @@ const AdlibDebugOverlay = ({
         });
       }
       setSafeZones(newSafeZones);
-      // ---------------------------------------
 
       adlibBoxes.forEach((adlibBox, idx) => {
         let stat = { 
@@ -561,7 +543,7 @@ const AdlibDebugOverlay = ({
         </div>
       )}
 
-      {/* Render Quadrant-Aware Safe Zones & Centered Adlib Ghost Copies */}
+      {/* Render Quadrant-Aware Safe Zones & AABB Mock Bounding Boxes */}
       {safeZones.map(zone => (
         <React.Fragment key={zone.id}>
           <div
@@ -576,7 +558,7 @@ const AdlibDebugOverlay = ({
             <span className="debug-safe-zone-label">{zone.label}</span>
           </div>
 
-          {/* Render the calculated Inner Safe Zone for Center Coordinates */}
+          {/* Render the calculated Inner Safe Zone */}
           {zone.innerZone && (
             <div
               className="debug-inner-safe-zone"
@@ -588,22 +570,6 @@ const AdlibDebugOverlay = ({
               }}
             >
               <span className="debug-inner-safe-zone-label">Center-Point Safe Area</span>
-            </div>
-          )}
-
-          {/* Render only the white dashed AABB box at the ideal location */}
-          {adlibCopies.length > 0 && (
-            <div 
-              className="debug-adlib-copy-wrapper"
-              style={{ 
-                left: `${zone.idealX}px`, 
-                top: `${zone.idealY}px`, 
-                width: `${adlibCopies[0].aabbW}px`, 
-                height: `${adlibCopies[0].aabbH}px`,
-                transform: `translate(-50%, -50%)`
-              }}
-            >
-              <div className="debug-adlib-copy-box" />
             </div>
           )}
         </React.Fragment>
