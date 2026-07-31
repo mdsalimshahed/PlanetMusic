@@ -108,10 +108,23 @@ const AdlibDebugOverlay = ({
       const previewContainer = document.querySelector('.focused-lyrics-preview') || overlayRef.current;
       const containerRect = previewContainer.getBoundingClientRect();
       
-      const safeTop = containerRect.top - overlayRect.top;
-      const safeLeft = containerRect.left - overlayRect.left;
-      const safeRight = containerRect.right - overlayRect.left;
-      const safeBottom = containerRect.bottom - overlayRect.top;
+      // True boundaries of the canvas
+      const canvasTop = containerRect.top - overlayRect.top;
+      const canvasLeft = containerRect.left - overlayRect.left;
+      const canvasRight = containerRect.right - overlayRect.left;
+      const canvasBottom = containerRect.bottom - overlayRect.top;
+
+      // Syncing Goldilocks Margin Math (For Adlib Safe Placement Zones)
+      const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08);
+      const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08);
+      const LYRIC_PAD = 25;
+      const SINGER_PAD = 20;
+      const MAX_DIST = 160;
+
+      const safeTop = canvasTop + EDGE_PAD_Y;
+      const safeLeft = canvasLeft + EDGE_PAD_X;
+      const safeRight = canvasRight - EDGE_PAD_X;
+      const safeBottom = canvasBottom - EDGE_PAD_Y;
 
       const activeLine = document.querySelector('.focused-line.active');
       const newBoxes = [];
@@ -136,9 +149,12 @@ const AdlibDebugOverlay = ({
       activeAdlibs.forEach((adlibNode, idx) => {
         const tightBounds = getTightTextBounds(adlibNode, overlayRect);
         const rotation = adlibNode.style.getPropertyValue('--adlib-rot') || '0deg';
+        const globalIndex = parseInt(adlibNode.dataset.globalIndex || idx, 10);
+        
         if (tightBounds) {
           newBoxes.push({
             id: `adlib-bounds-${idx}`,
+            globalIndex,
             color: '#ffffff', 
             datasetStart: parseFloat(adlibNode.dataset.start),
             rotation,
@@ -148,6 +164,7 @@ const AdlibDebugOverlay = ({
           const r = adlibNode.getBoundingClientRect();
           newBoxes.push({
             id: `adlib-bounds-${idx}`,
+            globalIndex,
             color: '#ffffff',
             datasetStart: parseFloat(adlibNode.dataset.start),
             rotation,
@@ -174,12 +191,13 @@ const AdlibDebugOverlay = ({
       let lyricsClipped = false;
       let singerClipped = false;
 
+      // Core Layout Checks against TRUE CANVAS BOUNDARIES, not adlib margins
       if (combinedBox) {
         if (
-          combinedBox.left < safeLeft ||
-          combinedBox.top < safeTop ||
-          (combinedBox.left + combinedBox.width) > safeRight ||
-          (combinedBox.top + combinedBox.height) > safeBottom
+          combinedBox.left < canvasLeft ||
+          combinedBox.top < canvasTop ||
+          (combinedBox.left + combinedBox.width) > canvasRight ||
+          (combinedBox.top + combinedBox.height) > canvasBottom
         ) {
           lyricsClipped = true;
         }
@@ -187,10 +205,10 @@ const AdlibDebugOverlay = ({
 
       if (singerBox) {
         if (
-          singerBox.left < safeLeft ||
-          singerBox.top < safeTop ||
-          (singerBox.left + singerBox.width) > safeRight ||
-          (singerBox.top + singerBox.height) > safeBottom
+          singerBox.left < canvasLeft ||
+          singerBox.top < canvasTop ||
+          (singerBox.left + singerBox.width) > canvasRight ||
+          (singerBox.top + singerBox.height) > canvasBottom
         ) {
           singerClipped = true;
         }
@@ -235,18 +253,27 @@ const AdlibDebugOverlay = ({
         const baseZones = [];
         
         if (combinedBox.top > safeTop) {
-          baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: safeTop, bottom: combinedBox.top });
+          const bottomEdge = combinedBox.top - LYRIC_PAD;
+          const topEdge = Math.max(safeTop, bottomEdge - MAX_DIST);
+          if (bottomEdge > topEdge) {
+            baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+          }
         }
         
         if (combinedBox.top + combinedBox.height < safeBottom) {
-          const bTop = combinedBox.top + combinedBox.height;
+          const topEdge = combinedBox.top + combinedBox.height + LYRIC_PAD;
+          let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
           
           if (singerBox && singerBox.top < safeBottom) {
-            if (singerBox.top > bTop) {
-              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: singerBox.top });
+            const sTopAdjusted = singerBox.top - SINGER_PAD;
+            if (sTopAdjusted > topEdge) {
+              bottomEdge = Math.min(bottomEdge, sTopAdjusted);
+              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
             }
           } else {
-            baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: bTop, bottom: safeBottom });
+            if (bottomEdge > topEdge) {
+              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+            }
           }
         }
 
@@ -297,7 +324,7 @@ const AdlibDebugOverlay = ({
 
       adlibBoxes.forEach((adlibBox, idx) => {
         let stat = { 
-          id: idx, 
+          id: adlibBox.globalIndex !== undefined ? adlibBox.globalIndex : idx, 
           rotation: adlibBox.rotation,
           toCenter: null, 
           isCorrect: true, 
@@ -316,26 +343,17 @@ const AdlibDebugOverlay = ({
         const centerY = adlibBox.top + adlibBox.height / 2;
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
-        // --- Verify Radial Clock Rotation (Cartesian Multiplication) ---
+        // --- Verify Radial Clock Rotation (Mathematical Multiplicative) ---
         const actualRot = parseFloat(adlibBox.rotation) || 0;
-        
-        // X-Axis (-1 for Left, +1 for Right)
         const rotMultiplier = (centerX - canvasMidX) / (canvasMidX || 1);
-        
-        // Y-Axis (+1 for Top half, -1 for Bottom half)
         const ySign = (centerY < canvasMidY) ? 1 : -1;
-        
-        // Match mathematical multiplication: (+X * -Y) = -18 (Minus)
         const expectedBaseRot = rotMultiplier * ySign * 18;
         
-        // We allow up to 12 degrees of variance to account for the ±4 organic randomness 
-        // AND the fact that the center point might shift slightly during boundary clamping
         stat.isRotationCorrect = Math.abs(actualRot - expectedBaseRot) <= 12;
         stat.expectedRotation = expectedBaseRot;
 
-        // Visualize Radial Angle
         newLines.push({
-          id: `radial-${idx}`,
+          id: `radial-${stat.id}`,
           x1: centerX,
           y1: centerY,
           x2: canvasMidX,
@@ -345,6 +363,7 @@ const AdlibDebugOverlay = ({
         
         stat.toCenter = distToCenter;
 
+        // Clip checks correctly verified against Goldilocks Safe Zones
         if (
           adlibBox.left < safeLeft || 
           adlibBox.top < safeTop || 

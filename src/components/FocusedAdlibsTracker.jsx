@@ -8,7 +8,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const cachedTrackNodesRef = useRef([]);
 
   // Generate a unique seed for this specific playback session.
-  // If the player is dismissed and restarted, this completely re-rolls the chaotic layout!
   const [sessionSeed] = useState(() => Math.random().toString(36).substring(2, 9));
 
   // ------------------------------------------------------------------
@@ -18,10 +17,11 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const items = [];
     if (!syncData) return items;
 
+    let globalAdlibCounter = 0; // Tracks consecutive sequence across the entire song
+
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
         
-        // Replicate Matrix Info exactly as the background does
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
         const isMulti = lineActiveNames.length > 1;
         const cols = Math.max(2, lineActiveNames.length);
@@ -137,6 +137,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           items.push({
             key,
+            globalIndex: globalAdlibCounter++, // Assign global sequence ID
             seedBase,
             start,
             end,
@@ -165,6 +166,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           start: dataItem.start,
           end: dataItem.end,
           key: dataItem.key,
+          globalIndex: dataItem.globalIndex,
           seedBase: dataItem.seedBase,
           isMulti: dataItem.isMulti,
           cols: dataItem.cols,
@@ -212,7 +214,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               item.cols,
               item.activeSingersList,
               item.activeNames,
-              item.seedBase
+              item.seedBase,
+              item.globalIndex
             );
             
             item.node.style.setProperty('--adlib-left', newPos.left);
@@ -256,12 +259,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           className="focused-adlib-line"
           data-start={item.start}
           data-end={item.end}
+          data-global-index={item.globalIndex} // Pass index so HUD can read it
           style={{
             '--adlib-rot': '0deg', // Initializes flat so math can measure it correctly
             '--adlib-top': '50%',
             '--adlib-left': '50%',
-            maxWidth: 'none',   // REMOVES CSS WIDTH RESTRICTION
-            whiteSpace: 'pre'   // PREVENTS WORD WRAPPING ENTIRELY
+            maxWidth: 'none',
+            whiteSpace: 'pre'
           }}
           onClick={(e) => { e.stopPropagation(); handleLineClick(item.start); }}
         >

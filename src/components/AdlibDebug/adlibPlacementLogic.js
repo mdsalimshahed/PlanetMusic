@@ -31,7 +31,8 @@ export const generateSafeAdlibPosition = (
   cols,
   activeSingersList,
   masterNamesArray,
-  seedKey
+  seedKey,
+  globalIndex
 ) => {
   const container = document.querySelector('.focused-lyrics-preview');
   if (!container || !adlibElement) return { left: '50%', top: '50%', rot: 0 };
@@ -46,34 +47,47 @@ export const generateSafeAdlibPosition = (
   const adlibWidth = adlibElement.offsetWidth;
   const adlibHeight = adlibElement.offsetHeight;
 
-  // 1. Container Safe Bounds
-  const safeLeft = 0;
-  const safeTop = 0;
-  const safeRight = containerRect.width;
-  const safeBottom = containerRect.height;
+  // 1. The Goldilocks Margins
+  const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08); 
+  const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08); 
+  const LYRIC_PAD = 25; 
+  const SINGER_PAD = 20; 
+  const MAX_DIST = 160; 
+
+  const safeLeft = EDGE_PAD_X;
+  const safeRight = containerRect.width - EDGE_PAD_X;
+  const safeTop = EDGE_PAD_Y;
+  const safeBottom = containerRect.height - EDGE_PAD_Y;
 
   // 2. Define Base Safe Zones
   const baseZones = [];
   if (cBox) {
-    // Top Zone (Full Width)
     if (cBox.top > safeTop) {
-      baseZones.push({ left: safeLeft, right: safeRight, top: safeTop, bottom: cBox.top });
+      const bottomEdge = cBox.top - LYRIC_PAD;
+      const topEdge = Math.max(safeTop, bottomEdge - MAX_DIST);
+      if (bottomEdge > topEdge) {
+        baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+      }
     }
     
-    // Bottom Zone (Full width ABOVE singer name)
     if (cBox.bottom < safeBottom) {
-      const bTop = cBox.bottom;
+      const topEdge = cBox.bottom + LYRIC_PAD;
+      let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
       
       if (sBox && sBox.top < safeBottom) {
-        if (sBox.top > bTop) {
-          baseZones.push({ left: safeLeft, right: safeRight, top: bTop, bottom: sBox.top });
+        const sTopAdjusted = sBox.top - SINGER_PAD;
+        if (sTopAdjusted > topEdge) {
+          bottomEdge = Math.min(bottomEdge, sTopAdjusted);
+          baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
         }
       } else {
-        baseZones.push({ left: safeLeft, right: safeRight, top: bTop, bottom: safeBottom });
+        if (bottomEdge > topEdge) {
+          baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+        }
       }
     }
   } else {
-    baseZones.push({ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
+    baseZones.push({ type: 'Full', left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
   }
 
   // 3. Determine Valid Quadrants based on Active Singer
@@ -123,34 +137,30 @@ export const generateSafeAdlibPosition = (
           top: ixTop,
           bottom: ixBottom,
           width: ixRight - ixLeft,
-          height: ixBottom - ixTop,
-          area: (ixRight - ixLeft) * (ixBottom - ixTop)
+          height: ixBottom - ixTop
         });
       }
     });
   });
 
-  // 5. CHAOTIC PLACEMENT: Pick a random valid zone & raw coordinate
-  const randX = pseudoRandom(seedKey + '-x');
-  const randY = pseudoRandom(seedKey + '-y');
-  const randZone = pseudoRandom(seedKey + '-zone');
-
+  // 5. CHAOTIC ALTERNATION: Pick a zone based on the globalIndex
   let targetArea;
   if (intersectedAreas.length > 0) {
-    intersectedAreas.sort((a, b) => b.area - a.area);
-    const zoneIndex = Math.floor(randZone * intersectedAreas.length);
+    intersectedAreas.sort((a, b) => (a.top - b.top) || (a.left - b.left));
+    const zoneOffset = Math.floor(pseudoRandom(seedKey + '-zone') * 10);
+    const zoneIndex = (globalIndex + zoneOffset) % intersectedAreas.length;
     targetArea = intersectedAreas[zoneIndex];
   } else if (validCells.length > 0) {
-    const fallback = validCells[Math.floor(randZone * validCells.length)];
+    const fallback = validCells[Math.floor(pseudoRandom(seedKey + '-zone') * validCells.length)];
     targetArea = { ...fallback, width: fallback.right - fallback.left, height: fallback.bottom - fallback.top };
   } else {
-    targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight, height: safeBottom };
+    targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop };
   }
 
-  const rawX = targetArea.left + (randX * targetArea.width);
-  const rawY = targetArea.top + (randY * targetArea.height);
+  const rawX = targetArea.left + (pseudoRandom(seedKey + '-x') * targetArea.width);
+  const rawY = targetArea.top + (pseudoRandom(seedKey + '-y') * targetArea.height);
 
-  // 6. RADIAL CLOCK ROTATION LOGIC (Cartesian Multiplication)
+  // 6. RADIAL CLOCK ROTATION LOGIC (Mathematical Multiplicative)
   const centerX = containerRect.width / 2;
   const centerY = containerRect.height / 2;
   
@@ -160,10 +170,14 @@ export const generateSafeAdlibPosition = (
   // Y-Axis (+1 for Top half, -1 for Bottom half) [DOM coordinates inverted to Cartesian]
   const ySign = (rawY < centerY) ? 1 : -1;
   
-  // (+X * -Y) = -18 (Minus) for Bottom-Right
+  // MULTIPLICATION LOGIC:
+  // Top-Left (- * +) = -
+  // Top-Right (+ * +) = +
+  // Bottom-Left (- * -) = +
+  // Bottom-Right (+ * -) = -
   const baseRot = rotMultiplier * ySign * 18;
   
-  // Add a slight organic variation (±4 degrees) so it's not perfectly rigid
+  // Add a slight organic variation (±4 degrees)
   const randRotVar = (pseudoRandom(seedKey + '-rotvar') * 8) - 4;
   const finalRot = baseRot + randRotVar;
 
