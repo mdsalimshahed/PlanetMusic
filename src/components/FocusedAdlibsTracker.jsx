@@ -3,23 +3,12 @@ import React, { useMemo, useRef, useEffect, useState } from 'react';
 import { normalizeTrans, renderFormattedTranslation } from './LyricsLineRenderer';
 import { generateSafeAdlibPosition } from './AdlibDebug/adlibPlacementLogic';
 
-// Deterministic pseudo-random float generator to keep rot/variation steady per ad-lib during a session
-const pseudoRandom = (seedStr) => {
-  let hash = 0;
-  for (let i = 0; i < seedStr.length; i++) {
-    hash = (hash << 5) - hash + seedStr.charCodeAt(i);
-    hash |= 0;
-  }
-  const x = Math.sin(hash++) * 10000;
-  return x - Math.floor(x);
-};
-
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
 
   // Generate a unique seed for this specific playback session.
-  // If the player is dismissed (component unmounts) and restarted, this generates a fresh layout!
+  // If the player is dismissed and restarted, this completely re-rolls the chaotic layout!
   const [sessionSeed] = useState(() => Math.random().toString(36).substring(2, 9));
 
   // ------------------------------------------------------------------
@@ -42,15 +31,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           const key = `adlib-${adlib.start}-${j}`;
           const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
-          
-          // Guarantee a noticeable rotation! No zero-rotation adlibs.
-          // Magnitude between 5 and 15 degrees.
-          const randRot = pseudoRandom(seedBase + '-rot');
-          const randSign = pseudoRandom(seedBase + '-sign');
-          const magnitude = 5 + (randRot * 10); 
-          const sign = randSign > 0.5 ? 1 : -1;
-          const rot = magnitude * sign;
-
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
           // Standard rich-text formatting
@@ -160,7 +140,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             seedBase,
             start,
             end,
-            rot,
             isMulti,
             cols,
             activeSingersList,
@@ -185,7 +164,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           node,
           start: dataItem.start,
           end: dataItem.end,
-          rot: dataItem.rot,
           key: dataItem.key,
           seedBase: dataItem.seedBase,
           isMulti: dataItem.isMulti,
@@ -230,7 +208,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           if (!item.isPlaced) {
             const newPos = generateSafeAdlibPosition(
               item.node,
-              item.rot,
               item.isMulti,
               item.cols,
               item.activeSingersList,
@@ -240,6 +217,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             
             item.node.style.setProperty('--adlib-left', newPos.left);
             item.node.style.setProperty('--adlib-top', newPos.top);
+            item.node.style.setProperty('--adlib-rot', `${newPos.rot}deg`);
             item.isPlaced = true;
           }
 
@@ -279,7 +257,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           data-start={item.start}
           data-end={item.end}
           style={{
-            '--adlib-rot': `${item.rot}deg`,
+            '--adlib-rot': '0deg', // Initializes flat so math can measure it correctly
             '--adlib-top': '50%',
             '--adlib-left': '50%',
             maxWidth: 'none',   // REMOVES CSS WIDTH RESTRICTION

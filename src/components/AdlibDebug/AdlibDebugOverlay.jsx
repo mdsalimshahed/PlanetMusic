@@ -34,11 +34,10 @@ const AdlibDebugOverlay = ({
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
   const [boundingBoxes, setBoundingBoxes] = useState([]);
-  const [distanceLines, setDistanceLines] = useState([]);
+  const [radialLines, setRadialLines] = useState([]);
   const [distanceStats, setDistanceStats] = useState([]);
   const [layoutStats, setLayoutStats] = useState({ lyricsClipped: false, singerClipped: false });
   const [safeZones, setSafeZones] = useState([]);
-  const [adlibCopies, setAdlibCopies] = useState([]);
   
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
   const syncDataRef = useRef(selectedSong?.syncData || []);
@@ -134,50 +133,30 @@ const AdlibDebugOverlay = ({
 
       const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
       
-      const newAdlibCopies = [];
-      let activeAdlibAABB_W = 0;
-      let activeAdlibAABB_H = 0;
-
       activeAdlibs.forEach((adlibNode, idx) => {
-        let aabbW = 0;
-        let aabbH = 0;
-        
         const tightBounds = getTightTextBounds(adlibNode, overlayRect);
+        const rotation = adlibNode.style.getPropertyValue('--adlib-rot') || '0deg';
         if (tightBounds) {
-          aabbW = tightBounds.width;
-          aabbH = tightBounds.height;
           newBoxes.push({
             id: `adlib-bounds-${idx}`,
-            color: '#eab308',
+            color: '#ffffff', 
             datasetStart: parseFloat(adlibNode.dataset.start),
+            rotation,
             ...tightBounds
           });
         } else {
           const r = adlibNode.getBoundingClientRect();
-          aabbW = r.width;
-          aabbH = r.height;
+          newBoxes.push({
+            id: `adlib-bounds-${idx}`,
+            color: '#ffffff',
+            datasetStart: parseFloat(adlibNode.dataset.start),
+            rotation,
+            top: r.top - overlayRect.top,
+            left: r.left - overlayRect.left,
+            width: r.width,
+            height: r.height
+          });
         }
-        
-        if (idx === 0) {
-          activeAdlibAABB_W = aabbW;
-          activeAdlibAABB_H = aabbH;
-        }
-
-        newAdlibCopies.push({
-          aabbW,
-          aabbH
-        });
-      });
-
-      setAdlibCopies(prev => {
-        if (prev.length !== newAdlibCopies.length) return newAdlibCopies;
-        if (prev.length > 0) {
-          if (prev[0].aabbW !== newAdlibCopies[0].aabbW ||
-              prev[0].aabbH !== newAdlibCopies[0].aabbH) {
-              return newAdlibCopies;
-          }
-        }
-        return prev;
       });
 
       const combinedBox = newBoxes.find(b => b.id === 'combined-bounds');
@@ -188,6 +167,9 @@ const AdlibDebugOverlay = ({
       const newStats = [];
       const colWidth = overlayRect.width / cols;
       const rowHeight = overlayRect.height / 2;
+      
+      const canvasMidX = overlayRect.width / 2;
+      const canvasMidY = overlayRect.height / 2;
       
       let lyricsClipped = false;
       let singerClipped = false;
@@ -247,17 +229,15 @@ const AdlibDebugOverlay = ({
         setActiveAdlibSingers(activeSingersList);
       }
 
-      // --- CALCULATE QUADRANT-RESTRICTED SAFE ZONES AND CENTER-POINT INNER ZONES ---
+      // --- CALCULATE QUADRANT-RESTRICTED SAFE ZONES ---
       const newSafeZones = [];
       if (combinedBox) {
         const baseZones = [];
         
-        // Top Zone
         if (combinedBox.top > safeTop) {
           baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: safeTop, bottom: combinedBox.top });
         }
         
-        // Bottom Zone
         if (combinedBox.top + combinedBox.height < safeBottom) {
           const bTop = combinedBox.top + combinedBox.height;
           
@@ -300,19 +280,6 @@ const AdlibDebugOverlay = ({
             if (ixLeft < ixRight && ixTop < ixBottom) {
               const szWidth = ixRight - ixLeft;
               const szHeight = ixBottom - ixTop;
-              
-              let innerZone = null;
-
-              if (activeAdlibAABB_W > 0 && activeAdlibAABB_H > 0) {
-                const iLeft = ixLeft + activeAdlibAABB_W / 2;
-                const iTop = ixTop + activeAdlibAABB_H / 2;
-                const iWidth = szWidth - activeAdlibAABB_W;
-                const iHeight = szHeight - activeAdlibAABB_H;
-
-                if (iWidth >= 0 && iHeight >= 0) {
-                  innerZone = { left: iLeft, top: iTop, width: iWidth, height: iHeight };
-                }
-              }
 
               newSafeZones.push({
                 id: `sz-${bz.type}-${Math.round(ixLeft)}-${Math.round(ixTop)}`,
@@ -320,8 +287,7 @@ const AdlibDebugOverlay = ({
                 left: ixLeft,
                 width: szWidth,
                 height: szHeight,
-                label: `${bz.type} Zone`,
-                innerZone
+                label: `${bz.type} Zone`
               });
             }
           });
@@ -332,17 +298,52 @@ const AdlibDebugOverlay = ({
       adlibBoxes.forEach((adlibBox, idx) => {
         let stat = { 
           id: idx, 
-          toLyrics: null, 
-          toSinger: null, 
+          rotation: adlibBox.rotation,
+          toCenter: null, 
           isCorrect: true, 
           quadArtist: null,
           isCollidingWithLyrics: false,
           isCollidingWithSinger: false,
-          isClippedOut: false
+          isClippedOut: false,
+          isRotationCorrect: false,
+          expectedRotation: 0
         };
 
         const aRight = adlibBox.left + adlibBox.width;
         const aBottom = adlibBox.top + adlibBox.height;
+
+        const centerX = adlibBox.left + adlibBox.width / 2;
+        const centerY = adlibBox.top + adlibBox.height / 2;
+        const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
+
+        // --- Verify Radial Clock Rotation (Cartesian Multiplication) ---
+        const actualRot = parseFloat(adlibBox.rotation) || 0;
+        
+        // X-Axis (-1 for Left, +1 for Right)
+        const rotMultiplier = (centerX - canvasMidX) / (canvasMidX || 1);
+        
+        // Y-Axis (+1 for Top half, -1 for Bottom half)
+        const ySign = (centerY < canvasMidY) ? 1 : -1;
+        
+        // Match mathematical multiplication: (+X * -Y) = -18 (Minus)
+        const expectedBaseRot = rotMultiplier * ySign * 18;
+        
+        // We allow up to 12 degrees of variance to account for the ±4 organic randomness 
+        // AND the fact that the center point might shift slightly during boundary clamping
+        stat.isRotationCorrect = Math.abs(actualRot - expectedBaseRot) <= 12;
+        stat.expectedRotation = expectedBaseRot;
+
+        // Visualize Radial Angle
+        newLines.push({
+          id: `radial-${idx}`,
+          x1: centerX,
+          y1: centerY,
+          x2: canvasMidX,
+          y2: canvasMidY,
+          color: '#00ffff'
+        });
+        
+        stat.toCenter = distToCenter;
 
         if (
           adlibBox.left < safeLeft || 
@@ -354,13 +355,8 @@ const AdlibDebugOverlay = ({
         }
 
         if (combinedBox) {
-          const pts = getClosestPoints(adlibBox, combinedBox);
-          newLines.push({ id: `line-c-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: combinedBox.color });
-          stat.toLyrics = Math.round(pts.dist);
-
           const cRight = combinedBox.left + combinedBox.width;
           const cBottom = combinedBox.top + combinedBox.height;
-          
           if (!(
             adlibBox.left >= cRight ||
             aRight <= combinedBox.left ||
@@ -372,13 +368,8 @@ const AdlibDebugOverlay = ({
         }
 
         if (singerBox) {
-          const pts = getClosestPoints(adlibBox, singerBox);
-          newLines.push({ id: `line-s-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: singerBox.color });
-          stat.toSinger = Math.round(pts.dist);
-
           const sRight = singerBox.left + singerBox.width;
           const sBottom = singerBox.top + singerBox.height;
-          
           if (!(
             adlibBox.left >= sRight ||
             aRight <= singerBox.left ||
@@ -403,9 +394,6 @@ const AdlibDebugOverlay = ({
             }
           }
 
-          const centerX = adlibBox.left + adlibBox.width / 2;
-          const centerY = adlibBox.top + adlibBox.height / 2;
-          
           const physCol = Math.max(0, Math.min(cols - 1, Math.floor(centerX / colWidth)));
           const physRow = Math.max(0, Math.min(1, Math.floor(centerY / rowHeight)));
           const physCellIdx = physRow * cols + physCol;
@@ -425,7 +413,7 @@ const AdlibDebugOverlay = ({
       });
 
       setBoundingBoxes(newBoxes);
-      setDistanceLines(newLines);
+      setRadialLines(newLines);
       setDistanceStats(newStats);
       rafRef.current = requestAnimationFrame(trackActiveLyrics);
     };
@@ -440,17 +428,19 @@ const AdlibDebugOverlay = ({
   return (
     <div className="adlib-debug-overlay" ref={overlayRef}>
       
-      {/* SVG Layer for Distance Lines */}
+      {/* SVG Layer for Radial Clock Lines */}
       <svg className="debug-svg-layer">
-        {distanceLines.map(line => (
+        {radialLines.map(line => (
           <g key={line.id}>
             <line 
               x1={line.x1} y1={line.y1} 
               x2={line.x2} y2={line.y2} 
-              stroke={line.color} strokeWidth="1.5" strokeDasharray="4 4" 
+              stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
             />
-            <circle cx={line.x1} cy={line.y1} r="3" fill="#eab308" />
-            <circle cx={line.x2} cy={line.y2} r="3" fill={line.color} />
+            {/* Center Canvas Dot */}
+            <circle cx={line.x2} cy={line.y2} r="4" fill="#ff00ff" />
+            {/* Adlib Center Dot */}
+            <circle cx={line.x1} cy={line.y1} r="3" fill="#ffffff" />
           </g>
         ))}
       </svg>
@@ -478,9 +468,13 @@ const AdlibDebugOverlay = ({
         {distanceStats.length > 0 && distanceStats.map(stat => (
           <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <div>
-              <strong>Adlib {stat.id + 1} Distances:</strong>
-              {stat.toLyrics !== null ? ` To Lyrics: ${stat.toLyrics}px |` : ''}
-              {stat.toSinger !== null ? ` To Name: ${stat.toSinger}px` : ''}
+              <strong>Adlib {stat.id + 1} Radial:</strong>
+              {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}° `}
+              {stat.isRotationCorrect ? (
+                <span style={{color: '#4ade80'}}>✔ Valid</span>
+              ) : (
+                <span style={{color: '#ef4444'}}>✘ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
+              )}
             </div>
             <div>
               <strong>Placement:</strong> {isMulti ? (
@@ -543,7 +537,7 @@ const AdlibDebugOverlay = ({
         </div>
       )}
 
-      {/* Render Quadrant-Aware Safe Zones & AABB Mock Bounding Boxes */}
+      {/* Render Quadrant-Aware Safe Zones */}
       {safeZones.map(zone => (
         <React.Fragment key={zone.id}>
           <div
@@ -557,21 +551,6 @@ const AdlibDebugOverlay = ({
           >
             <span className="debug-safe-zone-label">{zone.label}</span>
           </div>
-
-          {/* Render the calculated Inner Safe Zone */}
-          {zone.innerZone && (
-            <div
-              className="debug-inner-safe-zone"
-              style={{
-                top: `${zone.innerZone.top}px`,
-                left: `${zone.innerZone.left}px`,
-                width: `${zone.innerZone.width}px`,
-                height: `${zone.innerZone.height}px`,
-              }}
-            >
-              <span className="debug-inner-safe-zone-label">Center-Point Safe Area</span>
-            </div>
-          )}
         </React.Fragment>
       ))}
 
