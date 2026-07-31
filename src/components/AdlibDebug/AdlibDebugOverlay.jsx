@@ -42,6 +42,7 @@ const AdlibDebugOverlay = ({
   const [boundingBoxes, setBoundingBoxes] = useState([]);
   const [distanceLines, setDistanceLines] = useState([]);
   const [distanceStats, setDistanceStats] = useState([]);
+  const [layoutStats, setLayoutStats] = useState({ lyricsClipped: false, singerClipped: false });
   
   // Track who is singing the currently active adlib
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
@@ -163,6 +164,35 @@ const AdlibDebugOverlay = ({
       const newStats = [];
       const colWidth = overlayRect.width / cols;
       const rowHeight = overlayRect.height / 2;
+      
+      let lyricsClipped = false;
+      let singerClipped = false;
+
+      // Check if Main Lyrics box is clipping canvas
+      if (combinedBox) {
+        if (
+          combinedBox.left < 0 ||
+          combinedBox.top < 0 ||
+          (combinedBox.left + combinedBox.width) > overlayRect.width ||
+          (combinedBox.top + combinedBox.height) > overlayRect.height
+        ) {
+          lyricsClipped = true;
+        }
+      }
+
+      // Check if Singer Name box is clipping canvas
+      if (singerBox) {
+        if (
+          singerBox.left < 0 ||
+          singerBox.top < 0 ||
+          (singerBox.left + singerBox.width) > overlayRect.width ||
+          (singerBox.top + singerBox.height) > overlayRect.height
+        ) {
+          singerClipped = true;
+        }
+      }
+
+      setLayoutStats({ lyricsClipped, singerClipped });
 
       adlibBoxes.forEach((adlibBox, idx) => {
         let stat = { 
@@ -172,6 +202,7 @@ const AdlibDebugOverlay = ({
           isCorrect: true, 
           quadArtist: null,
           isCollidingWithLyrics: false,
+          isCollidingWithSinger: false,
           isClippedOut: false
         };
 
@@ -209,11 +240,24 @@ const AdlibDebugOverlay = ({
           }
         }
 
-        // Draw distance to singer name
+        // Draw distance to singer name and Check Collision
         if (singerBox) {
           const pts = getClosestPoints(adlibBox, singerBox);
           newLines.push({ id: `line-s-${idx}`, x1: pts.x1, y1: pts.y1, x2: pts.x2, y2: pts.y2, color: singerBox.color });
           stat.toSinger = Math.round(pts.dist);
+
+          // AABB Intersection check for Singer Name Corner
+          const sRight = singerBox.left + singerBox.width;
+          const sBottom = singerBox.top + singerBox.height;
+          
+          if (!(
+            adlibBox.left >= sRight ||
+            aRight <= singerBox.left ||
+            adlibBox.top >= sBottom ||
+            aBottom <= singerBox.top
+          )) {
+            stat.isCollidingWithSinger = true;
+          }
         }
 
         // Determine if placed in correct quadrant
@@ -342,8 +386,24 @@ const AdlibDebugOverlay = ({
         <div><strong>Current Singer(s):</strong> {currentSingerBg?.name || 'None'}</div>
         <div><strong>Active Adlib Singer:</strong> {activeAdlibSingers.length > 0 ? activeAdlibSingers.join(', ') : 'None'}</div>
         <div><strong>Layout Mode:</strong> {activeNames.length === 0 ? 'Idle' : (isMulti ? `Matrix (${cols}x2)` : 'Full Screen')}</div>
+        
+        {/* Core Layout Canvas Bounds Checking */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px', marginTop: '6px' }}>
+          <strong>Core Layout Status:</strong>{' '}
+          {layoutStats.lyricsClipped ? (
+            <span style={{color: '#ef4444'}}>Lyrics Clipped</span>
+          ) : (
+            <span style={{color: '#4ade80'}}>Lyrics Safe</span>
+          )}{' | '}
+          {layoutStats.singerClipped ? (
+            <span style={{color: '#ef4444'}}>Name Clipped</span>
+          ) : (
+            <span style={{color: '#4ade80'}}>Name Safe</span>
+          )}
+        </div>
+
         {distanceStats.length > 0 && distanceStats.map(stat => (
-          <div key={`stat-${stat.id}`} style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <div>
               <strong>Adlib {stat.id + 1} Distances:</strong>
               {stat.toLyrics !== null ? ` To Lyrics: ${stat.toLyrics}px |` : ''}
@@ -364,6 +424,11 @@ const AdlibDebugOverlay = ({
                 <span style={{color: '#ef4444'}}>Lyrics Collision</span>
               ) : (
                 <span style={{color: '#4ade80'}}>Safe from Lyrics</span>
+              )}{' | '}
+              {stat.isCollidingWithSinger ? (
+                <span style={{color: '#ef4444'}}>Name Collision</span>
+              ) : (
+                <span style={{color: '#4ade80'}}>Safe from Name</span>
               )}{' | '}
               {stat.isClippedOut ? (
                 <span style={{color: '#ef4444'}}>Clipped Bounds</span>
