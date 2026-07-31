@@ -25,12 +25,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const computeGraphPositions = () => {
     const parentContainer = containerRef.current?.parentElement;
     const activeFocusedLine = document.querySelector('.focused-line.active');
+    
     if (!parentContainer) return;
-
     const canvasWidth = parentContainer.clientWidth;
     const canvasHeight = parentContainer.clientHeight;
+    
     if (canvasWidth === 0 || canvasHeight === 0) return;
-
+    
     // Outer safe perimeter margin to completely prevent clipping off canvas edges
     const marginPx = 16; 
 
@@ -47,7 +48,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       const lineRect = activeFocusedLine.getBoundingClientRect();
       const translationEl = activeFocusedLine.querySelector('.chunk-translation, .focused-translation');
       const transliterationEl = activeFocusedLine.querySelector('.pronunciation-text');
-
+      
       let topY = lineRect.top - parentRect.top;
       let bottomY = lineRect.bottom - parentRect.top;
 
@@ -178,6 +179,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   useLayoutEffect(() => {
     if (!isPlayingCurrentSong) return;
     computeGraphPositions();
+
     const handleResize = () => computeGraphPositions();
     window.addEventListener('resize', handleResize);
     return () => {
@@ -191,57 +193,58 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!syncData) return items;
-
+    
     const currentTime = window.currentAudioTime || 0;
 
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
-        const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i)
-          .filter(Boolean)
-          .map(s => s.trim()) || [];
-
+        
+        // 1. REPLICATE EXACT BACKGROUND MATRIX LOGIC FROM DynamicBackground.jsx
+        const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
+        const isMulti = lineActiveNames.length > 1;
         const totalCols = Math.max(2, lineActiveNames.length);
+        const totalCells = totalCols * 2; // DynamicBackground renders cols * 2 cells
+        
+        const getArtistForCell = (cellIndex) => {
+          if (lineActiveNames.length === 0) return null;
+          const row = Math.floor(cellIndex / totalCols);
+          const col = cellIndex % totalCols;
+          return lineActiveNames[(col + row) % lineActiveNames.length];
+        };
 
         node.adlibs.forEach((adlib, j) => {
           if (adlib.start === null) return;
-
+          
           const key = `adlib-${adlib.start}-${j}`;
           const seedBase = `${node.text}-${adlib.start}-${j}`;
           const randRot = pseudoRandom(seedBase + '-rot');
           const rowSeed = pseudoRandom(seedBase + '-row');
-
-          const rot = (randRot * 12) - 6; // Subtle rotation to prevent edge spill
+          const rot = (randRot * 12) - 6; 
+          
           const adlibNames = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
           const primaryAdlibSinger = adlibNames[0];
 
-          let targetRow = 0; // 0 = Top, 1 = Bottom
-          let targetCol = 0; // 0 = Left, 1 = Right
+          let targetRow = 0;
+          let targetCol = 0;
 
-          if (lineActiveNames.length > 0 && primaryAdlibSinger) {
-            const idx = lineActiveNames.indexOf(primaryAdlibSinger);
-            if (idx === 1) {
-              const useBottomLeft = rowSeed > 0.5;
-              if (useBottomLeft) {
-                targetRow = 1;
-                targetCol = 0; // Quadrant (1, 0) -> Bottom-Left
-              } else {
-                targetRow = 0;
-                targetCol = 1; // Quadrant (0, 1) -> Top-Right
+          // 2. QUERY THE MATRIX: Find exactly which cells belong to this specific ad-lib singer
+          let validCells = [];
+          if (isMulti && primaryAdlibSinger) {
+            for (let i = 0; i < totalCells; i++) {
+              if (getArtistForCell(i) === primaryAdlibSinger) {
+                validCells.push(i);
               }
-            } else if (idx === 0) {
-              const useBottomRight = rowSeed > 0.5;
-              if (useBottomRight) {
-                targetRow = 1;
-                targetCol = 1; // Quadrant (1, 1) -> Bottom-Right
-              } else {
-                targetRow = 0;
-                targetCol = 0; // Quadrant (0, 0) -> Top-Left
-              }
-            } else {
-              targetRow = rowSeed > 0.5 ? 1 : 0;
-              targetCol = Math.floor(pseudoRandom(seedBase + '-col') * totalCols);
             }
+          }
+
+          // 3. ASSIGNMENT: Lock to specific valid cells, or free-reign if single artist
+          if (validCells.length > 0) {
+            const pickIndex = Math.floor(pseudoRandom(seedBase + '-cell') * validCells.length);
+            const chosenCell = validCells[pickIndex];
+            targetRow = Math.floor(chosenCell / totalCols);
+            targetCol = chosenCell % totalCols;
           } else {
+            // Free reigns: fallback for solitary singers or unmapped artists
             targetRow = rowSeed > 0.5 ? 1 : 0;
             targetCol = Math.floor(pseudoRandom(seedBase + '-col') * totalCols);
           }
@@ -251,6 +254,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const renderAdlibPure = (adlibObj) => {
             let aPron = adlibObj?.pronunciation;
             let aTrans = '';
+
             if (typeof aPron === 'string') {
               if (aPron.startsWith('{')) {
                 try { aTrans = JSON.parse(aPron).full || ''; } catch (e) {}
@@ -327,11 +331,25 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
                 {adlibTranslation && (
-                  <span className="chunk-translation" style={{ opacity: 1, visibility: 'visible' }} dir="ltr">
+                  <span 
+                    className="chunk-translation" 
+                    style={{ 
+                      opacity: 1, 
+                      visibility: 'visible',
+                      position: 'relative',
+                      top: 'auto', 
+                      left: 'auto', 
+                      transform: 'none', 
+                      marginBottom: '6px',
+                      maxWidth: '100%',
+                      width: 'max-content'
+                    }} 
+                    dir="ltr"
+                  >
                     {adlibTranslation}
                   </span>
                 )}
-                <span className="primary-text" style={{ whiteSpace: 'nowrap', display: 'inline-block' }} dir="auto">
+                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }} dir="auto">
                   {renderedSegments}
                 </span>
                 {aTrans ? <span className="pronunciation-text" style={basePronStyle} dir="ltr">{normalizeTrans(aTrans)}</span> : null}
@@ -394,9 +412,11 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const handleTime = (e) => {
       const time = e.detail;
       const nodes = cachedTrackNodesRef.current;
+
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
+
         if (shouldBeActive && !item.isActive) {
           item.node.classList.add('active');
           item.isActive = true;

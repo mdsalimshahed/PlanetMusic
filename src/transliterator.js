@@ -95,7 +95,6 @@ const isRomanChar = (char) => {
   return /^[\p{Script=Latin}\p{M}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 };
 
-// MASSIVE SPEED UP: Converted the serial loop into a parallel Promise.all execution
 export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
   let completed = 0;
   
@@ -129,7 +128,6 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       const tokens = cleanLine.split(/(\s+)/);
       let wordIndex = 0;
       
-      // We process tokens sequentially since number translation requires sync alignment
       for (const token of tokens) {
         if (!token) continue;
         if (/^\s+$/.test(token)) {
@@ -155,6 +153,15 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
             if (transWords[wordIndex] === token) wordIndex++;
           } else if (isEnToken) {
             chunks.push({ type: 'en', text: token, trans: '' });
+            
+            // CRITICAL FIX: Keep wordIndex in sync if Google echoed the English word in the transliteration string
+            // This prevents the UI from mapping the English word's slot to the next foreign word.
+            const cleanToken = token.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim().toLowerCase();
+            const cleanTransWord = (transWords[wordIndex] || '').toLowerCase();
+            
+            if (cleanTransWord === cleanToken && cleanToken !== '') {
+              wordIndex++;
+            }
           } else {
             chunks.push({ type: 'foreign', text: token, trans: currentTrans || token });
             wordIndex++;

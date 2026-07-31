@@ -95,18 +95,28 @@ export const useTranslationProcess = ({
     
     try {
       const sourceLang = line.lang || 'auto';
-      const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
-      
       const hasNumbers = /\d/.test(textToTranslate);
-      const targetLang = (hasNumbers && sourceLang === 'auto') ? (rawData.srcLang || sourceLang) : sourceLang;
       
+      let targetLang = sourceLang;
+      let rawTranslation = '';
+      let detectedSrc = sourceLang;
+      
+      // OPTIMIZATION: Only do the redundant double-fetch if it's 'auto' AND has numbers
+      if (hasNumbers && sourceLang === 'auto') {
+        const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
+        targetLang = rawData.srcLang || sourceLang;
+        rawTranslation = rawData.translation;
+        detectedSrc = rawData.srcLang;
+      }
+      
+      // This handles translation AND transliteration natively in one go
       const resArr = await getBulkPronunciations([textToTranslate], null, targetLang);
       const res = resArr?.[0] || {};
       
       return {
         ...res,
-        translation: rawData.translation || res.translation || '',
-        srcLang: rawData.srcLang || sourceLang
+        translation: rawTranslation || res.translation || '',
+        srcLang: detectedSrc
       };
     } catch (e) {
       console.error("Single line fetch error:", e);
@@ -307,8 +317,8 @@ export const useTranslationProcess = ({
         return clean.length > 0 ? clean : ' '; 
       });
       
-      // NEW DELIMITER LOGIC: Append [1], [2], etc. to each line.
-      const combinedText = cleanTexts.map((text, i) => `${text} [${i + 1}]`).join(' ');
+      // NEW DELIMITER LOGIC: Add bracketed numbers at the start of each line, separated by newlines
+      const combinedText = cleanTexts.map((text, i) => `[${i + 1}] ${text}`).join('\n');
       
       try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(lang)}&tl=en&dt=t`;
@@ -330,20 +340,19 @@ export const useTranslationProcess = ({
           });
         }
         
-        // Extract translated text using the bracketed markers
+        // Extract translated text dynamically using the bracketed markers
         const translatedLines = new Array(items.length).fill(undefined);
-        // Regex matches any text up to a bracketed/parenthesized number: e.g. "Translated text [1]"
-        const regex = /(.*?)\s*[\[\(]\s*(\d+)\s*[\]\)]/g;
+        // Robust regex that matches [1], (1), or Asian brackets 【1】 and captures the text until the next marker
+        const regex = /[\[\(\【]\s*(\d+)\s*[\]\)\】]\s*([\s\S]*?)(?=[\[\(\【]\s*\d+\s*[\]\)\】]|$)/g;
         
         let match;
         let matchesFound = 0;
         
         while ((match = regex.exec(combinedTranslation)) !== null) {
-          const textPart = match[1].trim();
-          const lineIndex = parseInt(match[2], 10) - 1; // Convert 1-based back to 0-based
+          const lineIndex = parseInt(match[1], 10) - 1;
+          const textPart = match[2].trim();
           
           if (lineIndex >= 0 && lineIndex < items.length) {
-            // Assign the text strictly to the line index Google indicated
             if (translatedLines[lineIndex] === undefined) {
                 translatedLines[lineIndex] = textPart;
                 matchesFound++;
@@ -351,7 +360,8 @@ export const useTranslationProcess = ({
           }
         }
         
-        const isAligned = matchesFound === items.length && !translatedLines.includes(undefined);
+        // Ensure no line was swallowed into a blank string during mapping
+        const isAligned = matchesFound === items.length && !translatedLines.some((t, i) => t === '' && cleanTexts[i] !== ' ');
         if (!isAligned) {
           console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} markers, found ${matchesFound}. Falling back to 1:1 translations.`);
         }

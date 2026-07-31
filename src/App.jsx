@@ -1,6 +1,7 @@
 /* --- src/App.jsx --- */
 import React, { useState, useEffect } from 'react';
 import './App.css';
+
 import Background from './components/Background';
 import Topbar from './components/Topbar';
 import SongCard from './components/SongCard';
@@ -10,14 +11,29 @@ import SettingsTab from './components/SettingsTab';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('search');
+  
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
-      if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 34;
-      if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 42;
-      if (parsed.focusedAdlibFontSize === undefined) parsed.focusedAdlibFontSize = 28;
+      
+      // AUTO-MIGRATION: Convert old hardcoded pixel font sizes to responsive 'vh' canvas proportions
+      if (parsed.liveSyncFontSize && parsed.liveSyncFontSize > 15) {
+        parsed.cardFontSize = 1.6;
+        parsed.modalFontSize = 5.5;
+        parsed.liveSyncFontSize = 4.5;
+        parsed.focusedSyncFontSize = 5.5;
+        parsed.focusedAdlibFontSize = 3.5;
+      }
+      
+      // Safety defaults if undefined
+      if (parsed.cardFontSize === undefined) parsed.cardFontSize = 1.6;
+      if (parsed.modalFontSize === undefined) parsed.modalFontSize = 5.5;
+      if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 4.5;
+      if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 5.5;
+      if (parsed.focusedAdlibFontSize === undefined) parsed.focusedAdlibFontSize = 3.5;
+      
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
@@ -32,8 +48,8 @@ const App = () => {
       return parsed;
     }
     return {
-      cardFontSize: 16,
-      modalFontSize: 56,
+      cardFontSize: 1.6,
+      modalFontSize: 5.5,
       cardWidth: 200,
       cardPadding: 16,
       cardGap: 28,
@@ -41,9 +57,9 @@ const App = () => {
       borderRadius: 16,
       persistentMemory: true,
       bgImageOpacity: 0.25,
-      liveSyncFontSize: 34,
-      focusedSyncFontSize: 42,
-      focusedAdlibFontSize: 28,
+      liveSyncFontSize: 4.5,
+      focusedSyncFontSize: 5.5,
+      focusedAdlibFontSize: 3.5,
       modalSplitRatio: 50,
       bgPreemptionTime: 400,
       modalPaddingY: 5,
@@ -59,14 +75,17 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
+
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -235,17 +254,19 @@ const App = () => {
     event.target.value = null;
   };
 
+  // Replaced all hardcoded pixels and clamps with pure 'vh' mappings to lock spatial occupancy in the canvas
   const dynamicStyles = {
-    '--dyn-card-font-size': `clamp(12px, 1.2vw, ${settings.cardFontSize}px)`,
-    '--dyn-modal-font-size': `clamp(24px, 4vw, ${settings.modalFontSize}px)`,
+    '--dyn-card-font-size': `${settings.cardFontSize}vh`,
+    '--dyn-modal-font-size': `${settings.modalFontSize}vh`,
+    
     '--dyn-card-width': `clamp(120px, 15vw, ${settings.cardWidth}px)`,
     '--dyn-card-padding': `clamp(8px, 1vw, ${settings.cardPadding}px)`,
     '--dyn-card-gap': `clamp(12px, 1.5vw, ${settings.cardGap}px)`,
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
     
-    '--dyn-live-sync-font-size': `clamp(16px, 4vw, ${settings.liveSyncFontSize}px)`,
-    '--dyn-focused-sync-font-size': `clamp(20px, 5vw, ${settings.focusedSyncFontSize}px)`,
-    '--dyn-focused-adlib-font-size': `clamp(12px, 3.5vw, ${settings.focusedAdlibFontSize ?? 28}px)`,
+    '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}vh`,
+    '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}vh`,
+    '--dyn-focused-adlib-font-size': `${settings.focusedAdlibFontSize ?? 3.5}vh`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
     '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
