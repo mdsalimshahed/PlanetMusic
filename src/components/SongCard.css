@@ -1,20 +1,26 @@
 /* --- src/components/SongCard.css --- */
 .song-card {
-  padding: var(--dyn-card-padding, 16px);
+  padding: 0; 
+  /* Completely invisible wrapper */
+  background: transparent;
+  border: none;
+  
   border-radius: var(--dyn-border-radius);
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
-  
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   width: 100%; 
   margin: 0; 
   box-sizing: border-box;
+  
+  /* Clips the child elements perfectly to the border radius */
+  overflow: hidden; 
 }
 
 .song-card:hover {
   transform: scale(1.03) translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.35);
+  /* The shadow outlines the image + the text window seamlessly */
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
@@ -22,11 +28,10 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1; 
-  border-radius: calc(var(--dyn-border-radius) - 4px);
+  border-radius: 0; 
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 0; 
   flex-shrink: 0; 
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .artwork {
@@ -50,7 +55,7 @@
   opacity: 1;
 }
 
-/* Quick Add Button Base */
+/* Quick Add Button Base (Now with solid white border) */
 .quick-add-btn {
   position: absolute;
   top: 10px;
@@ -62,7 +67,7 @@
   background: rgba(10, 10, 25, 0.65);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #ffffff;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -73,11 +78,10 @@
 
 .quick-add-btn:hover {
   background: rgba(255, 255, 255, 0.25);
-  border-color: #ffffff;
   transform: scale(1.1);
 }
 
-/* Saved State: Semi-transparent album accent background with crisp white border and transparent large check mark */
+/* Saved State */
 .quick-add-btn.saved {
   background: rgba(var(--card-accent-rgb, 255, 255, 255), 0.45);
   border: 2px solid #ffffff;
@@ -87,12 +91,16 @@
 
 .quick-add-btn.saved:hover {
   background: rgba(255, 255, 255, 0.3);
-  border-color: #ffffff;
   transform: scale(1.1);
 }
 
+/* Semi-Transparent Glass Ring Play Button */
 .play-btn {
-  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 2px solid #ffffff;
   width: 54px;
   height: 54px;
   border-radius: 50%;
@@ -101,15 +109,32 @@
   justify-content: center;
   text-decoration: none;
   font-size: 22px;
-  padding-left: 4px;
+  padding-left: 4px; /* Centers the Play triangle visually */
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
 }
 
+.play-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* The distinct text window directly under the album art */
 .card-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex-grow: 1; 
-  justify-content: space-between; 
+  justify-content: flex-start; 
+  padding: 14px var(--dyn-card-padding, 16px) 16px var(--dyn-card-padding, 16px);
+  
+  /* Adds frosted glass effect to the dynamic background window */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Delicate border just on the window to give it presence */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .text-info {

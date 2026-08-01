@@ -36,7 +36,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         b = Math.floor(b / pixelCount);
         
         setAccentRGB(`${r}, ${g}, ${b}`);
-        setBgColor(`linear-gradient(to bottom, rgba(${r}, ${g}, ${b}, 0.6), rgba(5, 5, 16, 0.95))`);
+        setBgColor(`linear-gradient(to bottom, rgba(${r}, ${g}, ${b}, 0.5), rgba(5, 5, 16, 0.95))`);
       } catch (e) {
         console.warn('Could not extract color due to CORS restrictions');
       } finally {
@@ -57,10 +57,9 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
 
   return (
     <div 
-      className="song-card glass-panel" 
+      className="song-card" 
       onClick={() => setSelectedSong(song)}
       style={{ 
-        background: bgColor || undefined,
         '--card-accent-rgb': accentRGB
       }}
     >
@@ -86,7 +85,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
@@ -96,7 +95,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         <div className="artwork-overlay">
           {(song.previewUrl || song.customLinks?.hasLocal) && (
             <button 
-              className="play-btn glass-button" 
+              className="play-btn" 
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentTrack(song);
@@ -109,7 +108,11 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         </div>
       </div>
 
-      <div className="card-info">
+      {/* The isolated window below the artwork housing the info */}
+      <div 
+        className="card-info"
+        style={{ background: bgColor || 'rgba(10, 10, 25, 0.8)' }}
+      >
         <div className="text-info">
           <h4 title={song.trackName}>
             {song.trackName}
