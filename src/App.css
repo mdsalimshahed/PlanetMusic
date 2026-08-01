@@ -5,16 +5,13 @@
   --base-bg: #050510;
   --text-base: #ffffff;
   --text-subdued: rgba(255, 255, 255, 0.6);
-  --accent: #b388eb; 
-  --accent-glow: rgba(179, 136, 235, 0.8);
+  --accent: #fbbf24; 
+  --accent-glow: rgba(251, 191, 36, 0.8);
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-heavy: rgba(10, 10, 25, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.15);
   --font-family: 'Outfit', sans-serif;
-}
-
-* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -96,7 +93,6 @@ body {
   min-height: 0;
 }
 
-/* THE FIX: Make the search container float independently OVER the scrolling area */
 .search-container {
   position: absolute;
   top: 0;
@@ -106,12 +102,10 @@ body {
   display: flex;
   justify-content: flex-start;
   z-index: 30;
-  /* Let clicks pass through empty space so you can click the song cards rolling behind it */
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .search-box {
-  /* Re-enable clicks so you can actually type in the search box */
   pointer-events: auto; 
   display: flex;
   align-items: center;
@@ -120,7 +114,7 @@ body {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
   border-radius: 500px;
-  padding: 0 24px;
+  padding: 0 8px 0 24px;
   width: 600px;
   max-width: 100%;
   height: 50px;
@@ -129,15 +123,9 @@ body {
 }
 
 .search-box:focus-within {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(251, 191, 36, 0.5);
   background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
-}
-
-.search-icon {
-  color: var(--text-subdued);
-  font-size: 20px;
-  margin-right: 16px;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
 }
 
 .search-box input {
@@ -154,18 +142,53 @@ body {
   color: var(--text-subdued);
 }
 
-.hidden-submit {
-  display: none;
+.search-submit-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-/* THE FIX: Starts the scroll area directly under the Topbar, 
-   but gives it 90px top padding so the first row of cards sits below the floating search bar */
+.search-submit-btn:hover {
+  background: var(--accent);
+  color: black;
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.search-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: black;
+  border-radius: 50%;
+  animation: searchSpin 0.8s linear infinite;
+}
+
+@keyframes searchSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .content-scroll-area {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 90px 40px 100px 40px; 
   min-height: 0;
+}
+
+.content-scroll-area.no-scroll {
+  overflow: hidden !important;
+  padding-bottom: 20px;
 }
 
 .content-scroll-area::-webkit-scrollbar {
@@ -184,22 +207,87 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* --- REACT CUSTOM MASONRY GRID STYLES --- */
-.track-grid {
+/* --- DUAL COLUMN SEARCH SPLIT STYLES --- */
+.dual-search-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: var(--dyn-card-gap, 28px);
   width: 100%;
-  margin: 0 auto;
+  height: calc(100vh - 190px);
+  gap: 28px;
 }
 
-.track-grid-column {
+.search-column {
   display: flex;
   flex-direction: column;
-  gap: var(--dyn-card-gap, 28px);
+  height: 100%;
+  min-height: 0;
+}
+
+.search-column.vault-column {
+  width: calc(100% - var(--dyn-cosmos-split, 60%));
+}
+
+.search-column.cosmos-column {
+  width: var(--dyn-cosmos-split, 60%);
+}
+
+.column-header {
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 10;
+  background: transparent;
+}
+
+/* Independent Column Scroll Container (with safe-padding to stop scale clipping) */
+.column-scroll-area {
   flex: 1;
-  width: var(--dyn-card-width, 20%);
+  overflow-y: auto;
+  padding: 10px 12px 80px 12px;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.column-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.column-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.column-empty-box {
+  padding: 24px;
+  text-align: center;
+  border-radius: 12px;
+  color: var(--text-subdued);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* --- REACT CUSTOM GRID --- */
+.track-grid {
+  display: grid;
+  /* Automatically packs as many strict VW columns as will fit */
+  grid-template-columns: repeat(auto-fill, var(--dyn-card-width, 12vw));
+  justify-content: center; /* Centers the leftover space evenly on left and right */
+  gap: var(--dyn-card-gap, 28px);
+  width: 100%;
+  margin: 0;
+}
+
+/* Items fill their strict column block perfectly */
+.track-grid-item {
+  width: 100%;
   min-width: 0;
 }
 
@@ -328,10 +416,13 @@ body {
   .content-scroll-area {
     padding: 82px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
   }
-  .section-title {
-    font-size: 22px;
-    margin-bottom: 20px;
-    text-align: center;
+  .dual-search-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .search-column.vault-column,
+  .search-column.cosmos-column {
+    width: 100% !important;
   }
 }
 

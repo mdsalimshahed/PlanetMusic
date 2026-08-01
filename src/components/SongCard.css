@@ -1,177 +1,197 @@
 /* --- src/components/SongCard.css --- */
 .song-card {
+  position: relative;
+  z-index: 1;
   padding: 0; 
-  /* Completely invisible wrapper */
   background: transparent;
   border: none;
-  
-  border-radius: var(--dyn-border-radius);
+  border-radius: 0px !important;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
   width: 100%; 
   margin: 0; 
   box-sizing: border-box;
-  
-  /* Clips the child elements perfectly to the border radius */
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .song-card:hover {
-  transform: scale(1.03) translateY(-4px);
-  /* The shadow outlines the image + the text window seamlessly */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  transform: scale(1.04) translateY(-4px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--card-accent-rgb), 0.3);
 }
 
 .artwork-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1; 
-  border-radius: 0; 
+  border-radius: 0px !important;
   overflow: hidden;
   margin-bottom: 0; 
-  flex-shrink: 0; 
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .artwork {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
+/* Unified Hover Center Play Overlay */
 .artwork-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 5;
 }
 
 .song-card:hover .artwork-overlay {
   opacity: 1;
 }
 
-/* Quick Add Button Base (Fully Transparent Outline) */
-.quick-add-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: transparent;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quick-add-btn:hover {
-  background: transparent;
-  transform: scale(1.1);
-}
-
-/* Saved State (Fully Transparent Outline) */
-.quick-add-btn.saved {
-  background: transparent;
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
-}
-
-.quick-add-btn.saved:hover {
-  background: transparent;
-  transform: scale(1.1);
-}
-
-/* Transparent Ring Play Button */
 .play-btn {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #ffffff;
   border: 2px solid #ffffff;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 0px !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  font-size: 22px;
-  padding-left: 4px; /* Centers the Play triangle visually */
+  font-size: 20px;
+  padding-left: 3px; 
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
   transition: all 0.2s ease;
 }
 
 .play-btn:hover {
   transform: scale(1.1);
-  background: transparent;
+  background: #ffffff;
+  color: #000000;
 }
 
-/* The distinct text window directly under the album art */
-.card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex-grow: 1; 
-  justify-content: flex-start; 
-  padding: 14px var(--dyn-card-padding, 16px) 16px var(--dyn-card-padding, 16px);
-  
-  /* Adds frosted glass effect to the dynamic background window */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  
-  /* Delicate border just on the window to give it presence */
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.text-info {
-  width: 100%;
-}
-
-.text-info h4 {
-  font-size: var(--dyn-card-font-size);
-  font-weight: 600;
-  margin-bottom: 4px;
-  line-height: 1.3;
+/* Play Button on Top-Right Corner */
+.play-card-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border-radius: 0px !important;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  font-size: 14px;
+  padding-left: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-card-btn:hover {
+  background: var(--accent, #fbbf24);
+  color: #000000;
+  border-color: var(--accent, #fbbf24);
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+}
+
+/* Floating Text Layer */
+.card-info-text-only {
+  position: relative;
+  z-index: 6;
+  margin: 10px;
+  pointer-events: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.card-info-text-only h4 {
+  font-size: var(--dyn-card-font-size, 1.5vh);
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  line-height: 1.35;
+  color: #ffffff;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.card-info-text-only p {
+  font-size: calc(var(--dyn-card-font-size, 1.5vh) * 0.82); 
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.text-fill-span {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 2px 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  display: inline;
+}
+
+.artist-span {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .explicit-tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-base);
-  font-size: 11px;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 10px;
   font-weight: 800;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 0px !important;
+  margin-left: 5px;
   vertical-align: middle;
   flex-shrink: 0;
-}
-
-.text-info p {
-  font-size: calc(var(--dyn-card-font-size) * 0.85); 
-  color: var(--text-subdued);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 480px) {
-  .quick-add-btn {
+  .play-card-btn {
     width: 28px;
     height: 28px;
     top: 8px;
     right: 8px;
+    font-size: 12px;
+  }
+  .card-info-text-only {
+    margin: 6px;
   }
 }

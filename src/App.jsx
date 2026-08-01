@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Background from './components/Background';
 import Topbar from './components/Topbar';
@@ -8,51 +8,20 @@ import SongModal from './components/SongModal';
 import Player from './components/Player';
 import SettingsTab from './components/SettingsTab';
 
-// --- CUSTOM ROW-ORDERED MASONRY GRID ---
-const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
-  const gridRef = useRef(null);
-  const [numCols, setNumCols] = useState(1);
-
-  useEffect(() => {
-    const updateCols = () => {
-      if (gridRef.current) {
-        let pct = Number(settings.cardWidth) || 20;
-        if (pct > 100) pct = 20; 
-
-        const cols = Math.max(1, Math.floor(100 / pct));
-        if (cols !== numCols) setNumCols(cols);
-      }
-    };
-    
-    updateCols();
-    
-    const resizeObserver = new ResizeObserver(() => updateCols());
-    if (gridRef.current) {
-      resizeObserver.observe(gridRef.current);
-    }
-    
-    return () => resizeObserver.disconnect();
-  }, [settings.cardWidth, numCols]);
-
-  const columns = Array.from({ length: numCols }, () => []);
-  items.forEach((item, index) => {
-    columns[index % numCols].push(item);
-  });
-
+// --- PURE FLEX GRID ---
+// Maps individual cards directly into the CSS grid, ensuring strictly applied widths
+const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   return (
-    <div className="track-grid" ref={gridRef}>
-      {columns.map((col, colIndex) => (
-        <div key={colIndex} className="track-grid-column">
-          {col.map(song => (
-            <SongCard 
-              key={song.trackId} 
-              song={song} 
-              isSaved={library.some((s) => s.trackId === song.trackId)}
-              toggleLibrary={toggleLibrary}
-              setSelectedSong={setSelectedSong}
-              setCurrentTrack={setCurrentTrack}
-            />
-          ))}
+    <div className="track-grid">
+      {items.map(song => (
+        <div key={song.trackId} className="track-grid-item">
+          <SongCard 
+            song={song} 
+            isSaved={library.some((s) => s.trackId === song.trackId)}
+            toggleLibrary={toggleLibrary}
+            setSelectedSong={setSelectedSong}
+            setCurrentTrack={setCurrentTrack}
+          />
         </div>
       ))}
     </div>
@@ -60,12 +29,13 @@ const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong,
 };
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('search');
+  const [activeTab, setActiveTab] = useState('main');
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
+      if (parsed.cosmosSplitRatio === undefined) parsed.cosmosSplitRatio = 60;
       
       if (parsed.cardFontSize === undefined) parsed.cardFontSize = 1.6;
       if (parsed.modalFontSize === undefined) parsed.modalFontSize = 5.5;
@@ -73,31 +43,29 @@ const App = () => {
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 5.5;
       if (parsed.focusedAdlibFontSize === undefined) parsed.focusedAdlibFontSize = 3.5;
       if (parsed.artistNameFontSize === undefined) parsed.artistNameFontSize = 3.5;
-
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
-
       if (parsed.translationColor === undefined) parsed.translationColor = '#ffffff';
       if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
-
-      if (parsed.cardWidth === undefined || parsed.cardWidth > 100) parsed.cardWidth = 20;
-
+      // Convert legacy percentages safely
+      if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12; 
       return parsed;
     }
     return {
       cardFontSize: 1.6,
       modalFontSize: 5.5,
-      cardWidth: 20, 
+      cardWidth: 12, // 12vw default
       cardPadding: 16,
       cardGap: 28,
       isRounded: true,
       borderRadius: 16,
       persistentMemory: true,
       bgImageOpacity: 0.25,
+      cosmosSplitRatio: 60,
       liveSyncFontSize: 4.5,
       focusedSyncFontSize: 5.5,
       focusedAdlibFontSize: 3.5,
@@ -117,18 +85,22 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
+  
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
+  
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
+  
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [songToRemove, setSongToRemove] = useState(null);
+  const [isExplicitSearch, setIsExplicitSearch] = useState(false);
 
   useEffect(() => {
     if (settings.persistentMemory) {
@@ -145,40 +117,80 @@ const App = () => {
   }, [settings, library, searchQuery, searchResults]);
 
   const handleTabSwitch = (tab) => {
-    if (activeTab !== tab) {
-      setSearchQuery('');
-      setActiveTab(tab);
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsExplicitSearch(false);
+    setActiveTab(tab);
+  };
+
+  const handleHomeClick = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setIsExplicitSearch(false);
+    setActiveTab('main');
+  };
+
+  const filteredLibrary = library.filter(song => {
+    if (activeTab !== 'main' || !searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      song.trackName?.toLowerCase().includes(query) ||
+      song.artistName?.toLowerCase().includes(query) ||
+      song.collectionName?.toLowerCase().includes(query)
+    );
+  });
+
+  const performOnlineSearch = async (query) => {
+    if (!query.trim()) return;
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=30`
+      );
+      const data = await response.json();
+      
+      const sortedResults = data.results.sort((a, b) => {
+        const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
+        const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
+        return isBExplicit - isAExplicit;
+      });
+      
+      setSearchResults(sortedResults);
+    } catch (error) {
+      console.error('Error fetching songs:', error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
   useEffect(() => {
-    if (activeTab !== 'search') return;
-    if (!searchQuery.trim()) return;
-    const debounceTimer = setTimeout(async () => {
-      setIsSearching(true);
-      try {
-        const response = await fetch(
-          `https://itunes.apple.com/search?term=${encodeURIComponent(searchQuery)}&entity=song&limit=30`
-        );
-        const data = await response.json();
-        
-        const sortedResults = data.results.sort((a, b) => {
-          const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
-          const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
-          return isBExplicit - isAExplicit;
-        });
-        setSearchResults(sortedResults);
-      } catch (error) {
-        console.error('Error fetching songs:', error);
-      } finally {
-        setIsSearching(false);
-      }
+    if (activeTab !== 'main') return;
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setIsExplicitSearch(false);
+      return;
+    }
+
+    setIsExplicitSearch(false);
+
+    if (filteredLibrary.length > 0) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const debounceTimer = setTimeout(() => {
+      performOnlineSearch(searchQuery);
     }, 400);
+
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery, activeTab]);
+  }, [searchQuery, activeTab, filteredLibrary.length]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setIsExplicitSearch(true);
+    performOnlineSearch(searchQuery);
   };
 
   const toggleLibrary = (e, song) => {
@@ -213,6 +225,7 @@ const App = () => {
         return [...prevLibrary, updatedSong];
       }
     });
+
     setSelectedSong(updatedSong);
     setCurrentTrack(prevTrack => {
       if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
@@ -235,6 +248,7 @@ const App = () => {
       delete optimizedSong.trackViewUrl;
       return optimizedSong;
     });
+
     const exportData = { library: optimizedLibrary, settings: settings };
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -252,11 +266,13 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
+
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -264,16 +280,17 @@ const App = () => {
             else newLibrary.push(newSong);
           });
         };
+
         if (parsedData.library && Array.isArray(parsedData.library)) {
           mergeSongs(parsedData.library);
           setLibrary(newLibrary);
           if (parsedData.settings) setSettings({ ...settings, ...parsedData.settings });
-          handleTabSwitch('library');
+          handleHomeClick();
           alert(`Successfully imported ${parsedData.library.length} songs and applied UI settings!`);
         } else if (Array.isArray(parsedData)) {
           mergeSongs(parsedData);
           setLibrary(newLibrary);
-          handleTabSwitch('library');
+          handleHomeClick();
           alert(`Successfully imported ${parsedData.length} songs!`);
         }
       } catch (err) {
@@ -284,13 +301,12 @@ const App = () => {
     event.target.value = null;
   };
 
-  const cardWPct = (settings.cardWidth && settings.cardWidth <= 100) ? settings.cardWidth : 20;
-
   const dynamicStyles = {
     '--dyn-card-font-size': `${settings.cardFontSize}vh`,
     '--dyn-modal-font-size': `${settings.modalFontSize}vh`,
+    '--dyn-cosmos-split': `${settings.cosmosSplitRatio ?? 60}%`,
     
-    '--dyn-card-width': `${cardWPct}%`,
+    '--dyn-card-width': `${settings.cardWidth || 12}vw`,
     '--dyn-card-padding': `clamp(8px, 1vw, ${settings.cardPadding}px)`,
     '--dyn-card-gap': `clamp(12px, 1.5vw, ${settings.cardGap}px)`,
     '--dyn-border-radius': settings.isRounded ? `${settings.borderRadius}px` : '0px',
@@ -314,15 +330,9 @@ const App = () => {
     '--dyn-translit-font-size': `${settings.transliterationFontSize ?? 0.55}em`,
   };
 
-  const filteredLibrary = library.filter(song => {
-    if (activeTab !== 'library' || !searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      song.trackName?.toLowerCase().includes(query) ||
-      song.artistName?.toLowerCase().includes(query) ||
-      song.collectionName?.toLowerCase().includes(query)
-    );
-  });
+  const uniqueOnlineResults = searchResults.filter(
+    onlineSong => !filteredLibrary.some(localSong => localSong.trackId === onlineSong.trackId)
+  );
 
   return (
     <div className="app-layout" style={dynamicStyles}>
@@ -330,57 +340,43 @@ const App = () => {
       
       <Topbar 
         activeTab={activeTab} 
-        setActiveTab={handleTabSwitch} 
+        handleHomeClick={handleHomeClick}
         handleExport={handleExport}
         handleImport={handleImport}
         openSettings={() => handleTabSwitch('settings')}
       />
+
       <main className="main-content">
-        
-        {/* THE FIX: Pulled back outside the scrollable area so it stays fixed! */}
         {activeTab !== 'settings' && (
           <div className="search-container">
             <form onSubmit={handleSearchSubmit} className="search-box">
-              <span className="search-icon">🔍</span>
               <input
                 type="text"
-                placeholder={activeTab === 'search' ? "Search for artists, songs, or albums..." : "Search your vault..."}
+                placeholder="Search vault (press Enter for full cosmos search)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button type="submit" className="hidden-submit" disabled={isSearching}></button>
+              <button type="submit" className="search-submit-btn" title="Search iTunes Online">
+                {isSearching ? (
+                  <span className="search-spinner"></span>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                )}
+              </button>
             </form>
           </div>
         )}
 
-        <div className="content-scroll-area">
-          {activeTab === 'search' && (
+        <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
+          {activeTab === 'main' && (
             <section className="view-section">
-              {searchResults.length > 0 ? (
-                <MasonryGrid 
-                  items={searchResults} 
-                  settings={settings} 
-                  library={library} 
-                  toggleLibrary={toggleLibrary} 
-                  setSelectedSong={setSelectedSong} 
-                  setCurrentTrack={setCurrentTrack} 
-                />
-              ) : (
-                <div className="empty-message glass-panel">
-                  <h2>Explore the Cosmos</h2>
-                  <p>Type in the persistent search bar above to start your journey.</p>
-                </div>
-              )}
-            </section>
-          )}
-
-          {activeTab === 'library' && (
-            <section className="view-section">
-              {library.length > 0 ? (
-                filteredLibrary.length > 0 ? (
-                  <MasonryGrid 
-                    items={filteredLibrary} 
-                    settings={settings} 
+              {!searchQuery.trim() ? (
+                library.length > 0 ? (
+                  <TrackGrid 
+                    items={library} 
                     library={library} 
                     toggleLibrary={toggleLibrary} 
                     setSelectedSong={setSelectedSong} 
@@ -388,15 +384,80 @@ const App = () => {
                   />
                 ) : (
                   <div className="empty-message glass-panel">
-                    <h2>No matches found</h2>
-                    <p>No songs in your vault match "{searchQuery}".</p>
+                    <h2>Your Vault is Empty</h2>
+                    <p>Type in the search bar above to start your journey.</p>
                   </div>
                 )
-              ) : (
-                <div className="empty-message glass-panel">
-                  <h2>Your vault is empty</h2>
-                  <p>Songs you collect will appear orbiting here.</p>
+              ) : isExplicitSearch ? (
+                <div className="dual-search-container">
+                  <div className="search-column vault-column">
+                    <div className="column-header">
+                      <span>VAULT ({filteredLibrary.length})</span>
+                    </div>
+                    <div className="column-scroll-area">
+                      {filteredLibrary.length > 0 ? (
+                        <TrackGrid 
+                          items={filteredLibrary} 
+                          library={library} 
+                          toggleLibrary={toggleLibrary} 
+                          setSelectedSong={setSelectedSong} 
+                          setCurrentTrack={setCurrentTrack} 
+                        />
+                      ) : (
+                        <div className="column-empty-box">No matches in your Vault</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="search-column cosmos-column">
+                    <div className="column-header">
+                      <span>COSMOS ({uniqueOnlineResults.length})</span>
+                    </div>
+                    <div className="column-scroll-area">
+                      {isSearching ? (
+                        <div className="column-empty-box">Searching the Cosmos...</div>
+                      ) : uniqueOnlineResults.length > 0 ? (
+                        <TrackGrid 
+                          items={uniqueOnlineResults} 
+                          library={library} 
+                          toggleLibrary={toggleLibrary} 
+                          setSelectedSong={setSelectedSong} 
+                          setCurrentTrack={setCurrentTrack} 
+                        />
+                      ) : (
+                        <div className="column-empty-box">No online matches found</div>
+                      )}
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                filteredLibrary.length > 0 ? (
+                  <TrackGrid 
+                    items={filteredLibrary} 
+                    library={library} 
+                    toggleLibrary={toggleLibrary} 
+                    setSelectedSong={setSelectedSong} 
+                    setCurrentTrack={setCurrentTrack} 
+                  />
+                ) : searchResults.length > 0 ? (
+                  <TrackGrid 
+                    items={searchResults} 
+                    library={library} 
+                    toggleLibrary={toggleLibrary} 
+                    setSelectedSong={setSelectedSong} 
+                    setCurrentTrack={setCurrentTrack} 
+                  />
+                ) : isSearching ? (
+                  <div className="empty-message glass-panel">
+                    <h2>Searching the Cosmos...</h2>
+                    <p>Looking for "{searchQuery}"</p>
+                  </div>
+                ) : (
+                  <div className="empty-message glass-panel">
+                    <h2>No matches found</h2>
+                    <p>No songs match "{searchQuery}" in your Vault or iTunes.</p>
+                  </div>
+                )
               )}
             </section>
           )}

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
-  const [bgColor, setBgColor] = useState('');
-  const [accentRGB, setAccentRGB] = useState('255, 255, 255');
+  const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
 
   useEffect(() => {
@@ -36,7 +35,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         b = Math.floor(b / pixelCount);
         
         setAccentRGB(`${r}, ${g}, ${b}`);
-        setBgColor(`linear-gradient(to bottom, rgba(${r}, ${g}, ${b}, 0.5), rgba(5, 5, 16, 0.95))`);
       } catch (e) {
         console.warn('Could not extract color due to CORS restrictions');
       } finally {
@@ -74,24 +72,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
-        {/* Top-Right Quick Add Icon Button */}
-        <button 
-          className={`quick-add-btn ${isSaved ? 'saved' : ''}`}
-          onClick={(e) => toggleLibrary(e, song)}
-          title={isSaved ? "Remove from Vault" : "Add to Vault"}
-        >
-          {isSaved ? (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          ) : (
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          )}
-        </button>
-
+        {/* Center Hover Play Overlay */}
         <div className="artwork-overlay">
           {(song.previewUrl || song.customLinks?.hasLocal) && (
             <button 
@@ -106,19 +87,30 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
             </button>
           )}
         </div>
-      </div>
 
-      {/* The isolated window below the artwork housing the info */}
-      <div 
-        className="card-info"
-        style={{ background: bgColor || 'rgba(10, 10, 25, 0.8)' }}
-      >
-        <div className="text-info">
+        {/* Top-Right Quick Play Button */}
+        {(song.previewUrl || song.customLinks?.hasLocal) && (
+          <button 
+            className="play-card-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentTrack(song);
+            }}
+            title={song.customLinks?.hasLocal ? "Play Local File" : "Play Preview"}
+          >
+            ▶
+          </button>
+        )}
+
+        {/* Text Overlay */}
+        <div className="card-info-text-only">
           <h4 title={song.trackName}>
-            {song.trackName}
+            <span className="text-fill-span">{song.trackName}</span>
             {song.trackExplicitness === 'explicit' && <span className="explicit-tag">E</span>}
           </h4>
-          <p title={song.artistName}>{song.artistName}</p>
+          <p title={song.artistName}>
+            <span className="text-fill-span artist-span">{song.artistName}</span>
+          </p>
         </div>
       </div>
     </div>
