@@ -55,7 +55,7 @@
   opacity: 1;
 }
 
-/* Quick Add Button Base (Now with solid white border) */
+/* Quick Add Button Base (Fully Transparent Outline) */
 .quick-add-btn {
   position: absolute;
   top: 10px;
@@ -64,9 +64,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(10, 10, 25, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
   border: 2px solid #ffffff;
   color: #ffffff;
   display: flex;
@@ -77,28 +75,26 @@
 }
 
 .quick-add-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: transparent;
   transform: scale(1.1);
 }
 
-/* Saved State */
+/* Saved State (Fully Transparent Outline) */
 .quick-add-btn.saved {
-  background: rgba(var(--card-accent-rgb, 255, 255, 255), 0.45);
+  background: transparent;
   border: 2px solid #ffffff;
   color: #ffffff;
   box-shadow: 0 0 14px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
 .quick-add-btn.saved:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: transparent;
   transform: scale(1.1);
 }
 
-/* Semi-Transparent Glass Ring Play Button */
+/* Transparent Ring Play Button */
 .play-btn {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: transparent;
   color: #ffffff;
   border: 2px solid #ffffff;
   width: 54px;
@@ -117,7 +113,7 @@
 
 .play-btn:hover {
   transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.35);
+  background: transparent;
 }
 
 /* The distinct text window directly under the album art */
