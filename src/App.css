@@ -53,7 +53,6 @@ body {
   background: var(--glass-bg-heavy);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  /* Removed border-bottom to eliminate the full width bar under the top bar */
 }
 
 .glass-panel-light {
@@ -189,7 +188,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--dyn-card-gap, 28px);
-  width: var(--dyn-card-width, 200px);
+  
+  /* Flex 1 ensures the columns perfectly stretch and absorb their percentage width */
+  flex: 1;
+  width: var(--dyn-card-width, 20%);
+  min-width: 0;
 }
 
 .empty-message {

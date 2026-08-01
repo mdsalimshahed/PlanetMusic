@@ -83,17 +83,18 @@ const SettingsTab = ({ settings, setSettings }) => {
           <h3>Canvas & Card Layout</h3>
           
           <div className="setting-item">
-            <label>Horizontal Card Width ({settings.cardWidth}px)</label>
+            <label>Horizontal Card Width ({settings.cardWidth}%)</label>
             <input 
               type="range" 
               name="cardWidth" 
-              min="120" 
-              max="400" 
+              min="10" 
+              max="100" 
+              step="5"
               value={settings.cardWidth} 
-              onChange={handleChange} 
-              style={getSliderStyle('cardWidth', ((settings.cardWidth - 120) / 280) * 100)} 
+              onChange={handleChange}
+              style={getSliderStyle('cardWidth', ((settings.cardWidth - 10) / 90) * 100)} 
             />
-            <span className="setting-desc">Sets the maximum width of track cards in the masonry grid.</span>
+            <span className="setting-desc">Sets the maximum width of track cards in the masonry grid (100% = 1 col, 50% = 2 cols, 20% = 5 cols).</span>
           </div>
 
           <div className="setting-item">
@@ -104,7 +105,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               min="8" 
               max="40" 
               value={settings.cardPadding} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('cardPadding', ((settings.cardPadding - 8) / 32) * 100)} 
             />
             <span className="setting-desc">Controls inner padding inside each song card.</span>
@@ -118,7 +119,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               min="8" 
               max="64" 
               value={settings.cardGap} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('cardGap', ((settings.cardGap - 8) / 56) * 100)} 
             />
             <span className="setting-desc">Adjusts spacing between cards across the dashboard layout.</span>
@@ -131,9 +132,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="cardFontSize" 
               min="0.5" 
               max="5.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.cardFontSize} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('cardFontSize', ((settings.cardFontSize - 0.5) / 4.5) * 100)} 
             />
             <span className="setting-desc">Scales song title text sizing relative to viewport height.</span>
@@ -148,7 +149,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               type="checkbox" 
               name="isRounded" 
               checked={settings.isRounded} 
-              onChange={handleChange} 
+              onChange={handleChange}
             />
           </div>
 
@@ -161,7 +162,7 @@ const SettingsTab = ({ settings, setSettings }) => {
                 min="4" 
                 max="50" 
                 value={settings.borderRadius} 
-                onChange={handleChange} 
+                onChange={handleChange}
                 style={getSliderStyle('borderRadius', ((settings.borderRadius - 4) / 46) * 100)} 
               />
               <span className="setting-desc">Defines corner roundness for cards and container panels.</span>
@@ -174,7 +175,6 @@ const SettingsTab = ({ settings, setSettings }) => {
           <h3>Lyrics Canvas</h3>
 
           <div className="sub-group-title">Live View</div>
-
           <div className="setting-item">
             <label>Line Gap ({settings.liveSyncLineGap ?? 16}px)</label>
             <input 
@@ -182,14 +182,13 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="liveSyncLineGap" 
               min="4" 
               max="100" 
-              step="1" 
+              step="1"
               value={settings.liveSyncLineGap ?? 16} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('liveSyncLineGap', (((settings.liveSyncLineGap ?? 16) - 4) / 96) * 100)} 
             />
             <span className="setting-desc">Vertical spacing separating consecutive lyric lines in Live View.</span>
           </div>
-
           <div className="setting-item">
             <label>Line Size ({settings.liveSyncFontSize}vh)</label>
             <input 
@@ -197,16 +196,15 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="liveSyncFontSize" 
               min="1.0" 
               max="12.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.liveSyncFontSize} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('liveSyncFontSize', ((settings.liveSyncFontSize - 1.0) / 11.0) * 100)} 
             />
             <span className="setting-desc">Overall font scale for active and upcoming lyric lines in Live View.</span>
           </div>
 
           <div className="group-divider"></div>
-
           <div className="sub-group-title">Focus View</div>
 
           <div className="setting-item">
@@ -216,14 +214,13 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="focusedSyncFontSize" 
               min="2.0" 
               max="15.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.focusedSyncFontSize} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('focusedSyncFontSize', ((settings.focusedSyncFontSize - 2.0) / 13.0) * 100)} 
             />
             <span className="setting-desc">Font scale for the centered main lyric line in Focused View.</span>
           </div>
-
           <div className="setting-item">
             <label>Ad-Lib Size ({settings.focusedAdlibFontSize ?? 3.5}vh)</label>
             <input 
@@ -231,9 +228,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="focusedAdlibFontSize" 
               min="1.0" 
               max="10.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.focusedAdlibFontSize ?? 3.5} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('focusedAdlibFontSize', (((settings.focusedAdlibFontSize ?? 3.5) - 1.0) / 9.0) * 100)} 
             />
             <span className="setting-desc">Controls canvas proportion of floating ad-libs in Focused View.</span>
@@ -251,9 +248,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="artistNameFontSize" 
               min="1.0" 
               max="10.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.artistNameFontSize ?? 3.5} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('artistNameFontSize', (((settings.artistNameFontSize ?? 3.5) - 1.0) / 9.0) * 100)} 
             />
             <span className="setting-desc">Controls text size of floating artist names at the bottom right corner.</span>
@@ -266,9 +263,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="bgPreemptionTime" 
               min="0" 
               max="2000" 
-              step="50" 
+              step="50"
               value={settings.bgPreemptionTime} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('bgPreemptionTime', (settings.bgPreemptionTime / 2000) * 100)} 
             />
             <span className="setting-desc">How early the artist image begins appearing before their line plays.</span>
@@ -286,7 +283,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               type="range" 
               min="0" 
               max="1000" 
-              step="10" 
+              step="10"
               defaultValue={localStorage.getItem('artistTransitionTime') || 0}
               onChange={(e) => {
                 const val = parseInt(e.target.value, 10);
@@ -307,9 +304,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="bgImageOpacity" 
               min="0" 
               max="1" 
-              step="0.05" 
+              step="0.05"
               value={settings.bgImageOpacity ?? 0.25} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('bgImageOpacity', (settings.bgImageOpacity ?? 0.25) * 100)} 
             />
             <span className="setting-desc">Transparency level of artist background photos behind lyrics.</span>
@@ -328,7 +325,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               min="20" 
               max="80" 
               value={settings.modalSplitRatio} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('modalSplitRatio', ((settings.modalSplitRatio - 20) / 60) * 100)} 
             />
             <span className="setting-desc">Proportional width split between metadata column and lyrics area.</span>
@@ -342,7 +339,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               min="0" 
               max="25" 
               value={settings.modalPaddingY} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('modalPaddingY', (settings.modalPaddingY / 25) * 100)} 
             />
             <span className="setting-desc">Top and bottom margin spacing surrounding song overlay window.</span>
@@ -355,9 +352,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="modalFontSize" 
               min="2.0" 
               max="10.0" 
-              step="0.1" 
+              step="0.1"
               value={settings.modalFontSize} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('modalFontSize', ((settings.modalFontSize - 2.0) / 8.0) * 100)} 
             />
             <span className="setting-desc">Font size scaling for main song title in left metadata panel.</span>
@@ -370,9 +367,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="eqFadeOutTime" 
               min="100" 
               max="2000" 
-              step="100" 
+              step="100"
               value={settings.eqFadeOutTime} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('eqFadeOutTime', ((settings.eqFadeOutTime - 100) / 1900) * 100)} 
             />
             <span className="setting-desc">How smoothly equalizer visualizer bars fall when music pauses.</span>
@@ -387,7 +384,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               type="checkbox" 
               name="persistentMemory" 
               checked={settings.persistentMemory} 
-              onChange={handleChange} 
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -405,8 +402,8 @@ const SettingsTab = ({ settings, setSettings }) => {
                 type="color" 
                 name="translationColor" 
                 value={settings.translationColor || '#ffffff'} 
-                onChange={handleChange} 
-                className="color-picker-input" 
+                onChange={handleChange}
+                className="color-picker-input"
               />
               <span className="color-preview-value">{settings.translationColor || '#ffffff'}</span>
             </div>
@@ -420,9 +417,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="translationOpacity" 
               min="0" 
               max="1" 
-              step="0.05" 
+              step="0.05"
               value={settings.translationOpacity ?? 0.9} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('translationOpacity', (settings.translationOpacity ?? 0.9) * 100)} 
             />
             <span className="setting-desc">Opacity level applied to translated text lines.</span>
@@ -435,9 +432,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="translationFontSize" 
               min="0.3" 
               max="1.0" 
-              step="0.05" 
+              step="0.05"
               value={settings.translationFontSize ?? 0.55} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('translationFontSize', (((settings.translationFontSize ?? 0.55) - 0.3) / 0.7) * 100)} 
             />
             <span className="setting-desc">Font size ratio of translated text relative to main lyrics.</span>
@@ -450,16 +447,15 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="translationTopPadding" 
               min="0" 
               max="30" 
-              step="1" 
+              step="1"
               value={settings.translationTopPadding ?? 8} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('translationTopPadding', ((settings.translationTopPadding ?? 8) / 30) * 100)} 
             />
             <span className="setting-desc">Distance floating translation text sits above main lyric line.</span>
           </div>
 
           <div className="group-divider"></div>
-
           <div className="sub-group-title">Transliteration</div>
 
           <div className="setting-item">
@@ -469,8 +465,8 @@ const SettingsTab = ({ settings, setSettings }) => {
                 type="color" 
                 name="transliterationColor" 
                 value={settings.transliterationColor || '#ffffff'} 
-                onChange={handleChange} 
-                className="color-picker-input" 
+                onChange={handleChange}
+                className="color-picker-input"
               />
               <span className="color-preview-value">{settings.transliterationColor || '#ffffff'}</span>
             </div>
@@ -484,9 +480,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="transliterationOpacity" 
               min="0" 
               max="1" 
-              step="0.05" 
+              step="0.05"
               value={settings.transliterationOpacity ?? 0.8} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('transliterationOpacity', (settings.transliterationOpacity ?? 0.8) * 100)} 
             />
             <span className="setting-desc">Opacity level applied to transliteration text lines.</span>
@@ -499,9 +495,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="transliterationFontSize" 
               min="0.3" 
               max="1.0" 
-              step="0.05" 
+              step="0.05"
               value={settings.transliterationFontSize ?? 0.55} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('transliterationFontSize', (((settings.transliterationFontSize ?? 0.55) - 0.3) / 0.7) * 100)} 
             />
             <span className="setting-desc">Font size ratio of pronunciation guide relative to main lyrics.</span>
@@ -514,9 +510,9 @@ const SettingsTab = ({ settings, setSettings }) => {
               name="transliterationBottomPadding" 
               min="0" 
               max="30" 
-              step="1" 
+              step="1"
               value={settings.transliterationBottomPadding ?? 4} 
-              onChange={handleChange} 
+              onChange={handleChange}
               style={getSliderStyle('transliterationBottomPadding', ((settings.transliterationBottomPadding ?? 4) / 30) * 100)} 
             />
             <span className="setting-desc">Distance transliteration text sits below main lyric line.</span>
