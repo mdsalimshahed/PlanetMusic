@@ -8,8 +8,9 @@ const Topbar = ({
 }) => {
   const fileInputRef = useRef(null);
 
+  // Removed 'glass-panel-heavy' to eliminate the full-width top band
   return (
-    <header className="topbar glass-panel-heavy">
+    <header className="topbar">
       {/* Left: Logo Only */}
       <div className="topbar-left">
         <div className="logo-area" title="PlanetMusic">

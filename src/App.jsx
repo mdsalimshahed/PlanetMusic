@@ -336,8 +336,8 @@ const App = () => {
       />
       <main className="main-content">
         {activeTab !== 'settings' && (
-          <div className="search-container glass-panel-light">
-            <form onSubmit={handleSearchSubmit} className="search-box glass-input">
+          <div className="search-container">
+            <form onSubmit={handleSearchSubmit} className="search-box">
               <span className="search-icon">🔍</span>
               <input
                 type="text"
