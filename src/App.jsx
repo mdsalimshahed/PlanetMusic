@@ -16,11 +16,9 @@ const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong,
   useEffect(() => {
     const updateCols = () => {
       if (gridRef.current) {
-        // Treat cardWidth as a percentage (e.g., 50 = 50%, 20 = 20%)
         let pct = Number(settings.cardWidth) || 20;
-        if (pct > 100) pct = 20; // Fallback to reset legacy pixel values
+        if (pct > 100) pct = 20; 
 
-        // Calculate maximum columns that fit based on percentage (100% / 50% = 2 columns)
         const cols = Math.max(1, Math.floor(100 / pct));
         if (cols !== numCols) setNumCols(cols);
       }
@@ -28,7 +26,6 @@ const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong,
     
     updateCols();
     
-    // Smoothly recalculate columns whenever the browser window or container resizes
     const resizeObserver = new ResizeObserver(() => updateCols());
     if (gridRef.current) {
       resizeObserver.observe(gridRef.current);
@@ -37,7 +34,6 @@ const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong,
     return () => resizeObserver.disconnect();
   }, [settings.cardWidth, numCols]);
 
-  // Distribute items row-by-row into their respective columns
   const columns = Array.from({ length: numCols }, () => []);
   items.forEach((item, index) => {
     columns[index % numCols].push(item);
@@ -88,7 +84,6 @@ const App = () => {
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
 
-      // Migrate legacy pixel sizes to a sane default percentage (e.g., 20%)[cite: 1]
       if (parsed.cardWidth === undefined || parsed.cardWidth > 100) parsed.cardWidth = 20;
 
       return parsed;
@@ -96,7 +91,7 @@ const App = () => {
     return {
       cardFontSize: 1.6,
       modalFontSize: 5.5,
-      cardWidth: 20, // Default to 20%
+      cardWidth: 20, 
       cardPadding: 16,
       cardGap: 28,
       isRounded: true,
@@ -289,14 +284,12 @@ const App = () => {
     event.target.value = null;
   };
 
-  // Safely grab the percentage[cite: 1]
   const cardWPct = (settings.cardWidth && settings.cardWidth <= 100) ? settings.cardWidth : 20;
 
   const dynamicStyles = {
     '--dyn-card-font-size': `${settings.cardFontSize}vh`,
     '--dyn-modal-font-size': `${settings.modalFontSize}vh`,
     
-    // Set strictly as a percentage from your settings![cite: 1]
     '--dyn-card-width': `${cardWPct}%`,
     '--dyn-card-padding': `clamp(8px, 1vw, ${settings.cardPadding}px)`,
     '--dyn-card-gap': `clamp(12px, 1.5vw, ${settings.cardGap}px)`,
@@ -343,6 +336,8 @@ const App = () => {
         openSettings={() => handleTabSwitch('settings')}
       />
       <main className="main-content">
+        
+        {/* THE FIX: Pulled back outside the scrollable area so it stays fixed! */}
         {activeTab !== 'settings' && (
           <div className="search-container">
             <form onSubmit={handleSearchSubmit} className="search-box">
@@ -357,6 +352,7 @@ const App = () => {
             </form>
           </div>
         )}
+
         <div className="content-scroll-area">
           {activeTab === 'search' && (
             <section className="view-section">

@@ -96,15 +96,23 @@ body {
   min-height: 0;
 }
 
+/* THE FIX: Make the search container float independently OVER the scrolling area */
 .search-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   padding: 20px 40px;
   display: flex;
   justify-content: flex-start;
   z-index: 30;
-  flex-shrink: 0;
+  /* Let clicks pass through empty space so you can click the song cards rolling behind it */
+  pointer-events: none; 
 }
 
 .search-box {
+  /* Re-enable clicks so you can actually type in the search box */
+  pointer-events: auto; 
   display: flex;
   align-items: center;
   background: rgba(0, 0, 0, 0.3);
@@ -150,11 +158,13 @@ body {
   display: none;
 }
 
+/* THE FIX: Starts the scroll area directly under the Topbar, 
+   but gives it 90px top padding so the first row of cards sits below the floating search bar */
 .content-scroll-area {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 32px 40px 100px 40px; 
+  padding: 90px 40px 100px 40px; 
   min-height: 0;
 }
 
@@ -188,8 +198,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--dyn-card-gap, 28px);
-  
-  /* Flex 1 ensures the columns perfectly stretch and absorb their percentage width */
   flex: 1;
   width: var(--dyn-card-width, 20%);
   min-width: 0;
@@ -318,7 +326,7 @@ body {
     justify-content: center;
   }
   .content-scroll-area {
-    padding: 24px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
+    padding: 82px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
   }
   .section-title {
     font-size: 22px;
@@ -332,7 +340,7 @@ body {
     padding: 10px 20px;
   }
   .content-scroll-area {
-    padding-top: 16px;
+    padding-top: 70px;
   }
 }
 
