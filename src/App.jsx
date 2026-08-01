@@ -1,7 +1,6 @@
 /* --- src/App.jsx --- */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-
 import Background from './components/Background';
 import Topbar from './components/Topbar';
 import SongCard from './components/SongCard';
@@ -9,42 +8,85 @@ import SongModal from './components/SongModal';
 import Player from './components/Player';
 import SettingsTab from './components/SettingsTab';
 
+// --- CUSTOM ROW-ORDERED MASONRY GRID ---
+const MasonryGrid = ({ items, settings, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
+  const gridRef = useRef(null);
+  const [numCols, setNumCols] = useState(1);
+
+  useEffect(() => {
+    const updateCols = () => {
+      if (gridRef.current) {
+        const width = gridRef.current.offsetWidth;
+        const cardW = Number(settings.cardWidth) || 200;
+        const gap = Number(settings.cardGap) || 28;
+        // Calculate maximum columns that fit the container width
+        const cols = Math.max(1, Math.floor((width + gap) / (cardW + gap)));
+        if (cols !== numCols) setNumCols(cols);
+      }
+    };
+    
+    updateCols();
+    
+    // Smoothly recalculate columns whenever the browser window or container resizes
+    const resizeObserver = new ResizeObserver(() => updateCols());
+    if (gridRef.current) {
+      resizeObserver.observe(gridRef.current);
+    }
+    
+    return () => resizeObserver.disconnect();
+  }, [settings.cardWidth, settings.cardGap, numCols]);
+
+  // Distribute items row-by-row into their respective columns
+  const columns = Array.from({ length: numCols }, () => []);
+  items.forEach((item, index) => {
+    columns[index % numCols].push(item);
+  });
+
+  return (
+    <div className="track-grid" ref={gridRef}>
+      {columns.map((col, colIndex) => (
+        <div key={colIndex} className="track-grid-column">
+          {col.map(song => (
+            <SongCard 
+              key={song.trackId} 
+              song={song} 
+              isSaved={library.some((s) => s.trackId === song.trackId)}
+              toggleLibrary={toggleLibrary}
+              setSelectedSong={setSelectedSong}
+              setCurrentTrack={setCurrentTrack}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const App = () => {
   const [activeTab, setActiveTab] = useState('search');
-  
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       
-      // AUTO-MIGRATION: Convert old hardcoded pixel font sizes to responsive 'vh' canvas proportions
-      if (parsed.liveSyncFontSize && parsed.liveSyncFontSize > 15) {
-        parsed.cardFontSize = 1.6;
-        parsed.modalFontSize = 5.5;
-        parsed.liveSyncFontSize = 4.5;
-        parsed.focusedSyncFontSize = 5.5;
-        parsed.focusedAdlibFontSize = 3.5;
-      }
-      
-      // Safety defaults if undefined
       if (parsed.cardFontSize === undefined) parsed.cardFontSize = 1.6;
       if (parsed.modalFontSize === undefined) parsed.modalFontSize = 5.5;
       if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 4.5;
       if (parsed.focusedSyncFontSize === undefined) parsed.focusedSyncFontSize = 5.5;
       if (parsed.focusedAdlibFontSize === undefined) parsed.focusedAdlibFontSize = 3.5;
-      
+      if (parsed.artistNameFontSize === undefined) parsed.artistNameFontSize = 3.5;
+
       if (parsed.modalSplitRatio === undefined) parsed.modalSplitRatio = 50;
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
-      
-      // Translation/Transliteration Settings
+
       if (parsed.translationColor === undefined) parsed.translationColor = '#ffffff';
       if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
-      
+
       return parsed;
     }
     return {
@@ -60,6 +102,7 @@ const App = () => {
       liveSyncFontSize: 4.5,
       focusedSyncFontSize: 5.5,
       focusedAdlibFontSize: 3.5,
+      artistNameFontSize: 3.5,
       modalSplitRatio: 50,
       bgPreemptionTime: 400,
       modalPaddingY: 5,
@@ -75,17 +118,14 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
-
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -115,7 +155,6 @@ const App = () => {
   useEffect(() => {
     if (activeTab !== 'search') return;
     if (!searchQuery.trim()) return;
-
     const debounceTimer = setTimeout(async () => {
       setIsSearching(true);
       try {
@@ -129,7 +168,6 @@ const App = () => {
           const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
           return isBExplicit - isAExplicit;
         });
-
         setSearchResults(sortedResults);
       } catch (error) {
         console.error('Error fetching songs:', error);
@@ -137,7 +175,6 @@ const App = () => {
         setIsSearching(false);
       }
     }, 400);
-
     return () => clearTimeout(debounceTimer);
   }, [searchQuery, activeTab]);
 
@@ -177,9 +214,7 @@ const App = () => {
         return [...prevLibrary, updatedSong];
       }
     });
-
     setSelectedSong(updatedSong);
-
     setCurrentTrack(prevTrack => {
       if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
         return { ...prevTrack, ...updatedSong };
@@ -201,7 +236,6 @@ const App = () => {
       delete optimizedSong.trackViewUrl;
       return optimizedSong;
     });
-
     const exportData = { library: optimizedLibrary, settings: settings };
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -219,13 +253,11 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
-
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -233,7 +265,6 @@ const App = () => {
             else newLibrary.push(newSong);
           });
         };
-
         if (parsedData.library && Array.isArray(parsedData.library)) {
           mergeSongs(parsedData.library);
           setLibrary(newLibrary);
@@ -254,7 +285,6 @@ const App = () => {
     event.target.value = null;
   };
 
-  // Replaced all hardcoded pixels and clamps with pure 'vh' mappings to lock spatial occupancy in the canvas
   const dynamicStyles = {
     '--dyn-card-font-size': `${settings.cardFontSize}vh`,
     '--dyn-modal-font-size': `${settings.modalFontSize}vh`,
@@ -267,6 +297,7 @@ const App = () => {
     '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}vh`,
     '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}vh`,
     '--dyn-focused-adlib-font-size': `${settings.focusedAdlibFontSize ?? 3.5}vh`,
+    '--dyn-artist-name-font-size': `${settings.artistNameFontSize ?? 3.5}vh`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
     '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
@@ -303,7 +334,6 @@ const App = () => {
         handleImport={handleImport}
         openSettings={() => handleTabSwitch('settings')}
       />
-
       <main className="main-content">
         {activeTab !== 'settings' && (
           <div className="search-container glass-panel-light">
@@ -319,23 +349,18 @@ const App = () => {
             </form>
           </div>
         )}
-
         <div className="content-scroll-area">
           {activeTab === 'search' && (
             <section className="view-section">
               {searchResults.length > 0 ? (
-                <div className="track-grid">
-                  {searchResults.map((song) => (
-                    <SongCard 
-                      key={song.trackId} 
-                      song={song} 
-                      isSaved={library.some((s) => s.trackId === song.trackId)}
-                      toggleLibrary={toggleLibrary}
-                      setSelectedSong={setSelectedSong}
-                      setCurrentTrack={setCurrentTrack}
-                    />
-                  ))}
-                </div>
+                <MasonryGrid 
+                  items={searchResults} 
+                  settings={settings} 
+                  library={library} 
+                  toggleLibrary={toggleLibrary} 
+                  setSelectedSong={setSelectedSong} 
+                  setCurrentTrack={setCurrentTrack} 
+                />
               ) : (
                 <div className="empty-message glass-panel">
                   <h2>Explore the Cosmos</h2>
@@ -349,18 +374,14 @@ const App = () => {
             <section className="view-section">
               {library.length > 0 ? (
                 filteredLibrary.length > 0 ? (
-                  <div className="track-grid">
-                    {filteredLibrary.map((song) => (
-                      <SongCard 
-                        key={song.trackId} 
-                        song={song} 
-                        isSaved={true}
-                        toggleLibrary={toggleLibrary}
-                        setSelectedSong={setSelectedSong}
-                        setCurrentTrack={setCurrentTrack}
-                      />
-                    ))}
-                  </div>
+                  <MasonryGrid 
+                    items={filteredLibrary} 
+                    settings={settings} 
+                    library={library} 
+                    toggleLibrary={toggleLibrary} 
+                    setSelectedSong={setSelectedSong} 
+                    setCurrentTrack={setCurrentTrack} 
+                  />
                 ) : (
                   <div className="empty-message glass-panel">
                     <h2>No matches found</h2>

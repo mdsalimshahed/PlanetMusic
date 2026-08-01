@@ -90,6 +90,7 @@
 }
 
 /* Singer Names */
+/* --- src/components/ModalRight.css --- */
 .singer-name-corner {
   position: absolute;
   bottom: 32px;
@@ -101,7 +102,7 @@
   justify-content: flex-end;
   align-items: center;
   gap: 0;
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: var(--dyn-artist-name-font-size, clamp(20px, 3.5vw, 42px));
   font-weight: 800;
   letter-spacing: -0.5px;
   transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;

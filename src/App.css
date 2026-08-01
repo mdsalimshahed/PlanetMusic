@@ -7,12 +7,10 @@
   --text-subdued: rgba(255, 255, 255, 0.6);
   --accent: #b388eb; 
   --accent-glow: rgba(179, 136, 235, 0.8);
-  
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-bg-heavy: rgba(10, 10, 25, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.15);
-  
   --font-family: 'Outfit', sans-serif;
 }
 
@@ -23,11 +21,10 @@
 }
 
 html, body {
-  /* Prevent pull-to-refresh and scroll bouncing that causes URL bar to glitch */
   overscroll-behavior: none; 
   overscroll-behavior-y: none;
   height: 100%;
-  overflow: hidden; /* Locks outer body so internal areas can scroll safely */
+  overflow: hidden;
 }
 
 body {
@@ -37,7 +34,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Hardware acceleration for all glass panels to prevent backdrop-filter flashing */
 .glass-panel, .glass-panel-heavy, .glass-panel-light, .glass-button {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -88,7 +84,6 @@ body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  /* Use dynamic viewport height to handle mobile URL bar gracefully */
   height: 100dvh; 
   overflow: hidden;
 }
@@ -99,7 +94,7 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 10;
-  min-height: 0; /* CRITICAL: Allows inner scroll area to actually scroll */
+  min-height: 0;
 }
 
 .search-container {
@@ -127,9 +122,9 @@ body {
 }
 
 .search-box:focus-within {
-  border-color: var(--accent);
+  border-color: rgba(255, 255, 255, 0.35);
   background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 15px rgba(179, 136, 235, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
 }
 
 .search-icon {
@@ -159,7 +154,7 @@ body {
 .content-scroll-area {
   flex: 1;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Ensures smooth native scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
   padding: 32px 40px 100px 40px; 
   min-height: 0;
 }
@@ -167,6 +162,7 @@ body {
 .content-scroll-area::-webkit-scrollbar {
   width: 8px;
 }
+
 .content-scroll-area::-webkit-scrollbar-thumb {
   background: var(--glass-highlight);
   border-radius: 10px;
@@ -179,12 +175,21 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* --- MASONRY LAYOUT UPDATES --- */
+/* --- REACT CUSTOM MASONRY GRID STYLES --- */
 .track-grid {
-  column-width: var(--dyn-card-width, 200px);
-  column-gap: var(--dyn-card-gap, 28px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--dyn-card-gap, 28px);
   width: 100%;
   margin: 0 auto;
+}
+
+.track-grid-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dyn-card-gap, 28px);
+  width: var(--dyn-card-width, 200px);
 }
 
 .empty-message {
@@ -196,6 +201,7 @@ body {
   text-align: center;
   border-radius: var(--dyn-border-radius);
   padding: 40px;
+  width: 100%;
 }
 
 .empty-message h2 {
@@ -308,20 +314,13 @@ body {
     padding: 16px 20px;
     justify-content: center;
   }
-  
   .content-scroll-area {
     padding: 24px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px; 
   }
-
   .section-title {
     font-size: 22px;
     margin-bottom: 20px;
     text-align: center;
-  }
-  
-  .track-grid {
-    column-width: 150px; 
-    column-gap: 16px;
   }
 }
 

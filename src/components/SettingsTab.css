@@ -9,32 +9,52 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Converted to Masonry Column Flow to break rigid uniform sizing */
 .settings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 32px;
-  max-width: 1200px;
+  column-width: 340px;
+  column-gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .settings-card {
-  padding: 32px;
+  padding: 28px;
   border-radius: var(--dyn-border-radius, 16px);
   display: flex;
   flex-direction: column;
+  break-inside: avoid;
+  margin-bottom: 24px;
 }
 
 .settings-card h3 {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 700;
   text-transform: uppercase;
-  color: var(--accent);
+  color: #ffffff;
   letter-spacing: 1.5px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sub-group-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 16px;
+}
+
+.group-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
 }
 
 .setting-item {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -46,18 +66,26 @@
 .setting-item label {
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .setting-desc {
   font-size: 12px;
   color: var(--text-subdued);
-  margin-top: 4px;
+  margin-top: 6px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: normal;
+  line-height: 1.4;
+}
+
+.value-badge {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: monospace;
 }
 
 .toggle-item {
@@ -68,6 +96,7 @@
 
 .toggle-item label {
   margin-bottom: 0;
+  padding-right: 16px;
 }
 
 /* Styled slider with progress fill */
@@ -75,8 +104,7 @@ input[type=range] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  background-image: linear-gradient(var(--accent), var(--accent));
+  background: rgba(255, 255, 255, 0.15);
   background-size: var(--progress, 0%) 100%;
   background-repeat: no-repeat;
   height: 4px;
@@ -99,24 +127,29 @@ input[type=range]::-webkit-slider-runnable-track {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   border-radius: 50%;
   background: var(--text-base);
   cursor: pointer;
-  margin-top: -8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  margin-top: -7px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
   border: none;
+  transition: transform 0.15s ease;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
 }
 
 input[type=checkbox] {
-  width: 24px;
-  height: 24px;
-  accent-color: var(--accent);
+  width: 20px;
+  height: 20px;
+  accent-color: #ffffff;
   cursor: pointer;
 }
 
-/* NEW: Custom styling for the color picker */
+/* Custom styling for the color picker */
 .color-picker-row {
   display: flex;
   align-items: center;
@@ -126,8 +159,8 @@ input[type=checkbox] {
 .color-picker-input {
   -webkit-appearance: none;
   border: 1px solid rgba(255,255,255,0.2);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   cursor: pointer;
   padding: 0;
@@ -136,7 +169,7 @@ input[type=checkbox] {
 }
 
 .color-picker-input:hover {
-  border-color: var(--accent);
+  border-color: #ffffff;
 }
 
 .color-picker-input::-webkit-color-swatch-wrapper {
