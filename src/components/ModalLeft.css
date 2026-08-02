@@ -1,99 +1,90 @@
 /* --- src/components/ModalLeft.css --- */
-.modal-left-col { 
-  flex: var(--dyn-modal-split, 50); 
-  display: flex; 
-  flex-direction: column; 
-  overflow: hidden; 
-  min-height: 0; 
-  min-width: 0; 
-  /* Prevent layout shift repaints */
+.modal-left-col {
+   flex: var(--dyn-modal-split, 50);
+   display: flex;
+   flex-direction: column;
+   overflow: hidden;
+   min-height: 0;
+   min-width: 0;
+   /* Prevent layout shift repaints */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
 }
 
-.modal-left-static { 
-  display: flex; 
-  flex-direction: column; 
-  gap: clamp(12px, 2vw, 20px); 
-  flex-shrink: 0; 
-  padding-right: 12px; 
-  margin-bottom: clamp(12px, 2vw, 20px); 
-  min-width: 0; 
+.modal-left-static {
+   display: flex;
+   flex-direction: column;
+   gap: clamp(10px, 1.5vw, 16px);
+   flex-shrink: 0;
+   padding-right: 12px;
+   margin-bottom: clamp(10px, 1.5vw, 16px);
+   min-width: 0; 
 }
 
-.modal-left-scrollable { 
-  flex: 1; 
-  display: flex; 
-  flex-direction: column; 
-  gap: clamp(12px, 2vw, 20px); 
-  overflow-y: auto; 
-  padding-right: 12px; 
-  padding-bottom: 120px; 
-  min-height: 0; 
-  min-width: 0;
+.modal-left-scrollable {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: clamp(12px, 2vw, 20px);
+   overflow-y: auto;
+   padding-right: 12px;
+   padding-bottom: 120px;
+   min-height: 0;
+   min-width: 0;
   -webkit-overflow-scrolling: touch;
 }
+
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* CRITICAL FIX: Ensure the header aligns vertically while clipping max-height */
-.modal-top { 
-  display: flex; 
-  flex-direction: row; 
-  gap: clamp(12px, 3vw, 24px); 
-  align-items: center; 
-  flex-shrink: 0; 
-  min-width: 0;
-  max-height: clamp(80px, 25vw, 140px);
+/* CRITICAL FIX: Re-introduced a strict max-height. 
+   It is taller than the image to give the title more room, 
+   but strictly capped so it NEVER pushes the layout below off-screen! */
+.modal-top {
+   display: flex;
+   flex-direction: row;
+   gap: clamp(12px, 3vw, 24px);
+   align-items: flex-start;
+   flex-shrink: 0;
+   min-width: 0;
+   max-height: 180px; 
 }
 
-/* CRITICAL FIX: Lock the aspect ratio to 1:1 and let the height scale automatically */
-.modal-cover { 
-  width: clamp(80px, 25vw, 140px); 
-  height: auto; 
-  aspect-ratio: 1 / 1; 
-  object-fit: cover;
-  border-radius: 0; 
-  box-shadow: 0 15px 40px rgba(0,0,0,0.6); 
-  flex-shrink: 0; 
+/* CRITICAL FIX: Album art is strictly reverted to its original, smaller size */
+.modal-cover {
+   width: clamp(80px, 25vw, 140px);
+   height: auto;
+   aspect-ratio: 1 / 1;
+   object-fit: cover;
+   border-radius: 0; 
+   box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+   flex-shrink: 0; 
 }
 
-.modal-header-info { 
-  flex: 1; 
-  min-width: 0; 
-  container-type: inline-size; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-height: 100%;
-  overflow: hidden;
+.modal-header-info {
+   flex: 1;
+   min-width: 0;
+   container-type: inline-size;
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-start;
+   max-height: 180px; /* Binds the text strictly to the new expanded container */
+   overflow: hidden;
+   padding-top: 2px; 
 }
 
-.modal-type { 
-  font-size: clamp(11px, 1.4vw, 14px); 
-  font-weight: 600; 
-  text-transform: uppercase; 
-  letter-spacing: 2px; 
-  margin-bottom: 8px; 
-  color: var(--text-base); 
-  opacity: 0.8; 
-  display: block; 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-shrink: 0;
-}
-
-/* Let the title fully render within its space, scrolling only if absolutely necessary */
-.modal-header-info h2 { 
-  font-size: clamp(16px, 8cqw, var(--dyn-modal-font-size));
-  font-weight: 800; 
-  line-height: 1.15; 
-  margin-bottom: 12px; 
-  letter-spacing: -1px; 
-  word-break: break-word; 
-  overflow-y: auto;
+/* Let the title fully render within its bounded space, gracefully scrolling if it's massive */
+.modal-header-info h2 {
+   font-size: clamp(18px, 6.5cqw, var(--dyn-modal-font-size));
+   font-weight: 800;
+   line-height: 1.15;
+   margin-top: 0;
+   margin-bottom: 8px;
+   letter-spacing: -1px;
+   word-break: break-word;
+   overflow-y: auto;
+   max-height: 100%;
   -webkit-overflow-scrolling: touch;
   flex-shrink: 1;
 }
@@ -126,73 +117,266 @@
   transform: translateY(-2px);
 }
 
-.modal-artist-row { 
-  display: flex; 
-  align-items: center; 
-  flex-wrap: wrap; 
-  gap: 6px 10px; /* Tighter spacing for narrow screens */
-  font-size: clamp(12px, 1.4vw, 15px); 
-  color: rgba(255,255,255,0.7); 
-  margin-bottom: 0; 
-  min-width: 0;
+.modal-artist-row {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   gap: 2px;
+   font-size: clamp(12px, 1.4vw, 15px);
+   color: rgba(255,255,255,0.7);
+   margin-bottom: 0;
+   line-height: 1.4;
+   min-width: 0;
+   flex-shrink: 0;
+}
+
+.modal-artist-row strong {
+   color: var(--text-base);
+   font-size: clamp(13px, 1.5vw, 16px);
+   word-wrap: break-word;
+}
+
+.modal-artist-row .release-date {
+   white-space: nowrap;
+   margin-left: 0;
+   font-size: 0.9em;
+}
+
+/* SHRUNK: The details container is now much more compact */
+.modal-details {
+  padding: clamp(10px, 1.5vw, 16px);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Allows more items to stay on 1 line */
+  gap: clamp(8px, 1.5vw, 16px);
+  border-radius: 12px;
+}
+
+/* SHRUNK: Tighter label text and reduced bottom margin */
+.detail-item label {
+  font-size: clamp(9px, 0.9vw, 11px);
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 2px;
+  display: block;
+}
+
+/* SHRUNK: Slightly scaled down info text */
+.detail-item p {
+  margin: 0;
+  font-size: clamp(12px, 1.3vw, 14px);
+  font-weight: 500;
+}
+
+.modal-links {
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: 16px;
   flex-shrink: 0;
 }
 
-.modal-artist-row strong { 
-  color: var(--text-base); 
-  font-size: clamp(13px, 1.5vw, 16px); 
+.links-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.links-header label {
+  font-size: clamp(10px, 1vw, 12px);
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0;
+  display: block;
+}
+
+.edit-links-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: clamp(10px, 1.2vw, 12px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.edit-links-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.edit-links-btn.save-mode {
+  background: var(--accent);
+  color: black;
+  border-color: var(--accent);
+  font-weight: bold;
+}
+
+.platform-inputs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.platform-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.platform-label {
+  width: 70px;
+  font-size: clamp(11px, 1.3vw, 13px);
+  font-weight: 600;
+}
+
+.spotify-color { color: #1DB954; }
+.yt-color { color: #FF0000; }
+.deezer-color { color: #9200FF; }
+.local-color { color: #4ade80; }
+
+.platform-input-row input[type="text"] {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: clamp(11px, 1.3vw, 13px);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.platform-input-row input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(179, 136, 235, 0.2);
+}
+
+.platform-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.platform-btn {
+  padding: 10px 20px;
+  border-radius: 500px;
+  font-weight: 600;
+  font-size: clamp(11px, 1.3vw, 13px);
+  text-decoration: none;
+  color: white;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.platform-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+.platform-btn.spotify {
+  background-color: #1DB954;
+  color: black;
+}
+
+.platform-btn.yt {
+  background-color: #FF0000;
+}
+
+.platform-btn.deezer {
+  background-color: #9200FF;
+}
+
+.platform-btn.local {
+  background-color: #4ade80;
+  color: black;
+}
+
+.local-file-btn {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: clamp(11px, 1.3vw, 13px);
+  cursor: pointer;
+  transition: all 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
+  text-align: left;
 }
 
-.modal-details { padding: clamp(16px, 2vw, 24px); display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: clamp(12px, 2vw, 20px); border-radius: 16px; }
-.detail-item label { font-size: clamp(10px, 1vw, 12px); color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
-.detail-item p { font-size: clamp(13px, 1.5vw, 16px); font-weight: 500; }
+.local-file-btn:hover {
+  border-color: var(--accent);
+  color: white;
+}
 
-.modal-links { padding: clamp(16px, 2vw, 24px); border-radius: 16px; flex-shrink: 0; }
-.links-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.links-header label { font-size: clamp(10px, 1vw, 12px); color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0; display: block; }
+.local-file-btn.has-file {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.05);
+}
 
-.edit-links-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 6px 14px; border-radius: 50px; font-size: clamp(10px, 1.2vw, 12px); cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
-.edit-links-btn:hover { background: rgba(255, 255, 255, 0.2); }
-.edit-links-btn.save-mode { background: var(--accent); color: black; border-color: var(--accent); font-weight: bold; }
-
-.platform-inputs-grid { display: flex; flex-direction: column; gap: 12px; }
-.platform-input-row { display: flex; align-items: center; gap: 12px; }
-.platform-label { width: 70px; font-size: clamp(11px, 1.3vw, 13px); font-weight: 600; }
-.spotify-color { color: #1DB954; } .yt-color { color: #FF0000; } .deezer-color { color: #9200FF; } .local-color { color: #4ade80; }
-.platform-input-row input[type="text"] { flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.15); color: white; padding: 10px 14px; border-radius: 8px; font-family: inherit; font-size: clamp(11px, 1.3vw, 13px); outline: none; transition: border-color 0.2s; }
-.platform-input-row input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(179, 136, 235, 0.2); }
-
-.platform-links { display: flex; gap: 12px; flex-wrap: wrap; }
-.platform-btn { padding: 10px 20px; border-radius: 500px; font-weight: 600; font-size: clamp(11px, 1.3vw, 13px); text-decoration: none; color: white; transition: all 0.2s ease; border: none; font-family: inherit; cursor: pointer; }
-.platform-btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
-.platform-btn.spotify { background-color: #1DB954; color: black; }
-.platform-btn.yt { background-color: #FF0000; }
-.platform-btn.deezer { background-color: #9200FF; }
-.platform-btn.local { background-color: #4ade80; color: black; }
-
-.local-file-btn { flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.15); color: rgba(255, 255, 255, 0.5); padding: 10px 14px; border-radius: 8px; font-family: inherit; font-size: clamp(11px, 1.3vw, 13px); cursor: pointer; transition: all 0.2s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
-.local-file-btn:hover { border-color: var(--accent); color: white; }
-.local-file-btn.has-file { color: #4ade80; border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.05); }
-.clear-local-btn { background: rgba(255, 255, 255, 0.1); border: none; color: white; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: clamp(10px, 1.2vw, 12px); transition: all 0.2s ease; flex-shrink: 0; }
-.clear-local-btn:hover { background: #FA243C; transform: scale(1.1); }
-
-.workspace-controls { padding: clamp(16px, 2vw, 24px); border-radius: 16px; margin-top: 0; flex-shrink: 0; }
-.action-buttons-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.toggle-view-btn { background: rgba(179, 136, 235, 0.2); border-color: var(--accent); color: var(--accent); }
-.toggle-view-btn:hover { background: var(--accent); color: black; }
-
-.bottom-actions { 
-  margin-top: auto; 
-  padding-top: 16px; 
-  display: flex; 
-  justify-content: space-between; 
+.clear-local-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
   align-items: center;
-  flex-wrap: wrap; 
-  gap: 12px;
+  justify-content: center;
+  font-size: clamp(10px, 1.2vw, 12px);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.clear-local-btn:hover {
+  background: #FA243C;
+  transform: scale(1.1);
+}
+
+.workspace-controls {
+  padding: clamp(16px, 2vw, 24px);
+  border-radius: 16px;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.action-buttons-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toggle-view-btn {
+  background: rgba(179, 136, 235, 0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toggle-view-btn:hover {
+  background: var(--accent);
+  color: black;
+}
+
+.bottom-actions {
+   margin-top: auto;
+   padding-top: 16px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+  flex-wrap: wrap;
+   gap: 12px;
 }
 
 .return-dashboard-btn {
@@ -216,43 +400,55 @@
   transform: translateY(-2px);
 }
 
-.delete-icon-btn { 
-  background: rgba(250, 36, 60, 0.15); 
-  border: 1px solid rgba(250, 36, 60, 0.3); 
-  color: #FA243C; 
-  font-size: clamp(12px, 1.4vw, 14px); 
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: all 0.2s ease; 
-  padding: 10px 20px; 
-  border-radius: 500px; 
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
-}
-.delete-icon-btn:hover { 
-  background: #FA243C; 
-  color: white; 
-  transform: translateY(-2px); 
-  box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
+.delete-icon-btn {
+   background: rgba(250, 36, 60, 0.15);
+   border: 1px solid rgba(250, 36, 60, 0.3);
+   color: #FA243C;
+   font-size: clamp(12px, 1.4vw, 14px);
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.2s ease;
+   padding: 10px 20px;
+   border-radius: 500px;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+ }
+
+ .delete-icon-btn:hover {
+   background: #FA243C;
+   color: white;
+   transform: translateY(-2px);
+   box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
+ }
+
+.search-google-btn {
+  background: rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
 }
 
-.search-google-btn { background: rgba(255, 255, 255, 0.15); text-decoration: none; display: inline-flex; align-items: center; font-weight: bold; }
-.search-google-btn:hover { background: white; color: black; }
+.search-google-btn:hover {
+  background: white;
+  color: black;
+}
 
-.sync-instructions-left { 
-  font-size: clamp(11px, 1.3vw, 13px); 
-  color: rgba(255, 255, 255, 0.85); 
-  padding: 16px; 
-  background: rgba(0, 0, 0, 0.25); 
-  border-radius: 12px; 
-  line-height: 1.6; 
-  margin-bottom: 20px; 
-  border: 1px solid rgba(255, 255, 255, 0.05); 
-  display: flex;
+.sync-instructions-left {
+   font-size: clamp(11px, 1.3vw, 13px);
+   color: rgba(255, 255, 255, 0.85);
+   padding: 16px;
+   background: rgba(0, 0, 0, 0.25);
+   border-radius: 12px;
+   line-height: 1.6;
+   margin-bottom: 20px;
+   border: 1px solid rgba(255, 255, 255, 0.05);
+   display: flex;
   flex-direction: column;
   gap: 6px;
 }
+
 .sync-instructions-left strong { color: var(--accent); }
 .instruction-row { display: flex; gap: 8px; }
 .instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
@@ -275,13 +471,11 @@
   .modal-details {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
-
   .bottom-actions {
     flex-direction: column;
     gap: 12px;
     width: 100%;
   }
-
   .bottom-actions > button {
     width: 100%;
     justify-content: center;

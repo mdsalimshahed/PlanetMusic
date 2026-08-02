@@ -1,6 +1,6 @@
 /* --- src/components/ModalLeft.jsx --- */
 import React from 'react';
-import { formatTime, formatDate, parseTrackName } from '../utils/songHelpers';
+import { formatDate, parseTrackName } from '../utils/songHelpers';
 import './ModalLeft.css';
 
 const ModalLeft = ({ 
@@ -10,8 +10,8 @@ const ModalLeft = ({
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen, 
   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers, 
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen, 
-  handleMapAutoSync, showAdlibDebug, setShowAdlibDebug }) => {
-
+  handleMapAutoSync, showAdlibDebug, setShowAdlibDebug
+}) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
 
   const handleProtectedAction = (actionCallback) => {
@@ -48,8 +48,7 @@ const ModalLeft = ({
         <div className="modal-top">
           <img src={highResArt} alt="Artwork" className="modal-cover" />
           <div className="modal-header-info">
-            <span className="modal-type">{selectedSong.primaryGenreName}</span>
-            <h2 className="text-glow">
+            <h2>
               {mainTitle}
               {selectedSong.trackExplicitness === 'explicit' && <span className="explicit-tag">E</span>}
               {extras.map((extra, idx) => (
@@ -58,12 +57,12 @@ const ModalLeft = ({
             </h2>
             <div className="modal-artist-row">
               <strong>{selectedSong.artistName}</strong>
-              <span> </span><span>{formatDate(selectedSong.releaseDate)}</span>
-              <span> </span><span>{formatTime(selectedSong.trackTimeMillis)}</span>
+              {selectedSong.releaseDate && (
+                <span className="release-date">{formatDate(selectedSong.releaseDate)}</span>
+              )}
             </div>
           </div>
         </div>
-
         <div className="modal-details glass-panel-light">
           {featuredArtists.length > 0 && (
             <div className="detail-item">
@@ -71,8 +70,16 @@ const ModalLeft = ({
               <p>{featuredArtists.join(', ')}</p>
             </div>
           )}
-          <div className="detail-item"><label>Album / Release</label><p>{releaseType}</p></div>
-          <div className="detail-item"><label>Track Number</label><p>{selectedSong.trackNumber ? `${selectedSong.trackNumber} of ${selectedSong.trackCount || '?'}` : 'N/A'}</p></div>
+          <div className="detail-item">
+            <label>Album / Release</label>
+            <p>{selectedSong.trackNumber && releaseType !== 'Single' ? `#${selectedSong.trackNumber} on ${releaseType}` : releaseType}</p>
+          </div>
+          {selectedSong.primaryGenreName && (
+            <div className="detail-item">
+              <label>Genre</label>
+              <p>{selectedSong.primaryGenreName}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -89,7 +96,7 @@ const ModalLeft = ({
                 <label htmlFor="localFileInput" className={`local-file-btn ${customData.hasLocal ? 'has-file' : ''}`}>
                   {customData.hasLocal ? customData.localName : "Browse Local Files..."}
                 </label>
-                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}> </button>)}
+                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}>✖</button>)}
               </div>
             </div>
           ) : (
@@ -106,9 +113,9 @@ const ModalLeft = ({
           
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
-              <div className="instruction-row"><span><strong>1.</strong> Press <strong> </strong> to set Start Time</span></div>
-              <div className="instruction-row"><span><strong>2.</strong> Press <strong> </strong> to set End Time <em>(Auto advances)</em></span></div>
-              <div className="instruction-row subtle"><span><em>(Press <strong> </strong> anytime to rewind)</em></span></div>
+              <div className="instruction-row"><span><strong>1.</strong> Press <strong>↓</strong> to set Start Time</span></div>
+              <div className="instruction-row"><span><strong>2.</strong> Press <strong>↓</strong> to set End Time <em>(Auto advances)</em></span></div>
+              <div className="instruction-row subtle"><span><em>(Press <strong>↑</strong> anytime to rewind)</em></span></div>
             </div>
           )}
 
@@ -117,7 +124,7 @@ const ModalLeft = ({
                 <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>Close Editor</button>
             ) : isSyncMode ? (
               <>
-                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}> Cancel Sync</button>
+                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>✖ Cancel Sync</button>
                 {hasAutoSyncAvailable && (
                   <button 
                     className="edit-links-btn" 
@@ -125,50 +132,50 @@ const ModalLeft = ({
                     style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24' }}
                     title="Sequentially split and map Auto-Sync timings onto Manual Lyrics based on line length"
                   >
-                    Map Sync Data from Auto
+                    ✦ Map Sync Data from Auto
                   </button>
                 )}
-                <button className="edit-links-btn save-mode" onClick={saveSyncData}> Save Timings</button>
+                <button className="edit-links-btn save-mode" onClick={saveSyncData}>✔ Save Timings</button>
               </>
             ) : isEditing ? (
               <>
-                <button className="edit-links-btn save-mode" onClick={saveData}> Save Info & Lyrics</button>
-                <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn"> Search Google for Lyrics</a>
+                <button className="edit-links-btn save-mode" onClick={saveData}>✔ Save Info & Lyrics</button>
+                <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google for Lyrics</a>
               </>
             ) : isImageManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={saveImageManager}> Save Artists Data</button>
+              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✔ Save Artists Data</button>
             ) : (
               <>
-                <button className="edit-links-btn" onClick={() => setIsEditing(true)}> Edit Info</button>
+                <button className="edit-links-btn" onClick={() => setIsEditing(true)}>✎ Edit Info</button>
                 <button 
                   className="edit-links-btn" 
                   onClick={() => handleAutoSyncDatabases()} 
                   disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
-                  {isLrcFetching ? ' Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? ' Show Manual Sync' : ' Show Auto-Sync') : ' Auto-Sync Lyrics')}
+                  {isLrcFetching ? '⚡ Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '⚡ Show Manual Sync' : '⚡ Show Auto-Sync') : '⚡ Auto-Sync Lyrics')}
                 </button>
                 
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? ' Parsing Engine...' : hasValidSyncData ? ' Edit Timings' : ' Manual Sync'}
+                      {isSyncLoading ? '⏱ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
                     </button>
                     
                     <button 
                       className="edit-links-btn" 
                       onClick={() => setIsTranslationManagerOpen(true)}
                     >
-                        Edit Translation
+                      文 Edit Translation
                     </button>
                     
-                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}> Manage Artists</button>
+                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>👥 Manage Artists</button>
                     
                     {hasValidSyncData && !isSyncLoading && (
                       <>
                         <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
-                          {lyricsViewMode === 'live' ? ' Show Focused Sync' : 
-                             lyricsViewMode === 'focused' ? ' Show Plain Text' : ' Show Live Sync'}
+                          {lyricsViewMode === 'live' ? '⌖ Show Focused Sync' : 
+                             lyricsViewMode === 'focused' ? '📄 Show Plain Text' : '▶ Show Live Sync'}
                         </button>
                         
                         {lyricsViewMode === 'focused' && (
@@ -177,7 +184,7 @@ const ModalLeft = ({
                              onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                              style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
                            >
-                             {showAdlibDebug ? ' Hide Adlib Debug' : ' Show Adlib Debug'}
+                             {showAdlibDebug ? '🛑 Hide Adlib Debug' : '🛠 Show Adlib Debug'}
                            </button>
                         )}
                       </>
@@ -185,8 +192,8 @@ const ModalLeft = ({
                   </>
                 ) : (
                   <>
-                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}> Add Custom Lyrics</button>
-                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn"> Search Google</a>
+                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}>➕ Add Custom Lyrics</button>
+                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google</a>
                   </>
                 )}
               </>
@@ -199,7 +206,7 @@ const ModalLeft = ({
         <div className="bottom-actions">
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
-              <span> </span> Remove from Vault
+              <span aria-hidden="true">✖</span> Remove from Vault
             </button>
           ) : (
             <button className="edit-links-btn save-mode" onClick={(e) => {
