@@ -17,7 +17,7 @@ const stripHtmlAndBrackets = (text) => {
 };
 
 const getGoogleData = async (text, sl = 'auto') => {
-  if (!text || text === '') return { translation: '', transliteration: null };
+  if (!text || text === '') return { translation: '', transliteration: null, srcLang: 'auto' };
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
@@ -25,6 +25,7 @@ const getGoogleData = async (text, sl = 'auto') => {
     
     let translation = '';
     let transliteration = '';
+    let srcLang = data?.[2] || 'auto'; // Extracted directly from Google's response
     
     if (data && data[0]) {
       for (let i = 0; i < data[0].length; i++) {
@@ -42,11 +43,12 @@ const getGoogleData = async (text, sl = 'auto') => {
     }
     return {
       translation: translation.trim(),
-      transliteration: transliteration ? transliteration.trim() : null
+      transliteration: transliteration ? transliteration.trim() : null,
+      srcLang
     };
   } catch (error) {
     console.warn("Google Translate API error:", error);
-    return { translation: '', transliteration: null };
+    return { translation: '', transliteration: null, srcLang: sl || 'auto' };
   }
 };
 
@@ -82,7 +84,7 @@ const fetchNumberTranslation = async (engWord, tl) => {
 
 export const quickTransliterate = async (text, sl = 'auto') => {
   const clean = stripHtmlAndBrackets(text);
-  if (!clean) return { translation: '', transliteration: null };
+  if (!clean) return { translation: '', transliteration: null, srcLang: 'auto' };
   return await getGoogleData(clean, sl);
 };
 
@@ -97,7 +99,6 @@ const isRomanChar = (char) => {
 
 export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
   let completed = 0;
-  
   const promises = linesArray.map(async (lineText) => {
     const updateProgress = () => {
       completed++;
@@ -145,8 +146,8 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
             const cleanNum = token.replace(/,/g, '');
             const engWord = numberToEnglishWords(cleanNum);
             let translatedNum = token;
-            if (engWord) { 
-               translatedNum = await fetchNumberTranslation(engWord, targetLang);
+            if (engWord) {
+                translatedNum = await fetchNumberTranslation(engWord, targetLang);
             }
             chunks.push({ type: 'foreign', text: token, trans: translatedNum });
             
@@ -154,8 +155,6 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
           } else if (isEnToken) {
             chunks.push({ type: 'en', text: token, trans: '' });
             
-            // CRITICAL FIX: Keep wordIndex in sync if Google echoed the English word in the transliteration string
-            // This prevents the UI from mapping the English word's slot to the next foreign word.
             const cleanToken = token.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim().toLowerCase();
             const cleanTransWord = (transWords[wordIndex] || '').toLowerCase();
             
@@ -197,8 +196,8 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
             const cleanNum = textKey.replace(/,/g, '');
             const engWord = numberToEnglishWords(cleanNum);
             let translatedNum = textKey;
-            if (engWord) { 
-               translatedNum = await fetchNumberTranslation(engWord, targetLang);
+            if (engWord) {
+                translatedNum = await fetchNumberTranslation(engWord, targetLang);
             }
             chunks[j].trans = translatedNum;
           } else {
@@ -219,12 +218,14 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
     if (hasForeign) {
       return {
         translation: fullData.translation,
-        pronunciation: JSON.stringify({ full: fullTrans, chunks: chunks })
+        pronunciation: JSON.stringify({ full: fullTrans, chunks: chunks }),
+        srcLang: fullData.srcLang || 'auto'
       };
     } else {
       return {
         translation: fullData.translation !== cleanLine ? fullData.translation : '', 
-        pronunciation: null
+        pronunciation: null,
+        srcLang: fullData.srcLang || 'auto'
       };
     }
   });

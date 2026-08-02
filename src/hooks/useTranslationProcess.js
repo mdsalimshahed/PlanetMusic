@@ -22,6 +22,7 @@ const fetchGoogleWithLang = async (text, sl = 'auto') => {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     const data = await response.json();
+
     let translation = '';
     let transliteration = '';
     let srcLang = data?.[2] || 'auto';
@@ -95,28 +96,18 @@ export const useTranslationProcess = ({
     
     try {
       const sourceLang = line.lang || 'auto';
-      const hasNumbers = /\d/.test(textToTranslate);
-      
-      let targetLang = sourceLang;
-      let rawTranslation = '';
-      let detectedSrc = sourceLang;
-      
-      // OPTIMIZATION: Only do the redundant double-fetch if it's 'auto' AND has numbers
-      if (hasNumbers && sourceLang === 'auto') {
-        const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
-        targetLang = rawData.srcLang || sourceLang;
-        rawTranslation = rawData.translation;
-        detectedSrc = rawData.srcLang;
-      }
-      
-      // This handles translation AND transliteration natively in one go
-      const resArr = await getBulkPronunciations([textToTranslate], null, targetLang);
+      const rawData = await fetchGoogleWithLang(textToTranslate, sourceLang);
+      const resArr = await getBulkPronunciations([textToTranslate], null, rawData.srcLang || sourceLang);
       const res = resArr?.[0] || {};
+      
+      const finalSrcLang = rawData.srcLang && rawData.srcLang !== 'auto' 
+        ? rawData.srcLang 
+        : (res.srcLang || sourceLang);
       
       return {
         ...res,
-        translation: rawTranslation || res.translation || '',
-        srcLang: detectedSrc
+        translation: rawData.translation || res.translation || '',
+        srcLang: finalSrcLang
       };
     } catch (e) {
       console.error("Single line fetch error:", e);
@@ -144,6 +135,7 @@ export const useTranslationProcess = ({
         cancelTranslationRef.current = true;
         setIsTranslatingAll(false);
         setActiveTranslatingId(null);
+        
         const wipedData = workspaceData.map(line => ({
           ...line,
           translation: '',
@@ -165,6 +157,7 @@ export const useTranslationProcess = ({
       stopTranslationProcess();
       return;
     }
+
     if (workspaceData.length === 0) return;
     
     cancelTranslationRef.current = false;
@@ -218,6 +211,7 @@ export const useTranslationProcess = ({
           displayPron = '';
           finalPron = '';
         }
+
         if (line._meta.isAdlib) {
           finalPron = formatAdlibPronunciation(line.displayText, displayPron);
         }
@@ -236,7 +230,6 @@ export const useTranslationProcess = ({
     });
 
     const results = await Promise.all(promises);
-
     if (cancelTranslationRef.current) {
       setIsTranslatingAll(false);
       return;
@@ -265,6 +258,7 @@ export const useTranslationProcess = ({
       stopTranslationProcess();
       return;
     }
+
     if (workspaceData.length === 0) return;
     
     cancelTranslationRef.current = false;
@@ -275,6 +269,7 @@ export const useTranslationProcess = ({
     
     let currentData = [...workspaceData];
     
+    // Clear English items immediately
     for (let i = 0; i < currentData.length; i++) {
       if (currentData[i].lang === 'en') {
         currentData[i] = {
@@ -296,37 +291,34 @@ export const useTranslationProcess = ({
     });
     
     const langs = Object.keys(groups);
+
     for (let gIdx = 0; gIdx < langs.length; gIdx++) {
       if (cancelTranslationRef.current) break;
       const lang = langs[gIdx];
       const items = groups[lang];
       
-      setNotification({ show: true, message: `Translating [${lang}] batch (${items.length} lines)...`, progress: 10 });
-      
+      setNotification({ show: true, message: `Translating [${lang}] group (${items.length} lines)...`, progress: 20 });
+
       if (items.length > 0) {
         setActiveTranslatingId(currentData[items[0].index].rowId);
       }
-      
+
       const cleanTexts = items.map(({ line }) => {
         let text = line.displayText;
         if (!line._meta.isAdlib && line.isSplit && line.adlibs) {
           line.adlibs.forEach(a => { text = text.replace(a.text, ''); });
         }
-        
-        const clean = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-        return clean.length > 0 ? clean : ' '; 
+        return text.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
       });
-      
-      // NEW DELIMITER LOGIC: Add bracketed numbers at the start of each line, separated by newlines
-      const combinedText = cleanTexts.map((text, i) => `[${i + 1}] ${text}`).join('\n');
-      
+
+      // ENTIRE LYRICS SENT AT ONCE WITH ♫ DELIMITER (NO NEWLINES, NO NUMBERING)
+      const combinedText = cleanTexts.join(' ♫ ');
+
       try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(lang)}&tl=en&dt=t`;
         const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ q: combinedText })
         });
         const data = await response.json();
@@ -339,54 +331,30 @@ export const useTranslationProcess = ({
             if (item[0]) combinedTranslation += item[0];
           });
         }
-        
-        // Extract translated text dynamically using the bracketed markers
-        const translatedLines = new Array(items.length).fill(undefined);
-        // Robust regex that matches [1], (1), or Asian brackets 【1】 and captures the text until the next marker
-        const regex = /[\[\(\【]\s*(\d+)\s*[\]\)\】]\s*([\s\S]*?)(?=[\[\(\【]\s*\d+\s*[\]\)\】]|$)/g;
-        
-        let match;
-        let matchesFound = 0;
-        
-        while ((match = regex.exec(combinedTranslation)) !== null) {
-          const lineIndex = parseInt(match[1], 10) - 1;
-          const textPart = match[2].trim();
-          
-          if (lineIndex >= 0 && lineIndex < items.length) {
-            if (translatedLines[lineIndex] === undefined) {
-                translatedLines[lineIndex] = textPart;
-                matchesFound++;
-            }
-          }
-        }
-        
-        // Ensure no line was swallowed into a blank string during mapping
-        const isAligned = matchesFound === items.length && !translatedLines.some((t, i) => t === '' && cleanTexts[i] !== ' ');
+
+        // SPLIT FULL RESPONSE BY MUSIC NOTE (♫ or ♪)
+        const translatedSegments = combinedTranslation.split(/\s*[♫♪]\s*/);
+        const isAligned = translatedSegments.length === items.length;
+
         if (!isAligned) {
-          console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} markers, found ${matchesFound}. Falling back to 1:1 translations.`);
+          console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} lines, got ${translatedSegments.length} segments.`);
         }
-        
+
         const hasNumbersInBatch = cleanTexts.some(text => /\d/.test(text));
         const translitLang = (hasNumbersInBatch && lang === 'auto') ? detectedLang : lang;
-        
-        const batchPronunciations = await getBulkPronunciations(cleanTexts, (current, total) => {
-           setNotification({
-             show: true,
-             message: `Transliterating [${translitLang}] (${current}/${total})...`,
-             progress: Math.round((current / total) * 100)
-           });
-        }, translitLang);
-        
+
+        const batchPronunciations = await getBulkPronunciations(cleanTexts, null, translitLang);
+
         if (cancelTranslationRef.current) break;
-        
+
         items.forEach((item, i) => {
           const targetIdx = item.index;
           const line = currentData[targetIdx];
           
-          let rawTransText = (isAligned && translatedLines[i] !== undefined) 
-             ? translatedLines[i] 
-             : (batchPronunciations[i]?.translation || line.translation);
-             
+          let rawTransText = (isAligned && translatedSegments[i] !== undefined)
+              ? translatedSegments[i]
+              : (batchPronunciations[i]?.translation || line.translation);
+          
           if (rawTransText) rawTransText = String(rawTransText).trim();
           
           const normOrig = normalizeForComparison(cleanTexts[i]);
@@ -413,7 +381,7 @@ export const useTranslationProcess = ({
               finalPron = '';
             }
           }
-          
+
           if (!isEnglishMatch && line._meta.isAdlib) {
             finalPron = formatAdlibPronunciation(line.displayText, displayPron);
           }
@@ -426,10 +394,10 @@ export const useTranslationProcess = ({
             lang: finalLang
           };
         });
-        
+
         setWorkspaceData([...currentData]);
       } catch (err) {
-        console.error("Context batch translation error:", err);
+        console.error("Context translation error:", err);
       }
     }
     
