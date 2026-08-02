@@ -4,7 +4,6 @@ import './AdlibDebugOverlay.css';
 
 const getClosestPoints = (r1, r2) => {
   let x1, x2, y1, y2;
-
   if (r1.right < r2.left) {
     x1 = r1.right; x2 = r2.left;
   } else if (r1.left > r2.right) {
@@ -12,7 +11,6 @@ const getClosestPoints = (r1, r2) => {
   } else {
     x1 = x2 = (Math.max(r1.left, r2.left) + Math.min(r1.right, r2.right)) / 2;
   }
-
   if (r1.bottom < r2.top) {
     y1 = r1.bottom; y2 = r2.top;
   } else if (r1.top > r2.bottom) {
@@ -20,7 +18,6 @@ const getClosestPoints = (r1, r2) => {
   } else {
     y1 = y2 = (Math.max(r1.top, r2.top) + Math.min(r1.bottom, r2.bottom)) / 2;
   }
-
   const dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   return { x1, y1, x2, y2, dist };
 };
@@ -29,11 +26,11 @@ const AdlibDebugOverlay = ({
   currentSingerBg, 
   isSingerVisible, 
   masterPalette,
-  selectedSong 
+  selectedSong
 }) => {
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
-  
+
   // HUD UI States
   const [isIdle, setIsIdle] = useState(true);
   const [boundingBoxes, setBoundingBoxes] = useState([]);
@@ -41,8 +38,9 @@ const AdlibDebugOverlay = ({
   const [distanceStats, setDistanceStats] = useState([]);
   const [layoutStats, setLayoutStats] = useState({ lyricsClipped: false, singerClipped: false });
   const [safeZones, setSafeZones] = useState([]);
-  
+  const [innerSafeZones, setInnerSafeZones] = useState([]);
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
+
   const syncDataRef = useRef(selectedSong?.syncData || []);
   const prevAdlibSingersRef = useRef(null);
 
@@ -53,7 +51,7 @@ const AdlibDebugOverlay = ({
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
-    
+      
   const isMulti = activeNames.length > 1;
   const cols = Math.max(2, activeNames.length);
 
@@ -67,7 +65,6 @@ const AdlibDebugOverlay = ({
   const getTightTextBounds = (element, overlayRect) => {
     let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
     let hasValidBounds = false;
-
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
     let node;
     
@@ -89,7 +86,6 @@ const AdlibDebugOverlay = ({
         }
       }
     }
-
     if (hasValidBounds) {
       return {
         top: minTop - overlayRect.top,
@@ -109,13 +105,14 @@ const AdlibDebugOverlay = ({
       
       const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
       
-      // ZERO CPU IDLE CHECK: If there are no ad-libs on screen, immediately return!
+      // ZERO CPU IDLE CHECK
       setIsIdle(activeAdlibs.length === 0);
       if (activeAdlibs.length === 0) {
         setBoundingBoxes([]);
         setRadialLines([]);
         setDistanceStats([]);
         setSafeZones([]);
+        setInnerSafeZones([]);
         setLayoutStats({ lyricsClipped: false, singerClipped: false });
         rafRef.current = requestAnimationFrame(trackActiveLyrics);
         return;
@@ -261,6 +258,8 @@ const AdlibDebugOverlay = ({
 
       // --- CALCULATE QUADRANT-RESTRICTED SAFE ZONES ---
       const newSafeZones = [];
+      const newInnerZones = [];
+
       if (combinedBox) {
         const baseZones = [];
         
@@ -319,7 +318,6 @@ const AdlibDebugOverlay = ({
             if (ixLeft < ixRight && ixTop < ixBottom) {
               const szWidth = ixRight - ixLeft;
               const szHeight = ixBottom - ixTop;
-
               newSafeZones.push({
                 id: `sz-${bz.type}-${Math.round(ixLeft)}-${Math.round(ixTop)}`,
                 top: ixTop,
@@ -353,6 +351,7 @@ const AdlibDebugOverlay = ({
 
         const centerX = adlibBox.left + adlibBox.width / 2;
         const centerY = adlibBox.top + adlibBox.height / 2;
+
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
         const actualRot = parseFloat(adlibBox.rotation) || 0;
@@ -386,6 +385,7 @@ const AdlibDebugOverlay = ({
         if (combinedBox) {
           const cRight = combinedBox.left + combinedBox.width;
           const cBottom = combinedBox.top + combinedBox.height;
+
           if (!(
             adlibBox.left >= cRight ||
             aRight <= combinedBox.left ||
@@ -399,6 +399,7 @@ const AdlibDebugOverlay = ({
         if (singerBox) {
           const sRight = singerBox.left + singerBox.width;
           const sBottom = singerBox.top + singerBox.height;
+
           if (!(
             adlibBox.left >= sRight ||
             aRight <= singerBox.left ||
@@ -439,11 +440,47 @@ const AdlibDebugOverlay = ({
         }
         
         newStats.push(stat);
+
+        // --- CALCULATE INNER SAFE ZONE FOR RENDERING ---
+        const containerZone = newSafeZones.find(z => 
+            centerX >= z.left && centerX <= (z.left + z.width) &&
+            centerY >= z.top && centerY <= (z.top + z.height)
+        );
+
+        if (containerZone) {
+            const padX = (adlibBox.width / 2) * 1.2;
+            const padY = (adlibBox.height / 2) * 1.2;
+            
+            let iLeft = containerZone.left + padX;
+            let iRight = containerZone.left + containerZone.width - padX;
+            let iTop = containerZone.top + padY;
+            let iBottom = containerZone.top + containerZone.height - padY;
+            
+            if (iLeft > iRight) {
+                const mid = containerZone.left + containerZone.width / 2;
+                iLeft = iRight = mid;
+            }
+            if (iTop > iBottom) {
+                const mid = containerZone.top + containerZone.height / 2;
+                iTop = iBottom = mid;
+            }
+            
+            newInnerZones.push({
+                id: `inner-sz-${idx}`,
+                left: iLeft,
+                top: iTop,
+                width: Math.max(1, iRight - iLeft),
+                height: Math.max(1, iBottom - iTop),
+                label: `Center Bounds`
+            });
+        }
       });
 
       setBoundingBoxes(newBoxes);
       setRadialLines(newLines);
       setDistanceStats(newStats);
+      setInnerSafeZones(newInnerZones);
+
       rafRef.current = requestAnimationFrame(trackActiveLyrics);
     };
 
@@ -502,19 +539,19 @@ const AdlibDebugOverlay = ({
                   <strong>Adlib {stat.id + 1} Radial:</strong>
                   {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}° `}
                   {stat.isRotationCorrect ? (
-                    <span style={{color: '#4ade80'}}>✔ Valid</span>
+                    <span style={{color: '#4ade80'}}>✓ Valid</span>
                   ) : (
-                    <span style={{color: '#ef4444'}}>✘ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
+                    <span style={{color: '#ef4444'}}>✕ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
                   )}
                 </div>
                 <div>
                   <strong>Placement:</strong> {isMulti ? (
                     stat.isCorrect ? (
-                      <span style={{color: '#4ade80'}}> Correct Quadrant</span>
+                      <span style={{color: '#4ade80'}}>✓ Correct Quadrant</span>
                     ) : (
-                      <span style={{color: '#ef4444'}}> Wrong (in {stat.quadArtist}'s quad)</span>
+                      <span style={{color: '#ef4444'}}>✕ Wrong (in {stat.quadArtist}'s quad)</span>
                     )
-                  ) : ' Full Screen'}
+                  ) : 'Full Screen'}
                 </div>
                 <div>
                   <strong>Status:</strong>{' '}
@@ -570,6 +607,18 @@ const AdlibDebugOverlay = ({
             style={{ top: `${zone.top}px`, left: `${zone.left}px`, width: `${zone.width}px`, height: `${zone.height}px` }}
           >
             <span className="debug-safe-zone-label">{zone.label}</span>
+          </div>
+        </React.Fragment>
+      ))}
+
+      {/* Render the Inner Safe Zones (Center Bounds) */}
+      {innerSafeZones.map(zone => (
+        <React.Fragment key={zone.id}>
+          <div
+            className="debug-inner-safe-zone"
+            style={{ top: `${zone.top}px`, left: `${zone.left}px`, width: `${zone.width}px`, height: `${zone.height}px` }}
+          >
+            <span className="debug-inner-safe-zone-label">{zone.label}</span>
           </div>
         </React.Fragment>
       ))}

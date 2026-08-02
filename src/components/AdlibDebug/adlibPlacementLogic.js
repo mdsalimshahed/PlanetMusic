@@ -39,7 +39,7 @@ export const generateSafeAdlibPosition = (
   globalIndex,
   sessionSeed
 ) => {
-  // 1. The Goldilocks Margins
+  // 1. The Goldilocks Margins (Outer Safe Zones)
   const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08); 
   const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08); 
   const LYRIC_PAD = 25; 
@@ -157,51 +157,51 @@ export const generateSafeAdlibPosition = (
       targetArea = intersectedAreas[effectiveIndex % intersectedAreas.length];
     }
   } else if (validCells.length > 0) {
-    const fallback = validCells[Math.floor(pseudoRandom(seedKey + '-zone') * validCells.length)];
-    targetArea = { ...fallback, width: fallback.right - fallback.left, height: fallback.bottom - fallback.top };
+    const fallback = validCells[Math.floor(pseudoRandom(seedKey) * validCells.length)];
+    targetArea = fallback;
   } else {
-    targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop };
+    targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom };
   }
 
-  const rawX = targetArea.left + (pseudoRandom(seedKey + '-x') * targetArea.width);
-  const rawY = targetArea.top + (pseudoRandom(seedKey + '-y') * targetArea.height);
+  // 6. GENERATE INNER SAFE ZONE (Prevents Center Placement from Bleeding Edges)
+  // We inset the target area by half the ad-lib's dimensions, plus a 20% buffer to protect it during rotation.
+  const padX = (adlibWidth / 2) * 1.2;
+  const padY = (adlibHeight / 2) * 1.2;
 
-  // 6. RADIAL CLOCK ROTATION LOGIC (Mathematical Multiplicative)
-  const centerX = containerRect.width / 2;
-  const centerY = containerRect.height / 2;
-  
-  const rotMultiplier = (rawX - centerX) / (centerX || 1); 
-  const ySign = (rawY < centerY) ? 1 : -1;
-  const baseRot = rotMultiplier * ySign * 18;
-  
-  const randRotVar = (pseudoRandom(seedKey + '-rotvar') * 8) - 4;
-  const finalRot = baseRot + randRotVar;
+  let innerLeft = targetArea.left + padX;
+  let innerRight = targetArea.right - padX;
+  let innerTop = targetArea.top + padY;
+  let innerBottom = targetArea.bottom - padY;
 
-  // 7. Calculate AABB with the newly determined rotation
-  const rad = finalRot * (Math.PI / 180);
-  const aabbW = Math.abs(adlibWidth * Math.cos(rad)) + Math.abs(adlibHeight * Math.sin(rad));
-  const aabbH = Math.abs(adlibWidth * Math.sin(rad)) + Math.abs(adlibHeight * Math.cos(rad));
-
-  // 8. Clamp the coordinate so the AABB fits perfectly inside the target area
-  let finalX = rawX;
-  let finalY = rawY;
-
-  const iLeft = targetArea.left + aabbW / 2;
-  const iTop = targetArea.top + aabbH / 2;
-  const iRight = targetArea.right - aabbW / 2;
-  const iBottom = targetArea.bottom - aabbH / 2;
-
-  if (iRight >= iLeft && iBottom >= iTop) {
-    finalX = Math.max(iLeft, Math.min(iRight, finalX));
-    finalY = Math.max(iTop, Math.min(iBottom, finalY));
-  } else {
-    finalX = targetArea.left + targetArea.width / 2;
-    finalY = targetArea.top + targetArea.height / 2;
+  // Fallback: If the target area is smaller than the ad-lib itself, force it to center within the area
+  if (innerLeft > innerRight) {
+    const mid = (targetArea.left + targetArea.right) / 2;
+    innerLeft = mid;
+    innerRight = mid;
   }
+  if (innerTop > innerBottom) {
+    const mid = (targetArea.top + targetArea.bottom) / 2;
+    innerTop = mid;
+    innerBottom = mid;
+  }
+
+  // Generate a random center point STRICTLY inside the Inner Safe Zone
+  const randomX = pseudoRandom(seedKey + 'x');
+  const randomY = pseudoRandom(seedKey + 'y');
+
+  const finalX = innerLeft + (randomX * (innerRight - innerLeft));
+  const finalY = innerTop + (randomY * (innerBottom - innerTop));
+
+  // 7. Calculate Dynamic Rotation based on distance from center
+  const canvasMidX = containerRect.width / 2;
+  const canvasMidY = containerRect.height / 2;
+  const rotMultiplier = (finalX - canvasMidX) / (canvasMidX || 1);
+  const ySign = (finalY < canvasMidY) ? 1 : -1;
+  const rot = rotMultiplier * ySign * 18;
 
   return {
-    left: `${(finalX / containerRect.width) * 100}%`,
-    top: `${(finalY / containerRect.height) * 100}%`,
-    rot: finalRot
+    left: `${finalX}px`,
+    top: `${finalY}px`,
+    rot: rot
   };
 };
