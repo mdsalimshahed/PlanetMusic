@@ -1,13 +1,11 @@
 /* --- src/components/ModalRight.css --- */
+
 .modal-right-col {
    flex: calc(100 - var(--dyn-modal-split, 50));
-   
    /* CRITICAL: Force a strict 1:1 square ratio at all times */
    aspect-ratio: 1 / 1 !important; 
-   
    /* CRITICAL: Prevent the flex container from stretching it into a rectangle */
    align-self: center; 
-   
    max-height: 100%;
    max-width: 100%;
    display: flex;
@@ -150,19 +148,23 @@
    margin-bottom: 24px; line-height: 1.5; background: rgba(255,200,0,0.1);
    padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;
 }
+
 .image-manager-list { display: flex; flex-direction: column; gap: 16px; }
+
 .image-manager-row {
    display: flex; flex-direction: column; padding: 16px; border-radius: 12px;
    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .img-manager-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
 .img-manager-name {
    font-weight: 800; font-size: clamp(13px, 1.5vw, 15px); text-decoration: none;
    background: rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 50px;
    transition: background 0.2s ease;
 }
 .img-manager-name:hover { background: rgba(255, 255, 255, 0.2); }
+
 .img-manager-preview {
    width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.1);
@@ -174,7 +176,9 @@
    transition: border-color 0.2s ease;
 }
 .img-manager-input:focus { outline: none; border-color: var(--accent); }
+
 .img-manager-controls { display: flex; align-items: center; gap: 12px; }
+
 .img-manager-color-picker {
    -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%;
    cursor: pointer; padding: 0; background: transparent; overflow: hidden;
@@ -193,6 +197,7 @@
    display: flex; align-items: center; gap: 12px; padding: 12px 20px;
    border-radius: 500px; background: rgba(0, 0, 0, 0.4);
 }
+
 .sync-play-btn {
    background: rgba(255, 255, 255, 0.1);
    color: white;
@@ -204,6 +209,7 @@
    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
    transition: all 0.2s ease;
 }
+
 .sync-play-btn:hover {
    transform: scale(1.1);
    background: var(--workspace-accent, var(--accent));
@@ -218,6 +224,7 @@
    font-variant-numeric: tabular-nums;
 }
 .sync-slider { flex: 1; }
+
 .sync-lines-container {
    flex-grow: 1; position: relative; overflow-y: auto; overflow-x: hidden;
    display: flex; flex-direction: column; gap: 8px; padding: 12px;
@@ -236,11 +243,13 @@
    border: 1px solid transparent;
 }
 .sync-line:hover { background: rgba(255, 255, 255, 0.05); }
+
 .sync-line.active {
    background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.2));
    border-color: var(--workspace-accent, var(--accent));
    transform: scale(1.02); box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2; position: relative;
 }
+
 .sync-line.recording .sync-time { color: #fbbf24; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
 .sync-line.synced .sync-time { color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.3); }
 
@@ -249,6 +258,7 @@
    border-left: 2px solid var(--workspace-accent, var(--accent));
    background: rgba(0, 0, 0, 0.3);
 }
+
 .sync-line.nested-adlib.adlib-playing {
    background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.15));
    border-left: 3px solid var(--workspace-accent, var(--accent));
@@ -284,6 +294,7 @@
    color: var(--workspace-accent, var(--accent));
    font-family: monospace; font-size: clamp(12px, 1.4vw, 14px);
 }
+
 .speed-reset-btn {
    background: rgba(255, 255, 255, 0.1); border: none; color: white;
    padding: 2px 8px; border-radius: 4px; font-size: clamp(9px, 1.2vw, 11px); cursor: pointer; transition: background 0.2s;
@@ -338,50 +349,122 @@
 .preview-line:hover { opacity: 0.8; transform: translate3d(0,0,0) scale(0.98); }
 .preview-line.active { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 
+/* --- FOCUSED VIEW LAYOUT SAFEGUARDS --- */
 .focused-lyrics-preview {
-   flex-grow: 1; display: flex; align-items: center; justify-content: center;
-   overflow: hidden; padding: 40px; position: relative;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 .focused-line {
-   position: absolute; top: 50%; left: 50%; width: 100%; padding: 0 40px; text-align: center;
-   font-size: var(--dyn-focused-sync-font-size, 42px); font-weight: 900; line-height: 1.4;
-   white-space: pre-wrap; word-break: normal; overflow-wrap: break-word;
-   opacity: 0; transform: translate3d(-50%, calc(-50% + 20px), 0);
-   transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-   pointer-events: none; will-change: opacity, transform; backface-visibility: hidden; transform-style: preserve-3d;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: var(--dyn-focused-sync-font-size, 42px);
+  font-weight: 900;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  
+  /* Prevents single-word orphans while ensuring balanced soft wrapping */
+  text-wrap: balance;
+  text-wrap: pretty;
+  
+  opacity: 0;
+  transform: translate3d(-50%, calc(-50% + 20px), 0);
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
-.focused-line.active { opacity: 1; transform: translate3d(-50%, -50%, 0); pointer-events: auto; cursor: pointer; }
+
+.focused-line.active {
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Ensure inner wrappers NEVER exceed parent width and flow natively */
+.focused-line .primary-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.focused-line .core-chunks {
+  position: relative;
+  display: inline-flex !important;
+  /* CRITICAL FIX: Stacks translation natively ON TOP of the lyrics */
+  flex-direction: column !important; 
+  align-items: center !important;
+  justify-content: center !important;
+  max-width: 100% !important;
+  width: auto !important;
+}
+
+.focused-line .main-lyrics-layer {
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  max-width: 100% !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
 
 .focused-adlibs-container {
    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;
 }
 
-/* --- src/components/ModalRight.css --- */
+/* --- Floating Adlib Safeguards --- */
 .focused-adlib-line {
-   position: absolute;
-   top: var(--adlib-top, 50%);
-   left: var(--adlib-left, 50%);
-   font-size: var(--dyn-focused-adlib-font-size, clamp(12px, 3.5vw, 28px));
-   font-weight: 800;
-   line-height: 1.4;
-   text-align: center;
-   white-space: pre-wrap;
-   word-break: normal;
-   overflow-wrap: break-word;
-   max-width: 80%; /* Constrains ad-lib width so long sentences wrap safely instead of clipping */
-   opacity: 0;
-   transform: translate3d(-50%, calc(-50% + 20px), 0) rotate(var(--adlib-rot, 0deg));
-   transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-   pointer-events: none;
-   will-change: opacity, transform;
-   backface-visibility: hidden;
-   transform-style: preserve-3d;
+  position: absolute;
+  top: var(--adlib-top, 50%);
+  left: var(--adlib-left, 50%);
+  font-size: var(--dyn-focused-adlib-font-size, clamp(12px, 3.5vw, 28px));
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  max-width: 80%; /* Strictly caps adlibs to 80% of canvas width */
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate3d(-50%, calc(-50% + 20px), 0) rotate(var(--adlib-rot, 0deg));
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events: none;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
+
 .focused-adlib-line.active {
-   opacity: 1;
-   transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg));
-   pointer-events: auto;
-   cursor: pointer;
+  opacity: 1;
+  transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg));
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* Inline Adlib Nodes */
@@ -391,20 +474,16 @@
    will-change: opacity, transform, filter;
    backface-visibility: hidden;
 }
-
-/* FIX: Ensure nested transliteration in hidden ad-libs is completely invisible */
 .adlib-node.adlib-hidden, .adlib-node.adlib-hidden .pronunciation-text {
    opacity: 0 !important;
    transform: translate3d(0, 8px, 0) !important;
    filter: grayscale(100%) !important;
 }
-
 .adlib-node.adlib-visible, .adlib-node.adlib-visible .pronunciation-text {
    opacity: 0.6 !important;
    transform: translate3d(0, 0, 0) !important;
    filter: grayscale(0%) !important;
 }
-
 .adlib-node.adlib-active, .adlib-node.adlib-active .pronunciation-text {
    opacity: 1 !important;
    transform: translate3d(0, 0, 0) !important;
@@ -422,6 +501,7 @@
    font-size: clamp(10px, 1.2vw, 12px); line-height: 1.5; background: rgba(0,0,0,0.5);
    padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 0;
 }
+
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
 
 .primary-text { display: block; width: 100%; box-sizing: border-box; }
@@ -429,7 +509,6 @@ rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacit
 /* Transliteration Text Styling */
 rt.pronunciation-text, .pronunciation-text {
    font-size: var(--dyn-translit-font-size, 0.55em);
-   /* Baking opacity into color-mix as configured by user settings */
    color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 0.8) * 100%), transparent);
    font-weight: 700;
    letter-spacing: 2px;
@@ -467,20 +546,14 @@ rt.pronunciation-text, .pronunciation-text {
 @media (max-width: 900px) {
   .modal-right-col {
     flex: none !important; 
-    width: 100% !important; 
-    
-    /* CRITICAL: Safe guard ensuring the square NEVER exceeds available screen height */
-    max-width: min(100%, calc(100vh - 200px)) !important;
-    
-    height: auto !important; 
-    
-    /* CRITICAL: FORCE STRICT 1:1 SQUARE RATIO AT ALL TIMES */
-    aspect-ratio: 1 / 1 !important; 
-    
+    width: 100% !important;      
+    max-width: min(100%, calc(100vh - 200px)) !important;     
+    height: auto !important;      
+    aspect-ratio: 1 / 1 !important;      
     min-height: 0 !important;
     max-height: none !important; 
     margin: 0 auto calc(60px + env(safe-area-inset-bottom, 20px)) auto !important;
-    border-radius: 0 !important; 
+    border-radius: 0 !important;
   }
   .preview-line { font-size: calc(var(--dyn-live-sync-font-size, 34px) * 0.75); }
   .focused-line { font-size: calc(var(--dyn-focused-sync-font-size, 42px) * 0.75); }
@@ -504,6 +577,7 @@ rt.pronunciation-text, .pronunciation-text {
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
+
 .eq-bar {
   width: 8px;
   background: #ffffff;
@@ -512,7 +586,7 @@ rt.pronunciation-text, .pronunciation-text {
   flex-shrink: 0;
   transform: scaleY(0.05);
   transform-origin: bottom;
-  transition: transform 0.05s ease-out; 
+  transition: transform 0.05s ease-out;
   will-change: transform;
 }
 
@@ -526,7 +600,6 @@ rt.pronunciation-text, .pronunciation-text {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  /* Applying dynamically set color AND opacity directly into text */
   color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.9) * 100%), transparent);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   text-align: center;
@@ -570,7 +643,6 @@ rt.pronunciation-text, .pronunciation-text {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  /* Applying dynamically set color AND slightly reduced opacity directly into text */
   color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.7) * 100%), transparent);
   text-align: inherit;
   line-height: 1.4;
@@ -584,65 +656,58 @@ rt.pronunciation-text, .pronunciation-text {
   visibility: hidden;
   transition: opacity 0.4s ease, visibility 0s linear 0.4s;
 }
+
 .preview-line.active .live-translation {
   opacity: 1;
   visibility: visible;
   transition: opacity 0.4s ease, visibility 0s linear 0s;
 }
 
-.focused-translation {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* --- FADE UP ANIMATION FOR TRANSLATED TEXT (FOCUSED VIEW MODE) --- */
-/* Main lyrics line stays 100% visible */
-.focused-line .main-lyrics-layer {
-  opacity: 1 !important;
-  filter: none !important;
-}
-
-/* Base Translation Container (Re-engineered to flow naturally in the flex container to prevent clipping) */
+/* --- Translation Overlay Bounds (Focused View Normal Flow) --- */
 .chunk-translation.focused-translation {
-  position: relative; /* Forces container to respect boundaries */
-  display: block;
+  position: relative;
   top: auto;
   left: auto;
   transform: none;
-  width: 100%;
+  width: auto;
   max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 8px;
   text-align: center;
   pointer-events: none;
   z-index: 10;
   margin-top: 0;
   margin-bottom: var(--dyn-trans-top-padding, 8px);
-  box-sizing: border-box;
 
-  /* Strict Font Size from Settings */
   font-size: var(--dyn-trans-font-size, 0.55em) !important;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-wrap: balance;
+  text-wrap: pretty;
 
-  /* Initial state: Hidden and slightly offset down */
+  color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.9) * 100%), transparent);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;
   transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s linear;
 }
 
-/* TRIGGER FADE UP ANIMATION WHEN FOCUSED LINE IS ACTIVE */
 .focused-line.active .chunk-translation.focused-translation {
   animation: fadeUpTranslation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* KEYFRAME: TRANSLATION FADES UP INTO PLACE ABOVE MAIN LINE */
 @keyframes fadeUpTranslation {
   0% {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;

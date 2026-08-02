@@ -4,7 +4,6 @@ import React, { useMemo } from 'react';
 const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 const isPunctuationChar = (char) => /^[\p{P}\p{S}\s]+$/u.test(char);
 
-// Helper to safely split a string into grapheme clusters
 const getGraphemes = (str) => {
   if (!str) return [];
   if (typeof Intl !== 'undefined' && Intl.Segmenter) {
@@ -33,16 +32,12 @@ const cleanTranslationText = (text) => {
     .trim();
 };
 
-// NEW HELPER: Dynamically applies yellow color and glow to punctuation in translation/transliteration strings
 export const renderFormattedTranslation = (text) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
-  
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
-    
-    // Only apply yellow to actual visible punctuation, not purely whitespace
     if (isPunct && part.trim() !== '') {
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
@@ -56,37 +51,57 @@ export const renderFormattedTranslation = (text) => {
 
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
 
-const groupWords = (elements, charData) => {
+const groupWords = (elements, charData, isFocused) => {
   const words = [];
   let currentWord = [];
+  
   for (let i = 0; i < elements.length; i++) {
     if (!elements[i]) {
       if (currentWord.length > 0) {
-        words.push(<span key={`w-${i}`} style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+        words.push(
+          <span key={`w-${i}`} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
+            {currentWord}
+          </span>
+        );
         currentWord = [];
       }
       words.push(elements[i]);
       continue;
     }
+    
     const char = charData[i].char;
+    
     if (/\s/.test(char) || isCJ(char)) {
       if (currentWord.length > 0) {
-        words.push(<span key={`w-${i}`} style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+        words.push(
+          <span key={`w-${i}`} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
+            {currentWord}
+          </span>
+        );
         currentWord = [];
       }
-      words.push(elements[i]);
+      words.push(
+        <span key={`s-${i}`} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      );
     } else {
       currentWord.push(elements[i]);
     }
   }
+  
   if (currentWord.length > 0) {
-    words.push(<span key="w-end" style={{ whiteSpace: 'nowrap' }}>{currentWord}</span>);
+    words.push(
+      <span key="w-end" style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
+        {currentWord}
+      </span>
+    );
   }
+  
   return words;
 };
 
-// Helper to align individual chunks with their corresponding transliteration directly beneath
-const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL) => {
+const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused) => {
   let alignedChunks = [];
   if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
@@ -122,11 +137,10 @@ const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderCo
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
     
-    const groupedText = groupWords(renderedText, chunk.chars);
-
+    const groupedText = groupWords(renderedText, chunk.chars, isFocused);
     if (isRTL) {
       return (
-        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle' }}>
+        <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
           {groupedText}
         </span>
       );
@@ -141,10 +155,11 @@ const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderCo
               flexDirection: 'column',
               alignItems: 'center',
               verticalAlign: 'bottom',
-              margin: '0 2px'
+              margin: '0 2px',
+              maxWidth: '100%'
             }}
           >
-            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{groupedText}</span>
+            <span style={{ display: 'inline-block', whiteSpace: isFocused ? 'normal' : 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
             {cleanTrans ? (
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">
                 {renderFormattedTranslation(cleanTrans)}
@@ -154,7 +169,7 @@ const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderCo
         );
       } else {
         return (
-          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom', display: 'inline-block' }}>
+          <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'bottom', display: 'inline-block', maxWidth: '100%' }}>
             {groupedText}
           </span>
         );
@@ -167,7 +182,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
   const segments = lineObj.segments || [];
   const isRTL = isRTLLanguage(lineObj.text || '');
-
   let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
   
   const normalizeForMatch = (str) =>
@@ -175,13 +189,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       .toLowerCase()
       .replace(/[\p{P}\p{S}\s]/gu, '')
       .trim();
-      
+
   const cleanMainText = normalizeForMatch(lineObj?.text);
   const cleanTransText = normalizeForMatch(rawTranslation);
   const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
-
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
-
+  
   const basePronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
     fontWeight: '800',
@@ -194,7 +207,6 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   let parsedChunks = null;
   let fullTrans = null;
-
   if (typeof pronString === 'string') {
     const cleanPron = pronString.trim();
     if (cleanPron.startsWith('{')) {
@@ -221,80 +233,14 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   const currentTime = window.currentAudioTime || 0;
 
-  const renderColoredChar = (c, globalIdx) => {
-    if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => globalIdx >= a.charStart && globalIdx < a.charEnd)) {
-      return null;
-    }
-
-    let adlibProps = {};
-    if (savedNode?.isSplit && !isFocused) {
-      const adlib = savedNode.adlibs?.find(a => globalIdx >= a.charStart && globalIdx < a.charEnd);
-      if (adlib && adlib.start !== null) {
-        const start = adlib.start;
-        const end = adlib.end !== null ? adlib.end : start + 5;
-        let initialClass = 'adlib-hidden';
-
-        if (isPlayingCurrentSong) {
-          if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
-          else if (currentTime > end) initialClass = 'adlib-visible';
-        }
-
-        adlibProps = {
-          className: `adlib-node ${initialClass}`,
-          'data-start': start,
-          'data-end': end
-        };
-      }
-    }
-
-    const isPunct = isPunctuationChar(c.char);
-    let activeColor = isPunct ? '#fbbf24' : '#ffffff';
-    let isGradient = false;
-    let gradientStyle = '';
-
-    if (!isPunct && c.seg) {
-      let targetArtists = c.seg.artists;
-      if (targetArtists && targetArtists.length > 0) {
-        if (targetArtists.length > 1) {
-          isGradient = true;
-          const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-          const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-          gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-        } else {
-          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-        }
-      } else {
-        activeColor = c.seg.color || '#ffffff';
-        isGradient = c.seg.isGradient || false;
-        gradientStyle = c.seg.gradient || '';
-      }
-    }
-
-    let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-
-    if (isGradient) {
-      style.backgroundImage = gradientStyle;
-      style.WebkitBackgroundClip = 'text';
-      style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused ? '30px' : '20px'} rgba(255,255,255,0.4))`;
-    } else {
-      style.color = activeColor;
-      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
-    }
-
-    return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
-  };
-
   // --- SPLIT LINE PATH FOR LIVE MODE (MAIN + ADLIBS IN SEPARATE CONTAINERS) ---
   if (!isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
     const blocks = [];
     let currentBlock = null;
-
     chars.forEach((c) => {
       const adlibIndex = savedNode.adlibs.findIndex(a => c.globalIndex >= a.charStart && c.globalIndex < a.charEnd);
       const isAdlibChar = adlibIndex !== -1;
       const adlibObj = isAdlibChar ? savedNode.adlibs[adlibIndex] : null;
-
       if (!currentBlock) {
         currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
       } else if (currentBlock.isAdlib === isAdlibChar && currentBlock.adlibObj === adlibObj) {
@@ -304,24 +250,58 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
       }
     });
-
     if (currentBlock) blocks.push(currentBlock);
+
+    const renderColoredCharForSplit = (c, globalIdx) => {
+      const isPunct = isPunctuationChar(c.char);
+      let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+      let isGradient = false;
+      let gradientStyle = '';
+      
+      if (!isPunct && c.seg) {
+        let targetArtists = c.seg.artists;
+        if (targetArtists && targetArtists.length > 0) {
+          if (targetArtists.length > 1) {
+            isGradient = true;
+            const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+            const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+            gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+          } else {
+            activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+          }
+        } else {
+          activeColor = c.seg.color || '#ffffff';
+          isGradient = c.seg.isGradient || false;
+          gradientStyle = c.seg.gradient || '';
+        }
+      }
+
+      let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+      if (isGradient) {
+        style.backgroundImage = gradientStyle;
+        style.WebkitBackgroundClip = 'text';
+        style.WebkitTextFillColor = 'transparent';
+        style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+      } else {
+        style.color = activeColor;
+        style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
+      }
+      return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+    };
 
     const renderedBlocks = blocks.map((blk, bIdx) => {
       if (blk.isAdlib && blk.adlibObj) {
         const adlib = blk.adlibObj;
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
-
         let initialClass = 'adlib-hidden';
         if (isPlayingCurrentSong && start !== null) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
-
+        
         let aParsedChunks = null;
         let aFullTrans = null;
-
         if (adlib.pronunciation) {
           if (typeof adlib.pronunciation === 'string') {
             if (adlib.pronunciation.startsWith('{')) {
@@ -337,16 +317,16 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
             }
           }
         }
-
         const adlibTranslation = cleanTranslationText(adlib.translation);
-
+        
         const alignedAdlibJSX = alignChunksWithTransliteration(
           blk.chars,
           aParsedChunks,
           aFullTrans,
-          renderColoredChar,
+          renderColoredCharForSplit,
           basePronStyle,
-          isRTL
+          isRTL,
+          isFocused
         );
 
         return (
@@ -389,9 +369,10 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
           blk.chars,
           parsedChunks,
           fullTrans,
-          renderColoredChar,
+          renderColoredCharForSplit,
           basePronStyle,
-          isRTL
+          isRTL,
+          isFocused
         );
 
         return (
@@ -471,6 +452,65 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   }
 
   // --- STANDARD PATH (UNSPLIT / FOCUSED VIEW) ---
+  const renderColoredChar = (c, globalIdx) => {
+    if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => globalIdx >= a.charStart && globalIdx < a.charEnd)) {
+      return null;
+    }
+    
+    let adlibProps = {};
+    if (savedNode?.isSplit && !isFocused) {
+      const adlib = savedNode.adlibs?.find(a => globalIdx >= a.charStart && globalIdx < a.charEnd);
+      if (adlib && adlib.start !== null) {
+        const start = adlib.start;
+        const end = adlib.end !== null ? adlib.end : start + 5;
+        let initialClass = 'adlib-hidden';
+        if (isPlayingCurrentSong) {
+          if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
+          else if (currentTime > end) initialClass = 'adlib-visible';
+        }
+        adlibProps = {
+          className: `adlib-node ${initialClass}`,
+          'data-start': start,
+          'data-end': end
+        };
+      }
+    }
+    
+    const isPunct = isPunctuationChar(c.char);
+    let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+    let isGradient = false;
+    let gradientStyle = '';
+    
+    if (!isPunct && c.seg) {
+      let targetArtists = c.seg.artists;
+      if (targetArtists && targetArtists.length > 0) {
+        if (targetArtists.length > 1) {
+          isGradient = true;
+          const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+          const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+          gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+        } else {
+          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+        }
+      } else {
+        activeColor = c.seg.color || '#ffffff';
+        isGradient = c.seg.isGradient || false;
+        gradientStyle = c.seg.gradient || '';
+      }
+    }
+
+    let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+    if (isGradient) {
+      style.backgroundImage = gradientStyle;
+      style.WebkitBackgroundClip = 'text';
+      style.WebkitTextFillColor = 'transparent';
+      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused ? '30px' : '20px'} rgba(255,255,255,0.4))`;
+    } else {
+      style.color = activeColor;
+      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
+    }
+    return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+  };
 
   const alignedJSX = alignChunksWithTransliteration(
     chars,
@@ -478,12 +518,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     fullTrans,
     renderColoredChar,
     basePronStyle,
-    isRTL
+    isRTL,
+    isFocused
   );
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
-
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -508,22 +548,24 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%' }}>
-      <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%' }}>
-        
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+      <span className="primary-text" style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', wordBreak: 'normal', overflowWrap: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
         <span
           className="core-chunks"
           style={{
             position: 'relative',
             display: 'inline-flex',
-            flexDirection: 'row',
+            flexDirection: isFocused ? 'column' : 'row',
             justifyContent: isFocused ? 'center' : 'flex-start',
-            alignItems: 'flex-end',
+            alignItems: isFocused ? 'center' : 'flex-end',
             flexWrap: 'wrap',
             verticalAlign: 'bottom',
-            margin: '0 4px',
-            width: isFocused ? '100%' : 'auto',
-            textAlign: lineTextAlign
+            margin: '0',
+            width: 'auto',
+            maxWidth: '100%',
+            textAlign: lineTextAlign,
+            textWrap: isFocused ? 'balance' : 'normal',
+            boxSizing: 'border-box'
           }}
         >
           {displayTranslation ? (
@@ -539,15 +581,17 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
               justifyContent: isFocused ? 'center' : 'flex-start',
               alignItems: 'flex-end',
               flexWrap: 'wrap',
-              width: '100%',
-              textAlign: lineTextAlign
+              width: 'auto',
+              maxWidth: '100%',
+              textAlign: lineTextAlign,
+              textWrap: isFocused ? 'balance' : 'normal',
+              boxSizing: 'border-box'
             }}
             dir="auto"
           >
             {alignedJSX}
           </span>
         </span>
-
       </span>
       {shouldRenderBlockPron && displayPronString && (
         <div className="pronunciation-text" style={blockPronStyle} dir="ltr">
@@ -559,16 +603,13 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 };
 
 export const LyricLineWrapper = React.memo(({
-  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong
-}) => {
+  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
-
   const renderedContent = useMemo(() =>
     renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette, isPlayingCurrentSong),
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
-
   return (
     <div
       className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
