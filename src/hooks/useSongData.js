@@ -11,8 +11,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
   });
-
-  const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
+  const [customData, setCustomData] = useState({ spotify: '', yt: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
 
@@ -34,7 +33,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       return Object.keys(basePalette).filter(Boolean);
   }, [basePalette]);
 
-  // Sync state whenever selectedSong changes or updates (including when syncData/translations update)
   useEffect(() => {
     if (selectedSong) {
       const isNewTrack = selectedSong.trackId !== previousTrackId.current;
@@ -45,12 +43,10 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setIsTranslationManagerOpen(false);
         setSingerImages({});
       }
-
       const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
       setCustomData({
         spotify: selectedSong.customLinks?.spotify || '',
         yt: selectedSong.customLinks?.yt || '',
-        deezer: selectedSong.customLinks?.deezer || '',
         hasLocal: selectedSong.customLinks?.hasLocal || false,
         localName: selectedSong.customLinks?.localName || '',
         lyrics: initialLyricsStr,
@@ -62,7 +58,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   useEffect(() => {
     if (!selectedSong) return;
-
     allPotentialSingers.forEach(async (singerName) => {
       const cleanName = singerName.trim();
       if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName] && !globalArtistData.images?.[cleanName]) {
@@ -113,10 +108,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
-
     updateSongInLibrary({
       ...selectedSong,
-      customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
+      customLinks: { spotify: customData.spotify, yt: customData.yt, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
       artistImages: customData.artistImages,
       artistColors: customData.artistColors,
@@ -143,7 +137,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
        updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
-
     updateSongInLibrary({
       ...selectedSong,
       artistImages: customData.artistImages,
@@ -157,7 +150,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const isSingle = selectedSong?.trackCount === 1 || selectedSong?.collectionName === selectedSong?.trackName;
   const releaseType = isSingle ? 'Single' : selectedSong?.collectionName || 'Single';
   const highResArt = selectedSong?.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
-
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -167,8 +159,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
-    yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
-    deezer: customData.deezer || `https://www.deezer.com/search/${searchQuery}`,
+    yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`
   };
 
   return {

@@ -164,6 +164,19 @@
   background: rgba(0, 0, 0, 0.55);
 }
 
+.source-info {
+  margin-top: 3px !important;
+}
+
+.source-span {
+  color: var(--accent, #fbbf24) !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  font-size: 0.78em !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
 .explicit-tag {
   display: inline-flex;
   align-items: center;

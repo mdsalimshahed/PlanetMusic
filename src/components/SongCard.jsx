@@ -111,6 +111,11 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           <p title={song.artistName}>
             <span className="text-fill-span artist-span">{song.artistName}</span>
           </p>
+          {song.sourceName && (
+            <p className="source-info" title={`Source: ${song.sourceName}`}>
+              <span className="text-fill-span source-span">{song.sourceName}</span>
+            </p>
+          )}
         </div>
       </div>
     </div>

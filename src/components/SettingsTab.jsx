@@ -53,7 +53,9 @@ const SettingsTab = ({ settings, setSettings }) => {
     const { name, value, type, checked } = e.target;
     setSettings(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : (type === 'color' || type === 'text' ? value : Number(value))
+      [name]: type === 'checkbox' 
+        ? checked 
+        : (type === 'color' || type === 'text' || type === 'password' ? value : Number(value))
     }));
   };
 
@@ -69,6 +71,76 @@ const SettingsTab = ({ settings, setSettings }) => {
     <section className="view-section settings-tab-container">
       <div className="settings-grid">
         
+        {/* GROUP 0: API KEYS & EXTERNAL SERVICES */}
+        <div className="settings-card glass-panel">
+          <h3>API Keys & Services</h3>
+          
+          <div className="setting-item">
+            <label>Spotify Client ID</label>
+            <input 
+              type="text" 
+              name="spotifyClientId" 
+              placeholder="Paste Spotify Client ID..." 
+              value={settings.spotifyClientId || ''} 
+              onChange={handleChange}
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#ffffff',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                outline: 'none',
+                marginTop: '6px'
+              }}
+            />
+          </div>
+
+          <div className="setting-item">
+            <label>Spotify Client Secret</label>
+            <input 
+              type="password" 
+              name="spotifyClientSecret" 
+              placeholder="Paste Spotify Client Secret..." 
+              value={settings.spotifyClientSecret || ''} 
+              onChange={handleChange}
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#ffffff',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                outline: 'none',
+                marginTop: '6px'
+              }}
+            />
+            <span className="setting-desc">Enables direct Spotify Web API searching with explicit tags & audio previews.</span>
+          </div>
+
+          <div className="setting-item">
+            <label>YouTube Data API v3 Key</label>
+            <input 
+              type="text" 
+              name="youtubeApiKey" 
+              placeholder="Paste Google/YouTube API Key..." 
+              value={settings.youtubeApiKey || ''} 
+              onChange={handleChange}
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#ffffff',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                outline: 'none',
+                marginTop: '6px'
+              }}
+            />
+            <span className="setting-desc">Enables direct YouTube & YouTube Music search integration for Cosmos.</span>
+          </div>
+        </div>
+
         {/* GROUP 1: CARD & DASHBOARD CANVAS */}
         <div className="settings-card glass-panel">
           <h3>Canvas & Card Layout</h3>
