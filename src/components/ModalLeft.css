@@ -38,8 +38,8 @@
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* CRITICAL FIX: Re-introduced a strict max-height. 
-   It is taller than the image to give the title more room, 
+/* CRITICAL FIX: Re-introduced a strict max-height.
+   It is taller than the image to give the title more room,
    but strictly capped so it NEVER pushes the layout below off-screen! */
 .modal-top {
    display: flex;
@@ -74,23 +74,27 @@
    padding-top: 2px; 
 }
 
-/* Let the title fully render within its bounded space, gracefully scrolling if it's massive */
+/* Allow text to wrap and dynamically shrink based on container width */
 .modal-header-info h2 {
-   font-size: clamp(18px, 6.5cqw, var(--dyn-modal-font-size));
+   /* Caps the max size at either the slider value OR 12% of the container width, whichever is smaller */
+   font-size: clamp(14px, min(var(--dyn-modal-font-size), 12cqw), var(--dyn-modal-font-size));
    font-weight: 800;
    line-height: 1.15;
    margin-top: 0;
    margin-bottom: 8px;
    letter-spacing: -1px;
    word-break: break-word;
-   overflow-y: auto;
+   
+   /* Removed strict line clamp to prevent text from permanently cutting off */
+   overflow-y: auto; 
    max-height: 100%;
-  -webkit-overflow-scrolling: touch;
-  flex-shrink: 1;
+   -webkit-overflow-scrolling: touch;
+   flex-shrink: 1;
 }
 
-.modal-header-info h2::-webkit-scrollbar { width: 4px; }
-.modal-header-info h2::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+/* Keep the scrollbar hidden visually for a cleaner look */
+.modal-header-info h2::-webkit-scrollbar { display: none; }
+.modal-header-info h2 { -ms-overflow-style: none; scrollbar-width: none; }
 
 .title-extra {
   font-size: 0.65em;
@@ -136,10 +140,15 @@
    word-wrap: break-word;
 }
 
-.modal-artist-row .release-date {
-   white-space: nowrap;
+.modal-artist-row .album-subtext {
    margin-left: 0;
-   font-size: 0.9em;
+   font-size: clamp(13px, 1.5vw, 16px); /* Matches artist name size */
+   /* Prevent long album names from blowing out the layout */
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 /* SHRUNK: The details container is now much more compact */
@@ -375,8 +384,8 @@
    display: flex;
    justify-content: space-between;
    align-items: center;
-  flex-wrap: wrap;
-   gap: 12px;
+  flex-wrap: wrap; 
+  gap: 12px;
 }
 
 .return-dashboard-btn {
@@ -412,15 +421,15 @@
    border-radius: 500px;
    display: flex;
    align-items: center;
-   gap: 8px;
- }
+   gap: 8px; 
+}
 
- .delete-icon-btn:hover {
+.delete-icon-btn:hover {
    background: #FA243C;
    color: white;
    transform: translateY(-2px);
    box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
- }
+}
 
 .search-google-btn {
   background: rgba(255, 255, 255, 0.15);
@@ -471,11 +480,13 @@
   .modal-details {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
+  
   .bottom-actions {
     flex-direction: column;
     gap: 12px;
     width: 100%;
   }
+
   .bottom-actions > button {
     width: 100%;
     justify-content: center;
