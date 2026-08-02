@@ -101,6 +101,14 @@
   
   /* CRITICAL: Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
+
+  /* Strict 2-Line Truncation */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* autoprefixer: ignore next - Prevents React's compiler from breaking the ellipsis */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
 
 .card-info-text-only p {
@@ -114,12 +122,18 @@
   
   /* Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
+  
+  /* Strict 2-Line Truncation */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* autoprefixer: ignore next - Prevents React's compiler from breaking the ellipsis */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .text-fill-span {
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.85);
   padding: 2px 6px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -128,7 +142,7 @@
 
 .artist-span {
   color: rgba(255, 255, 255, 0.95);
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .source-info {
@@ -137,7 +151,7 @@
 
 .source-span {
   color: var(--accent, #fbbf24) !important;
-  background: rgba(0, 0, 0, 0.75) !important;
+  background: rgba(0, 0, 0, 0.85) !important;
   font-size: 0.78em !important;
   font-weight: 800 !important;
   text-transform: uppercase !important;
@@ -148,9 +162,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.85);
   color: #ffffff;
   font-size: 10px;
   font-weight: 800;

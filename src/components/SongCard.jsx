@@ -2,19 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import './SongCard.css';
 
-// Helper function to hard-truncate text and inject ellipses directly into the string
-const truncateText = (text, maxLength) => {
-  if (!text) return '';
-  return text.length > maxLength ? text.substring(0, maxLength).trim() + '...' : text;
-};
-
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
-
-  // Hard limit strings to ~45 characters (approx 2 wrapped lines)
-  const displayTitle = truncateText(song.trackName, 45);
-  const displayArtist = truncateText(song.artistName, 45);
 
   useEffect(() => {
     if (!highResArt) return;
@@ -98,15 +88,15 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
 
         {/* Text Overlay */}
         <div className="card-info-text-only">
-          {/* Tooltip trigger attached directly to the h4 header, holding the full untruncated name */}
+          {/* Tooltip trigger attached directly to the h4 header, using the native string */}
           <h4 title={song.trackName}>
-            <span className="text-fill-span">{displayTitle}</span>
+            <span className="text-fill-span">{song.trackName}</span>
             {song.trackExplicitness === 'explicit' && <span className="explicit-tag" title="Explicit">E</span>}
           </h4>
           
-          {/* Tooltip trigger attached directly to the paragraph */}
+          {/* Tooltip trigger attached directly to the paragraph, using the native string */}
           <p title={song.artistName}>
-            <span className="text-fill-span artist-span">{displayArtist}</span>
+            <span className="text-fill-span artist-span">{song.artistName}</span>
           </p>
           
           {song.sourceName && (
