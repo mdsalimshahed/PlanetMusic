@@ -18,7 +18,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const sourceRef = useRef(null);
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-  
   const trackIdRef = useRef(null);
   const localRef = useRef(null);
 
@@ -369,7 +368,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   const playerUI = currentTrack ? (
     <div 
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''}`} 
+      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`} 
       onClick={openModal}
       style={{ '--player-accent': accentColor, cursor: 'pointer' }}
     >

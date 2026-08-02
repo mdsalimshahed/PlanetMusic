@@ -1,7 +1,13 @@
 /* --- src/components/ModalRight.css --- */
 .modal-right-col {
    flex: calc(100 - var(--dyn-modal-split, 50));
-   aspect-ratio: 1 / 1;
+   
+   /* CRITICAL: Force a strict 1:1 square ratio at all times */
+   aspect-ratio: 1 / 1 !important; 
+   
+   /* CRITICAL: Prevent the flex container from stretching it into a rectangle */
+   align-self: center; 
+   
    max-height: 100%;
    max-width: 100%;
    display: flex;
@@ -15,6 +21,7 @@
    -webkit-backface-visibility: hidden;
    backface-visibility: hidden;
    transform: translateZ(0);
+   margin: 0 auto; /* Ensures it stays centered when scaling down */
 }
 
 /* Background Layers */
@@ -461,12 +468,18 @@ rt.pronunciation-text, .pronunciation-text {
   .modal-right-col {
     flex: none !important; 
     width: 100% !important; 
-    max-width: 100% !important;
+    
+    /* CRITICAL: Safe guard ensuring the square NEVER exceeds available screen height */
+    max-width: min(100%, calc(100vh - 200px)) !important;
+    
     height: auto !important; 
-    aspect-ratio: auto !important; /* FLUID ASPECT RATIO: prevents vertical overflow on narrow mobile screens */
-    min-height: 300px;
+    
+    /* CRITICAL: FORCE STRICT 1:1 SQUARE RATIO AT ALL TIMES */
+    aspect-ratio: 1 / 1 !important; 
+    
+    min-height: 0 !important;
     max-height: none !important; 
-    margin-bottom: calc(60px + env(safe-area-inset-bottom, 20px)) !important;
+    margin: 0 auto calc(60px + env(safe-area-inset-bottom, 20px)) auto !important;
     border-radius: 0 !important; 
   }
   .preview-line { font-size: calc(var(--dyn-live-sync-font-size, 34px) * 0.75); }

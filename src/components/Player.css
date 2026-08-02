@@ -1,13 +1,15 @@
 /* --- src/components/Player.css --- */
 .global-player {
+  --tx: 0px; /* Custom CSS variable handles our translations smoothly */
   position: fixed;
   bottom: 24px;
-  /* Clamped left position prevents bleeding off the left edge */
+  
+  /* DEFAULT MODAL-OPEN MODE: Aligns cleanly below the modal's left sidebar */
   left: clamp(16px, 60px, calc(100vw - 366px));
-  /* Dynamically constrained width prevents bleeding off the right edge */
   width: min(calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100)), calc(100vw - 32px));
   min-width: min(280px, calc(100vw - 32px));
   max-width: calc(100vw - 32px);
+  
   height: clamp(80px, 10vw, 96px); 
   padding: 10px clamp(16px, 2.5vw, 24px);
   border-radius: 24px; 
@@ -18,8 +20,17 @@
   z-index: 10000;
   border: 1px solid color-mix(in srgb, var(--player-accent, rgba(255,255,255,0.1)) 20%, transparent);
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 10px 30px color-mix(in srgb, var(--player-accent, transparent) 10%, transparent);
+  
+  transform: translateX(var(--tx));
   animation: slideUpPlayer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* NEW CENTERED MODE: Applies automatically when SongModal is closed */
+.global-player.centered-mode {
+  --tx: -50%;
+  left: 50%;
+  width: clamp(350px, 45vw, 600px); 
 }
 
 .global-player.stacked {
@@ -40,8 +51,8 @@
 }
 
 @keyframes slideUpPlayer {
-  from { bottom: -100px; opacity: 0; transform: translateY(20px) scale(0.9); }
-  to { bottom: 24px; opacity: 1; transform: translateY(0) scale(1); }
+  from { bottom: -100px; opacity: 0; transform: translateX(var(--tx)) translateY(20px) scale(0.9); }
+  to { bottom: 24px; opacity: 1; transform: translateX(var(--tx)) translateY(0) scale(1); }
 }
 
 .player-top-row {
@@ -327,10 +338,13 @@
 }
 
 @media (max-width: 900px) {
+  /* Override constraints confidently when shrinking on mobile view */
   .global-player:not(.stacked) {
-    left: 20px;
-    right: 20px;
-    width: auto;
-    min-width: unset;
+    left: 20px !important;
+    right: 20px !important;
+    width: calc(100vw - 40px) !important;
+    min-width: unset !important;
+    transform: none !important;
+    --tx: 0px;
   }
 }
