@@ -35,8 +35,10 @@ const SettingsTab = ({ settings, setSettings }) => {
       const positiveJ = Math.abs(j);
       [palettePool[i], palettePool[positiveJ]] = [palettePool[positiveJ], palettePool[i]];
     }
+
     const gradMap = {};
     let lastPair = null;
+
     keys.forEach((key, index) => {
       let candidatePair = palettePool[index % palettePool.length];
       if (lastPair && candidatePair[0] === lastPair[0] && candidatePair[1] === lastPair[1]) {
@@ -46,6 +48,7 @@ const SettingsTab = ({ settings, setSettings }) => {
       gradMap[key] = candidatePair;
       lastPair = candidatePair;
     });
+
     return gradMap;
   }, []);
 
@@ -71,76 +74,6 @@ const SettingsTab = ({ settings, setSettings }) => {
     <section className="view-section settings-tab-container">
       <div className="settings-grid">
         
-        {/* GROUP 0: API KEYS & EXTERNAL SERVICES */}
-        <div className="settings-card glass-panel">
-          <h3>API Keys & Services</h3>
-          
-          <div className="setting-item">
-            <label>Spotify Client ID</label>
-            <input 
-              type="text" 
-              name="spotifyClientId" 
-              placeholder="Paste Spotify Client ID..." 
-              value={settings.spotifyClientId || ''} 
-              onChange={handleChange}
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#ffffff',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                outline: 'none',
-                marginTop: '6px'
-              }}
-            />
-          </div>
-
-          <div className="setting-item">
-            <label>Spotify Client Secret</label>
-            <input 
-              type="password" 
-              name="spotifyClientSecret" 
-              placeholder="Paste Spotify Client Secret..." 
-              value={settings.spotifyClientSecret || ''} 
-              onChange={handleChange}
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#ffffff',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                outline: 'none',
-                marginTop: '6px'
-              }}
-            />
-            <span className="setting-desc">Enables direct Spotify Web API searching with explicit tags & audio previews.</span>
-          </div>
-
-          <div className="setting-item">
-            <label>YouTube Data API v3 Key</label>
-            <input 
-              type="text" 
-              name="youtubeApiKey" 
-              placeholder="Paste Google/YouTube API Key..." 
-              value={settings.youtubeApiKey || ''} 
-              onChange={handleChange}
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                color: '#ffffff',
-                padding: '10px 14px',
-                borderRadius: '8px',
-                fontSize: '13px',
-                outline: 'none',
-                marginTop: '6px'
-              }}
-            />
-            <span className="setting-desc">Enables direct YouTube & YouTube Music search integration for Cosmos.</span>
-          </div>
-        </div>
-
         {/* GROUP 1: CARD & DASHBOARD CANVAS */}
         <div className="settings-card glass-panel">
           <h3>Canvas & Card Layout</h3>
@@ -158,7 +91,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Percentage of horizontal screen width occupied by the Cosmos search column.</span>
           </div>
-
           <div className="setting-item">
             <label>Card Width ({settings.cardWidth}vw)</label>
             <input 
@@ -173,7 +105,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Sets the exact horizontal width of track cards in viewport width (vw).</span>
           </div>
-
           <div className="setting-item">
             <label>Horizontal Card Padding ({settings.cardPadding}px)</label>
             <input 
@@ -187,7 +118,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Controls inner padding inside each song card.</span>
           </div>
-
           <div className="setting-item">
             <label>Grid Gap ({settings.cardGap}px)</label>
             <input 
@@ -201,7 +131,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Adjusts spacing between cards across the dashboard layout.</span>
           </div>
-
           <div className="setting-item">
             <label>Card Title Scale ({settings.cardFontSize}vh)</label>
             <input 
@@ -411,6 +340,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">How smoothly equalizer visualizer bars fall when music pauses.</span>
           </div>
+          
           <div className="setting-item toggle-item" style={{ marginTop: '12px' }}>
             <label>
               Persistent Memory 
@@ -485,7 +415,9 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Distance floating translation text sits above main lyric line.</span>
           </div>
+
           <div className="group-divider"></div>
+
           <div className="sub-group-title">Transliteration</div>
           <div className="setting-item">
             <label>Transliteration Color</label>
@@ -544,6 +476,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             <span className="setting-desc">Distance transliteration text sits below main lyric line.</span>
           </div>
         </div>
+
       </div>
     </section>
   );

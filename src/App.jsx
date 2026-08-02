@@ -35,9 +35,6 @@ const App = () => {
       const parsed = JSON.parse(saved);
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       if (parsed.cosmosSplitRatio === undefined) parsed.cosmosSplitRatio = 60;
-      if (parsed.youtubeApiKey === undefined) parsed.youtubeApiKey = '';
-      if (parsed.spotifyClientId === undefined) parsed.spotifyClientId = '';
-      if (parsed.spotifyClientSecret === undefined) parsed.spotifyClientSecret = '';
       
       if (parsed.cardFontSize === undefined) parsed.cardFontSize = 1.6;
       if (parsed.modalFontSize === undefined) parsed.modalFontSize = 5.5;
@@ -53,7 +50,13 @@ const App = () => {
       if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
-      if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12; 
+      if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12;
+      
+      // Clean up legacy API keys if present
+      delete parsed.youtubeApiKey;
+      delete parsed.spotifyClientId;
+      delete parsed.spotifyClientSecret;
+      
       return parsed;
     }
     return {
@@ -67,9 +70,6 @@ const App = () => {
       persistentMemory: true,
       bgImageOpacity: 0.25,
       cosmosSplitRatio: 60,
-      youtubeApiKey: '',
-      spotifyClientId: '',
-      spotifyClientSecret: '',
       liveSyncFontSize: 4.5,
       focusedSyncFontSize: 5.5,
       focusedAdlibFontSize: 3.5,
@@ -78,7 +78,6 @@ const App = () => {
       bgPreemptionTime: 400,
       modalPaddingY: 5,
       eqFadeOutTime: 500,
-      
       translationColor: '#ffffff',
       translationOpacity: 0.9,
       transliterationColor: '#ffffff',
@@ -89,17 +88,14 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
-  
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
-  
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
-  
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -144,98 +140,22 @@ const App = () => {
     );
   });
 
-  // --- TRIPLE-ENGINE SEARCH (iTunes + Spotify + YouTube Data API v3) ---
+  // --- SINGLE-ENGINE SEARCH (iTunes Only) ---
   const performOnlineSearch = async (query) => {
     if (!query.trim()) return;
     setIsSearching(true);
     try {
       // 1. iTunes API Search (With US storefront & explicit flag force)
-      const itunesPromise = fetch(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`
+      const itunesResults = await fetch(
+        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=50&explicit=Yes&country=US`
       )
         .then(res => res.json())
         .then(data => (data.results || []).map(track => ({ ...track, sourceName: 'iTunes' })))
         .catch(() => []);
 
-      // 2. Spotify Web API Search (if Client ID & Client Secret are configured)
-      let spotifyPromise = Promise.resolve([]);
-      if (settings.spotifyClientId?.trim() && settings.spotifyClientSecret?.trim()) {
-        spotifyPromise = (async () => {
-          try {
-            const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + btoa(`${settings.spotifyClientId.trim()}:${settings.spotifyClientSecret.trim()}`)
-              },
-              body: 'grant_type=client_credentials'
-            });
-            const tokenData = await tokenRes.json();
-            if (!tokenData.access_token) return [];
-
-            const spRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=25`, {
-              headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
-            });
-            const spData = await spRes.json();
-            if (!spData?.tracks?.items) return [];
-
-            return spData.tracks.items.map(track => ({
-              trackId: `sp_${track.id}`,
-              trackName: track.name,
-              artistName: track.artists.map(a => a.name).join(', '),
-              collectionName: track.album.name,
-              primaryGenreName: 'Music',
-              releaseDate: track.album.release_date,
-              trackTimeMillis: track.duration_ms,
-              artworkUrl100: track.album.images?.[0]?.url || track.album.images?.[1]?.url,
-              previewUrl: track.preview_url,
-              trackExplicitness: track.explicit ? 'explicit' : 'notExplicit',
-              sourceName: 'Spotify',
-              customLinks: { spotify: track.external_urls?.spotify }
-            }));
-          } catch (err) {
-            console.warn("Spotify API fetch error:", err);
-            return [];
-          }
-        })();
-      }
-
-      // 3. YouTube Data API v3 Search (if API Key provided)
-      let youtubePromise = Promise.resolve([]);
-      if (settings.youtubeApiKey?.trim()) {
-        const ytUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoCategoryId=10&maxResults=20&q=${encodeURIComponent(query)}&key=${settings.youtubeApiKey.trim()}`;
-        youtubePromise = fetch(ytUrl)
-          .then(res => res.json())
-          .then(data => {
-            if (!data || !data.items) return [];
-            return data.items.map(item => ({
-              trackId: `yt_${item.id.videoId}`,
-              trackName: item.snippet.title.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&'),
-              artistName: item.snippet.channelTitle,
-              collectionName: 'YouTube Music',
-              primaryGenreName: 'Music',
-              releaseDate: item.snippet.publishedAt,
-              trackTimeMillis: 210000,
-              artworkUrl100: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url,
-              previewUrl: null,
-              trackExplicitness: 'notExplicit',
-              sourceName: 'YouTube',
-              customLinks: { yt: `https://www.youtube.com/watch?v=${item.id.videoId}` }
-            }));
-          })
-          .catch(err => {
-            console.warn("YouTube Data API fetch error:", err);
-            return [];
-          });
-      }
-
-      // Execute all search requests concurrently
-      const [itunesResults, spotifyResults, youtubeResults] = await Promise.all([itunesPromise, spotifyPromise, youtubePromise]);
-      const combined = [...spotifyResults, ...youtubeResults, ...itunesResults];
-      
       // Deduplicate results
       const uniqueMap = new Map();
-      combined.forEach(song => {
+      itunesResults.forEach(song => {
          const cleanName = (song.trackName || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
          const cleanArtist = (song.artistName || '').toLowerCase().trim();
          const key = `${cleanName}_${cleanArtist}`;
@@ -272,19 +192,16 @@ const App = () => {
       setIsExplicitSearch(false);
       return;
     }
-
     setIsExplicitSearch(false);
-
+    
     if (filteredLibrary.length > 0) {
       setSearchResults([]);
       setIsSearching(false);
       return;
     }
-
     const debounceTimer = setTimeout(() => {
       performOnlineSearch(searchQuery);
     }, 400);
-
     return () => clearTimeout(debounceTimer);
   }, [searchQuery, activeTab, filteredLibrary.length]);
 
@@ -327,7 +244,6 @@ const App = () => {
         return [...prevLibrary, updatedSong];
       }
     });
-
     setSelectedSong(updatedSong);
     setCurrentTrack(prevTrack => {
       if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
@@ -350,7 +266,7 @@ const App = () => {
       delete optimizedSong.trackViewUrl;
       return optimizedSong;
     });
-
+    
     const exportData = { library: optimizedLibrary, settings: settings };
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -368,13 +284,12 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
         const newLibrary = [...library];
-
+        
         const mergeSongs = (importedSongs) => {
           importedSongs.forEach(newSong => {
             const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -382,7 +297,7 @@ const App = () => {
             else newLibrary.push(newSong);
           });
         };
-
+        
         if (parsedData.library && Array.isArray(parsedData.library)) {
           mergeSongs(parsedData.library);
           setLibrary(newLibrary);
@@ -450,7 +365,6 @@ const App = () => {
         handleImport={handleImport}
         openSettings={() => handleTabSwitch('settings')}
       />
-
       <main className="main-content">
         {activeTab !== 'settings' && (
           <div className="search-container">
@@ -474,7 +388,6 @@ const App = () => {
             </form>
           </div>
         )}
-
         <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
           {activeTab === 'main' && (
             <section className="view-section">
@@ -513,7 +426,6 @@ const App = () => {
                       )}
                     </div>
                   </div>
-
                   <div className="search-column cosmos-column">
                     <div className="column-header">
                       <span>COSMOS ({uniqueOnlineResults.length})</span>
@@ -566,13 +478,11 @@ const App = () => {
               )}
             </section>
           )}
-
           {activeTab === 'settings' && (
             <SettingsTab settings={settings} setSettings={setSettings} />
           )}
         </div>
       </main>
-
       <SongModal 
         key={selectedSong ? selectedSong.trackId : 'modal-empty'}
         selectedSong={selectedSong}
@@ -584,14 +494,12 @@ const App = () => {
         currentTrack={currentTrack}
         settings={settings}
       />
-
       <Player 
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 
         selectedSong={selectedSong}
         setSelectedSong={setSelectedSong}
       />
-
       {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>

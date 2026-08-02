@@ -98,10 +98,8 @@
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
-  
   /* CRITICAL: Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
-
   /* Strict 2-Line Truncation */
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -119,10 +117,8 @@
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
-  
   /* Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
-  
   /* Strict 2-Line Truncation */
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -143,19 +139,6 @@
 .artist-span {
   color: rgba(255, 255, 255, 0.95);
   background: rgba(0, 0, 0, 0.75);
-}
-
-.source-info {
-  margin-top: 3px !important;
-}
-
-.source-span {
-  color: var(--accent, #fbbf24) !important;
-  background: rgba(0, 0, 0, 0.85) !important;
-  font-size: 0.78em !important;
-  font-weight: 800 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
 }
 
 .explicit-tag {
