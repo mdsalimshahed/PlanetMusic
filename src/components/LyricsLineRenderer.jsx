@@ -71,6 +71,7 @@ const groupWords = (elements, charData, isFocused) => {
     
     const char = charData[i].char;
     
+    // Fix: Properly chunk spaces and CJK without destroying the element's color spans
     if (/\s/.test(char) || isCJ(char)) {
       if (currentWord.length > 0) {
         words.push(
@@ -80,11 +81,7 @@ const groupWords = (elements, charData, isFocused) => {
         );
         currentWord = [];
       }
-      words.push(
-        <span key={`s-${i}`} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      );
+      words.push(elements[i]); // Push the actual styled element directly
     } else {
       currentWord.push(elements[i]);
     }
@@ -260,6 +257,9 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       
       if (!isPunct && c.seg) {
         let targetArtists = c.seg.artists;
+        if (!targetArtists && lineObj.singer) {
+          targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
+        }
         if (targetArtists && targetArtists.length > 0) {
           if (targetArtists.length > 1) {
             isGradient = true;
@@ -286,6 +286,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
         style.color = activeColor;
         style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
       }
+      // Force empty spaces to have width
       return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
     };
 
@@ -483,6 +484,9 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
+      if (!targetArtists && lineObj.singer) {
+        targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
+      }
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -509,6 +513,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       style.color = activeColor;
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
     }
+    // Force empty spaces to have width
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
