@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { LyricLineWrapper } from './LyricsLineRenderer';
 import { FocusedAdlibsTracker } from './FocusedAdlibsTracker';
+import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
   isEditing, customData, handleDataChange, hasValidSyncData,

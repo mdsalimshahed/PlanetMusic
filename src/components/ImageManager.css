@@ -1,0 +1,44 @@
+/* --- src/components/ImageManager.css --- */
+.image-manager-container {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+   padding: 24px;
+   overflow-y: auto;
+   -webkit-overflow-scrolling: touch;
+}
+.image-manager-title { margin-top: 0; margin-bottom: 8px; color: white; }
+.image-manager-sub {
+   font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.8);
+   margin-bottom: 24px; line-height: 1.5; background: rgba(255,200,0,0.1);
+   padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;
+}
+.image-manager-list { display: flex; flex-direction: column; gap: 16px; }
+.image-manager-row {
+   display: flex; flex-direction: column; padding: 16px; border-radius: 12px;
+   background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.img-manager-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.img-manager-name {
+   font-weight: 800; font-size: clamp(13px, 1.5vw, 15px); text-decoration: none;
+   background: rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 50px;
+   transition: background 0.2s ease;
+}
+.img-manager-name:hover { background: rgba(255, 255, 255, 0.2); }
+.img-manager-preview {
+   width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.1);
+}
+.img-manager-input {
+   width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+   padding: 10px 14px; border-radius: 8px; color: white; font-size: clamp(11px, 1.3vw, 13px);
+   transition: border-color 0.2s ease;
+}
+.img-manager-input:focus { outline: none; border-color: var(--accent); }
+.img-manager-controls { display: flex; align-items: center; gap: 12px; }
+.img-manager-color-picker {
+   -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%;
+   cursor: pointer; padding: 0; background: transparent; overflow: hidden;
+}
+.img-manager-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.img-manager-color-picker::-webkit-color-swatch { border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }

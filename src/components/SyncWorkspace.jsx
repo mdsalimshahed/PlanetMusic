@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../utils/songHelpers';
 import { quickTransliterate } from '../transliterator';
 import { normalizeTrans } from './LyricsLineRenderer';
+import './SyncWorkspace.css';
 
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
 

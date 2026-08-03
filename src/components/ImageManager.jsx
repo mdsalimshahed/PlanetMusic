@@ -1,5 +1,6 @@
 /* --- src/components/ImageManager.jsx --- */
 import React from 'react';
+import './ImageManager.css';
 
 const ImageManager = ({
   allPotentialSingers, selectedSong, customData, singerImages, handleImageChange, handleColorChange, masterPalette, globalArtistData
