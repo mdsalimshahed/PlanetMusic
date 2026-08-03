@@ -40621,10 +40621,10 @@
           "isSplit": false
         },
         {
-          "text": "Ain't nothin' you say could ever trump (Nah), mic, pencil get killed (Yeah)",
+          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
           "segments": [
             {
-              "text": "Ain't nothin' you say could ever trump (Nah), mic, pencil get killed (Yeah)",
+              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40637,8 +40637,8 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 36.94,
-          "end": 36.94,
+          "start": null,
+          "end": null,
           "wordSync": null,
           "pronunciation": null,
           "translation": "",
@@ -42895,10 +42895,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 4.294379,
           "end": 6.521094,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -42957,10 +42957,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 6.605295,
           "end": 8.255331,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43024,10 +43024,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 8.361279,
           "end": 9.956032,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43091,10 +43091,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 10.063915,
           "end": 11.667386,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43137,10 +43137,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 11.760467,
           "end": 13.24929,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43204,10 +43204,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 13.356908,
           "end": 15.150242,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43271,10 +43271,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 15.241463,
           "end": 16.650163,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43317,10 +43317,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 16.737423,
           "end": 18.448769,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43384,10 +43384,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 18.543427,
           "end": 19.637706,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43407,10 +43407,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 20.260716,
           "end": 21.556394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43430,10 +43430,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 21.832959,
           "end": 23.213501,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43453,10 +43453,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 23.377771,
           "end": 24.815824,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43476,10 +43476,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 24.931146,
           "end": 26.431233,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43499,10 +43499,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 26.56834,
           "end": 28.24317,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43522,10 +43522,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 28.34726,
           "end": 29.859426,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43545,10 +43545,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 29.961613,
           "end": 31.561689,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43568,10 +43568,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 31.669606,
           "end": 33.91418,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43598,10 +43598,10 @@
           ]
         },
         {
-          "text": "Ain't nothin' you say could ever trump (Nah), mic, pencil get killed (Yeah)",
+          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
           "segments": [
             {
-              "text": "Ain't nothin' you say could ever trump (Nah), mic, pencil get killed (Yeah)",
+              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43614,18 +43614,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 34.093426,
-          "end": 37.430594,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 33.99135102097786,
+          "end": 37.327751020976365,
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Nah)",
-              "charStart": 39,
-              "charEnd": 44,
-              "start": 35.412392,
-              "end": 36.02332,
+              "charStart": 63,
+              "charEnd": 68,
+              "start": 35.4063091659438,
+              "end": 35.88020916594231,
               "segments": [
                 {
                   "text": "(Nah)",
@@ -43638,15 +43638,14 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
               "charStart": 69,
               "charEnd": 75,
-              "start": 36.948433,
-              "end": 37.430594,
+              "start": 37.07343992752075,
+              "end": 37.327751020976365,
               "segments": [
                 {
                   "text": "(Yeah)",
@@ -43659,8 +43658,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -43681,10 +43679,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 37.526635,
           "end": 40.741421,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43727,10 +43725,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 40.880812,
           "end": 44.084726,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43750,10 +43748,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 44.220013,
           "end": 49.086566,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43796,10 +43794,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 49.180292,
           "end": 51.291906,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43842,10 +43840,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 51.401779,
           "end": 52.519972,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43865,10 +43863,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 52.61777,
           "end": 54.366719,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43888,10 +43886,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 54.468941,
           "end": 56.063189,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43911,10 +43909,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 56.427665,
           "end": 57.747117,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43934,10 +43932,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 58.004218,
           "end": 59.341873,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43957,10 +43955,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 59.459258,
           "end": 62.011351,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44003,10 +44001,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 62.09374,
           "end": 64.674558,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44026,10 +44024,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 64.766358,
           "end": 66.216394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44049,10 +44047,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 66.300455,
           "end": 68.007041,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44072,10 +44070,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 68.421138,
           "end": 69.979588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44118,10 +44116,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 70.091201,
           "end": 71.668422,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44164,10 +44162,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 71.789552,
           "end": 74.686658,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44187,10 +44185,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 74.789085,
           "end": 76.307267,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44254,10 +44252,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 76.426389,
           "end": 77.985588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44321,10 +44319,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 78.088959,
           "end": 79.631282,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44367,10 +44365,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 79.728868,
           "end": 81.243845,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44434,10 +44432,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 81.380058,
           "end": 83.183052,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44501,10 +44499,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 83.289568,
           "end": 84.789239,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44547,10 +44545,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 84.903684,
           "end": 86.443384,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44614,10 +44612,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 86.554208,
           "end": 89.505362,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44697,10 +44695,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 90.023836,
           "end": 92.674544,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44743,10 +44741,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 92.830986,
           "end": 95.423463,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44766,10 +44764,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 95.538649,
           "end": 97.126559,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44789,10 +44787,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 97.208289,
           "end": 99.702464,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44812,10 +44810,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 99.793846,
           "end": 103.006169,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44879,10 +44877,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 103.531888,
           "end": 105.12413,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44902,10 +44900,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 105.222807,
           "end": 107.021414,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44948,10 +44946,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 107.131717,
           "end": 108.525807,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44971,10 +44969,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 108.621063,
           "end": 112.036883,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44994,10 +44992,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 112.170397,
           "end": 116.394083,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45040,10 +45038,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 116.506449,
           "end": 119.399785,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45063,10 +45061,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 119.505566,
           "end": 122.666624,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45109,10 +45107,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 122.786611,
           "end": 123.934565,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45132,10 +45130,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 124.039042,
           "end": 125.666089,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45155,10 +45153,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 125.770923,
           "end": 129.742854,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45201,10 +45199,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 129.84853,
           "end": 133.297374,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45224,10 +45222,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 133.393133,
           "end": 136.1049,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45270,10 +45268,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 136.205815,
           "end": 137.892737,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45316,10 +45314,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 137.996989,
           "end": 139.482849,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45339,10 +45337,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 139.993237,
           "end": 143.509676,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45385,10 +45383,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 143.615731,
           "end": 144.71664,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45408,10 +45406,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 144.920861,
           "end": 146.733616,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45454,10 +45452,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 146.867971,
           "end": 148.182517,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45500,10 +45498,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 148.336342,
           "end": 150.142668,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45546,10 +45544,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 150.284232,
           "end": 151.858833,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45592,10 +45590,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 151.976399,
           "end": 153.23458,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45615,10 +45613,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 153.321716,
           "end": 154.768442,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45638,10 +45636,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 154.861439,
           "end": 156.7064,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45661,10 +45659,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 156.797556,
           "end": 158.869098,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45684,10 +45682,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 158.960565,
           "end": 160.028875,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45707,10 +45705,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 160.13488,
           "end": 161.809016,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45730,10 +45728,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 161.944517,
           "end": 163.475188,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45753,10 +45751,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 163.584683,
           "end": 165.651771,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45776,10 +45774,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 165.763856,
           "end": 168.041753,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45799,10 +45797,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 168.149611,
           "end": 169.461507,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45822,10 +45820,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 170.065416,
           "end": 171.850081,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45845,10 +45843,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 171.940246,
           "end": 173.425489,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45868,10 +45866,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 173.513318,
           "end": 175.176862,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45891,10 +45889,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 175.272676,
           "end": 176.888133,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45914,10 +45912,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 176.972409,
           "end": 178.509823,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45937,10 +45935,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 178.613835,
           "end": 179.985965,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45960,10 +45958,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 180.086704,
           "end": 181.740526,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45983,10 +45981,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 181.832532,
           "end": 183.55378,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46006,10 +46004,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 183.655208,
           "end": 185.691697,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46029,10 +46027,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 185.782491,
           "end": 186.802202,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46052,10 +46050,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 186.900402,
           "end": 188.812027,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46075,10 +46073,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 188.91481,
           "end": 190.743602,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46098,10 +46096,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 190.845591,
           "end": 191.582285,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46121,10 +46119,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 191.676583,
           "end": 193.504343,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46144,10 +46142,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 193.626579,
           "end": 195.661622,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46167,10 +46165,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 195.76654,
           "end": 197.216913,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46190,10 +46188,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 197.315076,
           "end": 198.858958,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46213,10 +46211,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 198.941023,
           "end": 200.544172,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46236,10 +46234,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 200.654493,
           "end": 202.278159,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46275,10 +46273,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 202.382264,
           "end": 204.413814,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46337,10 +46335,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 204.512753,
           "end": 205.66944,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46360,10 +46358,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 205.78973,
           "end": 207.086166,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46383,10 +46381,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 207.188495,
           "end": 208.988174,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46406,10 +46404,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 209.100114,
           "end": 210.822061,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46429,10 +46427,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 210.920639,
           "end": 212.563029,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46496,10 +46494,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 212.690398,
           "end": 214.274455,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46563,10 +46561,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 214.386163,
           "end": 215.930533,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46609,10 +46607,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 216.031144,
           "end": 217.501266,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46676,10 +46674,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 217.634917,
           "end": 219.217272,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46743,10 +46741,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 219.313547,
           "end": 221.008175,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46789,10 +46787,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 221.116861,
           "end": 222.70939,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46856,10 +46854,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 222.815095,
           "end": 224.63638,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46886,7 +46884,7 @@
           ]
         }
       ],
-      "lyrics": "[Intro: Eminem]\nYeah, oh, yeah, sick (_d.a. got that dope_)\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that) (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nLike trying to fight off a gnat\n\n[Verse 1: Eminem]\nStill stackin' my chips, hoes\nHigher than Shaq on his tiptoes\nAtop the Empire State Buildin'\nThis shit is like child's play, children\nI will anni-nihilate, kill them\nI'll fuck around and pile eight million\nDead little juveniles, wait, chill, then\nI'll await my trial date 'til then (What?)\nAin't nothin' you say could ever trump (Nah), mic, pencil get killed (Yeah)\nIf you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)\nI mean my penmanship at times tends to get ill, violence but with skill\nThat's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)\nAnd I'm still ride or die for the squad (Yeah)\nSo you know which side that I'm on\nIf a battle line's ever drawn, but if I get involved\nIt'll be like K9's in a brawl\nBut not similar to Mike Vick at all\n'Cause even if I don't have a dog in the fight\nThey ain't never gonna get rid of the fight in the dog (Fight in the dog)\nGot stripes like a tiger, so you might get mauled, a mic in the palms\nLike claws, I can swing right for your jaw\nAnd rip it off with one swipe of the paw\nBitch, you still on my dick or nah? (Nah)\nIf I suck, your wife is a straw (Straw)\nI'm sick and I'm not gonna cover my mouth next time that I cough 'cause\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that)  (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nLike trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)\n\n[Verse 2: Eminem]\nAnd _d.a. got that dope_ he sends to me (Uh-huh)\nIt's like pneumonia symptoms and contracting COVID instantly\nWhich is what separates my flow from theirs\nSo that no one gets even close to this to pose a risk to me\nSo vocalistically (What?), that's social distancing (Yeah)\nFlow going viral, you best stay strapped\nWith that Lysol and get way back (Shh)\nGet that Pine-Sol and that Ajax\n'Cause this dry cough is just like football umpires callin' a playback\nBitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)\n'Nother fourteen-day quarantine, they're cordoning off everything\nThis shit lookin' like a horror scene, like me metaphorically (Damn)\n'Cause them stay-at-home orders seem\nLike they just keep getting more extreme\nWho knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)\nStill got that heroin lyrical drip with that morphine and that Thorazine\n'Cause I'm so fuckin' dope (Dope) and you're a fiend\nAnd that's the one thing that hasn't changed (Nope)\nFor some semblance of normalcy\nBut I might need that Hydrochloroquine 'cause I got that (Yeah)\nThe Dark Horse, I'm a knight-mare\nMom fed me Valium like air (Mmm)\nThought that's why they called it a high chair (Woah)\nI got a contact like eyewear (Woah)\nWait a minute, bitch, let me lie here (Uh)\n20/20 hindsight in my side mirror\nEvery year, you drop the ball like Times Square\nMy hair trigger whenever I get an idea's\nLike, fuck, now my name rings out like a sponge mop\nAnd my drip was a drop\nIn the bucket, so that gun shot\nYou just heard just now in that one spot\nJust came from the nine mil' that I just got\nThat's big bucks and I got a full money clip and I'm loaded\nI ain't even mean to go the fuck off\nAnd I'm still totally inappropriate with an opiate\nGroping it while I'm holding it like a trophy\nI'm hoping a little codeine'll get me ODin'\nWoah, everything is slow, I begin to floating\nI know that I'm getting loaded, the pen exploded\nHiroshima with the flows, a utopia\nWith the dope, I'm an OG, I'm like the GOAT\nHere to get your goat little bit of sodium, it's assault\nWhen I'm at the podium, at your throat, holy camoly\nI'm in the zone with the shit I'm on\nGet Imodium and a commode because nobody's even close\nYou're petroleum to plutonium, you're a phony\nI'm at the crib with your ho\nGot her at the pole like voting with no clothing\nStripped down to a toe ring and here we go with the gloating\nI've got my nose in the air like a Boeing\nThen I got into a little bit of an argument with her\nSo I took a little lick of a Klonopin at dinner\nThen I hit her with the motherfucking ottoman and bit her\nThen I shot her in the liver, delivered her to the bottom of the river (_Dope_)\nBut I'm probably gon' jump in the water with her\nWith a wad of money 'cause I got a lot of it\nAnd when it come to drippin', I be soppin' like a hundred mile an hour\nNever runnin' out of either one of 'em, I gotta get it 'cause\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that) (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nIt's like trying to fight off a gnat (Fight off a gnat)",
+      "lyrics": "[Intro: Eminem]\nYeah, oh, yeah, sick (_d.a. got that dope_)\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that) (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nLike trying to fight off a gnat\n\n[Verse 1: Eminem]\nStill stackin' my chips, hoes\nHigher than Shaq on his tiptoes\nAtop the Empire State Buildin'\nThis shit is like child's play, children\nI will anni-nihilate, kill them\nI'll fuck around and pile eight million\nDead little juveniles, wait, chill, then\nI'll await my trial date 'til then (What?)\nAin't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)\nIf you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)\nI mean my penmanship at times tends to get ill, violence but with skill\nThat's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)\nAnd I'm still ride or die for the squad (Yeah)\nSo you know which side that I'm on\nIf a battle line's ever drawn, but if I get involved\nIt'll be like K9's in a brawl\nBut not similar to Mike Vick at all\n'Cause even if I don't have a dog in the fight\nThey ain't never gonna get rid of the fight in the dog (Fight in the dog)\nGot stripes like a tiger, so you might get mauled, a mic in the palms\nLike claws, I can swing right for your jaw\nAnd rip it off with one swipe of the paw\nBitch, you still on my dick or nah? (Nah)\nIf I suck, your wife is a straw (Straw)\nI'm sick and I'm not gonna cover my mouth next time that I cough 'cause\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that)  (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nLike trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)\n\n[Verse 2: Eminem]\nAnd _d.a. got that dope_ he sends to me (Uh-huh)\nIt's like pneumonia symptoms and contracting COVID instantly\nWhich is what separates my flow from theirs\nSo that no one gets even close to this to pose a risk to me\nSo vocalistically (What?), that's social distancing (Yeah)\nFlow going viral, you best stay strapped\nWith that Lysol and get way back (Shh)\nGet that Pine-Sol and that Ajax\n'Cause this dry cough is just like football umpires callin' a playback\nBitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)\n'Nother fourteen-day quarantine, they're cordoning off everything\nThis shit lookin' like a horror scene, like me metaphorically (Damn)\n'Cause them stay-at-home orders seem\nLike they just keep getting more extreme\nWho knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)\nStill got that heroin lyrical drip with that morphine and that Thorazine\n'Cause I'm so fuckin' dope (Dope) and you're a fiend\nAnd that's the one thing that hasn't changed (Nope)\nFor some semblance of normalcy\nBut I might need that Hydrochloroquine 'cause I got that (Yeah)\nThe Dark Horse, I'm a knight-mare\nMom fed me Valium like air (Mmm)\nThought that's why they called it a high chair (Woah)\nI got a contact like eyewear (Woah)\nWait a minute, bitch, let me lie here (Uh)\n20/20 hindsight in my side mirror\nEvery year, you drop the ball like Times Square\nMy hair trigger whenever I get an idea's\nLike, fuck, now my name rings out like a sponge mop\nAnd my drip was a drop\nIn the bucket, so that gun shot\nYou just heard just now in that one spot\nJust came from the nine mil' that I just got\nThat's big bucks and I got a full money clip and I'm loaded\nI ain't even mean to go the fuck off\nAnd I'm still totally inappropriate with an opiate\nGroping it while I'm holding it like a trophy\nI'm hoping a little codeine'll get me ODin'\nWoah, everything is slow, I begin to floating\nI know that I'm getting loaded, the pen exploded\nHiroshima with the flows, a utopia\nWith the dope, I'm an OG, I'm like the GOAT\nHere to get your goat little bit of sodium, it's assault\nWhen I'm at the podium, at your throat, holy camoly\nI'm in the zone with the shit I'm on\nGet Imodium and a commode because nobody's even close\nYou're petroleum to plutonium, you're a phony\nI'm at the crib with your ho\nGot her at the pole like voting with no clothing\nStripped down to a toe ring and here we go with the gloating\nI've got my nose in the air like a Boeing\nThen I got into a little bit of an argument with her\nSo I took a little lick of a Klonopin at dinner\nThen I hit her with the motherfucking ottoman and bit her\nThen I shot her in the liver, delivered her to the bottom of the river (_Dope_)\nBut I'm probably gon' jump in the water with her\nWith a wad of money 'cause I got a lot of it\nAnd when it come to drippin', I be soppin' like a hundred mile an hour\nNever runnin' out of either one of 'em, I gotta get it 'cause\n\n[Chorus: Eminem]\nThey say these bars are like COVID (Bars are like COVID) (What?)\nYou get 'em right off the bat (You get 'em right off the bat) (Yeah)\nInfected with SARS and Corona (Infected with SARS and Corona)\nLike you took a bite off of that (You took a bite off of that) (Damn)\nAnd it goes from martian to human (From martian to human) (Yeah)\nThat's how the virus attacks (That's how the virus attacks)\nThey come at me with machine guns (At me with machine guns) (Brr)\nIt's like trying to fight off a gnat (Fight off a gnat)",
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=-cjFCjq_GMo",
