@@ -26,11 +26,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!syncData) return items;
+    let globalAdlibCounter = 0;
 
-    let globalAdlibCounter = 0; 
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
-                 
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
         const isMulti = lineActiveNames.length > 1;
         const cols = Math.max(2, lineActiveNames.length);
@@ -51,7 +50,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
               } else { aTrans = aPron; }
             }
-
             let adlibTranslation = adlibObj?.translation || '';
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
 
@@ -63,7 +61,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               textAlign: 'center',
               marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
               display: 'inline-block',
-              whiteSpace: 'pre' // Force no wrap
+              whiteSpace: 'nowrap' // FIX: Ensure ad-lib transliterations do not independently wrap internally
             };
 
             const segs = adlibObj.segments || [{ text: adlibObj.text }];
@@ -110,6 +108,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   </span>
                 );
               });
+
               renderedSegments.push(
                 <React.Fragment key={segIdx}>
                   {renderedChars}
@@ -167,7 +166,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         });
       }
     });
-
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
@@ -217,14 +215,14 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
     const handleTime = (e) => {
       const time = e.detail;
-
       const nodes = cachedTrackNodesRef.current;
+
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
 
         if (shouldBeActive && !item.isActive) {
-                     
+          
           // Use Browser Memory Cache mapping Window Size + Unique Adlib Key
           const cacheKey = `${item.sessionSeed}_${item.key}_${window.innerWidth}x${window.innerHeight}`;
           let pos = adlibPlacementCache.get(cacheKey);
@@ -234,13 +232,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const container = containerRef.current?.parentElement;
             if (container) {
               const containerRect = container.getBoundingClientRect();
-                             
+              
               // CRITICAL FIX: Bypass the `.active` class race condition completely!
               // Select the exact DOM node this ad-lib belongs to, even if it hasn't animated in yet.
               const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
               const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
               const singerNode = container.querySelector('.singer-name-corner.visible');
-                             
+              
               const cBox = getRelativeRect(lyricsNode, containerRect);
 
               // CRITICAL DOM MEASUREMENT FIX:
@@ -253,7 +251,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               }
 
               const sBox = getRelativeRect(singerNode, containerRect);
-                             
+              
               pos = generateSafeAdlibPosition(
                 item.node.offsetWidth || 150,
                 item.node.offsetHeight || 40,
@@ -268,7 +266,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 item.globalIndex,
                 item.sessionSeed
               );
-                             
+              
               // Cache it so it never runs math again for this screen size!
               adlibPlacementCache.set(cacheKey, pos);
             }
@@ -283,7 +281,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           item.node.classList.add('active');
           item.isActive = true;
-
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;

@@ -23,6 +23,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   const cleanMainText = normalizeForMatch(lineObj?.text);
   const cleanTransText = normalizeForMatch(rawTranslation);
+
   const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
 
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
@@ -34,17 +35,28 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     letterSpacing: '0.5px',
     textAlign: 'center',
     marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
-    display: 'inline-block'
+    display: 'inline-block',
+    whiteSpace: 'nowrap' // FIX: Force transliteration chunks to never wrap internally
   };
 
   const { parsedChunks, fullTrans } = parsePronunciation(pronString);
 
   const chars = [];
   let gIdx = 0;
+  let cpIdx = 0; // Track exact Code Point Index to bridge getGraphemes and Array.from
+
   segments.forEach(seg => {
     const segChars = getGraphemes(seg.text);
     segChars.forEach(char => {
-      chars.push({ char, seg, globalIndex: gIdx++ });
+      const cpLen = Array.from(char).length;
+      chars.push({ 
+        char, 
+        seg, 
+        globalIndex: gIdx++, 
+        cpStart: cpIdx, 
+        cpEnd: cpIdx + cpLen 
+      });
+      cpIdx += cpLen;
     });
   });
 

@@ -21,21 +21,24 @@ const StandardLine = ({
   const currentTime = window.currentAudioTime || 0;
 
   const renderColoredChar = (c, globalIdx) => {
-    if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => globalIdx >= a.charStart && globalIdx < a.charEnd)) {
+    // FIX: Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
+    if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd)) {
       return null;
     }
 
     let adlibProps = {};
     if (savedNode?.isSplit && !isFocused) {
-      const adlib = savedNode.adlibs?.find(a => globalIdx >= a.charStart && globalIdx < a.charEnd);
+      const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
       if (adlib && adlib.start !== null) {
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
+
         let initialClass = 'adlib-hidden';
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
+
         adlibProps = {
           className: `adlib-node ${initialClass}`,
           'data-start': start,
@@ -54,7 +57,6 @@ const StandardLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -72,6 +74,7 @@ const StandardLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -81,6 +84,7 @@ const StandardLine = ({
       style.color = activeColor;
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
     }
+
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
@@ -96,7 +100,6 @@ const StandardLine = ({
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
-
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
