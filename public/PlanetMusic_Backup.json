@@ -11605,10 +11605,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 6.630180999999999,
           "end": 7.665616999999999,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -11628,10 +11628,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 8.577555,
           "end": 10.97026,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -11651,10 +11651,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 12.005517,
           "end": 13.85128,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -11674,10 +11674,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "Uh-oh, is anyone there?",
-          "pronunciation": "{\"full\":\"Uh-oh, geogi nugungayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거기\",\"trans\":\"geogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"누군가요?\",\"trans\":\"nugungayo\"}]}",
           "start": 15.89,
           "end": 18.430201,
+          "pronunciation": "{\"full\":\"Uh-oh, geogi nugungayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거기\",\"trans\":\"geogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"누군가요?\",\"trans\":\"nugungayo\"}]}",
+          "translation": "Uh-oh, is anyone there?",
           "isSplit": false
         },
         {
@@ -11697,10 +11697,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-oh, you know me?",
-          "pronunciation": "{\"full\":\"Woah-oh, naleul andagoyo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나를\",\"trans\":\"naleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안다고요?\",\"trans\":\"andagoyo\"}]}",
           "start": 18.536253,
           "end": 21.12,
+          "pronunciation": "{\"full\":\"Woah-oh, naleul andagoyo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나를\",\"trans\":\"naleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안다고요?\",\"trans\":\"andagoyo\"}]}",
+          "translation": "Woah-oh, you know me?",
           "isSplit": false
         },
         {
@@ -11720,10 +11720,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-oh, I forgot",
-          "pronunciation": "{\"full\":\"Woah-oh, nan ij-eobeolyeossjyo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잊어버렸죠\",\"trans\":\"ij-eobeolyeossjyo\"}]}",
           "start": 21.12,
           "end": 23.873957927519264,
+          "pronunciation": "{\"full\":\"Woah-oh, nan ij-eobeolyeossjyo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잊어버렸죠\",\"trans\":\"ij-eobeolyeossjyo\"}]}",
+          "translation": "Woah-oh, I forgot",
           "isSplit": false
         },
         {
@@ -11743,10 +11743,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "I threw it away",
-          "pronunciation": "{\"full\":\"beolyeossjyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"버렸죠\",\"trans\":\"beolyeossjyo\"}]}",
           "start": 24.277757927520007,
           "end": 25.947828855041504,
+          "pronunciation": "{\"full\":\"beolyeossjyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"버렸죠\",\"trans\":\"beolyeossjyo\"}]}",
+          "translation": "I threw it away",
           "isSplit": true,
           "adlibs": [
             {
@@ -11790,10 +11790,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Aren't you funny too?",
-          "pronunciation": "{\"full\":\"neodo usgiji anhnayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너도\",\"trans\":\"neodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃기지\",\"trans\":\"usgiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않나요?\",\"trans\":\"anhnayo\"}]}",
           "start": 26.039828855041502,
           "end": 28.589528855040758,
+          "pronunciation": "{\"full\":\"neodo usgiji anhnayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너도\",\"trans\":\"neodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃기지\",\"trans\":\"usgiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않나요?\",\"trans\":\"anhnayo\"}]}",
+          "translation": "Aren't you funny too?",
           "isSplit": false
         },
         {
@@ -11831,10 +11831,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "I'm a little embarrassed",
-          "pronunciation": "{\"full\":\"nan jom danghwangseuleobneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"좀\",\"trans\":\"jom\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"당황스럽네요\",\"trans\":\"danghwangseuleobneyo\"}]}",
           "start": 28.663328855041502,
           "end": 31.242325927522245,
+          "pronunciation": "{\"full\":\"nan jom danghwangseuleobneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"좀\",\"trans\":\"jom\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"당황스럽네요\",\"trans\":\"danghwangseuleobneyo\"}]}",
+          "translation": "I'm a little embarrassed",
           "isSplit": true,
           "adlibs": [
             {
@@ -11923,10 +11923,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Uh-oh, stop acting friendly",
-          "pronunciation": "{\"full\":\"Uh-oh, chinhan cheog mal-ajwo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아줘\",\"trans\":\"mal-ajwo\"}]}",
           "start": 31.41101,
           "end": 34.623303,
+          "pronunciation": "{\"full\":\"Uh-oh, chinhan cheog mal-ajwo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아줘\",\"trans\":\"mal-ajwo\"}]}",
+          "translation": "Uh-oh, stop acting friendly",
           "isSplit": true,
           "adlibs": [
             {
@@ -12015,10 +12015,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Talk and go",
-          "pronunciation": "{\"full\":\"malhago danyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말하고\",\"trans\":\"malhago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다녀\",\"trans\":\"danyeo\"}]}",
           "start": 34.536725927520756,
           "end": 36.71592592752001,
+          "pronunciation": "{\"full\":\"malhago danyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말하고\",\"trans\":\"malhago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다녀\",\"trans\":\"danyeo\"}]}",
+          "translation": "Talk and go",
           "isSplit": true,
           "adlibs": [
             {
@@ -12080,10 +12080,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-uh-oh, don't touch",
-          "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "start": 37.246838,
           "end": 39.884163,
+          "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
+          "translation": "Woah-uh-oh, don't touch",
           "isSplit": false
         },
         {
@@ -12103,10 +12103,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Get away from me",
-          "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "start": 39.48832592752224,
           "end": 41.55892592752001,
+          "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
+          "translation": "Get away from me",
           "isSplit": false
         },
         {
@@ -12126,10 +12126,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "What do you want from me?",
-          "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "start": 41.6480259275215,
           "end": 44.0695259275215,
+          "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
+          "translation": "What do you want from me?",
           "isSplit": false
         },
         {
@@ -12149,10 +12149,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's all the same, like you",
-          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "start": 44.16212592752299,
           "end": 47.2310259275215,
+          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
+          "translation": "It's all the same, like you",
           "isSplit": false
         },
         {
@@ -12172,10 +12172,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "There's nothing like you anymore",
-          "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "start": 47.33512592752299,
           "end": 49.76492592752001,
+          "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
+          "translation": "There's nothing like you anymore",
           "isSplit": false
         },
         {
@@ -12195,10 +12195,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "I have no idea",
-          "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "start": 49.85582592752225,
           "end": 52.4390259275215,
+          "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
+          "translation": "I have no idea",
           "isSplit": false
         },
         {
@@ -12218,10 +12218,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-uh-oh, have I changed?",
-          "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "start": 52.522925927520006,
           "end": 54.707725927520755,
+          "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
+          "translation": "Woah-uh-oh, have I changed?",
           "isSplit": false
         },
         {
@@ -12268,10 +12268,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #ecf005, #f0740f)",
-          "translation": "It's all the same, just like you",
-          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "start": 54.7850259275215,
           "end": 57.741725927520754,
+          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
+          "translation": "It's all the same, just like you",
           "isSplit": true,
           "adlibs": [
             {
@@ -12351,10 +12351,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "translation": "Giving or giving away, an angelic hello",
-          "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "start": 57.8415259275215,
           "end": 60.694025927521494,
+          "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
+          "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
           "adlibs": [
             {
@@ -12434,10 +12434,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "translation": "Sweet, candy-coated words",
-          "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "start": 60.77132592752224,
           "end": 62.96612592752299,
+          "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
+          "translation": "Sweet, candy-coated words",
           "isSplit": true,
           "adlibs": [
             {
@@ -12526,10 +12526,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's rude, don't act nice, get out",
-          "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "start": 63.049725927520754,
           "end": 65.87032592752225,
+          "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
+          "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
           "adlibs": [
             {
@@ -12591,10 +12591,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "Now, don't be pretentious",
-          "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "start": 65.95522592752076,
           "end": 68.11002592752149,
+          "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
+          "translation": "Now, don't be pretentious",
           "isSplit": false
         },
         {
@@ -12632,10 +12632,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "translation": "Hovering around, talking, or a bat-like follower",
-          "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "start": 68.19892592752001,
           "end": 71.02082592752225,
+          "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
+          "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
           "adlibs": [
             {
@@ -12715,10 +12715,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "translation": "A liar who predicted my success",
-          "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "start": 71.10442592752001,
           "end": 73.45062592752299,
+          "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
+          "translation": "A liar who predicted my success",
           "isSplit": true,
           "adlibs": [
             {
@@ -12807,10 +12807,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's ridiculous, don't act friendly, get out",
-          "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "start": 73.52582592752225,
           "end": 76.27942592752001,
+          "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
+          "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
           "adlibs": [
             {
@@ -12872,10 +12872,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Don't expect any pretense for you",
-          "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "start": 76.365125927523,
           "end": 78.72092592752,
+          "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
+          "translation": "Don't expect any pretense for you",
           "isSplit": false
         },
         {
@@ -12895,10 +12895,10 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "translation": "Messy, only see now",
-          "pronunciation": "{\"full\":\"eongmangjinchang, only see now\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"엉망진창,\",\"trans\":\"eongmangjinchang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"only\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"see\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"}]}",
           "start": 89.0818689275215,
           "end": 91.83806892752075,
+          "pronunciation": "{\"full\":\"eongmangjinchang, only see now\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"엉망진창,\",\"trans\":\"eongmangjinchang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"only\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"see\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"}]}",
+          "translation": "Messy, only see now",
           "isSplit": false
         },
         {
@@ -12918,10 +12918,10 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "translation": "Didn't know, swan in a duck",
-          "pronunciation": "{\"full\":\"mollassji, oli sog swan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"몰랐지,\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오리\",\"trans\":\"oli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"swan\",\"trans\":\"\"}]}",
           "start": 91.92266892751852,
           "end": 94.38646892751926,
+          "pronunciation": "{\"full\":\"mollassji, oli sog swan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"몰랐지,\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오리\",\"trans\":\"oli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"swan\",\"trans\":\"\"}]}",
+          "translation": "Didn't know, swan in a duck",
           "isSplit": false
         },
         {
@@ -12941,10 +12941,10 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "translation": "Blow out on an ecstatic cake",
-          "pronunciation": "{\"full\":\"hwangholhan keikeu wi blow out\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"케이크\",\"trans\":\"keikeu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위\",\"trans\":\"wi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"blow\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"out\",\"trans\":\"\"}]}",
           "start": 94.46146892751926,
           "end": 97.08076892752001,
+          "pronunciation": "{\"full\":\"hwangholhan keikeu wi blow out\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"케이크\",\"trans\":\"keikeu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위\",\"trans\":\"wi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"blow\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"out\",\"trans\":\"\"}]}",
+          "translation": "Blow out on an ecstatic cake",
           "isSplit": false
         },
         {
@@ -12964,10 +12964,10 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "translation": "Crown on my head",
-          "pronunciation": "{\"full\":\"nae meoli wie crown\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"머리\",\"trans\":\"meoli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위에\",\"trans\":\"wie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"crown\",\"trans\":\"\"}]}",
           "start": 97.17396892751927,
           "end": 99.0528689275215,
+          "pronunciation": "{\"full\":\"nae meoli wie crown\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"머리\",\"trans\":\"meoli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위에\",\"trans\":\"wie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"crown\",\"trans\":\"\"}]}",
+          "translation": "Crown on my head",
           "isSplit": false
         },
         {
@@ -12987,10 +12987,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 99.13826892752002,
           "end": 99.68496892751926,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -13010,10 +13010,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "I said the jewel here is",
-          "pronunciation": "{\"full\":\"malhaessji igos-ui boseog-eun\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말했지\",\"trans\":\"malhaessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이곳의\",\"trans\":\"igos-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보석은\",\"trans\":\"boseog-eun\"}]}",
           "start": 99.7708689275215,
           "end": 102.3448689275215,
+          "pronunciation": "{\"full\":\"malhaessji igos-ui boseog-eun\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말했지\",\"trans\":\"malhaessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이곳의\",\"trans\":\"igos-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보석은\",\"trans\":\"boseog-eun\"}]}",
+          "translation": "I said the jewel here is",
           "isSplit": true,
           "adlibs": [
             {
@@ -13057,10 +13057,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "I'm the one, invest in it",
-          "pronunciation": "{\"full\":\"naya, tujahae eoseo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"나야,\",\"trans\":\"naya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"투자해\",\"trans\":\"tujahae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어서\",\"trans\":\"eoseo\"}]}",
           "start": 102.46546892751927,
           "end": 104.87776892752001,
+          "pronunciation": "{\"full\":\"naya, tujahae eoseo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"나야,\",\"trans\":\"naya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"투자해\",\"trans\":\"tujahae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어서\",\"trans\":\"eoseo\"}]}",
+          "translation": "I'm the one, invest in it",
           "isSplit": true,
           "adlibs": [
             {
@@ -13104,10 +13104,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "You're only looking for the sparkly stuff",
-          "pronunciation": "{\"full\":\"neon beonjjeoggeolin geosman chajneula\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"넌\",\"trans\":\"neon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍거린\",\"trans\":\"beonjjeoggeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것만\",\"trans\":\"geosman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾느라\",\"trans\":\"chajneula\"}]}",
           "start": 104.97876892752001,
           "end": 107.05233109346082,
+          "pronunciation": "{\"full\":\"neon beonjjeoggeolin geosman chajneula\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"넌\",\"trans\":\"neon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍거린\",\"trans\":\"beonjjeoggeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것만\",\"trans\":\"geosman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾느라\",\"trans\":\"chajneula\"}]}",
+          "translation": "You're only looking for the sparkly stuff",
           "isSplit": true,
           "adlibs": [
             {
@@ -13151,10 +13151,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "I couldn't find the one to lift the glitter here",
-          "pronunciation": "{\"full\":\"yeogil beonjjeog deul-eo ollil nan mos chaj-ass-eo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여길\",\"trans\":\"yeogil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍\",\"trans\":\"beonjjeog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들어\",\"trans\":\"deul-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"올릴\",\"trans\":\"ollil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"못\",\"trans\":\"mos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾았어\",\"trans\":\"chaj-ass-eo\"}]}",
           "start": 107.15793109346231,
           "end": 110.15493109346231,
+          "pronunciation": "{\"full\":\"yeogil beonjjeog deul-eo ollil nan mos chaj-ass-eo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여길\",\"trans\":\"yeogil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍\",\"trans\":\"beonjjeog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들어\",\"trans\":\"deul-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"올릴\",\"trans\":\"ollil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"못\",\"trans\":\"mos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾았어\",\"trans\":\"chaj-ass-eo\"}]}",
+          "translation": "I couldn't find the one to lift the glitter here",
           "isSplit": true,
           "adlibs": [
             {
@@ -13198,10 +13198,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 110.23303109346008,
           "end": 112.64683109346083,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -13221,10 +13221,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 112.72503109346007,
           "end": 115.25143109346232,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -13245,10 +13245,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "translation": "You're not good, you're worse",
-          "pronunciation": "{\"full\":\"neo byeollo, deo byeolloya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로,\",\"trans\":\"byeollo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로야\",\"trans\":\"byeolloya\"}]}",
           "start": 115.32393109346232,
           "end": 117.83483109346082,
+          "pronunciation": "{\"full\":\"neo byeollo, deo byeolloya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로,\",\"trans\":\"byeollo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로야\",\"trans\":\"byeolloya\"}]}",
+          "translation": "You're not good, you're worse",
           "isSplit": false
         },
         {
@@ -13269,10 +13269,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "translation": "That's enough, get the hell away, uh",
-          "pronunciation": "{\"full\":\"dwaess-euni kkeojyeo, uh\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"됐으니\",\"trans\":\"dwaess-euni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져,\",\"trans\":\"kkeojyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"uh\",\"trans\":\"\"}]}",
           "start": 117.91413109346158,
           "end": 120.27393109346231,
+          "pronunciation": "{\"full\":\"dwaess-euni kkeojyeo, uh\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"됐으니\",\"trans\":\"dwaess-euni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져,\",\"trans\":\"kkeojyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"uh\",\"trans\":\"\"}]}",
+          "translation": "That's enough, get the hell away, uh",
           "isSplit": false
         },
         {
@@ -13292,10 +13292,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-uh-oh, don't touch me",
-          "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "start": 120.37543109346231,
           "end": 122.91873109346307,
+          "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
+          "translation": "Woah-uh-oh, don't touch me",
           "isSplit": false
         },
         {
@@ -13315,10 +13315,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "Get off there",
-          "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "start": 123.00313109346158,
           "end": 125.15404885504,
+          "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
+          "translation": "Get off there",
           "isSplit": false
         },
         {
@@ -13338,10 +13338,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "What do you want from me?",
-          "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "start": 125.23324885503926,
           "end": 127.72844885503852,
+          "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
+          "translation": "What do you want from me?",
           "isSplit": false
         },
         {
@@ -13361,10 +13361,10 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's all the same, like you",
-          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "start": 127.80624885503926,
           "end": 130.68084885504075,
+          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
+          "translation": "It's all the same, like you",
           "isSplit": false
         },
         {
@@ -13384,10 +13384,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "There's nothing like you anymore",
-          "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "start": 130.77294885503852,
           "end": 133.46424885503927,
+          "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
+          "translation": "There's nothing like you anymore",
           "isSplit": false
         },
         {
@@ -13407,10 +13407,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "I have no idea",
-          "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "start": 133.54344885503852,
           "end": 136.00124885503925,
+          "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
+          "translation": "I have no idea",
           "isSplit": false
         },
         {
@@ -13430,10 +13430,10 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Woah-uh-oh, have I changed?",
-          "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "start": 136.0841488550415,
           "end": 138.11724885503926,
+          "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
+          "translation": "Woah-uh-oh, have I changed?",
           "isSplit": false
         },
         {
@@ -13480,10 +13480,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #9a86f9, #86d4f9)",
-          "translation": "It's all the same, just like you",
-          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "start": 138.1964488550385,
           "end": 141.21404885504,
+          "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
+          "translation": "It's all the same, just like you",
           "isSplit": true,
           "adlibs": [
             {
@@ -13563,10 +13563,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "translation": "Giving or giving away, an angelic hello",
-          "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "start": 141.29974885503927,
           "end": 144.21404885504,
+          "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
+          "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
           "adlibs": [
             {
@@ -13646,10 +13646,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "translation": "Sweet, candy-coated words",
-          "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "start": 144.3144488550385,
           "end": 146.47184885504075,
+          "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
+          "translation": "Sweet, candy-coated words",
           "isSplit": true,
           "adlibs": [
             {
@@ -13738,10 +13738,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's rude, don't act nice, get out",
-          "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "start": 146.5491488550415,
           "end": 149.36684885504076,
+          "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
+          "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
           "adlibs": [
             {
@@ -13803,10 +13803,10 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Now, don't be pretentious",
-          "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "start": 149.43494885503853,
           "end": 151.58874885503926,
+          "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
+          "translation": "Now, don't be pretentious",
           "isSplit": false
         },
         {
@@ -13844,10 +13844,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "translation": "Hovering around, talking, or a bat-like follower",
-          "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "start": 151.68204885504002,
           "end": 154.64024885503926,
+          "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
+          "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
           "adlibs": [
             {
@@ -13927,10 +13927,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "translation": "A liar who predicted my success",
-          "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "start": 154.74624885503925,
           "end": 156.88024885503927,
+          "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
+          "translation": "A liar who predicted my success",
           "isSplit": true,
           "adlibs": [
             {
@@ -14019,10 +14019,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's ridiculous, don't act friendly, get out",
-          "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "start": 156.98824885503927,
           "end": 159.68784885504076,
+          "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
+          "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
           "adlibs": [
             {
@@ -14084,10 +14084,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "Don't expect any pretense for you",
-          "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "start": 159.78324885503926,
           "end": 162.1470378760231,
+          "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
+          "translation": "Don't expect any pretense for you",
           "isSplit": false
         },
         {
@@ -14107,10 +14107,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "Uh-oh, so unbelievable",
-          "pronunciation": "{\"full\":\"Uh-oh, mid-eul su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"믿을\",\"trans\":\"mid-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "start": 162.23843787602533,
           "end": 164.78613787602458,
+          "pronunciation": "{\"full\":\"Uh-oh, mid-eul su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"믿을\",\"trans\":\"mid-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
+          "translation": "Uh-oh, so unbelievable",
           "isSplit": false
         },
         {
@@ -14130,10 +14130,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "Uh-oh, so untouchable",
-          "pronunciation": "{\"full\":\"Uh-oh, sondael su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손댈\",\"trans\":\"sondael\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "start": 164.88363787602458,
           "end": 167.38053787602308,
+          "pronunciation": "{\"full\":\"Uh-oh, sondael su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손댈\",\"trans\":\"sondael\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
+          "translation": "Uh-oh, so untouchable",
           "isSplit": false
         },
         {
@@ -14153,10 +14153,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "Uh-oh, sounds like it's wrong",
-          "pronunciation": "{\"full\":\"Uh-oh, jalmosdoen geos gat-eun yaegi\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘못된\",\"trans\":\"jalmosdoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얘기\",\"trans\":\"yaegi\"}]}",
           "start": 167.4740378760231,
           "end": 171.38933787602383,
+          "pronunciation": "{\"full\":\"Uh-oh, jalmosdoen geos gat-eun yaegi\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘못된\",\"trans\":\"jalmosdoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얘기\",\"trans\":\"yaegi\"}]}",
+          "translation": "Uh-oh, sounds like it's wrong",
           "isSplit": false
         },
         {
@@ -14176,10 +14176,10 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 171.47343787602532,
           "end": 172.91663787602457,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -14199,10 +14199,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 173.49123787602235,
           "end": 175.98928109346008,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -14246,10 +14246,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 176.67428109346008,
           "end": 178.25358109346084,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -14269,10 +14269,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 178.59308109346082,
           "end": 180.4312810934601,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -14292,10 +14292,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 180.75298109345934,
           "end": 183.03648109345934,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -14315,10 +14315,10 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "translation": "Nobody knew this masterpiece, this masterpiece",
-          "pronunciation": "{\"full\":\"amudo mollassji i masterpiece, i masterpiece\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아무도\",\"trans\":\"amudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"몰랐지\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece\",\"trans\":\"\"}]}",
           "start": 183.1046810934586,
           "end": 188.3163810934616,
+          "pronunciation": "{\"full\":\"amudo mollassji i masterpiece, i masterpiece\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아무도\",\"trans\":\"amudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"몰랐지\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece\",\"trans\":\"\"}]}",
+          "translation": "Nobody knew this masterpiece, this masterpiece",
           "isSplit": false
         },
         {
@@ -14354,10 +14354,10 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "translation": "The melody, oh, melody that repeats on my lips",
-          "pronunciation": "{\"full\":\"ibga-e banbogdoeneun melody, oh, melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"입가에\",\"trans\":\"ibga-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
           "start": 188.4082810934601,
           "end": 193.70888109346157,
+          "pronunciation": "{\"full\":\"ibga-e banbogdoeneun melody, oh, melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"입가에\",\"trans\":\"ibga-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
+          "translation": "The melody, oh, melody that repeats on my lips",
           "isSplit": true,
           "adlibs": [
             {
@@ -14417,10 +14417,10 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "translation": "My A to Z, oh, A to Z so perfect",
-          "pronunciation": "{\"full\":\"neomuna wanbyeoghan nae A to Z, oh, A to Z\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무나\",\"trans\":\"neomuna\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽한\",\"trans\":\"wanbyeoghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z\",\"trans\":\"\"}]}",
           "start": 193.7951810934586,
           "end": 198.78498109345935,
+          "pronunciation": "{\"full\":\"neomuna wanbyeoghan nae A to Z, oh, A to Z\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무나\",\"trans\":\"neomuna\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽한\",\"trans\":\"wanbyeoghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z\",\"trans\":\"\"}]}",
+          "translation": "My A to Z, oh, A to Z so perfect",
           "isSplit": false
         },
         {
@@ -14440,10 +14440,10 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "translation": "The fans love it, yeah, L-O-V-E, Yeah, L-O-V-E",
-          "pronunciation": "{\"full\":\"paendeul-eun salanghae, yeah, L-O-V-E, yeah, L-O-V-E\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"팬들은\",\"trans\":\"paendeul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사랑해,\",\"trans\":\"salanghae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E\",\"trans\":\"\"}]}",
           "start": 198.87318109345858,
           "end": 203.9272810934601,
+          "pronunciation": "{\"full\":\"paendeul-eun salanghae, yeah, L-O-V-E, yeah, L-O-V-E\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"팬들은\",\"trans\":\"paendeul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사랑해,\",\"trans\":\"salanghae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E\",\"trans\":\"\"}]}",
+          "translation": "The fans love it, yeah, L-O-V-E, Yeah, L-O-V-E",
           "isSplit": false
         },
         {
@@ -14463,10 +14463,10 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 204.0226810934586,
           "end": 205.5917810934601,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         }
       ],
@@ -26651,7 +26651,9 @@
         "yt": "https://music.youtube.com/watch?v=ILmHLmZiVG0",
         "hasLocal": false,
         "localName": ""
-      }
+      },
+      "forceSource": "youtube",
+      "playId": 1785768026663
     },
     {
       "wrapperType": "track",
