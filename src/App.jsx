@@ -35,7 +35,6 @@ const App = () => {
       const parsed = JSON.parse(saved);
       if (parsed.bgImageOpacity === undefined) parsed.bgImageOpacity = 0.25;
       if (parsed.cosmosSplitRatio === undefined) parsed.cosmosSplitRatio = 60;
-      
       if (parsed.cardFontSize === undefined) parsed.cardFontSize = 1.6;
       if (parsed.modalFontSize === undefined) parsed.modalFontSize = 5.5;
       if (parsed.liveSyncFontSize === undefined) parsed.liveSyncFontSize = 4.5;
@@ -52,7 +51,6 @@ const App = () => {
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
       if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12;
       
-      // Clean up legacy API keys if present
       delete parsed.youtubeApiKey;
       delete parsed.spotifyClientId;
       delete parsed.spotifyClientSecret;
@@ -84,7 +82,6 @@ const App = () => {
       transliterationOpacity: 0.8
     };
   });
-
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
@@ -101,6 +98,7 @@ const App = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [songToRemove, setSongToRemove] = useState(null);
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
+  const [isLoadingSample, setIsLoadingSample] = useState(false);
 
   useEffect(() => {
     if (settings.persistentMemory) {
@@ -145,7 +143,6 @@ const App = () => {
     if (!query.trim()) return;
     setIsSearching(true);
     try {
-      // 1. iTunes API Search (With US storefront & explicit flag force)
       const itunesResults = await fetch(
         `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=50&explicit=Yes&country=US`
       )
@@ -153,9 +150,8 @@ const App = () => {
         .then(data => (data.results || []).map(track => ({ ...track, sourceName: 'iTunes' })))
         .catch(() => []);
 
-      // Deduplicate results
       const uniqueMap = new Map();
-      itunesResults.forEach(song => {
+      itunesResults.forEach(song => { 
          const cleanName = (song.trackName || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
          const cleanArtist = (song.artistName || '').toLowerCase().trim();
          const key = `${cleanName}_${cleanArtist}`;
@@ -170,7 +166,6 @@ const App = () => {
          }
       });
 
-      // Sort results pushing Explicit songs to top
       const finalResults = Array.from(uniqueMap.values()).sort((a, b) => {
         const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
         const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
@@ -282,40 +277,60 @@ const App = () => {
   };
 
   const handleImport = (event) => {
-    const file = event.target.files[0];
+    const file = event.target ? event.target.files[0] : null;
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
-        const newLibrary = [...library];
-        
-        const mergeSongs = (importedSongs) => {
-          importedSongs.forEach(newSong => {
-            const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
-            if (existingIdx >= 0) newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
-            else newLibrary.push(newSong);
-          });
-        };
-        
-        if (parsedData.library && Array.isArray(parsedData.library)) {
-          mergeSongs(parsedData.library);
-          setLibrary(newLibrary);
-          if (parsedData.settings) setSettings({ ...settings, ...parsedData.settings });
-          handleHomeClick();
-          alert(`Successfully imported ${parsedData.library.length} songs and applied UI settings!`);
-        } else if (Array.isArray(parsedData)) {
-          mergeSongs(parsedData);
-          setLibrary(newLibrary);
-          handleHomeClick();
-          alert(`Successfully imported ${parsedData.length} songs!`);
-        }
+        applyParsedData(parsedData);
       } catch (err) {
         alert('Could not read the JSON file.');
       }
     };
     reader.readAsText(file);
-    event.target.value = null;
+    if (event.target) event.target.value = null;
+  };
+
+  const applyParsedData = (parsedData) => {
+    const newLibrary = [...library];
+    const mergeSongs = (importedSongs) => {
+      importedSongs.forEach(newSong => {
+        const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
+        if (existingIdx >= 0) newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
+        else newLibrary.push(newSong);
+      });
+    };
+
+    if (parsedData.library && Array.isArray(parsedData.library)) {
+      mergeSongs(parsedData.library);
+      setLibrary(newLibrary);
+      if (parsedData.settings) setSettings(prev => ({ ...prev, ...parsedData.settings }));
+      handleHomeClick();
+      alert(`Successfully imported ${parsedData.library.length} songs and applied settings!`);
+    } else if (Array.isArray(parsedData)) {
+      mergeSongs(parsedData);
+      setLibrary(newLibrary);
+      handleHomeClick();
+      alert(`Successfully imported ${parsedData.length} songs!`);
+    }
+  };
+
+  // --- SAMPLE LOAD FUNCTION ---
+  const handleLoadSample = async () => {
+    setIsLoadingSample(true);
+    try {
+      const res = await fetch('/PlanetMusic_Backup.json');
+      if (!res.ok) {
+        throw new Error('File not found');
+      }
+      const data = await res.json();
+      applyParsedData(data);
+    } catch (err) {
+      alert("Could not load sample backup file from public folder. Please make sure 'PlanetMusic_Backup.json' is placed inside the 'public/' directory.");
+    } finally {
+      setIsLoadingSample(false);
+    }
   };
 
   const dynamicStyles = {
@@ -349,8 +364,8 @@ const App = () => {
 
   const uniqueOnlineResults = searchResults.filter(
     onlineSong => !filteredLibrary.some(localSong => 
-      localSong.trackId === onlineSong.trackId || 
-      (localSong.trackName.toLowerCase() === onlineSong.trackName.toLowerCase() && localSong.artistName.toLowerCase() === onlineSong.artistName.toLowerCase())
+       localSong.trackId === onlineSong.trackId ||
+       (localSong.trackName.toLowerCase() === onlineSong.trackName.toLowerCase() && localSong.artistName.toLowerCase() === onlineSong.artistName.toLowerCase())
     )
   );
 
@@ -363,6 +378,7 @@ const App = () => {
         handleHomeClick={handleHomeClick}
         handleExport={handleExport}
         handleImport={handleImport}
+        handleLoadSample={handleLoadSample}
         openSettings={() => handleTabSwitch('settings')}
       />
       <main className="main-content">
@@ -404,6 +420,13 @@ const App = () => {
                   <div className="empty-message glass-panel">
                     <h2>Your Vault is Empty</h2>
                     <p>Type in the search bar above to start your journey.</p>
+                    <button 
+                      className="sample-vault-btn" 
+                      onClick={handleLoadSample}
+                      disabled={isLoadingSample}
+                    >
+                      {isLoadingSample ? 'Loading Sample Vault...' : '✨ Load Sample Vault'}
+                    </button>
                   </div>
                 )
               ) : isExplicitSearch ? (

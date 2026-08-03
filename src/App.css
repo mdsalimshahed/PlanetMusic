@@ -326,6 +326,33 @@ body {
   font-size: 18px;
 }
 
+/* --- App.css additions --- */
+.sample-vault-btn {
+  margin-top: 20px;
+  background: rgba(251, 191, 36, 0.15);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 12px 24px;
+  border-radius: 500px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+}
+
+.sample-vault-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: #000000;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+}
+
+.sample-vault-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 /* --- Confirmation Modal --- */
 .confirm-overlay {
   position: fixed;
