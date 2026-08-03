@@ -9,9 +9,10 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
-  const [showAdlibDebug, setShowAdlibDebug] = useState(false); // Debug Overlay State
-
+  const [showAdlibDebug, setShowAdlibDebug] = useState(false); 
+  
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
+  
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification
@@ -47,10 +48,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
       <div className="modal-window glass-panel" onClick={(e) => e.stopPropagation()}>
         <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
-                 
+        
         <div className="modal-content-wrapper">
-          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✖</button>
-                     
+          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✕</button>
+          
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
             <ModalRight 
@@ -82,7 +83,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         <div className="confirm-overlay" onClick={syncProps.cancelRefreshLyrics}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
             <h3>Clear All Timings?</h3>
-            <p>Are you sure you want to clear all timings, translations, and ad-lib splits? This action cannot be undone.</p>
+            <p>Are you sure you want to clear all timings, translations, and ad-lib splits from the workspace? You will need to click <strong>Save Timings</strong> to finalize this action.</p>
             <div className="confirm-actions">
               <button className="confirm-btn cancel" onClick={syncProps.cancelRefreshLyrics}>Cancel</button>
               <button className="confirm-btn delete" onClick={syncProps.confirmRefreshLyrics}>Clear Timings</button>

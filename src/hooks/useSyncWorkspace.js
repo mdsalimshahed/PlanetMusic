@@ -1,7 +1,8 @@
 /* --- src/hooks/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../db';
-import { parseLyrics } from '../utils/songHelpers';
+import { parseLyrics, extractYouTubeId } from '../utils/songHelpers';
+import { workspaceClock } from '../utils/clockEngine';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic';
 
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification) => {
@@ -13,12 +14,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [syncData, setSyncData] = useState([]);
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
-  
-  // Custom Confirmation Modal State
   const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
 
   // Dedicated local playback states for the Sync Workspace
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
+  const [syncYtVideoId, setSyncYtVideoId] = useState(null);
+  const [activeSyncSource, setActiveSyncSource] = useState('preview');
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
@@ -26,12 +27,17 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [loopRange, setLoopRange] = useState(null);
 
   const syncAudioRef = useRef(null);
+  const syncYtPlayerRef = useRef(null);
   const activeLineRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
+
+  useEffect(() => {
+    workspaceClock.setEventName('workspaceTimeUpdate');
+  }, []);
 
   useEffect(() => { activeIdxRef.current = activeSyncIndex; }, [activeSyncIndex]);
   useEffect(() => { syncDataRef.current = syncData; }, [syncData]);
@@ -66,46 +72,80 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
   }, [selectedSong]);
 
-  // Load the dedicated local audio file or preview URL for the Sync Player
+  // Load YouTube stream URL or local audio/preview URL for Sync Workspace
   useEffect(() => {
     const loadSyncAudio = async () => {
       if (isSyncMode && selectedSong) {
-        if (customData.hasLocal) {
+        const ytUrl = customData.yt || selectedSong.customLinks?.yt || selectedSong.yt;
+        const hasLocal = customData.hasLocal;
+        const ytId = hasLocal ? null : extractYouTubeId(ytUrl);
+        setSyncYtVideoId(ytId);
+
+        if (hasLocal) {
           const file = await getAudioFile(selectedSong.trackId);
-          setSyncAudioSrc(file ? URL.createObjectURL(file) : selectedSong.previewUrl);
+          if (file) {
+            setSyncAudioSrc(URL.createObjectURL(file));
+            setActiveSyncSource('local');
+          } else {
+            setSyncAudioSrc(selectedSong.previewUrl);
+            setActiveSyncSource('preview');
+          }
+        } else if (ytId) {
+          setSyncAudioSrc(undefined);
+          setActiveSyncSource('youtube');
         } else {
           setSyncAudioSrc(selectedSong.previewUrl);
+          setActiveSyncSource('preview');
         }
       }
     };
     loadSyncAudio();
-  }, [isSyncMode, customData.hasLocal, selectedSong]);
+  }, [isSyncMode, customData.hasLocal, customData.yt, selectedSong]);
 
-  // Apply volume and playback rate to the Sync Player
+  // Sync playback rate with workspace clock
   useEffect(() => {
-    if (isSyncMode && syncAudioRef.current) {
+    workspaceClock.setRate(playbackRate);
+    if (isSyncMode) {
       const savedVolume = localStorage.getItem('playerVolume');
-      syncAudioRef.current.volume = savedVolume !== null ? parseFloat(savedVolume) : 1;
-      syncAudioRef.current.playbackRate = playbackRate;
+      const vol = savedVolume !== null ? parseFloat(savedVolume) : 1;
+      
+      if (syncYtPlayerRef.current) {
+        try {
+          syncYtPlayerRef.current.setVolume(vol * 100);
+          syncYtPlayerRef.current.setPlaybackRate(playbackRate);
+        } catch (e) {}
+      }
+      if (syncAudioRef.current) {
+        syncAudioRef.current.volume = vol;
+        syncAudioRef.current.playbackRate = playbackRate;
+      }
     }
   }, [isSyncMode, syncAudioSrc, playbackRate]);
 
-  // Pause the Sync Player if the Global Player attempts to play
+  // Pause Sync Player if Global Player plays
   useEffect(() => {
     const handleGlobalPlay = () => {
+      if (syncYtPlayerRef.current) {
+        try { syncYtPlayerRef.current.pauseVideo(); } catch (e) {}
+      }
       if (syncAudioRef.current && !syncAudioRef.current.paused) {
         syncAudioRef.current.pause();
       }
+      setIsSyncPlaying(false);
+      workspaceClock.pause();
     };
     window.addEventListener('globalPlayerDidPlay', handleGlobalPlay);
     return () => window.removeEventListener('globalPlayerDidPlay', handleGlobalPlay);
   }, []);
 
+  // AUTO SCROLL ACTIVE LINE
   useEffect(() => {
     if (isSyncMode && activeLineRef.current) {
       const container = activeLineRef.current.parentElement;
-      const scrollPos = activeLineRef.current.offsetTop - (container.clientHeight / 2) + (activeLineRef.current.clientHeight / 2);
-      container.scrollTo({ top: scrollPos, behavior: 'smooth' });
+      if (container) {
+        const scrollPos = activeLineRef.current.offsetTop - (container.clientHeight / 2) + (activeLineRef.current.clientHeight / 2);
+        container.scrollTo({ top: scrollPos, behavior: 'smooth' });
+      }
     }
   }, [activeSyncIndex, isSyncMode]);
 
@@ -132,7 +172,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   useSyncEngine({
-    syncAudioRef, isSyncPlaying, setIsSyncPlaying,
+    syncAudioRef, syncYtVideoId, syncYtPlayerRef, isSyncPlaying, setIsSyncPlaying,
     workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
     syncDataRef, updateWorkspaceData,
     loopRangeRef, setLoopRange,
@@ -140,7 +180,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   });
 
   useSyncKeyboard({
-    isSyncMode, syncAudioRef, activeIdxRef, workspaceLinesRef,
+    isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
     loopRangeRef, isShowingAutoSync
   });
@@ -157,17 +197,15 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
-         
-    // Explicitly send a signal to auto-pause the Global Player when entering the workspace
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-         
+
     setIsSyncLoading(true);
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
-         
+
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
-         
+
     if (hasManualText) {
       initialData = parsedLines.map((line, i) => {
         const existingNode = selectedSong?.syncData?.[i] || {};
@@ -184,7 +222,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } else if (sourceData && sourceData.length > 0) {
       initialData = sourceData.map((node) => ({ ...node }));
     }
-         
+
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
@@ -207,17 +245,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       isSplit: false,
       adlibs: undefined
     }));
+    
+    // Updates local workspace state, NOT global library
     setSyncData(resetData);
     syncDataRef.current = resetData;
-         
-    updateSongInLibrary({
-      ...selectedSong,
-      syncData: resetData,
-      autoSyncData: null
-    });
+
     if (setNotification) {
-      setNotification({ show: true, message: 'Lyrics data refreshed and cleared!', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
+      setNotification({ show: true, message: 'Workspace cleared! Click "Save Timings" to apply changes.', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 3000);
     }
     setShowRefreshPrompt(false);
   };
@@ -234,27 +269,60 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
+    workspaceClock.pause();
   };
 
   const toggleSyncPlay = () => {
+    if (syncYtVideoId && syncYtPlayerRef.current) {
+      try {
+        if (isSyncPlaying) {
+          syncYtPlayerRef.current.pauseVideo();
+          setIsSyncPlaying(false);
+          workspaceClock.pause();
+        } else {
+          window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
+          syncYtPlayerRef.current.playVideo();
+          setIsSyncPlaying(true);
+          workspaceClock.start(workspaceClock.getCurrentTime());
+        }
+      } catch (e) {}
+      return;
+    }
     if (!syncAudioRef.current) return;
-    if (syncAudioRef.current.paused) syncAudioRef.current.play().catch(e => console.log(e));
-    else syncAudioRef.current.pause();
+    if (syncAudioRef.current.paused) {
+      window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
+      syncAudioRef.current.play().catch(e => console.log(e));
+      setIsSyncPlaying(true);
+      workspaceClock.start(syncAudioRef.current.currentTime || 0);
+    } else {
+      syncAudioRef.current.pause();
+      setIsSyncPlaying(false);
+      workspaceClock.pause();
+    }
   };
 
   const handleSyncSeek = (e) => {
     const time = Number(e.target.value);
-    if (syncAudioRef.current) syncAudioRef.current.currentTime = time;
-    window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
+    workspaceClock.seek(time);
+    if (syncYtVideoId && syncYtPlayerRef.current) {
+      try { syncYtPlayerRef.current.seekTo(time, true); } catch (err) {}
+    } else if (syncAudioRef.current) {
+      syncAudioRef.current.currentTime = time;
+    }
   };
 
   const handleSpeedChange = (e) => {
-    setPlaybackRate(parseFloat(e.target.value));
+    const spd = parseFloat(e.target.value);
+    setPlaybackRate(spd);
+    workspaceClock.setRate(spd);
+    if (syncYtVideoId && syncYtPlayerRef.current) {
+      try { syncYtPlayerRef.current.setPlaybackRate(spd); } catch (err) {}
+    }
   };
 
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
-    syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, playbackRate, debugInfo,
+    syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode
   };

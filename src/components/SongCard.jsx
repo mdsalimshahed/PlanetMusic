@@ -1,10 +1,15 @@
 /* --- src/components/SongCard.jsx --- */
 import React, { useState, useEffect } from 'react';
+import { extractYouTubeId } from '../utils/songHelpers';
 import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
+
+  const ytUrl = song.customLinks?.yt || song.yt || '';
+  const hasYtStream = Boolean(extractYouTubeId(ytUrl));
+  const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || hasYtStream);
 
   useEffect(() => {
     if (!highResArt) return;
@@ -44,14 +49,12 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         img = null;
       }
     };
-
     img.onerror = () => {
       img.onload = null;
       img.onerror = null;
       img.src = '';
       img = null;
     };
-
     img.src = highResArt;
   }, [highResArt]);
 
@@ -70,33 +73,31 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           className="artwork"
           loading="lazy"
           decoding="async"
-          fetchpriority="low"
+          fetchPriority="low"
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
         {/* Top-Right Quick Play Button */}
-        {(song.previewUrl || song.customLinks?.hasLocal) && (
+        {hasPlayableSource && (
           <button 
             className="play-card-btn"
             onClick={(e) => {
               e.stopPropagation();
-              setCurrentTrack(song);
+              // Pass playId to ensure a fresh reset/restart on every click
+              setCurrentTrack({ ...song, playId: Date.now() });
             }}
-            title={song.customLinks?.hasLocal ? "Play Local File" : "Play Preview"}
+            title={song.customLinks?.hasLocal ? "Play Local File" : (hasYtStream ? "Play YouTube Stream" : "Play Preview")}
           >
             ▶
           </button>
         )}
-
         {/* Text Overlay */}
         <div className="card-info-text-only">
-          {/* Tooltip trigger attached directly to the h4 header, using the native string */}
           <h4 title={song.trackName}>
             <span className="text-fill-span">{song.trackName}</span>
             {song.trackExplicitness === 'explicit' && <span className="explicit-tag" title="Explicit">E</span>}
           </h4>
           
-          {/* Tooltip trigger attached directly to the paragraph, using the native string */}
           <p title={song.artistName}>
             <span className="text-fill-span artist-span">{song.artistName}</span>
           </p>

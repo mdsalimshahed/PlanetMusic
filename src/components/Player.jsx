@@ -2,10 +2,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { getAudioFile } from '../db';
+import { extractYouTubeId } from '../utils/songHelpers';
+import { globalClock } from '../utils/clockEngine';
 import './Player.css';
 
 const formatTime = (seconds) => {
-  if (isNaN(seconds)) return "0:00";
+  if (isNaN(seconds) || seconds === null) return "0:00";
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s < 10 ? '0' : ''}${s}`;
@@ -13,26 +15,39 @@ const formatTime = (seconds) => {
 
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
+  const ytPlayerRef = useRef(null);
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
+  
   const trackIdRef = useRef(null);
   const localRef = useRef(null);
+  const activeSourceRef = useRef(null); 
+  const playIdRef = useRef(null);
+
+  const ytLastTimeRef = useRef(0);
+  const ytLastPerfRef = useRef(0);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState(undefined);
+  const [ytVideoId, setYtVideoId] = useState(null);
+  const [ytPlayerReady, setYtPlayerReady] = useState(false);
+  const [activeSource, setActiveSource] = useState('preview'); 
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
-
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
+
+  useEffect(() => {
+    globalClock.setEventName('globalTimeUpdate');
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsStacked(window.innerWidth <= 900);
@@ -51,21 +66,28 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   }, [selectedSong, isStacked]);
 
   const emitPlayState = (playing, ended = false) => {
+    if (playing) {
+      globalClock.start(window.currentAudioTime || 0);
+    } else {
+      globalClock.pause();
+    }
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
-  // Listen for signals from the Sync Workspace to pause automatically
+  // Pause when requested by Sync Workspace
   useEffect(() => {
     const handlePauseGlobal = () => {
-      if (audioRef.current && !audioRef.current.paused) {
+      if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.pauseVideo(); } catch (e) {}
+      } else if (audioRef.current && !audioRef.current.paused) {
         audioRef.current.pause();
-        setIsPlaying(false);
-        emitPlayState(false, false);
       }
+      setIsPlaying(false);
+      emitPlayState(false, false);
     };
     window.addEventListener('pauseGlobalPlayer', handlePauseGlobal);
     return () => window.removeEventListener('pauseGlobalPlayer', handlePauseGlobal);
-  }, []);
+  }, [ytVideoId, ytPlayerReady]);
 
   const initWebAudio = () => {
     try {
@@ -90,20 +112,49 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     }
   };
 
+  // Ensure global frequency array exists even during YouTube streams
+  useEffect(() => {
+    if (!window.globalFreqData) {
+      window.globalFreqData = new Uint8Array(64);
+    }
+  }, []);
+
+  // Load YouTube IFrame API script dynamically once
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      if (firstScriptTag && firstScriptTag.parentNode) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      } else {
+        document.head.appendChild(tag);
+      }
+    }
+  }, []);
+
   const attemptPlay = async () => {
-    if (!audioRef.current) return;
-    initWebAudio();
-    try {
-      // If the Sync Workspace is active, we broadcast a signal to pause its audio
-      window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
-      await audioRef.current.play();
-      setIsPlaying(true);
-      emitPlayState(true, false);
-    } catch (err) {
-      console.log("Autoplay prevented:", err);
+    window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
+    
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try {
+        if (audioRef.current) audioRef.current.pause();
+        ytLastPerfRef.current = performance.now();
+        ytPlayerRef.current.playVideo();
+        setIsPlaying(true);
+        emitPlayState(true, false);
+      } catch (err) {}
+    } else if (audioRef.current) {
+      initWebAudio();
+      try {
+        await audioRef.current.play();
+        setIsPlaying(true);
+        emitPlayState(true, false);
+      } catch (err) {}
     }
   };
 
+  // Extract accent color from cover art
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
     let img = new Image();
@@ -132,7 +183,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           r = Math.floor(r / count);
           g = Math.floor(g / count);
           b = Math.floor(b / count);
-          
           const boost = 30; 
           r = Math.min(255, r + boost);
           g = Math.min(255, g + boost);
@@ -158,18 +208,26 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
-  // Player state protection - will not reset to 0:00 when closing modal
+  // Track change, intended source resolution, and Audio/YouTube initialization
   useEffect(() => {
     if (!currentTrack) {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
+      if (ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.stopVideo(); } catch(e) {}
+      }
       setAudioSrc(undefined);
+      setYtVideoId(null);
       setPendingSeek(null);
       setIsPlaying(false);
+      setActiveSource('preview');
+      activeSourceRef.current = null;
+      playIdRef.current = null;
+      globalClock.pause();
+      globalClock.seek(0);
       emitPlayState(false, true);
-      window.currentAudioTime = 0;
       trackIdRef.current = null;
       localRef.current = null;
       if (progressBarRef.current) progressBarRef.current.value = 0;
@@ -179,47 +237,256 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
     const trackId = currentTrack.trackId;
     const hasLocal = currentTrack.customLinks?.hasLocal;
+    const ytUrl = currentTrack.customLinks?.yt || currentTrack.yt || '';
+    let extractedYtId = extractYouTubeId(ytUrl);
 
-    if (trackId !== trackIdRef.current || hasLocal !== localRef.current) {
+    let intendedSource = 'preview';
+
+    // 1. Check for explicit overrides from user button clicks
+    if (currentTrack.forceSource === 'youtube' && extractedYtId) {
+      intendedSource = 'youtube';
+    } else if (currentTrack.forceSource === 'local' && hasLocal) {
+      intendedSource = 'local';
+    } else if (currentTrack.forceSource === 'preview') {
+      intendedSource = 'preview';
+    } else {
+      // 2. Default Hierarchy: Local Audio -> YouTube Stream -> 30s iTunes Preview
+      if (hasLocal) {
+        intendedSource = 'local';
+      } else if (extractedYtId) {
+        intendedSource = 'youtube';
+      }
+    }
+
+    if (intendedSource !== 'youtube') extractedYtId = null;
+
+    const isNewPlayAction = currentTrack.playId && currentTrack.playId !== playIdRef.current;
+    const trackChanged = trackId !== trackIdRef.current;
+    const sourceChanged = intendedSource !== activeSourceRef.current;
+
+    // Hard switch: Tear down and reload players
+    if (trackChanged || sourceChanged) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      if (ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.stopVideo(); } catch(e) {}
+      }
+      setIsPlaying(false);
+      globalClock.pause();
+      globalClock.seek(0);
+      window.currentAudioTime = 0;
+      if (progressBarRef.current) progressBarRef.current.value = 0;
+      if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
+
       trackIdRef.current = trackId;
       localRef.current = hasLocal;
+      activeSourceRef.current = intendedSource;
+      playIdRef.current = currentTrack.playId;
+      
+      setYtPlayerReady(false);
+      setYtVideoId(extractedYtId);
 
       const loadAudio = async () => {
-        if (hasLocal) {
+        if (intendedSource === 'local') {
           const file = await getAudioFile(trackId);
-          setAudioSrc(file ? URL.createObjectURL(file) : currentTrack.previewUrl);
+          if (file) {
+            setAudioSrc(URL.createObjectURL(file));
+            setActiveSource('local');
+          } else {
+            setAudioSrc(currentTrack.previewUrl);
+            setActiveSource('preview');
+            activeSourceRef.current = 'preview';
+          }
+        } else if (intendedSource === 'youtube') {
+          setAudioSrc(undefined);
+          setActiveSource('youtube');
         } else {
           setAudioSrc(currentTrack.previewUrl);
+          setActiveSource('preview');
         }
       };
       loadAudio();
+      
+    // Soft switch: Same track and source, but user re-clicked play
+    } else if (isNewPlayAction) {
+      playIdRef.current = currentTrack.playId;
+      globalClock.seek(0);
+      window.currentAudioTime = 0;
+      if (progressBarRef.current) progressBarRef.current.value = 0;
+      if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
+      
+      if (intendedSource === 'youtube' && ytPlayerRef.current && ytPlayerReady) {
+        try {
+          ytPlayerRef.current.seekTo(0, true);
+          ytPlayerRef.current.playVideo();
+          setIsPlaying(true);
+          emitPlayState(true, false);
+        } catch(e) {}
+      } else if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        attemptPlay();
+      }
     }
   }, [currentTrack]);
 
+  // Initialize YouTube Player via native API
   useEffect(() => {
-    if (audioSrc && audioRef.current) {
+    if (!ytVideoId) return;
+
+    let playerInstance = null;
+
+    const initYTPlayer = () => {
+      if (!window.YT || !window.YT.Player) {
+        setTimeout(initYTPlayer, 100);
+        return;
+      }
+
+      const container = document.getElementById('yt-player-container');
+      if (!container) return;
+
+      container.innerHTML = '<div id="yt-player-target" style="width:100%;height:100%;"></div>';
+
+      playerInstance = new window.YT.Player('yt-player-target', {
+        videoId: ytVideoId,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: {
+          autoplay: 1,
+          playsinline: 1,
+          rel: 0,
+          enablejsapi: 1,
+          origin: window.location.origin
+        },
+        events: {
+          onReady: (event) => {
+            ytPlayerRef.current = event.target;
+            setYtPlayerReady(true);
+            try {
+              event.target.setVolume(volume * 100);
+              const dur = event.target.getDuration();
+              if (dur && !isNaN(dur)) setDuration(dur);
+              
+              if (pendingSeek !== null) {
+                event.target.seekTo(pendingSeek, true);
+                globalClock.seek(pendingSeek);
+                setPendingSeek(null);
+              }
+              event.target.playVideo();
+              setIsPlaying(true);
+              emitPlayState(true, false);
+            } catch (e) {
+              console.warn("YouTube onReady play error:", e);
+            }
+          },
+          onStateChange: (event) => {
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              const apiTime = ytPlayerRef.current?.getCurrentTime() || 0;
+              globalClock.updateAnchor(apiTime, true);
+              setIsPlaying(true);
+              emitPlayState(true, false);
+              
+              if (ytPlayerRef.current) {
+                const dur = ytPlayerRef.current.getDuration();
+                if (dur && !isNaN(dur)) setDuration(dur);
+              }
+            } else if (event.data === window.YT.PlayerState.PAUSED) {
+              setIsPlaying(false);
+              emitPlayState(false, false);
+            } else if (event.data === window.YT.PlayerState.ENDED) {
+              setIsPlaying(false);
+              emitPlayState(false, true);
+            }
+          },
+          onError: (event) => {
+            console.warn("YouTube Embed Error Code:", event.data, "- Falling back to standard audio preview");
+            setYtVideoId(null); 
+            setYtPlayerReady(false);
+            setAudioSrc(currentTrack.previewUrl);
+            setActiveSource('preview');
+            activeSourceRef.current = 'preview';
+            if (audioRef.current) {
+              attemptPlay();
+            }
+          }
+        }
+      });
+    };
+
+    initYTPlayer();
+
+    return () => {
+      if (ytPlayerRef.current && typeof ytPlayerRef.current.destroy === 'function') {
+        try { ytPlayerRef.current.destroy(); } catch (e) {}
+      }
+      ytPlayerRef.current = null;
+      setYtPlayerReady(false);
+    };
+  }, [ytVideoId]);
+
+  // Sync clock time with UI elements
+  useEffect(() => {
+    let lastSecond = -1;
+    const handleTimeUpdate = (e) => {
+      const time = e.detail;
+      const currentSecond = Math.floor(time);
+
+      if (currentSecond !== lastSecond) {
+        if (progressBarRef.current) {
+          progressBarRef.current.value = time;
+          progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
+        }
+        if (currentTimeRef.current) {
+          currentTimeRef.current.innerText = formatTime(time);
+        }
+        lastSecond = currentSecond;
+      }
+
+      // Sync Native Audio / YT periodic check
+      if (ytVideoId && ytPlayerRef.current && isPlaying) {
+        try {
+          const ytTime = ytPlayerRef.current.getCurrentTime();
+          if (ytTime !== undefined) globalClock.updateAnchor(ytTime);
+        } catch (err) {}
+      } else if (audioRef.current && isPlaying) {
+        globalClock.updateAnchor(audioRef.current.currentTime);
+      }
+    };
+
+    window.addEventListener('globalTimeUpdate', handleTimeUpdate);
+    return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
+  }, [duration, ytVideoId, isPlaying]);
+
+  // Handle standard audio src updates
+  useEffect(() => {
+    if (!ytVideoId && audioSrc && audioRef.current) {
       audioRef.current.volume = volume;
       if (pendingSeek === null) {
         attemptPlay();
       }
     }
-  }, [audioSrc]);
+  }, [audioSrc, ytVideoId]);
 
+  // Global Seek Request Listener
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
       
       if (!currentTrack || currentTrack.trackId !== track.trackId) {
-        setCurrentTrack(track);
+        setCurrentTrack({ ...track, playId: Date.now() });
         setPendingSeek(time); 
       } else {
-        if (audioRef.current && time !== null) {
-          audioRef.current.currentTime = time;
-          window.currentAudioTime = time;
-          if (!isPlaying) {
-            attemptPlay();
-          } else {
-            emitPlayState(true, false);
+        if (time !== null) {
+          globalClock.seek(time);
+          if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+            try {
+              ytPlayerRef.current.seekTo(time, true);
+              if (!isPlaying) ytPlayerRef.current.playVideo();
+            } catch (err) {}
+          } else if (audioRef.current) {
+            audioRef.current.currentTime = time;
+            if (!isPlaying) attemptPlay();
+            else emitPlayState(true, false);
           }
         }
       }
@@ -227,33 +494,51 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     
     window.addEventListener('globalSeekRequest', handleSeekRequest);
     return () => window.removeEventListener('globalSeekRequest', handleSeekRequest);
-  }, [currentTrack, isPlaying, setCurrentTrack]);
+  }, [currentTrack, isPlaying, ytVideoId, ytPlayerReady, setCurrentTrack]);
 
+  // Sync Volume
   useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
-  }, [volume]);
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try { ytPlayerRef.current.setVolume(volume * 100); } catch (e) {}
+    } else if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume, ytVideoId, ytPlayerReady]);
 
   const togglePlay = (e) => {
     if (e) e.stopPropagation();
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      emitPlayState(false, false);
-    } else attemptPlay();
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try {
+        if (isPlaying) {
+          ytPlayerRef.current.pauseVideo();
+          setIsPlaying(false);
+          emitPlayState(false, false);
+        } else {
+          ytLastPerfRef.current = performance.now();
+          ytPlayerRef.current.playVideo();
+          setIsPlaying(true);
+          emitPlayState(true, false);
+        }
+      } catch (err) {}
+    } else if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+        emitPlayState(false, false);
+      } else attemptPlay();
+    }
   };
 
   const openModal = () => {
     if (currentTrack && setSelectedSong) setSelectedSong(currentTrack);
   };
 
+  // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
-      if (!audioRef.current || !currentTrack) return;
-      
-      // We don't want global spacebar to trigger if the sync audio player is actively being used
+      if (!currentTrack) return;
       if (document.querySelector('.sync-mode-container')) return;
 
       if (e.code === 'Space') {
@@ -261,69 +546,37 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         togglePlay();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        const newTime = Math.max(0, audioRef.current.currentTime - 5);
-        audioRef.current.currentTime = newTime;
-        window.currentAudioTime = newTime;
+        const cur = window.currentAudioTime || 0;
+        const newTime = Math.max(0, cur - 5);
+        globalClock.seek(newTime);
+        if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+          try { ytPlayerRef.current.seekTo(newTime, true); } catch (err) {}
+        } else if (audioRef.current) {
+          audioRef.current.currentTime = newTime;
+        }
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        const maxTime = duration || audioRef.current.duration;
-        const newTime = Math.min(maxTime, audioRef.current.currentTime + 5);
-        audioRef.current.currentTime = newTime;
-        window.currentAudioTime = newTime;
+        const cur = window.currentAudioTime || 0;
+        const maxTime = duration || 100;
+        const newTime = Math.min(maxTime, cur + 5);
+        globalClock.seek(newTime);
+        if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+          try { ytPlayerRef.current.seekTo(newTime, true); } catch (err) {}
+        } else if (audioRef.current) {
+          audioRef.current.currentTime = newTime;
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, duration, currentTrack]);
-
-  useEffect(() => {
-    let animationFrameId;
-    let lastSecond = -1;
-    let lastEventTime = 0;
-    
-    const tick = (timestamp) => {
-      if (audioRef.current && isPlaying) {
-        const time = audioRef.current.currentTime;
-        window.currentAudioTime = time;
-        
-        const currentSecond = Math.floor(time);
-        
-        if (currentSecond !== lastSecond) {
-          if (progressBarRef.current) {
-            progressBarRef.current.value = time;
-            const dur = duration || audioRef.current.duration || 1;
-            progressBarRef.current.style.setProperty('--progress', `${(time / dur) * 100}%`);
-          }
-          if (currentTimeRef.current) {
-            currentTimeRef.current.innerText = formatTime(time);
-          }
-          lastSecond = currentSecond;
-        }
-
-        if (timestamp - lastEventTime > 33) {
-          window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
-          lastEventTime = timestamp;
-        }
-      }
-      
-      if (isPlaying) {
-        animationFrameId = requestAnimationFrame(tick);
-      }
-    };
-
-    if (isPlaying) {
-      animationFrameId = requestAnimationFrame(tick);
-    }
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPlaying, duration]);
+  }, [isPlaying, duration, currentTrack, ytVideoId, ytPlayerReady]);
 
   const handleLoadedMetadata = () => {
-    if (audioRef.current) {
+    if (audioRef.current && !ytVideoId) {
       setDuration(audioRef.current.duration);
-      window.currentAudioTime = audioRef.current.currentTime;
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
-        window.currentAudioTime = pendingSeek;
+        globalClock.seek(pendingSeek);
         attemptPlay();
         setPendingSeek(null); 
       }
@@ -333,20 +586,26 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const handleSeek = (e) => {
     e.stopPropagation();
     const time = Number(e.target.value);
-    if (audioRef.current) {
+    globalClock.seek(time);
+
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try {
+        ytPlayerRef.current.seekTo(time, true);
+        const isEnded = time >= duration && duration > 0;
+        emitPlayState(isPlaying, isEnded);
+      } catch (err) {}
+    } else if (audioRef.current) {
       audioRef.current.currentTime = time;
-      window.currentAudioTime = time;
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-    
+
     if (progressBarRef.current) {
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
     if (currentTimeRef.current) {
       currentTimeRef.current.innerText = formatTime(time);
     }
-    window.dispatchEvent(new CustomEvent('globalTimeUpdate', { detail: time }));
   };
 
   const handleVolumeChange = (e) => {
@@ -358,11 +617,14 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   const closePlayer = (e) => {
     e.stopPropagation();
-    if (audioRef.current) {
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try { ytPlayerRef.current.stopVideo(); } catch (e) {}
+    } else if (audioRef.current) {
       audioRef.current.pause(); 
     }
     setCurrentTrack(null);
     setIsPlaying(false);
+    globalClock.pause();
     emitPlayState(false, true);
   };
 
@@ -375,6 +637,20 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       <div className="player-top-row">
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
+            <div 
+              id="yt-player-container" 
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '1px',
+                height: '1px',
+                opacity: 0.01,
+                pointerEvents: 'none',
+                overflow: 'hidden',
+                zIndex: -1
+              }}
+            ></div>
             <img 
               src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
               alt="Album art" 
@@ -389,11 +665,27 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             </div>
           </div>
           <div className="player-text">
-            <h4 title={currentTrack.trackName}>{currentTrack.trackName}</h4>
+            <h4 title={currentTrack.trackName}>
+              {currentTrack.trackName}
+              {activeSource === 'youtube' && <span className="source-badge yt-badge" title="Playing YouTube Stream">YT</span>}
+              {activeSource === 'local' && (
+                <span className="source-badge local-badge" title="Playing Local Audio">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </span>
+              )}
+              {activeSource === 'preview' && (
+                <span className="source-badge preview-badge" title="Playing iTunes Preview (30s)">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>
+                  </svg>
+                </span>
+              )}
+            </h4>
             <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
           </div>
         </div>
-
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">

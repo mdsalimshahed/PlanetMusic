@@ -1,18 +1,20 @@
 /* --- src/components/ModalLeft.jsx --- */
 import React from 'react';
-import { formatDate, parseTrackName } from '../utils/songHelpers';
+import { formatDate, parseTrackName, extractYouTubeId } from '../utils/songHelpers';
 import './ModalLeft.css';
 
 const ModalLeft = ({ 
-   selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
-   handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
-   saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
-   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
-   saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
-   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
-   handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug 
- }) => {
+    selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
+    handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
+    saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
+    startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
+    saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
+    handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
+    handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug
+  }) => {
+
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
+  const ytVideoId = extractYouTubeId(customData.yt || selectedSong.customLinks?.yt || selectedSong.yt);
 
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
@@ -39,6 +41,9 @@ const ModalLeft = ({
       }
     });
   };
+
+  const ytSearchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`);
+  const ytSearchUrl = `https://music.youtube.com/search?q=${ytSearchQuery}`;
 
   return (
     <div className="modal-left-col">
@@ -83,109 +88,136 @@ const ModalLeft = ({
           )}
         </div>
       </div>
-             
+
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
           <div className="links-header"><label>Listen on Platforms</label></div>
-
           {isEditing ? (
             <div className="platform-inputs-grid">
-              <div className="platform-input-row"><span className="platform-label spotify-color">Spotify</span><input type="text" name="spotify" value={customData.spotify} onChange={handleDataChange} /></div>
-              <div className="platform-input-row"><span className="platform-label yt-color">YT Music</span><input type="text" name="yt" value={customData.yt} onChange={handleDataChange} /></div>
+              <div className="platform-input-row">
+                <span className="platform-label spotify-color">Spotify</span>
+                <input type="text" name="spotify" value={customData.spotify} onChange={handleDataChange} />
+              </div>
+              <div className="platform-input-row">
+                <a 
+                  href={ytSearchUrl} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="platform-label yt-color"
+                  style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  title="Click to search YouTube Music for this song link"
+                >
+                  YT Music 🔍
+                </a>
+                <input 
+                  type="text" 
+                  name="yt" 
+                  value={customData.yt} 
+                  onChange={handleDataChange} 
+                  placeholder="Paste YouTube Video URL..." 
+                />
+              </div>
               <div className="platform-input-row">
                 <span className="platform-label local-color">Local MP3</span>
                 <input type="file" accept="audio/*" id="localFileInput" style={{ display: 'none' }} onChange={handleLocalFileChange} />
                 <label htmlFor="localFileInput" className={`local-file-btn ${customData.hasLocal ? 'has-file' : ''}`}>
                   {customData.hasLocal ? customData.localName : "Browse Local Files..."}
                 </label>
-                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}>🗑</button>)}
+                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}>✕</button>)}
               </div>
             </div>
           ) : (
             <div className="platform-links">
               <a href={finalLinks.spotify} target="_blank" rel="noreferrer" className="platform-btn spotify">Spotify</a>
               <a href={finalLinks.yt} target="_blank" rel="noreferrer" className="platform-btn yt">YT Music</a>
-              {customData.hasLocal && (<button className="platform-btn local" onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData })}>Play Local Audio</button>)}
+              {ytVideoId && (
+                <button className="platform-btn yt" onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'youtube', playId: Date.now() })}>
+                  Play YouTube Stream
+                </button>
+              )}
+              {customData.hasLocal && (
+                <button className="platform-btn local" onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() })}>
+                  Play Local Audio
+                </button>
+              )}
             </div>
           )}
         </div>
 
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
-                     
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
-              <div className="instruction-row"><span><strong>↓</strong> Press <strong>[⬇]</strong> to set Start Time</span></div>
-              <div className="instruction-row"><span><strong>↑</strong> Press <strong>[⬆]</strong> to set End Time <em>(Auto advances)</em></span></div>
-              <div className="instruction-row subtle"><span><em>(Press <strong>[⬅/➡]</strong> anytime to rewind)</em></span></div>
+              <div className="instruction-row"><span><strong>↓</strong> Press <strong>[↓]</strong> to set Start Time</span></div>
+              <div className="instruction-row"><span><strong>↓</strong> Press <strong>[↓]</strong> to set End Time <em>(Auto advances)</em></span></div>
+              <div className="instruction-row subtle"><span><em>(Press <strong>[↑]</strong> anytime to rewind)</em></span></div>
             </div>
           )}
-
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
                 <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>Close Editor</button>
             ) : isSyncMode ? (
               <>
-                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>🚫 Cancel Sync</button>
+                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>✕ Cancel Sync</button>
                 <button 
-                  className="edit-links-btn" 
-                  onClick={handleRefreshLyrics}
+                   className="edit-links-btn" 
+                   onClick={handleRefreshLyrics}
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
                   title="Wipe all timings and ad-lib splits from these lyrics"
                 >
-                  🗑️ Clear All Timings
+                    Clear All Timings
                 </button>
-                <button className="edit-links-btn save-mode" onClick={saveSyncData}>💾 Save Timings</button>
+                <button className="edit-links-btn save-mode" onClick={saveSyncData}>✓ Save Timings</button>
               </>
             ) : isEditing ? (
               <>
-                <button className="edit-links-btn save-mode" onClick={saveData}>💾 Save Info & Lyrics</button>
+                <button className="edit-links-btn save-mode" onClick={saveData}>✓ Save Info & Lyrics</button>
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google for Lyrics</a>
               </>
             ) : isImageManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={saveImageManager}>💾 Save Artists Data</button>
+              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✓ Save Artists Data</button>
             ) : (
               <>
-                <button className="edit-links-btn" onClick={() => setIsEditing(true)}>✏️ Edit Info</button>
-                                 
+                <button className="edit-links-btn" onClick={() => setIsEditing(true)}>✎ Edit Info</button>
+                
                 <button 
-                  className="edit-links-btn" 
-                  onClick={() => handleAutoSyncDatabases()} 
-                  disabled={isLrcFetching || isSyncLoading}
+                   className="edit-links-btn" 
+                   onClick={() => handleAutoSyncDatabases()} 
+                   disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
-                  {isLrcFetching ? '⏳ Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '📖 Show Manual Sync' : '🤖 Show Auto-Sync') : '🪄 Auto-Sync Lyrics')}
+                  {isLrcFetching ? '⚡ Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '⚙ Show Manual Sync' : '⚡ Show Auto-Sync') : '⚡ Auto-Sync Lyrics')}
                 </button>
 
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? '⏳ Parsing Engine...' : hasValidSyncData ? '⏱️ Edit Timings' : '⏱️ Manual Sync'}
+                      {isSyncLoading ? '⚡ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
                     </button>
-                                         
+                    
                     <button 
-                       className="edit-links-btn" 
-                       onClick={() => setIsTranslationManagerOpen(true)}
+                        className="edit-links-btn" 
+                        onClick={() => setIsTranslationManagerOpen(true)}
                     >
-                        🌍 Edit Translation
+                          Edit Translation
                     </button>
 
-                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🎭 Manage Artists</button>
+                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🖼 Manage Artists</button>
 
                     {hasValidSyncData && !isSyncLoading && (
                       <>
                         <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
-                          {lyricsViewMode === 'live' ? '👁️ Show Focused Sync' : 
-                             lyricsViewMode === 'focused' ? '👁️ Show Plain Text' : '👁️ Show Live Sync'}
+                          {lyricsViewMode === 'live' ? '👁 Show Focused Sync' : 
+                              lyricsViewMode === 'focused' ? '📝 Show Plain Text' : '🎤 Show Live Sync'}
                         </button>
-                                                 
+                        
                         {lyricsViewMode === 'focused' && (
                            <button 
-                              className="edit-links-btn toggle-view-btn" 
-                              onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                               className="edit-links-btn toggle-view-btn" 
+                               onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                              style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
                            >
-                             {showAdlibDebug ? '🐛 Hide Adlib Debug' : '🐛 Show Adlib Debug'}
+                             {showAdlibDebug ? '🐞 Hide Adlib Debug' : '🐞 Show Adlib Debug'}
                            </button>
                         )}
                       </>
@@ -193,7 +225,7 @@ const ModalLeft = ({
                   </>
                 ) : (
                   <>
-                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}>📝 Add Custom Lyrics</button>
+                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}>+ Add Custom Lyrics</button>
                     <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google</a>
                   </>
                 )}
@@ -215,7 +247,7 @@ const ModalLeft = ({
                 handleAutoSyncDatabases(true);
                 }}>+ Add to Vault</button>
           )}
-                     
+          
           <button className="return-dashboard-btn" onClick={handleCloseModal}>
             Return to Dashboard
           </button>

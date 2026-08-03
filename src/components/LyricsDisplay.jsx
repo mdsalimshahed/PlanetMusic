@@ -4,37 +4,40 @@ import { LyricLineWrapper } from './LyricsLineRenderer';
 import { FocusedAdlibsTracker } from './FocusedAdlibsTracker';
 import './LyricsDisplay.css';
 
-const LyricsDisplay = ({
-  isEditing, customData, handleDataChange, hasValidSyncData,
-  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-  isPlaying, settings
-}) => {
+const LyricsDisplay = ({ 
+  isEditing, customData, handleDataChange, hasValidSyncData, 
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+  isPlaying, settings }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
-
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
-  // OPTIMIZED EQUALIZER: Throttled to ~30 FPS to prevent phone overheating
+  // EQUALIZER: Only activates for Web Audio API sources (local MP3/preview). YT streams stay gracefully idle.
   useEffect(() => {
     let rafId;
     let lastEqDraw = 0;
     const fadeOutTime = settings?.eqFadeOutTime ?? 500;
     
     const renderEQ = (timestamp) => {
-      if (isPlaying && isPlayingCurrentSong && window.globalAudioAnalyser && window.globalFreqData) {
+      const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
+
+      if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         if (timestamp - lastEqDraw > 33) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
+          const freqData = window.globalFreqData;
           const bars = eqBarsRef.current;
-
-          for (let i = 0; i < bars.length; i++) {
-            if (bars[i]) {
-              const raw = window.globalFreqData[i];
-              const scale = 0.05 + (raw / 255) * 0.95;
-              
-              bars[i].style.transition = 'transform 0.05s ease-out';
-              bars[i].style.transform = `scaleY(${scale})`;
+          
+          if (freqData && bars) {
+            for (let i = 0; i < bars.length; i++) {
+              if (bars[i]) {
+                const raw = freqData[i % freqData.length] || 0;
+                const scale = 0.05 + (raw / 255) * 0.95;
+                
+                bars[i].style.transition = 'transform 0.05s ease-out';
+                bars[i].style.transform = `scaleY(${scale})`;
+              }
             }
           }
           lastEqDraw = timestamp;
@@ -50,7 +53,6 @@ const LyricsDisplay = ({
       }
       rafId = requestAnimationFrame(renderEQ);
     };
-
     rafId = requestAnimationFrame(renderEQ);
     return () => cancelAnimationFrame(rafId);
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
@@ -75,7 +77,6 @@ const LyricsDisplay = ({
 
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
-
     const clearAllActive = () => {
         cachedLinesRef.current.forEach(item => {
             if (item.isActive) {
@@ -91,26 +92,22 @@ const LyricsDisplay = ({
             }
         });
     };
-
     const handleTime = (e) => {
         if (!isPlayingCurrentSong) return;
         const time = e.detail;
         const lines = cachedLinesRef.current;
-
         let newActiveIndex = -1;
         for (let i = 0; i < lines.length; i++) {
             const { start, end, nextStart } = lines[i];
             if (!isNaN(start) && time >= start) {
                 const isBeforeEnd = isNaN(end) || time <= end;
                 const isBeforeNext = isNaN(nextStart) || time < nextStart;
-
                 if (isBeforeEnd && isBeforeNext) {
                     newActiveIndex = i;
                     break; 
                 }
             }
         }
-
         for (let i = 0; i < lines.length; i++) {
             const item = lines[i];
             const shouldBeActive = (i === newActiveIndex);
@@ -129,16 +126,13 @@ const LyricsDisplay = ({
                 item.isActive = false;
             }
         }
-
         const adlibs = cachedAdlibsRef.current;
         for (let i = 0; i < adlibs.length; i++) {
             const item = adlibs[i];
             if (isNaN(item.start)) continue;
-
             let targetState = 'hidden';
             if (time >= item.start && time <= item.end) targetState = 'active';
             else if (time >= item.start) targetState = 'visible';
-
             if (item.state !== targetState) {
                 const cl = item.node.classList;
                 if (targetState === 'active') {
@@ -155,15 +149,12 @@ const LyricsDisplay = ({
             }
         }
     };
-
-    // CRITICAL FIX: If the global player ends the song naturally, strip all active classes 
-    // so lyrics fade out gracefully instead of being stuck paused on the screen.
+    
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
         }
     };
-
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
     
@@ -173,7 +164,6 @@ const LyricsDisplay = ({
     } else {
         clearAllActive();
     }
-
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTime);
         window.removeEventListener('globalPlayState', handlePlayState);
@@ -207,7 +197,6 @@ const LyricsDisplay = ({
             if (isBold) wrapped = `**${wrapped}**`;
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
-
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
           return innerText;
         }
@@ -225,17 +214,17 @@ const LyricsDisplay = ({
     <>
       {isEditing ? (
         <textarea 
-          name="lyrics" 
-          value={customData.lyrics}
+           name="lyrics" 
+           value={customData.lyrics}
           onChange={handleDataChange} 
-          onPaste={handlePaste}
+           onPaste={handlePaste}
           className="lyrics-textarea"
-          placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!" 
-        />
+          placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!"
+         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-          className="live-lyrics-preview" 
-          ref={containerRef}
+           className="live-lyrics-preview" 
+           ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -289,7 +278,7 @@ const LyricsDisplay = ({
           })}
           
           <FocusedAdlibsTracker 
-             syncData={selectedSong?.syncData}
+              syncData={selectedSong?.syncData}
              handleLineClick={handleLineClick}
              masterPalette={masterPalette}
              isPlayingCurrentSong={isPlayingCurrentSong}
@@ -315,7 +304,6 @@ const LyricsDisplay = ({
                           inlineColor = masterPalette[seg.artists[0]] || '#ffffff';
                       }
                     }
-
                     return (
                       <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' } : { color: inlineColor }}>
                           {seg.text}
@@ -331,7 +319,6 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
-
       {!isEditing && (
         <div className={`lyrics-equalizer`}>
           {Array.from({ length: 60 }).map((_, i) => (

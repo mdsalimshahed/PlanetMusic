@@ -1,5 +1,4 @@
 /* --- src/utils/formatUtils.js --- */
-
 export const formatTime = (millis) => {
   if (!millis) return "N/A";
   const minutes = Math.floor(millis / 60000);
@@ -48,7 +47,6 @@ export const cleanImageUrl = (urlStr) => {
       finalUrl = finalUrl.replace(/\/thumb\//, '/');
       finalUrl = finalUrl.substring(0, finalUrl.lastIndexOf('/'));
     }
-
     return finalUrl;
   } catch (e) {
     return urlStr;
@@ -57,17 +55,15 @@ export const cleanImageUrl = (urlStr) => {
 
 export const parseTrackName = (trackName) => {
   if (!trackName) return { mainTitle: '', extras: [], featuredArtists: [] };
-  
   const extras = [];
   const featuredArtists = [];
-  
   let mainTitle = trackName.replace(/[\(\[]([^()\[\]]+)[\)\]]/g, (match, content) => {
     const lowerContent = content.toLowerCase().trim();
     if (
       lowerContent.includes('soundtrack') || 
       lowerContent.includes('motion picture') || 
-      lowerContent.startsWith('from ') ||
-      lowerContent === 'ost' ||
+      lowerContent.startsWith('from ') || 
+      lowerContent === 'ost' || 
       lowerContent.includes('original score')
     ) {
       return ''; 
@@ -82,8 +78,16 @@ export const parseTrackName = (trackName) => {
     extras.push(content.trim());
     return ''; 
   });
-  
   mainTitle = mainTitle.replace(/\s+/g, ' ').trim();
-  
   return { mainTitle, extras, featuredArtists };
+};
+
+/**
+ * Extracts 11-character YouTube video ID from any standard, short, embed, or YouTube Music URL.
+ */
+export const extractYouTubeId = (url) => {
+  if (!url) return null;
+  const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = String(url).match(regExp);
+  return (match && match[1].length === 11) ? match[1] : null;
 };
