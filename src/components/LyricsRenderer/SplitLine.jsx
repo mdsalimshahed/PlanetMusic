@@ -18,7 +18,6 @@ const SplitLine = ({
   pronString
 }) => {
   const currentTime = window.currentAudioTime || 0;
-
   const blocks = [];
   let currentBlock = null;
 
@@ -49,6 +48,7 @@ const SplitLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
+
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -66,7 +66,6 @@ const SplitLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -85,8 +84,8 @@ const SplitLine = ({
       const adlib = blk.adlibObj;
       const start = adlib.start;
       const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
-
       let initialClass = 'adlib-hidden';
+
       if (isPlayingCurrentSong && start !== null) {
         if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
         else if (currentTime > end) initialClass = 'adlib-visible';
@@ -94,6 +93,7 @@ const SplitLine = ({
 
       let aParsedChunks = null;
       let aFullTrans = null;
+
       if (adlib.pronunciation) {
         if (typeof adlib.pronunciation === 'string') {
           if (adlib.pronunciation.startsWith('{')) {
@@ -111,6 +111,7 @@ const SplitLine = ({
       }
 
       const adlibTranslation = cleanTranslationText(adlib.translation);
+
       const alignedAdlibJSX = alignChunksWithTransliteration(
         blk.chars,
         aParsedChunks,
@@ -132,14 +133,25 @@ const SplitLine = ({
             flexDirection: 'column',
             alignItems: 'center',
             position: 'relative',
-            margin: '0 4px',
-            verticalAlign: 'bottom',
+            verticalAlign: 'baseline',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
         >
           {adlibTranslation ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr" style={{ maxWidth: '100%', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+            <span
+               className={`chunk-translation ${transClass}`}
+               dir="ltr"
+               style={{
+                 maxWidth: '90vw',
+                 width: 'max-content',
+                 whiteSpace: 'normal',
+                 wordBreak: 'break-word',
+                 overflowWrap: 'break-word',
+                 textAlign: 'center',
+                 textWrap: 'balance'
+               }}
+            >
               {renderFormattedTranslation(adlibTranslation)}
             </span>
           ) : null}
@@ -182,14 +194,27 @@ const SplitLine = ({
             flexDirection: 'column',
             alignItems: 'flex-start',
             position: 'relative',
-            margin: '0 4px',
-            verticalAlign: 'bottom',
+            verticalAlign: 'baseline',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
         >
           {displayTranslation && bIdx === 0 ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr" style={{ maxWidth: '100%', whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+            <span
+               className={`chunk-translation ${transClass}`}
+               dir="ltr"
+               style={{
+                 left: '50%',
+                 transform: 'translate(-50%, -100%)',
+                 maxWidth: '90vw',
+                 width: 'max-content',
+                 whiteSpace: 'normal',
+                 wordBreak: 'break-word',
+                 overflowWrap: 'break-word',
+                 textAlign: 'center',
+                 textWrap: 'balance'
+               }}
+            >
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
@@ -225,8 +250,24 @@ const SplitLine = ({
     }
   }
 
+  const hasMainTranslation = !!displayTranslation;
+  const hasAdlibTranslation = savedNode?.adlibs?.some(a => cleanTranslationText(a.translation));
+  const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
+  const translationSpaceCalc = 'calc(var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-top-padding, 8px) + 0.5vh)';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+    <div
+       style={{
+         display: 'flex',
+         flexDirection: 'column',
+         alignItems: 'flex-start',
+         textAlign: 'left',
+         width: '100%',
+         maxWidth: '100%',
+         boxSizing: 'border-box',
+         paddingTop: requiresTranslationSpace ? translationSpaceCalc : '0'
+       }}
+    >
       <span
         className="primary-text"
         style={{
@@ -235,9 +276,10 @@ const SplitLine = ({
           overflowWrap: 'break-word',
           display: 'inline-flex',
           flexDirection: 'row',
-          alignItems: 'flex-end',
+          alignItems: 'baseline', 
           flexWrap: 'wrap',
-          gap: '8px',
+          columnGap: '12px',
+          rowGap: requiresTranslationSpace ? translationSpaceCalc : '0', 
           position: 'relative',
           textAlign: 'left',
           direction: 'ltr',
