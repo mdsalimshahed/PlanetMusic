@@ -16,29 +16,24 @@ const StandardLine = ({
   transClass,
   basePronStyle,
   displayTranslation,
-  pronString
-}) => {
+  pronString }) => {
   const currentTime = window.currentAudioTime || 0;
-
   const renderColoredChar = (c, globalIdx) => {
-    // FIX: Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
+    // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
     if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd)) {
       return null;
     }
-
     let adlibProps = {};
     if (savedNode?.isSplit && !isFocused) {
       const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
       if (adlib && adlib.start !== null) {
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
-
         let initialClass = 'adlib-hidden';
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
-
         adlibProps = {
           className: `adlib-node ${initialClass}`,
           'data-start': start,
@@ -46,12 +41,10 @@ const StandardLine = ({
         };
       }
     }
-
     const isPunct = isPunctuationChar(c.char);
     let activeColor = isPunct ? '#fbbf24' : '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
-
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
       if (!targetArtists && lineObj.singer) {
@@ -72,9 +65,7 @@ const StandardLine = ({
         gradientStyle = c.seg.gradient || '';
       }
     }
-
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -84,7 +75,6 @@ const StandardLine = ({
       style.color = activeColor;
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
     }
-
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
@@ -145,7 +135,14 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr">
+            <span 
+              className={`chunk-translation ${transClass}`} 
+              dir="ltr"
+              style={{
+                textWrap: 'balance',
+                textAlign: 'center'
+              }}
+            >
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
@@ -169,10 +166,11 @@ const StandardLine = ({
           </span>
         </span>
       </span>
+
       {shouldRenderBlockPron && displayPronString && (
-        <div className="pronunciation-text" style={blockPronStyle} dir="ltr">
+        <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {renderFormattedTranslation(displayPronString)}
-        </div>
+        </span>
       )}
     </div>
   );

@@ -80,7 +80,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
         const hasLocal = customData.hasLocal;
         const ytId = hasLocal ? null : extractYouTubeId(ytUrl);
         setSyncYtVideoId(ytId);
-
         if (hasLocal) {
           const file = await getAudioFile(selectedSong.trackId);
           if (file) {
@@ -198,14 +197,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-
     setIsSyncLoading(true);
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
-
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
-
+    
     if (hasManualText) {
       initialData = parsedLines.map((line, i) => {
         const existingNode = selectedSong?.syncData?.[i] || {};
@@ -222,7 +219,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } else if (sourceData && sourceData.length > 0) {
       initialData = sourceData.map((node) => ({ ...node }));
     }
-
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
@@ -235,23 +231,21 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const confirmRefreshLyrics = () => {
-    const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
-    const resetData = parsedLines.map(line => ({
+    // Clear timing for currently active workspace mode only
+    const resetData = syncDataRef.current.map(line => ({
       ...line,
-      translation: '',
-      pronunciation: null,
       start: null,
       end: null,
       isSplit: false,
       adlibs: undefined
     }));
-    
-    // Updates local workspace state, NOT global library
+
     setSyncData(resetData);
     syncDataRef.current = resetData;
-
+    
     if (setNotification) {
-      setNotification({ show: true, message: 'Workspace cleared! Click "Save Timings" to apply changes.', progress: 100 });
+      const modeLabel = isShowingAutoSync ? "Auto-Sync" : "Manual Sync";
+      setNotification({ show: true, message: `${modeLabel} timings cleared! Click "Save Timings" to apply changes.`, progress: 100 });
       setTimeout(() => setNotification({ show: false }), 3000);
     }
     setShowRefreshPrompt(false);
