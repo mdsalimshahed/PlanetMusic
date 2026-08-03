@@ -30603,7 +30603,7 @@
         "Eminem": "https://image.gala.de/24471862/t/Pf/v5/w480/r1/-/eminem.jpg"
       },
       "artistColors": {
-        "Eminem": "#bbc3c4"
+        "Eminem": "#d5d0bb"
       },
       "autoSyncData": [
         {
@@ -30611,7 +30611,7 @@
           "segments": [
             {
               "text": "Yeah (",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30627,7 +30627,7 @@
             },
             {
               "text": ")",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30636,13 +30636,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 4.98,
           "end": 7.48,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -30654,7 +30654,7 @@
               "segments": [
                 {
                   "text": "(",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -30670,7 +30670,7 @@
                 },
                 {
                   "text": ")",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -30679,7 +30679,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -30688,7 +30689,7 @@
           "segments": [
             {
               "text": "Yo, I'm just gonna write down my first thoughts",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30697,13 +30698,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 7.48,
           "end": 11.4,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30711,7 +30712,7 @@
           "segments": [
             {
               "text": "And see where this takes me",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30720,13 +30721,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 11.4,
           "end": 14.4,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30734,7 +30735,7 @@
           "segments": [
             {
               "text": "'Cause I feel like I wanna punch the world",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30743,13 +30744,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 14.4,
           "end": 16.16,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30757,7 +30758,7 @@
           "segments": [
             {
               "text": "In the fuckin' face right now",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30766,13 +30767,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 16.16,
           "end": 19.13,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30780,7 +30781,7 @@
           "segments": [
             {
               "text": "Yeah",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30789,13 +30790,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 19.13,
           "end": 20.26,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30803,7 +30804,7 @@
           "segments": [
             {
               "text": "Let me explain just how to make greatness",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30812,13 +30813,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 20.26,
           "end": 22.12,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30826,7 +30827,7 @@
           "segments": [
             {
               "text": "Straight out the gate, I'm 'bout to break it down",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30835,13 +30836,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 22.12,
           "end": 24.05,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30849,7 +30850,7 @@
           "segments": [
             {
               "text": "Ain't no mistakes allowed, but make no mistake, I'm 'bout",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30858,13 +30859,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 24.05,
           "end": 26.45,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30872,7 +30873,7 @@
           "segments": [
             {
               "text": "To rape the alphabet, I may raise some brows",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30881,13 +30882,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 26.45,
           "end": 28.88,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30895,7 +30896,7 @@
           "segments": [
             {
               "text": "If I press the issue just to get the anger out (Brrr!)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30904,13 +30905,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 28.88,
           "end": 31.07,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -30922,7 +30923,7 @@
               "segments": [
                 {
                   "text": "(Brrr!)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -30931,7 +30932,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -30940,7 +30942,7 @@
           "segments": [
             {
               "text": "Full magazine could take Staples out",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30949,13 +30951,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 31.07,
           "end": 32.86,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30963,7 +30965,7 @@
           "segments": [
             {
               "text": "Savage but ain't thinkin' 'bout no bank account",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30972,13 +30974,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 32.86,
           "end": 34.78,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -30986,7 +30988,7 @@
           "segments": [
             {
               "text": "But bitch, I'm off the chain like Kala Brown",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -30995,13 +30997,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 34.78,
           "end": 36.96,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31009,7 +31011,7 @@
           "segments": [
             {
               "text": "Motherfucker, shut the fuck up when I'm talkin', lil' bitch",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31018,13 +31020,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 36.96,
           "end": 39.73,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31032,7 +31034,7 @@
           "segments": [
             {
               "text": "I'm sorry, wait, what's your talent? Oh, critiquin'",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31041,13 +31043,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 39.73,
           "end": 42.81,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31055,7 +31057,7 @@
           "segments": [
             {
               "text": "My talent? Oh, bitch, I don't know who the fuck y'all are",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31064,13 +31066,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 42.81,
           "end": 45.95,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31078,7 +31080,7 @@
           "segments": [
             {
               "text": "To give a sub-par bar or even have an opinion of you",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31087,13 +31089,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 45.95,
           "end": 48.54,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31101,7 +31103,7 @@
           "segments": [
             {
               "text": "You mention me, millions of views, attention in news",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31110,13 +31112,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 48.54,
           "end": 51.68,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31124,7 +31126,7 @@
           "segments": [
             {
               "text": "I mention you, lose-lose for me, win-win for you",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31133,13 +31135,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 51.68,
           "end": 54.65,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31147,7 +31149,7 @@
           "segments": [
             {
               "text": "Billions of views, your ten cents are two",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31156,13 +31158,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 54.65,
           "end": 56.59,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31170,7 +31172,7 @@
           "segments": [
             {
               "text": "Skim through the music to give shit reviews",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31179,13 +31181,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 56.59,
           "end": 58.42,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31193,7 +31195,7 @@
           "segments": [
             {
               "text": "To get clicks, but bitch, you just lit the fuse",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31202,13 +31204,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 58.42,
           "end": 60.58,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31216,7 +31218,7 @@
           "segments": [
             {
               "text": "Don't get misconstrued, business as us'",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31225,13 +31227,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 60.58,
           "end": 62.53,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31239,7 +31241,7 @@
           "segments": [
             {
               "text": "Shit-list renewed, so get shit to do",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31248,13 +31250,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 62.53,
           "end": 64.58,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31262,7 +31264,7 @@
           "segments": [
             {
               "text": "Or get dissed 'cause I just don't get",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31271,13 +31273,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 64.58,
           "end": 66.05,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31285,7 +31287,7 @@
           "segments": [
             {
               "text": "What the fuck half the shit is that you're listenin' to",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31294,13 +31296,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 66.05,
           "end": 68.43,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31308,7 +31310,7 @@
           "segments": [
             {
               "text": "Do you have any idea how much I hate this choppy flow",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31317,13 +31319,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 68.43,
           "end": 71.07,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31331,7 +31333,7 @@
           "segments": [
             {
               "text": "Everyone copies though? Prob'ly no",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31340,13 +31342,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 71.07,
           "end": 72.57,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31354,7 +31356,7 @@
           "segments": [
             {
               "text": "Get this fuckin' audio out my Audi, yo, adiós",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31363,13 +31365,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 72.57,
           "end": 75.15,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31377,7 +31379,7 @@
           "segments": [
             {
               "text": "I can see why people like Lil Yachty, but not me though",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31386,13 +31388,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 75.15,
           "end": 77.66,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31400,7 +31402,7 @@
           "segments": [
             {
               "text": "Not even dissin', it just ain't for me",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31409,13 +31411,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 77.66,
           "end": 79.36,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31423,7 +31425,7 @@
           "segments": [
             {
               "text": "All I am simply is just an MC",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31432,13 +31434,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 79.36,
           "end": 81.36,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31446,7 +31448,7 @@
           "segments": [
             {
               "text": "Maybe \"Stan\" just isn't your cup of tea (Get it?)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31455,13 +31457,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 81.36,
           "end": 83.56,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -31473,7 +31475,7 @@
               "segments": [
                 {
                   "text": "(Get it?)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -31482,7 +31484,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -31491,7 +31494,7 @@
           "segments": [
             {
               "text": "Maybe your cup's full of syrup and lean",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31500,13 +31503,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 83.56,
           "end": 85.52,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31514,7 +31517,7 @@
           "segments": [
             {
               "text": "Maybe I need to stir up shit, preferably",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31523,13 +31526,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 85.52,
           "end": 87.69,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31537,7 +31540,7 @@
           "segments": [
             {
               "text": "Shake the world up if it were up to me",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31546,13 +31549,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 87.69,
           "end": 89.43,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31560,7 +31563,7 @@
           "segments": [
             {
               "text": "Paul wants me to chill, y'all want me to ill",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31569,13 +31572,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 89.43,
           "end": 91.55,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31583,7 +31586,7 @@
           "segments": [
             {
               "text": "I should eat a pill, probably I will",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31592,13 +31595,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 91.55,
           "end": 93.53999999999999,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31606,7 +31609,7 @@
           "segments": [
             {
               "text": "Old me killed the new me, watch him bleed to death",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31615,13 +31618,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 93.53999999999999,
           "end": 95.78,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31629,7 +31632,7 @@
           "segments": [
             {
               "text": "I breathe on the mirror, I don't see my breath",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31638,13 +31641,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 95.78,
           "end": 97.63,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31652,7 +31655,7 @@
           "segments": [
             {
               "text": "Possibly I'm dead, I must be possessed",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31661,13 +31664,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 97.63,
           "end": 99.62,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31675,7 +31678,7 @@
           "segments": [
             {
               "text": "Like an evil spell, I'm E-V-I-L (\"Evil\" spelled)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31684,13 +31687,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 99.62,
           "end": 102.84,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -31702,7 +31705,7 @@
               "segments": [
                 {
                   "text": "(\"Evil\" spelled)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -31711,7 +31714,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -31720,7 +31724,7 @@
           "segments": [
             {
               "text": "Jam a Crest Whitestrip in the tip of my dick",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31729,13 +31733,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 102.84,
           "end": 105,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31743,7 +31747,7 @@
           "segments": [
             {
               "text": "With an ice pick, stick it in a vise grip",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31752,13 +31756,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 105,
           "end": 106.78,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31766,7 +31770,7 @@
           "segments": [
             {
               "text": "Hang it on a spike fence, bang it with a pipe wrench",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31775,13 +31779,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 106.78,
           "end": 108.77000000000001,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31789,7 +31793,7 @@
           "segments": [
             {
               "text": "While I take my ball sack and flick it like a light switch",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31798,13 +31802,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 108.77000000000001,
           "end": 110.92,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31812,7 +31816,7 @@
           "segments": [
             {
               "text": "Like Vice President Mike Pence",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31821,13 +31825,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 110.92,
           "end": 112.43,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31835,7 +31839,7 @@
           "segments": [
             {
               "text": "Back up on my shit in a sidekick as I lay it on a spike strip",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31844,13 +31848,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 112.43,
           "end": 115.42,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31858,7 +31862,7 @@
           "segments": [
             {
               "text": "These are things that I'd rather do than hear you on a mic",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31867,13 +31871,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 115.42,
           "end": 117.71000000000001,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31881,7 +31885,7 @@
           "segments": [
             {
               "text": "Since nine tenths of your rhyme is about ice and",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31890,13 +31894,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 117.71000000000001,
           "end": 119.89,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31904,7 +31908,7 @@
           "segments": [
             {
               "text": "Jesus Christ, man, how many times is",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31913,13 +31917,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 119.89,
           "end": 121.61,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31927,7 +31931,7 @@
           "segments": [
             {
               "text": "Someone gonna fuck on my bitch? (Fuck my side chick!)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31936,13 +31940,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 121.61,
           "end": 124.23,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -31954,7 +31958,7 @@
               "segments": [
                 {
                   "text": "(Fuck my side chick!)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -31963,7 +31967,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -31972,7 +31977,7 @@
           "segments": [
             {
               "text": "You won't ever see Em icy",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -31981,13 +31986,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 124.23,
           "end": 125.87,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -31995,7 +32000,7 @@
           "segments": [
             {
               "text": "But as cold as I get on the M-I-C",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32004,13 +32009,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 125.87,
           "end": 127.85,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32018,7 +32023,7 @@
           "segments": [
             {
               "text": "I polarize shit, so the Thames might freeze",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32027,13 +32032,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 127.85,
           "end": 129.93,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32041,7 +32046,7 @@
           "segments": [
             {
               "text": "And your skull might split like I bashed you upside it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32050,13 +32055,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 129.93,
           "end": 132.32,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32064,7 +32069,7 @@
           "segments": [
             {
               "text": "Bitch, I got the club on smash like a nightstick (Yeah)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32073,13 +32078,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 132.32,
           "end": 134.88,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -32091,7 +32096,7 @@
               "segments": [
                 {
                   "text": "(Yeah)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32100,7 +32105,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -32109,7 +32115,7 @@
           "segments": [
             {
               "text": "Turn down for what?",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32118,13 +32124,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 134.88,
           "end": 136.09,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32132,7 +32138,7 @@
           "segments": [
             {
               "text": "I ain't loud enough, nah, turn the Valium up (",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32148,7 +32154,7 @@
             },
             {
               "text": ")",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32157,13 +32163,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 136.09,
           "end": 137.9,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -32175,7 +32181,7 @@
               "segments": [
                 {
                   "text": "(",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32191,7 +32197,7 @@
                 },
                 {
                   "text": ")",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32200,7 +32206,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -32209,7 +32216,7 @@
           "segments": [
             {
               "text": "'Cause I don't know how I'm gonna get your mouths to shut",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32218,13 +32225,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 137.9,
           "end": 139.93,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32232,7 +32239,7 @@
           "segments": [
             {
               "text": "Now when it doesn't matter what caliber",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32241,13 +32248,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 139.93,
           "end": 141.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32255,7 +32262,7 @@
           "segments": [
             {
               "text": "I spit at, I'll bet a hundred thousand bucks",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32264,13 +32271,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 141.97,
           "end": 143.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32278,7 +32285,7 @@
           "segments": [
             {
               "text": "You'll turn around and just be like, \"Man, how the fuck",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32287,13 +32294,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 143.97,
           "end": 145.99,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32301,7 +32308,7 @@
           "segments": [
             {
               "text": "Sourpuss gonna get mad just 'cause his album sucks?",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32310,13 +32317,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 145.99,
           "end": 148.42000000000002,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32324,7 +32331,7 @@
           "segments": [
             {
               "text": "And now he wants to take it out on us\" (Ooouuu)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32333,13 +32340,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 148.42000000000002,
           "end": 152.28,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -32351,7 +32358,7 @@
               "segments": [
                 {
                   "text": "(Ooouuu)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32360,7 +32367,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -32369,7 +32377,7 @@
           "segments": [
             {
               "text": "But last week, an ex-fan mailed me a copy",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32378,13 +32386,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 152.28,
           "end": 154.38,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32392,7 +32400,7 @@
           "segments": [
             {
               "text": "Of ",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32408,7 +32416,7 @@
             },
             {
               "text": " to tell me to study",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32417,13 +32425,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 154.38,
           "end": 156.37,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32431,7 +32439,7 @@
           "segments": [
             {
               "text": "It'll help me get back to myself and she'll love me (Ooouuu)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32440,13 +32448,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 156.37,
           "end": 160.23,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -32458,7 +32466,7 @@
               "segments": [
                 {
                   "text": "(Ooouuu)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32467,7 +32475,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -32476,7 +32485,7 @@
           "segments": [
             {
               "text": "I mailed the bitch back and said if I did that",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32485,13 +32494,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 160.23,
           "end": 162.53,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32499,7 +32508,7 @@
           "segments": [
             {
               "text": "I'd just be like everyone else in the fucking industry",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32508,13 +32517,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 162.53,
           "end": 165.14,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32522,7 +32531,7 @@
           "segments": [
             {
               "text": "Especially an effing ",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32538,7 +32547,7 @@
             },
             {
               "text": " clone of me (NFing)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32547,13 +32556,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 165.14,
           "end": 168.07,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -32565,7 +32574,7 @@
               "segments": [
                 {
                   "text": "(NFing)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -32574,7 +32583,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -32583,7 +32593,7 @@
           "segments": [
             {
               "text": "So finger-bang, chicken wang, MGK, Igg' Azae'",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32592,13 +32602,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 168.07,
           "end": 170.75,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32606,7 +32616,7 @@
           "segments": [
             {
               "text": "Lil Pump, Lil Xan imitate Lil Wayne",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32615,13 +32625,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 170.75,
           "end": 172.69,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32629,7 +32639,7 @@
           "segments": [
             {
               "text": "I should aim at everybody in the game, pick a name",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32638,13 +32648,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 172.69,
           "end": 174.98,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32652,7 +32662,7 @@
           "segments": [
             {
               "text": "I'm fed up with bein' humble",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32661,13 +32671,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 174.98,
           "end": 176.23,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32675,7 +32685,7 @@
           "segments": [
             {
               "text": "And rumor is I'm hungry, I'm sure you heard rumblings",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32684,13 +32694,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 176.23,
           "end": 178.16,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32698,7 +32708,7 @@
           "segments": [
             {
               "text": "I heard you wanna rumble like an empty stomach",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32707,13 +32717,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 178.16,
           "end": 180.1,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32721,7 +32731,7 @@
           "segments": [
             {
               "text": "I heard your mumblin' but it's jumbled in mumbo-jumbo",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32730,13 +32740,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 180.1,
           "end": 182.17,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32744,7 +32754,7 @@
           "segments": [
             {
               "text": "The era that I'm from will pummel you, that's what it's comin' to",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32753,13 +32763,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 182.17,
           "end": 184.08,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32767,7 +32777,7 @@
           "segments": [
             {
               "text": "What the fuck you're gonna do when you run into it?",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32776,13 +32786,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 184.08,
           "end": 185.41,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32790,7 +32800,7 @@
           "segments": [
             {
               "text": "I'm gonna crumble you and I'll take a number two",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32799,13 +32809,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 185.41,
           "end": 187.17,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32813,7 +32823,7 @@
           "segments": [
             {
               "text": "And dump on you, if you ain't Joyner",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32822,13 +32832,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 187.17,
           "end": 188.4,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32836,7 +32846,7 @@
           "segments": [
             {
               "text": "If you ain't Kendrick or Cole or Sean, then you're a goner",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32845,13 +32855,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 188.4,
           "end": 190.15,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32859,7 +32869,7 @@
           "segments": [
             {
               "text": "I'm 'bout to bring it to anyone in this bitch who want it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32868,13 +32878,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 190.15,
           "end": 192.24,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32882,7 +32892,7 @@
           "segments": [
             {
               "text": "I guess when you walk into BK you expect a Whopper",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32891,13 +32901,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 192.24,
           "end": 194.25,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32905,7 +32915,7 @@
           "segments": [
             {
               "text": "You can order a Quarter Pounder when you go to McDonald's",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32914,13 +32924,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 194.25,
           "end": 196.37,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32928,7 +32938,7 @@
           "segments": [
             {
               "text": "But if you're lookin' to get a porterhouse you better go get ",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32944,13 +32954,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 196.37,
           "end": 198.37,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32958,7 +32968,7 @@
           "segments": [
             {
               "text": "But y'all are actin' like I tried to serve you up a slider",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32967,13 +32977,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 198.37,
           "end": 200.34,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -32981,7 +32991,7 @@
           "segments": [
             {
               "text": "Maybe the vocals shoulda been auto-tuned",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -32990,13 +33000,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 200.34,
           "end": 201.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33004,7 +33014,7 @@
           "segments": [
             {
               "text": "And you woulda bought it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33013,13 +33023,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 201.97,
           "end": 202.57,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33027,7 +33037,7 @@
           "segments": [
             {
               "text": "But sayin' I no longer got it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33036,13 +33046,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 202.57,
           "end": 203.68,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33050,7 +33060,7 @@
           "segments": [
             {
               "text": "'Cause you missed a line and never caught it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33059,13 +33069,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 203.68,
           "end": 204.93,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33073,7 +33083,7 @@
           "segments": [
             {
               "text": "'Cause it went over your head, because you're too stupid to get it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33082,13 +33092,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 205.93,
           "end": 206.98,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33096,7 +33106,7 @@
           "segments": [
             {
               "text": "'Cause you're mentally retarded, but pretend to be the smartest",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33105,13 +33115,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 206.98,
           "end": 207.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33119,7 +33129,7 @@
           "segments": [
             {
               "text": "With your expertise and knowledge, but you'll never be an artist",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33128,13 +33138,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 208.92000000000002,
           "end": 209.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33142,7 +33152,7 @@
           "segments": [
             {
               "text": "And I'm harder on myself than you could ever be regardless",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33151,13 +33161,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 211.87,
           "end": 213,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33165,7 +33175,7 @@
           "segments": [
             {
               "text": "What I'll never be is flawless, all I'll ever be is honest (",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33181,7 +33191,7 @@
             },
             {
               "text": ")",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33190,13 +33200,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 213,
           "end": 214.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -33208,7 +33218,7 @@
               "segments": [
                 {
                   "text": "(",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -33224,7 +33234,7 @@
                 },
                 {
                   "text": ")",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -33233,7 +33243,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -33242,7 +33253,7 @@
           "segments": [
             {
               "text": "Even when I'm gone they're gonna say I brought it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33251,13 +33262,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 214.97,
           "end": 216.63,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33265,7 +33276,7 @@
           "segments": [
             {
               "text": "Even when I hit my forties like a fuckin' alcoholic",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33274,13 +33285,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 216.63,
           "end": 218.46,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33288,7 +33299,7 @@
           "segments": [
             {
               "text": "With a bottle full of malt liquor",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33297,13 +33308,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 218.46,
           "end": 219.66,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33311,7 +33322,7 @@
           "segments": [
             {
               "text": "But I couldn't bottle this shit any longer",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33320,13 +33331,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 219.66,
           "end": 221.01,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33334,7 +33345,7 @@
           "segments": [
             {
               "text": "The fact that I know that I'ma hit my bottom",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33343,13 +33354,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 221.01,
           "end": 222.59,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33357,7 +33368,7 @@
           "segments": [
             {
               "text": "If I don't pull myself from the jaws of defeat and rise to my feet",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33366,13 +33377,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 222.59,
           "end": 225.03,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33380,7 +33391,7 @@
           "segments": [
             {
               "text": "I don't see why y'all even started with me",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33389,13 +33400,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 225.03,
           "end": 227.02,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33403,7 +33414,7 @@
           "segments": [
             {
               "text": "I get in beefs, my enemies die",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33412,13 +33423,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 227.02,
           "end": 228.87,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33426,7 +33437,7 @@
           "segments": [
             {
               "text": "I don't cease fire 'til at least all are deceased",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33435,13 +33446,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 228.87,
           "end": 230.82,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33449,7 +33460,7 @@
           "segments": [
             {
               "text": "I'm east side, never be caught slippin'",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33458,13 +33469,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 230.82,
           "end": 232.73,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33472,7 +33483,7 @@
           "segments": [
             {
               "text": "Now you see why I don't sleep, not even a wink, I don't blink",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33481,13 +33492,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 232.73,
           "end": 235.34,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33495,7 +33506,7 @@
           "segments": [
             {
               "text": "I don't doze off, I don't even nod to the beats",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33504,13 +33515,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 235.34,
           "end": 237.23,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33518,7 +33529,7 @@
           "segments": [
             {
               "text": "I don't even close my fuckin' eyes when I sneeze",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33527,13 +33538,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 237.23,
           "end": 240.19,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33541,7 +33552,7 @@
           "segments": [
             {
               "text": "\"Aw, man! That BET cypher was weak, it was garbage",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33550,13 +33561,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 240.19,
           "end": 242.99,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33564,7 +33575,7 @@
           "segments": [
             {
               "text": "The Thing ain't even orange—oh my God, that's a reach!\"",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33573,13 +33584,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 242.99,
           "end": 245.79,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33587,7 +33598,7 @@
           "segments": [
             {
               "text": "Shout to all my colorblind people",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33596,13 +33607,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 245.79,
           "end": 247.16,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33610,7 +33621,7 @@
           "segments": [
             {
               "text": "Each and everyone of y'all, if you call a fire engine green",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33619,13 +33630,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 247.16,
           "end": 249.56,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33633,7 +33644,7 @@
           "segments": [
             {
               "text": "Aquamarine, or you think water is pink",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33642,13 +33653,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 249.56,
           "end": 251.43,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33656,7 +33667,7 @@
           "segments": [
             {
               "text": "\"Dawg, that's a date\" — \"Looks like an olive to me\"",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33665,13 +33676,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 251.43,
           "end": 253.34,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33679,7 +33690,7 @@
           "segments": [
             {
               "text": "\"Look, there's an apple!\" — \"No, it's not, it's a peach!\"",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33688,13 +33699,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 253.34,
           "end": 256.55,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33702,7 +33713,7 @@
           "segments": [
             {
               "text": "So finger-bang, Pootie Tang",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33711,13 +33722,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 256.55,
           "end": 257.82,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33725,7 +33736,7 @@
           "segments": [
             {
               "text": "Burger King, Gucci Gang, dookie, dang",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33734,13 +33745,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 257.82,
           "end": 259.27,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33748,7 +33759,7 @@
           "segments": [
             {
               "text": "Charlamagne gonna hate anyway, doesn't matter what I say",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33757,13 +33768,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 259.27,
           "end": 261.89,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33771,7 +33782,7 @@
           "segments": [
             {
               "text": "Give me Donkey of the Day",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33780,13 +33791,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 261.89,
           "end": 262.81,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33794,7 +33805,7 @@
           "segments": [
             {
               "text": "What a way for 2018 to get underway",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33803,13 +33814,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 262.81,
           "end": 264.84,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33817,7 +33828,7 @@
           "segments": [
             {
               "text": "But I'm gonna say everything that I wanna say",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33826,13 +33837,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 264.84,
           "end": 267.01,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33840,7 +33851,7 @@
           "segments": [
             {
               "text": "Welcome to the slaughterhouse, bitch! (Yeah)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33849,13 +33860,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 267.01,
           "end": 269.47,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -33867,7 +33878,7 @@
               "segments": [
                 {
                   "text": "(Yeah)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -33876,7 +33887,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -33885,7 +33897,7 @@
           "segments": [
             {
               "text": "Invite 'em in like a One A Day",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33894,13 +33906,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 269.47,
           "end": 271.26,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33908,7 +33920,7 @@
           "segments": [
             {
               "text": "I'm not done (Preach!)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33917,13 +33929,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 271.26,
           "end": 272.27,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -33935,7 +33947,7 @@
               "segments": [
                 {
                   "text": "(Preach!)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -33944,7 +33956,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -33953,7 +33966,7 @@
           "segments": [
             {
               "text": "'Cause I feel like the beast of burden",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33962,13 +33975,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 272.27,
           "end": 273.97,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33976,7 +33989,7 @@
           "segments": [
             {
               "text": "That line in the sand, was it even worth it?",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -33985,13 +33998,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 273.97,
           "end": 275.74,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -33999,7 +34012,7 @@
           "segments": [
             {
               "text": "'Cause the way I see people turning's",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34008,13 +34021,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 275.74,
           "end": 277.3,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34022,7 +34035,7 @@
           "segments": [
             {
               "text": "Makin' it seem worthless, it's startin' to defeat the purpose",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34031,13 +34044,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 277.3,
           "end": 279.74,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34045,7 +34058,7 @@
           "segments": [
             {
               "text": "I'm watchin' my fan base shrink to thirds",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34054,13 +34067,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 279.74,
           "end": 281.7,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34068,7 +34081,7 @@
           "segments": [
             {
               "text": "And I was just tryin' to do the right thing, but word",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34077,13 +34090,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 281.7,
           "end": 283.62,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34091,7 +34104,7 @@
           "segments": [
             {
               "text": "Has the court of public opinion reached a verdict",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34100,13 +34113,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 283.62,
           "end": 285.93,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34114,7 +34127,7 @@
           "segments": [
             {
               "text": "Or still yet to be determined?",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34123,13 +34136,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 285.93,
           "end": 287.55,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34137,7 +34150,7 @@
           "segments": [
             {
               "text": "'Cause I'm determined to be me, critiqued or worshipped",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34146,13 +34159,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 287.55,
           "end": 289.84000000000003,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34160,7 +34173,7 @@
           "segments": [
             {
               "text": "But if I could go back, I'd at least reword it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34169,13 +34182,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 289.84000000000003,
           "end": 292.01,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34183,7 +34196,7 @@
           "segments": [
             {
               "text": "And say I empathize with the people this evil serpent",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34192,13 +34205,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 292.01,
           "end": 294.56,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34206,7 +34219,7 @@
           "segments": [
             {
               "text": "Sold the dream to that he's deserted",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34215,13 +34228,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 294.56,
           "end": 296.98,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34229,7 +34242,7 @@
           "segments": [
             {
               "text": "But I think it's workin'",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34238,13 +34251,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 296.98,
           "end": 297.96,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34252,7 +34265,7 @@
           "segments": [
             {
               "text": "These verses are makin' him a wee bit nervous",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34261,13 +34274,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 297.96,
           "end": 300.09,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34275,7 +34288,7 @@
           "segments": [
             {
               "text": "And he's too scurred to answer me with words",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34284,13 +34297,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 300.09,
           "end": 302.07,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34298,7 +34311,7 @@
           "segments": [
             {
               "text": "'Cause he knows that he will lyrically get murdered",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34307,13 +34320,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 302.07,
           "end": 304.75,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34321,7 +34334,7 @@
           "segments": [
             {
               "text": "But I know at least he's heard it",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34330,13 +34343,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 304.75,
           "end": 306.38,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34344,7 +34357,7 @@
           "segments": [
             {
               "text": "'Cause Agent Orange just sent the Secret Service",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34353,13 +34366,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 306.38,
           "end": 308.14,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34367,7 +34380,7 @@
           "segments": [
             {
               "text": "To meet in person to see if I really think of hurtin' him",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34376,13 +34389,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 308.14,
           "end": 310.72,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34390,7 +34403,7 @@
           "segments": [
             {
               "text": "Or ask if I'm linked to terrorists",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34399,13 +34412,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 310.72,
           "end": 312.32,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34413,7 +34426,7 @@
           "segments": [
             {
               "text": "I said, \"Only when it comes to ink and lyricists\"",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34422,13 +34435,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 312.32,
           "end": 314.88,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34436,7 +34449,7 @@
           "segments": [
             {
               "text": "But my beef is more media journalists",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34445,13 +34458,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 314.88,
           "end": 317.37,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34459,7 +34472,7 @@
           "segments": [
             {
               "text": "(Hold up, hold up, hold up)",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34468,13 +34481,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 317.37,
           "end": 319.04,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -34486,7 +34499,7 @@
               "segments": [
                 {
                   "text": "(Hold up, hold up, hold up)",
-                  "color": "#bbc3c4",
+                  "color": "#d5d0bb",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -34495,7 +34508,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -34504,7 +34518,7 @@
           "segments": [
             {
               "text": "I said, my beef is more meaty, a journalist",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34513,13 +34527,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 319.04,
           "end": 321.36,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34527,7 +34541,7 @@
           "segments": [
             {
               "text": "Can get a mouthful of flesh",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34536,13 +34550,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 321.36,
           "end": 322.95,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34550,7 +34564,7 @@
           "segments": [
             {
               "text": "And yes, I mean eating a penis",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34559,13 +34573,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 322.95,
           "end": 327.95,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34573,7 +34587,7 @@
           "segments": [
             {
               "text": "'Cause they've been pannin' my album to death",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34582,13 +34596,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 327.95,
           "end": 328.66,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34596,7 +34610,7 @@
           "segments": [
             {
               "text": "So I've been givin' the media fingers",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34605,13 +34619,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 328.66,
           "end": 328.66,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34619,7 +34633,7 @@
           "segments": [
             {
               "text": "Don't wanna turn this to a counseling sesh",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34628,13 +34642,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 328.66,
           "end": 330.81,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34642,7 +34656,7 @@
           "segments": [
             {
               "text": "But they've been puttin' me through the ringer",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34651,13 +34665,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 330.81,
           "end": 332.77,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34665,7 +34679,7 @@
           "segments": [
             {
               "text": "So I ain't ironin' shit out with the press",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34674,13 +34688,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 332.77,
           "end": 335.03,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -34688,7 +34702,7 @@
           "segments": [
             {
               "text": "But I just took this beat to the cleaners",
-              "color": "#bbc3c4",
+              "color": "#d5d0bb",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -34697,13 +34711,13 @@
             }
           ],
           "singer": "Eminem",
-          "color": "#bbc3c4",
+          "color": "#d5d0bb",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 335.03,
           "end": 342.03,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         }
       ],
@@ -48217,6 +48231,556 @@
       "artistColors": {
         "Suzuka": "#cb9d72"
       }
+    },
+    {
+      "wrapperType": "track",
+      "kind": "song",
+      "artistId": 1540305791,
+      "collectionId": 1855890248,
+      "trackId": 1855890524,
+      "artistName": "Lorien Testard & Alice Duport-Percier",
+      "collectionName": "Clair Obscur: Expedition 33 - Verso's Drafts (Original Soundtrack) - EP",
+      "trackName": "Pour Que Naisse Un Bouquet",
+      "collectionArtistName": "Lorien Testard",
+      "collectionViewUrl": "https://music.apple.com/us/album/pour-que-naisse-un-bouquet/1855890248?i=1855890524&uo=4",
+      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d9/e3/24/d9e3249b-bffc-3d28-238b-e05a841a981f/mzaf_10846567522721603451.plus.aac.p.m4a",
+      "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/88/36/95/88369575-d08c-d25c-8f3e-f537b14f951b/8721416771460.png/100x100bb.jpg",
+      "collectionPrice": 5.94,
+      "trackPrice": 0.99,
+      "releaseDate": "2025-12-12T12:00:00Z",
+      "collectionExplicitness": "notExplicit",
+      "trackExplicitness": "notExplicit",
+      "discCount": 1,
+      "discNumber": 1,
+      "trackCount": 6,
+      "trackNumber": 6,
+      "trackTimeMillis": 190000,
+      "country": "USA",
+      "currency": "USD",
+      "primaryGenreName": "Classical",
+      "isStreamable": true,
+      "sourceName": "iTunes",
+      "customLinks": {
+        "spotify": "",
+        "yt": "https://music.youtube.com/watch?v=LammBLf9AeI",
+        "hasLocal": false,
+        "localName": ""
+      },
+      "lyrics": "[Paroles de \"Pour Que Naisse Un Bouquet\"]\n\n[Couplet 1: Alice Duport-Percier]\nLe jour viendra où l'on s'efface\nD'autres cœurs prendront la place\nLe vent porte leur prénom\nSur les ruines de nos chansons\nCouleur, silence, dessin, absence\nLa vie grandit dans l'ombre\nLorsque nos noms deviennent nombres\n\n[Refrain: Alice Duport-Percier]\nQue mon absence serve d'encre pour demain\nQuand, de mes mains froides, je peindrai notre fin\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nAux lendemains rêvés\nCeux que j'aime sans les voir briller\n\n[Couplet 2: Alice Duport-Percier]\nJe ne te dis pas\nÀ Dieu, mais à toi\nQue de nos rêves brisés\nNaissent des bouquets\nPour ceux qui ne cessent de s’aimer\n\n[Refrain: Alice Duport-Percier]\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nEnsemble vers demain, les mains vides d'hier\nC'est dans nos mains que brille la lumière",
+      "artistImages": {
+        "Alice Duport-Percier": "https://i.scdn.co/image/ab6761610000e5eba827065c7030ba08fa638bec"
+      },
+      "artistColors": {
+        "Alice Duport-Percier": "#eb9e45"
+      },
+      "syncData": [
+        {
+          "text": "Le jour viendra où l'on s'efface",
+          "segments": [
+            {
+              "text": "Le jour viendra où l'on s'efface",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 2.6104270934630636,
+          "end": 11.515727093460082,
+          "pronunciation": null,
+          "translation": "The day will come when we fade away",
+          "isSplit": false
+        },
+        {
+          "text": "D'autres cœurs prendront la place",
+          "segments": [
+            {
+              "text": "D'autres cœurs prendront la place",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 13.485927093463063,
+          "end": 18.04112709345859,
+          "pronunciation": null,
+          "translation": "Other hearts will take their place",
+          "isSplit": false
+        },
+        {
+          "text": "Le vent porte leur prénom",
+          "segments": [
+            {
+              "text": "Le vent porte leur prénom",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 23.329227093460084,
+          "end": 27.63112709345859,
+          "pronunciation": null,
+          "translation": "The wind carries their first name",
+          "isSplit": false
+        },
+        {
+          "text": "Sur les ruines de nos chansons",
+          "segments": [
+            {
+              "text": "Sur les ruines de nos chansons",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 27.700027093464552,
+          "end": 33.511327093461574,
+          "pronunciation": null,
+          "translation": "On the ruins of our songs",
+          "isSplit": false
+        },
+        {
+          "text": "Couleur, silence, dessin, absence",
+          "segments": [
+            {
+              "text": "Couleur, silence, dessin, absence",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 35.37622709346009,
+          "end": 44.56352709346456,
+          "pronunciation": null,
+          "translation": "Color, silence, drawing, absence",
+          "isSplit": false
+        },
+        {
+          "text": "La vie grandit dans l'ombre",
+          "segments": [
+            {
+              "text": "La vie grandit dans l'ombre",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 45.68577902098083,
+          "end": 53.04847804196018,
+          "pronunciation": null,
+          "translation": "Life grows in the shadows",
+          "isSplit": false
+        },
+        {
+          "text": "Lorsque nos noms deviennent nombres",
+          "segments": [
+            {
+              "text": "Lorsque nos noms deviennent nombres",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 56.56876692751777,
+          "end": 63.81006692752224,
+          "pronunciation": null,
+          "translation": "When our names become numbers",
+          "isSplit": false
+        },
+        {
+          "text": "Que mon absence serve d'encre pour demain",
+          "segments": [
+            {
+              "text": "Que mon absence serve d'encre pour demain",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 67.4117521659423,
+          "end": 74.8918521659438,
+          "pronunciation": null,
+          "translation": "May my absence serve as ink for tomorrow",
+          "isSplit": false
+        },
+        {
+          "text": "Quand, de mes mains froides, je peindrai notre fin",
+          "segments": [
+            {
+              "text": "Quand, de mes mains froides, je peindrai notre fin",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 75.76425216594231,
+          "end": 82.79215216594082,
+          "pronunciation": null,
+          "translation": "When, with my cold hands, I paint our end",
+          "isSplit": false
+        },
+        {
+          "text": "Que ton silence serve d'encre pour demain",
+          "segments": [
+            {
+              "text": "Que ton silence serve d'encre pour demain",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 83.9112521659423,
+          "end": 91.16375216594231,
+          "pronunciation": null,
+          "translation": "May your silence serve of ink for tomorrow",
+          "isSplit": false
+        },
+        {
+          "text": "Quand, de tes mains distantes, tu peindras notre fin",
+          "segments": [
+            {
+              "text": "Quand, de tes mains distantes, tu peindras notre fin",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 91.92395216593783,
+          "end": 99.25055216593933,
+          "pronunciation": null,
+          "translation": "When, with your distant hands, you will paint our end",
+          "isSplit": false
+        },
+        {
+          "text": "Aux lendemains rêvés",
+          "segments": [
+            {
+              "text": "Aux lendemains rêvés",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 100.81905216593933,
+          "end": 108.9317521659423,
+          "pronunciation": null,
+          "translation": "To the dreamed tomorrows",
+          "isSplit": false
+        },
+        {
+          "text": "Ceux que j'aime sans les voir briller",
+          "segments": [
+            {
+              "text": "Ceux que j'aime sans les voir briller",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 111.59225216594231,
+          "end": 119.02795216593785,
+          "pronunciation": null,
+          "translation": "Those whom I love without seeing them shine",
+          "isSplit": false
+        },
+        {
+          "text": "Je ne te dis pas",
+          "segments": [
+            {
+              "text": "Je ne te dis pas",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 120.53475216594231,
+          "end": 123.58098392752522,
+          "pronunciation": null,
+          "translation": "I am not telling you",
+          "isSplit": false
+        },
+        {
+          "text": "À Dieu, mais à toi",
+          "segments": [
+            {
+              "text": "À Dieu, mais à toi",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 125.95568392752075,
+          "end": 129.27578392752224,
+          "pronunciation": null,
+          "translation": "To God, but to you",
+          "isSplit": false
+        },
+        {
+          "text": "Que de nos rêves brisés",
+          "segments": [
+            {
+              "text": "Que de nos rêves brisés",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 131.55057392752374,
+          "end": 135.42097392752225,
+          "pronunciation": null,
+          "translation": "That from our broken dreams",
+          "isSplit": false
+        },
+        {
+          "text": "Naissent des bouquets",
+          "segments": [
+            {
+              "text": "Naissent des bouquets",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 136.36547392752226,
+          "end": 140.27837392752076,
+          "pronunciation": null,
+          "translation": "Bouquets are born",
+          "isSplit": false
+        },
+        {
+          "text": "Pour ceux qui ne cessent de s’aimer",
+          "segments": [
+            {
+              "text": "Pour ceux qui ne cessent de s’aimer",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 141.0412350934586,
+          "end": 148.8017350934586,
+          "pronunciation": null,
+          "translation": "For those who never stop loving each other",
+          "isSplit": false
+        },
+        {
+          "text": "Que ton silence serve d'encre pour demain",
+          "segments": [
+            {
+              "text": "Que ton silence serve d'encre pour demain",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 152.6340540934601,
+          "end": 160.17075409345563,
+          "pronunciation": null,
+          "translation": "May your silence serve as ink for tomorrow",
+          "isSplit": false
+        },
+        {
+          "text": "Quand, de tes mains distantes, tu peindras notre fin",
+          "segments": [
+            {
+              "text": "Quand, de tes mains distantes, tu peindras notre fin",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 160.8144540934586,
+          "end": 168.1254540934586,
+          "pronunciation": null,
+          "translation": "When, your distant hands, you will paint our end",
+          "isSplit": false
+        },
+        {
+          "text": "Ensemble vers demain, les mains vides d'hier",
+          "segments": [
+            {
+              "text": "Ensemble vers demain, les mains vides d'hier",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 168.9925540934601,
+          "end": 176.68215409346158,
+          "pronunciation": null,
+          "translation": "Together towards tomorrow, hands empty of yesterday",
+          "isSplit": false
+        },
+        {
+          "text": "C'est dans nos mains que brille la lumière",
+          "segments": [
+            {
+              "text": "C'est dans nos mains que brille la lumière",
+              "color": "#eb9e45",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Alice Duport-Percier"
+              ]
+            }
+          ],
+          "singer": "Alice Duport-Percier",
+          "color": "#eb9e45",
+          "isGradient": false,
+          "gradient": "",
+          "start": 177.45895302098083,
+          "end": 185.27030616593635,
+          "pronunciation": null,
+          "translation": "It is in our hands that the light shines",
+          "isSplit": false
+        }
+      ]
     }
   ],
   "settings": {
