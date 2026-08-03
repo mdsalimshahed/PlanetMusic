@@ -356,6 +356,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           playsinline: 1,
           rel: 0,
           enablejsapi: 1,
+          suggestedQuality: 'small',
           origin: window.location.origin
         },
         events: {
@@ -363,6 +364,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
+              if (typeof event.target.setPlaybackQuality === 'function') {
+                event.target.setPlaybackQuality('small');
+              }
               event.target.setVolume(volume * 100);
               const dur = event.target.getDuration();
               if (dur && !isNaN(dur)) setDuration(dur);
@@ -387,6 +391,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               emitPlayState(true, false);
               
               if (ytPlayerRef.current) {
+                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') {
+                  ytPlayerRef.current.setPlaybackQuality('small');
+                }
                 const dur = ytPlayerRef.current.getDuration();
                 if (dur && !isNaN(dur)) setDuration(dur);
               }
@@ -637,20 +644,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       <div className="player-top-row">
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
-            <div 
-              id="yt-player-container" 
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '1px',
-                height: '1px',
-                opacity: 0.01,
-                pointerEvents: 'none',
-                overflow: 'hidden',
-                zIndex: -1
-              }}
-            ></div>
             <img 
               src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
               alt="Album art" 
@@ -746,6 +739,21 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
         onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
       />
+      {/* Stable YouTube Container outside of the Portal */}
+      <div 
+        id="yt-player-container" 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '1px',
+          height: '1px',
+          opacity: 0.01,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+          zIndex: -1
+        }}
+      ></div>
       {playerUI && (slotNode ? createPortal(playerUI, slotNode) : playerUI)}
     </>
   );
