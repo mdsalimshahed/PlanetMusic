@@ -32,7 +32,7 @@ const DynamicBackground = ({
              
       {/* FULL SCREEN LAYER (Single Artist) */}
       {allPotentialSingers.map(singerName => {
-        const finalImgUrl = customData.artistImages?.[singerName] || globalArtistData?.images?.[singerName] || singerImages[singerName];
+        const finalImgUrl = customData.artistImages?.[singerName] ?? globalArtistData?.images?.[singerName] ?? singerImages[singerName];
         if (!finalImgUrl) return null;
 
         const isActive = activeNames.length === 1 && activeNames[0] === singerName;
@@ -55,7 +55,7 @@ const DynamicBackground = ({
           return (
             <div key={`cell-${cellIdx}`} className="matrix-cell">
               {allPotentialSingers.map(singerName => {
-                const finalImgUrl = customData.artistImages?.[singerName] || globalArtistData?.images?.[singerName] || singerImages[singerName];
+                const finalImgUrl = customData.artistImages?.[singerName] ?? globalArtistData?.images?.[singerName] ?? singerImages[singerName];
                 if (!finalImgUrl) return null;
 
                 const isActive = targetArtist === singerName;

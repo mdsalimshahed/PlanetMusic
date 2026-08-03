@@ -39,13 +39,43 @@
    width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.1);
 }
+
+.img-manager-input-row {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   width: 100%;
+}
+
 .img-manager-input {
-   width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+   flex: 1;
+   background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
    padding: 10px 14px; border-radius: 8px; color: white; font-size: clamp(11px, 1.3vw, 13px);
    transition: border-color 0.2s ease;
 }
 .img-manager-input:focus { outline: none; border-color: var(--accent); }
 .img-manager-controls { display: flex; align-items: center; gap: 12px; }
+
+.img-manager-clear-btn {
+   background: rgba(250, 36, 60, 0.15);
+   border: 1px solid rgba(250, 36, 60, 0.3);
+   color: #FA243C;
+   border-radius: 8px;
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: all 0.2s ease;
+   flex-shrink: 0;
+}
+.img-manager-clear-btn:hover {
+   background: #FA243C;
+   color: white;
+   transform: scale(1.05);
+}
+
 .img-manager-color-picker {
    -webkit-appearance: none; border: none; width: 32px; height: 32px; border-radius: 50%;
    cursor: pointer; padding: 0; background: transparent; overflow: hidden;

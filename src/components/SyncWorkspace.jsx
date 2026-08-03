@@ -12,7 +12,7 @@ export const SyncWorkspace = ({
   isSyncPlaying, toggleSyncPlay, handleSyncSeek, playbackRate, handleSpeedChange,
   syncAudioRef, syncAudioSrc, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
-  selectedSong
+  selectedSong, isShowingAutoSync, toggleWorkspaceMode, handleMapAutoSync
 }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
@@ -31,10 +31,10 @@ export const SyncWorkspace = ({
         canvas.width = 5;
         canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
-        
+                 
         const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
-        
+                 
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
             r += data[i];
@@ -43,12 +43,12 @@ export const SyncWorkspace = ({
             count++;
           }
         }
-        
+                 
         if (count > 0) {
           r = Math.floor(r / count);
           g = Math.floor(g / count);
           b = Math.floor(b / count);
-          
+                     
           const boost = 30; 
           r = Math.min(255, r + boost);
           g = Math.min(255, g + boost);
@@ -83,7 +83,7 @@ export const SyncWorkspace = ({
   useEffect(() => {
     const handleWorkspaceTime = (e) => {
       const time = e.detail;
-      
+             
       if (progressSliderRef.current) progressSliderRef.current.value = time;
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
 
@@ -104,6 +104,7 @@ export const SyncWorkspace = ({
         }
       }
     };
+
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
@@ -113,11 +114,11 @@ export const SyncWorkspace = ({
     const line = data[lineIndex];
     const lineChars = Array.from(line.text);
     const adlibs = [];
-    
+         
     let inAdlib = false;
     let charStart = 0;
     let adlibText = '';
-    
+         
     for (let i = 0; i < lineChars.length; i++) {
         if (lineChars[i] === '(' && !inAdlib) {
             inAdlib = true;
@@ -128,16 +129,15 @@ export const SyncWorkspace = ({
             if (lineChars[i] === ')') {
                 inAdlib = false;
                 const charEnd = i + 1;
-                
+                                 
                 const adlibSegments = [];
                 const adlibArtistsSet = new Set();
                 let currentPos = 0;
-                
+                                 
                 for (const seg of line.segments) {
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
-
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
 
@@ -147,7 +147,6 @@ export const SyncWorkspace = ({
                             ...seg,
                             text: overlapText
                         });
-
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -172,7 +171,7 @@ export const SyncWorkspace = ({
             }
         }
     }
-    
+         
     if (adlibs.length > 0) {
       line.isSplit = true;
       line.adlibs = adlibs;
@@ -184,7 +183,7 @@ export const SyncWorkspace = ({
     const pronString = line.pronunciation;
     const segments = line.segments || [{ text: line.text }];
     const isRTL = isRTLLanguage(line.text);
-    
+         
     const pronStyle = {
       fontSize: '0.55em',
       color: '#ffffff',
@@ -200,6 +199,7 @@ export const SyncWorkspace = ({
 
     let parsedChunks = null;
     let fullTrans = null;
+
     if (typeof pronString === 'string') {
       const cleanPron = pronString.trim();
       if (cleanPron.startsWith('{')) {
@@ -253,7 +253,7 @@ export const SyncWorkspace = ({
       }
 
       const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-      
+             
       if (isMain && line.isSplit) {
         const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
         if (isAdlibChar) {
@@ -302,8 +302,8 @@ export const SyncWorkspace = ({
     let pChunkIndex = 0;
     let currentPChunk = activeParsedChunks[0];
     let currentPChunkConsumed = 0;
-
     let i = 0;
+
     while (i < chars.length) {
       if (!currentPChunk) {
         alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
@@ -371,7 +371,33 @@ export const SyncWorkspace = ({
         '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
         '--player-accent': accentColor
       }}>
-      
+
+      <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
+         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <button 
+              onClick={toggleWorkspaceMode} 
+              className="edit-links-btn" 
+              style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
+            >
+              {isShowingAutoSync ? '🤖 Auto Sync Mode' : '📖 Manual Sync Mode'}
+            </button>
+
+            {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
+              <button 
+                onClick={handleMapAutoSync} 
+                className="edit-links-btn" 
+                style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
+                title="Map Auto-Sync timings to these manual lyrics"
+              >
+                🪄 Map Timings from Auto
+              </button>
+            )}
+         </div>
+         <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'right' }}>
+            {isShowingAutoSync ? 'Only Ad-libs Editable' : 'Full Edit Enabled'}
+         </div>
+      </div>
+             
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>
           {isSyncPlaying ? (
@@ -416,12 +442,12 @@ export const SyncWorkspace = ({
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
           const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
-          
+                     
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
-          
+                     
           return (
             <div 
               key={i} 
@@ -431,7 +457,7 @@ export const SyncWorkspace = ({
               data-end={!isMain ? boundedEnd : 'NaN'}
               onClick={() => {
                 setActiveSyncIndex(i);
-                
+                                 
                 if (!isMain) {
                   const pStart = item.parentRef.start;
                   if (pStart !== null) {
@@ -450,7 +476,7 @@ export const SyncWorkspace = ({
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
                 {renderWorkspaceLine(line, isMain)}
-                
+                                 
                 {isMain && hasParentheses && (
                   <button 
                     className={`action-split-btn ${line.isSplit ? 'undo' : ''}`} 
@@ -464,13 +490,13 @@ export const SyncWorkspace = ({
                   </button>
                 )}
               </div>
-              
+                             
               <span className="sync-time">{formatPreciseTime(line.start)} - {formatPreciseTime(line.end)}</span>
             </div>
           );
         })}
       </div>
-      
+             
       <audio 
         ref={syncAudioRef}
         src={syncAudioSrc || undefined}

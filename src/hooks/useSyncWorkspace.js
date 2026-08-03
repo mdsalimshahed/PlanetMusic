@@ -14,17 +14,18 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
   
+  // Custom Confirmation Modal State
+  const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
+
   // Dedicated local playback states for the Sync Workspace
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
-  
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
-  
+
   const syncAudioRef = useRef(null);
-  
   const activeLineRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
@@ -108,12 +109,24 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
   }, [activeSyncIndex, isSyncMode]);
 
-  const updateWorkspaceData = (newData) => {
+  const toggleWorkspaceMode = () => {
     if (isShowingAutoSync) {
       setIsShowingAutoSync(false);
-      setNotification({ show: true, message: 'Edit detected: Converted to Manual Sync', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
+      setSyncData(selectedSong.syncData || []);
+      syncDataRef.current = selectedSong.syncData || [];
+      setActiveSyncIndex(0);
+    } else {
+      if (!selectedSong.autoSyncData || selectedSong.autoSyncData.length === 0) {
+        return alert("No Auto-Sync data available! Please fetch it from the dashboard first.");
+      }
+      setIsShowingAutoSync(true);
+      setSyncData(selectedSong.autoSyncData);
+      syncDataRef.current = selectedSong.autoSyncData;
+      setActiveSyncIndex(0);
     }
+  };
+
+  const updateWorkspaceData = (newData) => {
     setSyncData(newData);
     syncDataRef.current = newData;
   };
@@ -129,7 +142,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   useSyncKeyboard({
     isSyncMode, syncAudioRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-    loopRangeRef
+    loopRangeRef, isShowingAutoSync
   });
 
   const {
@@ -144,18 +157,17 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
-    
+         
     // Explicitly send a signal to auto-pause the Global Player when entering the workspace
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-    
+         
     setIsSyncLoading(true);
-
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
-    
+         
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
-    
+         
     if (hasManualText) {
       initialData = parsedLines.map((line, i) => {
         const existingNode = selectedSong?.syncData?.[i] || {};
@@ -172,7 +184,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } else if (sourceData && sourceData.length > 0) {
       initialData = sourceData.map((node) => ({ ...node }));
     }
-    
+         
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
@@ -181,7 +193,10 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const handleRefreshLyrics = () => {
-    if (!window.confirm("Are you sure you want to refresh lyrics? This will reset all timings, translations, and split ad-libs for this song.")) return;
+    setShowRefreshPrompt(true);
+  };
+
+  const confirmRefreshLyrics = () => {
     const parsedLines = parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
     const resetData = parsedLines.map(line => ({
       ...line,
@@ -194,7 +209,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }));
     setSyncData(resetData);
     syncDataRef.current = resetData;
-    
+         
     updateSongInLibrary({
       ...selectedSong,
       syncData: resetData,
@@ -204,10 +219,19 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setNotification({ show: true, message: 'Lyrics data refreshed and cleared!', progress: 100 });
       setTimeout(() => setNotification({ show: false }), 2000);
     }
+    setShowRefreshPrompt(false);
+  };
+
+  const cancelRefreshLyrics = () => {
+    setShowRefreshPrompt(false);
   };
 
   const saveSyncData = () => {
-    updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
+    if (isShowingAutoSync) {
+      updateSongInLibrary({ ...selectedSong, autoSyncData: syncDataRef.current });
+    } else {
+      updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
+    }
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
   };
@@ -231,7 +255,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, playbackRate, debugInfo,
-    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
-    handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange
+    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
+    handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode
   };
 };

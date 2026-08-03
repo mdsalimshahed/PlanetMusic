@@ -30,7 +30,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
     syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
-  
+
   displayProps.isSyncMode = syncProps.isSyncMode;
 
   const sharedProps = {
@@ -47,10 +47,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
       <div className="modal-window glass-panel" onClick={(e) => e.stopPropagation()}>
         <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
-        
+                 
         <div className="modal-content-wrapper">
-          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}> </button>
-          
+          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✖</button>
+                     
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
             <ModalRight 
@@ -76,6 +76,20 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
           )}
         </div>
       </div>
+
+      {/* Sync Workspace 'Clear Timings' Red Danger Modal Overlay */}
+      {syncProps.showRefreshPrompt && (
+        <div className="confirm-overlay" onClick={syncProps.cancelRefreshLyrics}>
+          <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+            <h3>Clear All Timings?</h3>
+            <p>Are you sure you want to clear all timings, translations, and ad-lib splits? This action cannot be undone.</p>
+            <div className="confirm-actions">
+              <button className="confirm-btn cancel" onClick={syncProps.cancelRefreshLyrics}>Cancel</button>
+              <button className="confirm-btn delete" onClick={syncProps.confirmRefreshLyrics}>Clear Timings</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -17,16 +17,16 @@ export const useSyncEngine = ({
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
     const currentItem = wLines[activeIdxRef.current];
-    
+         
     if (currentItem && (currentItem.ref.start === null || (currentItem.ref.start !== null && currentItem.ref.end === null))) {
       return; 
     }
-    
+         
     let newIdx = -1;
     for (let i = 0; i < wLines.length; i++) {
       const item = wLines[i];
       if (item.type !== 'main' || item.ref.start === null) continue;
-      
+             
       let nextStart = null;
       for (let j = i + 1; j < wLines.length; j++) {
         if (wLines[j].type === 'main' && wLines[j].ref.start !== null) {
@@ -34,7 +34,7 @@ export const useSyncEngine = ({
           break;
         }
       }
-      
+             
       if (time >= item.ref.start) {
         if (nextStart === null || time < nextStart) {
             if (item.ref.end !== null && time > item.ref.end) {
@@ -46,7 +46,7 @@ export const useSyncEngine = ({
         }
       }
     }
-    
+         
     if (newIdx === -1) {
         for (let i = 0; i < wLines.length; i++) {
             if (wLines[i].type === 'main') {
@@ -57,7 +57,7 @@ export const useSyncEngine = ({
             }
         }
     }
-    
+         
     if (newIdx !== activeIdxRef.current) {
       if (newIdx !== -1 && currentItem?.type === 'adlib' && wLines[newIdx].lineIndex === currentItem.lineIndex) {
         return; 
@@ -69,19 +69,19 @@ export const useSyncEngine = ({
   useEffect(() => {
     let animationFrameId;
     let lastDispatchTime = 0;
-    
+         
     const syncTick = (timestamp) => {
       if (syncAudioRef.current && isSyncPlaying) {
         const time = syncAudioRef.current.currentTime;
-        
+                 
         if (timestamp - lastDispatchTime > 33) {
            window.dispatchEvent(new CustomEvent('workspaceTimeUpdate', { detail: time }));
            lastDispatchTime = timestamp;
         }
-        
+                 
         const wLines = workspaceLinesRef.current;
         const currentItem = wLines[activeIdxRef.current];
-        
+                 
         if (currentItem?.type === 'adlib' && currentItem.ref.start !== null && currentItem.ref.end === null) {
           if (currentItem.parentRef.end !== null && time >= currentItem.parentRef.end) {
              const data = [...syncDataRef.current];
@@ -89,7 +89,7 @@ export const useSyncEngine = ({
              itemToMutate.end = currentItem.parentRef.end;
              updateWorkspaceData(data);
              setLoopRange(null);
-             
+                           
              let nextIdx = activeIdxRef.current + 1;
              while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
              if (nextIdx < wLines.length) {
@@ -98,7 +98,7 @@ export const useSyncEngine = ({
              }
           }
         }
-        
+                 
         if (loopRangeRef.current) {
           if (time >= loopRangeRef.current.end && syncAudioRef.current) {
             syncAudioRef.current.pause();
@@ -113,7 +113,7 @@ export const useSyncEngine = ({
           autoTrackSyncPlayback(time);
         }
       }
-      
+             
       if (isSyncPlaying) {
         animationFrameId = requestAnimationFrame(syncTick);
       }
@@ -132,11 +132,10 @@ export const useSyncEngine = ({
 export const useSyncKeyboard = ({
   isSyncMode, syncAudioRef, activeIdxRef, workspaceLinesRef,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-  loopRangeRef
+  loopRangeRef, isShowingAutoSync
 }) => {
   useEffect(() => {
     if (!isSyncMode) return;
-
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
         if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
@@ -164,36 +163,46 @@ export const useSyncKeyboard = ({
         }
         return;
       }
-      
+             
       const currentIdx = activeIdxRef.current;
       const wLines = workspaceLinesRef.current;
       if (!wLines[currentIdx]) return;
-      
+             
       const currentItem = wLines[currentIdx];
       const data = [...syncDataRef.current];
-      
+             
       let itemToMutate;
       if (currentItem.type === 'main') itemToMutate = data[currentItem.lineIndex];
       else itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
-      
-      // FIX: The artificial offset has been removed. 
-      // The exact time of the keypress is now passed directly through.
+             
       const time = syncAudioRef.current?.currentTime || 0;
-      
+             
       if (e.key === 'ArrowDown') {
         e.preventDefault();
+
+        // Block main line mutation in Auto Sync
+        if (isShowingAutoSync && currentItem.type === 'main') {
+            let nextIdx = currentIdx + 1;
+            while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
+            if (nextIdx < wLines.length) {
+                setActiveSyncIndex(nextIdx);
+                activeIdxRef.current = nextIdx;
+            }
+            return;
+        }
+
         if (itemToMutate.start === null) itemToMutate.start = time;
         else if (itemToMutate.end === null) {
           let newEnd = time;
           if (newEnd < itemToMutate.start) newEnd = itemToMutate.start;
-          
+                     
           if (currentItem.type === 'adlib' && currentItem.parentRef.end !== null && newEnd > currentItem.parentRef.end) {
             newEnd = currentItem.parentRef.end;
           }
           itemToMutate.end = newEnd;
-          
+                     
           if (currentItem.type === 'adlib') setLoopRange(null);
-          
+                     
           let nextIdx = currentIdx + 1;
           while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
           if (nextIdx < wLines.length) {
@@ -211,6 +220,20 @@ export const useSyncKeyboard = ({
         updateWorkspaceData(data);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+
+        // Block main line mutation in Auto Sync
+        if (isShowingAutoSync && currentItem.type === 'main') {
+            let prevIdx = currentIdx - 1;
+            while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
+            if (prevIdx >= 0) {
+                setActiveSyncIndex(prevIdx);
+                activeIdxRef.current = prevIdx;
+                const prevItem = wLines[prevIdx].ref;
+                if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem.start || 0;
+            }
+            return;
+        }
+
         if (itemToMutate.end !== null) {
           itemToMutate.end = null;
           if (currentItem.type === 'adlib') {
@@ -229,7 +252,7 @@ export const useSyncKeyboard = ({
           if (prevIdx >= 0) {
             setActiveSyncIndex(prevIdx);
             activeIdxRef.current = prevIdx;
-            
+                         
             const prevItem = wLines[prevIdx].ref;
             if (syncAudioRef.current) syncAudioRef.current.currentTime = prevItem.start || 0;
           }
@@ -237,10 +260,10 @@ export const useSyncKeyboard = ({
         updateWorkspaceData(data);
       }
     };
-    
+         
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSyncMode]);
+  }, [isSyncMode, isShowingAutoSync]);
 };
 
 // ------------------------------------------------------------------
@@ -259,11 +282,11 @@ export const useSyncActions = ({
     const line = data[lineIndex];
     const lineChars = Array.from(line.text);
     const adlibs = [];
-    
+         
     let inAdlib = false;
     let charStart = 0;
     let adlibText = '';
-    
+         
     for (let i = 0; i < lineChars.length; i++) {
         if (lineChars[i] === '(' && !inAdlib) {
             inAdlib = true;
@@ -274,16 +297,15 @@ export const useSyncActions = ({
             if (lineChars[i] === ')') {
                 inAdlib = false;
                 const charEnd = i + 1;
-                
+                                 
                 const adlibSegments = [];
                 const adlibArtistsSet = new Set();
                 let currentPos = 0;
-                
+                                 
                 for (const seg of line.segments) {
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
-
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
 
@@ -293,7 +315,6 @@ export const useSyncActions = ({
                             ...seg,
                             text: overlapText
                         });
-
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -318,7 +339,7 @@ export const useSyncActions = ({
             }
         }
     }
-    
+         
     if (adlibs.length > 0) {
       line.isSplit = true;
       line.adlibs = adlibs;
@@ -338,12 +359,10 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
-
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
     }
-
     const parsedLines = parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
     if (parsedLines.length === 0) {
       return alert("No manual lyrics available to map.");
@@ -400,7 +419,7 @@ export const useSyncActions = ({
         const targetAutoLine = autoData[matchedAutoIdx];
         const manualGroup = [manualPointer];
         let nextManual = manualPointer + 1;
-        
+                 
         while (nextManual < updatedSyncData.length) {
           const cleanNextManual = normalize(updatedSyncData[nextManual].text);
           if (!cleanNextManual) {
@@ -457,14 +476,14 @@ export const useSyncActions = ({
       setSyncData(updatedSyncData);
       syncDataRef.current = updatedSyncData;
     }
-    
+         
     setNotification({ show: true, message: 'Sequentially mapped Auto-Sync timings to Manual Lyrics!', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 2500);
   };
 
   const handleAutoSyncDatabases = async (forceSync = false) => {
     if (!isSaved && !forceSync) return alert("Please add to Vault first before auto-syncing!");
-    
+         
     if (selectedSong.autoSyncData && selectedSong.autoSyncData.length > 0 && !forceSync) {
       if (isShowingAutoSync) {
         setIsShowingAutoSync(false);
@@ -488,7 +507,7 @@ export const useSyncActions = ({
 
     setIsLrcFetching(true);
     setNotification({ show: true, message: 'Fetching from databases...', progress: null });
-    
+         
     try {
       let finalSyncData = null;
       let finalPlainText = "";
@@ -499,7 +518,7 @@ export const useSyncActions = ({
       const youData = await fetchYouLyrics(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
       let youParsed = null;
       let youHasWordSync = false;
-      
+             
       if (youData?.syncedLyrics) {
         youParsed = parseLRC(youData.syncedLyrics, selectedSong.artistName, masterPalette);
         youHasWordSync = youParsed.syncData.some(line => line.wordSync?.length > 0);
@@ -512,6 +531,7 @@ export const useSyncActions = ({
         if (lrcData?.syncedLyrics) {
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync?.length > 0);
+
           if (lrcHasWordSync || !youParsed) {
             finalSyncData = lrcParsed.syncData; finalPlainText = lrcParsed.plainTextLyrics; hasWordSync = lrcHasWordSync; finalSource = 'LRCLIB API'; finalRawData = lrcData;
           } else {
@@ -536,16 +556,16 @@ export const useSyncActions = ({
       if (finalSyncData) {
         const hasManualLyrics = Boolean(customData.lyrics && customData.lyrics.trim());
         const hasManualSync = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
-        
+                 
         let newSyncData = hasManualSync ? selectedSong.syncData : (hasManualLyrics ? selectedSong.syncData : finalSyncData);
         let saveLyrics = hasManualLyrics ? customData.lyrics : finalPlainText;
 
         updateSongInLibrary({ ...selectedSong, autoSyncData: finalSyncData, syncData: newSyncData, lyrics: saveLyrics });
-        
+                 
         if (!hasManualLyrics) {
           setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         }
-        
+                 
         setNotification({ show: true, message: hasWordSync ? 'Word-by-word sync found!' : 'Auto-sync successful!', progress: 100 });
       } else {
         if (!customData.lyrics) {
