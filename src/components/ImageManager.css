@@ -7,6 +7,16 @@
    overflow-y: auto;
    -webkit-overflow-scrolling: touch;
 }
+
+/* Custom Scrollbar Styling to match the rest of the app */
+.image-manager-container::-webkit-scrollbar { 
+   width: 6px; 
+}
+.image-manager-container::-webkit-scrollbar-thumb { 
+   background: rgba(255, 255, 255, 0.2); 
+   border-radius: 10px; 
+}
+
 .image-manager-title { margin-top: 0; margin-bottom: 8px; color: white; }
 .image-manager-sub {
    font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.8);
