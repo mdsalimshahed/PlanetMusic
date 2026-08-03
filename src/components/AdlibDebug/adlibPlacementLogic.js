@@ -14,6 +14,44 @@ export const pseudoRandom = (seedStr) => {
 // Exported so the tracker can do JIT DOM reading outside of the loop
 export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
+
+  // Extract tight text bounds to ignore 100% width block containers
+  let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
+  let hasValidBounds = false;
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+       
+  while ((node = walker.nextNode())) {
+    if (node.textContent.trim() !== '') {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const rects = range.getClientRects();
+               
+      for (let i = 0; i < rects.length; i++) {
+        const rect = rects[i];
+        if (rect.width > 0 && rect.height > 0) {
+          hasValidBounds = true;
+          minTop = Math.min(minTop, rect.top);
+          minLeft = Math.min(minLeft, rect.left);
+          maxRight = Math.max(maxRight, rect.right);
+          maxBottom = Math.max(maxBottom, rect.bottom);
+        }
+      }
+    }
+  }
+  
+  if (hasValidBounds) {
+    return {
+      top: minTop - containerRect.top,
+      bottom: maxBottom - containerRect.top,
+      left: minLeft - containerRect.left,
+      right: maxRight - containerRect.left,
+      width: maxRight - minLeft,
+      height: maxBottom - minTop
+    };
+  }
+
+  // Fallback to basic bounding box if no text nodes found
   const rect = element.getBoundingClientRect();
   return {
     top: rect.top - containerRect.top,
@@ -61,11 +99,11 @@ export const generateSafeAdlibPosition = (
         baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
       }
     }
-    
+         
     if (cBox.bottom < safeBottom) {
       const topEdge = cBox.bottom + LYRIC_PAD;
       let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
-      
+             
       if (sBox && sBox.top < safeBottom) {
         const sTopAdjusted = sBox.top - SINGER_PAD;
         if (sTopAdjusted > topEdge) {
@@ -101,7 +139,7 @@ export const generateSafeAdlibPosition = (
       const r = Math.floor(i / cols);
       const c = i % cols;
       const artist = getArtistForCell(i);
-      
+             
       if (activeSingersList.includes(artist)) {
         validCells.push({
           left: c * colW,
@@ -139,7 +177,7 @@ export const generateSafeAdlibPosition = (
   let targetArea;
   if (intersectedAreas.length > 0) {
     const canvasMidY = containerRect.height / 2;
-    
+         
     const topZones = intersectedAreas.filter(a => a.top < canvasMidY).sort((a, b) => a.left - b.left);
     const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY).sort((a, b) => a.left - b.left);
 
@@ -164,10 +202,8 @@ export const generateSafeAdlibPosition = (
   }
 
   // 6. GENERATE INNER SAFE ZONE (Prevents Center Placement from Bleeding Edges)
-  // We inset the target area by half the ad-lib's dimensions, plus a 20% buffer to protect it during rotation.
   const padX = (adlibWidth / 2) * 1.2;
   const padY = (adlibHeight / 2) * 1.2;
-
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
@@ -186,22 +222,23 @@ export const generateSafeAdlibPosition = (
   }
 
   // Generate a random center point STRICTLY inside the Inner Safe Zone
-  const randomX = pseudoRandom(seedKey + 'x');
-  const randomY = pseudoRandom(seedKey + 'y');
+  const randomX = innerLeft + pseudoRandom(`${seedKey}_X_${globalIndex}`) * (innerRight - innerLeft);
+  const randomY = innerTop + pseudoRandom(`${seedKey}_Y_${globalIndex}`) * (innerBottom - innerTop);
 
-  const finalX = innerLeft + (randomX * (innerRight - innerLeft));
-  const finalY = innerTop + (randomY * (innerBottom - innerTop));
-
-  // 7. Calculate Dynamic Rotation based on distance from center
+  // 7. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
   const canvasMidY = containerRect.height / 2;
-  const rotMultiplier = (finalX - canvasMidX) / (canvasMidX || 1);
-  const ySign = (finalY < canvasMidY) ? 1 : -1;
-  const rot = rotMultiplier * ySign * 18;
+  
+  const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
+  const ySign = (randomY < canvasMidY) ? 1 : -1; 
+  let finalRotation = rotMultiplier * ySign * 18; 
+
+  const noise = (pseudoRandom(`${seedKey}_Rot_${globalIndex}`) * 10) - 5;
+  finalRotation += noise;
 
   return {
-    left: `${finalX}px`,
-    top: `${finalY}px`,
-    rot: rot
+    left: `${randomX}px`,
+    top: `${randomY}px`,
+    rot: finalRotation.toFixed(2)
   };
 };

@@ -28,17 +28,15 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     if (!syncData) return items;
 
     let globalAdlibCounter = 0; 
-
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
-        
+                 
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
         const isMulti = lineActiveNames.length > 1;
         const cols = Math.max(2, lineActiveNames.length);
 
         node.adlibs.forEach((adlib, j) => {
           if (adlib.start === null) return;
-
           const key = `adlib-${adlib.start}-${j}`;
           const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -53,8 +51,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
               } else { aTrans = aPron; }
             }
+
             let adlibTranslation = adlibObj?.translation || '';
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
+
             const basePronStyle = {
               fontSize: 'var(--dyn-translit-font-size, 0.55em)',
               fontWeight: '800',
@@ -65,13 +65,16 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               display: 'inline-block',
               whiteSpace: 'pre' // Force no wrap
             };
+
             const segs = adlibObj.segments || [{ text: adlibObj.text }];
             const renderedSegments = [];
             let charIdxCounter = 0;
+
             segs.forEach((seg, segIdx) => {
               let inlineColor = seg.color || '#ffffff';
               let inlineIsGradient = seg.isGradient || false;
               let inlineGradient = seg.gradient || '';
+
               if (seg.artists && seg.artists.length > 0) {
                 if (seg.artists.length > 1) {
                   inlineIsGradient = true;
@@ -82,10 +85,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   inlineColor = masterPalette[seg.artists[0]] || inlineColor;
                 }
               }
+
               const segChars = Array.from(seg.text || '');
               const renderedChars = segChars.map((char) => {
                 const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(char);
                 let style = {};
+
                 if (isPunct) {
                   style.color = '#fbbf24';
                   style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
@@ -98,6 +103,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   style.color = inlineColor;
                   style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${inlineColor}80`;
                 }
+
                 return (
                   <span key={charIdxCounter++} style={style}>
                     {char}
@@ -110,6 +116,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 </React.Fragment>
               );
             });
+
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
                 {adlibTranslation && (
@@ -154,11 +161,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             cols,
             activeSingersList,
             activeNames: lineActiveNames,
+            parentStart: node.start, // <--- CRITICAL FIX: Direct link back to parent DOM element
             rendered: renderAdlibPure(adlib)
           });
         });
       }
     });
+
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
@@ -179,6 +188,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           cols: dataItem.cols,
           activeSingersList: dataItem.activeSingersList,
           activeNames: dataItem.activeNames,
+          parentStart: dataItem.parentStart,
           isActive: node.classList.contains('active')
         };
       });
@@ -207,14 +217,14 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
     const handleTime = (e) => {
       const time = e.detail;
-      const nodes = cachedTrackNodesRef.current;
 
+      const nodes = cachedTrackNodesRef.current;
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
 
         if (shouldBeActive && !item.isActive) {
-          
+                     
           // Use Browser Memory Cache mapping Window Size + Unique Adlib Key
           const cacheKey = `${item.sessionSeed}_${item.key}_${window.innerWidth}x${window.innerHeight}`;
           let pos = adlibPlacementCache.get(cacheKey);
@@ -224,14 +234,26 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const container = containerRef.current?.parentElement;
             if (container) {
               const containerRect = container.getBoundingClientRect();
-              
-              // Only measuring the exact lyric line currently active
-              const lyricsNode = container.querySelector('.focused-line.active');
+                             
+              // CRITICAL FIX: Bypass the `.active` class race condition completely!
+              // Select the exact DOM node this ad-lib belongs to, even if it hasn't animated in yet.
+              const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
+              const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
               const singerNode = container.querySelector('.singer-name-corner.visible');
-              
+                             
               const cBox = getRelativeRect(lyricsNode, containerRect);
-              const sBox = getRelativeRect(singerNode, containerRect);
 
+              // CRITICAL DOM MEASUREMENT FIX:
+              // If this JIT calculation fires milliseconds before LyricsDisplay applies 
+              // the '.active' class, the main text is physically sitting 20px lower (pre-transition state).
+              // We must mathematically reverse this 20px shift to calculate bounds against its TRUE resting place.
+              if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
+                  cBox.top -= 20;
+                  cBox.bottom -= 20;
+              }
+
+              const sBox = getRelativeRect(singerNode, containerRect);
+                             
               pos = generateSafeAdlibPosition(
                 item.node.offsetWidth || 150,
                 item.node.offsetHeight || 40,
@@ -246,7 +268,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 item.globalIndex,
                 item.sessionSeed
               );
-              
+                             
               // Cache it so it never runs math again for this screen size!
               adlibPlacementCache.set(cacheKey, pos);
             }
