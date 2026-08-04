@@ -13,15 +13,51 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
+// Reusable component that automatically scrolls overflowing text
+const MarqueeText = ({ text, className }) => {
+  const containerRef = useRef(null);
+  const textRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current && textRef.current) {
+        // Checking natural span width against constrained container width (with a safe 2px padding buffer)
+        setIsOverflowing(textRef.current.offsetWidth > containerRef.current.clientWidth + 2);
+      }
+    };
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [text]);
+
+  return (
+    <div 
+      className={`marquee-container ${className}`} 
+      ref={containerRef}
+      style={{ 
+        WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none',
+        maskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none'
+      }}
+    >
+      <div className={`marquee-content ${isOverflowing ? 'animate-marquee' : ''}`}>
+        <span ref={textRef} className="marquee-text">{text}</span>
+        {isOverflowing && <span className="marquee-text gap-pl">{text}</span>}
+      </div>
+    </div>
+  );
+};
+
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
   const audioRef = useRef(null);
   const ytPlayerRef = useRef(null);
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
+
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-  
+
   const trackIdRef = useRef(null);
   const localRef = useRef(null);
   const activeSourceRef = useRef(null); 
@@ -38,10 +74,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const [activeSource, setActiveSource] = useState('preview'); 
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
+
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
+
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
 
@@ -239,7 +277,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     const hasLocal = currentTrack.customLinks?.hasLocal;
     const ytUrl = currentTrack.customLinks?.yt || currentTrack.yt || '';
     let extractedYtId = extractYouTubeId(ytUrl);
-
     let intendedSource = 'preview';
 
     // 1. Check for explicit overrides from user button clicks
@@ -307,6 +344,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           setActiveSource('preview');
         }
       };
+
       loadAudio();
       
     // Soft switch: Same track and source, but user re-clicked play
@@ -334,7 +372,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   // Initialize YouTube Player via native API
   useEffect(() => {
     if (!ytVideoId) return;
-
     let playerInstance = null;
 
     const initYTPlayer = () => {
@@ -342,12 +379,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         setTimeout(initYTPlayer, 100);
         return;
       }
-
       const container = document.getElementById('yt-player-container');
       if (!container) return;
 
       container.innerHTML = '<div id="yt-player-target" style="width:100%;height:100%;"></div>';
-
+      
       playerInstance = new window.YT.Player('yt-player-target', {
         videoId: ytVideoId,
         host: 'https://www.youtube-nocookie.com',
@@ -376,6 +412,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
                 globalClock.seek(pendingSeek);
                 setPendingSeek(null);
               }
+
               event.target.playVideo();
               setIsPlaying(true);
               emitPlayState(true, false);
@@ -419,7 +456,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
       });
     };
-
     initYTPlayer();
 
     return () => {
@@ -459,7 +495,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         globalClock.updateAnchor(audioRef.current.currentTime);
       }
     };
-
     window.addEventListener('globalTimeUpdate', handleTimeUpdate);
     return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
   }, [duration, ytVideoId, isPlaying]);
@@ -574,6 +609,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPlaying, duration, currentTrack, ytVideoId, ytPlayerReady]);
@@ -657,28 +693,18 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               )}
             </div>
           </div>
+
           <div className="player-text">
-            <h4 title={currentTrack.trackName}>
-              {currentTrack.trackName}
-              {activeSource === 'youtube' && <span className="source-badge yt-badge" title="Playing YouTube Stream">YT</span>}
-              {activeSource === 'local' && (
-                <span className="source-badge local-badge" title="Playing Local Audio">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                </span>
-              )}
-              {activeSource === 'preview' && (
-                <span className="source-badge preview-badge" title="Playing iTunes Preview (30s)">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle>
-                  </svg>
-                </span>
-              )}
-            </h4>
-            <p title={currentTrack.artistName}>{currentTrack.artistName}</p>
+            <MarqueeText className="track-title" text={currentTrack.trackName} />
+            <MarqueeText className="artist-name" text={currentTrack.artistName} />
+            <p className="source-text">
+              {activeSource === 'youtube' && "YT Music"}
+              {activeSource === 'local' && "Local Audio File"}
+              {activeSource === 'preview' && "iTunes Preview (30s)"}
+            </p>
           </div>
         </div>
+
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">

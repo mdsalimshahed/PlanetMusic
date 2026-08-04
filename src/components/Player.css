@@ -1,20 +1,23 @@
 /* --- src/components/Player.css --- */
 .global-player {
-  --tx: 0px; /* Custom CSS variable handles our translations smoothly */
+  --tx: 0px; 
   position: fixed;
   bottom: 24px;
-  /* DEFAULT MODAL-OPEN MODE: Aligns cleanly below the modal's left sidebar */
   left: clamp(16px, 60px, calc(100vw - 366px));
   width: min(calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100)), calc(100vw - 32px));
   min-width: min(280px, calc(100vw - 32px));
   max-width: calc(100vw - 32px);
-  height: clamp(80px, 10vw, 96px); 
-  padding: 10px clamp(16px, 2.5vw, 24px);
+  
+  /* FLUID HEIGHT FIX: Tightened padding and gaps to reduce vertical bulk */
+  height: auto; 
+  min-height: 64px;
+  padding: 8px clamp(16px, 2.5vw, 24px) 4px;
   border-radius: 24px; 
+  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 4px;
+  gap: 2px;
   z-index: 10000;
   border: 1px solid color-mix(in srgb, var(--player-accent, rgba(255,255,255,0.1)) 20%, transparent);
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 10px 30px color-mix(in srgb, var(--player-accent, transparent) 10%, transparent);
@@ -23,7 +26,6 @@
   transition: box-shadow 0.4s ease, border-color 0.4s ease, left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* NEW CENTERED MODE: Applies automatically when SongModal is closed */
 .global-player.centered-mode {
   --tx: -50%;
   left: 50%;
@@ -59,7 +61,7 @@
   align-items: center;
   min-height: 0;
   pointer-events: none;
-} 
+}
 
 .player-top-row > * {
   pointer-events: auto;
@@ -136,59 +138,70 @@
 .player-text {
   overflow: hidden;
   width: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
 }
 
-.player-text h4 {
+/* --- MARQUEE TEXT SYSTEM --- */
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.marquee-container.track-title {
   font-size: clamp(13px, 1.5vw, 15px); 
   font-weight: 700;
   color: white;
-  margin-bottom: 0px;
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  line-height: 1.2;
 }
 
-.source-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 2px 5px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  height: 16px;
-  box-sizing: border-box;
-}
-
-.yt-badge {
-  background: #FF0000;
-  color: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
-}
-
-.local-badge {
-  background: #4ade80;
-  color: #000000;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-}
-
-.preview-badge {
-  background: #a855f7;
-  color: #ffffff;
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
-}
-
-.player-text p {
+.marquee-container.artist-name {
   font-size: clamp(11px, 1.3vw, 13px); 
   color: var(--text-subdued);
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  margin-top: 0;
+  line-height: 1.2;
+}
+
+.marquee-content {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  width: max-content;
+}
+
+/* Smooth loop with built-in pauses at the start and end of the string */
+.animate-marquee {
+  animation: marquee-scroll 14s linear infinite;
+}
+
+.marquee-container:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+.marquee-text {
+  display: inline-block;
+}
+
+.gap-pl {
+  padding-left: 32px;
+}
+
+@keyframes marquee-scroll {
+  0%, 10% { transform: translateX(0); }
+  90%, 100% { transform: translateX(calc(-50% - 16px)); } /* 16px perfectly aligns the 32px gap for a seamless loop */
+}
+
+.player-text .source-text {
+  font-size: clamp(8px, 0.8vw, 9px);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 .player-right-controls {
@@ -315,7 +328,7 @@
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent !important; 
-  height: 32px; 
+  height: 24px; 
   background-image: 
     linear-gradient(var(--player-accent, white), var(--player-accent, white)),
     linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
@@ -348,7 +361,7 @@
   box-shadow: none;
   border: none;
   background: transparent; 
-  height: 32px; 
+  height: 24px; 
   cursor: pointer;
 }
 
@@ -359,7 +372,7 @@
   width: 14px;
   border-radius: 50%;
   background: white;
-  margin-top: 9px; 
+  margin-top: 5px; 
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   transition: transform 0.1s ease, background-color 0.3s ease;
 }
