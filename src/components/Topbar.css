@@ -18,7 +18,6 @@
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
 /* --- DYNAMIC LOGO COLOR ANIMATION --- */
@@ -28,27 +27,20 @@
   100% { background-position: 0% 50%; }
 }
 
-.logo-icon, .logo-text {
+.logo-text {
   /* Matches the vibrant palette from the fluid background */
   background: linear-gradient(270deg, #ff0a54, #ff7000, #ffc300, #00f5d4, #00bbf9, #f15bb5, #ff0a54);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: dynamicGradientPulse 10s ease infinite;
-}
-
-.logo-icon {
-  font-size: 28px;
-  filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-}
-
-.logo-text {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.5px;
+  margin: 0;
 }
-/* ------------------------------------ */
 
+/* ------------------------------------ */
 /* Right Side Grouping */
 .topbar-right {
   display: flex;
@@ -69,6 +61,7 @@
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-subdued);
+  font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   padding: 8px 20px;
@@ -112,6 +105,7 @@
   height: 40px;
   border-radius: 50%;
   color: var(--text-base);
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -129,30 +123,25 @@
     padding: 16px 20px;
     gap: 12px;
   }
-  
   .topbar-right {
     width: 100%;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 12px;
   }
-  
   .topbar-divider {
-    display: none;
+    display: none; 
   }
 }
 
-/* Safely hides layout barrier when wrapped */
 @media (max-width: 480px) {
   .topbar-right {
     justify-content: center;
   }
-  
   .nav-menu {
     justify-content: center;
     width: 100%;
   }
-  
   .topbar-tools {
     justify-content: center;
     width: 100%;

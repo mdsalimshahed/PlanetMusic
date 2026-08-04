@@ -121,9 +121,10 @@ body {
   pointer-events: auto; 
   display: flex;
   align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* FIX: Ensure Cloudflare production build respects the blur */
+  background: rgba(0, 0, 0, 0.3) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
   border: 1px solid var(--glass-border);
   border-radius: 500px;
   padding: 0 8px 0 24px;
@@ -136,7 +137,7 @@ body {
 
 .search-box:focus-within {
   border-color: rgba(251, 191, 36, 0.5);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5) !important;
   box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
 }
 

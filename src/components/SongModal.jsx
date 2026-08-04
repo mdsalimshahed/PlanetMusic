@@ -9,8 +9,8 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
-  const [showAdlibDebug, setShowAdlibDebug] = useState(false); 
-  
+  const [showAdlibDebug, setShowAdlibDebug] = useState(false);
+
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   
   const syncProps = useSyncWorkspace(
@@ -18,14 +18,25 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification
   );
 
+  // Hierarchy: Explicit Workspace Mode -> Manual Sync -> Auto Sync -> Empty Array
   const effectiveSong = useMemo(() => {
     if (!selectedSong) return null;
-    const activeData = syncProps.isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
+    
+    let activeData = selectedSong.syncData;
+    const hasManual = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
+    const hasAuto = selectedSong.autoSyncData && selectedSong.autoSyncData.some(l => l.start !== null);
+
+    if (syncProps.isSyncMode) {
+      activeData = syncProps.isShowingAutoSync && hasAuto ? selectedSong.autoSyncData : selectedSong.syncData;
+    } else {
+      activeData = hasManual ? selectedSong.syncData : (hasAuto ? selectedSong.autoSyncData : selectedSong.syncData);
+    }
+
     return {
       ...selectedSong,
       syncData: activeData
     };
-  }, [selectedSong, syncProps.isShowingAutoSync]);
+  }, [selectedSong, syncProps.isShowingAutoSync, syncProps.isSyncMode]);
 
   const displayProps = useLyricsDisplay(
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 

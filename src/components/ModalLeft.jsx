@@ -38,8 +38,9 @@ const ModalLeft = ({
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const ytVideoId = extractYouTubeId(customData.yt || selectedSong.customLinks?.yt || selectedSong.yt);
 
-  // Checks if the track possesses any synced data (whether it is active right now or not)
-  const hasAnySyncData = hasValidSyncData || (realSelectedSong?.autoSyncData && realSelectedSong.autoSyncData.some(l => l.start !== null));
+  // Checks directly against the pure original database entries
+  const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
+  const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
 
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
@@ -193,7 +194,7 @@ const ModalLeft = ({
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
             <div className="action-buttons-grid">
-              {hasAnySyncData ? (
+              {hasValidSyncData ? (
                 <>
                   <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
                     <Icon name="eye" />
@@ -212,9 +213,13 @@ const ModalLeft = ({
                      </button>
                   )}
                 </>
-              ) : (
+              ) : hasPlainLyrics ? (
                 <span className="no-sync-warning">
                   Lyrics aren't synced. Manual or Auto-Sync is needed.
+                </span>
+              ) : (
+                <span className="no-sync-warning">
+                  No lyrics found. Add custom lyrics and sync them.
                 </span>
               )}
             </div>
@@ -287,8 +292,8 @@ const ModalLeft = ({
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? <Icon name="clock" /> : (hasValidSyncData ? <Icon name="edit" /> : <Icon name="clock" />)}
-                      {isSyncLoading ? 'Parsing Engine...' : hasValidSyncData ? 'Edit Timings' : 'Manual Sync'}
+                      {isSyncLoading ? <Icon name="clock" /> : (hasManualSync ? <Icon name="edit" /> : <Icon name="clock" />)}
+                      {isSyncLoading ? 'Parsing Engine...' : hasManualSync ? 'Edit Timings' : 'Manual Sync'}
                     </button>
                     
                     <button 

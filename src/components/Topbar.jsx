@@ -3,17 +3,16 @@ import React, { useRef } from 'react';
 import './Topbar.css';
 
 const Topbar = ({ 
-  activeTab, handleHomeClick, 
-  handleExport, handleImport, handleLoadSample, openSettings 
-}) => {
+    activeTab, handleHomeClick, 
+    handleExport, handleImport, handleLoadSample, openSettings 
+  }) => {
   const fileInputRef = useRef(null);
 
   return (
     <header className="topbar">
-      {/* Left: Logo Only (Clicking Logo also resets to Home) */}
+      {/* Left: Logo Text Only */}
       <div className="topbar-left" onClick={handleHomeClick} style={{ cursor: 'pointer' }}>
         <div className="logo-area" title="PlanetMusic">
-          <span className="logo-icon"> </span>
           <h2 className="logo-text">PlanetMusic</h2>
         </div>
       </div>
@@ -36,7 +35,12 @@ const Topbar = ({
           
           {/* Settings Button */}
           <button className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={openSettings} title="Preferences">
-            <span className="nav-icon"> </span>
+            <span className="nav-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </span>
             <span className="nav-text">Settings</span>
           </button>
         </nav>
@@ -51,7 +55,6 @@ const Topbar = ({
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
           </button>
-
           <button className="tool-btn glass-button" onClick={handleExport} title="Export Database (JSON)">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
