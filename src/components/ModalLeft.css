@@ -498,6 +498,15 @@ a.platform-label.yt-color:hover {
 .instruction-row { display: flex; gap: 8px; }
 .instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
 
+/* Subtext warning when no sync data is available */
+.no-sync-warning {
+  font-size: clamp(11px, 1.3vw, 13px);
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
 /* --- MOBILE RESPONSIVE STACKING --- */
 @media (max-width: 900px) {
   .modal-left-col {

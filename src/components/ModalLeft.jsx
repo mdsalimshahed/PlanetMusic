@@ -38,6 +38,9 @@ const ModalLeft = ({
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const ytVideoId = extractYouTubeId(customData.yt || selectedSong.customLinks?.yt || selectedSong.yt);
 
+  // Checks if the track possesses any synced data (whether it is active right now or not)
+  const hasAnySyncData = hasValidSyncData || (realSelectedSong?.autoSyncData && realSelectedSong.autoSyncData.some(l => l.start !== null));
+
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
       const workspaceElement = document.querySelector('.tw-container');
@@ -185,26 +188,34 @@ const ModalLeft = ({
           )}
         </div>
 
-        {/* LYRICS VIEW MODES (Only visible outside edit modes when lyrics/sync exists) */}
-        {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && hasValidSyncData && !isSyncLoading && (
+        {/* LYRICS VIEW MODES (Always appears outside edit modes) */}
+        {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
             <div className="action-buttons-grid">
-              <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
-                <Icon name="eye" />
-                {lyricsViewMode === 'live' ? 'Show Focused Sync' : 
-                     lyricsViewMode === 'focused' ? 'Show Plain Text' : 'Show Live Sync'}
-              </button>
-              
-              {lyricsViewMode === 'focused' && (
-                 <button 
-                      className="edit-links-btn toggle-view-btn" 
-                      onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                   style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
-                 >
-                   <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
-                   {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
-                 </button>
+              {hasAnySyncData ? (
+                <>
+                  <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
+                    <Icon name="eye" />
+                    {lyricsViewMode === 'live' ? 'Show Focused Sync' : 
+                         lyricsViewMode === 'focused' ? 'Show Plain Text' : 'Show Live Sync'}
+                  </button>
+                  
+                  {lyricsViewMode === 'focused' && (
+                     <button 
+                          className="edit-links-btn toggle-view-btn" 
+                          onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                       style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
+                     >
+                       <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
+                       {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
+                     </button>
+                  )}
+                </>
+              ) : (
+                <span className="no-sync-warning">
+                  Lyrics aren't synced. Manual or Auto-Sync is needed.
+                </span>
               )}
             </div>
           </div>
