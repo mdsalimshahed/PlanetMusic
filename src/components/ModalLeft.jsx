@@ -107,7 +107,7 @@ const ModalLeft = ({
                   style={{ textDecoration: 'underline', cursor: 'pointer' }}
                   title="Click to search YouTube Music for this song link"
                 >
-                  YT Music 🔍
+                  YT Music 
                 </a>
                 <input 
                   type="text" 
@@ -123,7 +123,7 @@ const ModalLeft = ({
                 <label htmlFor="localFileInput" className={`local-file-btn ${customData.hasLocal ? 'has-file' : ''}`}>
                   {customData.hasLocal ? customData.localName : "Browse Local Files..."}
                 </label>
-                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}>✕</button>)}
+                {customData.hasLocal && (<button className="clear-local-btn" onClick={handleClearLocal}>✖</button>)}
               </div>
             </div>
           ) : (
@@ -144,8 +144,33 @@ const ModalLeft = ({
           )}
         </div>
 
+        {/* LYRICS VIEW MODES (Only visible outside edit modes when lyrics/sync exists) */}
+        {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && hasValidSyncData && !isSyncLoading && (
+          <div className="workspace-controls glass-panel-light">
+            <div className="links-header"><label>Lyrics View Modes</label></div>
+            <div className="action-buttons-grid">
+              <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
+                {lyricsViewMode === 'live' ? '👁 Show Focused Sync' : 
+                     lyricsViewMode === 'focused' ? '👁 Show Plain Text' : '👁 Show Live Sync'}
+              </button>
+              
+              {lyricsViewMode === 'focused' && (
+                 <button 
+                      className="edit-links-btn toggle-view-btn" 
+                      onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                   style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
+                 >
+                   {showAdlibDebug ? '🛑 Hide Adlib Debug' : '🛠 Show Adlib Debug'}
+                 </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* WORKSPACE CONTROLS (Always anchors the bottom buttons) */}
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
+
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
               <div className="instruction-row"><span><strong>↓</strong> Press <strong>[↓]</strong> to set Start Time</span></div>
@@ -153,75 +178,56 @@ const ModalLeft = ({
               <div className="instruction-row subtle"><span><em>(Press <strong>[↑]</strong> anytime to rewind)</em></span></div>
             </div>
           )}
+
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
                 <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>Close Editor</button>
             ) : isSyncMode ? (
               <>
-                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>✕ Cancel Sync</button>
+                <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>✖ Cancel Sync</button>
                 <button 
-                   className="edit-links-btn" 
-                   onClick={handleRefreshLyrics}
+                    className="edit-links-btn" 
+                    onClick={handleRefreshLyrics}
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
                   title="Wipe all timings and ad-lib splits from these lyrics"
                 >
                     Clear All Timings
                 </button>
-                <button className="edit-links-btn save-mode" onClick={saveSyncData}>✓ Save Timings</button>
+                <button className="edit-links-btn save-mode" onClick={saveSyncData}>✔ Save Timings</button>
               </>
             ) : isEditing ? (
               <>
-                <button className="edit-links-btn save-mode" onClick={saveData}>✓ Save Info & Lyrics</button>
+                <button className="edit-links-btn save-mode" onClick={saveData}>✔ Save Info & Lyrics</button>
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">🔍 Search Google for Lyrics</a>
               </>
             ) : isImageManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✓ Save Artists Data</button>
+              <button className="edit-links-btn save-mode" onClick={saveImageManager}>✔ Save Artists Data</button>
             ) : (
               <>
                 <button className="edit-links-btn" onClick={() => setIsEditing(true)}>✎ Edit Info</button>
                 
                 <button 
-                   className="edit-links-btn" 
-                   onClick={() => handleAutoSyncDatabases()} 
-                   disabled={isLrcFetching || isSyncLoading}
+                    className="edit-links-btn" 
+                    onClick={() => handleAutoSyncDatabases()} 
+                    disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
-                  {isLrcFetching ? '⚡ Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '⚙ Show Manual Sync' : '⚡ Show Auto-Sync') : '⚡ Auto-Sync Lyrics')}
+                  {isLrcFetching ? '⏳ Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? '🔄 Show Manual Sync' : '🔄 Show Auto-Sync') : '⚡ Auto-Sync Lyrics')}
                 </button>
 
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? '⚡ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
+                      {isSyncLoading ? '⏳ Parsing Engine...' : hasValidSyncData ? '⏱ Edit Timings' : '⏱ Manual Sync'}
                     </button>
                     
                     <button 
-                        className="edit-links-btn" 
-                        onClick={() => setIsTranslationManagerOpen(true)}
+                         className="edit-links-btn" 
+                         onClick={() => setIsTranslationManagerOpen(true)}
                     >
                           Edit Translation
                     </button>
-
-                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🖼 Manage Artists</button>
-
-                    {hasValidSyncData && !isSyncLoading && (
-                      <>
-                        <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
-                          {lyricsViewMode === 'live' ? '👁 Show Focused Sync' : 
-                              lyricsViewMode === 'focused' ? '📝 Show Plain Text' : '🎤 Show Live Sync'}
-                        </button>
-                        
-                        {lyricsViewMode === 'focused' && (
-                           <button 
-                               className="edit-links-btn toggle-view-btn" 
-                               onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                             style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
-                           >
-                             {showAdlibDebug ? '🐞 Hide Adlib Debug' : '🐞 Show Adlib Debug'}
-                           </button>
-                        )}
-                      </>
-                    )}
+                    <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>🎭 Manage Artists</button>
                   </>
                 ) : (
                   <>

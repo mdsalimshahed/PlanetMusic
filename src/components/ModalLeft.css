@@ -38,8 +38,8 @@
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* CRITICAL FIX: Re-introduced a strict max-height.
-   It is taller than the image to give the title more room,
+/* CRITICAL FIX: Re-introduced a strict max-height. 
+   It is taller than the image to give the title more room, 
    but strictly capped so it NEVER pushes the layout below off-screen! */
 .modal-top {
    display: flex;
@@ -84,7 +84,6 @@
    margin-bottom: 8px;
    letter-spacing: -1px;
    word-break: break-word;
-   
    /* Removed strict line clamp to prevent text from permanently cutting off */
    overflow-y: auto; 
    max-height: 100%;
@@ -291,15 +290,12 @@
   background-color: #1DB954;
   color: black;
 }
-
 .platform-btn.yt {
   background-color: #FF0000;
 }
-
 .platform-btn.deezer {
   background-color: #9200FF;
 }
-
 .platform-btn.local {
   background-color: #4ade80;
   color: black;
@@ -384,8 +380,8 @@
    display: flex;
    justify-content: space-between;
    align-items: center;
-  flex-wrap: wrap; 
-  gap: 12px;
+  flex-wrap: wrap;
+   gap: 12px;
 }
 
 .return-dashboard-btn {
@@ -459,6 +455,7 @@
 }
 
 .sync-instructions-left strong { color: var(--accent); }
+
 .instruction-row { display: flex; gap: 8px; }
 .instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
 
@@ -480,13 +477,11 @@
   .modal-details {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
-  
   .bottom-actions {
     flex-direction: column;
     gap: 12px;
     width: 100%;
   }
-
   .bottom-actions > button {
     width: 100%;
     justify-content: center;
