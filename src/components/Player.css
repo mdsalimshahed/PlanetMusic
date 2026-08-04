@@ -71,22 +71,24 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  margin-top: -2px; 
 }
 
 .player-info {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex: 1;
   min-width: 0; 
-  max-width: calc(100% - 100px); 
+  max-width: calc(100% - 90px); 
 }
 
+/* Shrunk the album art slightly to allow a tighter bar */
 .album-art-container {
   position: relative;
-  width: clamp(36px, 5vw, 44px); 
-  height: clamp(36px, 5vw, 44px);
+  width: clamp(30px, 4vw, 38px); 
+  height: clamp(30px, 4vw, 38px);
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
@@ -141,7 +143,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0;
+  /* Added a 4px gap to space out the title, artist, and source text */
+  gap: 4px;
 }
 
 /* --- MARQUEE TEXT SYSTEM --- */
@@ -153,17 +156,17 @@
 }
 
 .marquee-container.track-title {
-  font-size: clamp(13px, 1.5vw, 15px); 
+  font-size: clamp(12px, 1.4vw, 14px); 
   font-weight: 700;
   color: white;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .marquee-container.artist-name {
-  font-size: clamp(11px, 1.3vw, 13px); 
+  font-size: clamp(10px, 1.1vw, 12px); 
   color: var(--text-subdued);
   margin-top: 0;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .marquee-content {
@@ -194,14 +197,15 @@
   90%, 100% { transform: translateX(calc(-50% - 16px)); } /* 16px perfectly aligns the 32px gap for a seamless loop */
 }
 
+/* Small, subtle, italic source indicator */
 .player-text .source-text {
-  font-size: clamp(8px, 0.8vw, 9px);
+  font-size: 8px;
   font-style: italic;
   color: rgba(255, 255, 255, 0.4);
   margin-top: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .player-right-controls {
@@ -217,8 +221,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
 }
 
@@ -242,8 +246,8 @@
   background: rgba(15, 15, 25, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  width: 32px; 
-  height: 120px; 
+  width: 28px; 
+  height: 110px; 
   padding: 0; 
   display: flex;
   align-items: center;
@@ -263,13 +267,13 @@
 
 .volume-tooltip {
   position: absolute;
-  top: -28px;
+  top: -26px;
   left: 50%;
   transform: translateX(-50%);
   color: black;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   pointer-events: none;
   opacity: 0;
@@ -296,8 +300,8 @@
   background: transparent;
   border: none;
   color: var(--text-subdued);
-  width: clamp(28px, 3.5vw, 32px);
-  height: clamp(28px, 3.5vw, 32px);
+  width: clamp(24px, 3vw, 28px);
+  height: clamp(24px, 3vw, 28px);
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -315,45 +319,25 @@
 }
 
 .time-text {
-  font-size: clamp(9px, 1.2vw, 11px);
+  font-size: clamp(9px, 1.1vw, 10px);
   font-weight: 500;
   color: var(--text-subdued);
-  min-width: 35px;
+  min-width: 30px;
   text-align: center;
   font-variant-numeric: tabular-nums; 
   flex-shrink: 0; 
 }
 
+/* Base custom slider mechanics */
 .custom-slider {
   -webkit-appearance: none;
   appearance: none;
   background-color: transparent !important; 
   height: 24px; 
-  background-image: 
-    linear-gradient(var(--player-accent, white), var(--player-accent, white)),
-    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
-  background-size: var(--progress, 0%) 4px, 100% 4px !important;
-  background-position: left center, left center !important;
-  background-repeat: no-repeat !important;
   cursor: pointer;
   border-radius: 2px;
   margin: 0;
   outline: none;
-}
-
-.progress-slider {
-  flex: 1;
-  width: 100%; 
-}
-
-.volume-slider {
-  width: 100px; 
-  min-width: 100px; 
-  flex-shrink: 0; 
-  transform: rotate(-90deg);
-  transform-origin: center;
-  margin: 0;
-  padding: 0;
 }
 
 .custom-slider::-webkit-slider-runnable-track {
@@ -368,19 +352,113 @@
 .custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 14px;
-  width: 14px;
+  height: 10px;
+  width: 10px;
   border-radius: 50%;
-  background: white;
-  margin-top: 5px; 
+  margin-top: 7px; 
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
-.custom-slider:hover::-webkit-slider-thumb {
-  transform: scale(1.2); 
+/* Specific styling for Volume Slider */
+.volume-slider {
+  width: 90px; 
+  min-width: 90px; 
+  flex-shrink: 0; 
+  transform: rotate(-90deg);
+  transform-origin: center;
+  background-image: 
+    linear-gradient(var(--player-accent, white), var(--player-accent, white)),
+    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+  background-size: var(--progress, 0%) 4px, 100% 4px !important;
+  background-position: left center, left center !important;
+  background-repeat: no-repeat !important;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  background: white;
+}
+
+.volume-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.3); 
   background: var(--player-accent, white) !important;
   box-shadow: 0 0 15px color-mix(in srgb, var(--player-accent, transparent) 80%, transparent) !important;
+}
+
+/* --- PROGRESS BAR (HOVER + TOOLTIP TRACKING) --- */
+.progress-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Default Progress: Accent fill + Accent thumb */
+.custom-slider.progress-slider {
+  width: 100%; 
+  background-image: 
+    linear-gradient(var(--player-accent, white), var(--player-accent, white)),
+    linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+  /* Top layer (Accent) = Progress | Middle Layer (Hover) = 0% | Bottom Layer (Gray) = 100% */
+  background-size: var(--progress, 0%) 4px, 0% 4px, 100% 4px !important;
+  background-position: left center, left center, left center !important;
+  background-repeat: no-repeat !important;
+  transition: background-image 0.2s ease;
+}
+
+.custom-slider.progress-slider::-webkit-slider-thumb {
+  background: var(--player-accent, white);
+  opacity: 1; /* Always visible */
+}
+
+/* Hover Progress: White fill + White translucent tracking fill + White thumb */
+.progress-container:hover .custom-slider.progress-slider {
+  background-image: 
+    linear-gradient(#ffffff, #ffffff),
+    linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+  /* Middle layer activates and extends to cursor point */
+  background-size: var(--progress, 0%) 4px, var(--hover-progress, 0%) 4px, 100% 4px !important;
+}
+
+.progress-container:hover .custom-slider.progress-slider::-webkit-slider-thumb {
+  background: #ffffff;
+  transform: scale(1.3);
+}
+
+/* Dynamic Tooltip that follows cursor */
+.progress-tooltip {
+  position: absolute;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: rgba(20, 20, 30, 0.95);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  z-index: 110;
+  transition: opacity 0.2s ease;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.progress-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(20, 20, 30, 0.95) transparent transparent transparent;
 }
 
 @media (max-width: 900px) {

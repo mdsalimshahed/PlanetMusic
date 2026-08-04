@@ -22,7 +22,6 @@ const MarqueeText = ({ text, className }) => {
   useEffect(() => {
     const checkOverflow = () => {
       if (containerRef.current && textRef.current) {
-        // Checking natural span width against constrained container width (with a safe 2px padding buffer)
         setIsOverflowing(textRef.current.offsetWidth > containerRef.current.clientWidth + 2);
       }
     };
@@ -63,7 +62,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const activeSourceRef = useRef(null); 
   const playIdRef = useRef(null);
 
-  const ytLastTimeRef = useRef(0);
   const ytLastPerfRef = useRef(0);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -74,6 +72,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   const [activeSource, setActiveSource] = useState('preview'); 
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
+  const [hoverTime, setHoverTime] = useState(null);
 
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
@@ -626,6 +625,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     }
   };
 
+  // Triggers explicitly from clicking/dragging the input thumb directly
   const handleSeek = (e) => {
     e.stopPropagation();
     const time = Number(e.target.value);
@@ -648,6 +648,53 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
     }
     if (currentTimeRef.current) {
       currentTimeRef.current.innerText = formatTime(time);
+    }
+  };
+
+  // Triggers from clicking anywhere in the container outside the direct input thumb
+  const handleContainerClick = (e) => {
+    if (e.target === progressBarRef.current) return; 
+    if (!progressBarRef.current || !duration) return;
+
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    const time = percent * duration;
+
+    globalClock.seek(time);
+
+    if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+      try {
+        ytPlayerRef.current.seekTo(time, true);
+        const isEnded = time >= duration && duration > 0;
+        emitPlayState(isPlaying, isEnded);
+      } catch (err) {}
+    } else if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      const isEnded = time >= duration && duration > 0;
+      emitPlayState(isPlaying, isEnded);
+    }
+
+    if (progressBarRef.current) {
+      progressBarRef.current.value = time;
+      progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
+    }
+    if (currentTimeRef.current) {
+      currentTimeRef.current.innerText = formatTime(time);
+    }
+  };
+
+  const handleProgressMouseMove = (e) => {
+    if (!progressBarRef.current || !duration) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+    setHoverTime(percent * duration);
+    progressBarRef.current.style.setProperty('--hover-progress', `${percent * 100}%`);
+  };
+
+  const handleProgressMouseLeave = () => {
+    setHoverTime(null);
+    if (progressBarRef.current) {
+      progressBarRef.current.style.setProperty('--hover-progress', `0%`);
     }
   };
 
@@ -740,15 +787,32 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text" ref={currentTimeRef}>0:00</span>
-        <input 
-          type="range" 
-          className="custom-slider progress-slider" 
-          ref={progressBarRef}
-          min="0" max={duration || 100} 
-          defaultValue="0"
-          onChange={handleSeek} 
-          style={{ '--progress': `0%` }}
-        />
+        <div 
+          className="progress-container"
+          onClick={handleContainerClick}
+          onMouseMove={handleProgressMouseMove}
+          onMouseLeave={handleProgressMouseLeave}
+          onTouchStart={handleProgressMouseLeave}
+        >
+          <div 
+            className="progress-tooltip" 
+            style={{ 
+              opacity: hoverTime !== null ? 1 : 0,
+              left: hoverTime !== null ? `${(hoverTime / (duration || 1)) * 100}%` : '0%'
+            }}
+          >
+            {formatTime(hoverTime || 0)}
+          </div>
+          <input 
+            type="range" 
+            className="custom-slider progress-slider" 
+            ref={progressBarRef}
+            min="0" max={duration || 100} 
+            defaultValue="0"
+            onChange={handleSeek} 
+            style={{ '--progress': `0%` }}
+          />
+        </div>
         <span className="time-text">{formatTime(duration)}</span>
       </div>
     </div>
