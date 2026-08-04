@@ -11605,11 +11605,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 6.630180999999999,
-          "end": 7.665616999999999,
-          "pronunciation": null,
+          "start": 6.557602876021258,
+          "end": 7.885802876021257,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "There's someone trying to be close to me",
@@ -11628,11 +11629,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 8.577555,
-          "end": 10.97026,
-          "pronunciation": null,
+          "start": 8.508287876022338,
+          "end": 10.813497876018017,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Yeah, I'm talking about you",
@@ -11651,11 +11653,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 12.005517,
-          "end": 13.85128,
-          "pronunciation": null,
+          "start": 11.827047876018018,
+          "end": 13.592277876021258,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Uh-oh, 거기 누군가요?",
@@ -11674,11 +11677,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 15.89,
-          "end": 18.430201,
+          "start": 15.798452876021258,
+          "end": 18.215602876021254,
           "pronunciation": "{\"full\":\"Uh-oh, geogi nugungayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거기\",\"trans\":\"geogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"누군가요?\",\"trans\":\"nugungayo\"}]}",
           "translation": "Uh-oh, is anyone there?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-oh, 나를 안다고요?",
@@ -11697,11 +11701,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 18.536253,
-          "end": 21.12,
+          "start": 18.327977876021258,
+          "end": 20.864607876019097,
           "pronunciation": "{\"full\":\"Woah-oh, naleul andagoyo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나를\",\"trans\":\"naleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안다고요?\",\"trans\":\"andagoyo\"}]}",
           "translation": "Woah-oh, you know me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-oh, 난 잊어버렸죠",
@@ -11720,17 +11725,34 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 21.12,
-          "end": 23.873957927519264,
+          "start": 20.96523787602234,
+          "end": 24.045037876022334,
           "pronunciation": "{\"full\":\"Woah-oh, nan ij-eobeolyeossjyo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잊어버렸죠\",\"trans\":\"ij-eobeolyeossjyo\"}]}",
           "translation": "Woah-oh, I forgot",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "버렸죠 (버렸죠)",
           "segments": [
             {
-              "text": "버렸죠 (버렸죠)",
+              "text": "버렸죠 (",
+              "color": "#f0740f",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Soyeon"
+              ]
+            },
+            {
+              "text": "버렸죠",
+              "color": "#ffffff",
+              "isGradient": false,
+              "gradient": "",
+              "artists": []
+            },
+            {
+              "text": ")",
               "color": "#f0740f",
               "isGradient": false,
               "gradient": "",
@@ -11743,8 +11765,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 24.277757927520007,
-          "end": 25.947828855041504,
+          "start": 24.177712876022337,
+          "end": 26.121292876020174,
           "pronunciation": "{\"full\":\"beolyeossjyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"버렸죠\",\"trans\":\"beolyeossjyo\"}]}",
           "translation": "I threw it away",
           "isSplit": true,
@@ -11753,11 +11775,27 @@
               "text": "(버렸죠)",
               "charStart": 4,
               "charEnd": 9,
-              "start": 25.394162,
-              "end": 26.209971,
+              "start": 24.99941909346232,
+              "end": 26.00581909346083,
               "segments": [
                 {
-                  "text": "(버렸죠)",
+                  "text": "(",
+                  "color": "#f0740f",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Soyeon"
+                  ]
+                },
+                {
+                  "text": "버렸죠",
+                  "color": "#ffffff",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": []
+                },
+                {
+                  "text": ")",
                   "color": "#f0740f",
                   "isGradient": false,
                   "gradient": "",
@@ -11771,7 +11809,8 @@
               "translation": "(I threw it away)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "너도 웃기지 않나요?",
@@ -11790,11 +11829,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 26.039828855041502,
-          "end": 28.589528855040758,
+          "start": 26.263972876018013,
+          "end": 28.753187876022334,
           "pronunciation": "{\"full\":\"neodo usgiji anhnayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너도\",\"trans\":\"neodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃기지\",\"trans\":\"usgiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않나요?\",\"trans\":\"anhnayo\"}]}",
           "translation": "Aren't you funny too?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "난 좀 당황스럽네요 (-나요)",
@@ -11831,8 +11871,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 28.663328855041502,
-          "end": 31.242325927522245,
+          "start": 28.849902876021254,
+          "end": 31.416402876021255,
           "pronunciation": "{\"full\":\"nan jom danghwangseuleobneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"좀\",\"trans\":\"jom\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"당황스럽네요\",\"trans\":\"danghwangseuleobneyo\"}]}",
           "translation": "I'm a little embarrassed",
           "isSplit": true,
@@ -11841,8 +11881,8 @@
               "text": "(-나요)",
               "charStart": 11,
               "charEnd": 16,
-              "start": 29.854056,
-              "end": 30.445265,
+              "start": 29.439720093463063,
+              "end": 30.266620093461572,
               "segments": [
                 {
                   "text": "(",
@@ -11877,7 +11917,8 @@
               "translation": "(-I am)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 친한 척 말아줘 (Uh-oh)",
@@ -11923,8 +11964,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 31.41101,
-          "end": 34.623303,
+          "start": 31.520512876022334,
+          "end": 34.54115287602126,
           "pronunciation": "{\"full\":\"Uh-oh, chinhan cheog mal-ajwo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아줘\",\"trans\":\"mal-ajwo\"}]}",
           "translation": "Uh-oh, stop acting friendly",
           "isSplit": true,
@@ -11933,8 +11974,8 @@
               "text": "(Uh-oh)",
               "charStart": 16,
               "charEnd": 23,
-              "start": 32.452587,
-              "end": 33.236652,
+              "start": 32.154245020983815,
+              "end": 33.13724502098381,
               "segments": [
                 {
                   "text": "(",
@@ -11969,7 +12010,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "말하고 다녀 (말하고 다녀)",
@@ -12015,8 +12057,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 34.536725927520756,
-          "end": 36.71592592752001,
+          "start": 34.64236287602234,
+          "end": 36.792712876022335,
           "pronunciation": "{\"full\":\"malhago danyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말하고\",\"trans\":\"malhago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다녀\",\"trans\":\"danyeo\"}]}",
           "translation": "Talk and go",
           "isSplit": true,
@@ -12025,8 +12067,8 @@
               "text": "(말하고 다녀)",
               "charStart": 7,
               "charEnd": 15,
-              "start": 35.359279,
-              "end": 36.371477,
+              "start": 35.08856616593785,
+              "end": 36.006666165939336,
               "segments": [
                 {
                   "text": "(",
@@ -12061,7 +12103,8 @@
               "translation": "(Talk and go)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 만지지 말고",
@@ -12080,11 +12123,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 37.246838,
-          "end": 39.884163,
+          "start": 36.90610287602126,
+          "end": 39.38681003042113,
           "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "translation": "Woah-uh-oh, don't touch",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "저기 떨어져요",
@@ -12103,11 +12147,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 39.48832592752224,
-          "end": 41.55892592752001,
+          "start": 39.48961503041897,
+          "end": 41.67882503042005,
           "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "translation": "Get away from me",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내게 뭐를 원하나요?",
@@ -12126,11 +12171,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 41.6480259275215,
-          "end": 44.0695259275215,
+          "start": 41.79584003041897,
+          "end": 44.06349503042221,
           "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "translation": "What do you want from me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼",
@@ -12149,11 +12195,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 44.16212592752299,
-          "end": 47.2310259275215,
+          "start": 44.17166503041897,
+          "end": 47.209705030417894,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, like you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "너 같은 거는 이제",
@@ -12172,11 +12219,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 47.33512592752299,
-          "end": 49.76492592752001,
+          "start": 47.31613503042113,
+          "end": 49.85262003042221,
           "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "translation": "There's nothing like you anymore",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "전혀 모르겠네요",
@@ -12195,11 +12243,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 49.85582592752225,
-          "end": 52.4390259275215,
+          "start": 49.97195503041789,
+          "end": 52.42129503042221,
           "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "translation": "I have no idea",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 나 변했나요?",
@@ -12218,11 +12267,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 52.522925927520006,
-          "end": 54.707725927520755,
+          "start": 52.52874003041897,
+          "end": 54.73726578981018,
           "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "translation": "Woah-uh-oh, have I changed?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼 (Uh)",
@@ -12268,8 +12318,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #ecf005, #f0740f)",
-          "start": 54.7850259275215,
-          "end": 57.741725927520754,
+          "start": 54.83021078981234,
+          "end": 57.7129557898091,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, just like you",
           "isSplit": true,
@@ -12278,8 +12328,8 @@
               "text": "(Uh)",
               "charStart": 10,
               "charEnd": 14,
-              "start": 57.289482,
-              "end": 58.06,
+              "start": 56.83024109346009,
+              "end": 57.7129557898091,
               "segments": [
                 {
                   "text": "(",
@@ -12314,7 +12364,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "베풀거나 내주거나 천사 같은 hello (Uh, uh)",
@@ -12351,8 +12402,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 57.8415259275215,
-          "end": 60.694025927521494,
+          "start": 57.81344078981018,
+          "end": 60.7485307898091,
           "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
@@ -12361,8 +12412,8 @@
               "text": "(Uh, uh)",
               "charStart": 22,
               "charEnd": 30,
-              "start": 59.706429,
-              "end": 60.817483,
+              "start": 59.427092114439425,
+              "end": 60.7485307898091,
               "segments": [
                 {
                   "text": "(",
@@ -12397,7 +12448,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "달콤하게 사탕 발린 말도 (Uh, uh)",
@@ -12434,8 +12486,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 60.77132592752224,
-          "end": 62.96612592752299,
+          "start": 60.861340789810185,
+          "end": 62.82580078981126,
           "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "translation": "Sweet, candy-coated words",
           "isSplit": true,
@@ -12444,8 +12496,8 @@
               "text": "(Uh, uh)",
               "charStart": 14,
               "charEnd": 22,
-              "start": 62.653803,
-              "end": 63.142636,
+              "start": 62.07049311443943,
+              "end": 62.82580078981126,
               "segments": [
                 {
                   "text": "(",
@@ -12480,7 +12532,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "예의 없어 착한 척 말고 꺼져 (꺼져)",
@@ -12526,8 +12579,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 63.049725927520754,
-          "end": 65.87032592752225,
+          "start": 62.938900789811264,
+          "end": 65.77510078981126,
           "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
@@ -12536,8 +12589,8 @@
               "text": "(꺼져)",
               "charStart": 17,
               "charEnd": 21,
-              "start": 65.72743,
-              "end": 66.061093,
+              "start": 65.2801300934571,
+              "end": 65.77510078981126,
               "segments": [
                 {
                   "text": "(",
@@ -12572,7 +12625,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "이제 와 가식 따위 떨지 말아",
@@ -12591,11 +12645,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 65.95522592752076,
-          "end": 68.11002592752149,
+          "start": 65.88849078981018,
+          "end": 68.1609307898091,
           "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Now, don't be pretentious",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "맴돌거나 말 걸거나 박쥐 같은 follower (Uh, uh)",
@@ -12632,8 +12687,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 68.19892592752001,
-          "end": 71.02082592752225,
+          "start": 68.28389078981019,
+          "end": 71.12995078981126,
           "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
@@ -12642,8 +12697,8 @@
               "text": "(Uh, uh)",
               "charStart": 26,
               "charEnd": 34,
-              "start": 70.106174,
-              "end": 71.332593,
+              "start": 70.01200602098159,
+              "end": 71.12995078981126,
               "segments": [
                 {
                   "text": "(",
@@ -12678,7 +12733,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "내 성공을 점쳤다는 liar (Uh, uh)",
@@ -12715,8 +12771,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 71.10442592752001,
-          "end": 73.45062592752299,
+          "start": 71.2436307898091,
+          "end": 73.42530078981126,
           "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "translation": "A liar who predicted my success",
           "isSplit": true,
@@ -12725,8 +12781,8 @@
               "text": "(Uh, uh)",
               "charStart": 16,
               "charEnd": 24,
-              "start": 72.791364,
-              "end": 73.756834,
+              "start": 72.5992451659386,
+              "end": 73.42530078981126,
               "segments": [
                 {
                   "text": "(",
@@ -12761,7 +12817,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "어이없어 친한 척 말고 꺼져 (꺼져)",
@@ -12807,8 +12864,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 73.52582592752225,
-          "end": 76.27942592752001,
+          "start": 73.54898578981235,
+          "end": 76.15828489490725,
           "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
@@ -12817,8 +12874,8 @@
               "text": "(꺼져)",
               "charStart": 16,
               "charEnd": 20,
-              "start": 76.088919,
-              "end": 76.48,
+              "start": 75.81354492752075,
+              "end": 76.15828489490725,
               "segments": [
                 {
                   "text": "(",
@@ -12853,7 +12910,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "널 위한 가식 따윈 기대 말아",
@@ -12872,11 +12930,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 76.365125927523,
-          "end": 78.72092592752,
+          "start": 76.27094989490618,
+          "end": 78.8370148949051,
           "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Don't expect any pretense for you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "엉망진창, only see now",
@@ -12895,11 +12954,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 89.0818689275215,
-          "end": 91.83806892752075,
+          "start": 89.17181478981126,
+          "end": 91.83459478980912,
           "pronunciation": "{\"full\":\"eongmangjinchang, only see now\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"엉망진창,\",\"trans\":\"eongmangjinchang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"only\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"see\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"}]}",
           "translation": "Messy, only see now",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "몰랐지, 오리 속 swan",
@@ -12918,11 +12978,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 91.92266892751852,
-          "end": 94.38646892751926,
+          "start": 91.94232978981019,
+          "end": 94.21563978981128,
           "pronunciation": "{\"full\":\"mollassji, oli sog swan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"몰랐지,\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오리\",\"trans\":\"oli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"swan\",\"trans\":\"\"}]}",
           "translation": "Didn't know, swan in a duck",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "황홀한 케이크 위 blow out",
@@ -12941,11 +13002,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 94.46146892751926,
-          "end": 97.08076892752001,
+          "start": 94.35135978980803,
+          "end": 97.10534478980911,
           "pronunciation": "{\"full\":\"hwangholhan keikeu wi blow out\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"케이크\",\"trans\":\"keikeu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위\",\"trans\":\"wi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"blow\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"out\",\"trans\":\"\"}]}",
           "translation": "Blow out on an ecstatic cake",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내 머리 위에 crown",
@@ -12964,11 +13026,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 97.17396892751927,
-          "end": 99.0528689275215,
+          "start": 97.20887478981236,
+          "end": 99.18156092752076,
           "pronunciation": "{\"full\":\"nae meoli wie crown\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"머리\",\"trans\":\"meoli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위에\",\"trans\":\"wie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"crown\",\"trans\":\"\"}]}",
           "translation": "Crown on my head",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Yo",
@@ -12987,11 +13050,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 99.13826892752002,
-          "end": 99.68496892751926,
-          "pronunciation": null,
+          "start": 99.2693609275215,
+          "end": 99.71306092752076,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "말했지 이곳의 보석은 (보석은)",
@@ -13010,8 +13074,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 99.7708689275215,
-          "end": 102.3448689275215,
+          "start": 99.7863609275215,
+          "end": 102.4808609275215,
           "pronunciation": "{\"full\":\"malhaessji igos-ui boseog-eun\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말했지\",\"trans\":\"malhaessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이곳의\",\"trans\":\"igos-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보석은\",\"trans\":\"boseog-eun\"}]}",
           "translation": "I said the jewel here is",
           "isSplit": true,
@@ -13020,8 +13084,8 @@
               "text": "(보석은)",
               "charStart": 12,
               "charEnd": 17,
-              "start": 102.111024,
-              "end": 102.604215,
+              "start": 101.92946692751926,
+              "end": 102.4808609275215,
               "segments": [
                 {
                   "text": "(보석은)",
@@ -13038,7 +13102,8 @@
               "translation": "(the jewel)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "나야, 투자해 어서 (어서)",
@@ -13057,8 +13122,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 102.46546892751927,
-          "end": 104.87776892752001,
+          "start": 102.54030592752075,
+          "end": 104.98230592752076,
           "pronunciation": "{\"full\":\"naya, tujahae eoseo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"나야,\",\"trans\":\"naya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"투자해\",\"trans\":\"tujahae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어서\",\"trans\":\"eoseo\"}]}",
           "translation": "I'm the one, invest in it",
           "isSplit": true,
@@ -13067,8 +13132,8 @@
               "text": "(어서)",
               "charStart": 11,
               "charEnd": 15,
-              "start": 104.853399,
-              "end": 105.25,
+              "start": 104.45974592751851,
+              "end": 104.98230592752076,
               "segments": [
                 {
                   "text": "(어서)",
@@ -13085,7 +13150,8 @@
               "translation": "(hurry up)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "넌 번쩍거린 것만 찾느라 (Uh, yo)",
@@ -13104,8 +13170,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 104.97876892752001,
-          "end": 107.05233109346082,
+          "start": 105.0731059275215,
+          "end": 106.79386192752149,
           "pronunciation": "{\"full\":\"neon beonjjeoggeolin geosman chajneula\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"넌\",\"trans\":\"neon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍거린\",\"trans\":\"beonjjeoggeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것만\",\"trans\":\"geosman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾느라\",\"trans\":\"chajneula\"}]}",
           "translation": "You're only looking for the sparkly stuff",
           "isSplit": true,
@@ -13114,8 +13180,8 @@
               "text": "(Uh, yo)",
               "charStart": 14,
               "charEnd": 22,
-              "start": 106.722321,
-              "end": 107.59,
+              "start": 106.48045011443942,
+              "end": 106.96727413551605,
               "segments": [
                 {
                   "text": "(Uh, yo)",
@@ -13132,7 +13198,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "여길 번쩍 들어 올릴 난 못 찾았어 (Yo, yeah, stop it)",
@@ -13151,8 +13218,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 107.15793109346231,
-          "end": 110.15493109346231,
+          "start": 107.08791413552038,
+          "end": 109.93788913552038,
           "pronunciation": "{\"full\":\"yeogil beonjjeog deul-eo ollil nan mos chaj-ass-eo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여길\",\"trans\":\"yeogil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍\",\"trans\":\"beonjjeog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들어\",\"trans\":\"deul-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"올릴\",\"trans\":\"ollil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"못\",\"trans\":\"mos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾았어\",\"trans\":\"chaj-ass-eo\"}]}",
           "translation": "I couldn't find the one to lift the glitter here",
           "isSplit": true,
@@ -13161,8 +13228,8 @@
               "text": "(Yo, yeah, stop it)",
               "charStart": 20,
               "charEnd": 39,
-              "start": 108.047079,
-              "end": 110.216113,
+              "start": 107.67508692752074,
+              "end": 109.93788913552038,
               "segments": [
                 {
                   "text": "(Yo, yeah, stop it)",
@@ -13179,7 +13246,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Uh, uh, uh, uh, uh, uh",
@@ -13198,11 +13266,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 110.23303109346008,
-          "end": 112.64683109346083,
-          "pronunciation": null,
+          "start": 110.05359913551605,
+          "end": 112.55774913551605,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "No, no, no, no, no, no",
@@ -13221,11 +13290,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 112.72503109346007,
-          "end": 115.25143109346232,
-          "pronunciation": null,
+          "start": 112.67128413551713,
+          "end": 115.13367413551605,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "너 별로, 더 별로야",
@@ -13245,11 +13315,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "start": 115.32393109346232,
-          "end": 117.83483109346082,
+          "start": 115.26083913552037,
+          "end": 117.86474913551605,
           "pronunciation": "{\"full\":\"neo byeollo, deo byeolloya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로,\",\"trans\":\"byeollo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로야\",\"trans\":\"byeolloya\"}]}",
           "translation": "You're not good, you're worse",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "됐으니 꺼져, uh",
@@ -13269,11 +13340,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "start": 117.91413109346158,
-          "end": 120.27393109346231,
+          "start": 118.00568913552037,
+          "end": 120.28479913551605,
           "pronunciation": "{\"full\":\"dwaess-euni kkeojyeo, uh\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"됐으니\",\"trans\":\"dwaess-euni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져,\",\"trans\":\"kkeojyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"uh\",\"trans\":\"\"}]}",
           "translation": "That's enough, get the hell away, uh",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 만지지 말고",
@@ -13292,11 +13364,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 120.37543109346231,
-          "end": 122.91873109346307,
+          "start": 120.40282913551928,
+          "end": 122.83607413551604,
           "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "translation": "Woah-uh-oh, don't touch me",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "저기 떨어져요",
@@ -13315,11 +13388,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 123.00313109346158,
-          "end": 125.15404885504,
+          "start": 122.95801913551821,
+          "end": 125.08241413552037,
           "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "translation": "Get off there",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내게 뭐를 원하나요?",
@@ -13338,11 +13412,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 125.23324885503926,
-          "end": 127.72844885503852,
+          "start": 125.19812413551605,
+          "end": 127.76534913551605,
           "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "translation": "What do you want from me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼",
@@ -13361,11 +13436,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 127.80624885503926,
-          "end": 130.68084885504075,
+          "start": 127.88497413551605,
+          "end": 130.7822191355182,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, like you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "너 같은 거는 이제",
@@ -13384,11 +13460,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 130.77294885503852,
-          "end": 133.46424885503927,
+          "start": 130.8902441355182,
+          "end": 133.41034413551822,
           "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "translation": "There's nothing like you anymore",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "전혀 모르겠네요",
@@ -13407,11 +13484,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 133.54344885503852,
-          "end": 136.00124885503925,
+          "start": 133.52431413552037,
+          "end": 135.94813413551714,
           "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "translation": "I have no idea",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 나 변했나요?",
@@ -13430,11 +13508,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 136.0841488550415,
-          "end": 138.11724885503926,
+          "start": 136.0603641355204,
+          "end": 138.28669413551822,
           "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "translation": "Woah-uh-oh, have I changed?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼 (Yeah)",
@@ -13480,8 +13559,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #9a86f9, #86d4f9)",
-          "start": 138.1964488550385,
-          "end": 141.21404885504,
+          "start": 138.38790413551928,
+          "end": 141.4169541355193,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, just like you",
           "isSplit": true,
@@ -13490,8 +13569,8 @@
               "text": "(Yeah)",
               "charStart": 10,
               "charEnd": 16,
-              "start": 140.618872,
-              "end": 141.524423,
+              "start": 140.3614018550415,
+              "end": 141.4169541355193,
               "segments": [
                 {
                   "text": "(",
@@ -13526,7 +13605,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "베풀거나 내주거나 천사 같은 hello (Yeah, yeah)",
@@ -13563,8 +13643,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 141.29974885503927,
-          "end": 144.21404885504,
+          "start": 141.54803413551713,
+          "end": 144.23314413551822,
           "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
@@ -13573,8 +13653,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 22,
               "charEnd": 34,
-              "start": 143.063759,
-              "end": 144.424133,
+              "start": 142.96894785504,
+              "end": 144.23314413551822,
               "segments": [
                 {
                   "text": "(",
@@ -13609,7 +13689,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "달콤하게 사탕 발린 말도 (Yeah, yeah)",
@@ -13646,8 +13727,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 144.3144488550385,
-          "end": 146.47184885504075,
+          "start": 144.3368191355182,
+          "end": 146.63013913552038,
           "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "translation": "Sweet, candy-coated words",
           "isSplit": true,
@@ -13656,8 +13737,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 14,
               "charEnd": 26,
-              "start": 146.147038,
-              "end": 146.574275,
+              "start": 145.4352391659423,
+              "end": 146.63013913552038,
               "segments": [
                 {
                   "text": "(",
@@ -13692,7 +13773,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "예의 없어 착한 척 말고 꺼져 (꺼져)",
@@ -13738,8 +13820,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 146.5491488550415,
-          "end": 149.36684885504076,
+          "start": 146.7664391355204,
+          "end": 149.46126413552037,
           "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
@@ -13748,8 +13830,8 @@
               "text": "(꺼져)",
               "charStart": 17,
               "charEnd": 21,
-              "start": 149.102975,
-              "end": 149.434182,
+              "start": 148.8550930209786,
+              "end": 149.46126413552037,
               "segments": [
                 {
                   "text": "(",
@@ -13784,7 +13866,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "이제 와 가식 따위 떨지 말아",
@@ -13803,11 +13886,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 149.43494885503853,
-          "end": 151.58874885503926,
+          "start": 149.57262413551604,
+          "end": 151.59044413551823,
           "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Now, don't be pretentious",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "맴돌거나 말 걸거나 박쥐 같은 follower (Yeah, yeah)",
@@ -13844,8 +13928,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 151.68204885504002,
-          "end": 154.64024885503926,
+          "start": 151.70731413552036,
+          "end": 154.52915913551712,
           "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
@@ -13854,8 +13938,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 26,
               "charEnd": 38,
-              "start": 153.499218,
-              "end": 154.788817,
+              "start": 153.26189994850384,
+              "end": 154.52915913551712,
               "segments": [
                 {
                   "text": "(",
@@ -13890,7 +13974,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "내 성공을 점쳤다는 liar (Yeah, yeah)",
@@ -13927,8 +14012,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 154.74624885503925,
-          "end": 156.88024885503927,
+          "start": 154.63819913551606,
+          "end": 156.92165913551713,
           "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "translation": "A liar who predicted my success",
           "isSplit": true,
@@ -13937,8 +14022,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 16,
               "charEnd": 28,
-              "start": 156.297602,
-              "end": 157.13,
+              "start": 156.0290340209786,
+              "end": 156.92165913551713,
               "segments": [
                 {
                   "text": "(",
@@ -13973,7 +14058,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "어이없어 친한 척 말고 꺼져 (꺼져)",
@@ -14019,8 +14105,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 156.98824885503927,
-          "end": 159.68784885504076,
+          "start": 157.03359913551606,
+          "end": 159.90745389490618,
           "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
@@ -14029,8 +14115,8 @@
               "text": "(꺼져)",
               "charStart": 16,
               "charEnd": 20,
-              "start": 159.65644,
-              "end": 160.09,
+              "start": 159.21177416594082,
+              "end": 159.90745389490618,
               "segments": [
                 {
                   "text": "(",
@@ -14065,7 +14151,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "널 위한 가식 따윈 기대 말아",
@@ -14084,11 +14171,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 159.78324885503926,
-          "end": 162.1470378760231,
+          "start": 159.99749889490292,
+          "end": 162.17605813551495,
           "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Don't expect any pretense for you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 믿을 수 없게",
@@ -14107,11 +14195,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 162.23843787602533,
-          "end": 164.78613787602458,
+          "start": 162.30626813551604,
+          "end": 164.84086813551602,
           "pronunciation": "{\"full\":\"Uh-oh, mid-eul su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"믿을\",\"trans\":\"mid-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "translation": "Uh-oh, so unbelievable",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 손댈 수 없게",
@@ -14130,11 +14219,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 164.88363787602458,
-          "end": 167.38053787602308,
+          "start": 164.96107313551926,
+          "end": 167.4469531355171,
           "pronunciation": "{\"full\":\"Uh-oh, sondael su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손댈\",\"trans\":\"sondael\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "translation": "Uh-oh, so untouchable",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 잘못된 것 같은 얘기",
@@ -14153,11 +14243,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 167.4740378760231,
-          "end": 171.38933787602383,
+          "start": 167.54221813551604,
+          "end": 171.51014313551602,
           "pronunciation": "{\"full\":\"Uh-oh, jalmosdoen geos gat-eun yaegi\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘못된\",\"trans\":\"jalmosdoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얘기\",\"trans\":\"yaegi\"}]}",
           "translation": "Uh-oh, sounds like it's wrong",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Mm",
@@ -14176,11 +14267,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 171.47343787602532,
-          "end": 172.91663787602457,
-          "pronunciation": null,
+          "start": 171.62643313551496,
+          "end": 173.0143751355171,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Yo (You got it?)",
@@ -14199,9 +14291,9 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 173.49123787602235,
-          "end": 175.98928109346008,
-          "pronunciation": null,
+          "start": 173.52956013551278,
+          "end": 175.74619089490724,
+          "pronunciation": "",
           "translation": "",
           "isSplit": true,
           "adlibs": [
@@ -14209,8 +14301,8 @@
               "text": "(You got it?)",
               "charStart": 3,
               "charEnd": 16,
-              "start": 174.697856,
-              "end": 175.755734,
+              "start": 174.77739302098158,
+              "end": 175.67209302098084,
               "segments": [
                 {
                   "text": "(You got it?)",
@@ -14227,7 +14319,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "en"
         },
         {
           "text": "Don't mess with me",
@@ -14246,11 +14339,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 176.67428109346008,
-          "end": 178.25358109346084,
-          "pronunciation": null,
+          "start": 176.5845622406131,
+          "end": 178.4884358976697,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Mm, I'm not finished",
@@ -14269,11 +14363,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 178.59308109346082,
-          "end": 180.4312810934601,
-          "pronunciation": null,
+          "start": 178.94272089767077,
+          "end": 180.56730089766862,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Okay, let's go",
@@ -14292,11 +14387,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 180.75298109345934,
-          "end": 183.03648109345934,
-          "pronunciation": null,
+          "start": 180.65589589767077,
+          "end": 183.15062089767076,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "아무도 몰랐지 이 masterpiece, 이 masterpiece",
@@ -14315,11 +14411,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 183.1046810934586,
-          "end": 188.3163810934616,
+          "start": 183.24385589767184,
+          "end": 188.34713089767183,
           "pronunciation": "{\"full\":\"amudo mollassji i masterpiece, i masterpiece\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아무도\",\"trans\":\"amudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"몰랐지\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece\",\"trans\":\"\"}]}",
           "translation": "Nobody knew this masterpiece, this masterpiece",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "입가에 반복되는 melody, oh, melody (Woo)",
@@ -14354,8 +14451,8 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 188.4082810934601,
-          "end": 193.70888109346157,
+          "start": 188.44036589766753,
+          "end": 193.59279589767075,
           "pronunciation": "{\"full\":\"ibga-e banbogdoeneun melody, oh, melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"입가에\",\"trans\":\"ibga-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
           "translation": "The melody, oh, melody that repeats on my lips",
           "isSplit": true,
@@ -14364,8 +14461,8 @@
               "text": "(Woo)",
               "charStart": 28,
               "charEnd": 33,
-              "start": 193.465244,
-              "end": 193.932088,
+              "start": 193.1122419275185,
+              "end": 193.59279589767075,
               "segments": [
                 {
                   "text": "(",
@@ -14398,7 +14495,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "너무나 완벽한 내 A to Z, oh, A to Z",
@@ -14417,11 +14515,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 193.7951810934586,
-          "end": 198.78498109345935,
+          "start": 193.69603589766967,
+          "end": 198.77168024061314,
           "pronunciation": "{\"full\":\"neomuna wanbyeoghan nae A to Z, oh, A to Z\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무나\",\"trans\":\"neomuna\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽한\",\"trans\":\"wanbyeoghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z\",\"trans\":\"\"}]}",
           "translation": "My A to Z, oh, A to Z so perfect",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "팬들은 사랑해, yeah, L-O-V-E, yeah, L-O-V-E",
@@ -14440,11 +14539,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 198.87318109345858,
-          "end": 203.9272810934601,
+          "start": 198.8656402406142,
+          "end": 204.01038524061096,
           "pronunciation": "{\"full\":\"paendeul-eun salanghae, yeah, L-O-V-E, yeah, L-O-V-E\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"팬들은\",\"trans\":\"paendeul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사랑해,\",\"trans\":\"salanghae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E\",\"trans\":\"\"}]}",
           "translation": "The fans love it, yeah, L-O-V-E, Yeah, L-O-V-E",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh",
@@ -14463,14 +14563,15 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 204.0226810934586,
-          "end": 205.5917810934601,
-          "pronunciation": null,
+          "start": 204.12348524061096,
+          "end": 205.7197902406142,
+          "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         }
       ],
-      "lyrics": "[(여자)아이들 \"Uh-Oh\" 가사]\n\n[Intro: Minnie]\nHey\nThere's someone trying to be close to me\nYeah, I'm talking about you\n\n[Verse 1: Soyeon, _Soojin_]\nUh-oh, 거기 누군가요?\nWoah-oh, 나를 안다고요?\nWoah-oh, 난 잊어버렸죠\n버렸죠 (버렸죠)\n_너도 웃기지 않나요?_ \n_난 좀 당황스럽네요 (_-나요_)\nUh-oh, 친한 척 말아줘_ (_Uh-oh_)\n_말하고 다녀_ (_말하고 다녀_)\n\n[Pre-Chorus: Miyeon, _Yuqi_, **Soyeon**]\nWoah-uh-oh, 만지지 말고\n저기 떨어져요\n내게 뭐를 원하나요?\n다 똑같죠 너처럼\n_너 같은 거는 이제\n전혀 모르겠네요\nWoah-uh-oh, 나 변했나요?\n다 똑같죠 너처럼_ (**Uh**)\n\n[Chorus: Minnie, _Soyeon_, **Soojin**]\n베풀거나 내주거나 천사 같은 hello (_Uh, uh_)\n달콤하게 사탕 발린 말도 (_Uh, uh_)\n_예의 없어 착한 척 말고 꺼져_ (_꺼져_)\n_이제 와 가식 따위 떨지 말아_\n맴돌거나 말 걸거나 박쥐 같은 follower (**Uh, uh**)\n내 성공을 점쳤다는 liar (**Uh, uh**)\n**어이없어 친한 척 말고 꺼져** (**꺼져**)\n**널 위한 가식 따윈 기대 말아**\n\n[Verse 2: Shuhua]\n엉망진창, only see now\n몰랐지, 오리 속 swan\n황홀한 케이크 위 blow out\n내 머리 위에 crown\n\n[Verse 3: Soyeon, _Soojin_, **Both**]\nYo\n말했지 이곳의 보석은 (보석은)\n나야, 투자해 어서 (어서)\n넌 번쩍거린 것만 찾느라 (Uh, yo)\n여길 번쩍 들어 올릴 난 못 찾았어 (Yo, yeah, stop it)\n_Uh, uh, uh, uh, uh, uh_\nNo, no, no, no, no, no\n**너 별로, 더 별로야\n됐으니 꺼져, uh**\n\n[Pre-Chorus: Yuqi, _Miyeon_, **Soojin**]\nWoah-uh-oh, 만지지 말고\n저기 떨어져요\n내게 뭐를 원하나요?\n다 똑같죠 너처럼\n_너 같은 거는 이제\n전혀 모르겠네요\nWoah-uh-oh, 나 변했나요?\n다 똑같죠 너처럼_ (**Yeah**)\n\n[Chorus: Minnie, _Soojin_, **Soyeon**]\n베풀거나 내주거나 천사 같은 hello (_Yeah, yeah_)\n달콤하게 사탕 발린 말도 (_Yeah, yeah_)\n_예의 없어 착한 척 말고 꺼져_ (_꺼져_)\n_이제 와 가식 따위 떨지 말아_\n맴돌거나 말 걸거나 박쥐 같은 follower (**Yeah, yeah**)\n내 성공을 점쳤다는 liar (**Yeah, yeah**)\n**어이없어 친한 척 말고 꺼져** (**꺼져**)\n**널 위한 가식 따윈 기대 말아**\n\n[Bridge: Minnie]\nUh-oh, 믿을 수 없게\nUh-oh, 손댈 수 없게\nUh-oh, 잘못된 것 같은 얘기\nMm\n\n[Interlude: Soyeon]\nYo (You got it?)\nDon't mess with me\nMm, I'm not finished\nOkay, let's go\n\n[Refrain: All]\n아무도 몰랐지 이 masterpiece, 이 masterpiece\n입가에 반복되는 melody, oh, melody (*Woo*)\n너무나 완벽한 내 A to Z, oh, A to Z\n팬들은 사랑해, yeah, L-O-V-E, yeah, L-O-V-E\n\n[Outro: Soyeon]\nUh-oh",
+      "lyrics": "[(여자)아이들 \"Uh-Oh\" 가사]\n\n[Intro: Minnie]\nHey\nThere's someone trying to be close to me\nYeah, I'm talking about you\n\n[Verse 1: Soyeon, _Soojin_]\nUh-oh, 거기 누군가요?\nWoah-oh, 나를 안다고요?\nWoah-oh, 난 잊어버렸죠\n버렸죠 (**버렸죠**)\n_너도 웃기지 않나요?_ \n_난 좀 당황스럽네요 (_-나요_)\nUh-oh, 친한 척 말아줘_ (_Uh-oh_)\n_말하고 다녀_ (_말하고 다녀_)\n\n[Pre-Chorus: Miyeon, _Yuqi_, **Soyeon**]\nWoah-uh-oh, 만지지 말고\n저기 떨어져요\n내게 뭐를 원하나요?\n다 똑같죠 너처럼\n_너 같은 거는 이제\n전혀 모르겠네요\nWoah-uh-oh, 나 변했나요?\n다 똑같죠 너처럼_ (**Uh**)\n\n[Chorus: Minnie, _Soyeon_, **Soojin**]\n베풀거나 내주거나 천사 같은 hello (_Uh, uh_)\n달콤하게 사탕 발린 말도 (_Uh, uh_)\n_예의 없어 착한 척 말고 꺼져_ (_꺼져_)\n_이제 와 가식 따위 떨지 말아_\n맴돌거나 말 걸거나 박쥐 같은 follower (**Uh, uh**)\n내 성공을 점쳤다는 liar (**Uh, uh**)\n**어이없어 친한 척 말고 꺼져** (**꺼져**)\n**널 위한 가식 따윈 기대 말아**\n\n[Verse 2: Shuhua]\n엉망진창, only see now\n몰랐지, 오리 속 swan\n황홀한 케이크 위 blow out\n내 머리 위에 crown\n\n[Verse 3: Soyeon, _Soojin_, **Both**]\nYo\n말했지 이곳의 보석은 (보석은)\n나야, 투자해 어서 (어서)\n넌 번쩍거린 것만 찾느라 (Uh, yo)\n여길 번쩍 들어 올릴 난 못 찾았어 (Yo, yeah, stop it)\n_Uh, uh, uh, uh, uh, uh_\nNo, no, no, no, no, no\n**너 별로, 더 별로야\n됐으니 꺼져, uh**\n\n[Pre-Chorus: Yuqi, _Miyeon_, **Soojin**]\nWoah-uh-oh, 만지지 말고\n저기 떨어져요\n내게 뭐를 원하나요?\n다 똑같죠 너처럼\n_너 같은 거는 이제\n전혀 모르겠네요\nWoah-uh-oh, 나 변했나요?\n다 똑같죠 너처럼_ (**Yeah**)\n\n[Chorus: Minnie, _Soojin_, **Soyeon**]\n베풀거나 내주거나 천사 같은 hello (_Yeah, yeah_)\n달콤하게 사탕 발린 말도 (_Yeah, yeah_)\n_예의 없어 착한 척 말고 꺼져_ (_꺼져_)\n_이제 와 가식 따위 떨지 말아_\n맴돌거나 말 걸거나 박쥐 같은 follower (**Yeah, yeah**)\n내 성공을 점쳤다는 liar (**Yeah, yeah**)\n**어이없어 친한 척 말고 꺼져** (**꺼져**)\n**널 위한 가식 따윈 기대 말아**\n\n[Bridge: Minnie]\nUh-oh, 믿을 수 없게\nUh-oh, 손댈 수 없게\nUh-oh, 잘못된 것 같은 얘기\nMm\n\n[Interlude: Soyeon]\nYo (You got it?)\nDon't mess with me\nMm, I'm not finished\nOkay, let's go\n\n[Refrain: All]\n아무도 몰랐지 이 masterpiece, 이 masterpiece\n입가에 반복되는 melody, oh, melody (*Woo*)\n너무나 완벽한 내 A to Z, oh, A to Z\n팬들은 사랑해, yeah, L-O-V-E, yeah, L-O-V-E\n\n[Outro: Soyeon]\nUh-oh",
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=NMYzKVLSlgc",
@@ -14510,11 +14611,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 6.630180999999999,
-          "end": 7.665616999999999,
+          "start": 6.557602876021258,
+          "end": 7.885802876021257,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "There's someone trying to be close to me",
@@ -14533,11 +14635,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 8.577555,
-          "end": 10.97026,
+          "start": 8.508287876022338,
+          "end": 10.813497876018017,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Yeah, I'm talking about you",
@@ -14556,11 +14659,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 12.005517,
-          "end": 13.85128,
+          "start": 11.827047876018018,
+          "end": 13.592277876021258,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Uh-oh, 거기 누군가요?",
@@ -14579,11 +14683,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 15.89,
-          "end": 18.430201,
+          "start": 15.798452876021258,
+          "end": 18.215602876021254,
           "pronunciation": "{\"full\":\"Uh-oh, geogi nugungayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거기\",\"trans\":\"geogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"누군가요?\",\"trans\":\"nugungayo\"}]}",
           "translation": "Uh-oh, is anyone there?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-oh, 나를 안다고요?",
@@ -14602,11 +14707,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 18.536253,
-          "end": 21.12,
+          "start": 18.327977876021258,
+          "end": 20.864607876019097,
           "pronunciation": "{\"full\":\"Woah-oh, naleul andagoyo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나를\",\"trans\":\"naleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안다고요?\",\"trans\":\"andagoyo\"}]}",
           "translation": "Woah-oh, you know me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-oh, 난 잊어버렸죠",
@@ -14625,17 +14731,34 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 21.12,
-          "end": 24.247378,
+          "start": 20.96523787602234,
+          "end": 24.045037876022334,
           "pronunciation": "{\"full\":\"Woah-oh, nan ij-eobeolyeossjyo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잊어버렸죠\",\"trans\":\"ij-eobeolyeossjyo\"}]}",
           "translation": "Woah-oh, I forgot",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "버렸죠 (버렸죠)",
           "segments": [
             {
-              "text": "버렸죠 (버렸죠)",
+              "text": "버렸죠 (",
+              "color": "#f0740f",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Soyeon"
+              ]
+            },
+            {
+              "text": "버렸죠",
+              "color": "#ffffff",
+              "isGradient": false,
+              "gradient": "",
+              "artists": []
+            },
+            {
+              "text": ")",
               "color": "#f0740f",
               "isGradient": false,
               "gradient": "",
@@ -14648,8 +14771,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 24.344672,
-          "end": 26.259946,
+          "start": 24.177712876022337,
+          "end": 26.121292876020174,
           "pronunciation": "{\"full\":\"beolyeossjyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"버렸죠\",\"trans\":\"beolyeossjyo\"}]}",
           "translation": "I threw it away",
           "isSplit": true,
@@ -14658,11 +14781,27 @@
               "text": "(버렸죠)",
               "charStart": 4,
               "charEnd": 9,
-              "start": 25.394162,
-              "end": 26.209971,
+              "start": 24.99941909346232,
+              "end": 26.00581909346083,
               "segments": [
                 {
-                  "text": "(버렸죠)",
+                  "text": "(",
+                  "color": "#f0740f",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Soyeon"
+                  ]
+                },
+                {
+                  "text": "버렸죠",
+                  "color": "#ffffff",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": []
+                },
+                {
+                  "text": ")",
                   "color": "#f0740f",
                   "isGradient": false,
                   "gradient": "",
@@ -14676,7 +14815,8 @@
               "translation": "(I threw it away)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "너도 웃기지 않나요?",
@@ -14695,11 +14835,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 26.625099,
-          "end": 28.810408,
+          "start": 26.263972876018013,
+          "end": 28.753187876022334,
           "pronunciation": "{\"full\":\"neodo usgiji anhnayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너도\",\"trans\":\"neodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃기지\",\"trans\":\"usgiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않나요?\",\"trans\":\"anhnayo\"}]}",
           "translation": "Aren't you funny too?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "난 좀 당황스럽네요 (-나요)",
@@ -14736,8 +14877,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 28.810408,
-          "end": 31.41101,
+          "start": 28.849902876021254,
+          "end": 31.416402876021255,
           "pronunciation": "{\"full\":\"nan jom danghwangseuleobneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"좀\",\"trans\":\"jom\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"당황스럽네요\",\"trans\":\"danghwangseuleobneyo\"}]}",
           "translation": "I'm a little embarrassed",
           "isSplit": true,
@@ -14746,8 +14887,8 @@
               "text": "(-나요)",
               "charStart": 11,
               "charEnd": 16,
-              "start": 29.854056,
-              "end": 30.445265,
+              "start": 29.439720093463063,
+              "end": 30.266620093461572,
               "segments": [
                 {
                   "text": "(",
@@ -14782,7 +14923,8 @@
               "translation": "(-I am)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 친한 척 말아줘 (Uh-oh)",
@@ -14828,8 +14970,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 31.41101,
-          "end": 34.623303,
+          "start": 31.520512876022334,
+          "end": 34.54115287602126,
           "pronunciation": "{\"full\":\"Uh-oh, chinhan cheog mal-ajwo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아줘\",\"trans\":\"mal-ajwo\"}]}",
           "translation": "Uh-oh, stop acting friendly",
           "isSplit": true,
@@ -14838,8 +14980,8 @@
               "text": "(Uh-oh)",
               "charStart": 16,
               "charEnd": 23,
-              "start": 32.452587,
-              "end": 33.236652,
+              "start": 32.154245020983815,
+              "end": 33.13724502098381,
               "segments": [
                 {
                   "text": "(",
@@ -14874,7 +15016,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "말하고 다녀 (말하고 다녀)",
@@ -14920,8 +15063,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 34.899266,
-          "end": 37.246838,
+          "start": 34.64236287602234,
+          "end": 36.792712876022335,
           "pronunciation": "{\"full\":\"malhago danyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말하고\",\"trans\":\"malhago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다녀\",\"trans\":\"danyeo\"}]}",
           "translation": "Talk and go",
           "isSplit": true,
@@ -14930,8 +15073,8 @@
               "text": "(말하고 다녀)",
               "charStart": 7,
               "charEnd": 15,
-              "start": 35.359279,
-              "end": 36.371477,
+              "start": 35.08856616593785,
+              "end": 36.006666165939336,
               "segments": [
                 {
                   "text": "(",
@@ -14966,7 +15109,8 @@
               "translation": "(Talk and go)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 만지지 말고",
@@ -14985,11 +15129,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 37.246838,
-          "end": 39.884163,
+          "start": 36.90610287602126,
+          "end": 39.38681003042113,
           "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "translation": "Woah-uh-oh, don't touch",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "저기 떨어져요",
@@ -15008,11 +15153,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 39.884163,
-          "end": 42.054833,
+          "start": 39.48961503041897,
+          "end": 41.67882503042005,
           "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "translation": "Get away from me",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내게 뭐를 원하나요?",
@@ -15031,11 +15177,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 42.13359,
-          "end": 44.533759,
+          "start": 41.79584003041897,
+          "end": 44.06349503042221,
           "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "translation": "What do you want from me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼",
@@ -15054,11 +15201,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 44.63122,
-          "end": 47.717767,
+          "start": 44.17166503041897,
+          "end": 47.209705030417894,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, like you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "너 같은 거는 이제",
@@ -15077,11 +15225,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 47.823535,
-          "end": 50.230691,
+          "start": 47.31613503042113,
+          "end": 49.85262003042221,
           "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "translation": "There's nothing like you anymore",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "전혀 모르겠네요",
@@ -15100,11 +15249,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 50.269594,
-          "end": 52.750509,
+          "start": 49.97195503041789,
+          "end": 52.42129503042221,
           "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "translation": "I have no idea",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 나 변했나요?",
@@ -15123,11 +15273,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 52.983598,
-          "end": 55.14867,
+          "start": 52.52874003041897,
+          "end": 54.73726578981018,
           "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "translation": "Woah-uh-oh, have I changed?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼 (Uh)",
@@ -15173,8 +15324,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #ecf005, #f0740f)",
-          "start": 55.252998,
-          "end": 58.06,
+          "start": 54.83021078981234,
+          "end": 57.7129557898091,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, just like you",
           "isSplit": true,
@@ -15183,8 +15334,8 @@
               "text": "(Uh)",
               "charStart": 10,
               "charEnd": 14,
-              "start": 57.289482,
-              "end": 58.06,
+              "start": 56.83024109346009,
+              "end": 57.7129557898091,
               "segments": [
                 {
                   "text": "(",
@@ -15219,7 +15370,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "베풀거나 내주거나 천사 같은 hello (Uh, uh)",
@@ -15256,8 +15408,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 58.06,
-          "end": 60.859849,
+          "start": 57.81344078981018,
+          "end": 60.7485307898091,
           "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
@@ -15266,8 +15418,8 @@
               "text": "(Uh, uh)",
               "charStart": 22,
               "charEnd": 30,
-              "start": 59.706429,
-              "end": 60.817483,
+              "start": 59.427092114439425,
+              "end": 60.7485307898091,
               "segments": [
                 {
                   "text": "(",
@@ -15302,7 +15454,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "달콤하게 사탕 발린 말도 (Uh, uh)",
@@ -15339,8 +15492,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 60.986096,
-          "end": 63.142636,
+          "start": 60.861340789810185,
+          "end": 62.82580078981126,
           "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "translation": "Sweet, candy-coated words",
           "isSplit": true,
@@ -15349,8 +15502,8 @@
               "text": "(Uh, uh)",
               "charStart": 14,
               "charEnd": 22,
-              "start": 62.653803,
-              "end": 63.142636,
+              "start": 62.07049311443943,
+              "end": 62.82580078981126,
               "segments": [
                 {
                   "text": "(",
@@ -15385,7 +15538,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "예의 없어 착한 척 말고 꺼져 (꺼져)",
@@ -15431,8 +15585,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 63.230854,
-          "end": 66.061093,
+          "start": 62.938900789811264,
+          "end": 65.77510078981126,
           "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
@@ -15441,8 +15595,8 @@
               "text": "(꺼져)",
               "charStart": 17,
               "charEnd": 21,
-              "start": 65.72743,
-              "end": 66.061093,
+              "start": 65.2801300934571,
+              "end": 65.77510078981126,
               "segments": [
                 {
                   "text": "(",
@@ -15477,7 +15631,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "이제 와 가식 따위 떨지 말아",
@@ -15496,11 +15651,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 66.159405,
-          "end": 68.48,
+          "start": 65.88849078981018,
+          "end": 68.1609307898091,
           "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Now, don't be pretentious",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "맴돌거나 말 걸거나 박쥐 같은 follower (Uh, uh)",
@@ -15537,8 +15693,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 68.48,
-          "end": 71.332593,
+          "start": 68.28389078981019,
+          "end": 71.12995078981126,
           "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
@@ -15547,8 +15703,8 @@
               "text": "(Uh, uh)",
               "charStart": 26,
               "charEnd": 34,
-              "start": 70.106174,
-              "end": 71.332593,
+              "start": 70.01200602098159,
+              "end": 71.12995078981126,
               "segments": [
                 {
                   "text": "(",
@@ -15583,7 +15739,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "내 성공을 점쳤다는 liar (Uh, uh)",
@@ -15620,8 +15777,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 71.57,
-          "end": 73.756834,
+          "start": 71.2436307898091,
+          "end": 73.42530078981126,
           "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "translation": "A liar who predicted my success",
           "isSplit": true,
@@ -15630,8 +15787,8 @@
               "text": "(Uh, uh)",
               "charStart": 16,
               "charEnd": 24,
-              "start": 72.791364,
-              "end": 73.756834,
+              "start": 72.5992451659386,
+              "end": 73.42530078981126,
               "segments": [
                 {
                   "text": "(",
@@ -15666,7 +15823,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "어이없어 친한 척 말고 꺼져 (꺼져)",
@@ -15712,8 +15870,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 73.845277,
-          "end": 76.48,
+          "start": 73.54898578981235,
+          "end": 76.15828489490725,
           "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
@@ -15722,8 +15880,8 @@
               "text": "(꺼져)",
               "charStart": 16,
               "charEnd": 20,
-              "start": 76.088919,
-              "end": 76.48,
+              "start": 75.81354492752075,
+              "end": 76.15828489490725,
               "segments": [
                 {
                   "text": "(",
@@ -15758,7 +15916,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "널 위한 가식 따윈 기대 말아",
@@ -15777,11 +15936,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 76.48,
-          "end": 79.222364,
+          "start": 76.27094989490618,
+          "end": 78.8370148949051,
           "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Don't expect any pretense for you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "엉망진창, only see now",
@@ -15800,11 +15960,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 89.366144,
-          "end": 92.229965,
+          "start": 89.17181478981126,
+          "end": 91.83459478980912,
           "pronunciation": "{\"full\":\"eongmangjinchang, only see now\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"엉망진창,\",\"trans\":\"eongmangjinchang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"only\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"see\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"}]}",
           "translation": "Messy, only see now",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "몰랐지, 오리 속 swan",
@@ -15823,11 +15984,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 92.229965,
-          "end": 94.706157,
+          "start": 91.94232978981019,
+          "end": 94.21563978981128,
           "pronunciation": "{\"full\":\"mollassji, oli sog swan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"몰랐지,\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오리\",\"trans\":\"oli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"swan\",\"trans\":\"\"}]}",
           "translation": "Didn't know, swan in a duck",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "황홀한 케이크 위 blow out",
@@ -15846,11 +16008,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 94.71000000000001,
-          "end": 97.35,
+          "start": 94.35135978980803,
+          "end": 97.10534478980911,
           "pronunciation": "{\"full\":\"hwangholhan keikeu wi blow out\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"케이크\",\"trans\":\"keikeu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위\",\"trans\":\"wi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"blow\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"out\",\"trans\":\"\"}]}",
           "translation": "Blow out on an ecstatic cake",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내 머리 위에 crown",
@@ -15869,11 +16032,12 @@
           "color": "#f98692",
           "isGradient": false,
           "gradient": "",
-          "start": 97.35,
-          "end": 99.469007,
+          "start": 97.20887478981236,
+          "end": 99.18156092752076,
           "pronunciation": "{\"full\":\"nae meoli wie crown\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"머리\",\"trans\":\"meoli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위에\",\"trans\":\"wie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"crown\",\"trans\":\"\"}]}",
           "translation": "Crown on my head",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Yo",
@@ -15892,11 +16056,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 99.528076,
-          "end": 99.994248,
+          "start": 99.2693609275215,
+          "end": 99.71306092752076,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "말했지 이곳의 보석은 (보석은)",
@@ -15915,8 +16080,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 100.104121,
-          "end": 102.670095,
+          "start": 99.7863609275215,
+          "end": 102.4808609275215,
           "pronunciation": "{\"full\":\"malhaessji igos-ui boseog-eun\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"말했지\",\"trans\":\"malhaessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이곳의\",\"trans\":\"igos-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보석은\",\"trans\":\"boseog-eun\"}]}",
           "translation": "I said the jewel here is",
           "isSplit": true,
@@ -15925,8 +16090,8 @@
               "text": "(보석은)",
               "charStart": 12,
               "charEnd": 17,
-              "start": 102.111024,
-              "end": 102.604215,
+              "start": 101.92946692751926,
+              "end": 102.4808609275215,
               "segments": [
                 {
                   "text": "(보석은)",
@@ -15943,7 +16108,8 @@
               "translation": "(the jewel)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "나야, 투자해 어서 (어서)",
@@ -15962,8 +16128,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 102.750501,
-          "end": 105.25,
+          "start": 102.54030592752075,
+          "end": 104.98230592752076,
           "pronunciation": "{\"full\":\"naya, tujahae eoseo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"나야,\",\"trans\":\"naya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"투자해\",\"trans\":\"tujahae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어서\",\"trans\":\"eoseo\"}]}",
           "translation": "I'm the one, invest in it",
           "isSplit": true,
@@ -15972,8 +16138,8 @@
               "text": "(어서)",
               "charStart": 11,
               "charEnd": 15,
-              "start": 104.853399,
-              "end": 105.25,
+              "start": 104.45974592751851,
+              "end": 104.98230592752076,
               "segments": [
                 {
                   "text": "(어서)",
@@ -15990,7 +16156,8 @@
               "translation": "(hurry up)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "넌 번쩍거린 것만 찾느라 (Uh, yo)",
@@ -16009,8 +16176,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 105.25,
-          "end": 107.59,
+          "start": 105.0731059275215,
+          "end": 106.79386192752149,
           "pronunciation": "{\"full\":\"neon beonjjeoggeolin geosman chajneula\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"넌\",\"trans\":\"neon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍거린\",\"trans\":\"beonjjeoggeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것만\",\"trans\":\"geosman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾느라\",\"trans\":\"chajneula\"}]}",
           "translation": "You're only looking for the sparkly stuff",
           "isSplit": true,
@@ -16019,8 +16186,8 @@
               "text": "(Uh, yo)",
               "charStart": 14,
               "charEnd": 22,
-              "start": 106.722321,
-              "end": 107.59,
+              "start": 106.48045011443942,
+              "end": 106.96727413551605,
               "segments": [
                 {
                   "text": "(Uh, yo)",
@@ -16037,7 +16204,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "여길 번쩍 들어 올릴 난 못 찾았어 (Yo, yeah, stop it)",
@@ -16056,8 +16224,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 107.59,
-          "end": 110.42,
+          "start": 107.08791413552038,
+          "end": 109.93788913552038,
           "pronunciation": "{\"full\":\"yeogil beonjjeog deul-eo ollil nan mos chaj-ass-eo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여길\",\"trans\":\"yeogil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번쩍\",\"trans\":\"beonjjeog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들어\",\"trans\":\"deul-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"올릴\",\"trans\":\"ollil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"못\",\"trans\":\"mos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"찾았어\",\"trans\":\"chaj-ass-eo\"}]}",
           "translation": "I couldn't find the one to lift the glitter here",
           "isSplit": true,
@@ -16066,8 +16234,8 @@
               "text": "(Yo, yeah, stop it)",
               "charStart": 20,
               "charEnd": 39,
-              "start": 108.047079,
-              "end": 110.216113,
+              "start": 107.67508692752074,
+              "end": 109.93788913552038,
               "segments": [
                 {
                   "text": "(Yo, yeah, stop it)",
@@ -16084,7 +16252,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "Uh, uh, uh, uh, uh, uh",
@@ -16103,11 +16272,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 110.42,
-          "end": 113.08,
+          "start": 110.05359913551605,
+          "end": 112.55774913551605,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "No, no, no, no, no, no",
@@ -16126,11 +16296,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 113.08,
-          "end": 115.526777,
+          "start": 112.67128413551713,
+          "end": 115.13367413551605,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "너 별로, 더 별로야",
@@ -16150,11 +16321,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "start": 115.629484,
-          "end": 118.13534,
+          "start": 115.26083913552037,
+          "end": 117.86474913551605,
           "pronunciation": "{\"full\":\"neo byeollo, deo byeolloya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로,\",\"trans\":\"byeollo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"별로야\",\"trans\":\"byeolloya\"}]}",
           "translation": "You're not good, you're worse",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "됐으니 꺼져, uh",
@@ -16174,11 +16346,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
-          "start": 118.250309,
-          "end": 120.623351,
+          "start": 118.00568913552037,
+          "end": 120.28479913551605,
           "pronunciation": "{\"full\":\"dwaess-euni kkeojyeo, uh\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"됐으니\",\"trans\":\"dwaess-euni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져,\",\"trans\":\"kkeojyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"uh\",\"trans\":\"\"}]}",
           "translation": "That's enough, get the hell away, uh",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 만지지 말고",
@@ -16197,11 +16370,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 120.730975,
-          "end": 123.18254,
+          "start": 120.40282913551928,
+          "end": 122.83607413551604,
           "pronunciation": "{\"full\":\"Woah-uh-oh, manjiji malgo\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"만지지\",\"trans\":\"manjiji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"}]}",
           "translation": "Woah-uh-oh, don't touch me",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "저기 떨어져요",
@@ -16220,11 +16394,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 123.28872,
-          "end": 125.341301,
+          "start": 122.95801913551821,
+          "end": 125.08241413552037,
           "pronunciation": "{\"full\":\"jeogi tteol-eojyeoyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"저기\",\"trans\":\"jeogi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨어져요\",\"trans\":\"tteol-eojyeoyo\"}]}",
           "translation": "Get off there",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "내게 뭐를 원하나요?",
@@ -16243,11 +16418,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 125.449028,
-          "end": 128.006652,
+          "start": 125.19812413551605,
+          "end": 127.76534913551605,
           "pronunciation": "{\"full\":\"naege mwoleul wonhanayo?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내게\",\"trans\":\"naege\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원하나요?\",\"trans\":\"wonhanayo\"}]}",
           "translation": "What do you want from me?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼",
@@ -16266,11 +16442,12 @@
           "color": "#ecf005",
           "isGradient": false,
           "gradient": "",
-          "start": 128.094724,
-          "end": 130.966988,
+          "start": 127.88497413551605,
+          "end": 130.7822191355182,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, like you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "너 같은 거는 이제",
@@ -16289,11 +16466,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 131.067154,
-          "end": 133.654718,
+          "start": 130.8902441355182,
+          "end": 133.41034413551822,
           "pronunciation": "{\"full\":\"neo gat-eun geoneun ije\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너\",\"trans\":\"neo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거는\",\"trans\":\"geoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"}]}",
           "translation": "There's nothing like you anymore",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "전혀 모르겠네요",
@@ -16312,11 +16490,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 133.757121,
-          "end": 136.324652,
+          "start": 133.52431413552037,
+          "end": 135.94813413551714,
           "pronunciation": "{\"full\":\"jeonhyeo moleugessneyo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"전혀\",\"trans\":\"jeonhyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"모르겠네요\",\"trans\":\"moleugessneyo\"}]}",
           "translation": "I have no idea",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Woah-uh-oh, 나 변했나요?",
@@ -16335,11 +16514,12 @@
           "color": "#9a86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 136.408133,
-          "end": 138.752714,
+          "start": 136.0603641355204,
+          "end": 138.28669413551822,
           "pronunciation": "{\"full\":\"Woah-uh-oh, na byeonhaessnayo?\",\"chunks\":[{\"type\":\"en\",\"text\":\"Woah-uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나\",\"trans\":\"na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"변했나요?\",\"trans\":\"byeonhaessnayo\"}]}",
           "translation": "Woah-uh-oh, have I changed?",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "다 똑같죠 너처럼 (Yeah)",
@@ -16385,8 +16565,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #9a86f9, #86d4f9)",
-          "start": 138.805391,
-          "end": 141.524423,
+          "start": 138.38790413551928,
+          "end": 141.4169541355193,
           "pronunciation": "{\"full\":\"da ttoggatjyo neocheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"똑같죠\",\"trans\":\"ttoggatjyo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너처럼\",\"trans\":\"neocheoleom\"}]}",
           "translation": "It's all the same, just like you",
           "isSplit": true,
@@ -16395,8 +16575,8 @@
               "text": "(Yeah)",
               "charStart": 10,
               "charEnd": 16,
-              "start": 140.618872,
-              "end": 141.524423,
+              "start": 140.3614018550415,
+              "end": 141.4169541355193,
               "segments": [
                 {
                   "text": "(",
@@ -16431,7 +16611,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "베풀거나 내주거나 천사 같은 hello (Yeah, yeah)",
@@ -16468,8 +16649,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 141.650708,
-          "end": 144.506771,
+          "start": 141.54803413551713,
+          "end": 144.23314413551822,
           "pronunciation": "{\"full\":\"bepulgeona naejugeona cheonsa gat-eun hello\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"베풀거나\",\"trans\":\"bepulgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내주거나\",\"trans\":\"naejugeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"천사\",\"trans\":\"cheonsa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hello\",\"trans\":\"\"}]}",
           "translation": "Giving or giving away, an angelic hello",
           "isSplit": true,
@@ -16478,8 +16659,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 22,
               "charEnd": 34,
-              "start": 143.063759,
-              "end": 144.424133,
+              "start": 142.96894785504,
+              "end": 144.23314413551822,
               "segments": [
                 {
                   "text": "(",
@@ -16514,7 +16695,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "달콤하게 사탕 발린 말도 (Yeah, yeah)",
@@ -16551,8 +16733,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
-          "start": 144.811452,
-          "end": 146.574275,
+          "start": 144.3368191355182,
+          "end": 146.63013913552038,
           "pronunciation": "{\"full\":\"dalkomhage satang ballin maldo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"달콤하게\",\"trans\":\"dalkomhage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사탕\",\"trans\":\"satang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"발린\",\"trans\":\"ballin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말도\",\"trans\":\"maldo\"}]}",
           "translation": "Sweet, candy-coated words",
           "isSplit": true,
@@ -16561,8 +16743,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 14,
               "charEnd": 26,
-              "start": 146.147038,
-              "end": 146.574275,
+              "start": 145.4352391659423,
+              "end": 146.63013913552038,
               "segments": [
                 {
                   "text": "(",
@@ -16597,7 +16779,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "예의 없어 착한 척 말고 꺼져 (꺼져)",
@@ -16643,8 +16826,8 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 146.665205,
-          "end": 149.434182,
+          "start": 146.7664391355204,
+          "end": 149.46126413552037,
           "pronunciation": "{\"full\":\"yeui eobs-eo chaghan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"예의\",\"trans\":\"yeui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없어\",\"trans\":\"eobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's rude, don't act nice, get out",
           "isSplit": true,
@@ -16653,8 +16836,8 @@
               "text": "(꺼져)",
               "charStart": 17,
               "charEnd": 21,
-              "start": 149.102975,
-              "end": 149.434182,
+              "start": 148.8550930209786,
+              "end": 149.46126413552037,
               "segments": [
                 {
                   "text": "(",
@@ -16689,7 +16872,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "이제 와 가식 따위 떨지 말아",
@@ -16708,11 +16892,12 @@
           "color": "#86d4f9",
           "isGradient": false,
           "gradient": "",
-          "start": 149.56,
-          "end": 151.95,
+          "start": 149.57262413551604,
+          "end": 151.59044413551823,
           "pronunciation": "{\"full\":\"ije wa gasig ttawi tteolji mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이제\",\"trans\":\"ije\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"와\",\"trans\":\"wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따위\",\"trans\":\"ttawi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨지\",\"trans\":\"tteolji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Now, don't be pretentious",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "맴돌거나 말 걸거나 박쥐 같은 follower (Yeah, yeah)",
@@ -16749,8 +16934,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 151.95,
-          "end": 154.96,
+          "start": 151.70731413552036,
+          "end": 154.52915913551712,
           "pronunciation": "{\"full\":\"maemdolgeona mal geolgeona bagjwi gat-eun follower\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"맴돌거나\",\"trans\":\"maemdolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸거나\",\"trans\":\"geolgeona\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"박쥐\",\"trans\":\"bagjwi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"follower\",\"trans\":\"\"}]}",
           "translation": "Hovering around, talking, or a bat-like follower",
           "isSplit": true,
@@ -16759,8 +16944,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 26,
               "charEnd": 38,
-              "start": 153.499218,
-              "end": 154.788817,
+              "start": 153.26189994850384,
+              "end": 154.52915913551712,
               "segments": [
                 {
                   "text": "(",
@@ -16795,7 +16980,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "내 성공을 점쳤다는 liar (Yeah, yeah)",
@@ -16832,8 +17018,8 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
-          "start": 154.96,
-          "end": 157.13,
+          "start": 154.63819913551606,
+          "end": 156.92165913551713,
           "pronunciation": "{\"full\":\"nae seong-gong-eul jeomchyeossdaneun liar\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"성공을\",\"trans\":\"seong-gong-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"점쳤다는\",\"trans\":\"jeomchyeossdaneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"liar\",\"trans\":\"\"}]}",
           "translation": "A liar who predicted my success",
           "isSplit": true,
@@ -16842,8 +17028,8 @@
               "text": "(Yeah, yeah)",
               "charStart": 16,
               "charEnd": 28,
-              "start": 156.297602,
-              "end": 157.13,
+              "start": 156.0290340209786,
+              "end": 156.92165913551713,
               "segments": [
                 {
                   "text": "(",
@@ -16878,7 +17064,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "어이없어 친한 척 말고 꺼져 (꺼져)",
@@ -16924,8 +17111,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 157.13,
-          "end": 160.09,
+          "start": 157.03359913551606,
+          "end": 159.90745389490618,
           "pronunciation": "{\"full\":\"eoieobs-eo chinhan cheog malgo kkeojyeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어이없어\",\"trans\":\"eoieobs-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"친한\",\"trans\":\"chinhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"척\",\"trans\":\"cheog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말고\",\"trans\":\"malgo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꺼져\",\"trans\":\"kkeojyeo\"}]}",
           "translation": "It's ridiculous, don't act friendly, get out",
           "isSplit": true,
@@ -16934,8 +17121,8 @@
               "text": "(꺼져)",
               "charStart": 16,
               "charEnd": 20,
-              "start": 159.65644,
-              "end": 160.09,
+              "start": 159.21177416594082,
+              "end": 159.90745389490618,
               "segments": [
                 {
                   "text": "(",
@@ -16970,7 +17157,8 @@
               "translation": "(get out)",
               "lang": "ko"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "널 위한 가식 따윈 기대 말아",
@@ -16989,11 +17177,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 160.09,
-          "end": 162.577384,
+          "start": 159.99749889490292,
+          "end": 162.17605813551495,
           "pronunciation": "{\"full\":\"neol wihan gasig ttawin gidae mal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"널\",\"trans\":\"neol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"위한\",\"trans\":\"wihan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가식\",\"trans\":\"gasig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"기대\",\"trans\":\"gidae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말아\",\"trans\":\"mal-a\"}]}",
           "translation": "Don't expect any pretense for you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 믿을 수 없게",
@@ -17012,11 +17201,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 162.889788,
-          "end": 164.920749,
+          "start": 162.30626813551604,
+          "end": 164.84086813551602,
           "pronunciation": "{\"full\":\"Uh-oh, mid-eul su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"믿을\",\"trans\":\"mid-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "translation": "Uh-oh, so unbelievable",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 손댈 수 없게",
@@ -17035,11 +17225,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 165.35,
-          "end": 167.66574,
+          "start": 164.96107313551926,
+          "end": 167.4469531355171,
           "pronunciation": "{\"full\":\"Uh-oh, sondael su eobsge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손댈\",\"trans\":\"sondael\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없게\",\"trans\":\"eobsge\"}]}",
           "translation": "Uh-oh, so untouchable",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh, 잘못된 것 같은 얘기",
@@ -17058,11 +17249,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 167.774699,
-          "end": 171.710807,
+          "start": 167.54221813551604,
+          "end": 171.51014313551602,
           "pronunciation": "{\"full\":\"Uh-oh, jalmosdoen geos gat-eun yaegi\",\"chunks\":[{\"type\":\"en\",\"text\":\"Uh-oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘못된\",\"trans\":\"jalmosdoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같은\",\"trans\":\"gat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얘기\",\"trans\":\"yaegi\"}]}",
           "translation": "Uh-oh, sounds like it's wrong",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Mm",
@@ -17081,11 +17273,12 @@
           "color": "#b3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 171.790745,
-          "end": 173.148656,
+          "start": 171.62643313551496,
+          "end": 173.0143751355171,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Yo (You got it?)",
@@ -17104,8 +17297,8 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 173.726533,
-          "end": 175.998945,
+          "start": 173.52956013551278,
+          "end": 175.74619089490724,
           "pronunciation": "",
           "translation": "",
           "isSplit": true,
@@ -17114,8 +17307,8 @@
               "text": "(You got it?)",
               "charStart": 3,
               "charEnd": 16,
-              "start": 174.697856,
-              "end": 175.755734,
+              "start": 174.77739302098158,
+              "end": 175.67209302098084,
               "segments": [
                 {
                   "text": "(You got it?)",
@@ -17132,7 +17325,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "en"
         },
         {
           "text": "Don't mess with me",
@@ -17151,11 +17345,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 176.932844,
-          "end": 178.551738,
+          "start": 176.5845622406131,
+          "end": 178.4884358976697,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Mm, I'm not finished",
@@ -17174,11 +17369,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 179.037268,
-          "end": 180.724179,
+          "start": 178.94272089767077,
+          "end": 180.56730089766862,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "Okay, let's go",
@@ -17197,11 +17393,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 181.010775,
-          "end": 183.352634,
+          "start": 180.65589589767077,
+          "end": 183.15062089767076,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         },
         {
           "text": "아무도 몰랐지 이 masterpiece, 이 masterpiece",
@@ -17220,11 +17417,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 183.54,
-          "end": 188.7,
+          "start": 183.24385589767184,
+          "end": 188.34713089767183,
           "pronunciation": "{\"full\":\"amudo mollassji i masterpiece, i masterpiece\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아무도\",\"trans\":\"amudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"몰랐지\",\"trans\":\"mollassji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"masterpiece\",\"trans\":\"\"}]}",
           "translation": "Nobody knew this masterpiece, this masterpiece",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "입가에 반복되는 melody, oh, melody (Woo)",
@@ -17259,8 +17457,8 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 188.7,
-          "end": 193.932088,
+          "start": 188.44036589766753,
+          "end": 193.59279589767075,
           "pronunciation": "{\"full\":\"ibga-e banbogdoeneun melody, oh, melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"입가에\",\"trans\":\"ibga-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
           "translation": "The melody, oh, melody that repeats on my lips",
           "isSplit": true,
@@ -17269,8 +17467,8 @@
               "text": "(Woo)",
               "charStart": 28,
               "charEnd": 33,
-              "start": 193.465244,
-              "end": 193.932088,
+              "start": 193.1122419275185,
+              "end": 193.59279589767075,
               "segments": [
                 {
                   "text": "(",
@@ -17303,7 +17501,8 @@
               "translation": "",
               "lang": "en"
             }
-          ]
+          ],
+          "lang": "ko"
         },
         {
           "text": "너무나 완벽한 내 A to Z, oh, A to Z",
@@ -17322,11 +17521,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 193.98,
-          "end": 199.27,
+          "start": 193.69603589766967,
+          "end": 198.77168024061314,
           "pronunciation": "{\"full\":\"neomuna wanbyeoghan nae A to Z, oh, A to Z\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무나\",\"trans\":\"neomuna\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽한\",\"trans\":\"wanbyeoghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"oh,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"A\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"to\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Z\",\"trans\":\"\"}]}",
           "translation": "My A to Z, oh, A to Z so perfect",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "팬들은 사랑해, yeah, L-O-V-E, yeah, L-O-V-E",
@@ -17345,11 +17545,12 @@
           "color": "#f9dc86",
           "isGradient": false,
           "gradient": "",
-          "start": 199.27,
-          "end": 204.331021,
+          "start": 198.8656402406142,
+          "end": 204.01038524061096,
           "pronunciation": "{\"full\":\"paendeul-eun salanghae, yeah, L-O-V-E, yeah, L-O-V-E\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"팬들은\",\"trans\":\"paendeul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사랑해,\",\"trans\":\"salanghae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"L-O-V-E\",\"trans\":\"\"}]}",
           "translation": "The fans love it, yeah, L-O-V-E, Yeah, L-O-V-E",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "ko"
         },
         {
           "text": "Uh-oh",
@@ -17368,11 +17569,12 @@
           "color": "#f0740f",
           "isGradient": false,
           "gradient": "",
-          "start": 204.433787,
-          "end": 205.782157,
+          "start": 204.12348524061096,
+          "end": 205.7197902406142,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en"
         }
       ]
     },
@@ -42895,10 +43097,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 4.294379,
           "end": 6.521094,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -42957,10 +43159,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 6.605295,
           "end": 8.255331,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43024,10 +43226,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 8.361279,
           "end": 9.956032,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43091,10 +43293,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 10.063915,
           "end": 11.667386,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43137,10 +43339,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 11.760467,
           "end": 13.24929,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43204,10 +43406,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 13.356908,
           "end": 15.150242,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43271,10 +43473,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 15.241463,
           "end": 16.650163,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43317,10 +43519,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 16.737423,
           "end": 18.448769,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43384,10 +43586,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 18.543427,
           "end": 19.637706,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43407,10 +43609,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 20.260716,
           "end": 21.556394,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43430,10 +43632,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 21.832959,
           "end": 23.213501,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43453,10 +43655,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 23.377771,
           "end": 24.815824,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43476,10 +43678,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 24.931146,
           "end": 26.431233,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43499,10 +43701,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 26.56834,
           "end": 28.24317,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43522,10 +43724,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 28.34726,
           "end": 29.859426,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43545,10 +43747,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 29.961613,
           "end": 31.561689,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43568,10 +43770,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 31.669606,
           "end": 33.91418,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43614,10 +43816,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 33.99135102097786,
           "end": 37.327751020976365,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43638,7 +43840,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             },
             {
               "text": "(Yeah)",
@@ -43658,7 +43861,8 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -43679,10 +43883,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 37.526635,
           "end": 40.741421,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43725,10 +43929,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 40.880812,
           "end": 44.084726,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43748,10 +43952,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 44.220013,
           "end": 49.086566,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43794,10 +43998,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 49.180292,
           "end": 51.291906,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43840,10 +44044,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 51.401779,
           "end": 52.519972,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43863,10 +44067,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 52.61777,
           "end": 54.366719,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43886,10 +44090,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 54.468941,
           "end": 56.063189,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43909,10 +44113,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 56.427665,
           "end": 57.747117,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43932,10 +44136,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 58.004218,
           "end": 59.341873,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -43955,10 +44159,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 59.459258,
           "end": 62.011351,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44001,10 +44205,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 62.09374,
           "end": 64.674558,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44024,10 +44228,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 64.766358,
           "end": 66.216394,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44047,10 +44251,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 66.300455,
           "end": 68.007041,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44070,10 +44274,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 68.421138,
           "end": 69.979588,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44116,10 +44320,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 70.091201,
           "end": 71.668422,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44162,10 +44366,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 71.789552,
           "end": 74.686658,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44185,10 +44389,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 74.789085,
           "end": 76.307267,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44252,10 +44456,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 76.426389,
           "end": 77.985588,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44319,10 +44523,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 78.088959,
           "end": 79.631282,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44365,10 +44569,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 79.728868,
           "end": 81.243845,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44432,10 +44636,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 81.380058,
           "end": 83.183052,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44499,10 +44703,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 83.289568,
           "end": 84.789239,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44545,10 +44749,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 84.903684,
           "end": 86.443384,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44612,10 +44816,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 86.554208,
           "end": 89.505362,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44695,10 +44899,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 90.023836,
           "end": 92.674544,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44741,10 +44945,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 92.830986,
           "end": 95.423463,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44764,10 +44968,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 95.538649,
           "end": 97.126559,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44787,10 +44991,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 97.208289,
           "end": 99.702464,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44810,10 +45014,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 99.793846,
           "end": 103.006169,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44877,10 +45081,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 103.531888,
           "end": 105.12413,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44900,10 +45104,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 105.222807,
           "end": 107.021414,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44946,10 +45150,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 107.131717,
           "end": 108.525807,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44969,10 +45173,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 108.621063,
           "end": 112.036883,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -44992,10 +45196,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 112.170397,
           "end": 116.394083,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45038,10 +45242,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 116.506449,
           "end": 119.399785,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45061,10 +45265,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 119.505566,
           "end": 122.666624,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45107,10 +45311,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 122.786611,
           "end": 123.934565,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45130,10 +45334,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 124.039042,
           "end": 125.666089,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45153,10 +45357,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 125.770923,
           "end": 129.742854,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45199,10 +45403,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 129.84853,
           "end": 133.297374,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45222,10 +45426,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 133.393133,
           "end": 136.1049,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45268,10 +45472,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 136.205815,
           "end": 137.892737,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45314,10 +45518,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 137.996989,
           "end": 139.482849,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45337,10 +45541,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 139.993237,
           "end": 143.509676,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45383,10 +45587,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 143.615731,
           "end": 144.71664,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45406,10 +45610,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 144.920861,
           "end": 146.733616,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45452,10 +45656,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 146.867971,
           "end": 148.182517,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45498,10 +45702,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 148.336342,
           "end": 150.142668,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45544,10 +45748,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 150.284232,
           "end": 151.858833,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45590,10 +45794,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 151.976399,
           "end": 153.23458,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45613,10 +45817,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 153.321716,
           "end": 154.768442,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45636,10 +45840,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 154.861439,
           "end": 156.7064,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45659,10 +45863,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 156.797556,
           "end": 158.869098,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45682,10 +45886,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 158.960565,
           "end": 160.028875,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45705,10 +45909,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 160.13488,
           "end": 161.809016,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45728,10 +45932,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 161.944517,
           "end": 163.475188,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45751,10 +45955,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 163.584683,
           "end": 165.651771,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45774,10 +45978,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 165.763856,
           "end": 168.041753,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45797,10 +46001,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 168.149611,
           "end": 169.461507,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45820,10 +46024,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 170.065416,
           "end": 171.850081,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45843,10 +46047,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 171.940246,
           "end": 173.425489,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45866,10 +46070,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 173.513318,
           "end": 175.176862,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45889,10 +46093,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 175.272676,
           "end": 176.888133,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45912,10 +46116,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 176.972409,
           "end": 178.509823,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45935,10 +46139,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 178.613835,
           "end": 179.985965,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45958,10 +46162,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 180.086704,
           "end": 181.740526,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -45981,10 +46185,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 181.832532,
           "end": 183.55378,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46004,10 +46208,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 183.655208,
           "end": 185.691697,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46027,10 +46231,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 185.782491,
           "end": 186.802202,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46050,10 +46254,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 186.900402,
           "end": 188.812027,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46073,10 +46277,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 188.91481,
           "end": 190.743602,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46096,10 +46300,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 190.845591,
           "end": 191.582285,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46119,10 +46323,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 191.676583,
           "end": 193.504343,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46142,10 +46346,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 193.626579,
           "end": 195.661622,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46165,10 +46369,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 195.76654,
           "end": 197.216913,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46188,10 +46392,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 197.315076,
           "end": 198.858958,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46211,10 +46415,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 198.941023,
           "end": 200.544172,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46234,10 +46438,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 200.654493,
           "end": 202.278159,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46273,10 +46477,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 202.382264,
           "end": 204.413814,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46335,10 +46539,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 204.512753,
           "end": 205.66944,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46358,10 +46562,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 205.78973,
           "end": 207.086166,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46381,10 +46585,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 207.188495,
           "end": 208.988174,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46404,10 +46608,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 209.100114,
           "end": 210.822061,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -46427,10 +46631,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 210.920639,
           "end": 212.563029,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46494,10 +46698,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 212.690398,
           "end": 214.274455,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46561,10 +46765,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 214.386163,
           "end": 215.930533,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46607,10 +46811,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 216.031144,
           "end": 217.501266,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46674,10 +46878,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 217.634917,
           "end": 219.217272,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46741,10 +46945,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 219.313547,
           "end": 221.008175,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46787,10 +46991,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 221.116861,
           "end": 222.70939,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46854,10 +47058,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 222.815095,
           "end": 224.63638,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
