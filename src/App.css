@@ -121,7 +121,6 @@ body {
   pointer-events: auto; 
   display: flex;
   align-items: center;
-  /* FIX: Ensure Cloudflare production build respects the blur */
   background: rgba(0, 0, 0, 0.3) !important;
   -webkit-backdrop-filter: blur(10px) !important;
   backdrop-filter: blur(10px) !important;
@@ -141,18 +140,21 @@ body {
   box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
 }
 
+/* FLUID SCALING SEARCH TEXT */
 .search-box input {
   flex: 1;
   background: none;
   border: none;
   color: var(--text-base);
-  font-size: 16px;
+  font-size: clamp(12px, 3.2vw, 16px); /* Scales down fluidly on small screens */
   outline: none;
   font-family: var(--font-family);
+  min-width: 0;
 }
 
 .search-box input::placeholder {
   color: var(--text-subdued);
+  font-size: clamp(12px, 3.2vw, 16px);
 }
 
 .search-submit-btn {
@@ -448,8 +450,12 @@ body {
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .search-container {
-    padding: 16px 20px;
+    padding: 12px 16px;
     justify-content: center;
+  }
+  .search-box {
+    height: 44px;
+    padding: 0 6px 0 16px;
   }
   .content-scroll-area {
     padding: 82px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
@@ -461,6 +467,17 @@ body {
   .search-column.vault-column,
   .search-column.cosmos-column {
     width: 100% !important;
+  }
+}
+
+/* COMPACT SINGLE-COLUMN CARD LAYOUT FOR MOBILE */
+@media (max-width: 550px) {
+  .track-grid {
+    grid-template-columns: min(100%, 210px); /* Reduced card width for mobile */
+    justify-content: center;
+  }
+  .track-grid-item {
+    margin: 0 auto;
   }
 }
 
