@@ -44,6 +44,7 @@ const ModalLeft = ({
 
   const ytSearchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`);
   const ytSearchUrl = `https://music.youtube.com/search?q=${ytSearchQuery}`;
+  const spotifySearchUrl = `https://open.spotify.com/search/${ytSearchQuery}`;
 
   return (
     <div className="modal-left-col">
@@ -91,12 +92,26 @@ const ModalLeft = ({
 
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
-          <div className="links-header"><label>Listen on Platforms</label></div>
+          <div className="links-header"><label>Play Music From:</label></div>
           {isEditing ? (
             <div className="platform-inputs-grid">
               <div className="platform-input-row">
-                <span className="platform-label spotify-color">Spotify</span>
-                <input type="text" name="spotify" value={customData.spotify} onChange={handleDataChange} />
+                <a 
+                  href={spotifySearchUrl} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="platform-label spotify-color"
+                  title="Click to search Spotify for this song link"
+                >
+                  Spotify
+                </a>
+                <input 
+                  type="text" 
+                  name="spotify" 
+                  value={customData.spotify} 
+                  onChange={handleDataChange} 
+                  placeholder="Paste Spotify URL..." 
+                />
               </div>
               <div className="platform-input-row">
                 <a 
@@ -104,7 +119,6 @@ const ModalLeft = ({
                   target="_blank" 
                   rel="noreferrer" 
                   className="platform-label yt-color"
-                  style={{ textDecoration: 'underline', cursor: 'pointer' }}
                   title="Click to search YouTube Music for this song link"
                 >
                   YT Music 
@@ -129,15 +143,20 @@ const ModalLeft = ({
           ) : (
             <div className="platform-links">
               <a href={finalLinks.spotify} target="_blank" rel="noreferrer" className="platform-btn spotify">Spotify</a>
-              <a href={finalLinks.yt} target="_blank" rel="noreferrer" className="platform-btn yt">YT Music</a>
-              {ytVideoId && (
-                <button className="platform-btn yt" onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'youtube', playId: Date.now() })}>
-                  Play YouTube Stream
-                </button>
-              )}
+              
+              <button 
+                className="platform-btn yt" 
+                onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'youtube', playId: Date.now() })}
+              >
+                YT Music
+              </button>
+
               {customData.hasLocal && (
-                <button className="platform-btn local" onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() })}>
-                  Play Local Audio
+                <button 
+                  className="platform-btn local" 
+                  onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() })}
+                >
+                  Local Audio File
                 </button>
               )}
             </div>

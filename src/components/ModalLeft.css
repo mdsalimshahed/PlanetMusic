@@ -233,10 +233,37 @@
   gap: 12px;
 }
 
+/* TURNED LABELS INTO BADGE BUTTONS */
 .platform-label {
-  width: 70px;
-  font-size: clamp(11px, 1.3vw, 13px);
-  font-weight: 600;
+  width: 80px; 
+  font-size: clamp(10px, 1.2vw, 12px);
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  display: inline-block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* Hover effects only apply to the active search links */
+a.platform-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+a.platform-label.spotify-color:hover {
+  background: rgba(29, 185, 84, 0.15);
+  border-color: #1DB954;
+}
+
+a.platform-label.yt-color:hover {
+  background: rgba(255, 0, 0, 0.15);
+  border-color: #FF0000;
 }
 
 .spotify-color { color: #1DB954; }
@@ -355,6 +382,15 @@
   border-radius: 16px;
   margin-top: 0;
   flex-shrink: 0;
+}
+
+.view-controls-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
 }
 
 .action-buttons-grid {
