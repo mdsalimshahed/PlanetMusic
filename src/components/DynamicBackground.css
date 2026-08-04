@@ -85,7 +85,8 @@
    justify-content: flex-end;
    align-items: center;
    gap: 0;
-   font-size: var(--dyn-artist-name-font-size, clamp(20px, 3.5vw, 42px));
+   /* Wrapped the CSS variable inside the clamp to strictly bind its maximum growth */
+   font-size: clamp(14px, 4vw, var(--dyn-artist-name-font-size, 42px));
    font-weight: 800;
    letter-spacing: -0.5px;
    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
@@ -107,4 +108,11 @@
    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
    font-weight: 600;
    white-space: pre-wrap;
+}
+
+/* Applies the min() cap matching the exact logic used in LyricsDisplay */
+@media (max-width: 900px) {
+  .singer-name-corner {
+    font-size: clamp(12px, 4vw, min(var(--dyn-artist-name-font-size, 42px), 20px));
+  }
 }
