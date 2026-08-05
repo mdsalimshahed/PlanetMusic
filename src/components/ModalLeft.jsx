@@ -1,6 +1,6 @@
 /* --- src/components/ModalLeft.jsx --- */
 import React from 'react';
-import { formatDate, parseTrackName, extractYouTubeId } from '../utils/songHelpers';
+import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../utils/songHelpers';
 import './ModalLeft.css';
 
 // Universal monochromatic SVG Icon Helper
@@ -106,6 +106,12 @@ const ModalLeft = ({
             <div className="detail-item">
               <label>Genre</label>
               <p>{selectedSong.primaryGenreName}</p>
+            </div>
+          )}
+          {selectedSong.trackTimeMillis > 0 && (
+            <div className="detail-item">
+              <label>Duration</label>
+              <p>{formatTime(selectedSong.trackTimeMillis)}</p>
             </div>
           )}
         </div>

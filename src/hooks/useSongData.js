@@ -16,6 +16,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
+  
+  // Track to prevent infinite fetch loops
+  const hasFetchedDeezerMetaRef = useRef(new Set());
 
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
@@ -59,6 +62,54 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       });
     }
   }, [selectedSong]);
+
+  // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved
+  useEffect(() => {
+    if (isSaved && selectedSong) {
+      const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') || 
+                           (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
+      
+      if (isDeezerOnly) {
+        const tId = selectedSong.trackId;
+        if (!hasFetchedDeezerMetaRef.current.has(tId)) {
+          hasFetchedDeezerMetaRef.current.add(tId);
+          
+          const fetchDeezerMeta = async () => {
+            try {
+              const realId = tId.replace('dz_', '');
+              const res = await fetch(`https://ytdownloader-jnt0.onrender.com/track-info-deezer/${realId}`);
+              const json = await res.json();
+              
+              if (json.success && json.data) {
+                const updatedSong = { ...selectedSong };
+                let modified = false;
+                
+                if (json.data.release_date && !updatedSong.releaseDate) {
+                  updatedSong.releaseDate = json.data.release_date;
+                  modified = true;
+                }
+                
+                if (json.data.extracted_genres && json.data.extracted_genres.length > 0) {
+                  const validGenres = json.data.extracted_genres.filter(g => g !== "Not Specified");
+                  if (validGenres.length > 0 && !updatedSong.primaryGenreName) {
+                    updatedSong.primaryGenreName = validGenres.join(', ');
+                    modified = true;
+                  }
+                }
+                
+                if (modified) {
+                  updateSongInLibrary(updatedSong);
+                }
+              }
+            } catch (e) {
+              console.error("Failed to fetch Deezer metadata:", e);
+            }
+          };
+          fetchDeezerMeta();
+        }
+      }
+    }
+  }, [isSaved, selectedSong, updateSongInLibrary]);
 
   useEffect(() => {
     if (!selectedSong) return;
