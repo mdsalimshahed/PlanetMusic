@@ -35,7 +35,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
-  const prevBlobUrlRef = useRef(null);
+  
+  // Caches binary audio blobs for the lifecycle of the track so we never re-request Deezer streams on toggle
+  const cachedUrlsRef = useRef({ local: null, deezer: null });
 
   useEffect(() => {
     workspaceClock.setEventName('workspaceTimeUpdate');
@@ -62,6 +64,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const workspaceLinesRef = useRef(workspaceLines);
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
+  // Handle global unmount memory clearance
+  useEffect(() => {
+    return () => {
+      if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
+      if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
+    };
+  }, []);
+
   useEffect(() => {
     if (selectedSong && selectedSong.trackId !== prevTrackRef.current) {
       prevTrackRef.current = selectedSong.trackId;
@@ -72,6 +82,11 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setConstrainedEnd(null);
       setLoopRange(null);
       setManualSource(null);
+
+      // Clean up previous blobs from memory
+      if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
+      if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
+      cachedUrlsRef.current = { local: null, deezer: null };
     }
   }, [selectedSong]);
 
@@ -103,23 +118,35 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           return;
         }
 
-        if (prevBlobUrlRef.current) {
-          URL.revokeObjectURL(prevBlobUrlRef.current);
-          prevBlobUrlRef.current = null;
+        // Force stop players to prevent malfunction/overlap on rapid switching
+        setIsSyncPlaying(false);
+        workspaceClock.pause();
+        if (syncAudioRef.current) {
+          syncAudioRef.current.pause();
+          syncAudioRef.current.currentTime = 0;
+        }
+        if (syncYtPlayerRef.current) {
+          try { syncYtPlayerRef.current.pauseVideo(); } catch(e){}
         }
 
         setSyncYtVideoId(null);
         setSyncAudioSrc(undefined);
 
         if (sourceToLoad === 'local') {
-          const file = await getAudioFile(selectedSong.trackId);
-          if (file) {
-            const url = URL.createObjectURL(file);
-            prevBlobUrlRef.current = url;
-            setSyncAudioSrc(url);
+          if (cachedUrlsRef.current.local) {
+            setSyncAudioSrc(cachedUrlsRef.current.local);
             setActiveSyncSource('local');
+            setIsSyncLoading(false);
+          } else {
+            const file = await getAudioFile(selectedSong.trackId);
+            if (file) {
+              const url = URL.createObjectURL(file);
+              cachedUrlsRef.current.local = url;
+              setSyncAudioSrc(url);
+              setActiveSyncSource('local');
+            }
+            setIsSyncLoading(false);
           }
-          setIsSyncLoading(false);
         } else if (sourceToLoad === 'youtube') {
           const ytUrl = customData.yt || selectedSong.customLinks?.yt || selectedSong.yt;
           setSyncYtVideoId(extractYouTubeId(ytUrl));
@@ -127,6 +154,13 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           setIsSyncLoading(false);
         } else if (sourceToLoad === 'deezer') {
           setActiveSyncSource('deezer');
+          
+          if (cachedUrlsRef.current.deezer) {
+            setSyncAudioSrc(cachedUrlsRef.current.deezer);
+            setIsSyncLoading(false);
+            return;
+          }
+
           setIsSyncLoading(true);
           const dzUrl = customData.deezer || selectedSong.customLinks?.deezer;
           try {
@@ -146,7 +180,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
-            prevBlobUrlRef.current = url;
+            cachedUrlsRef.current.deezer = url;
             setSyncAudioSrc(url);
           } catch (e) {
             console.error("Deezer buffer issue, falling back:", e);

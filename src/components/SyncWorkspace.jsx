@@ -477,23 +477,37 @@ export const SyncWorkspace = ({
 
          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {availableSources && availableSources.length > 1 && (
-                  <button
-                    onClick={() => {
-                        const currentIndex = availableSources.indexOf(activeSyncSource);
-                        const nextIndex = (currentIndex + 1) % availableSources.length;
-                        setManualSource(availableSources[nextIndex]);
-                    }}
-                    className="action-split-btn"
-                    style={{ margin: 0, background: 'rgba(255, 255, 255, 0.1)', borderColor: 'rgba(255, 255, 255, 0.3)', color: 'white' }}
-                    title="Toggle Audio Source"
-                  >
-                    Switch Source
-                  </button>
-              )}
-              {activeSyncSource === 'youtube' && <span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}} title="YouTube Stream">YT Music</span>}
-              {activeSyncSource === 'local' && <span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}} title="Local Audio">LOCAL</span>}
-              {activeSyncSource === 'deezer' && <span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}} title="Deezer Stream">DEEZER</span>}
+              {(() => {
+                  const isMultiple = availableSources && availableSources.length > 1;
+                  const cycleSource = () => {
+                      if (isMultiple) {
+                          const currentIndex = availableSources.indexOf(activeSyncSource || computedSource);
+                          const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
+                          const nextIndex = (effectiveIndex + 1) % availableSources.length;
+                          setManualSource(availableSources[nextIndex]);
+                      }
+                  };
+
+                  const cursorStyle = isMultiple ? { cursor: 'pointer', userSelect: 'none', transition: 'transform 0.2s' } : {};
+                  const title = isMultiple ? "Click to switch audio source" : "";
+
+                  const Wrapper = ({ children }) => (
+                    <span 
+                      onClick={cycleSource} 
+                      style={{...cursorStyle, display: 'inline-block'}} 
+                      title={title}
+                      onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
+                      onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
+                    >
+                      {children}
+                    </span>
+                  );
+
+                  if (activeSyncSource === 'youtube') return <Wrapper><span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>YT Music</span></Wrapper>;
+                  if (activeSyncSource === 'local') return <Wrapper><span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>LOCAL</span></Wrapper>;
+                  if (activeSyncSource === 'deezer') return <Wrapper><span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>DEEZER</span></Wrapper>;
+                  return null;
+              })()}
             </div>
             <span>{isShowingAutoSync ? 'Only Ad-libs Editable' : 'Full Edit Enabled'}</span>
          </div>

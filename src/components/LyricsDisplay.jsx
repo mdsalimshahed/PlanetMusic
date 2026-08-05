@@ -7,11 +7,13 @@ import './LyricsDisplay.css';
 const LyricsDisplay = ({ 
   isEditing, customData, handleDataChange, hasValidSyncData, 
   lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-  isPlaying, settings }) => {
+  isPlaying, settings
+}) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
+
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
   // EQUALIZER: Only activates for Web Audio API sources (local MP3/preview). YT streams stay gracefully idle.
@@ -22,7 +24,6 @@ const LyricsDisplay = ({
     
     const renderEQ = (timestamp) => {
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
-
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         if (timestamp - lastEqDraw > 33) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
@@ -66,6 +67,7 @@ const LyricsDisplay = ({
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
+
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -77,6 +79,7 @@ const LyricsDisplay = ({
 
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
+
     const clearAllActive = () => {
         cachedLinesRef.current.forEach(item => {
             if (item.isActive) {
@@ -92,11 +95,13 @@ const LyricsDisplay = ({
             }
         });
     };
+
     const handleTime = (e) => {
         if (!isPlayingCurrentSong) return;
         const time = e.detail;
         const lines = cachedLinesRef.current;
         let newActiveIndex = -1;
+
         for (let i = 0; i < lines.length; i++) {
             const { start, end, nextStart } = lines[i];
             if (!isNaN(start) && time >= start) {
@@ -108,6 +113,7 @@ const LyricsDisplay = ({
                 }
             }
         }
+
         for (let i = 0; i < lines.length; i++) {
             const item = lines[i];
             const shouldBeActive = (i === newActiveIndex);
@@ -126,13 +132,16 @@ const LyricsDisplay = ({
                 item.isActive = false;
             }
         }
+
         const adlibs = cachedAdlibsRef.current;
         for (let i = 0; i < adlibs.length; i++) {
             const item = adlibs[i];
             if (isNaN(item.start)) continue;
+
             let targetState = 'hidden';
             if (time >= item.start && time <= item.end) targetState = 'active';
             else if (time >= item.start) targetState = 'visible';
+
             if (item.state !== targetState) {
                 const cl = item.node.classList;
                 if (targetState === 'active') {
@@ -155,6 +164,7 @@ const LyricsDisplay = ({
             clearAllActive();
         }
     };
+
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
     
@@ -164,6 +174,7 @@ const LyricsDisplay = ({
     } else {
         clearAllActive();
     }
+
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTime);
         window.removeEventListener('globalPlayState', handlePlayState);
@@ -204,27 +215,36 @@ const LyricsDisplay = ({
       };
       
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
-      const textarea = e.target;
-      const newVal = (customData.lyrics || '').substring(0, textarea.selectionStart) + markdownText + (customData.lyrics || '').substring(textarea.selectionEnd);
-      handleDataChange({ target: { name: 'lyrics', value: newVal } });
+
+      // RESTORED CTRL+Z NATIVE UNDO BEHAVIOR
+      // Using execCommand injects the paste securely into the browser's history timeline 
+      // without breaking the sequence, triggering the standard onChange event organically.
+      if (document.queryCommandSupported('insertText')) {
+        document.execCommand('insertText', false, markdownText);
+      } else {
+        // Fallback for extreme legacy browsers
+        const textarea = e.target;
+        const newVal = (customData.lyrics || '').substring(0, textarea.selectionStart) + markdownText + (customData.lyrics || '').substring(textarea.selectionEnd);
+        handleDataChange({ target: { name: 'lyrics', value: newVal } });
+      }
     }
   };
 
   return (
     <>
       {isEditing ? (
-        <textarea 
-           name="lyrics" 
-           value={customData.lyrics}
-          onChange={handleDataChange} 
-           onPaste={handlePaste}
+        <textarea
+            name="lyrics"
+            value={customData.lyrics}
+          onChange={handleDataChange}
+            onPaste={handlePaste}
           className="lyrics-textarea"
-          placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!"
-         />
+          placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!" 
+        />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-           className="live-lyrics-preview" 
-           ref={containerRef}
+            className="live-lyrics-preview" 
+            ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -304,6 +324,7 @@ const LyricsDisplay = ({
                           inlineColor = masterPalette[seg.artists[0]] || '#ffffff';
                       }
                     }
+
                     return (
                       <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' } : { color: inlineColor }}>
                           {seg.text}
@@ -319,6 +340,7 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
+
       {!isEditing && (
         <div className={`lyrics-equalizer`}>
           {Array.from({ length: 60 }).map((_, i) => (
