@@ -1,5 +1,6 @@
 /* --- src/App.jsx --- */
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import Background from './components/Background';
 import Topbar from './components/Topbar';
@@ -7,6 +8,7 @@ import SongCard from './components/SongCard';
 import SongModal from './components/SongModal';
 import Player from './components/Player';
 import SettingsTab from './components/SettingsTab';
+import BlogTab from './components/BlogTab';
 
 // --- PURE FLEX GRID ---
 const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
@@ -28,7 +30,16 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
 };
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('main');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Parse routing variables from URL
+  const pathParts = location.pathname.split('/').filter(Boolean);
+  const activeTab = pathParts[0] === 'blog' ? 'blog' : 
+                    pathParts[0] === 'settings' ? 'settings' : 'main';
+                    
+  const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
+
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
@@ -87,12 +98,10 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
-
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
-
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
@@ -104,6 +113,53 @@ const App = () => {
   const [songToRemove, setSongToRemove] = useState(null);
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
+
+  // Deep Linking Engine: Loads song if visited directly via URL
+  useEffect(() => {
+    if (urlTrackId) {
+      // Prevent redundant fetches if the song is already loaded
+      if (selectedSong && String(selectedSong.trackId) === String(urlTrackId)) return;
+
+      // Force string coercion to ensure iTunes Number IDs match the URL String
+      let found = library.find(s => String(s.trackId) === String(urlTrackId)) || 
+                  searchResults.find(s => String(s.trackId) === String(urlTrackId));
+      
+      if (found) {
+        setSelectedSong(found);
+      } else {
+        // If not in library or search history, fetch it fresh from iTunes!
+        if (!urlTrackId.startsWith('dz_')) {
+          fetch(`https://itunes.apple.com/lookup?id=${urlTrackId}&entity=song`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.results && data.results.length > 0) {
+                setSelectedSong({
+                  ...data.results[0],
+                  sourceNames: ['iTunes']
+                });
+              }
+            })
+            .catch(e => console.error("Deep link fetch failed", e));
+        }
+      }
+    } else {
+      setSelectedSong(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlTrackId]); // Strictly bound to URL changes
+
+  // Master controller for opening/closing the modal via URL routing
+  const handleSetSelectedSong = (song) => {
+    if (song) {
+      // Default to /live view when opening a fresh song card
+      navigate(`/song/${song.trackId}/live`);
+    } else {
+      // Return safely to whatever tab they were on behind the modal
+      const tabPath = activeTab === 'main' ? '/' : `/${activeTab}`;
+      navigate(tabPath);
+    }
+    setSelectedSong(song);
+  };
 
   useEffect(() => {
     if (settings.persistentMemory) {
@@ -119,18 +175,11 @@ const App = () => {
     }
   }, [settings, library, searchQuery, searchResults]);
 
-  const handleTabSwitch = (tab) => {
-    setSearchQuery('');
-    setSearchResults([]);
-    setIsExplicitSearch(false);
-    setActiveTab(tab);
-  };
-
   const handleHomeClick = () => {
     setSearchQuery('');
     setSearchResults([]);
     setIsExplicitSearch(false);
-    setActiveTab('main');
+    navigate('/');
   };
 
   const filteredLibrary = library.filter(song => {
@@ -167,10 +216,8 @@ const App = () => {
           })
       ]);
 
-      // Helper to strip parenthesis/brackets for a robust "Exact" string match
       const normalizeString = (str) => (str || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
 
-      // Pre-process Deezer Results
       const deezerResults = (deezerRes.results || []).map(dz => ({
         trackId: `dz_${dz.id}`,
         trackName: dz.title,
@@ -178,8 +225,8 @@ const App = () => {
         collectionName: dz.album,
         artworkUrl100: dz.cover,
         trackTimeMillis: (dz.duration || 0) * 1000,
-        previewUrl: '', // Streams natively from backend
-        trackExplicitness: 'explicit', 
+        previewUrl: '',
+        trackExplicitness: 'explicit',
         sourceNames: ['Deezer'],
         customLinks: { deezer: dz.link },
         _normTitle: normalizeString(dz.title),
@@ -189,15 +236,13 @@ const App = () => {
       const finalResults = [];
       const matchedDeezerIds = new Set();
 
-      // Process iTunes & Look for Deezer Matches
       (itunesRes.results || []).forEach(song => {
         const normTitle = normalizeString(song.trackName);
         const normArtist = normalizeString(song.artistName);
 
-        // Find Exact Match by Title + Artist
         const dzMatch = deezerResults.find(dz => 
-          !matchedDeezerIds.has(dz.trackId) && 
-          dz._normTitle === normTitle && 
+          !matchedDeezerIds.has(dz.trackId) &&
+          dz._normTitle === normTitle &&
           dz._normArtist === normArtist
         );
 
@@ -207,7 +252,6 @@ const App = () => {
         };
 
         if (dzMatch) {
-          // Fuse them together!
           formattedSong.sourceNames = ['iTunes', 'Deezer'];
           formattedSong.customLinks = { ...formattedSong.customLinks, deezer: dzMatch.customLinks.deezer };
           if (dzMatch.trackExplicitness === 'explicit') formattedSong.trackExplicitness = 'explicit';
@@ -217,14 +261,12 @@ const App = () => {
         finalResults.push(formattedSong);
       });
 
-      // Add remaining unmatched Deezer explicit/underground tracks
       deezerResults.forEach(dz => {
         if (!matchedDeezerIds.has(dz.trackId)) {
           finalResults.push(dz);
         }
       });
 
-      // Clean up temporary normalization properties
       finalResults.forEach(res => {
         delete res._normTitle;
         delete res._normArtist;
@@ -281,7 +323,7 @@ const App = () => {
   const confirmRemove = () => {
     if (songToRemove) {
       setLibrary(library.filter((s) => s.trackId !== songToRemove.trackId));
-      if (selectedSong?.trackId === songToRemove.trackId) setSelectedSong(null);
+      if (selectedSong?.trackId === songToRemove.trackId) handleSetSelectedSong(null);
       setSongToRemove(null);
     }
   };
@@ -299,7 +341,9 @@ const App = () => {
         return [...prevLibrary, updatedSong];
       }
     });
-    setSelectedSong(updatedSong);
+
+    handleSetSelectedSong(updatedSong);
+
     setCurrentTrack(prevTrack => {
       if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
         return { ...prevTrack, ...updatedSong };
@@ -323,7 +367,7 @@ const App = () => {
     });
     
     const exportData = { library: optimizedLibrary, settings: { ...settings } };
-    delete exportData.settings.deezerArl; // SECURITY FIX: DO NOT EXPORT ARL TOKEN
+    delete exportData.settings.deezerArl;
 
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -357,7 +401,6 @@ const App = () => {
 
   const applyParsedData = (parsedData) => {
     const newLibrary = [...library];
-
     const mergeSongs = (importedSongs) => {
       importedSongs.forEach(newSong => {
         const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -427,8 +470,8 @@ const App = () => {
 
   const uniqueOnlineResults = searchResults.filter(
     onlineSong => !filteredLibrary.some(localSong => 
-        localSong.trackId === onlineSong.trackId ||
-       (localSong.trackName.toLowerCase() === onlineSong.trackName.toLowerCase() && localSong.artistName.toLowerCase() === onlineSong.artistName.toLowerCase())
+      String(localSong.trackId) === String(onlineSong.trackId) ||
+      (localSong.trackName.toLowerCase() === onlineSong.trackName.toLowerCase() && localSong.artistName.toLowerCase() === onlineSong.artistName.toLowerCase())
     )
   );
 
@@ -442,11 +485,10 @@ const App = () => {
         handleExport={handleExport}
         handleImport={handleImport}
         handleLoadSample={handleLoadSample}
-        openSettings={() => handleTabSwitch('settings')}
       />
 
       <main className="main-content">
-        {activeTab !== 'settings' && (
+        {activeTab === 'main' && (
           <div className="search-container">
             <form onSubmit={handleSearchSubmit} className="search-box">
               <input
@@ -478,7 +520,7 @@ const App = () => {
                     items={library} 
                     library={library} 
                     toggleLibrary={toggleLibrary} 
-                    setSelectedSong={setSelectedSong} 
+                    setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
                   />
                 ) : (
@@ -490,7 +532,7 @@ const App = () => {
                       onClick={handleLoadSample}
                       disabled={isLoadingSample}
                     >
-                      {isLoadingSample ? 'Loading Sample Vault...' : '  Load Sample Vault'}
+                      {isLoadingSample ? 'Loading Sample Vault...' : 'Load Sample Vault'}
                     </button>
                   </div>
                 )
@@ -506,7 +548,7 @@ const App = () => {
                           items={filteredLibrary} 
                           library={library} 
                           toggleLibrary={toggleLibrary} 
-                          setSelectedSong={setSelectedSong} 
+                          setSelectedSong={handleSetSelectedSong} 
                           setCurrentTrack={setCurrentTrack} 
                         />
                       ) : (
@@ -527,7 +569,7 @@ const App = () => {
                           items={uniqueOnlineResults} 
                           library={library} 
                           toggleLibrary={toggleLibrary} 
-                          setSelectedSong={setSelectedSong} 
+                          setSelectedSong={handleSetSelectedSong} 
                           setCurrentTrack={setCurrentTrack} 
                         />
                       ) : (
@@ -542,7 +584,7 @@ const App = () => {
                     items={filteredLibrary} 
                     library={library} 
                     toggleLibrary={toggleLibrary} 
-                    setSelectedSong={setSelectedSong} 
+                    setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
                   />
                 ) : searchResults.length > 0 ? (
@@ -550,7 +592,7 @@ const App = () => {
                     items={searchResults} 
                     library={library} 
                     toggleLibrary={toggleLibrary} 
-                    setSelectedSong={setSelectedSong} 
+                    setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
                   />
                 ) : isSearching ? (
@@ -568,6 +610,10 @@ const App = () => {
             </section>
           )}
 
+          {activeTab === 'blog' && (
+            <BlogTab />
+          )}
+
           {activeTab === 'settings' && (
             <SettingsTab settings={settings} setSettings={setSettings} />
           )}
@@ -577,7 +623,7 @@ const App = () => {
       <SongModal 
         key={selectedSong ? selectedSong.trackId : 'modal-empty'}
         selectedSong={selectedSong}
-        setSelectedSong={setSelectedSong}
+        setSelectedSong={handleSetSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
         toggleLibrary={toggleLibrary}
         updateSongInLibrary={updateSongInLibrary}
@@ -590,7 +636,7 @@ const App = () => {
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 
         selectedSong={selectedSong}
-        setSelectedSong={setSelectedSong}
+        setSelectedSong={handleSetSelectedSong}
         settings={settings}
       />
 

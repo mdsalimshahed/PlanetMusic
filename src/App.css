@@ -1,4 +1,5 @@
 /* --- src/App.css --- */
+
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* --- UNIVERSAL BOX SIZING SAFEGUARD --- */
@@ -17,6 +18,9 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.15);
   --font-family: 'Outfit', sans-serif;
+}
+
+* {
   margin: 0;
   padding: 0;
 }
@@ -107,10 +111,10 @@ body {
 
 .search-container {
   position: absolute;
-  top: 0;
+  top: 8px; /* Tightly tucked under the Topbar */
   left: 0;
   right: 0;
-  padding: 20px 40px;
+  padding: 0 40px;
   display: flex;
   justify-content: flex-start;
   z-index: 30;
@@ -146,7 +150,7 @@ body {
   background: none;
   border: none;
   color: var(--text-base);
-  font-size: clamp(12px, 3.2vw, 16px); /* Scales down fluidly on small screens */
+  font-size: clamp(12px, 3.2vw, 16px);
   outline: none;
   font-family: var(--font-family);
   min-width: 0;
@@ -197,8 +201,13 @@ body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 90px 40px 100px 40px; 
+  padding: 8px 40px 100px 40px; /* Snaps Blog/Settings flush to the Topbar */
   min-height: 0;
+}
+
+/* MAGIC FIX: Pushes content down ONLY on the Main tab to make room for the floating search bar */
+.search-container ~ .content-scroll-area {
+  padding-top: 72px; 
 }
 
 .content-scroll-area.no-scroll {
@@ -226,7 +235,7 @@ body {
 .dual-search-container {
   display: flex;
   width: 100%;
-  height: calc(100vh - 190px);
+  height: calc(100vh - 164px); 
   gap: 28px;
 }
 
@@ -450,7 +459,8 @@ body {
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .search-container {
-    padding: 12px 16px;
+    top: 8px;
+    padding: 0 16px;
     justify-content: center;
   }
   .search-box {
@@ -458,7 +468,10 @@ body {
     padding: 0 6px 0 16px;
   }
   .content-scroll-area {
-    padding: 82px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
+    padding: 8px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
+  }
+  .search-container ~ .content-scroll-area {
+    padding-top: 64px; 
   }
   .dual-search-container {
     flex-direction: column;
@@ -473,7 +486,7 @@ body {
 /* COMPACT SINGLE-COLUMN CARD LAYOUT FOR MOBILE */
 @media (max-width: 550px) {
   .track-grid {
-    grid-template-columns: min(100%, 210px); /* Reduced card width for mobile */
+    grid-template-columns: min(100%, 210px); 
     justify-content: center;
   }
   .track-grid-item {
@@ -483,10 +496,13 @@ body {
 
 @media (max-height: 600px) {
   .search-container {
-    padding: 10px 20px;
+    padding: 0 20px;
   }
   .content-scroll-area {
-    padding-top: 70px;
+    padding-top: 8px;
+  }
+  .search-container ~ .content-scroll-area {
+    padding-top: 56px; 
   }
 }
 
