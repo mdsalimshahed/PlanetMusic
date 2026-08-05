@@ -48362,8 +48362,9 @@
       "customLinks": {
         "spotify": "https://open.spotify.com/track/04TrKKFNElQUgYFkIeKgY1",
         "yt": "https://music.youtube.com/watch?v=LammBLf9AeI",
-        "hasLocal": true,
-        "localName": "Pour que Naisse un Bouquet.mp3"
+        "deezer": "",
+        "hasLocal": false,
+        "localName": ""
       },
       "lyrics": "[Paroles de \"Pour Que Naisse Un Bouquet\"]\n\n[Couplet 1: Alice Duport-Percier]\nLe jour viendra où l'on s'efface\nD'autres cœurs prendront la place\nLe vent porte leur prénom\nSur les ruines de nos chansons\nCouleur, silence, dessin, absence\nLa vie grandit dans l'ombre\nLorsque nos noms deviennent nombres\n\n[Refrain: Alice Duport-Percier]\nQue mon absence serve d'encre pour demain\nQuand, de mes mains froides, je peindrai notre fin\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nAux lendemains rêvés\nCeux que j'aime sans les voir briller\n\n[Couplet 2: Alice Duport-Percier]\nJe ne te dis pas\nÀ Dieu, mais à toi\nQue de nos rêves brisés\nNaissent des bouquets\nPour ceux qui ne cessent de s’aimer\n\n[Refrain: Alice Duport-Percier]\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nEnsemble vers demain, les mains vides d'hier\nC'est dans nos mains que brille la lumière",
       "artistImages": {
@@ -50797,10 +50798,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 12.336798093455613,
           "end": 15.228498093458594,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -50820,10 +50821,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 15.314798093455614,
           "end": 18.228098093460083,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -50843,10 +50844,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 18.312898093457104,
           "end": 21.165233927522245,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -50889,10 +50890,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 21.268433927517773,
           "end": 23.91953392751926,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -50912,10 +50913,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 24.230698093454123,
           "end": 27.175698093454123,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -50935,10 +50936,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 27.250498093458596,
           "end": 30.146298093455613,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -50985,10 +50986,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86f9dc, #86a3f9)",
-          "translation": "",
-          "pronunciation": null,
           "start": 30.222398093457105,
           "end": 32.774531093460084,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51027,7 +51028,8 @@
                 }
               ],
               "singer": "Jennie",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -51057,10 +51059,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86f9dc, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 32.856431093458596,
           "end": 36.27812016593337,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51103,10 +51105,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 36.38022016593486,
           "end": 39.27092016593784,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51149,10 +51151,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 39.35982016593635,
           "end": 42.08922016593486,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51172,10 +51174,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 42.167020165939334,
           "end": 45.11582016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51195,10 +51197,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 45.19922016593486,
           "end": 48.15032016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51218,10 +51220,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 48.24832016593635,
           "end": 51.059120165933365,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51264,10 +51266,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 51.14482016593635,
           "end": 54.11002016593933,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51287,10 +51289,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 54.20132016593635,
           "end": 57.06742016593784,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51310,10 +51312,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 57.15852016593933,
           "end": 60.12122016593486,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51333,10 +51335,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 60.21972016593486,
           "end": 63.09682016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51356,10 +51358,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 63.19302016593933,
           "end": 66.03302016593932,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51379,10 +51381,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 66.11644694850605,
           "end": 68.68854694850755,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51402,10 +51404,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 68.79724694850307,
           "end": 71.80879192752074,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51448,10 +51450,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 71.92469192751926,
           "end": 74.64499192752373,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51471,10 +51473,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 74.74549192752373,
           "end": 77.68179192752075,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51494,10 +51496,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 77.80589192752224,
           "end": 81.17639192752225,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51517,10 +51519,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 81.27219192751926,
           "end": 84.31159192752523,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51540,10 +51542,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 84.41079192752075,
           "end": 87.31849192752372,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51563,10 +51565,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 87.43789192752224,
           "end": 90.08959192752522,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51586,10 +51588,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 90.18869192751926,
           "end": 93.14479192752074,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51632,10 +51634,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 93.25179192752076,
           "end": 96.10933292752075,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51655,10 +51657,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 96.26903292752374,
           "end": 99.05123292751927,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51678,10 +51680,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 99.15223292751926,
           "end": 102.10993292752224,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51728,10 +51730,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 102.21283292752075,
           "end": 105.20013292752522,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -51792,10 +51794,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 105.31023292751927,
           "end": 108.01823292751926,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51815,10 +51817,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 108.10813292752522,
           "end": 111.03453292752373,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51838,10 +51840,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 111.14103292752372,
           "end": 114.14153292752374,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51871,10 +51873,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 114.23463292752523,
           "end": 117.10843292752224,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51882,11 +51884,12 @@
           "segments": [
             {
               "text": "Ice cream chillin', chillin', ",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
               "artists": [
-                "Jisoo"
+                "Jisoo",
+                "Selena Gomez"
               ]
             },
             {
@@ -51904,26 +51907,17 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 117.21603292752373,
           "end": 120.14263292752523,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
           "text": "Ice cream chillin', chillin', ice cream chillin'",
           "segments": [
             {
-              "text": "Ice cream chillin', chillin', ",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Jisoo"
-              ]
-            },
-            {
-              "text": "ice cream chillin'",
+              "text": "Ice cream chillin', chillin', ice cream chillin'",
               "color": "#ffffff",
               "isGradient": true,
               "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
@@ -51937,33 +51931,44 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 120.25683292752075,
           "end": 123.1126850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
           "text": "Ice cream chillin', chillin', ice cream",
           "segments": [
             {
-              "text": "Ice cream chillin', chillin', ice cream",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
+              "text": "Ice cream chillin', chillin'",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
               "artists": [
-                "Jisoo"
+                "Jisoo",
+                "Selena Gomez"
+              ]
+            },
+            {
+              "text": ", ice cream",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+              "artists": [
+                "Jisoo",
+                "Selena Gomez"
               ]
             }
           ],
-          "singer": "Jisoo",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "translation": "",
-          "pronunciation": null,
+          "singer": "Jisoo, Selena Gomez",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
           "start": 123.22248509346157,
           "end": 126.24808509346306,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -51983,10 +51988,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 126.34088509346009,
           "end": 128.67408509346308,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52006,10 +52011,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "Crazy, crazy speed in my La Ferra'",
-          "pronunciation": "{\"full\":\"michin michindeushan sogdo in my La Ferra'\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"미친\",\"trans\":\"michin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"미친듯한\",\"trans\":\"michindeushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속도\",\"trans\":\"sogdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"La\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Ferra'\",\"trans\":\"\"}]}",
           "start": 128.77098509346158,
           "end": 131.69918509345712,
+          "pronunciation": "{\"full\":\"michin michindeushan sogdo in my La Ferra'\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"미친\",\"trans\":\"michin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"미친듯한\",\"trans\":\"michindeushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속도\",\"trans\":\"sogdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"La\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Ferra'\",\"trans\":\"\"}]}",
+          "translation": "Crazy, crazy speed in my La Ferra'",
           "isSplit": false
         },
         {
@@ -52029,10 +52034,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's so fast that you'll miss it If you want, just diameter",
-          "pronunciation": "{\"full\":\"neomu ppalleo neoneun ppikkeus wonhandamyeon geunyang jileum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무\",\"trans\":\"neomu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빨러\",\"trans\":\"ppalleo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너는\",\"trans\":\"neoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"삐끗\",\"trans\":\"ppikkeus\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그냥\",\"trans\":\"geunyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지름\",\"trans\":\"jileum\"}]}",
           "start": 131.78488509346008,
           "end": 134.8082850934586,
+          "pronunciation": "{\"full\":\"neomu ppalleo neoneun ppikkeus wonhandamyeon geunyang jileum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무\",\"trans\":\"neomu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빨러\",\"trans\":\"ppalleo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너는\",\"trans\":\"neoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"삐끗\",\"trans\":\"ppikkeus\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그냥\",\"trans\":\"geunyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지름\",\"trans\":\"jileum\"}]}",
+          "translation": "It's so fast that you'll miss it If you want, just diameter",
           "isSplit": false
         },
         {
@@ -52052,10 +52057,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "Millis, billis I earn every day Ice on my wrist in midsummer",
-          "pronunciation": "{\"full\":\"Millis, billis maeil beol-eum han-yeoleum sonmog-e eol-eum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Millis,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"billis\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"매일\",\"trans\":\"maeil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"벌음\",\"trans\":\"beol-eum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"한여름\",\"trans\":\"han-yeoleum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손목에\",\"trans\":\"sonmog-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼음\",\"trans\":\"eol-eum\"}]}",
           "start": 134.88858509346306,
           "end": 137.75458509346308,
+          "pronunciation": "{\"full\":\"Millis, billis maeil beol-eum han-yeoleum sonmog-e eol-eum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Millis,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"billis\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"매일\",\"trans\":\"maeil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"벌음\",\"trans\":\"beol-eum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"한여름\",\"trans\":\"han-yeoleum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손목에\",\"trans\":\"sonmog-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼음\",\"trans\":\"eol-eum\"}]}",
+          "translation": "Millis, billis I earn every day Ice on my wrist in midsummer",
           "isSplit": false
         },
         {
@@ -52075,10 +52080,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 137.83958509346306,
           "end": 139.29298509346157,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52098,10 +52103,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 139.39008509346306,
           "end": 140.7896850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52121,10 +52126,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 140.8738850934601,
           "end": 142.24058509346307,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52144,10 +52149,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 142.31898509346158,
           "end": 143.72798509346157,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52167,10 +52172,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 143.8124850934616,
           "end": 145.3032850934586,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52190,10 +52195,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 145.38848509346158,
           "end": 146.8741850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52213,10 +52218,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 146.9583850934601,
           "end": 148.25558509346308,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52236,10 +52241,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 148.3613850934601,
           "end": 150.24758509346307,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52283,10 +52288,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 150.3462850934586,
           "end": 151.7023850934601,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52316,10 +52321,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 151.8161850934571,
           "end": 153.26848509346158,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52363,10 +52368,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 153.37548509346158,
           "end": 155.7345038550415,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52387,10 +52392,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 155.81810385504298,
           "end": 157.39666316593636,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52411,10 +52416,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 157.4805631659423,
           "end": 159.11494716593936,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52434,10 +52439,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 159.19484716593786,
           "end": 162.13624716593637,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52458,10 +52463,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 162.21884716593786,
           "end": 163.75414716593488,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52491,10 +52496,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 163.82724716593637,
           "end": 165.10924716593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52538,10 +52543,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 165.22914716593488,
           "end": 167.69134716593786,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52562,10 +52567,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 167.77904716593338,
           "end": 169.23454716593338,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52586,10 +52591,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 169.31984716593786,
           "end": 171.13002609345708,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52609,10 +52614,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 171.22632609346155,
           "end": 172.61612609345858,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52632,10 +52637,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 172.6989260934556,
           "end": 174.47162609345858,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         }
       ],
@@ -52657,10 +52662,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 12.336798093455613,
           "end": 15.228498093458594,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52680,10 +52685,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 15.314798093455614,
           "end": 18.228098093460083,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52703,10 +52708,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 18.312898093457104,
           "end": 21.165233927522245,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52749,10 +52754,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 21.268433927517773,
           "end": 23.91953392751926,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52772,10 +52777,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 24.230698093454123,
           "end": 27.175698093454123,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52795,10 +52800,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 27.250498093458596,
           "end": 30.146298093455613,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -52845,10 +52850,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86f9dc, #86a3f9)",
-          "translation": "",
-          "pronunciation": null,
           "start": 30.222398093457105,
           "end": 32.774531093460084,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52887,7 +52892,8 @@
                 }
               ],
               "singer": "Jennie",
-              "pronunciation": null
+              "pronunciation": null,
+              "translation": ""
             }
           ]
         },
@@ -52917,10 +52923,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86f9dc, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 32.856431093458596,
           "end": 36.27812016593337,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -52963,10 +52969,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 36.38022016593486,
           "end": 39.27092016593784,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -53009,10 +53015,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 39.35982016593635,
           "end": 42.08922016593486,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53032,10 +53038,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 42.167020165939334,
           "end": 45.11582016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53055,10 +53061,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 45.19922016593486,
           "end": 48.15032016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53078,10 +53084,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 48.24832016593635,
           "end": 51.059120165933365,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -53124,10 +53130,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 51.14482016593635,
           "end": 54.11002016593933,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53147,10 +53153,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 54.20132016593635,
           "end": 57.06742016593784,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53170,10 +53176,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 57.15852016593933,
           "end": 60.12122016593486,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53193,10 +53199,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 60.21972016593486,
           "end": 63.09682016593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53216,10 +53222,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 63.19302016593933,
           "end": 66.03302016593932,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53239,10 +53245,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 66.11644694850605,
           "end": 68.68854694850755,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53262,10 +53268,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 68.79724694850307,
           "end": 71.80879192752074,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -53308,10 +53314,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 71.92469192751926,
           "end": 74.64499192752373,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53331,10 +53337,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 74.74549192752373,
           "end": 77.68179192752075,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53354,10 +53360,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 77.80589192752224,
           "end": 81.17639192752225,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53377,10 +53383,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 81.27219192751926,
           "end": 84.31159192752523,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53400,10 +53406,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 84.41079192752075,
           "end": 87.31849192752372,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53423,10 +53429,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 87.43789192752224,
           "end": 90.08959192752522,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53446,10 +53452,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 90.18869192751926,
           "end": 93.14479192752074,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -53492,10 +53498,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 93.25179192752076,
           "end": 96.10933292752075,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53515,10 +53521,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 96.26903292752374,
           "end": 99.05123292751927,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53538,10 +53544,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 99.15223292751926,
           "end": 102.10993292752224,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53588,10 +53594,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 102.21283292752075,
           "end": 105.20013292752522,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -53652,10 +53658,10 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 105.31023292751927,
           "end": 108.01823292751926,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53675,10 +53681,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 108.10813292752522,
           "end": 111.03453292752373,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53698,10 +53704,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 111.14103292752372,
           "end": 114.14153292752374,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53731,10 +53737,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 114.23463292752523,
           "end": 117.10843292752224,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53742,11 +53748,12 @@
           "segments": [
             {
               "text": "Ice cream chillin', chillin', ",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
               "artists": [
-                "Jisoo"
+                "Jisoo",
+                "Selena Gomez"
               ]
             },
             {
@@ -53764,26 +53771,17 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 117.21603292752373,
           "end": 120.14263292752523,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
           "text": "Ice cream chillin', chillin', ice cream chillin'",
           "segments": [
             {
-              "text": "Ice cream chillin', chillin', ",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Jisoo"
-              ]
-            },
-            {
-              "text": "ice cream chillin'",
+              "text": "Ice cream chillin', chillin', ice cream chillin'",
               "color": "#ffffff",
               "isGradient": true,
               "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
@@ -53797,33 +53795,44 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 120.25683292752075,
           "end": 123.1126850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
           "text": "Ice cream chillin', chillin', ice cream",
           "segments": [
             {
-              "text": "Ice cream chillin', chillin', ice cream",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
+              "text": "Ice cream chillin', chillin'",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
               "artists": [
-                "Jisoo"
+                "Jisoo",
+                "Selena Gomez"
+              ]
+            },
+            {
+              "text": ", ice cream",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+              "artists": [
+                "Jisoo",
+                "Selena Gomez"
               ]
             }
           ],
-          "singer": "Jisoo",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "translation": "",
-          "pronunciation": null,
+          "singer": "Jisoo, Selena Gomez",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
           "start": 123.22248509346157,
           "end": 126.24808509346306,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53843,10 +53852,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 126.34088509346009,
           "end": 128.67408509346308,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53866,10 +53875,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "Crazy, crazy speed in my La Ferra'",
-          "pronunciation": "{\"full\":\"michin michindeushan sogdo in my La Ferra'\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"미친\",\"trans\":\"michin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"미친듯한\",\"trans\":\"michindeushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속도\",\"trans\":\"sogdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"La\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Ferra'\",\"trans\":\"\"}]}",
           "start": 128.77098509346158,
           "end": 131.69918509345712,
+          "pronunciation": "{\"full\":\"michin michindeushan sogdo in my La Ferra'\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"미친\",\"trans\":\"michin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"미친듯한\",\"trans\":\"michindeushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속도\",\"trans\":\"sogdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"La\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"Ferra'\",\"trans\":\"\"}]}",
+          "translation": "Crazy, crazy speed in my La Ferra'",
           "isSplit": false
         },
         {
@@ -53889,10 +53898,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's so fast that you'll miss it If you want, just diameter",
-          "pronunciation": "{\"full\":\"neomu ppalleo neoneun ppikkeus wonhandamyeon geunyang jileum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무\",\"trans\":\"neomu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빨러\",\"trans\":\"ppalleo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너는\",\"trans\":\"neoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"삐끗\",\"trans\":\"ppikkeus\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그냥\",\"trans\":\"geunyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지름\",\"trans\":\"jileum\"}]}",
           "start": 131.78488509346008,
           "end": 134.8082850934586,
+          "pronunciation": "{\"full\":\"neomu ppalleo neoneun ppikkeus wonhandamyeon geunyang jileum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"너무\",\"trans\":\"neomu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빨러\",\"trans\":\"ppalleo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너는\",\"trans\":\"neoneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"삐끗\",\"trans\":\"ppikkeus\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그냥\",\"trans\":\"geunyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지름\",\"trans\":\"jileum\"}]}",
+          "translation": "It's so fast that you'll miss it If you want, just diameter",
           "isSplit": false
         },
         {
@@ -53912,10 +53921,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "Millis, billis I earn every day Ice on my wrist in midsummer",
-          "pronunciation": "{\"full\":\"Millis, billis maeil beol-eum han-yeoleum sonmog-e eol-eum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Millis,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"billis\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"매일\",\"trans\":\"maeil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"벌음\",\"trans\":\"beol-eum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"한여름\",\"trans\":\"han-yeoleum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손목에\",\"trans\":\"sonmog-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼음\",\"trans\":\"eol-eum\"}]}",
           "start": 134.88858509346306,
           "end": 137.75458509346308,
+          "pronunciation": "{\"full\":\"Millis, billis maeil beol-eum han-yeoleum sonmog-e eol-eum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Millis,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"billis\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"매일\",\"trans\":\"maeil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"벌음\",\"trans\":\"beol-eum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"한여름\",\"trans\":\"han-yeoleum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"손목에\",\"trans\":\"sonmog-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼음\",\"trans\":\"eol-eum\"}]}",
+          "translation": "Millis, billis I earn every day Ice on my wrist in midsummer",
           "isSplit": false
         },
         {
@@ -53935,10 +53944,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 137.83958509346306,
           "end": 139.29298509346157,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53958,10 +53967,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 139.39008509346306,
           "end": 140.7896850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -53981,10 +53990,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 140.8738850934601,
           "end": 142.24058509346307,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54004,10 +54013,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 142.31898509346158,
           "end": 143.72798509346157,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54027,10 +54036,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 143.8124850934616,
           "end": 145.3032850934586,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54050,10 +54059,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 145.38848509346158,
           "end": 146.8741850934571,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54073,10 +54082,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 146.9583850934601,
           "end": 148.25558509346308,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54096,10 +54105,10 @@
           "color": "#86f9dc",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 148.3613850934601,
           "end": 150.24758509346307,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -54143,10 +54152,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 150.3462850934586,
           "end": 151.7023850934601,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54176,10 +54185,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 151.8161850934571,
           "end": 153.26848509346158,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -54223,10 +54232,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 153.37548509346158,
           "end": 155.7345038550415,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54247,10 +54256,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 155.81810385504298,
           "end": 157.39666316593636,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54271,10 +54280,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 157.4805631659423,
           "end": 159.11494716593936,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54294,10 +54303,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 159.19484716593786,
           "end": 162.13624716593637,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54318,10 +54327,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 162.21884716593786,
           "end": 163.75414716593488,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54351,10 +54360,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 163.82724716593637,
           "end": 165.10924716593635,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -54398,10 +54407,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 165.22914716593488,
           "end": 167.69134716593786,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54422,10 +54431,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 167.77904716593338,
           "end": 169.23454716593338,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54446,10 +54455,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f9dc86, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 169.31984716593786,
           "end": 171.13002609345708,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54469,10 +54478,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 171.22632609346155,
           "end": 172.61612609345858,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -54492,14 +54501,14 @@
           "color": "#86a3f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 172.6989260934556,
           "end": 174.47162609345858,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         }
       ],
-      "lyrics": "[Verse 1: Selena Gomez, _Lisa_ & **Jennie**]\nCome a little closer 'cause you lookin' thirsty\nI'ma make it better, sip it like a Slurpee\n_Snow cone chilly, get it free like Willy (Oh)\nIn the jeans like Billie, you be poppin' like a wheelie_\n**Even in the sun, you know I keep it icy**\n**You could take a lick, but it's too cold to bite me** \n_Brr, brr, frozen, you're the one been chosen_  (**Haha**)\n_Play the part like Moses, keep it fresh like roses_ (Oh)\n\n[Chorus: Rosé, _Selena Gomez_ & **Jennie**]\nLook so good, yeah, look so sweet (Hey)\nLookin' good enough to eat\n_Coldest with the kiss, so he call me ice cream\nCatch me in the fridge, right where the ice be_\n**Look so good, yeah, look so sweet (Hey)\nBaby, you deserve a treat**\n_Diamonds on my wrist, so he call me ice cream\nYou could double-dip 'cause I know you like me_\n\n[Post-Chorus: Jennie]\nIce cream chillin', chillin', ice cream chillin'\nIce cream chillin', chillin', ice cream chillin'\n\n[Verse 2: Selena Gomez, _Rosé_, **Jisoo** & **_Jennie_**]\nI know that my heart can be so cold\nBut I'm sweet for you, come put me in a cone (In a cone)\n_You're the only touch, yeah, that get me meltin'\nHe's my favorite flavor, always gonna pick him_\n**You're the cherry piece, just stay on top of me, so\nI can't see nobody else for me, no**\n**_Get it, flip it, scoop it, do it like that, oh yeah, oh yeah\nLike it, love it, lick it, do it like la-la-la, oh yeah_**\n\n[Chorus: Rosé, _Selena Gomez_ & **Jennie**]\nLook so good, yeah, look so sweet (Hey)\nLookin' good enough to eat\n_Coldest with the kiss, so he call me ice cream\nCatch me in the fridge, right where the ice be_\n**Look so good, yeah, look so sweet** (**Hey**)\n**Baby, you deserve a treat**\n_Diamonds on my wrist, so he call me ice cream\nYou could double-dip 'cause I know you like me_\n\n[Post-Chorus: Jisoo, _Jisoo & Selena Gomez_]\nIce cream chillin', chillin', _ice cream chillin'_\nIce cream chillin', chillin', _ice cream chillin'_\nIce cream chillin', chillin', _ice cream chillin'_\nIce cream chillin', chillin', ice cream\n\n[Verse 3: Lisa]\nChillin' like a villain, yeah, ra-ra-ra\n미친 미친듯한 속도 in my La Ferra'\n너무 빨러 너는 삐끗 원한다면 그냥 지름\nMillis, billis 매일 벌음 한여름 손목에 얼음\nKeep it movin' like my lease up\nThink you fly, boy, where your visa?\nMona Lisa kinda Lisa\nNeeds an ice cream man that treats her\nKeep it movin' like my lease up\nThink you fly, boy, where your visa?\nMona Lisa kinda Lisa\nNeeds an ice cream man that treats her (Hey)\n\n[Outro: BLACKPINK & Selena Gomez, **_Jennie_**, _Selena Gomez_, **Jisoo**]\nNa, na-na-na-na\nNa, na-na-na-na _(Hey)_\nIce on my wrist, yeah, I like it like this\nGet the bag with the cream\nIf you know what I mean\n**Ice cream, ice cream, ice cream chillin'**\nNa, na-na-na-na\nNa, na-na-na-na _(Hey)_\nIce on my wrist, yeah, I like it like this\nAnd I'm nice with the cream \nIf you know what I mean\n**Ice cream, ice cream**\n**_Ice cream_**",
+      "lyrics": "[Verse 1: Selena Gomez, _Lisa_ & **Jennie**]\nCome a little closer 'cause you lookin' thirsty\nI'ma make it better, sip it like a Slurpee\n_Snow cone chilly, get it free like Willy (Oh)\nIn the jeans like Billie, you be poppin' like a wheelie_\n**Even in the sun, you know I keep it icy**\n**You could take a lick, but it's too cold to bite me** \n_Brr, brr, frozen, you're the one been chosen_  (**Haha**)\n_Play the part like Moses, keep it fresh like roses_ (Oh)\n\n[Chorus: Rosé, _Selena Gomez_ & **Jennie**]\nLook so good, yeah, look so sweet (Hey)\nLookin' good enough to eat\n_Coldest with the kiss, so he call me ice cream\nCatch me in the fridge, right where the ice be_\n**Look so good, yeah, look so sweet (Hey)\nBaby, you deserve a treat**\n_Diamonds on my wrist, so he call me ice cream\nYou could double-dip 'cause I know you like me_\n\n[Post-Chorus: Jennie]\nIce cream chillin', chillin', ice cream chillin'\nIce cream chillin', chillin', ice cream chillin'\n\n[Verse 2: Selena Gomez, _Rosé_, **Jisoo** & **_Jennie_**]\nI know that my heart can be so cold\nBut I'm sweet for you, come put me in a cone (In a cone)\n_You're the only touch, yeah, that get me meltin'\nHe's my favorite flavor, always gonna pick him_\n**You're the cherry piece, just stay on top of me, so\nI can't see nobody else for me, no**\n**_Get it, flip it, scoop it, do it like that, oh yeah, oh yeah\nLike it, love it, lick it, do it like la-la-la, oh yeah_**\n\n[Chorus: Rosé, _Selena Gomez_ & **Jennie**]\nLook so good, yeah, look so sweet (Hey)\nLookin' good enough to eat\n_Coldest with the kiss, so he call me ice cream\nCatch me in the fridge, right where the ice be_\n**Look so good, yeah, look so sweet** (**Hey**)\n**Baby, you deserve a treat**\n_Diamonds on my wrist, so he call me ice cream\nYou could double-dip 'cause I know you like me_\n\n[Post-Chorus: Jisoo, _Jisoo & Selena Gomez_]\nIce cream chillin', chillin', _ice cream chillin'\nIce cream chillin', chillin', _ice cream chillin'\nIce cream chillin', chillin', ice cream chillin'\nIce cream chillin', chillin'_, ice cream\n\n[Verse 3: Lisa]\nChillin' like a villain, yeah, ra-ra-ra\n미친 미친듯한 속도 in my La Ferra'\n너무 빨러 너는 삐끗 원한다면 그냥 지름\nMillis, billis 매일 벌음 한여름 손목에 얼음\nKeep it movin' like my lease up\nThink you fly, boy, where your visa?\nMona Lisa kinda Lisa\nNeeds an ice cream man that treats her\nKeep it movin' like my lease up\nThink you fly, boy, where your visa?\nMona Lisa kinda Lisa\nNeeds an ice cream man that treats her (Hey)\n\n[Outro: BLACKPINK & Selena Gomez, **_Jennie_**, _Selena Gomez_, **Jisoo**]\nNa, na-na-na-na\nNa, na-na-na-na _(Hey)_\nIce on my wrist, yeah, I like it like this\nGet the bag with the cream\nIf you know what I mean\n**Ice cream, ice cream, ice cream chillin'**\nNa, na-na-na-na\nNa, na-na-na-na _(Hey)_\nIce on my wrist, yeah, I like it like this\nAnd I'm nice with the cream \nIf you know what I mean\n**Ice cream, ice cream**\n**_Ice cream_**",
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=TUt3guu92Zg",
