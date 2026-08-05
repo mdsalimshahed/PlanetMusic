@@ -48368,7 +48368,7 @@
       },
       "lyrics": "[Paroles de \"Pour Que Naisse Un Bouquet\"]\n\n[Couplet 1: Alice Duport-Percier]\nLe jour viendra où l'on s'efface\nD'autres cœurs prendront la place\nLe vent porte leur prénom\nSur les ruines de nos chansons\nCouleur, silence, dessin, absence\nLa vie grandit dans l'ombre\nLorsque nos noms deviennent nombres\n\n[Refrain: Alice Duport-Percier]\nQue mon absence serve d'encre pour demain\nQuand, de mes mains froides, je peindrai notre fin\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nAux lendemains rêvés\nCeux que j'aime sans les voir briller\n\n[Couplet 2: Alice Duport-Percier]\nJe ne te dis pas\nÀ Dieu, mais à toi\nQue de nos rêves brisés\nNaissent des bouquets\nPour ceux qui ne cessent de s’aimer\n\n[Refrain: Alice Duport-Percier]\nQue ton silence serve d'encre pour demain\nQuand, de tes mains distantes, tu peindras notre fin\nEnsemble vers demain, les mains vides d'hier\nC'est dans nos mains que brille la lumière",
       "artistImages": {
-        "Alice Duport-Percier": "https://i.scdn.co/image/ab6761610000e5eba827065c7030ba08fa638bec"
+        "Alice Duport-Percier": "https://is1-ssl.mzstatic.com/image/thumb/Video211/v4/af/21/a8/af21a8e7-b836-0538-0fd4-6b9558056cf0/Jobb5cee87f-1c63-4a14-ad4d-03ba97e5fbe5-185676851-PreviewImage_preview_image_127000_video_sdr-Time1739381230798.png/3840x2160mv.jpg"
       },
       "artistColors": {
         "Alice Duport-Percier": "#eb9e45"
@@ -48880,7 +48880,9 @@
           "translation": "It is in our hands that the light shines",
           "isSplit": false
         }
-      ]
+      ],
+      "forceSource": "youtube",
+      "playId": 1785914333374
     },
     {
       "wrapperType": "track",
