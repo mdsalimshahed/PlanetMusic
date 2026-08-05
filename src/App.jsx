@@ -674,17 +674,6 @@ const App = () => {
 
         <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
-          {/* TOP BANNER AD (Appears on Main dashboard view) */}
-          {activeTab === 'main' && settings.adsEnabled !== false && (
-            <SponsorUnit 
-              testMode={true} 
-              className="glass-panel" 
-              style={{ padding: '16px', margin: '16px auto', maxWidth: '800px', minHeight: '90px', borderRadius: '16px' }}
-              adTitle="Sponsor Banner"
-              adSub="This space is reserved for a horizontal top banner ad."
-            />
-          )}
-
           {activeTab === 'main' && (
             <section className="view-section">
               {/* --- PERSISTENT SAMPLE VAULT BANNER --- */}
