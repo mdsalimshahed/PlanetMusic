@@ -337,9 +337,15 @@ const ModalLeft = ({
           
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
-              <div className="instruction-row"><span><strong>[Space]</strong> Press <strong>[Space]</strong> to set Start Time</span></div>
-              <div className="instruction-row"><span><strong>[Down]</strong> Press <strong>[Down]</strong> to set End Time <em>(Auto advances)</em></span></div>
-              <div className="instruction-row subtle"><span><em>(Press <strong>[Up]</strong> anytime to rewind)</em></span></div>
+              <div className="instruction-row">
+                <span><strong>[Space]</strong> Play / Pause audio</span>
+              </div>
+              <div className="instruction-row">
+                <span><strong>[↓] Down Arrow</strong> Tap to set <strong>Start</strong> time. Tap again to set <strong>End</strong> and advance.</span>
+              </div>
+              <div className="instruction-row subtle">
+                <span><strong>[↑] Up Arrow</strong> Undo last timing & step back</span>
+              </div>
             </div>
           )}
 
