@@ -4,18 +4,29 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true
+    host: true,
+    proxy: {
+      // Route search requests to Render
+      '/search-deezer': {
+        target: 'https://ytdownloader-jnt0.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      },
+      // Route streaming/download requests to Render
+      '/download-deezer': {
+        target: 'https://ytdownloader-jnt0.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      }
+    }
   },
   css: {
-    // Ensures CSS is processed but not over‑optimized
     devSourcemap: true,
     modules: {
-      // If you use CSS modules, adjust accordingly
       localsConvention: 'camelCase'
     }
   },
   build: {
-    // Prevent aggressive CSS minification that might remove important rules
     cssMinify: 'lightningcss'
   }
 })

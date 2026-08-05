@@ -12,8 +12,9 @@ import SettingsTab from './components/SettingsTab';
 const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   return (
     <div className="track-grid">
-      {items.map(song => (
-        <div key={song.trackId} className="track-grid-item">
+      {items.map((song, idx) => (
+        // Added idx fallback to key just in case of duplicate IDs
+        <div key={`${song.trackId}-${idx}`} className="track-grid-item">
           <SongCard 
             song={song} 
             isSaved={library.some((s) => s.trackId === song.trackId)}
@@ -79,20 +80,25 @@ const App = () => {
       translationColor: '#ffffff',
       translationOpacity: 0.9,
       transliterationColor: '#ffffff',
-      transliterationOpacity: 0.8
+      transliterationOpacity: 0.8,
+      deezerArl: ''
     };
   });
+
   const [searchQuery, setSearchQuery] = useState(() => {
     return localStorage.getItem('searchQuery') || '';
   });
+
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -138,39 +144,60 @@ const App = () => {
     );
   });
 
-  // --- SINGLE-ENGINE SEARCH (iTunes Only) ---
+  // --- SEPARATE & INTERLEAVED SEARCH ENGINE (iTunes + Deezer) ---
+  // --- SEPARATE & INTERLEAVED SEARCH ENGINE (iTunes + Deezer) ---
   const performOnlineSearch = async (query) => {
     if (!query.trim()) return;
     setIsSearching(true);
+    
     try {
-      const itunesResults = await fetch(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=50&explicit=Yes&country=US`
-      )
-        .then(res => res.json())
-        .then(data => (data.results || []).map(track => ({ ...track, sourceName: 'iTunes' })))
-        .catch(() => []);
+      // Fetch both APIs concurrently
+      const [itunesRes, deezerRes] = await Promise.all([
+        fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`)
+          .then(res => res.json())
+          .catch(err => {
+            console.error("iTunes Search Error:", err);
+            return { results: [] };
+          }),
+        fetch(`https://ytdownloader-jnt0.onrender.com/search-deezer?q=${encodeURIComponent(query)}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            return res.json();
+          })
+          .catch(err => {
+            console.error("Deezer Search Error:", err);
+            return { results: [] };
+          })
+      ]);
 
-      const uniqueMap = new Map();
-      itunesResults.forEach(song => { 
-         const cleanName = (song.trackName || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
-         const cleanArtist = (song.artistName || '').toLowerCase().trim();
-         const key = `${cleanName}_${cleanArtist}`;
-         
-         if (uniqueMap.has(key)) {
-           const existing = uniqueMap.get(key);
-           if (song.trackExplicitness === 'explicit' && existing.trackExplicitness !== 'explicit') {
-              uniqueMap.set(key, song);
-           }
-         } else {
-           uniqueMap.set(key, song);
-         }
-      });
+      // Format iTunes Results
+      const itunesResults = (itunesRes.results || []).map(song => ({
+        ...song,
+        sourceName: 'iTunes'
+      }));
 
-      const finalResults = Array.from(uniqueMap.values()).sort((a, b) => {
-        const isAExplicit = a.trackExplicitness === 'explicit' ? 1 : 0;
-        const isBExplicit = b.trackExplicitness === 'explicit' ? 1 : 0;
-        return isBExplicit - isAExplicit;
-      });
+      // Format Deezer Results
+      const deezerResults = (deezerRes.results || []).map(dz => ({
+        trackId: `dz_${dz.id}`,
+        trackName: dz.title,
+        artistName: dz.artist,
+        collectionName: dz.album,
+        artworkUrl100: dz.cover,
+        trackTimeMillis: (dz.duration || 0) * 1000,
+        previewUrl: '', // Will stream directly from python backend
+        trackExplicitness: 'explicit', 
+        sourceName: 'Deezer',
+        customLinks: { deezer: dz.link }
+      }));
+
+      // Interleave results (1 iTunes, 1 Deezer, 1 iTunes...) so they mix nicely
+      const finalResults = [];
+      const maxLength = Math.max(itunesResults.length, deezerResults.length);
+      
+      for (let i = 0; i < maxLength; i++) {
+        if (itunesResults[i]) finalResults.push(itunesResults[i]);
+        if (deezerResults[i]) finalResults.push(deezerResults[i]);
+      }
       
       setSearchResults(finalResults);
     } catch (error) {
@@ -194,9 +221,11 @@ const App = () => {
       setIsSearching(false);
       return;
     }
+
     const debounceTimer = setTimeout(() => {
       performOnlineSearch(searchQuery);
     }, 400);
+
     return () => clearTimeout(debounceTimer);
   }, [searchQuery, activeTab, filteredLibrary.length]);
 
@@ -262,7 +291,9 @@ const App = () => {
       return optimizedSong;
     });
     
-    const exportData = { library: optimizedLibrary, settings: settings };
+    const exportData = { library: optimizedLibrary, settings: { ...settings } };
+    delete exportData.settings.deezerArl; // SECURITY FIX: DO NOT EXPORT ARL TOKEN
+
     const jsonString = JSON.stringify(exportData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -279,6 +310,7 @@ const App = () => {
   const handleImport = (event) => {
     const file = event.target ? event.target.files[0] : null;
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -294,6 +326,7 @@ const App = () => {
 
   const applyParsedData = (parsedData) => {
     const newLibrary = [...library];
+
     const mergeSongs = (importedSongs) => {
       importedSongs.forEach(newSong => {
         const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
@@ -316,7 +349,6 @@ const App = () => {
     }
   };
 
-  // --- SAMPLE LOAD FUNCTION ---
   const handleLoadSample = async () => {
     setIsLoadingSample(true);
     try {
@@ -364,7 +396,7 @@ const App = () => {
 
   const uniqueOnlineResults = searchResults.filter(
     onlineSong => !filteredLibrary.some(localSong => 
-       localSong.trackId === onlineSong.trackId ||
+        localSong.trackId === onlineSong.trackId ||
        (localSong.trackName.toLowerCase() === onlineSong.trackName.toLowerCase() && localSong.artistName.toLowerCase() === onlineSong.artistName.toLowerCase())
     )
   );
@@ -381,6 +413,7 @@ const App = () => {
         handleLoadSample={handleLoadSample}
         openSettings={() => handleTabSwitch('settings')}
       />
+
       <main className="main-content">
         {activeTab !== 'settings' && (
           <div className="search-container">
@@ -404,6 +437,7 @@ const App = () => {
             </form>
           </div>
         )}
+
         <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
           {activeTab === 'main' && (
             <section className="view-section">
@@ -425,7 +459,7 @@ const App = () => {
                       onClick={handleLoadSample}
                       disabled={isLoadingSample}
                     >
-                      {isLoadingSample ? 'Loading Sample Vault...' : '✨ Load Sample Vault'}
+                      {isLoadingSample ? 'Loading Sample Vault...' : '  Load Sample Vault'}
                     </button>
                   </div>
                 )
@@ -449,6 +483,7 @@ const App = () => {
                       )}
                     </div>
                   </div>
+
                   <div className="search-column cosmos-column">
                     <div className="column-header">
                       <span>COSMOS ({uniqueOnlineResults.length})</span>
@@ -501,11 +536,13 @@ const App = () => {
               )}
             </section>
           )}
+
           {activeTab === 'settings' && (
             <SettingsTab settings={settings} setSettings={setSettings} />
           )}
         </div>
       </main>
+
       <SongModal 
         key={selectedSong ? selectedSong.trackId : 'modal-empty'}
         selectedSong={selectedSong}
@@ -517,12 +554,15 @@ const App = () => {
         currentTrack={currentTrack}
         settings={settings}
       />
+
       <Player 
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 
         selectedSong={selectedSong}
         setSelectedSong={setSelectedSong}
+        settings={settings}
       />
+
       {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>

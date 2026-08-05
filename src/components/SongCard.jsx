@@ -6,10 +6,9 @@ import './SongCard.css';
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
-
   const ytUrl = song.customLinks?.yt || song.yt || '';
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
-  const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || hasYtStream);
+  const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
 
   useEffect(() => {
     if (!highResArt) return;
@@ -49,12 +48,14 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         img = null;
       }
     };
+
     img.onerror = () => {
       img.onload = null;
       img.onerror = null;
       img.src = '';
       img = null;
     };
+    
     img.src = highResArt;
   }, [highResArt]);
 
@@ -77,6 +78,13 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
+        {/* Source API Tag (Top-Left) - Only visible if NOT in the Vault */}
+        {!isSaved && song.sourceName && (
+           <div className={`card-source-tag ${song.sourceName.toLowerCase()}`}>
+             {song.sourceName}
+           </div>
+        )}
+
         {/* Top-Right Quick Play Button */}
         {hasPlayableSource && (
           <button 
@@ -86,11 +94,14 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
               // Pass playId to ensure a fresh reset/restart on every click
               setCurrentTrack({ ...song, playId: Date.now() });
             }}
-            title={song.customLinks?.hasLocal ? "Play Local File" : (hasYtStream ? "Play YouTube Stream" : "Play Preview")}
+            title={song.customLinks?.hasLocal ? "Play Local File" : (song.customLinks?.deezer ? "Play Deezer Stream" : (hasYtStream ? "Play YouTube Stream" : "Play Preview"))}
           >
-            ▶
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
           </button>
         )}
+
         {/* Text Overlay */}
         <div className="card-info-text-only">
           <h4 title={song.trackName}>

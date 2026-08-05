@@ -47,29 +47,32 @@ const MarqueeText = ({ text, className }) => {
   );
 };
 
-const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }) => {
+const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings }) => {
   const audioRef = useRef(null);
   const ytPlayerRef = useRef(null);
+  
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
-
+  
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
-
   const trackIdRef = useRef(null);
   const localRef = useRef(null);
   const activeSourceRef = useRef(null); 
   const playIdRef = useRef(null);
-
   const ytLastPerfRef = useRef(0);
+  const prevBlobUrlRef = useRef(null); // Ref to hold memory object URLs
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState(undefined);
+  
   const [ytVideoId, setYtVideoId] = useState(null);
   const [ytPlayerReady, setYtPlayerReady] = useState(false);
   const [activeSource, setActiveSource] = useState('preview'); 
+
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
   const [hoverTime, setHoverTime] = useState(null);
@@ -255,6 +258,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       if (ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
       }
+      
+      if (prevBlobUrlRef.current) {
+          URL.revokeObjectURL(prevBlobUrlRef.current);
+          prevBlobUrlRef.current = null;
+      }
+
       setAudioSrc(undefined);
       setYtVideoId(null);
       setPendingSeek(null);
@@ -274,7 +283,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
     const trackId = currentTrack.trackId;
     const hasLocal = currentTrack.customLinks?.hasLocal;
+    const dzUrl = currentTrack.customLinks?.deezer || '';
     const ytUrl = currentTrack.customLinks?.yt || currentTrack.yt || '';
+    
     let extractedYtId = extractYouTubeId(ytUrl);
     let intendedSource = 'preview';
 
@@ -283,12 +294,16 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       intendedSource = 'youtube';
     } else if (currentTrack.forceSource === 'local' && hasLocal) {
       intendedSource = 'local';
+    } else if (currentTrack.forceSource === 'deezer' && dzUrl) {
+      intendedSource = 'deezer';
     } else if (currentTrack.forceSource === 'preview') {
       intendedSource = 'preview';
     } else {
-      // 2. Default Hierarchy: Local Audio -> YouTube Stream -> 30s iTunes Preview
+      // 2. Default Hierarchy: Local Audio -> Deezer -> YouTube Stream -> 30s iTunes Preview
       if (hasLocal) {
         intendedSource = 'local';
+      } else if (dzUrl) {
+        intendedSource = 'deezer';
       } else if (extractedYtId) {
         intendedSource = 'youtube';
       }
@@ -309,6 +324,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       if (ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
       }
+      
       setIsPlaying(false);
       globalClock.pause();
       globalClock.seek(0);
@@ -325,6 +341,11 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
       setYtVideoId(extractedYtId);
 
       const loadAudio = async () => {
+        if (prevBlobUrlRef.current) {
+            URL.revokeObjectURL(prevBlobUrlRef.current);
+            prevBlobUrlRef.current = null;
+        }
+
         if (intendedSource === 'local') {
           const file = await getAudioFile(trackId);
           if (file) {
@@ -338,6 +359,36 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         } else if (intendedSource === 'youtube') {
           setAudioSrc(undefined);
           setActiveSource('youtube');
+        } else if (intendedSource === 'deezer') {
+          setActiveSource('deezer');
+          setIsBuffering(true);
+          try {
+            const formData = new FormData();
+            formData.append('session_id', `stream_${Date.now()}`);
+            formData.append('url', dzUrl);
+            formData.append('arl_token', settings?.deezerArl || '');
+            formData.append('quality', '1'); // Fixed standard stream speed
+            formData.append('action', 'stream');
+
+            const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
+            
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            prevBlobUrlRef.current = blobUrl;
+            setAudioSrc(blobUrl);
+          } catch (e) {
+            console.error("Deezer buffer issue, falling back:", e);
+            setAudioSrc(currentTrack.previewUrl);
+            setActiveSource('preview');
+            activeSourceRef.current = 'preview';
+          } finally {
+            setIsBuffering(false);
+          }
         } else {
           setAudioSrc(currentTrack.previewUrl);
           setActiveSource('preview');
@@ -366,6 +417,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         attemptPlay();
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack]);
 
   // Initialize YouTube Player via native API
@@ -378,6 +430,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         setTimeout(initYTPlayer, 100);
         return;
       }
+
       const container = document.getElementById('yt-player-container');
       if (!container) return;
 
@@ -411,7 +464,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
                 globalClock.seek(pendingSeek);
                 setPendingSeek(null);
               }
-
               event.target.playVideo();
               setIsPlaying(true);
               emitPlayState(true, false);
@@ -455,6 +507,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         }
       });
     };
+
     initYTPlayer();
 
     return () => {
@@ -494,6 +547,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         globalClock.updateAnchor(audioRef.current.currentTime);
       }
     };
+
     window.addEventListener('globalTimeUpdate', handleTimeUpdate);
     return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
   }, [duration, ytVideoId, isPlaying]);
@@ -548,6 +602,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
 
   const togglePlay = (e) => {
     if (e) e.stopPropagation();
+
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
       try {
         if (isPlaying) {
@@ -654,12 +709,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
   // Triggers from clicking anywhere in the container outside the direct input thumb
   const handleContainerClick = (e) => {
     if (e.target === progressBarRef.current) return; 
-    if (!progressBarRef.current || !duration) return;
 
+    if (!progressBarRef.current || !duration) return;
     const rect = progressBarRef.current.getBoundingClientRect();
     const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
     const time = percent * duration;
-
+    
     globalClock.seek(time);
 
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
@@ -740,18 +795,19 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
               )}
             </div>
           </div>
-
           <div className="player-text">
             <MarqueeText className="track-title" text={currentTrack.trackName} />
             <MarqueeText className="artist-name" text={currentTrack.artistName} />
             <p className="source-text">
-              {activeSource === 'youtube' && "YT Music"}
-              {activeSource === 'local' && "Local Audio File"}
-              {activeSource === 'preview' && "iTunes Preview (30s)"}
+              {isBuffering ? "Buffering Stream..." : (
+                  activeSource === 'youtube' ? "YT Music" :
+                  activeSource === 'local' ? "Local Audio File" :
+                  activeSource === 'deezer' ? "Deezer HQ Stream" :
+                  "iTunes Preview (30s)"
+              )}
             </p>
           </div>
         </div>
-
         <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
           <div className="volume-container">
             <span className="volume-icon">
@@ -828,7 +884,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
         onEnded={() => { setIsPlaying(false); emitPlayState(false, true); }}
         onPlay={() => { setIsPlaying(true); emitPlayState(true, false); }}
         onPause={() => { setIsPlaying(false); emitPlayState(false, false); }}
+        onContextMenu={(e) => e.preventDefault()} // Security block right-click
       />
+
       {/* Stable YouTube Container outside of the Portal */}
       <div 
         id="yt-player-container" 
@@ -844,6 +902,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong }
           zIndex: -1
         }}
       ></div>
+
       {playerUI && (slotNode ? createPortal(playerUI, slotNode) : playerUI)}
     </>
   );

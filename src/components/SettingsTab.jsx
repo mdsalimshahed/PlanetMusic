@@ -1,5 +1,5 @@
 /* --- src/components/SettingsTab.jsx --- */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import './SettingsTab.css';
 
 const DUAL_GRADIENT_PALETTE = [
@@ -18,6 +18,8 @@ const DUAL_GRADIENT_PALETTE = [
 ];
 
 const SettingsTab = ({ settings, setSettings }) => {
+  const [showArl, setShowArl] = useState(false);
+
   const sliderGradients = useMemo(() => {
     const keys = [
       'cardWidth', 'cardPadding', 'cardGap', 'cardFontSize', 'borderRadius',
@@ -91,6 +93,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Percentage of horizontal screen width occupied by the Cosmos search column.</span>
           </div>
+
           <div className="setting-item">
             <label>Card Width ({settings.cardWidth}vw)</label>
             <input 
@@ -105,6 +108,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Sets the exact horizontal width of track cards in viewport width (vw).</span>
           </div>
+
           <div className="setting-item">
             <label>Horizontal Card Padding ({settings.cardPadding}px)</label>
             <input 
@@ -118,6 +122,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Controls inner padding inside each song card.</span>
           </div>
+
           <div className="setting-item">
             <label>Grid Gap ({settings.cardGap}px)</label>
             <input 
@@ -131,6 +136,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Adjusts spacing between cards across the dashboard layout.</span>
           </div>
+
           <div className="setting-item">
             <label>Card Title Scale ({settings.cardFontSize}vh)</label>
             <input 
@@ -150,6 +156,7 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 2: LYRICS CANVAS */}
         <div className="settings-card glass-panel">
           <h3>Lyrics Canvas</h3>
+
           <div className="sub-group-title">Live View</div>
           <div className="setting-item">
             <label>Line Gap ({settings.liveSyncLineGap ?? 16}px)</label>
@@ -165,6 +172,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Vertical spacing separating consecutive lyric lines in Live View.</span>
           </div>
+
           <div className="setting-item">
             <label>Line Size ({settings.liveSyncFontSize}vh)</label>
             <input 
@@ -179,7 +187,9 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Overall font scale for active and upcoming lyric lines in Live View.</span>
           </div>
+
           <div className="group-divider"></div>
+
           <div className="sub-group-title">Focus View</div>
           <div className="setting-item">
             <label>Line Size ({settings.focusedSyncFontSize}vh)</label>
@@ -195,6 +205,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font scale for the centered main lyric line in Focused View.</span>
           </div>
+
           <div className="setting-item">
             <label>Ad-Lib Size ({settings.focusedAdlibFontSize ?? 3.5}vh)</label>
             <input 
@@ -214,6 +225,7 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 3: GENERAL ARTIST DISPLAY */}
         <div className="settings-card glass-panel">
           <h3>Artist Display</h3>
+
           <div className="setting-item">
             <label>Artist Name Size ({settings.artistNameFontSize ?? 3.5}vh)</label>
             <input 
@@ -228,6 +240,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Controls text size of floating artist names at the bottom right corner.</span>
           </div>
+
           <div className="setting-item">
             <label>Image Anticipation Time ({settings.bgPreemptionTime}ms)</label>
             <input 
@@ -242,6 +255,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">How early the artist image begins appearing before their line plays.</span>
           </div>
+
           <div className="setting-item">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <label htmlFor="transitionSlider" style={{ marginBottom: 0 }}>Artist Transition Timing</label>
@@ -267,6 +281,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Adjusts fade duration gap between singer changes (0ms = instant).</span>
           </div>
+
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
             <input 
@@ -286,6 +301,7 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 4: MODAL & SYSTEM BEHAVIOR */}
         <div className="settings-card glass-panel">
           <h3>Modal & System Dynamics</h3>
+
           <div className="setting-item">
             <label>Modal Layout Split ({settings.modalSplitRatio}% Left)</label>
             <input 
@@ -299,6 +315,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Proportional width split between metadata column and lyrics area.</span>
           </div>
+
           <div className="setting-item">
             <label>Modal Vertical Padding ({settings.modalPaddingY}vh)</label>
             <input 
@@ -312,6 +329,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Top and bottom margin spacing surrounding song overlay window.</span>
           </div>
+
           <div className="setting-item">
             <label>Modal Title Scale ({settings.modalFontSize}vh)</label>
             <input 
@@ -326,6 +344,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size scaling for main song title in left metadata panel.</span>
           </div>
+
           <div className="setting-item">
             <label>Equalizer Fade-Out Time ({settings.eqFadeOutTime}ms)</label>
             <input 
@@ -353,11 +372,55 @@ const SettingsTab = ({ settings, setSettings }) => {
               onChange={handleChange}
             />
           </div>
+
+          {/* DEEZER AUTHENTICATION BLOCK */}
+          <div className="setting-item" style={{ marginTop: '20px' }}>
+            <label style={{ color: '#a238ff', fontWeight: '800' }}>Deezer ARL Token</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type={showArl ? 'text' : 'password'}
+                name="deezerArl"
+                value={settings.deezerArl || ''}
+                onChange={handleChange}
+                placeholder="Paste Deezer ARL token here..."
+                style={{ 
+                  flex: 1, padding: '10px 14px', borderRadius: '8px', 
+                  background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(162, 56, 255, 0.3)', 
+                  color: 'white', outline: 'none' 
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowArl(!showArl)}
+                style={{ 
+                  padding: '0 12px', background: 'rgba(162, 56, 255, 0.15)', 
+                  border: '1px solid rgba(162, 56, 255, 0.3)', borderRadius: '8px', 
+                  color: '#a238ff', cursor: 'pointer', display: 'flex', alignItems: 'center'
+                }}
+                title={showArl ? "Hide Token" : "Show Token"}
+              >
+                {showArl ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
+              </button>
+            </div>
+            <span className="setting-desc">Required to securely stream and download high-quality explicit audio via the Deezer Python backend. <strong>This token is NEVER exported in your JSON backups.</strong></span>
+          </div>
+
         </div>
 
         {/* GROUP 5: TRANSLATION & TRANSLITERATION */}
         <div className="settings-card glass-panel">
           <h3>Translation & Transliteration</h3>
+
           <div className="sub-group-title">Translation</div>
           <div className="setting-item">
             <label>Translation Color</label>
@@ -373,6 +436,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             </div>
             <span className="setting-desc">Default color for translated text lines above lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Opacity ({Math.round((settings.translationOpacity ?? 0.9) * 100)}%)</label>
             <input 
@@ -387,6 +451,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to translated text lines.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Font Scale ({settings.translationFontSize ?? 0.55}em)</label>
             <input 
@@ -401,6 +466,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of translated text relative to main lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Top Padding ({settings.translationTopPadding ?? 8}px)</label>
             <input 
@@ -433,6 +499,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             </div>
             <span className="setting-desc">Default color for Romanized phonetic pronunciation guide text.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Opacity ({Math.round((settings.transliterationOpacity ?? 0.8) * 100)}%)</label>
             <input 
@@ -447,6 +514,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to transliteration text lines.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Font Scale ({settings.transliterationFontSize ?? 0.55}em)</label>
             <input 
@@ -461,6 +529,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of pronunciation guide relative to main lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Bottom Padding ({settings.transliterationBottomPadding ?? 4}px)</label>
             <input 

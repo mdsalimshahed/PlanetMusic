@@ -36,8 +36,7 @@ const ModalLeft = ({
   }) => {
 
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
-  const ytVideoId = extractYouTubeId(customData.yt || selectedSong.customLinks?.yt || selectedSong.yt);
-
+  
   // Checks directly against the pure original database entries
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
@@ -67,10 +66,6 @@ const ModalLeft = ({
       }
     });
   };
-
-  const ytSearchQuery = encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`);
-  const ytSearchUrl = `https://music.youtube.com/search?q=${ytSearchQuery}`;
-  const spotifySearchUrl = `https://open.spotify.com/search/${ytSearchQuery}`;
 
   return (
     <div className="modal-left-col">
@@ -119,11 +114,12 @@ const ModalLeft = ({
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
           <div className="links-header"><label>Play Music From:</label></div>
+          
           {isEditing ? (
             <div className="platform-inputs-grid">
               <div className="platform-input-row">
                 <a 
-                  href={spotifySearchUrl} 
+                  href={finalLinks.spotify} 
                   target="_blank" 
                   rel="noreferrer" 
                   className="platform-label spotify-color"
@@ -139,9 +135,29 @@ const ModalLeft = ({
                   placeholder="Paste Spotify URL..." 
                 />
               </div>
+
               <div className="platform-input-row">
                 <a 
-                  href={ytSearchUrl} 
+                  href={finalLinks.deezer} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="platform-label deezer-color"
+                  title="Click to search Deezer for this song link"
+                >
+                  Deezer
+                </a>
+                <input 
+                  type="text" 
+                  name="deezer" 
+                  value={customData.deezer} 
+                  onChange={handleDataChange} 
+                  placeholder="Paste Deezer Track URL..." 
+                />
+              </div>
+
+              <div className="platform-input-row">
+                <a 
+                  href={finalLinks.yt} 
                   target="_blank" 
                   rel="noreferrer" 
                   className="platform-label yt-color"
@@ -157,6 +173,7 @@ const ModalLeft = ({
                   placeholder="Paste YouTube Video URL..." 
                 />
               </div>
+              
               <div className="platform-input-row">
                 <span className="platform-label local-color">Local MP3</span>
                 <input type="file" accept="audio/*" id="localFileInput" style={{ display: 'none' }} onChange={handleLocalFileChange} />
@@ -170,16 +187,25 @@ const ModalLeft = ({
             <div className="platform-links">
               <a href={finalLinks.spotify} target="_blank" rel="noreferrer" className="platform-btn spotify">Spotify</a>
               
+              {customData.deezer && (
+                <button 
+                  className="platform-btn deezer"
+                  onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'deezer', playId: Date.now() })}
+                >
+                  Deezer Stream
+                </button>
+              )}
+
               <button 
-                className="platform-btn yt" 
+                className="platform-btn yt"
                 onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'youtube', playId: Date.now() })}
               >
                 YT Music
               </button>
-
+              
               {customData.hasLocal && (
                 <button 
-                  className="platform-btn local" 
+                  className="platform-btn local"
                   onClick={() => setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() })}
                 >
                   Local Audio File
@@ -199,13 +225,13 @@ const ModalLeft = ({
                   <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
                     <Icon name="eye" />
                     {lyricsViewMode === 'live' ? 'Show Focused Sync' : 
-                         lyricsViewMode === 'focused' ? 'Show Plain Text' : 'Show Live Sync'}
+                          lyricsViewMode === 'focused' ? 'Show Plain Text' : 'Show Live Sync'}
                   </button>
                   
                   {lyricsViewMode === 'focused' && (
                      <button 
-                          className="edit-links-btn toggle-view-btn" 
-                          onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                           className="edit-links-btn toggle-view-btn" 
+                           onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                        style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
                      >
                        <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
@@ -229,12 +255,12 @@ const ModalLeft = ({
         {/* WORKSPACE CONTROLS (Always anchors the bottom buttons) */}
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
-
+          
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
-              <div className="instruction-row"><span><strong>↓</strong> Press <strong>[↓]</strong> to set Start Time</span></div>
-              <div className="instruction-row"><span><strong>↓</strong> Press <strong>[↓]</strong> to set End Time <em>(Auto advances)</em></span></div>
-              <div className="instruction-row subtle"><span><em>(Press <strong>[↑]</strong> anytime to rewind)</em></span></div>
+              <div className="instruction-row"><span><strong> </strong> Press <strong>[ ]</strong> to set Start Time</span></div>
+              <div className="instruction-row"><span><strong> </strong> Press <strong>[ ]</strong> to set End Time <em>(Auto advances)</em></span></div>
+              <div className="instruction-row subtle"><span><em>(Press <strong>[ ]</strong> anytime to rewind)</em></span></div>
             </div>
           )}
 
@@ -297,11 +323,12 @@ const ModalLeft = ({
                     </button>
                     
                     <button 
-                         className="edit-links-btn" 
-                         onClick={() => setIsTranslationManagerOpen(true)}
+                          className="edit-links-btn" 
+                          onClick={() => setIsTranslationManagerOpen(true)}
                     >
                           <Icon name="translate" /> Edit Translation
                     </button>
+
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>
                       <Icon name="users" /> Manage Artists
                     </button>
