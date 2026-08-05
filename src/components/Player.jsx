@@ -32,10 +32,10 @@ const MarqueeText = ({ text, className }) => {
 
   return (
     <div 
-      className={`marquee-container ${className}`} 
-      ref={containerRef}
+       className={`marquee-container ${className}`} 
+       ref={containerRef}
       style={{ 
-        WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none',
+         WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none',
         maskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none'
       }}
     >
@@ -50,11 +50,9 @@ const MarqueeText = ({ text, className }) => {
 const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings }) => {
   const audioRef = useRef(null);
   const ytPlayerRef = useRef(null);
-  
   const audioCtxRef = useRef(null);
   const analyserRef = useRef(null);
   const sourceRef = useRef(null);
-  
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
   const trackIdRef = useRef(null);
@@ -62,31 +60,39 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const activeSourceRef = useRef(null); 
   const playIdRef = useRef(null);
   const ytLastPerfRef = useRef(0);
-  const prevBlobUrlRef = useRef(null); // Ref to hold memory object URLs
+  
+  // FIFO Cache System to retain Streams in Memory safely
+  const audioCacheRef = useRef(new Map());
+  const MAX_CACHE_SIZE = 5; // Retain max 5 audio streams in memory to prevent RAM bloat
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioSrc, setAudioSrc] = useState(undefined);
-  
   const [ytVideoId, setYtVideoId] = useState(null);
   const [ytPlayerReady, setYtPlayerReady] = useState(false);
   const [activeSource, setActiveSource] = useState('preview'); 
-
   const [accentColor, setAccentColor] = useState('#ffffff'); 
   const [pendingSeek, setPendingSeek] = useState(null);
   const [hoverTime, setHoverTime] = useState(null);
-
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
     return savedVolume !== null ? parseFloat(savedVolume) : 1;
   });
-
+  
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
 
   useEffect(() => {
     globalClock.setEventName('globalTimeUpdate');
+  }, []);
+
+  // Flush memory entirely if the component fully unmounts
+  useEffect(() => {
+    return () => {
+      audioCacheRef.current.forEach(url => URL.revokeObjectURL(url));
+      audioCacheRef.current.clear();
+    };
   }, []);
 
   useEffect(() => {
@@ -259,11 +265,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
       }
       
-      if (prevBlobUrlRef.current) {
-          URL.revokeObjectURL(prevBlobUrlRef.current);
-          prevBlobUrlRef.current = null;
-      }
-
       setAudioSrc(undefined);
       setYtVideoId(null);
       setPendingSeek(null);
@@ -340,26 +341,48 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       setYtPlayerReady(false);
       setYtVideoId(extractedYtId);
 
-      const loadAudio = async () => {
-        if (prevBlobUrlRef.current) {
-            URL.revokeObjectURL(prevBlobUrlRef.current);
-            prevBlobUrlRef.current = null;
+      // FIFO Cache Insert Function
+      const addToCache = (key, url) => {
+        if (audioCacheRef.current.has(key)) return;
+        if (audioCacheRef.current.size >= MAX_CACHE_SIZE) {
+          // Map iterators preserve insertion order, so .next().value gets the oldest key
+          const oldestKey = audioCacheRef.current.keys().next().value;
+          URL.revokeObjectURL(audioCacheRef.current.get(oldestKey));
+          audioCacheRef.current.delete(oldestKey);
         }
+        audioCacheRef.current.set(key, url);
+      };
 
+      const loadAudio = async () => {
         if (intendedSource === 'local') {
-          const file = await getAudioFile(trackId);
-          if (file) {
-            setAudioSrc(URL.createObjectURL(file));
+          const cacheKey = `local_${trackId}`;
+          if (audioCacheRef.current.has(cacheKey)) {
+            setAudioSrc(audioCacheRef.current.get(cacheKey));
             setActiveSource('local');
           } else {
-            setAudioSrc(currentTrack.previewUrl);
-            setActiveSource('preview');
-            activeSourceRef.current = 'preview';
+            const file = await getAudioFile(trackId);
+            if (file) {
+              const url = URL.createObjectURL(file);
+              addToCache(cacheKey, url);
+              setAudioSrc(url);
+              setActiveSource('local');
+            } else {
+              setAudioSrc(currentTrack.previewUrl);
+              setActiveSource('preview');
+              activeSourceRef.current = 'preview';
+            }
           }
         } else if (intendedSource === 'youtube') {
           setAudioSrc(undefined);
           setActiveSource('youtube');
         } else if (intendedSource === 'deezer') {
+          const cacheKey = `deezer_${trackId}`;
+          if (audioCacheRef.current.has(cacheKey)) {
+            setActiveSource('deezer');
+            setAudioSrc(audioCacheRef.current.get(cacheKey));
+            return;
+          }
+
           setActiveSource('deezer');
           setIsBuffering(true);
           try {
@@ -378,9 +401,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
             if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
             
             const blob = await response.blob();
-            const blobUrl = URL.createObjectURL(blob);
-            prevBlobUrlRef.current = blobUrl;
-            setAudioSrc(blobUrl);
+            const url = URL.createObjectURL(blob);
+            addToCache(cacheKey, url);
+            setAudioSrc(url);
           } catch (e) {
             console.error("Deezer buffer issue, falling back:", e);
             setAudioSrc(currentTrack.previewUrl);
@@ -394,9 +417,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
           setActiveSource('preview');
         }
       };
-
       loadAudio();
-      
+
     // Soft switch: Same track and source, but user re-clicked play
     } else if (isNewPlayAction) {
       playIdRef.current = currentTrack.playId;
@@ -430,10 +452,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         setTimeout(initYTPlayer, 100);
         return;
       }
-
       const container = document.getElementById('yt-player-container');
       if (!container) return;
-
       container.innerHTML = '<div id="yt-player-target" style="width:100%;height:100%;"></div>';
       
       playerInstance = new window.YT.Player('yt-player-target', {
@@ -464,6 +484,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
                 globalClock.seek(pendingSeek);
                 setPendingSeek(null);
               }
+
               event.target.playVideo();
               setIsPlaying(true);
               emitPlayState(true, false);
@@ -507,7 +528,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         }
       });
     };
-
     initYTPlayer();
 
     return () => {
@@ -547,7 +567,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         globalClock.updateAnchor(audioRef.current.currentTime);
       }
     };
-
     window.addEventListener('globalTimeUpdate', handleTimeUpdate);
     return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
   }, [duration, ytVideoId, isPlaying]);
@@ -671,6 +690,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const handleLoadedMetadata = () => {
     if (audioRef.current && !ytVideoId) {
       setDuration(audioRef.current.duration);
+      
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         globalClock.seek(pendingSeek);
@@ -685,7 +705,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     e.stopPropagation();
     const time = Number(e.target.value);
     globalClock.seek(time);
-
+    
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
       try {
         ytPlayerRef.current.seekTo(time, true);
@@ -697,7 +717,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-
+    
     if (progressBarRef.current) {
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
@@ -716,7 +736,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     const time = percent * duration;
     
     globalClock.seek(time);
-
+    
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
       try {
         ytPlayerRef.current.seekTo(time, true);
@@ -728,7 +748,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       const isEnded = time >= duration && duration > 0;
       emitPlayState(isPlaying, isEnded);
     }
-
+    
     if (progressBarRef.current) {
       progressBarRef.current.value = time;
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
@@ -775,17 +795,17 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
   const playerUI = currentTrack ? (
     <div 
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`} 
-      onClick={openModal}
+       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`} 
+       onClick={openModal}
       style={{ '--player-accent': accentColor, cursor: 'pointer' }}
     >
       <div className="player-top-row">
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
             <img 
-              src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
-              alt="Album art" 
-              className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
+               src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
+               alt="Album art" 
+               className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
             />
             <div className={`play-overlay ${!isPlaying ? 'show-play' : ''}`}>
               {isPlaying ? (
@@ -822,12 +842,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
             <div className="volume-slider-wrapper">
               <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>{Math.round(volume * 100)}%</div>
               <input 
-                type="range" 
-                className="custom-slider volume-slider" 
-                min="0" max="1" step="0.01" 
-                value={volume} 
-                onChange={handleVolumeChange} 
-                style={{ '--progress': `${volume * 100}%` }}
+                 type="range" 
+                 className="custom-slider volume-slider" 
+                 min="0" max="1" step="0.01" 
+                 value={volume} 
+                 onChange={handleVolumeChange} 
+                 style={{ '--progress': `${volume * 100}%` }}
               />
             </div>
           </div>
@@ -844,29 +864,29 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text" ref={currentTimeRef}>0:00</span>
         <div 
-          className="progress-container"
+           className="progress-container"
           onClick={handleContainerClick}
           onMouseMove={handleProgressMouseMove}
           onMouseLeave={handleProgressMouseLeave}
           onTouchStart={handleProgressMouseLeave}
         >
           <div 
-            className="progress-tooltip" 
-            style={{ 
-              opacity: hoverTime !== null ? 1 : 0,
+             className="progress-tooltip" 
+             style={{
+               opacity: hoverTime !== null ? 1 : 0,
               left: hoverTime !== null ? `${(hoverTime / (duration || 1)) * 100}%` : '0%'
             }}
           >
             {formatTime(hoverTime || 0)}
           </div>
           <input 
-            type="range" 
-            className="custom-slider progress-slider" 
-            ref={progressBarRef}
+             type="range" 
+             className="custom-slider progress-slider" 
+             ref={progressBarRef}
             min="0" max={duration || 100} 
-            defaultValue="0"
+             defaultValue="0"
             onChange={handleSeek} 
-            style={{ '--progress': `0%` }}
+             style={{ '--progress': `0%` }}
           />
         </div>
         <span className="time-text">{formatTime(duration)}</span>
@@ -877,7 +897,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   return (
     <>
       <audio 
-        ref={audioRef}
+         ref={audioRef}
         crossOrigin="anonymous"
         src={audioSrc || undefined} 
         onLoadedMetadata={handleLoadedMetadata}
@@ -889,8 +909,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
       {/* Stable YouTube Container outside of the Portal */}
       <div 
-        id="yt-player-container" 
-        style={{
+         id="yt-player-container" 
+         style={{
           position: 'fixed',
           top: 0,
           left: 0,
