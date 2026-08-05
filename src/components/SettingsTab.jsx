@@ -17,12 +17,12 @@ const DUAL_GRADIENT_PALETTE = [
   ['#e0aaff', '#38b000']
 ];
 
-const SettingsTab = ({ settings, setSettings }) => {
+const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
   const [showArl, setShowArl] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState(null);
+  const [showPurgeConfirm, setShowPurgeConfirm] = useState(false);
 
-  // Generate a random gradient layout for the Deezer widget on mount
   const [authGradient] = useState(() => {
     const palette = DUAL_GRADIENT_PALETTE[Math.floor(Math.random() * DUAL_GRADIENT_PALETTE.length)];
     return `linear-gradient(90deg, ${palette[0]}, ${palette[1]})`;
@@ -45,10 +45,8 @@ const SettingsTab = ({ settings, setSettings }) => {
       const positiveJ = Math.abs(j);
       [palettePool[i], palettePool[positiveJ]] = [palettePool[positiveJ], palettePool[i]];
     }
-
     const gradMap = {};
     let lastPair = null;
-
     keys.forEach((key, index) => {
       let candidatePair = palettePool[index % palettePool.length];
       if (lastPair && candidatePair[0] === lastPair[0] && candidatePair[1] === lastPair[1]) {
@@ -58,17 +56,18 @@ const SettingsTab = ({ settings, setSettings }) => {
       gradMap[key] = candidatePair;
       lastPair = candidatePair;
     });
-
     return gradMap;
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    if (dismissSampleMode) dismissSampleMode(); // Dismiss sample vault mode on settings change
+
     setSettings(prev => ({
       ...prev,
-      [name]: type === 'checkbox'
-         ? checked
-         : (type === 'color' || type === 'text' || type === 'password' ? value : Number(value))
+      [name]: type === 'checkbox' 
+        ? checked 
+        : (type === 'color' || type === 'text' || type === 'password' ? value : Number(value))
     }));
   };
 
@@ -84,7 +83,6 @@ const SettingsTab = ({ settings, setSettings }) => {
     try {
       const formData = new FormData();
       formData.append('session_id', `test_${Date.now()}`);
-      // Use a known public Deezer track URL for the test stream initialization
       formData.append('url', 'https://www.deezer.com/track/3135556');
       formData.append('arl_token', settings.deezerArl);
       formData.append('quality', '1');
@@ -95,7 +93,6 @@ const SettingsTab = ({ settings, setSettings }) => {
         body: formData
       });
       
-      // If the backend accepts the ARL and returns the stream data, it's valid
       if (response.ok) {
         setVerifyResult('success');
       } else {
@@ -107,6 +104,62 @@ const SettingsTab = ({ settings, setSettings }) => {
     } finally {
       setIsVerifying(false);
     }
+  };
+
+  // PURGE WITH AUTOMATIC BACKUP DOWNLOAD
+  const handlePurgeAllData = () => {
+    // 1. Trigger export file download
+    try {
+      const rawLibrary = localStorage.getItem('songLibrary');
+      const parsedLibrary = rawLibrary ? JSON.parse(rawLibrary) : [];
+
+      const optimizedLibrary = parsedLibrary.map(song => {
+        const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
+        delete optimizedSong.artworkUrl30;
+        delete optimizedSong.artworkUrl60;
+        delete optimizedSong.trackCensoredName;
+        delete optimizedSong.collectionCensoredName;
+        delete optimizedSong.artistViewUrl;
+        delete optimizedSong.trackViewUrl;
+        return optimizedSong;
+      });
+
+      const exportData = { 
+        library: optimizedLibrary, 
+        settings: { ...settings } 
+      };
+      delete exportData.settings.deezerArl;
+
+      const jsonString = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `PlanetMusic_Purge_Backup_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Backup trigger failed before purge:", e);
+    }
+
+    // 2. Clear storage
+    localStorage.clear();
+    localStorage.setItem('hasVisitedBefore', 'true');
+    localStorage.setItem('isSampleVaultActive', 'false');
+    
+    if (window.indexedDB) {
+      try {
+        window.indexedDB.deleteDatabase('PlanetMusicDB');
+      } catch (err) {
+        console.error("Failed to delete IndexedDB:", err);
+      }
+    }
+
+    // 3. Reload cleanly to an empty main view
+    window.location.href = '/';
   };
 
   const getSliderStyle = (key, progressPct) => {
@@ -128,7 +181,7 @@ const SettingsTab = ({ settings, setSettings }) => {
           <div className="deezer-auth-instructions">
             <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources. Without it, you can still manually paste YouTube links or load Local MP3s to stream your songs.</p>
             <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser's Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-            <p className="security-warning">🛡️ <strong>Privacy & Security:</strong> Your token is stored entirely locally on your device. It is only sent to our secure backend proxy to fetch audio streams and is <strong>NEVER</strong> exported or shared when you backup your database to JSON.</p>
+            <p className="security-warning">🔒 <strong>Privacy & Security:</strong> Your token is stored entirely locally on your device. It is only sent to our secure backend proxy to fetch audio streams and is <strong>NEVER</strong> exported or shared when you backup your database to JSON.</p>
           </div>
 
           <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
@@ -142,19 +195,19 @@ const SettingsTab = ({ settings, setSettings }) => {
                   if (e.target.name === 'deezerArl') setVerifyResult(null); 
                 }}
                 placeholder="Paste Deezer ARL token here..."
-                style={{
-                   flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
-                   background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
-                   color: 'white', outline: 'none', fontSize: '14px'
-                 }}
+                style={{ 
+                  flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
+                  background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: 'white', outline: 'none', fontSize: '14px' 
+                }}
               />
               <button
                 type="button"
                 onClick={() => setShowArl(!showArl)}
-                style={{
-                   padding: '0 16px', height: '44px', background: 'rgba(255, 255, 255, 0.1)',
-                   border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px',
-                   color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0
+                style={{ 
+                  padding: '0 16px', height: '44px', background: 'rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px',
+                  color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 
                 }}
                 title={showArl ? "Hide Token" : "Show Token"}
               >
@@ -181,8 +234,41 @@ const SettingsTab = ({ settings, setSettings }) => {
               {isVerifying ? 'Testing Connection...' : 'Test Connection'}
             </button>
             
-            {verifyResult === 'success' && <div style={{color: '#4ade80', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>✅ Token is valid and streaming works!</div>}
-            {verifyResult === 'error' && <div style={{color: '#FA243C', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>❌ Invalid token or streaming proxy failed</div>}
+            {verifyResult === 'success' && <div style={{color: '#4ade80', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>✓ Token is valid and streaming works!</div>}
+            {verifyResult === 'error' && <div style={{color: '#FA243C', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>✕ Invalid token or streaming proxy failed</div>}
+          </div>
+        </div>
+
+        {/* DECOUPLED GROUP: DATA STORAGE & MEMORY */}
+        <div className="settings-card glass-panel purge-card">
+          <h3>Data Storage & Memory</h3>
+          
+          <div className="setting-item toggle-item">
+            <label>
+              Persistent Memory 
+              <span className="setting-desc">Automatically save song library, lyrics, synced timings, and visual settings to browser local storage.</span>
+            </label>
+            <input 
+              type="checkbox" 
+              name="persistentMemory" 
+              checked={settings.persistentMemory} 
+              onChange={handleChange} 
+            />
+          </div>
+
+          <div className="group-divider"></div>
+
+          <div className="purge-warning-box">
+            <h4>Clear Vault Data</h4>
+            <p>Completely purges all saved tracks, sample songs, cached audio files, custom lyrics, and user preferences from this browser.</p>
+            <p className="auto-backup-note">💾 <strong>Automatic Backup:</strong> Clicking purge will automatically download a backup file before erasing data.</p>
+            
+            <button 
+              className="purge-action-btn"
+              onClick={() => setShowPurgeConfirm(true)}
+            >
+              Purge All Data
+            </button>
           </div>
         </div>
 
@@ -335,6 +421,7 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 3: GENERAL ARTIST DISPLAY */}
         <div className="settings-card glass-panel">
           <h3>Artist Display</h3>
+
           <div className="setting-item">
             <label>Artist Name Size ({settings.artistNameFontSize ?? 3.5}vh)</label>
             <input 
@@ -349,6 +436,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Controls text size of floating artist names at the bottom right corner.</span>
           </div>
+
           <div className="setting-item">
             <label>Image Anticipation Time ({settings.bgPreemptionTime}ms)</label>
             <input 
@@ -363,6 +451,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">How early the artist image begins appearing before their line plays.</span>
           </div>
+
           <div className="setting-item">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <label htmlFor="transitionSlider" style={{ marginBottom: 0 }}>Artist Transition Timing</label>
@@ -378,6 +467,7 @@ const SettingsTab = ({ settings, setSettings }) => {
               step="10"
               defaultValue={localStorage.getItem('artistTransitionTime') || 0}
               onChange={(e) => {
+                if (dismissSampleMode) dismissSampleMode();
                 const val = parseInt(e.target.value, 10);
                 localStorage.setItem('artistTransitionTime', val);
                 document.getElementById('transitionValueDisplay').innerText = `${val}ms`;
@@ -388,6 +478,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Adjusts fade duration gap between singer changes (0ms = instant).</span>
           </div>
+
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
             <input 
@@ -407,6 +498,7 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 4: MODAL & SYSTEM BEHAVIOR */}
         <div className="settings-card glass-panel">
           <h3>Modal & System Dynamics</h3>
+
           <div className="setting-item">
             <label>Modal Layout Split ({settings.modalSplitRatio}% Left)</label>
             <input 
@@ -420,6 +512,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Proportional width split between metadata column and lyrics area.</span>
           </div>
+
           <div className="setting-item">
             <label>Modal Vertical Padding ({settings.modalPaddingY}vh)</label>
             <input 
@@ -433,6 +526,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Top and bottom margin spacing surrounding song overlay window.</span>
           </div>
+
           <div className="setting-item">
             <label>Modal Title Scale ({settings.modalFontSize}vh)</label>
             <input 
@@ -447,6 +541,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size scaling for main song title in left metadata panel.</span>
           </div>
+
           <div className="setting-item">
             <label>Equalizer Fade-Out Time ({settings.eqFadeOutTime}ms)</label>
             <input 
@@ -460,19 +555,6 @@ const SettingsTab = ({ settings, setSettings }) => {
               style={getSliderStyle('eqFadeOutTime', ((settings.eqFadeOutTime - 100) / 1900) * 100)}
             />
             <span className="setting-desc">How smoothly equalizer visualizer bars fall when music pauses.</span>
-          </div>
-          
-          <div className="setting-item toggle-item" style={{ marginTop: '12px' }}>
-            <label>
-              Persistent Memory 
-              <span className="setting-desc">Automatically save library and settings to local storage</span>
-            </label>
-            <input 
-              type="checkbox" 
-              name="persistentMemory" 
-              checked={settings.persistentMemory} 
-              onChange={handleChange}
-            />
           </div>
         </div>
 
@@ -488,13 +570,14 @@ const SettingsTab = ({ settings, setSettings }) => {
                 type="color" 
                 name="translationColor" 
                 value={settings.translationColor || '#ffffff'} 
-                onChange={handleChange}
+                onChange={handleChange} 
                 className="color-picker-input"
               />
               <span className="color-preview-value">{settings.translationColor || '#ffffff'}</span>
             </div>
             <span className="setting-desc">Default color for translated text lines above lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Opacity ({Math.round((settings.translationOpacity ?? 0.9) * 100)}%)</label>
             <input 
@@ -509,6 +592,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to translated text lines.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Font Scale ({settings.translationFontSize ?? 0.55}em)</label>
             <input 
@@ -523,6 +607,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of translated text relative to main lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Translation Top Padding ({settings.translationTopPadding ?? 8}px)</label>
             <input 
@@ -548,13 +633,14 @@ const SettingsTab = ({ settings, setSettings }) => {
                 type="color" 
                 name="transliterationColor" 
                 value={settings.transliterationColor || '#ffffff'} 
-                onChange={handleChange}
+                onChange={handleChange} 
                 className="color-picker-input"
               />
               <span className="color-preview-value">{settings.transliterationColor || '#ffffff'}</span>
             </div>
             <span className="setting-desc">Default color for Romanized phonetic pronunciation guide text.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Opacity ({Math.round((settings.transliterationOpacity ?? 0.8) * 100)}%)</label>
             <input 
@@ -569,6 +655,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to transliteration text lines.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Font Scale ({settings.transliterationFontSize ?? 0.55}em)</label>
             <input 
@@ -583,6 +670,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of pronunciation guide relative to main lyrics.</span>
           </div>
+
           <div className="setting-item">
             <label>Transliteration Bottom Padding ({settings.transliterationBottomPadding ?? 4}px)</label>
             <input 
@@ -597,10 +685,31 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Distance transliteration text sits below main lyric line.</span>
           </div>
-
         </div>
 
       </div>
+
+      {/* CONFIRMATION PURGE MODAL OVERLAY */}
+      {showPurgeConfirm && (
+        <div className="confirm-overlay" onClick={() => setShowPurgeConfirm(false)}>
+          <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+            <h3>Purge Vault Data?</h3>
+            <p>
+              Are you sure you want to clear your local Vault? This will permanently erase all saved tracks, custom lyrics, and audio cache from this browser.
+              <br/><br/>
+              An <strong>automatic backup JSON file</strong> will download immediately before purging so you never lose your work.
+            </p>
+            <div className="confirm-actions">
+              <button className="confirm-btn cancel" onClick={() => setShowPurgeConfirm(false)}>
+                Cancel
+              </button>
+              <button className="confirm-btn delete" onClick={handlePurgeAllData}>
+                Backup & Purge
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

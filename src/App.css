@@ -111,7 +111,7 @@ body {
 
 .search-container {
   position: absolute;
-  top: 8px; /* Tightly tucked under the Topbar */
+  top: 0;
   left: 0;
   right: 0;
   padding: 0 40px;
@@ -201,13 +201,13 @@ body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 8px 40px 100px 40px; /* Snaps Blog/Settings flush to the Topbar */
+  padding: 0 40px 100px 40px;
   min-height: 0;
 }
 
-/* MAGIC FIX: Pushes content down ONLY on the Main tab to make room for the floating search bar */
+/* Pushes content down ONLY on the Main tab to make room for the floating search bar */
 .search-container ~ .content-scroll-area {
-  padding-top: 72px; 
+  padding-top: 64px; 
 }
 
 .content-scroll-area.no-scroll {
@@ -349,6 +349,7 @@ body {
   border-radius: 500px;
   font-size: 15px;
   font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
@@ -364,6 +365,80 @@ body {
 .sample-vault-btn:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+/* SAMPLE VAULT BANNER STYLES */
+.sample-vault-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: rgba(251, 191, 36, 0.08) !important;
+  border: 1px solid rgba(251, 191, 36, 0.3) !important;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sample-banner-text {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  text-align: left;
+  flex: 1;
+}
+
+.sample-banner-text strong {
+  color: var(--accent);
+}
+
+.sample-banner-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.keep-sample-btn {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  padding: 8px 16px;
+  border-radius: 500px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.keep-sample-btn:hover {
+  background: var(--accent);
+  color: black;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.clear-sample-btn {
+  background: rgba(250, 36, 60, 0.15);
+  color: #FA243C;
+  border: 1px solid rgba(250, 36, 60, 0.3);
+  padding: 8px 16px;
+  border-radius: 500px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.clear-sample-btn:hover {
+  background: #FA243C;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(250, 36, 60, 0.3);
 }
 
 /* --- Confirmation Modal --- */
@@ -459,7 +534,7 @@ body {
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .search-container {
-    top: 8px;
+    top: 0;
     padding: 0 16px;
     justify-content: center;
   }
@@ -468,10 +543,10 @@ body {
     padding: 0 6px 0 16px;
   }
   .content-scroll-area {
-    padding: 8px 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
+    padding: 0 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
   }
   .search-container ~ .content-scroll-area {
-    padding-top: 64px; 
+    padding-top: 56px; 
   }
   .dual-search-container {
     flex-direction: column;
@@ -499,7 +574,7 @@ body {
     padding: 0 20px;
   }
   .content-scroll-area {
-    padding-top: 8px;
+    padding-top: 0;
   }
   .search-container ~ .content-scroll-area {
     padding-top: 56px; 

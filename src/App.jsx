@@ -40,6 +40,10 @@ const App = () => {
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
+  // Extract ?q= search parameter from URL for bookmarking
+  const queryParams = new URLSearchParams(location.search);
+  const urlSearchQuery = queryParams.get('q') || '';
+
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
     if (saved) {
@@ -96,7 +100,7 @@ const App = () => {
   });
 
   const [searchQuery, setSearchQuery] = useState(() => {
-    return localStorage.getItem('searchQuery') || '';
+    return urlSearchQuery || localStorage.getItem('searchQuery') || '';
   });
   const [searchResults, setSearchResults] = useState(() => {
     const saved = localStorage.getItem('searchResults');
@@ -113,21 +117,83 @@ const App = () => {
   const [songToRemove, setSongToRemove] = useState(null);
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
+  
+  const [isSampleVaultActive, setIsSampleVaultActive] = useState(() => {
+    return localStorage.getItem('isSampleVaultActive') === 'true';
+  });
+
+  // Helper to permanently dismiss sample vault mode when user modifies data
+  const dismissSampleMode = () => {
+    if (isSampleVaultActive) {
+      setIsSampleVaultActive(false);
+      localStorage.setItem('isSampleVaultActive', 'false');
+      localStorage.setItem('hasVisitedBefore', 'true');
+    }
+  };
+
+  // Wrap setSettings to ensure modifying visual/audio settings dismisses sample vault banner
+  const handleSetSettings = (newSettingsAction) => {
+    dismissSampleMode();
+    setSettings(newSettingsAction);
+  };
+
+  // Synchronize input if user navigates through browser history
+  useEffect(() => {
+    if (urlSearchQuery !== searchQuery) {
+      setSearchQuery(urlSearchQuery);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlSearchQuery]);
+
+  // --- AUTOMATIC SAMPLE VAULT INITIALIZATION FOR FIRST-TIME VISITORS ---
+  useEffect(() => {
+    const autoLoadSampleOnMount = async () => {
+      const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+      if (library.length === 0 && !hasVisitedBefore) {
+        setIsLoadingSample(true);
+        try {
+          const res = await fetch('/PlanetMusic_Backup.json');
+          if (res.ok) {
+            const data = await res.json();
+            applyParsedData(data, false);
+            localStorage.setItem('hasVisitedBefore', 'true');
+            localStorage.setItem('isSampleVaultActive', 'true');
+            setIsSampleVaultActive(true);
+          }
+        } catch (err) {
+          console.warn("Could not auto-load sample vault on mount:", err);
+        } finally {
+          setIsLoadingSample(false);
+        }
+      }
+    };
+    autoLoadSampleOnMount();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClearSampleVault = () => {
+    setLibrary([]);
+    localStorage.removeItem('songLibrary');
+    localStorage.setItem('isSampleVaultActive', 'false');
+    localStorage.setItem('hasVisitedBefore', 'true');
+    setIsSampleVaultActive(false);
+  };
+
+  const handleKeepSampleVault = () => {
+    dismissSampleMode();
+  };
 
   // Deep Linking Engine: Loads song if visited directly via URL
   useEffect(() => {
     if (urlTrackId) {
-      // Prevent redundant fetches if the song is already loaded
       if (selectedSong && String(selectedSong.trackId) === String(urlTrackId)) return;
 
-      // Force string coercion to ensure iTunes Number IDs match the URL String
       let found = library.find(s => String(s.trackId) === String(urlTrackId)) || 
                   searchResults.find(s => String(s.trackId) === String(urlTrackId));
       
       if (found) {
         setSelectedSong(found);
       } else {
-        // If not in library or search history, fetch it fresh from iTunes!
         if (!urlTrackId.startsWith('dz_')) {
           fetch(`https://itunes.apple.com/lookup?id=${urlTrackId}&entity=song`)
             .then(res => res.json())
@@ -146,16 +212,15 @@ const App = () => {
       setSelectedSong(null);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlTrackId]); // Strictly bound to URL changes
+  }, [urlTrackId]);
 
-  // Master controller for opening/closing the modal via URL routing
   const handleSetSelectedSong = (song) => {
     if (song) {
-      // Default to /live view when opening a fresh song card
-      navigate(`/song/${song.trackId}/live`);
+      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
+      navigate(`/song/${song.trackId}/live${qParam}`);
     } else {
-      // Return safely to whatever tab they were on behind the modal
-      const tabPath = activeTab === 'main' ? '/' : `/${activeTab}`;
+      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
+      const tabPath = activeTab === 'main' ? `/${qParam}` : `/${activeTab}${qParam}`;
       navigate(tabPath);
     }
     setSelectedSong(song);
@@ -167,13 +232,15 @@ const App = () => {
       localStorage.setItem('songLibrary', JSON.stringify(library));
       localStorage.setItem('searchQuery', searchQuery);
       localStorage.setItem('searchResults', JSON.stringify(searchResults));
+      localStorage.setItem('isSampleVaultActive', isSampleVaultActive ? 'true' : 'false');
     } else {
       localStorage.removeItem('appSettings');
       localStorage.removeItem('songLibrary');
       localStorage.removeItem('searchQuery');
       localStorage.removeItem('searchResults');
+      localStorage.removeItem('isSampleVaultActive');
     }
-  }, [settings, library, searchQuery, searchResults]);
+  }, [settings, library, searchQuery, searchResults, isSampleVaultActive]);
 
   const handleHomeClick = () => {
     setSearchQuery('');
@@ -182,43 +249,78 @@ const App = () => {
     navigate('/');
   };
 
-  const filteredLibrary = library.filter(song => {
-    if (activeTab !== 'main' || !searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      song.trackName?.toLowerCase().includes(query) ||
-      song.artistName?.toLowerCase().includes(query) ||
-      song.collectionName?.toLowerCase().includes(query)
-    );
-  });
+  // Helper string normalizer
+  const norm = (str) => 
+    (str || '')
+      .replace(/[\(\[].*?[\)\]]/g, '')
+      .replace(/[’']/g, "'")
+      .toLowerCase()
+      .trim();
 
-  // --- COMBINED HYBRID SEARCH ENGINE (Exact Match Fusion) ---
+  // --- STRICT SONG-TITLE FILTER & RELEVANCE ENGINE ---
+  const filterAndSortByTitleMatch = (results, query) => {
+    if (!results || results.length === 0) return [];
+    if (!query || !query.trim()) return results;
+    
+    const cleanQuery = query.toLowerCase().trim();
+    const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
+
+    const strictFiltered = results.filter(song => {
+      const titleClean = norm(song.trackName);
+      const rawTitle = (song.trackName || '').toLowerCase().trim();
+
+      return queryWords.some(word => titleClean.includes(word) || rawTitle.includes(word));
+    });
+
+    const getScore = (song) => {
+      const titleClean = norm(song.trackName);
+      const rawTitle = (song.trackName || '').toLowerCase().trim();
+
+      let score = 0;
+
+      if (titleClean === cleanQuery || rawTitle === cleanQuery) score += 1000;
+      if (titleClean.startsWith(cleanQuery) || rawTitle.startsWith(cleanQuery)) score += 500;
+      if (titleClean.includes(cleanQuery) || rawTitle.includes(cleanQuery)) score += 300;
+
+      queryWords.forEach(word => {
+        if (titleClean.includes(word)) score += 50;
+      });
+
+      return score;
+    };
+
+    return [...strictFiltered].sort((a, b) => getScore(b) - getScore(a));
+  };
+
+  const filteredLibrary = filterAndSortByTitleMatch(
+    library.filter(song => {
+      if (activeTab !== 'main' || !searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        song.trackName?.toLowerCase().includes(query) ||
+        song.artistName?.toLowerCase().includes(query) ||
+        song.collectionName?.toLowerCase().includes(query)
+      );
+    }),
+    searchQuery
+  );
+
+  // --- PROGRESSIVE HYBRID SEARCH ENGINE WITH EXACT FUSION ---
   const performOnlineSearch = async (query) => {
     if (!query.trim()) return;
     setIsSearching(true);
     
-    try {
-      const [itunesRes, deezerRes] = await Promise.all([
-        fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`)
-          .then(res => res.json())
-          .catch(err => {
-            console.error("iTunes Search Error:", err);
-            return { results: [] };
-          }),
-        fetch(`https://ytdownloader-jnt0.onrender.com/search-deezer?q=${encodeURIComponent(query)}`)
-          .then(res => {
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            return res.json();
-          })
-          .catch(err => {
-            console.error("Deezer Search Error:", err);
-            return { results: [] };
-          })
-      ]);
+    let currentResults = [];
 
-      const normalizeString = (str) => (str || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
+    const processITunes = (items) => {
+      return items.map(song => ({
+        ...song,
+        sourceNames: ['iTunes']
+      }));
+    };
 
-      const deezerResults = (deezerRes.results || []).map(dz => ({
+    const fuseDeezerAndDeduplicate = (existing, dzItems) => {
+      const deezerResults = dzItems.map(dz => ({
         trackId: `dz_${dz.id}`,
         trackName: dz.title,
         artistName: dz.artist,
@@ -228,31 +330,26 @@ const App = () => {
         previewUrl: '',
         trackExplicitness: 'explicit',
         sourceNames: ['Deezer'],
-        customLinks: { deezer: dz.link },
-        _normTitle: normalizeString(dz.title),
-        _normArtist: normalizeString(dz.artist)
+        customLinks: { deezer: dz.link }
       }));
 
       const finalResults = [];
       const matchedDeezerIds = new Set();
 
-      (itunesRes.results || []).forEach(song => {
-        const normTitle = normalizeString(song.trackName);
-        const normArtist = normalizeString(song.artistName);
+      existing.forEach(song => {
+        const normTitle = norm(song.trackName);
+        const normArtist = norm(song.artistName);
 
         const dzMatch = deezerResults.find(dz => 
           !matchedDeezerIds.has(dz.trackId) &&
-          dz._normTitle === normTitle &&
-          dz._normArtist === normArtist
+          norm(dz.trackName) === normTitle &&
+          norm(dz.artistName) === normArtist
         );
 
-        const formattedSong = {
-          ...song,
-          sourceNames: ['iTunes']
-        };
+        const formattedSong = { ...song };
 
         if (dzMatch) {
-          formattedSong.sourceNames = ['iTunes', 'Deezer'];
+          formattedSong.sourceNames = Array.from(new Set([...(formattedSong.sourceNames || []), 'Deezer']));
           formattedSong.customLinks = { ...formattedSong.customLinks, deezer: dzMatch.customLinks.deezer };
           if (dzMatch.trackExplicitness === 'explicit') formattedSong.trackExplicitness = 'explicit';
           matchedDeezerIds.add(dzMatch.trackId);
@@ -267,12 +364,43 @@ const App = () => {
         }
       });
 
-      finalResults.forEach(res => {
-        delete res._normTitle;
-        delete res._normArtist;
-      });
-      
-      setSearchResults(finalResults);
+      return finalResults;
+    };
+
+    try {
+      const iTunesPromise = fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`)
+        .then(res => res.json())
+        .then(data => {
+          const formatted = processITunes(data.results || []);
+          currentResults = formatted;
+          setSearchResults(filterAndSortByTitleMatch(formatted, query));
+          setIsSearching(false); 
+          return data;
+        })
+        .catch(err => {
+          console.error("iTunes Search Error:", err);
+          return { results: [] };
+        });
+
+      const deezerPromise = fetch(`https://ytdownloader-jnt0.onrender.com/search-deezer?q=${encodeURIComponent(query)}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          if (data.results && data.results.length > 0) {
+            const fused = fuseDeezerAndDeduplicate(currentResults, data.results);
+            setSearchResults(filterAndSortByTitleMatch(fused, query));
+          }
+          return data;
+        })
+        .catch(err => {
+          console.error("Deezer Search Error:", err);
+          return { results: [] };
+        });
+
+      await Promise.allSettled([iTunesPromise, deezerPromise]);
+
     } catch (error) {
       console.error('Error fetching songs:', error);
     } finally {
@@ -285,10 +413,15 @@ const App = () => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
       setIsExplicitSearch(false);
+      if (urlSearchQuery) navigate('/', { replace: true });
       return;
     }
     setIsExplicitSearch(false);
     
+    if (searchQuery.trim() !== urlSearchQuery) {
+      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`, { replace: true });
+    }
+
     if (filteredLibrary.length > 0) {
       setSearchResults([]);
       setIsSearching(false);
@@ -300,17 +433,20 @@ const App = () => {
     }, 400);
 
     return () => clearTimeout(debounceTimer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, activeTab, filteredLibrary.length]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsExplicitSearch(true);
+    navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
     performOnlineSearch(searchQuery);
   };
 
   const toggleLibrary = (e, song) => {
     if (e) e.stopPropagation();
+    dismissSampleMode();
     const isSaved = library.some((s) => s.trackId === song.trackId);
     
     if (isSaved) {
@@ -322,6 +458,7 @@ const App = () => {
 
   const confirmRemove = () => {
     if (songToRemove) {
+      dismissSampleMode();
       setLibrary(library.filter((s) => s.trackId !== songToRemove.trackId));
       if (selectedSong?.trackId === songToRemove.trackId) handleSetSelectedSong(null);
       setSongToRemove(null);
@@ -333,6 +470,7 @@ const App = () => {
   };
 
   const updateSongInLibrary = (updatedSong) => {
+    dismissSampleMode();
     setLibrary(prevLibrary => {
       const exists = prevLibrary.some(s => s.trackId === updatedSong.trackId);
       if (exists) {
@@ -390,6 +528,7 @@ const App = () => {
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
+        dismissSampleMode();
         applyParsedData(parsedData);
       } catch (err) {
         alert('Could not read the JSON file.');
@@ -399,7 +538,7 @@ const App = () => {
     if (event.target) event.target.value = null;
   };
 
-  const applyParsedData = (parsedData) => {
+  const applyParsedData = (parsedData, shouldRedirect = true) => {
     const newLibrary = [...library];
     const mergeSongs = (importedSongs) => {
       importedSongs.forEach(newSong => {
@@ -413,13 +552,11 @@ const App = () => {
       mergeSongs(parsedData.library);
       setLibrary(newLibrary);
       if (parsedData.settings) setSettings(prev => ({ ...prev, ...parsedData.settings }));
-      handleHomeClick();
-      alert(`Successfully imported ${parsedData.library.length} songs and applied settings!`);
+      if (shouldRedirect) handleHomeClick();
     } else if (Array.isArray(parsedData)) {
       mergeSongs(parsedData);
       setLibrary(newLibrary);
-      handleHomeClick();
-      alert(`Successfully imported ${parsedData.length} songs!`);
+      if (shouldRedirect) handleHomeClick();
     }
   };
 
@@ -431,7 +568,10 @@ const App = () => {
         throw new Error('File not found');
       }
       const data = await res.json();
-      applyParsedData(data);
+      applyParsedData(data, true);
+      localStorage.setItem('isSampleVaultActive', 'true');
+      localStorage.setItem('hasVisitedBefore', 'true');
+      setIsSampleVaultActive(true);
     } catch (err) {
       alert("Could not load sample backup file from public folder. Please make sure 'PlanetMusic_Backup.json' is placed inside the 'public/' directory.");
     } finally {
@@ -514,7 +654,35 @@ const App = () => {
         <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
           {activeTab === 'main' && (
             <section className="view-section">
-              {!searchQuery.trim() ? (
+              {/* --- PERSISTENT SAMPLE VAULT BANNER --- */}
+              {isSampleVaultActive && library.length > 0 && !searchQuery.trim() && (
+                <div className="sample-vault-banner glass-panel">
+                  <div className="sample-banner-text">
+                    <strong>💡 Sample Vault Mode:</strong> You are currently viewing pre-loaded demo tracks. You can keep them or clear them to start fresh.
+                  </div>
+                  <div className="sample-banner-actions">
+                    <button 
+                      className="keep-sample-btn" 
+                      onClick={handleKeepSampleVault}
+                    >
+                      Keep Vault
+                    </button>
+                    <button 
+                      className="clear-sample-btn" 
+                      onClick={handleClearSampleVault}
+                    >
+                      Clear Sample Vault
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {isLoadingSample ? (
+                <div className="empty-message glass-panel">
+                  <h2>Loading PlanetMusic Vault...</h2>
+                  <p>Populating your initial library experience.</p>
+                </div>
+              ) : !searchQuery.trim() ? (
                 library.length > 0 ? (
                   <TrackGrid 
                     items={library} 
@@ -562,7 +730,7 @@ const App = () => {
                       <span>COSMOS ({uniqueOnlineResults.length})</span>
                     </div>
                     <div className="column-scroll-area">
-                      {isSearching ? (
+                      {isSearching && uniqueOnlineResults.length === 0 ? (
                         <div className="column-empty-box">Searching the Cosmos...</div>
                       ) : uniqueOnlineResults.length > 0 ? (
                         <TrackGrid 
@@ -615,7 +783,11 @@ const App = () => {
           )}
 
           {activeTab === 'settings' && (
-            <SettingsTab settings={settings} setSettings={setSettings} />
+            <SettingsTab 
+              settings={settings} 
+              setSettings={handleSetSettings} 
+              dismissSampleMode={dismissSampleMode}
+            />
           )}
         </div>
       </main>

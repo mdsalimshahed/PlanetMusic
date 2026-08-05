@@ -1,4 +1,5 @@
 /* --- src/components/SettingsTab.css --- */
+
 .settings-tab-container {
   animation: fadeIn 0.4s ease-out;
   padding-bottom: 60px;
@@ -91,6 +92,73 @@
 .verify-arl-btn:disabled {
   opacity: 0.6;
   cursor: wait;
+}
+
+/* --- PURGE & DATA STORAGE CARD --- */
+.purge-card {
+  border: 1px solid rgba(250, 36, 60, 0.2) !important;
+  background: rgba(250, 36, 60, 0.03) !important;
+}
+
+.purge-card h3 {
+  border-bottom-color: rgba(250, 36, 60, 0.2) !important;
+}
+
+.purge-warning-box {
+  background: rgba(250, 36, 60, 0.08);
+  border: 1px solid rgba(250, 36, 60, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.purge-warning-box h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #FA243C;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.purge-warning-box p {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.purge-warning-box .auto-backup-note {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #fbbf24;
+}
+
+.purge-action-btn {
+  background: rgba(250, 36, 60, 0.15);
+  color: #FA243C;
+  border: 1px solid rgba(250, 36, 60, 0.4);
+  padding: 12px 20px;
+  border-radius: 500px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+  text-align: center;
+  font-family: inherit;
+}
+
+.purge-action-btn:hover {
+  background: #FA243C;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
 }
 
 /* Converted to Masonry Column Flow to break rigid uniform sizing */
