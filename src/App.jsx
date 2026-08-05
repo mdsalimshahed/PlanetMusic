@@ -13,7 +13,6 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
   return (
     <div className="track-grid">
       {items.map((song, idx) => (
-        // Added idx fallback to key just in case of duplicate IDs
         <div key={`${song.trackId}-${idx}`} className="track-grid-item">
           <SongCard 
             song={song} 
@@ -144,14 +143,12 @@ const App = () => {
     );
   });
 
-  // --- SEPARATE & INTERLEAVED SEARCH ENGINE (iTunes + Deezer) ---
-  // --- SEPARATE & INTERLEAVED SEARCH ENGINE (iTunes + Deezer) ---
+  // --- COMBINED HYBRID SEARCH ENGINE (Exact Match Fusion) ---
   const performOnlineSearch = async (query) => {
     if (!query.trim()) return;
     setIsSearching(true);
     
     try {
-      // Fetch both APIs concurrently
       const [itunesRes, deezerRes] = await Promise.all([
         fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`)
           .then(res => res.json())
@@ -170,13 +167,10 @@ const App = () => {
           })
       ]);
 
-      // Format iTunes Results
-      const itunesResults = (itunesRes.results || []).map(song => ({
-        ...song,
-        sourceName: 'iTunes'
-      }));
+      // Helper to strip parenthesis/brackets for a robust "Exact" string match
+      const normalizeString = (str) => (str || '').replace(/[\(\[].*?[\)\]]/g, '').toLowerCase().trim();
 
-      // Format Deezer Results
+      // Pre-process Deezer Results
       const deezerResults = (deezerRes.results || []).map(dz => ({
         trackId: `dz_${dz.id}`,
         trackName: dz.title,
@@ -184,20 +178,57 @@ const App = () => {
         collectionName: dz.album,
         artworkUrl100: dz.cover,
         trackTimeMillis: (dz.duration || 0) * 1000,
-        previewUrl: '', // Will stream directly from python backend
+        previewUrl: '', // Streams natively from backend
         trackExplicitness: 'explicit', 
-        sourceName: 'Deezer',
-        customLinks: { deezer: dz.link }
+        sourceNames: ['Deezer'],
+        customLinks: { deezer: dz.link },
+        _normTitle: normalizeString(dz.title),
+        _normArtist: normalizeString(dz.artist)
       }));
 
-      // Interleave results (1 iTunes, 1 Deezer, 1 iTunes...) so they mix nicely
       const finalResults = [];
-      const maxLength = Math.max(itunesResults.length, deezerResults.length);
-      
-      for (let i = 0; i < maxLength; i++) {
-        if (itunesResults[i]) finalResults.push(itunesResults[i]);
-        if (deezerResults[i]) finalResults.push(deezerResults[i]);
-      }
+      const matchedDeezerIds = new Set();
+
+      // Process iTunes & Look for Deezer Matches
+      (itunesRes.results || []).forEach(song => {
+        const normTitle = normalizeString(song.trackName);
+        const normArtist = normalizeString(song.artistName);
+
+        // Find Exact Match by Title + Artist
+        const dzMatch = deezerResults.find(dz => 
+          !matchedDeezerIds.has(dz.trackId) && 
+          dz._normTitle === normTitle && 
+          dz._normArtist === normArtist
+        );
+
+        const formattedSong = {
+          ...song,
+          sourceNames: ['iTunes']
+        };
+
+        if (dzMatch) {
+          // Fuse them together!
+          formattedSong.sourceNames = ['iTunes', 'Deezer'];
+          formattedSong.customLinks = { ...formattedSong.customLinks, deezer: dzMatch.customLinks.deezer };
+          if (dzMatch.trackExplicitness === 'explicit') formattedSong.trackExplicitness = 'explicit';
+          matchedDeezerIds.add(dzMatch.trackId);
+        }
+
+        finalResults.push(formattedSong);
+      });
+
+      // Add remaining unmatched Deezer explicit/underground tracks
+      deezerResults.forEach(dz => {
+        if (!matchedDeezerIds.has(dz.trackId)) {
+          finalResults.push(dz);
+        }
+      });
+
+      // Clean up temporary normalization properties
+      finalResults.forEach(res => {
+        delete res._normTitle;
+        delete res._normArtist;
+      });
       
       setSearchResults(finalResults);
     } catch (error) {

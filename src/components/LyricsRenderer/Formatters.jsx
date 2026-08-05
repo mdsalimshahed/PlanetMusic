@@ -22,50 +22,63 @@ export const renderFormattedTranslation = (text) => {
 export const groupWords = (elements, charData, isFocused) => {
   const words = [];
   let currentWord = [];
+  let hyphenCount = 0;
+
+  const flushWord = (keySuffix) => {
+    if (currentWord.length > 0) {
+      // If in Focused View and the word has more than 4 hyphens, allow it to wrap naturally
+      const shouldWrap = isFocused && hyphenCount > 4;
+      words.push(
+        <span
+          key={`w-${keySuffix}`}
+          style={
+            shouldWrap
+              ? {
+                  whiteSpace: 'normal',
+                  display: 'inline-block',
+                  maxWidth: '100%',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word'
+                }
+              : {
+                  whiteSpace: 'nowrap',
+                  display: 'inline-block'
+                }
+          }
+        >
+          {currentWord}
+        </span>
+      );
+      currentWord = [];
+      hyphenCount = 0;
+    }
+  };
+
   for (let i = 0; i < elements.length; i++) {
     if (!elements[i]) {
-      if (currentWord.length > 0) {
-        words.push(
-          <span key={`w-${i}`} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
-            {currentWord}
-          </span>
-        );
-        currentWord = [];
-      }
+      flushWord(i);
       words.push(elements[i]);
       continue;
     }
-
-    const char = charData[i].char;
-
+    const char = charData[i] ? charData[i].char : '';
     // Properly chunk spaces and CJK without destroying the element's color spans
     if (/\s/.test(char) || isCJ(char)) {
-      if (currentWord.length > 0) {
-        words.push(
-          <span key={`w-${i}`} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
-            {currentWord}
-          </span>
-        );
-        currentWord = [];
-      }
+      flushWord(i);
       words.push(elements[i]); // Push the actual styled element directly
     } else {
+      if (char === '-') {
+        hyphenCount++;
+      }
       currentWord.push(elements[i]);
     }
   }
-  if (currentWord.length > 0) {
-    words.push(
-      <span key="w-end" style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
-        {currentWord}
-      </span>
-    );
-  }
+  flushWord('end');
+
   return words;
 };
 
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused) => {
   let alignedChunks = [];
-  
   if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
     parsedChunks.forEach((chunk) => {
@@ -99,9 +112,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   return alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
-
     const groupedText = groupWords(renderedText, chunk.chars, isFocused);
-
     if (isRTL) {
       return (
         <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>

@@ -46,12 +46,19 @@
   display: block;
 }
 
-/* API Source Tag on Top-Left Corner */
-.card-source-tag {
+/* API Source Tags on Top-Left Corner (Vertically Stacked) */
+.card-source-tags {
   position: absolute;
   top: 10px;
-  left: 10px; /* Shifted to Left */
+  left: 10px;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.card-source-tag {
   font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
@@ -59,7 +66,7 @@
   border-radius: 4px;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-  pointer-events: none;
+  width: fit-content;
 }
 
 .card-source-tag.deezer {
@@ -76,11 +83,11 @@
   color: black;
 }
 
-/* Play Button shifted back to Top-Right */
+/* Play Button stays Top-Right */
 .play-card-btn {
   position: absolute;
   top: 10px;
-  right: 10px; /* Shifted back to Right */
+  right: 10px;
   z-index: 10;
   width: clamp(26px, 16cqw, 36px);
   height: clamp(26px, 16cqw, 36px);
@@ -173,12 +180,13 @@
   background: rgba(0, 0, 0, 0.75);
 }
 
-.explicit-tag {
+/* ADDED SCOPE: Strict adherence to dark background to prevent CSS crossover */
+.song-card .explicit-tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  color: #ffffff !important;
   font-size: 10px;
   font-weight: 800;
   width: 15px;

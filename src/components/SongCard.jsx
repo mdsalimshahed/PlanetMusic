@@ -10,6 +10,9 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
   const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
 
+  // Fallback to safely support old single-string structure if loading from localStorage cache
+  const sources = song.sourceNames || (song.sourceName ? [song.sourceName] : []);
+
   useEffect(() => {
     if (!highResArt) return;
     let img = new Image();
@@ -78,10 +81,14 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
-        {/* Source API Tag (Top-Left) - Only visible if NOT in the Vault */}
-        {!isSaved && song.sourceName && (
-           <div className={`card-source-tag ${song.sourceName.toLowerCase()}`}>
-             {song.sourceName}
+        {/* Source API Tags (Top-Left) - Only visible if NOT in the Vault */}
+        {!isSaved && sources.length > 0 && (
+           <div className="card-source-tags">
+             {sources.map(source => (
+               <div key={source} className={`card-source-tag ${source.toLowerCase()}`}>
+                 {source}
+               </div>
+             ))}
            </div>
         )}
 
