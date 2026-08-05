@@ -10,12 +10,13 @@ import './SongModal.css';
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
   const [showAdlibDebug, setShowAdlibDebug] = useState(false);
-
+  
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   
+  // Passed settings downward to enable Deezer streaming natively within the workspace
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
-    songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification
+    songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings
   );
 
   // Hierarchy: Explicit Workspace Mode -> Manual Sync -> Auto Sync -> Empty Array
@@ -31,7 +32,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     } else {
       activeData = hasManual ? selectedSong.syncData : (hasAuto ? selectedSong.autoSyncData : selectedSong.syncData);
     }
-
     return {
       ...selectedSong,
       syncData: activeData
@@ -42,7 +42,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
     syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
-
   displayProps.isSyncMode = syncProps.isSyncMode;
 
   const sharedProps = {
@@ -61,7 +60,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
         
         <div className="modal-content-wrapper">
-          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}>✕</button>
+          <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}> </button>
           
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />

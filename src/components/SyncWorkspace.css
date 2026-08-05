@@ -4,6 +4,7 @@
    animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 .sync-player {
    display: flex; align-items: center; gap: 12px; padding: 12px 20px;
    border-radius: 500px; background: rgba(0, 0, 0, 0.4);
@@ -56,6 +57,7 @@
 }
 .sync-line.recording .sync-time { color: #fbbf24; text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
 .sync-line.synced .sync-time { color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.3); }
+
 .sync-line.nested-adlib {
    margin-left: 32px;
    border-left: 2px solid var(--workspace-accent, var(--accent));
@@ -67,6 +69,7 @@
    box-shadow: inset 4px 0 15px var(--workspace-accent-glow, rgba(179, 136, 235, 0.25));
 }
 .sync-line.nested-adlib.adlib-playing .sync-text { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); color: white; }
+
 .action-split-btn {
    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
    color: white; padding: 4px 10px; border-radius: 50px; font-size: clamp(9px, 1.2vw, 11px);
@@ -79,11 +82,13 @@
 }
 .action-split-btn.undo { background: rgba(250, 36, 60, 0.1); border-color: rgba(250, 36, 60, 0.3); color: #FA243C; }
 .action-split-btn.undo:hover { background: #FA243C; border-color: #FA243C; color: white; }
+
 .sync-text { font-size: clamp(12px, 1.4vw, 14px); line-height: 1.4; color: rgba(255,255,255,0.9); pointer-events: none; }
 .sync-time {
    font-family: monospace; font-size: clamp(9px, 1.2vw, 11px);
    color: rgba(255,255,255,0.3); pointer-events: none; white-space: nowrap; flex-shrink: 0;
 }
+
 .sync-speed-deck {
    display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; margin-bottom: 14px;
    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;
@@ -100,3 +105,21 @@
 .speed-reset-btn:hover { background: rgba(255, 255, 255, 0.2); }
 .speed-slider { width: 100%; margin: 4px 0; }
 .speed-ticks { display: flex; justify-content: space-between; font-size: clamp(8px, 1vw, 10px); color: rgba(255, 255, 255, 0.3); padding: 0 2px; font-family: monospace; }
+
+/* Custom Gradient Tracking for Workspace Sliders */
+.custom-slider.sync-slider, .custom-slider.speed-slider {
+  background-image:
+    linear-gradient(var(--workspace-accent, #fbbf24), var(--workspace-accent, #fbbf24)),
+    linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
+  background-size: var(--progress, 0%) 4px, 100% 4px !important;
+  background-position: left center, left center !important;
+  background-repeat: no-repeat !important;
+}
+
+.custom-slider.sync-slider::-webkit-slider-thumb, .custom-slider.speed-slider::-webkit-slider-thumb {
+  background: var(--workspace-accent, #fbbf24) !important;
+}
+
+.custom-slider.sync-slider:hover::-webkit-slider-thumb, .custom-slider.speed-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.3);
+}

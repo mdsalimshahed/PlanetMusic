@@ -5,7 +5,7 @@ import { parseLyrics, extractYouTubeId } from '../utils/songHelpers';
 import { workspaceClock } from '../utils/clockEngine';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic';
 
-export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification) => {
+export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isShowingAutoSync, setIsShowingAutoSync] = useState(false);
   const [isSyncLoading, setIsSyncLoading] = useState(false);
@@ -15,17 +15,18 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
   const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
-
+  
   // Dedicated local playback states for the Sync Workspace
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
   const [syncYtVideoId, setSyncYtVideoId] = useState(null);
-  const [activeSyncSource, setActiveSyncSource] = useState('preview');
+  const [activeSyncSource, setActiveSyncSource] = useState(null);
+  const [manualSource, setManualSource] = useState(null); // Explicit user override state
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
-
+  
   const syncAudioRef = useRef(null);
   const syncYtPlayerRef = useRef(null);
   const activeLineRef = useRef(null);
@@ -34,6 +35,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
+  const prevBlobUrlRef = useRef(null);
 
   useEffect(() => {
     workspaceClock.setEventName('workspaceTimeUpdate');
@@ -56,7 +58,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     });
     return lines;
   }, [syncData]);
-
+  
   const workspaceLinesRef = useRef(workspaceLines);
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
@@ -69,37 +71,95 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setDebugInfo({ source: 'Local Vault / Cache', rawData: null });
       setConstrainedEnd(null);
       setLoopRange(null);
+      setManualSource(null);
     }
   }, [selectedSong]);
 
-  // Load YouTube stream URL or local audio/preview URL for Sync Workspace
+  // Compute available valid sources dynamically based on current track data
+  const availableSources = useMemo(() => {
+    const sources = [];
+    if (customData.hasLocal) sources.push('local');
+    if (customData.deezer || selectedSong?.customLinks?.deezer) sources.push('deezer');
+    const ytUrl = customData.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
+    if (extractYouTubeId(ytUrl)) sources.push('youtube');
+    return sources;
+  }, [customData.hasLocal, customData.deezer, customData.yt, selectedSong]);
+
+  const computedSource = manualSource && availableSources.includes(manualSource)
+    ? manualSource
+    : (availableSources[0] || null); // Local -> Deezer -> YouTube Strict Fallback
+
+  // Load YouTube stream URL or local audio / deezer fetch
   useEffect(() => {
     const loadSyncAudio = async () => {
       if (isSyncMode && selectedSong) {
-        const ytUrl = customData.yt || selectedSong.customLinks?.yt || selectedSong.yt;
-        const hasLocal = customData.hasLocal;
-        const ytId = hasLocal ? null : extractYouTubeId(ytUrl);
-        setSyncYtVideoId(ytId);
-        if (hasLocal) {
+        const sourceToLoad = computedSource;
+
+        if (!sourceToLoad) {
+          setActiveSyncSource(null);
+          setSyncYtVideoId(null);
+          setSyncAudioSrc(undefined);
+          setIsSyncLoading(false);
+          return;
+        }
+
+        if (prevBlobUrlRef.current) {
+          URL.revokeObjectURL(prevBlobUrlRef.current);
+          prevBlobUrlRef.current = null;
+        }
+
+        setSyncYtVideoId(null);
+        setSyncAudioSrc(undefined);
+
+        if (sourceToLoad === 'local') {
           const file = await getAudioFile(selectedSong.trackId);
           if (file) {
-            setSyncAudioSrc(URL.createObjectURL(file));
+            const url = URL.createObjectURL(file);
+            prevBlobUrlRef.current = url;
+            setSyncAudioSrc(url);
             setActiveSyncSource('local');
-          } else {
-            setSyncAudioSrc(selectedSong.previewUrl);
-            setActiveSyncSource('preview');
           }
-        } else if (ytId) {
-          setSyncAudioSrc(undefined);
+          setIsSyncLoading(false);
+        } else if (sourceToLoad === 'youtube') {
+          const ytUrl = customData.yt || selectedSong.customLinks?.yt || selectedSong.yt;
+          setSyncYtVideoId(extractYouTubeId(ytUrl));
           setActiveSyncSource('youtube');
-        } else {
-          setSyncAudioSrc(selectedSong.previewUrl);
-          setActiveSyncSource('preview');
+          setIsSyncLoading(false);
+        } else if (sourceToLoad === 'deezer') {
+          setActiveSyncSource('deezer');
+          setIsSyncLoading(true);
+          const dzUrl = customData.deezer || selectedSong.customLinks?.deezer;
+          try {
+            const formData = new FormData();
+            formData.append('session_id', `stream_${Date.now()}`);
+            formData.append('url', dzUrl);
+            formData.append('arl_token', settings?.deezerArl || '');
+            formData.append('quality', '1');
+            formData.append('action', 'stream');
+            
+            const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            prevBlobUrlRef.current = url;
+            setSyncAudioSrc(url);
+          } catch (e) {
+            console.error("Deezer buffer issue, falling back:", e);
+            if (availableSources.includes('youtube')) setManualSource('youtube');
+            else if (availableSources.includes('local')) setManualSource('local');
+          } finally {
+            setIsSyncLoading(false);
+          }
         }
       }
     };
     loadSyncAudio();
-  }, [isSyncMode, customData.hasLocal, customData.yt, selectedSong]);
+  }, [isSyncMode, computedSource, selectedSong]);
 
   // Sync playback rate with workspace clock
   useEffect(() => {
@@ -196,8 +256,13 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
+    if (availableSources.length === 0) {
+      return alert("No full-length audio source available! Please add a Local MP3, Deezer link, or YouTube link to sync. iTunes Preview snippets are not allowed in the sync workspace.");
+    }
+
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
     setIsSyncLoading(true);
+
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
     let initialData = [];
@@ -219,11 +284,11 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } else if (sourceData && sourceData.length > 0) {
       initialData = sourceData.map((node) => ({ ...node }));
     }
+
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
     setIsSyncMode(true);
-    setIsSyncLoading(false);
   };
 
   const handleRefreshLyrics = () => {
@@ -239,7 +304,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       isSplit: false,
       adlibs: undefined
     }));
-
     setSyncData(resetData);
     syncDataRef.current = resetData;
     
@@ -283,6 +347,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       return;
     }
     if (!syncAudioRef.current) return;
+
     if (syncAudioRef.current.paused) {
       window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
       syncAudioRef.current.play().catch(e => console.log(e));
@@ -318,6 +383,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
-    handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode
+    handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
+    availableSources, setManualSource
   };
 };
