@@ -17482,10 +17482,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 11.195054,
           "end": 13.228887,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17505,10 +17505,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 13.351471,
           "end": 15.746055,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17528,10 +17528,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 16.575941,
           "end": 18.548238,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17551,10 +17551,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 18.678737,
           "end": 21.441545,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17574,10 +17574,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 21.577037,
           "end": 24.421439,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17597,10 +17597,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "The past that I threw away everything",
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 24.421439,
           "end": 27.134751,
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
+          "translation": "The past that I threw away everything",
           "isSplit": false
         },
         {
@@ -17620,10 +17620,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 27.134751,
           "end": 28.704744,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17643,10 +17643,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "Because I'll live alone",
-          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 28.704744,
           "end": 32.533375,
+          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
+          "translation": "Because I'll live alone",
           "isSplit": false
         },
         {
@@ -17666,10 +17666,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 32.533375,
           "end": 34.375027,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17689,10 +17689,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "I can't forget your face",
-          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "start": 34.520324,
           "end": 37.679632,
+          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
+          "translation": "I can't forget your face",
           "isSplit": false
         },
         {
@@ -17712,10 +17712,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 37.786643,
           "end": 39.471936,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17735,10 +17735,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "You can't live alone, can you?",
-          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 39.471936,
           "end": 43.15788,
+          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
+          "translation": "You can't live alone, can you?",
           "isSplit": false
         },
         {
@@ -17758,10 +17758,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 43.15788,
           "end": 45.282982,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17781,10 +17781,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "For me it's okay",
-          "pronunciation": "{\"full\":\"Watashinara it' s okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" it's okay\",\"trans\":\"\"}]}",
           "start": 45.399361,
           "end": 47.900153,
+          "pronunciation": "{\"full\":\"Watashinara it' s okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" it's okay\",\"trans\":\"\"}]}",
+          "translation": "For me it's okay",
           "isSplit": false
         },
         {
@@ -17804,10 +17804,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "Suddenly I'm so crying",
-          "pronunciation": "{\"full\":\"Fui ni I' m so crying\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不意に\",\"trans\":\"Fui ni\"},{\"type\":\"en\",\"text\":\" I'm so crying\",\"trans\":\"\"}]}",
           "start": 47.996106,
           "end": 50.52284,
+          "pronunciation": "{\"full\":\"Fui ni I' m so crying\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不意に\",\"trans\":\"Fui ni\"},{\"type\":\"en\",\"text\":\" I'm so crying\",\"trans\":\"\"}]}",
+          "translation": "Suddenly I'm so crying",
           "isSplit": false
         },
         {
@@ -17827,10 +17827,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "I'm hungry for love",
-          "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
           "start": 50.52284,
           "end": 53.323786,
+          "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
+          "translation": "I'm hungry for love",
           "isSplit": false
         },
         {
@@ -17850,10 +17850,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Don't let anyone get close to you",
-          "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
           "start": 53.808238,
           "end": 58.497698,
+          "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
+          "translation": "Don't let anyone get close to you",
           "isSplit": false
         },
         {
@@ -17873,10 +17873,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 58.733846,
           "end": 63.86805,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -17897,10 +17897,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
-          "translation": "The moonlight shines only on mistakes",
-          "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" moonlight\",\"trans\":\"\"}]}",
           "start": 63.986814,
           "end": 66.33093,
+          "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" moonlight\",\"trans\":\"\"}]}",
+          "translation": "The moonlight shines only on mistakes",
           "isSplit": false
         },
         {
@@ -17921,10 +17921,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
-          "translation": "I can never go back good night",
-          "pronunciation": "{\"full\":\"Mōnidoto modorenai guddo night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" good night\",\"trans\":\"\"}]}",
           "start": 66.466275,
           "end": 69.128029,
+          "pronunciation": "{\"full\":\"Mōnidoto modorenai guddo night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" good night\",\"trans\":\"\"}]}",
+          "translation": "I can never go back good night",
           "isSplit": false
         },
         {
@@ -17944,10 +17944,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "I only have one hope so far",
-          "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" so far\",\"trans\":\"\"}]}",
           "start": 69.260294,
           "end": 71.512073,
+          "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" so far\",\"trans\":\"\"}]}",
+          "translation": "I only have one hope so far",
           "isSplit": false
         },
         {
@@ -17967,10 +17967,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "Please, please",
-          "pronunciation": "{\"full\":\"Onegaidakara dō ka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"お願いだからどうか\",\"trans\":\"Onegaidakara dō ka\"}]}",
           "start": 71.512073,
           "end": 74.539548,
+          "pronunciation": "{\"full\":\"Onegaidakara dō ka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"お願いだからどうか\",\"trans\":\"Onegaidakara dō ka\"}]}",
+          "translation": "Please, please",
           "isSplit": false
         },
         {
@@ -17991,10 +17991,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
-          "translation": "It's just you time goes by",
-          "pronunciation": "{\"full\":\"Anata dakena no time goes by\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなただけなの\",\"trans\":\"Anata dakena no\"},{\"type\":\"en\",\"text\":\" time goes by\",\"trans\":\"\"}]}",
           "start": 74.539548,
           "end": 77.099273,
+          "pronunciation": "{\"full\":\"Anata dakena no time goes by\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなただけなの\",\"trans\":\"Anata dakena no\"},{\"type\":\"en\",\"text\":\" time goes by\",\"trans\":\"\"}]}",
+          "translation": "It's just you time goes by",
           "isSplit": false
         },
         {
@@ -18015,10 +18015,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
-          "translation": "Hate it as much as you like, more",
-          "pronunciation": "{\"full\":\"Sukinadake iya tte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "start": 77.222056,
           "end": 79.950447,
+          "pronunciation": "{\"full\":\"Sukinadake iya tte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
+          "translation": "Hate it as much as you like, more",
           "isSplit": false
         },
         {
@@ -18038,10 +18038,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 80.117165,
           "end": 81.327785,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18061,10 +18061,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "repeated love makes me",
-          "pronunciation": "{\"full\":\"Kurikaeshita love meikusu me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" love makes me\",\"trans\":\"\"}]}",
           "start": 81.446022,
           "end": 84.711451,
+          "pronunciation": "{\"full\":\"Kurikaeshita love meikusu me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" love makes me\",\"trans\":\"\"}]}",
+          "translation": "repeated love makes me",
           "isSplit": false
         },
         {
@@ -18084,10 +18084,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "Bad, no one can stop me",
-          "pronunciation": "{\"full\":\"Baddo, darenimo tomerarenai\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"誰にも止められない\",\"trans\":\"Darenimo tomerarenai\"}]}",
           "start": 84.880972,
           "end": 90.318577,
+          "pronunciation": "{\"full\":\"Baddo, darenimo tomerarenai\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"誰にも止められない\",\"trans\":\"Darenimo tomerarenai\"}]}",
+          "translation": "Bad, no one can stop me",
           "isSplit": false
         },
         {
@@ -18125,10 +18125,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 90.435003,
           "end": 93.462625,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -18191,10 +18191,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 93.584632,
           "end": 95.405379,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18214,10 +18214,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Sorry is not enough",
-          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 95.405379,
           "end": 100.405379,
+          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "translation": "Sorry is not enough",
           "isSplit": false
         },
         {
@@ -18237,10 +18237,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "i love you",
-          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 100.405379,
           "end": 101.730075,
+          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "translation": "i love you",
           "isSplit": false
         },
         {
@@ -18260,10 +18260,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Just like this midnight",
-          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
           "start": 101.730075,
           "end": 104.188596,
+          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
+          "translation": "Just like this midnight",
           "isSplit": false
         },
         {
@@ -18283,10 +18283,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "Fly away freely, fly more",
-          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
           "start": 104.346337,
           "end": 106.974788,
+          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
+          "translation": "Fly away freely, fly more",
           "isSplit": false
         },
         {
@@ -18306,10 +18306,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 107.101238,
           "end": 109.685907,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18329,10 +18329,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "The past that I threw away everything",
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 109.685907,
           "end": 112.33477,
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
+          "translation": "The past that I threw away everything",
           "isSplit": false
         },
         {
@@ -18352,10 +18352,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 112.33477,
           "end": 113.893465,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18375,10 +18375,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "Because I'll live alone",
-          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 113.893465,
           "end": 117.580143,
+          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
+          "translation": "Because I'll live alone",
           "isSplit": false
         },
         {
@@ -18398,10 +18398,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 117.580143,
           "end": 119.793062,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18421,10 +18421,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "I can't forget your face",
-          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "start": 119.927507,
           "end": 123.020703,
+          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
+          "translation": "I can't forget your face",
           "isSplit": false
         },
         {
@@ -18444,10 +18444,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 123.115318,
           "end": 124.686462,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18467,10 +18467,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "You can't live alone, can you?",
-          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 124.686462,
           "end": 128.281526,
+          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
+          "translation": "You can't live alone, can you?",
           "isSplit": false
         },
         {
@@ -18508,10 +18508,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
-          "translation": "",
-          "pronunciation": null,
           "start": 128.281526,
           "end": 130.728264,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -18592,10 +18592,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
-          "translation": "This is fan-fan-fantasy",
-          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
           "start": 130.824393,
           "end": 133.327932,
+          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
+          "translation": "This is fan-fan-fantasy",
           "isSplit": true,
           "adlibs": [
             {
@@ -18658,10 +18658,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "Looks like I'm going to exceed my capacity",
-          "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
           "start": 133.327932,
           "end": 134.782073,
+          "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
+          "translation": "Looks like I'm going to exceed my capacity",
           "isSplit": false
         },
         {
@@ -18681,10 +18681,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "as you want",
-          "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
           "start": 134.861813,
           "end": 136.455853,
+          "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
+          "translation": "as you want",
           "isSplit": false
         },
         {
@@ -18704,10 +18704,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "It's like I haven't woken up from a dream yet",
-          "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
           "start": 136.516142,
           "end": 138.790478,
+          "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
+          "translation": "It's like I haven't woken up from a dream yet",
           "isSplit": false
         },
         {
@@ -18727,10 +18727,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "The spinning clock tick tack",
-          "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tikku tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" tick tack\",\"trans\":\"\"}]}",
           "start": 138.812082,
           "end": 141.100215,
+          "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tikku tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" tick tack\",\"trans\":\"\"}]}",
+          "translation": "The spinning clock tick tack",
           "isSplit": false
         },
         {
@@ -18750,10 +18750,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "Laugh as much as you like more",
-          "pronunciation": "{\"full\":\"Sukina dake waratte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "start": 141.186851,
           "end": 143.897193,
+          "pronunciation": "{\"full\":\"Sukina dake waratte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
+          "translation": "Laugh as much as you like more",
           "isSplit": false
         },
         {
@@ -18773,10 +18773,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "Don't let your guard down",
-          "pronunciation": "{\"full\":\"Yudan shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"油断しないで\",\"trans\":\"Yudan shinaide\"}]}",
           "start": 143.897193,
           "end": 145.131033,
+          "pronunciation": "{\"full\":\"Yudan shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"油断しないで\",\"trans\":\"Yudan shinaide\"}]}",
+          "translation": "Don't let your guard down",
           "isSplit": false
         },
         {
@@ -18796,10 +18796,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 145.131033,
           "end": 146.449335,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18819,10 +18819,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 146.554323,
           "end": 148.412821,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18842,10 +18842,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "Bad, don't start",
-          "pronunciation": "{\"full\":\"Baddo, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
           "start": 149.125263,
           "end": 154.24918,
+          "pronunciation": "{\"full\":\"Baddo, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
+          "translation": "Bad, don't start",
           "isSplit": false
         },
         {
@@ -18883,10 +18883,10 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
-          "translation": "",
-          "pronunciation": null,
           "start": 154.338883,
           "end": 157.14129,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -18949,10 +18949,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 157.264073,
           "end": 159.381433,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -18972,10 +18972,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Sorry is not enough",
-          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 159.381433,
           "end": 162.11404616593782,
+          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "translation": "Sorry is not enough",
           "isSplit": false
         },
         {
@@ -18995,10 +18995,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "i love you",
-          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 162.20214616593933,
           "end": 165.11094616593633,
+          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "translation": "i love you",
           "isSplit": false
         },
         {
@@ -19018,10 +19018,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "Just like this midnight",
-          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
           "start": 165.597635,
           "end": 168.083989,
+          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
+          "translation": "Just like this midnight",
           "isSplit": false
         },
         {
@@ -19041,10 +19041,10 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "translation": "Fly away freely, fly more",
-          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
           "start": 168.150152,
           "end": 170.999095,
+          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
+          "translation": "Fly away freely, fly more",
           "isSplit": false
         },
         {
@@ -19064,10 +19064,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 171.092167,
           "end": 173.086787,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19087,10 +19087,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 173.22958,
           "end": 175.512293,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19110,10 +19110,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 176.53254,
           "end": 178.368817,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19133,10 +19133,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 178.489517,
           "end": 181.360962,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19156,10 +19156,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 181.863278,
           "end": 183.855174,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19179,10 +19179,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 183.993957,
           "end": 186.037457,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19202,10 +19202,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 187.131903,
           "end": 189.058883,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19225,10 +19225,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 189.178743,
           "end": 191.898559,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19248,10 +19248,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 192.492682,
           "end": 194.923433,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19271,10 +19271,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "The past that I threw away everything",
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 194.923433,
           "end": 197.586099,
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
+          "translation": "The past that I threw away everything",
           "isSplit": false
         },
         {
@@ -19294,10 +19294,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 197.586099,
           "end": 199.22881,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19317,10 +19317,10 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "translation": "I feel lonely when I'm alone",
-          "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
           "start": 199.22881,
           "end": 203.113419,
+          "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
+          "translation": "I feel lonely when I'm alone",
           "isSplit": false
         },
         {
@@ -19340,10 +19340,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 203.113419,
           "end": 205.056118,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19363,10 +19363,10 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "translation": "I want to see you, please come to my side right away",
-          "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
           "start": 205.056118,
           "end": 208.491744,
+          "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
+          "translation": "I want to see you, please come to my side right away",
           "isSplit": false
         },
         {
@@ -19386,10 +19386,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 208.491744,
           "end": 209.910205,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19409,10 +19409,10 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "translation": "I can't live alone",
-          "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
           "start": 209.910205,
           "end": 214.910205,
+          "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
+          "translation": "I can't live alone",
           "isSplit": false
         },
         {
@@ -19432,10 +19432,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 224.474218,
           "end": 226.486699,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19455,10 +19455,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 226.592706,
           "end": 229.098669,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19478,10 +19478,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 229.742187,
           "end": 231.766178,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19501,10 +19501,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 235.153566,
           "end": 237.054783,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19524,10 +19524,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 237.188045,
           "end": 239.484792,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19547,10 +19547,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 240.521221,
           "end": 242.296402,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19570,10 +19570,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 245.710346,
           "end": 247.625939,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19593,10 +19593,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 247.791787,
           "end": 250.363256,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19616,10 +19616,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 251.159991,
           "end": 253.052339,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         },
         {
@@ -19639,10 +19639,10 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "translation": "",
-          "pronunciation": null,
           "start": 253.219093,
           "end": 256.977711,
+          "pronunciation": null,
+          "translation": "",
           "isSplit": false
         }
       ],
@@ -19650,14 +19650,28 @@
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=3i2YCVTC7rc",
+        "deezer": "https://www.deezer.com/en/track/1586120582",
         "hasLocal": false,
-        "localName": ""
+        "localName": "",
+        "lyrics": "[EXID「Break My Heart」の歌詞]\n\n[Intro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 1: Jeonghwa, _Hani_, **Hyelin**, _**Solji**_]\nI'm so fine\n_私なら it's okay_\n不意に I'm so crying\n_愛に飢えてるの_\n**誰にもきっと近づかないように**\n_**Might change my mind, like 'my oh my'**_\n\n[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]\n間違いだけを照らす moonlight\nもう二度と戻れない good night\n_望みは一つ so far\nお願いだからどうか_\nあなただけなの time goes by\n好きなだけ嫌って more\n**Like gallows bird\n繰り返した love makes me**\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 誰にも止められない\nWhy (_Please, break my heart_)\n_Please, break me down_\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 3: Elly, _Jeonghwa_, **Hani**, _**Solji**_]\nI'm in fan-fan-fantasy (_I feel blue blue_)\nこれは fan-fan-fantasy (_I feel blue blue_)\nキャパオーバーしそうに\nあなたが　したいように\nまだ夢から覚めないみたいに\n**回る回る時計が tick tack\n好きなだけ笑って more**\n_**油断しないで\nDon't let me go before\nLove makes me**_\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 始まらないように\nBye (_Please, break my heart_)\n_Please, break me down_\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Bridge: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りは寂しいけど\n_Sonic, sonic, boom, super sonic\n会いたいわ　すぐにそばに来てよ_\n**Baby, baby, I loved you\n一人じゃ生きていけないけど**\n\n[Outro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down",
+        "artistImages": {
+          "Elly": "https://i.pinimg.com/originals/fd/c0/0b/fdc00ba4bfccca18c91f4b20a72d5a21.jpg",
+          "Hani": "https://static.asiachan.com/Hani.full.317014.jpg",
+          "Jeonghwa": "https://i.pinimg.com/736x/2c/e8/57/2ce85727a289d187d4064cdf8e33117c.jpg",
+          "Hyelin": "https://www.gluwee.com/wp-content/uploads/2021/06/Hyelin-EXID_5.jpg",
+          "Solji": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.YQp6GLR0NsxudWk0zO9lMAHaJQ%3Fpid%3DApi&f=1&ipt=074c7380baa63aff38641c14a87e998f01334344ffc903b61c0661db06493cb8",
+          "EXID": "https://duhocsunny.edu.vn/wp-content/uploads/2021/03/exid-2.jpg"
+        },
+        "artistColors": {
+          "Hani": "#fad900",
+          "Jeonghwa": "#08f3f7"
+        }
       },
       "artistImages": {
-        "Elly": "https://i.pinimg.com/originals/fd/c0/0b/fdc00ba4bfccca18c91f4b20a72d5a21.jpg",
-        "Hani": "https://static.asiachan.com/Hani.full.317014.jpg",
+        "Elly": "https://pbs.twimg.com/media/EwrPD8gWEAAV0ea.jpg",
+        "Hani": "https://i.pinimg.com/736x/d5/7a/37/d57a375c34b77234501a0d000c22a1b3.jpg",
         "Jeonghwa": "https://i.pinimg.com/736x/2c/e8/57/2ce85727a289d187d4064cdf8e33117c.jpg",
-        "Hyelin": "https://www.gluwee.com/wp-content/uploads/2021/06/Hyelin-EXID_5.jpg",
+        "Hyelin": "https://i.pinimg.com/originals/57/a7/67/57a767682bd36da7710432f0e7a973d7.jpg",
         "Solji": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.explicit.bing.net%2Fth%2Fid%2FOIP.YQp6GLR0NsxudWk0zO9lMAHaJQ%3Fpid%3DApi&f=1&ipt=074c7380baa63aff38641c14a87e998f01334344ffc903b61c0661db06493cb8",
         "EXID": "https://duhocsunny.edu.vn/wp-content/uploads/2021/03/exid-2.jpg"
       },
@@ -21846,7 +21860,9 @@
           "translation": "",
           "isSplit": false
         }
-      ]
+      ],
+      "forceSource": "deezer",
+      "playId": 1785931111626
     },
     {
       "wrapperType": "track",
