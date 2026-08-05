@@ -9,6 +9,90 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- DEEZER AUTHENTICATION CARD --- */
+.deezer-auth-card {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+.deezer-auth-card h3 {
+  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  display: block;
+  background: var(--auth-gradient, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 100%;
+}
+
+.deezer-auth-instructions {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.deezer-auth-instructions p {
+  margin: 0;
+}
+
+.deezer-auth-instructions strong {
+  background: var(--auth-gradient, #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.deezer-auth-instructions code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #fff;
+}
+
+.deezer-auth-instructions .security-warning {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+}
+
+.deezer-auth-instructions .security-warning strong {
+  background: none;
+  -webkit-text-fill-color: #fff;
+  color: #fff;
+}
+
+.verify-arl-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0 16px;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.verify-arl-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.verify-arl-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 /* Converted to Masonry Column Flow to break rigid uniform sizing */
 .settings-grid {
   column-width: 340px;

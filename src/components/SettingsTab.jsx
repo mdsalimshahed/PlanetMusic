@@ -19,6 +19,14 @@ const DUAL_GRADIENT_PALETTE = [
 
 const SettingsTab = ({ settings, setSettings }) => {
   const [showArl, setShowArl] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState(null);
+
+  // Generate a random gradient layout for the Deezer widget on mount
+  const [authGradient] = useState(() => {
+    const palette = DUAL_GRADIENT_PALETTE[Math.floor(Math.random() * DUAL_GRADIENT_PALETTE.length)];
+    return `linear-gradient(90deg, ${palette[0]}, ${palette[1]})`;
+  });
 
   const sliderGradients = useMemo(() => {
     const keys = [
@@ -58,10 +66,47 @@ const SettingsTab = ({ settings, setSettings }) => {
     const { name, value, type, checked } = e.target;
     setSettings(prev => ({
       ...prev,
-      [name]: type === 'checkbox' 
-        ? checked 
-        : (type === 'color' || type === 'text' || type === 'password' ? value : Number(value))
+      [name]: type === 'checkbox'
+         ? checked
+         : (type === 'color' || type === 'text' || type === 'password' ? value : Number(value))
     }));
+  };
+
+  const handleVerifyArl = async () => {
+    if (!settings.deezerArl) {
+      setVerifyResult('error');
+      return;
+    }
+    
+    setIsVerifying(true);
+    setVerifyResult(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('session_id', `test_${Date.now()}`);
+      // Use a known public Deezer track URL for the test stream initialization
+      formData.append('url', 'https://www.deezer.com/track/3135556');
+      formData.append('arl_token', settings.deezerArl);
+      formData.append('quality', '1');
+      formData.append('action', 'stream');
+
+      const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
+        method: 'POST',
+        body: formData
+      });
+      
+      // If the backend accepts the ARL and returns the stream data, it's valid
+      if (response.ok) {
+        setVerifyResult('success');
+      } else {
+        setVerifyResult('error');
+      }
+    } catch (error) {
+      console.error('Verification failed:', error);
+      setVerifyResult('error');
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const getSliderStyle = (key, progressPct) => {
@@ -76,6 +121,71 @@ const SettingsTab = ({ settings, setSettings }) => {
     <section className="view-section settings-tab-container">
       <div className="settings-grid">
         
+        {/* DEEZER AUTHENTICATION BLOCK */}
+        <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
+          <h3>Deezer ARL Token (Optional)</h3>
+          
+          <div className="deezer-auth-instructions">
+            <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources. Without it, you can still manually paste YouTube links or load Local MP3s to stream your songs.</p>
+            <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser's Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
+            <p className="security-warning">🛡️ <strong>Privacy & Security:</strong> Your token is stored entirely locally on your device. It is only sent to our secure backend proxy to fetch audio streams and is <strong>NEVER</strong> exported or shared when you backup your database to JSON.</p>
+          </div>
+
+          <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
+            <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
+              <input
+                type={showArl ? 'text' : 'password'}
+                name="deezerArl"
+                value={settings.deezerArl || ''}
+                onChange={(e) => { 
+                  handleChange(e); 
+                  if (e.target.name === 'deezerArl') setVerifyResult(null); 
+                }}
+                placeholder="Paste Deezer ARL token here..."
+                style={{
+                   flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
+                   background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
+                   color: 'white', outline: 'none', fontSize: '14px'
+                 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowArl(!showArl)}
+                style={{
+                   padding: '0 16px', height: '44px', background: 'rgba(255, 255, 255, 0.1)',
+                   border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px',
+                   color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0
+                }}
+                title={showArl ? "Hide Token" : "Show Token"}
+              >
+                {showArl ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                )}
+              </button>
+            </div>
+            
+            <button 
+              type="button" 
+              className="verify-arl-btn" 
+              onClick={handleVerifyArl}
+              disabled={isVerifying || !settings.deezerArl}
+            >
+              {isVerifying ? 'Testing Connection...' : 'Test Connection'}
+            </button>
+            
+            {verifyResult === 'success' && <div style={{color: '#4ade80', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>✅ Token is valid and streaming works!</div>}
+            {verifyResult === 'error' && <div style={{color: '#FA243C', fontSize: '13px', marginTop: '8px', textAlign: 'left'}}>❌ Invalid token or streaming proxy failed</div>}
+          </div>
+        </div>
+
         {/* GROUP 1: CARD & DASHBOARD CANVAS */}
         <div className="settings-card glass-panel">
           <h3>Canvas & Card Layout</h3>
@@ -225,7 +335,6 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 3: GENERAL ARTIST DISPLAY */}
         <div className="settings-card glass-panel">
           <h3>Artist Display</h3>
-
           <div className="setting-item">
             <label>Artist Name Size ({settings.artistNameFontSize ?? 3.5}vh)</label>
             <input 
@@ -240,7 +349,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Controls text size of floating artist names at the bottom right corner.</span>
           </div>
-
           <div className="setting-item">
             <label>Image Anticipation Time ({settings.bgPreemptionTime}ms)</label>
             <input 
@@ -255,7 +363,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">How early the artist image begins appearing before their line plays.</span>
           </div>
-
           <div className="setting-item">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <label htmlFor="transitionSlider" style={{ marginBottom: 0 }}>Artist Transition Timing</label>
@@ -281,7 +388,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Adjusts fade duration gap between singer changes (0ms = instant).</span>
           </div>
-
           <div className="setting-item">
             <label>Background Image Opacity ({Math.round((settings.bgImageOpacity ?? 0.25) * 100)}%)</label>
             <input 
@@ -301,7 +407,6 @@ const SettingsTab = ({ settings, setSettings }) => {
         {/* GROUP 4: MODAL & SYSTEM BEHAVIOR */}
         <div className="settings-card glass-panel">
           <h3>Modal & System Dynamics</h3>
-
           <div className="setting-item">
             <label>Modal Layout Split ({settings.modalSplitRatio}% Left)</label>
             <input 
@@ -315,7 +420,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Proportional width split between metadata column and lyrics area.</span>
           </div>
-
           <div className="setting-item">
             <label>Modal Vertical Padding ({settings.modalPaddingY}vh)</label>
             <input 
@@ -329,7 +433,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Top and bottom margin spacing surrounding song overlay window.</span>
           </div>
-
           <div className="setting-item">
             <label>Modal Title Scale ({settings.modalFontSize}vh)</label>
             <input 
@@ -344,7 +447,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size scaling for main song title in left metadata panel.</span>
           </div>
-
           <div className="setting-item">
             <label>Equalizer Fade-Out Time ({settings.eqFadeOutTime}ms)</label>
             <input 
@@ -372,49 +474,6 @@ const SettingsTab = ({ settings, setSettings }) => {
               onChange={handleChange}
             />
           </div>
-
-          {/* DEEZER AUTHENTICATION BLOCK */}
-          <div className="setting-item" style={{ marginTop: '20px' }}>
-            <label style={{ color: '#a238ff', fontWeight: '800' }}>Deezer ARL Token</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type={showArl ? 'text' : 'password'}
-                name="deezerArl"
-                value={settings.deezerArl || ''}
-                onChange={handleChange}
-                placeholder="Paste Deezer ARL token here..."
-                style={{ 
-                  flex: 1, padding: '10px 14px', borderRadius: '8px', 
-                  background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(162, 56, 255, 0.3)', 
-                  color: 'white', outline: 'none' 
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowArl(!showArl)}
-                style={{ 
-                  padding: '0 12px', background: 'rgba(162, 56, 255, 0.15)', 
-                  border: '1px solid rgba(162, 56, 255, 0.3)', borderRadius: '8px', 
-                  color: '#a238ff', cursor: 'pointer', display: 'flex', alignItems: 'center'
-                }}
-                title={showArl ? "Hide Token" : "Show Token"}
-              >
-                {showArl ? (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                )}
-              </button>
-            </div>
-            <span className="setting-desc">Required to securely stream and download high-quality explicit audio via the Deezer Python backend. <strong>This token is NEVER exported in your JSON backups.</strong></span>
-          </div>
-
         </div>
 
         {/* GROUP 5: TRANSLATION & TRANSLITERATION */}
@@ -436,7 +495,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             </div>
             <span className="setting-desc">Default color for translated text lines above lyrics.</span>
           </div>
-
           <div className="setting-item">
             <label>Translation Opacity ({Math.round((settings.translationOpacity ?? 0.9) * 100)}%)</label>
             <input 
@@ -451,7 +509,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to translated text lines.</span>
           </div>
-
           <div className="setting-item">
             <label>Translation Font Scale ({settings.translationFontSize ?? 0.55}em)</label>
             <input 
@@ -466,7 +523,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of translated text relative to main lyrics.</span>
           </div>
-
           <div className="setting-item">
             <label>Translation Top Padding ({settings.translationTopPadding ?? 8}px)</label>
             <input 
@@ -499,7 +555,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             </div>
             <span className="setting-desc">Default color for Romanized phonetic pronunciation guide text.</span>
           </div>
-
           <div className="setting-item">
             <label>Transliteration Opacity ({Math.round((settings.transliterationOpacity ?? 0.8) * 100)}%)</label>
             <input 
@@ -514,7 +569,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Opacity level applied to transliteration text lines.</span>
           </div>
-
           <div className="setting-item">
             <label>Transliteration Font Scale ({settings.transliterationFontSize ?? 0.55}em)</label>
             <input 
@@ -529,7 +583,6 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Font size ratio of pronunciation guide relative to main lyrics.</span>
           </div>
-
           <div className="setting-item">
             <label>Transliteration Bottom Padding ({settings.transliterationBottomPadding ?? 4}px)</label>
             <input 
@@ -544,6 +597,7 @@ const SettingsTab = ({ settings, setSettings }) => {
             />
             <span className="setting-desc">Distance transliteration text sits below main lyric line.</span>
           </div>
+
         </div>
 
       </div>
