@@ -30,7 +30,7 @@ const ModalLeft = ({
     handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
     saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
     startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
-    saveImageManager, lyricsViewMode, cycleViewMode, hasValidSyncData, allPotentialSingers,
+    saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
     handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
     handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, settings
   }) => {
@@ -283,20 +283,35 @@ const ModalLeft = ({
         {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
-            <div className="action-buttons-grid">
+            <div className="action-buttons-grid" style={{ flexDirection: 'column' }}>
               {hasValidSyncData ? (
                 <>
-                  <button className="edit-links-btn toggle-view-btn" onClick={cycleViewMode}>
-                    <Icon name="eye" />
-                    {lyricsViewMode === 'live' ? 'Show Focused Sync' : 
-                           lyricsViewMode === 'focused' ? 'Show Plain Text' : 'Show Live Sync'}
-                  </button>
+                  <div className="view-mode-segmented-slider">
+                    <div className={`slider-pill ${lyricsViewMode}`}></div>
+                    <button 
+                      className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`}
+                      onClick={() => setLyricsViewMode('live')}
+                    >
+                      Live
+                    </button>
+                    <button 
+                      className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`}
+                      onClick={() => setLyricsViewMode('focused')}
+                    >
+                      Focused
+                    </button>
+                    <button 
+                      className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`}
+                      onClick={() => setLyricsViewMode('plain')}
+                    >
+                      Plain Text
+                    </button>
+                  </div>
                   
                   {lyricsViewMode === 'focused' && (
                      <button 
-                            className="edit-links-btn toggle-view-btn" 
-                            onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                       style={{ background: showAdlibDebug ? 'rgba(255, 0, 255, 0.2)' : '', borderColor: showAdlibDebug ? '#ff00ff' : '', color: showAdlibDebug ? '#ff00ff' : '' }}
+                       className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
+                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                      >
                        <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
                        {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}

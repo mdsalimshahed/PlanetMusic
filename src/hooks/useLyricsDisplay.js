@@ -4,12 +4,10 @@ import { parseLyrics } from '../utils/songHelpers';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
-  
   const [playState, setPlayState] = useState({ 
-    isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false, 
-    isEnded: false 
-  });
-  
+     isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false, 
+     isEnded: false 
+   });
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   const [transitionTiming, setTransitionTiming] = useState(() => {
@@ -57,8 +55,8 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         const cbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex] : null;
         const nbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex + 1] : null;
         
-        const stillInBg = cbNode && cbNode.start !== null && time >= (cbNode.start - preemptionTimeSec) &&
-              (cbNode.end !== null ? time <= cbNode.end : true) &&
+        const stillInBg = cbNode && cbNode.start !== null && time >= (cbNode.start - preemptionTimeSec) && 
+              (cbNode.end !== null ? time <= cbNode.end : true) && 
               (nbNode && nbNode.start !== null ? time < (nbNode.start - preemptionTimeSec) : true);
 
         if (!stillInBg) {
@@ -94,7 +92,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
   }, [selectedSong]);
 
-  const cycleViewMode = useCallback(() => setLyricsViewMode(prev =>
+  const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
       prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   ), []);
 
@@ -170,7 +168,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming]);
 
   return {
-    lyricsViewMode, cycleViewMode, liveParsedLyrics, 
+    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics, 
     currentSingerBg: displaySingerBg, isSingerVisible,
     activePreviewRef, handleLineClick, hasValidSyncData,
     isPlaying: playState.isPlaying
