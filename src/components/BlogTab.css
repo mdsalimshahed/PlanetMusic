@@ -1,7 +1,6 @@
 /* --- src/components/BlogTab.css --- */
-
 .blog-tab-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Widened slightly to accommodate sidebar */
   margin: 0 auto;
   width: 100%;
   padding-bottom: 80px;
@@ -11,6 +10,31 @@
 @keyframes blogFadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- SIDEBAR LAYOUT --- */
+.blog-layout-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  width: 100%;
+}
+
+.blog-main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.blog-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 24px;
 }
 
 /* HERO SECTION */
@@ -390,6 +414,24 @@
 }
 
 /* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .blog-layout-wrapper {
+    flex-direction: column;
+  }
+  .blog-sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .blog-sidebar > * {
+    flex: 1;
+    min-width: 300px;
+    min-height: 250px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .blog-hero {
     padding: 24px 20px;

@@ -9,22 +9,39 @@ import SongModal from './components/SongModal';
 import Player from './components/Player';
 import SettingsTab from './components/SettingsTab';
 import BlogTab from './components/BlogTab';
+import PrivacyTab from './components/PrivacyTab';
+import ContactTab from './components/ContactTab';
 
-// --- PURE FLEX GRID ---
-const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
+// Import Ad Components & Consent Notice
+import SponsorUnit from './components/Promos/SponsorUnit';
+import InFeedSponsor from './components/Promos/InFeedSponsor';
+import ConsentNotice from './components/ConsentNotice';
+
+// --- PURE FLEX GRID WITH IN-FEED ADS ---
+const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack, adsEnabled }) => {
   return (
     <div className="track-grid">
-      {items.map((song, idx) => (
-        <div key={`${song.trackId}-${idx}`} className="track-grid-item">
-          <SongCard 
-            song={song} 
-            isSaved={library.some((s) => s.trackId === song.trackId)}
-            toggleLibrary={toggleLibrary}
-            setSelectedSong={setSelectedSong}
-            setCurrentTrack={setCurrentTrack}
-          />
-        </div>
-      ))}
+      {items.map((song, idx) => {
+        // Inject an In-Feed Ad every 6 items
+        const showAdAfter = (idx + 1) % 6 === 0;
+
+        return (
+          <React.Fragment key={`${song.trackId}-${idx}`}>
+            <div className="track-grid-item">
+              <SongCard 
+                song={song} 
+                isSaved={library.some((s) => s.trackId === song.trackId)}
+                toggleLibrary={toggleLibrary}
+                setSelectedSong={setSelectedSong}
+                setCurrentTrack={setCurrentTrack}
+              />
+            </div>
+            
+            {/* INJECT IN-FEED AD IF ENABLED */}
+            {adsEnabled && showAdAfter && <InFeedSponsor testMode={true} />}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };
@@ -36,7 +53,9 @@ const App = () => {
   // Parse routing variables from URL
   const pathParts = location.pathname.split('/').filter(Boolean);
   const activeTab = pathParts[0] === 'blog' ? 'blog' : 
-                    pathParts[0] === 'settings' ? 'settings' : 'main';
+                    pathParts[0] === 'settings' ? 'settings' : 
+                    pathParts[0] === 'privacy' ? 'privacy' : 
+                    pathParts[0] === 'contact' ? 'contact' : 'main';
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
@@ -65,6 +84,7 @@ const App = () => {
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
       if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12;
+      if (parsed.adsEnabled === undefined) parsed.adsEnabled = true; // Inject ad toggle default
       
       delete parsed.youtubeApiKey;
       delete parsed.spotifyClientId;
@@ -95,7 +115,8 @@ const App = () => {
       translationOpacity: 0.9,
       transliterationColor: '#ffffff',
       transliterationOpacity: 0.8,
-      deezerArl: ''
+      deezerArl: '',
+      adsEnabled: true // Default on
     };
   });
 
@@ -652,6 +673,18 @@ const App = () => {
         )}
 
         <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
+          
+          {/* TOP BANNER AD (Appears on Main dashboard view) */}
+          {activeTab === 'main' && settings.adsEnabled !== false && (
+            <SponsorUnit 
+              testMode={true} 
+              className="glass-panel" 
+              style={{ padding: '16px', margin: '16px auto', maxWidth: '800px', minHeight: '90px', borderRadius: '16px' }}
+              adTitle="Sponsor Banner"
+              adSub="This space is reserved for a horizontal top banner ad."
+            />
+          )}
+
           {activeTab === 'main' && (
             <section className="view-section">
               {/* --- PERSISTENT SAMPLE VAULT BANNER --- */}
@@ -690,6 +723,7 @@ const App = () => {
                     toggleLibrary={toggleLibrary} 
                     setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
+                    adsEnabled={settings.adsEnabled !== false}
                   />
                 ) : (
                   <div className="empty-message glass-panel">
@@ -718,6 +752,7 @@ const App = () => {
                           toggleLibrary={toggleLibrary} 
                           setSelectedSong={handleSetSelectedSong} 
                           setCurrentTrack={setCurrentTrack} 
+                          adsEnabled={settings.adsEnabled !== false}
                         />
                       ) : (
                         <div className="column-empty-box">No matches in your Vault</div>
@@ -739,6 +774,7 @@ const App = () => {
                           toggleLibrary={toggleLibrary} 
                           setSelectedSong={handleSetSelectedSong} 
                           setCurrentTrack={setCurrentTrack} 
+                          adsEnabled={settings.adsEnabled !== false}
                         />
                       ) : (
                         <div className="column-empty-box">No online matches found</div>
@@ -754,6 +790,7 @@ const App = () => {
                     toggleLibrary={toggleLibrary} 
                     setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
+                    adsEnabled={settings.adsEnabled !== false}
                   />
                 ) : searchResults.length > 0 ? (
                   <TrackGrid 
@@ -762,6 +799,7 @@ const App = () => {
                     toggleLibrary={toggleLibrary} 
                     setSelectedSong={handleSetSelectedSong} 
                     setCurrentTrack={setCurrentTrack} 
+                    adsEnabled={settings.adsEnabled !== false}
                   />
                 ) : isSearching ? (
                   <div className="empty-message glass-panel">
@@ -775,11 +813,22 @@ const App = () => {
                   </div>
                 )
               )}
+
+              {/* BOTTOM SPONSOR AD (Main Dashboard) */}
+              {settings.adsEnabled !== false && (
+                <SponsorUnit 
+                  testMode={true} 
+                  className="glass-panel settings-promo-box" 
+                  style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
+                  adTitle="Discover More"
+                  adSub="Thank you for supporting PlanetMusic"
+                />
+              )}
             </section>
           )}
 
           {activeTab === 'blog' && (
-            <BlogTab />
+            <BlogTab adsEnabled={settings.adsEnabled !== false} />
           )}
 
           {activeTab === 'settings' && (
@@ -787,10 +836,34 @@ const App = () => {
               settings={settings} 
               setSettings={handleSetSettings} 
               dismissSampleMode={dismissSampleMode}
+              adsEnabled={settings.adsEnabled !== false}
             />
           )}
+
+          {activeTab === 'privacy' && (
+            <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
+          )}
+
+          {activeTab === 'contact' && (
+            <ContactTab adsEnabled={settings.adsEnabled !== false} />
+          )}
+
+          {/* GLOBAL FOOTER: Copyright & Ad Toggle */}
+          <div className="global-footer">
+            <p>&copy; {new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
+            <button 
+              className="ad-toggle-btn"
+              onClick={() => handleSetSettings({ ...settings, adsEnabled: settings.adsEnabled === false ? true : false })}
+              title="Toggle to hide or show non-obtrusive sponsor placements"
+            >
+              {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
+            </button>
+          </div>
+
         </div>
       </main>
+
+      <ConsentNotice />
 
       <SongModal 
         key={selectedSong ? selectedSong.trackId : 'modal-empty'}

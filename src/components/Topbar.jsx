@@ -38,7 +38,23 @@ const Topbar = ({
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
             style={{ textDecoration: 'none' }}
           >
-            Blog & Guides
+            Blog
+          </Link>
+
+          <Link 
+            to="/privacy" 
+            className={`nav-btn ${activeTab === 'privacy' ? 'active' : ''}`}
+            style={{ textDecoration: 'none' }}
+          >
+            Privacy
+          </Link>
+          
+          <Link 
+            to="/contact" 
+            className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`}
+            style={{ textDecoration: 'none' }}
+          >
+            Contact
           </Link>
 
           <Link 

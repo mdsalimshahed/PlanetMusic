@@ -1,6 +1,7 @@
 /* --- src/components/SettingsTab.jsx --- */
 import React, { useMemo, useState } from 'react';
 import './SettingsTab.css';
+import SponsorUnit from './Promos/SponsorUnit';
 
 const DUAL_GRADIENT_PALETTE = [
   ['#00f5d4', '#00bbf9'],
@@ -17,7 +18,7 @@ const DUAL_GRADIENT_PALETTE = [
   ['#e0aaff', '#38b000']
 ];
 
-const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
+const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled }) => {
   const [showArl, setShowArl] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState(null);
@@ -45,8 +46,10 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
       const positiveJ = Math.abs(j);
       [palettePool[i], palettePool[positiveJ]] = [palettePool[positiveJ], palettePool[i]];
     }
+
     const gradMap = {};
     let lastPair = null;
+
     keys.forEach((key, index) => {
       let candidatePair = palettePool[index % palettePool.length];
       if (lastPair && candidatePair[0] === lastPair[0] && candidatePair[1] === lastPair[1]) {
@@ -56,13 +59,14 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
       gradMap[key] = candidatePair;
       lastPair = candidatePair;
     });
+
     return gradMap;
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (dismissSampleMode) dismissSampleMode(); // Dismiss sample vault mode on settings change
-
+    if (dismissSampleMode) dismissSampleMode(); 
+    
     setSettings(prev => ({
       ...prev,
       [name]: type === 'checkbox' 
@@ -106,13 +110,10 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
     }
   };
 
-  // PURGE WITH AUTOMATIC BACKUP DOWNLOAD
   const handlePurgeAllData = () => {
-    // 1. Trigger export file download
     try {
       const rawLibrary = localStorage.getItem('songLibrary');
       const parsedLibrary = rawLibrary ? JSON.parse(rawLibrary) : [];
-
       const optimizedLibrary = parsedLibrary.map(song => {
         const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
         delete optimizedSong.artworkUrl30;
@@ -123,7 +124,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
         delete optimizedSong.trackViewUrl;
         return optimizedSong;
       });
-
+      
       const exportData = { 
         library: optimizedLibrary, 
         settings: { ...settings } 
@@ -145,7 +146,6 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
       console.error("Backup trigger failed before purge:", e);
     }
 
-    // 2. Clear storage
     localStorage.clear();
     localStorage.setItem('hasVisitedBefore', 'true');
     localStorage.setItem('isSampleVaultActive', 'false');
@@ -158,7 +158,6 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
       }
     }
 
-    // 3. Reload cleanly to an empty main view
     window.location.href = '/';
   };
 
@@ -172,6 +171,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
 
   return (
     <section className="view-section settings-tab-container">
+      
       <div className="settings-grid">
         
         {/* DEEZER AUTHENTICATION BLOCK */}
@@ -347,6 +347,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
             />
             <span className="setting-desc">Scales song title text sizing relative to viewport height.</span>
           </div>
+
         </div>
 
         {/* GROUP 2: LYRICS CANVAS */}
@@ -421,7 +422,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
         {/* GROUP 3: GENERAL ARTIST DISPLAY */}
         <div className="settings-card glass-panel">
           <h3>Artist Display</h3>
-
+          
           <div className="setting-item">
             <label>Artist Name Size ({settings.artistNameFontSize ?? 3.5}vh)</label>
             <input 
@@ -459,6 +460,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
                 {localStorage.getItem('artistTransitionTime') || 0}ms
               </span>
             </div>
+            
             <input 
               id="transitionSlider"
               type="range" 
@@ -685,9 +687,21 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
             />
             <span className="setting-desc">Distance transliteration text sits below main lyric line.</span>
           </div>
+
         </div>
 
       </div>
+
+      {/* --- SETTINGS TAB NATIVE AD --- */}
+      {adsEnabled && (
+        <SponsorUnit 
+          testMode={true} 
+          className="glass-panel settings-promo-box" 
+          style={{ maxWidth: '1400px', margin: '0 auto' }}
+          adTitle="Sponsor / Partner"
+          adSub="Thank you for supporting PlanetMusic"
+        />
+      )}
 
       {/* CONFIRMATION PURGE MODAL OVERLAY */}
       {showPurgeConfirm && (
@@ -710,6 +724,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode }) => {
           </div>
         </div>
       )}
+
     </section>
   );
 };

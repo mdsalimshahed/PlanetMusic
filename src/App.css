@@ -1,10 +1,11 @@
 /* --- src/App.css --- */
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* --- UNIVERSAL BOX SIZING SAFEGUARD --- */
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
@@ -18,11 +19,6 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.15);
   --font-family: 'Outfit', sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
 }
 
 html, body {
@@ -552,7 +548,7 @@ body {
     flex-direction: column;
     height: auto;
   }
-  .search-column.vault-column,
+  .search-column.vault-column, 
   .search-column.cosmos-column {
     width: 100% !important;
   }
@@ -584,4 +580,42 @@ body {
 @keyframes popIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* --- GLOBAL FOOTER STYLES --- */
+.global-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 20px 20px;
+  margin-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 16px;
+  width: 100%;
+}
+
+.global-footer p {
+  color: var(--text-subdued);
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+  font-weight: 500;
+}
+
+.ad-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 20px;
+  border-radius: 500px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ad-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
 }
