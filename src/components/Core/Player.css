@@ -1,5 +1,5 @@
 /* --- src/components/Player.css --- */
-.global-player {
+body .global-player.glass-panel-heavy {
   --tx: 0px; 
   position: fixed;
   bottom: 24px;
@@ -7,12 +7,11 @@
   width: min(calc((100vw - 160px) * (var(--dyn-modal-split, 50) / 100)), calc(100vw - 32px));
   min-width: min(280px, calc(100vw - 32px));
   max-width: calc(100vw - 32px);
-  
   /* FLUID HEIGHT FIX: Tightened padding and gaps to reduce vertical bulk */
   height: auto; 
   min-height: 64px;
   padding: 8px clamp(16px, 2.5vw, 24px) 4px;
-  border-radius: 24px; 
+  border-radius: 24px !important; /* Force it to stay rounded */
   
   display: flex;
   flex-direction: column;
@@ -26,7 +25,8 @@
   transition: box-shadow 0.4s ease, border-color 0.4s ease, left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.global-player.centered-mode {
+/* EXACT ORIGINAL DASHBOARD CENTERED MODE */
+body .global-player.glass-panel-heavy.centered-mode {
   --tx: -50%;
   left: 50%;
   width: clamp(350px, 45vw, 600px); 
@@ -194,9 +194,10 @@
 
 @keyframes marquee-scroll {
   0%, 10% { transform: translateX(0); }
-  90%, 100% { transform: translateX(calc(-50% - 16px)); } /* 16px perfectly aligns the 32px gap for a seamless loop */
+  90%, 100% { transform: translateX(calc(-50% - 16px)); }
 }
 
+/* 16px perfectly aligns the 32px gap for a seamless loop */
 /* Small, subtle, italic source indicator */
 .player-text .source-text {
   font-size: 8px;

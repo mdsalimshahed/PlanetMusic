@@ -1,5 +1,5 @@
 /* --- src/components/ModalRight.css --- */
-.modal-right-col {
+body .modal-right-col.glass-panel-light {
    flex: calc(100 - var(--dyn-modal-split, 50));
    /* CRITICAL: Force a strict 1:1 square ratio at all times */
    aspect-ratio: 1 / 1 !important; 
@@ -13,7 +13,7 @@
    overflow: hidden;
    box-sizing: border-box;
    padding: clamp(16px, 3vw, 24px);
-   border-radius: 0;
+   border-radius: 0 !important;
    background: rgba(0,0,0,0.3) !important;
    -webkit-backface-visibility: hidden;
    backface-visibility: hidden;
