@@ -50234,7 +50234,7 @@
       "collectionName": "Bedtime Thoughts - Single",
       "trackName": "Bedtime Thoughts",
       "collectionViewUrl": "https://music.apple.com/us/album/bedtime-thoughts/1813251718?i=1813251719&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/92/39/00/92390033-0004-88d2-4401-f7cffd548740/mzaf_13269235931129652015.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/12/6b/26/126b26cb-b297-70a2-0264-bc9082920c58/859705838674_cover.jpg/100x100bb.jpg",
       "collectionPrice": 0.99,
       "trackPrice": 0.99,
@@ -51138,10 +51138,37 @@
           "isSplit": false
         },
         {
-          "text": "So crisp, so good (So crisp) (So good)",
+          "text": "So crisp, so good  (So crisp) (So good)",
           "segments": [
             {
-              "text": "So crisp, so good (So crisp) (So good)",
+              "text": "So crisp, so good ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": "(So crisp) ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": "(So good)",
               "color": "#f9dc86",
               "isGradient": false,
               "gradient": "",
@@ -51162,10 +51189,10 @@
           "adlibs": [
             {
               "text": "(So crisp)",
-              "charStart": 18,
-              "charEnd": 28,
-              "start": 141.85914009346084,
-              "end": 142.60364009346083,
+              "charStart": 19,
+              "charEnd": 29,
+              "start": 141.5339180934571,
+              "end": 142.66641602098085,
               "segments": [
                 {
                   "text": "(So crisp)",
@@ -51182,9 +51209,9 @@
             },
             {
               "text": "(So good)",
-              "charStart": 29,
-              "charEnd": 38,
-              "start": 143.24689609346044,
+              "charStart": 30,
+              "charEnd": 39,
+              "start": 143.37421809346156,
               "end": 144.43053485504,
               "segments": [
                 {
@@ -51203,10 +51230,37 @@
           ]
         },
         {
-          "text": "So cozy! So cozy! (So cozy!) (So cozy!)",
+          "text": "So cozy! So cozy!  (So cozy!) (So cozy!)",
           "segments": [
             {
-              "text": "So cozy! So cozy! (So cozy!) (So cozy!)",
+              "text": "So cozy! So cozy! ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": "(So cozy!) ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Bad Lip Reading"
+              ]
+            },
+            {
+              "text": "(So cozy!)",
               "color": "#f9dc86",
               "isGradient": false,
               "gradient": "",
@@ -51227,10 +51281,10 @@
           "adlibs": [
             {
               "text": "(So cozy!)",
-              "charStart": 18,
-              "charEnd": 28,
-              "start": 148.5568680934599,
-              "end": 149.5118680934599,
+              "charStart": 19,
+              "charEnd": 29,
+              "start": 148.6372300934571,
+              "end": 149.5137300934571,
               "segments": [
                 {
                   "text": "(So cozy!)",
@@ -51247,10 +51301,10 @@
             },
             {
               "text": "(So cozy!)",
-              "charStart": 29,
-              "charEnd": 39,
-              "start": 150.67149209346027,
-              "end": 152.51999209346027,
+              "charStart": 30,
+              "charEnd": 40,
+              "start": 150.64104609346455,
+              "end": 152.75544609346306,
               "segments": [
                 {
                   "text": "(So cozy!)",
@@ -52095,7 +52149,8 @@
           "end": 317.1944429275193,
           "isSplit": false
         }
-      ]
+      ],
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/92/39/00/92390033-0004-88d2-4401-f7cffd548740/mzaf_13269235931129652015.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
