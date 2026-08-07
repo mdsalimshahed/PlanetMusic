@@ -32,7 +32,6 @@ const ContactTab = ({ adsEnabled }) => {
           message: formData.message,
         }),
       });
-
       const result = await response.json();
       
       if (result.success) {
@@ -77,8 +76,8 @@ const ContactTab = ({ adsEnabled }) => {
                   type="text" 
                   name="name" 
                   className="contact-input" 
-                  value={formData.name} 
-                  onChange={handleChange} 
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="What should we call you?" 
                 />
               </div>
@@ -88,8 +87,8 @@ const ContactTab = ({ adsEnabled }) => {
                 <select 
                   name="subject" 
                   className="contact-input" 
-                  value={formData.subject} 
-                  onChange={handleChange} 
+                  value={formData.subject}
+                  onChange={handleChange}
                   style={{ cursor: 'pointer' }}
                 >
                   <option value="General Inquiry">General Inquiry</option>
@@ -105,8 +104,8 @@ const ContactTab = ({ adsEnabled }) => {
                   name="message" 
                   className="contact-textarea" 
                   required 
-                  value={formData.message} 
-                  onChange={handleChange} 
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Write your message here..."
                 ></textarea>
               </div>
@@ -123,15 +122,16 @@ const ContactTab = ({ adsEnabled }) => {
                 
                 {submitStatus === 'success' && (
                   <span style={{ color: '#4ade80', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                    ✓ Message sent successfully!
+                    ✅ Message sent successfully!
                   </span>
                 )}
                 {submitStatus === 'error' && (
                   <span style={{ color: '#FA243C', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                    ✕ Failed to send. Please try again.
+                    ❌ Failed to send. Please try again.
                   </span>
                 )}
               </div>
+
             </form>
 
             <div className="contact-info-blocks">
@@ -144,6 +144,7 @@ const ContactTab = ({ adsEnabled }) => {
                 <p>If you lost your library, ensure your browser has not cleared your LocalStorage or IndexedDB data.</p>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -153,29 +154,28 @@ const ContactTab = ({ adsEnabled }) => {
             <>
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel" 
-                style={{ minHeight: '600px', borderRadius: '24px' }}
+                className="glass-panel dynamic-radius-override"
+                style={{ minHeight: '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel" 
-                style={{ minHeight: '300px', borderRadius: '24px' }}
+                className="glass-panel dynamic-radius-override"
+                style={{ minHeight: '300px' }}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
             </>
           )}
         </aside>
-
       </div>
 
       {/* BOTTOM SPONSOR AD (Matches Settings Page Format) */}
       {adsEnabled && (
         <SponsorUnit 
           testMode={true} 
-          className="glass-panel settings-promo-box" 
+          className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor Message"
           adSub="Thank you for supporting PlanetMusic"
