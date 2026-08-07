@@ -1,4 +1,4 @@
-/* --- src/hooks/useSongData.js --- */
+/* --- src/hooks/data/useSongData.js --- */
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../utils/songHelpers';
@@ -7,12 +7,10 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
-
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
   });
-
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
   const previousTrackId = useRef(null);
@@ -47,9 +45,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setIsTranslationManagerOpen(false);
         setSingerImages({});
       }
-
       const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-
       setCustomData({
         spotify: selectedSong.customLinks?.spotify || '',
         yt: selectedSong.customLinks?.yt || '',
@@ -66,8 +62,8 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved
   useEffect(() => {
     if (isSaved && selectedSong) {
-      const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') || 
-                           (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
+      const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') ||
+                            (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
       
       if (isDeezerOnly) {
         const tId = selectedSong.trackId;
@@ -113,6 +109,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   useEffect(() => {
     if (!selectedSong) return;
+
     allPotentialSingers.forEach(async (singerName) => {
       const cleanName = singerName.trim();
       if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName] && !globalArtistData.images?.[cleanName]) {
@@ -163,8 +160,8 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
-    
-    updateSongInLibrary({
+
+    const updatedSongPayload = {
       ...selectedSong,
       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
@@ -172,8 +169,13 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       artistColors: customData.artistColors,
       syncData: updatedSyncData,
       autoSyncData: updatedAutoSyncData
-    });
+    };
+    
+    // Close editor view first to unmount editing UI elements
     setIsEditing(false);
+
+    // Commit updated song payload to vault and active player state simultaneously
+    updateSongInLibrary(updatedSongPayload);
   };
 
   const saveImageManager = () => {
@@ -195,6 +197,8 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
        updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
 
+    setIsImageManagerOpen(false);
+
     updateSongInLibrary({
       ...selectedSong,
       artistImages: customData.artistImages,
@@ -202,13 +206,11 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       syncData: updatedSyncData,
       autoSyncData: updatedAutoSyncData
     });
-    setIsImageManagerOpen(false);
   };
 
   const isSingle = selectedSong?.trackCount === 1 || selectedSong?.collectionName === selectedSong?.trackName;
   const releaseType = isSingle ? 'Single' : selectedSong?.collectionName || 'Single';
   const highResArt = selectedSong?.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
-
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;

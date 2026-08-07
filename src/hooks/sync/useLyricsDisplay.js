@@ -1,13 +1,13 @@
-/* --- src/hooks/useLyricsDisplay.js --- */
+/* --- src/hooks/sync/useLyricsDisplay.js --- */
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { parseLyrics } from '../../utils/songHelpers';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
-  const [playState, setPlayState] = useState({ 
-     isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false, 
-     isEnded: false 
-   });
+  const [playState, setPlayState] = useState({
+      isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false,
+      isEnded: false
+    });
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
   const [transitionTiming, setTransitionTiming] = useState(() => {
@@ -48,7 +48,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     const handleGlobalTime = (e) => {
       const time = e.detail;
       const validSync = selectedSong?.syncData?.some(line => line.start !== null);
-      const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
+      const isPlayingCurrentSong = currentTrack && selectedSong && String(currentTrack.trackId) === String(selectedSong.trackId);
       
       if (validSync && !isSyncMode && !isEditing && !isImageManagerOpen && isPlayingCurrentSong && !playState.isEnded) {
         let newBgIndex = bgIdxRef.current;
@@ -56,8 +56,8 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         const nbNode = newBgIndex >= 0 ? selectedSong.syncData[newBgIndex + 1] : null;
         
         const stillInBg = cbNode && cbNode.start !== null && time >= (cbNode.start - preemptionTimeSec) && 
-              (cbNode.end !== null ? time <= cbNode.end : true) && 
-              (nbNode && nbNode.start !== null ? time < (nbNode.start - preemptionTimeSec) : true);
+               (cbNode.end !== null ? time <= cbNode.end : true) &&
+               (nbNode && nbNode.start !== null ? time < (nbNode.start - preemptionTimeSec) : true);
 
         if (!stillInBg) {
             newBgIndex = selectedSong.syncData.findIndex((savedNode, i) => {
@@ -93,18 +93,25 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [selectedSong]);
 
   const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
-      prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
+       prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   ), []);
 
+  // SEEK HANDLER: Direct seek trigger with strict active-track validation
   const handleLineClick = useCallback((startTime) => {
-    if (startTime === null || isSyncMode || isEditing || isImageManagerOpen) return;
-    window.dispatchEvent(new CustomEvent('globalSeekRequest', { detail: { time: startTime, track: selectedSong } }));
+    if (startTime === null || isSyncMode || isEditing || isImageManagerOpen || !selectedSong) return;
+    
+    // Pass the full selectedSong object so Player.jsx correctly receives the seek request
+    window.dispatchEvent(new CustomEvent('globalSeekRequest', { 
+      detail: { 
+        time: startTime, 
+        track: selectedSong 
+      } 
+    }));
   }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong]);
 
   useEffect(() => {
     if (!selectedSong) return;
 
-    // FIX: Trigger the 2-second silence timer for a graceful fade when the song ends
     if (playState.isEnded) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
@@ -116,7 +123,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     }
     
     if (!hasValidSyncData) {
-      const isPlayingCurrentSong = currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId;
+      const isPlayingCurrentSong = currentTrack && selectedSong && String(currentTrack.trackId) === String(selectedSong.trackId);
       if (isPlayingCurrentSong && !playState.isEnded) {
         setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
         setIsSingerVisible(true);
@@ -131,7 +138,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     if (activeBgLineObj) {
       if (activeBgLineObj.singer) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
-
         if (activeBgLineObj.singer !== displaySingerBg?.name) {
           setIsSingerVisible(false);
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);

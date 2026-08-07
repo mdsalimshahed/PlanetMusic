@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
-
 import Background from './components/Core/Background';
 import Topbar from './components/Core/Topbar';
 import SongModal from './components/Modals/SongModal';
@@ -27,11 +26,11 @@ const App = () => {
 
   // Parse routing variables from URL
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const activeTab = pathParts[0] === 'blog' ? 'blog' : 
-                    pathParts[0] === 'settings' ? 'settings' : 
-                    pathParts[0] === 'privacy' ? 'privacy' : 
+  const activeTab = pathParts[0] === 'blog' ? 'blog' :
+                    pathParts[0] === 'settings' ? 'settings' :
+                    pathParts[0] === 'privacy' ? 'privacy' :
                     pathParts[0] === 'contact' ? 'contact' : 'main';
-                    
+                      
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
   // Extract ?q= search parameter from URL for bookmarking
@@ -64,6 +63,11 @@ const App = () => {
     setSelectedSong(song);
   };
 
+  // Direct State Update Handler (No Navigation / Route Interruption)
+  const updateSelectedSongDirect = (song) => {
+    setSelectedSong(song);
+  };
+
   const handleHomeClick = () => {
     setSearchQuery('');
     setSearchResults([]);
@@ -92,7 +96,7 @@ const App = () => {
   } = useVaultOperations({
     library, setLibrary, settings, setSettings,
     isSampleVaultActive, setIsSampleVaultActive,
-    selectedSong, handleSetSelectedSong, setCurrentTrack, handleHomeClick
+    selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick
   });
 
   // 4. Cosmos Search Engine
@@ -175,17 +179,17 @@ const App = () => {
               {isSampleVaultActive && library.length > 0 && !searchQuery.trim() && (
                 <div className="sample-vault-banner glass-panel">
                   <div className="sample-banner-text">
-                    <strong>💡 Sample Vault Mode:</strong> You are currently viewing pre-loaded demo tracks. You can keep them or clear them to start fresh.
+                    <strong>Sample Vault Mode:</strong> You are currently viewing pre-loaded demo tracks. You can keep them or clear them to start fresh.
                   </div>
                   <div className="sample-banner-actions">
                     <button 
-                      className="keep-sample-btn" 
+                      className="keep-sample-btn"
                       onClick={handleKeepSampleVault}
                     >
                       Keep Vault
                     </button>
                     <button 
-                      className="clear-sample-btn" 
+                      className="clear-sample-btn"
                       onClick={handleClearSampleVault}
                     >
                       Clear Sample Vault
@@ -243,6 +247,7 @@ const App = () => {
                       )}
                     </div>
                   </div>
+
                   <div className="search-column cosmos-column">
                     <div className="column-header">
                       <span>COSMOS ({uniqueOnlineResults.length})</span>
@@ -342,6 +347,7 @@ const App = () => {
               {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
             </button>
           </div>
+
         </div>
       </main>
 

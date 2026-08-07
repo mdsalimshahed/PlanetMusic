@@ -1,5 +1,4 @@
 /* --- src/utils/lyricsUtils.js --- */
-
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
   const lines = raw.split('\n').map(l => l.trim());
@@ -13,7 +12,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   lines.forEach(line => {
     const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
     if (!cleanHtmlLine || cleanHtmlLine.startsWith('<!')) return;
-
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
       activeTags = [];
@@ -44,7 +42,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 }
             }
         });
-
         unmarkedStr = unmarkedStr.trim();
         const unmarkedTokens = unmarkedStr.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean);
         
@@ -56,10 +53,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 }
             });
         }
-
         const allMentioned = [...explicitArtists, ...unmarkedTokens].map(n => n.trim()).filter(n => n.toLowerCase() !== 'both' && n.toLowerCase() !== 'all');
         const contextArtists = allMentioned.length > 0 ? [...new Set(allMentioned)] : globalDefaultArtists;
-
         currentRules = parsedTokens.map(pt => {
             const lowerName = pt.name.toLowerCase();
             let ruleArtists = [];
@@ -86,7 +81,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         
         const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
         const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
-
         if (isOpeningBoundary && !isClosingBoundary) {
             activeTags.push(chunk);
         } else if (isClosingBoundary && !isOpeningBoundary) {
@@ -133,13 +127,14 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let artists = [];
         const rule = currentRules.find(r => r.marker === seg.marker);
         
-        if (rule && rule.artists.length > 0) {
+        if (rule) {
             artists = rule.artists;
         } else if (seg.marker === '') {
             artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
         } else {
-            // Unformatted or unmapped marker defaults to global main artist if no explicit sub-artists defined
-            artists = globalDefaultArtists.length > 0 ? globalDefaultArtists : [];
+            // Uncredited line: marker (e.g. _) was used in lyrics but deliberately NOT defined in the heading rule.
+            // Leave artists empty so it does NOT default to main artist.
+            artists = [];
         }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
@@ -212,14 +207,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
 
-    if (lineArtistsSet.size === 0 && globalDefaultArtists.length > 0) {
-      globalDefaultArtists.forEach(a => lineArtistsSet.add(a));
-    }
-
+    // Only assign lineSinger if explicit artists exist on this line
     const finalArtistsArray = Array.from(lineArtistsSet);
-    const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : (defaultArtist || '');
+    const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : '';
+
     const displayText = finalSegments.map(s => s.text).join('');
-    let finalColor = colorPalette[defaultArtist] || '#ffffff';
+    let finalColor = '#ffffff';
     let lineIsGradient = false;
     let lineGradientStyle = '';
 
@@ -267,14 +260,12 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
     for (let i = currentLrcIdx; i < Math.min(currentLrcIdx + 15, lrcSyncData.length); i++) {
       const cleanLrc = normalize(lrcSyncData[i].text);
       if (!cleanLrc && !cleanGenius) continue;
-
       let score = 0;
       if (cleanGenius === cleanLrc && cleanGenius !== '') {
         score = 100;
       } else if (cleanGenius && cleanLrc && (cleanGenius.includes(cleanLrc) || cleanLrc.includes(cleanGenius))) {
         score = 60 + (Math.min(cleanGenius.length, cleanLrc.length) / Math.max(cleanGenius.length, cleanLrc.length)) * 40;
       }
-
       if (score > highestScore && score > 35) {
         highestScore = score;
         bestMatchIdx = i;
@@ -378,7 +369,6 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       
       const text = rawText.replace(/<\d{2}:\d{2}\.\d{2,3}>/g, '').trim();
       if (!text) return;
-
       const startTime = (minutes * 60) + seconds;
       plainTextLyrics += text + "\n";
       

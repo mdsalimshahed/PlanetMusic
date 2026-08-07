@@ -1,10 +1,10 @@
-/* --- src/hooks/useVaultOperations.js --- */
+/* --- src/hooks/data/useVaultOperations.js --- */
 import { useState, useEffect } from 'react';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
   isSampleVaultActive, setIsSampleVaultActive,
-  selectedSong, handleSetSelectedSong, setCurrentTrack, handleHomeClick
+  selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick
 }) => {
   const [songToRemove, setSongToRemove] = useState(null);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
@@ -31,6 +31,7 @@ export const useVaultOperations = ({
         else newLibrary.push(newSong);
       });
     };
+
     if (parsedData.library && Array.isArray(parsedData.library)) {
       mergeSongs(parsedData.library);
       setLibrary(newLibrary);
@@ -107,19 +108,57 @@ export const useVaultOperations = ({
 
   const updateSongInLibrary = (updatedSong) => {
     dismissSampleMode();
+
+    // Prevent iTunes preview fallback if custom sources exist
+    if (updatedSong.customLinks?.hasLocal || updatedSong.customLinks?.yt || updatedSong.customLinks?.deezer) {
+      if (updatedSong.previewUrl) {
+        updatedSong.originalPreviewUrl = updatedSong.previewUrl;
+      }
+      updatedSong.previewUrl = ''; 
+    } else if (updatedSong.originalPreviewUrl) {
+      updatedSong.previewUrl = updatedSong.originalPreviewUrl;
+    }
+
+    const finalSong = { ...updatedSong };
+
     setLibrary(prevLibrary => {
-      const exists = prevLibrary.some(s => s.trackId === updatedSong.trackId);
+      const exists = prevLibrary.some(s => String(s.trackId) === String(finalSong.trackId));
       if (exists) {
-        return prevLibrary.map(s => s.trackId === updatedSong.trackId ? updatedSong : s);
+        return prevLibrary.map(s => String(s.trackId) === String(finalSong.trackId) ? finalSong : s);
       } else {
-        return [...prevLibrary, updatedSong];
+        return [...prevLibrary, finalSong];
       }
     });
-    handleSetSelectedSong(updatedSong);
-    setCurrentTrack(prevTrack => {
-      if (prevTrack && prevTrack.trackId === updatedSong.trackId) {
-        return { ...prevTrack, ...updatedSong };
+
+    // Update selectedSong in memory directly without route navigation
+    if (selectedSong && String(selectedSong.trackId) === String(finalSong.trackId)) {
+      if (typeof updateSelectedSongDirect === 'function') {
+        updateSelectedSongDirect(finalSong);
       }
+    }
+
+    // --- DUAL LINK VS LYRIC PLAYER CONTROLLER ---
+    setCurrentTrack(prevTrack => {
+      if (!prevTrack) return null;
+      if (String(prevTrack.trackId) !== String(finalSong.trackId)) {
+        // Edited song is NOT the active player track -> Leave player completely untouched
+        return prevTrack;
+      }
+
+      // Check if any audio link source was edited
+      const sameLocal = prevTrack.customLinks?.hasLocal === finalSong.customLinks?.hasLocal;
+      const sameYt = prevTrack.customLinks?.yt === finalSong.customLinks?.yt;
+      const sameDz = prevTrack.customLinks?.deezer === finalSong.customLinks?.deezer;
+      const samePreview = prevTrack.previewUrl === finalSong.previewUrl;
+
+      const linksModified = !sameLocal || !sameYt || !sameDz || !samePreview;
+
+      if (linksModified) {
+        // LINK EDITED: Force close/stop the player so it never gets stuck at 00:00
+        return null;
+      }
+
+      // LYRICS ONLY EDITED: Keep exact object reference so audio stream continues uninterrupted
       return prevTrack;
     });
   };

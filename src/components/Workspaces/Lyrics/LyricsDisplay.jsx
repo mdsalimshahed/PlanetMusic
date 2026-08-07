@@ -6,13 +6,15 @@ import { parseLyrics } from '../../../utils/songHelpers';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({ 
-   isEditing, customData, handleDataChange, hasValidSyncData, 
-   lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-   isPlaying, settings }) => {
+    isEditing, customData, handleDataChange, hasValidSyncData, 
+    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+    isPlaying, settings }) => {
+
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
+
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
   // Parse editable lyrics in real-time for live preview calculation
@@ -21,13 +23,12 @@ const LyricsDisplay = ({
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
   }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
 
-  // Primary color style resolver: Produces exact linear gradients for multi-artist lines and solid colors for single artists
+  // Primary color style resolver
   const getArtistStyle = (item) => {
     let artists = item.artists || [];
     if (artists.length === 0 && item.singer) {
       artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     }
-
     if (artists.length > 1) {
       const c1 = masterPalette[artists[0]] || '#ffffff';
       const c2 = masterPalette[artists[1]] || '#ffffff';
@@ -41,7 +42,6 @@ const LyricsDisplay = ({
       const color = masterPalette[artists[0]] || item.color || '#ffffff';
       return { color };
     }
-
     if (item.isGradient && item.gradient) {
       return {
         backgroundImage: item.gradient,
@@ -50,19 +50,16 @@ const LyricsDisplay = ({
         display: 'inline-block'
       };
     }
-
     return { color: item.color || '#ffffff' };
   };
 
-  // Helper to render artist headers in preview view with independent colors for each artist name
+  // Helper to render artist headers in preview view
   const renderColoredSingerHeader = (singerString) => {
     if (!singerString) {
       const defaultSinger = selectedSong?.artistName || 'Default Artist';
       return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
     }
-
     const artists = singerString.split(/\s*(?:,)\s*/i).filter(Boolean).map(a => a.trim());
-
     return artists.map((artist, aIdx) => {
       const artistColor = masterPalette[artist] || '#ffffff';
       return (
@@ -74,7 +71,6 @@ const LyricsDisplay = ({
     });
   };
 
-  // Helper to get the primary left-border accent color for the preview card row
   const getBorderAccentColor = (line) => {
     let artists = line.artists || [];
     if (artists.length === 0 && line.singer) {
@@ -86,7 +82,7 @@ const LyricsDisplay = ({
     return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
   };
 
-  // EQUALIZER: Only activates for Web Audio API sources (local MP3/preview).
+  // EQUALIZER
   useEffect(() => {
     let rafId;
     let lastEqDraw = 0;
@@ -99,13 +95,11 @@ const LyricsDisplay = ({
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const freqData = window.globalFreqData;
           const bars = eqBarsRef.current;
-
           if (freqData && bars) {
             for (let i = 0; i < bars.length; i++) {
               if (bars[i]) {
                 const raw = freqData[i % freqData.length] || 0;
                 const scale = 0.05 + (raw / 255) * 0.95;
-
                 bars[i].style.transition = 'transform 0.05s ease-out';
                 bars[i].style.transform = `scaleY(${scale})`;
               }
@@ -124,12 +118,18 @@ const LyricsDisplay = ({
       }
       rafId = requestAnimationFrame(renderEQ);
     };
+
     rafId = requestAnimationFrame(renderEQ);
     return () => cancelAnimationFrame(rafId);
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
 
+  // RE-QUERY DOM ELEMENTS WHENEVER EDIT MODE CLOSES OR LYRICS/VIEW-MODES CHANGE
   useEffect(() => {
-    if (containerRef.current) {
+    if (isEditing) return;
+
+    // Small delay allows React to finish DOM paint after exiting edit mode
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -143,11 +143,84 @@ const LyricsDisplay = ({
             end: parseFloat(node.dataset.end),
             state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
         }));
+
+        // Immediately trigger sync calculation on newly cached DOM nodes
+        if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
+            handleTimeUpdate(window.currentAudioTime);
+        }
+      }
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [isEditing, liveParsedLyrics, lyricsViewMode, selectedSong?.syncData]);
+
+  // DEDICATED TIME UPDATE PROCESSOR
+  const handleTimeUpdate = (time) => {
+    if (isEditing || !isPlayingCurrentSong) return;
+
+    const lines = cachedLinesRef.current;
+    let newActiveIndex = -1;
+
+    for (let i = 0; i < lines.length; i++) {
+        const { start, end, nextStart } = lines[i];
+        if (!isNaN(start) && time >= start) {
+            const isBeforeEnd = isNaN(end) || time <= end;
+            const isBeforeNext = isNaN(nextStart) || time < nextStart;
+            if (isBeforeEnd && isBeforeNext) {
+                newActiveIndex = i;
+                break;
+            }
+        }
     }
-  }, [liveParsedLyrics, lyricsViewMode, selectedSong?.syncData]);
+
+    for (let i = 0; i < lines.length; i++) {
+        const item = lines[i];
+        const shouldBeActive = (i === newActiveIndex);
+        
+        if (shouldBeActive && !item.isActive) {
+            item.node.classList.add('active');
+            item.isActive = true;
+            
+            if (lyricsViewMode === 'live' && containerRef.current) {
+                const offsetTop = item.node.offsetTop;
+                const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
+                containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
+            }
+        } else if (!shouldBeActive && item.isActive) {
+            item.node.classList.remove('active');
+            item.isActive = false;
+        }
+    }
+
+    const adlibs = cachedAdlibsRef.current;
+    for (let i = 0; i < adlibs.length; i++) {
+        const item = adlibs[i];
+        if (isNaN(item.start)) continue;
+
+        let targetState = 'hidden';
+        if (time >= item.start && time <= item.end) targetState = 'active';
+        else if (time >= item.start) targetState = 'visible';
+
+        if (item.state !== targetState) {
+            const cl = item.node.classList;
+            if (targetState === 'active') {
+                cl.add('adlib-active');
+                cl.remove('adlib-hidden', 'adlib-visible');
+            } else if (targetState === 'visible') {
+                cl.add('adlib-visible');
+                cl.remove('adlib-hidden', 'adlib-active');
+            } else {
+                cl.add('adlib-hidden');
+                cl.remove('adlib-active', 'adlib-visible');
+            }
+            item.state = targetState;
+        }
+    }
+  };
 
   useEffect(() => {
-    if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
+    if (isEditing || (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused')) return;
+
     const clearAllActive = () => {
         cachedLinesRef.current.forEach(item => {
             if (item.isActive) {
@@ -163,83 +236,29 @@ const LyricsDisplay = ({
             }
         });
     };
-    const handleTime = (e) => {
-        if (!isPlayingCurrentSong) return;
-        const time = e.detail;
-        const lines = cachedLinesRef.current;
-        let newActiveIndex = -1;
-        for (let i = 0; i < lines.length; i++) {
-            const { start, end, nextStart } = lines[i];
-            if (!isNaN(start) && time >= start) {
-                const isBeforeEnd = isNaN(end) || time <= end;
-                const isBeforeNext = isNaN(nextStart) || time < nextStart;
-                if (isBeforeEnd && isBeforeNext) {
-                    newActiveIndex = i;
-                    break;
-                }
-            }
-        }
-        for (let i = 0; i < lines.length; i++) {
-            const item = lines[i];
-            const shouldBeActive = (i === newActiveIndex);
-            
-            if (shouldBeActive && !item.isActive) {
-                item.node.classList.add('active');
-                item.isActive = true;
-                
-                if (lyricsViewMode === 'live' && containerRef.current) {
-                    const offsetTop = item.node.offsetTop;
-                    const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
-                    containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
-                }
-            } else if (!shouldBeActive && item.isActive) {
-                item.node.classList.remove('active');
-                item.isActive = false;
-            }
-        }
-        const adlibs = cachedAdlibsRef.current;
-        for (let i = 0; i < adlibs.length; i++) {
-            const item = adlibs[i];
-            if (isNaN(item.start)) continue;
-            let targetState = 'hidden';
-            if (time >= item.start && time <= item.end) targetState = 'active';
-            else if (time >= item.start) targetState = 'visible';
-            if (item.state !== targetState) {
-                const cl = item.node.classList;
-                if (targetState === 'active') {
-                    cl.add('adlib-active');
-                    cl.remove('adlib-hidden', 'adlib-visible');
-                } else if (targetState === 'visible') {
-                    cl.add('adlib-visible');
-                    cl.remove('adlib-hidden', 'adlib-active');
-                } else {
-                    cl.add('adlib-hidden');
-                    cl.remove('adlib-active', 'adlib-visible');
-                }
-                item.state = targetState;
-            }
-        }
-    };
 
+    const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
         }
     };
-    window.addEventListener('globalTimeUpdate', handleTime);
+
+    window.addEventListener('globalTimeUpdate', handleTimeEvent);
     window.addEventListener('globalPlayState', handlePlayState);
 
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
-        handleTime({ detail: initialTime });
+        handleTimeUpdate(initialTime);
     } else {
         clearAllActive();
     }
+
     return () => {
-        window.removeEventListener('globalTimeUpdate', handleTime);
+        window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-  }, [lyricsViewMode, isPlayingCurrentSong, currentTrack]);
+  }, [isEditing, lyricsViewMode, isPlayingCurrentSong, currentTrack]);
 
   const handlePaste = (e) => {
     const html = e.clipboardData.getData('text/html');
@@ -256,7 +275,6 @@ const LyricsDisplay = ({
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
-
           const isBold = tag === 'b' || tag === 'strong' || fw === 'bold' || fw === '700' || parseInt(fw) >= 600;
           const isItalic = tag === 'i' || tag === 'em' || style.fontStyle === 'italic';
 
@@ -268,6 +286,7 @@ const LyricsDisplay = ({
             if (isBold) wrapped = `**${wrapped}**`;
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
+
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
           return innerText;
         }
@@ -299,7 +318,6 @@ const LyricsDisplay = ({
               placeholder="Paste your lyrics here! Format lines using [Artist Name:] tags or *italics* / **bold** formatting."
             />
           </div>
-
           <div className="artist-preview-pane">
             <div className="artist-preview-header">
               <span className="artist-preview-title">
@@ -311,12 +329,10 @@ const LyricsDisplay = ({
               </span>
               <span className="artist-preview-badge">{editParsedLyrics.length} lines</span>
             </div>
-
             <div className="artist-preview-scroll">
               {editParsedLyrics.length > 0 ? (
                 editParsedLyrics.map((line, idx) => {
                   const borderAccent = getBorderAccentColor(line);
-
                   return (
                     <div key={idx} className="preview-line-row" style={{ borderLeftColor: borderAccent }}>
                       <span className="preview-line-singer">
@@ -399,10 +415,10 @@ const LyricsDisplay = ({
           })}
           
           <FocusedAdlibsTracker 
-             syncData={selectedSong?.syncData}
-             handleLineClick={handleLineClick}
-             masterPalette={masterPalette}
-             isPlayingCurrentSong={isPlayingCurrentSong}
+            syncData={selectedSong?.syncData}
+            handleLineClick={handleLineClick}
+            masterPalette={masterPalette}
+            isPlayingCurrentSong={isPlayingCurrentSong}
           />
         </div>
       ) : (
@@ -426,6 +442,7 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
+
       {!isEditing && (
         <div className={`lyrics-equalizer`}>
           {Array.from({ length: 60 }).map((_, i) => (
