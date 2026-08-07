@@ -1,6 +1,6 @@
 /* --- src/hooks/useCosmosSearch.js --- */
 import { useState, useEffect } from 'react';
-import { norm, filterAndSortByTitleMatch } from '../utils/searchEngine';
+import { norm, filterAndSortByTitleMatch } from '../../utils/searchEngine';
 
 export const useCosmosSearch = ({
   searchQuery, searchResults, setSearchResults,

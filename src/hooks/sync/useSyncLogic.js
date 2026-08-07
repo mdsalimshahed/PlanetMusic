@@ -1,8 +1,8 @@
 /* --- src/hooks/useSyncLogic.js --- */
 import { useEffect } from 'react';
-import { quickTransliterate } from '../transliterator';
-import { workspaceClock } from '../utils/clockEngine';
-import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../utils/songHelpers';
+import { quickTransliterate } from '../../services/transliterator';
+import { workspaceClock } from '../../utils/clockEngine';
+import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
 
 // ------------------------------------------------------------------
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking

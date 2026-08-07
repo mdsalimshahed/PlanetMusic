@@ -1,9 +1,9 @@
 /* --- src/components/Player.jsx --- */
 import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { getAudioFile } from '../db';
-import { extractYouTubeId } from '../utils/songHelpers';
-import { globalClock } from '../utils/clockEngine';
+import { getAudioFile } from '../../services/db';
+import { extractYouTubeId } from '../../utils/songHelpers';
+import { globalClock } from '../../utils/clockEngine';
 import './Player.css';
 
 const formatTime = (seconds) => {

@@ -1,6 +1,6 @@
 /* --- src/hooks/useTranslationWorkspaceData.js --- */
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { parseLyrics } from '../utils/songHelpers';
+import { parseLyrics } from '../../utils/songHelpers';
 
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return '';

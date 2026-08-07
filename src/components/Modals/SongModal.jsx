@@ -3,9 +3,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModalLeft from './ModalLeft';
 import ModalRight from './ModalRight';
-import { useSongData } from '../hooks/useSongData';
-import { useLyricsDisplay } from '../hooks/useLyricsDisplay';
-import { useSyncWorkspace } from '../hooks/useSyncWorkspace';
+import { useSongData } from '../../hooks/data/useSongData';
+import { useLyricsDisplay } from '../../hooks/sync/useLyricsDisplay';
+import { useSyncWorkspace } from '../../hooks/sync/useSyncWorkspace';
 import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {

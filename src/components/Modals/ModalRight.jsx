@@ -1,11 +1,11 @@
 /* --- src/components/ModalRight.jsx --- */
 import React from 'react';
-import DynamicBackground from './DynamicBackground';
-import ImageManager from './ImageManager';
-import { SyncWorkspace } from './SyncWorkspace';
-import LyricsDisplay from './LyricsDisplay';
-import TranslationWorkspace from './TranslationWorkspace';
-import AdlibDebugOverlay from './AdlibDebug/AdlibDebugOverlay';
+import DynamicBackground from '../Core/DynamicBackground';
+import ImageManager from '../Workspaces/Lyrics/ImageManager';
+import { SyncWorkspace } from '../Workspaces/Sync/SyncWorkspace';
+import LyricsDisplay from '../Workspaces/Lyrics/LyricsDisplay';
+import TranslationWorkspace from '../Workspaces/Translation/TranslationWorkspace';
+import AdlibDebugOverlay from '../AdlibDebug/AdlibDebugOverlay';
 import './ModalRight.css';
 
 const ModalRight = (props) => {

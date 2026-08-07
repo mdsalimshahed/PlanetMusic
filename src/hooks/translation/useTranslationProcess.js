@@ -1,6 +1,6 @@
 /* --- src/hooks/useTranslationProcess.js --- */
 import { useState, useRef, useEffect } from 'react';
-import { getBulkPronunciations } from '../transliterator';
+import { getBulkPronunciations } from '../../services/transliterator';
 
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return null;

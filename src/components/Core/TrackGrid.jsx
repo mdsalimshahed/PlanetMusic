@@ -1,7 +1,7 @@
 /* --- src/components/TrackGrid.jsx --- */
 import React from 'react';
 import SongCard from './SongCard';
-import InFeedSponsor from './Promos/InFeedSponsor';
+import InFeedSponsor from '../Promos/InFeedSponsor';
 
 const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack, adsEnabled }) => {
   return (

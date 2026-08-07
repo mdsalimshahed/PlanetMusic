@@ -1,14 +1,14 @@
 /* --- src/components/SettingsTab.jsx --- */
 import React from 'react';
 import './SettingsTab.css';
-import { useSettingsLogic } from '../hooks/useSettingsLogic';
+import { useSettingsLogic } from '../hooks/core/useSettingsLogic';
 
-import DeezerAuthCard from './Settings/DeezerAuthCard';
-import LayoutSettings from './Settings/LayoutSettings';
-import TypographySettings from './Settings/TypographySettings';
-import TranslationSettings from './Settings/TranslationSettings';
-import PurgeCard from './Settings/PurgeCard';
-import SponsorUnit from './Promos/SponsorUnit';
+import DeezerAuthCard from '../components/Settings/DeezerAuthCard';
+import LayoutSettings from '../components/Settings/LayoutSettings';
+import TypographySettings from '../components/Settings/TypographySettings';
+import TranslationSettings from '../components/Settings/TranslationSettings';
+import PurgeCard from '../components/Settings/PurgeCard';
+import SponsorUnit from '../components/Promos/SponsorUnit';
 
 const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled }) => {
   const {

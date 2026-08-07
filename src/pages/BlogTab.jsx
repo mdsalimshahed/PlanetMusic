@@ -2,8 +2,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './BlogTab.css';
-import SponsorUnit from './Promos/SponsorUnit';
-import InFeedSponsor from './Promos/InFeedSponsor';
+import SponsorUnit from '../components/Promos/SponsorUnit';
+import InFeedSponsor from '../components/Promos/InFeedSponsor';
 
 const BLOG_POSTS = [
   {

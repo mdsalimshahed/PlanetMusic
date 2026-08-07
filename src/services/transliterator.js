@@ -1,5 +1,5 @@
 /* --- src/transliterator.js --- */
-import { numberToEnglishWords } from './utils/numberToWords';
+import { numberToEnglishWords } from '../utils/numberToWords';
 
 // Clear legacy memory caches from localStorage
 try {

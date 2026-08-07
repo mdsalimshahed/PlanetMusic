@@ -1,6 +1,6 @@
 /* --- src/components/SongCard.jsx --- */
 import React, { useState, useEffect } from 'react';
-import { extractYouTubeId } from '../utils/songHelpers';
+import { extractYouTubeId } from '../../utils/songHelpers';
 import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {

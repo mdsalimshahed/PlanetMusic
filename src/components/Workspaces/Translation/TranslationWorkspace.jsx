@@ -1,10 +1,10 @@
 /* --- src/components/TranslationWorkspace.jsx --- */
 import React, { useState, useEffect } from 'react';
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from '../../Modals/ConfirmModal';
 import TranslationHeader from './TranslationHeader';
 import TranslationRow from './TranslationRow';
-import { useTranslationWorkspaceData } from '../hooks/useTranslationWorkspaceData';
-import { useTranslationProcess } from '../hooks/useTranslationProcess';
+import { useTranslationWorkspaceData } from '../../../hooks/translation/useTranslationWorkspaceData';
+import { useTranslationProcess } from '../../../hooks/translation/useTranslationProcess';
 import './TranslationWorkspace.css';
 
 const TranslationWorkspace = ({

@@ -1,7 +1,7 @@
 /* --- src/components/PrivacyTab.jsx --- */
 import React from 'react';
 import './PrivacyTab.css';
-import SponsorUnit from './Promos/SponsorUnit';
+import SponsorUnit from '../components/Promos/SponsorUnit';
 
 const PrivacyTab = ({ adsEnabled }) => {
   return (

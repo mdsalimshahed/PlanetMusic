@@ -1,6 +1,6 @@
 /* --- src/hooks/useLyricsDisplay.js --- */
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { parseLyrics } from '../utils/songHelpers';
+import { parseLyrics } from '../../utils/songHelpers';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');

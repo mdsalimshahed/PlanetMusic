@@ -1,7 +1,7 @@
 /* --- src/components/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect } from 'react';
-import { normalizeTrans, renderFormattedTranslation } from './LyricsLineRenderer';
-import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from './AdlibDebug/adlibPlacementLogic';
+import { normalizeTrans, renderFormattedTranslation } from "../Lyrics/LyricsLineRenderer";
+import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
 
 // GLOBAL CACHE: Persists calculated ad-lib positions in memory even if you go to the dashboard!
 // Only clears mathematically if window size or song lyrics change.

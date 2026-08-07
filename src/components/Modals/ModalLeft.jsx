@@ -1,6 +1,6 @@
 /* --- src/components/ModalLeft.jsx --- */
 import React, { useState, useEffect } from 'react';
-import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../utils/songHelpers';
+import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../utils/songHelpers';
 import './ModalLeft.css';
 
 // Universal monochromatic SVG Icon Helper

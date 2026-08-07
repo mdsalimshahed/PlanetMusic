@@ -1,8 +1,8 @@
 /* --- src/hooks/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { getAudioFile } from '../db';
-import { parseLyrics, extractYouTubeId } from '../utils/songHelpers';
-import { workspaceClock } from '../utils/clockEngine';
+import { getAudioFile } from '../../services/db';
+import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers';
+import { workspaceClock } from '../../utils/clockEngine';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic';
 
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings) => {

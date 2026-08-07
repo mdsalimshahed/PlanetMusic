@@ -1,7 +1,7 @@
 /* --- src/components/ContactTab.jsx --- */
 import React, { useState } from 'react';
 import './ContactTab.css';
-import SponsorUnit from './Promos/SponsorUnit';
+import SponsorUnit from '../components/Promos/SponsorUnit';
 
 const ContactTab = ({ adsEnabled }) => {
   const [formData, setFormData] = useState({ name: '', subject: 'General Inquiry', message: '' });

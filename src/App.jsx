@@ -3,23 +3,23 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 
-import Background from './components/Background';
-import Topbar from './components/Topbar';
-import SongModal from './components/SongModal';
-import Player from './components/Player';
-import SettingsTab from './components/SettingsTab';
-import BlogTab from './components/BlogTab';
-import PrivacyTab from './components/PrivacyTab';
-import ContactTab from './components/ContactTab';
+import Background from './components/Core/Background';
+import Topbar from './components/Core/Topbar';
+import SongModal from './components/Modals/SongModal';
+import Player from './components/Core/Player';
+import SettingsTab from './pages/SettingsTab';
+import BlogTab from './pages/BlogTab';
+import PrivacyTab from './pages/PrivacyTab';
+import ContactTab from './pages/ContactTab';
 import SponsorUnit from './components/Promos/SponsorUnit';
-import ConsentNotice from './components/ConsentNotice';
-import TrackGrid from './components/TrackGrid';
+import ConsentNotice from './components/Core/ConsentNotice';
+import TrackGrid from './components/Core/TrackGrid';
 
 // Custom Hooks for Modular Logic
-import { useAppStorage } from './hooks/useAppStorage';
-import { useVaultOperations } from './hooks/useVaultOperations';
-import { useCosmosSearch } from './hooks/useCosmosSearch';
-import { useDeepLink } from './hooks/useDeepLink';
+import { useAppStorage } from './hooks/data/useAppStorage';
+import { useVaultOperations } from './hooks/data/useVaultOperations';
+import { useCosmosSearch } from './hooks/core/useCosmosSearch';
+import { useDeepLink } from './hooks/core/useDeepLink';
 
 const App = () => {
   const location = useLocation();

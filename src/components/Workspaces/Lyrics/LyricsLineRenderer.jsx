@@ -1,12 +1,12 @@
 /* --- src/components/LyricsLineRenderer.jsx --- */
 import React, { useMemo } from 'react';
-import { getGraphemes, cleanTranslationText, isRTLLanguage, parsePronunciation } from './LyricsRenderer/textUtils';
-import SplitLine from './LyricsRenderer/SplitLine';
-import StandardLine from './LyricsRenderer/StandardLine';
+import { getGraphemes, cleanTranslationText, isRTLLanguage, parsePronunciation } from '../../LyricsRenderer/textUtils';
+import SplitLine from '../../LyricsRenderer/SplitLine';
+import StandardLine from '../../LyricsRenderer/StandardLine';
 
 // Re-export specific utilities that other parts of the app rely on
-export { normalizeTrans } from './LyricsRenderer/textUtils';
-export { renderFormattedTranslation } from './LyricsRenderer/Formatters';
+export { normalizeTrans } from '../../LyricsRenderer/textUtils';
+export { renderFormattedTranslation } from '../../LyricsRenderer/Formatters';
 
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;

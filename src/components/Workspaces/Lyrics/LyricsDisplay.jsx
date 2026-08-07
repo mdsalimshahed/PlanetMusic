@@ -1,7 +1,7 @@
 /* --- src/components/LyricsDisplay.jsx --- */
 import React, { useEffect, useRef } from 'react';
 import { LyricLineWrapper } from './LyricsLineRenderer';
-import { FocusedAdlibsTracker } from './FocusedAdlibsTracker';
+import { FocusedAdlibsTracker } from '../Sync/FocusedAdlibsTracker';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({ 

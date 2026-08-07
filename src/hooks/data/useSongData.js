@@ -1,7 +1,7 @@
 /* --- src/hooks/useSongData.js --- */
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { saveAudioFile, deleteAudioFile } from '../db';
-import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../utils/songHelpers';
+import { saveAudioFile, deleteAudioFile } from '../../services/db';
+import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../utils/songHelpers';
 
 export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
