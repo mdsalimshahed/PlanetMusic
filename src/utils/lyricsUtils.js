@@ -69,7 +69,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         });
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
       } else {
-        currentRules = [{ marker: '', artists: [] }];
+        // Heading with no colon (e.g. [Verse 1]) defaults to main artist
+        currentRules = [{ marker: '', artists: globalDefaultArtists }];
       }
       return;
     }
@@ -124,7 +125,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
     }
 
-    const finalSegments = [];
+    let rawSegments = [];
     const lineArtistsSet = new Set();
     const isOnlyPunctuationOrSpace = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u;
 
@@ -132,13 +133,13 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let artists = [];
         const rule = currentRules.find(r => r.marker === seg.marker);
         
-        if (rule) {
+        if (rule && rule.artists.length > 0) {
             artists = rule.artists;
         } else if (seg.marker === '') {
             artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
         } else {
-            // Unmapped formatting marker inside an explicit header block remains uncredited
-            artists = hasExplicitHeader ? [] : (currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists);
+            // Unformatted or unmapped marker defaults to global main artist if no explicit sub-artists defined
+            artists = globalDefaultArtists.length > 0 ? globalDefaultArtists : [];
         }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
@@ -160,7 +161,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         const cleanSegText = seg.text.replace(/[_*~]+/g, '');
         if (cleanSegText.length > 0) {
-            finalSegments.push({
+            rawSegments.push({
                   text: cleanSegText,
                   color: segColor,
                   isGradient: segIsGradient,
@@ -170,10 +171,55 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
+    // --- RE-ORDER ADLIBS & SANITIZE PUNCTUATION SPACING ---
+    const mainSegments = [];
+    const adlibSegments = [];
+
+    rawSegments.forEach(seg => {
+      const parts = seg.text.split(/(\([^)]+\))/g);
+      parts.forEach(part => {
+        if (!part) return;
+        const isAdlib = /^\([^)]+\)$/.test(part);
+        const subSeg = { ...seg, text: part };
+        if (isAdlib) {
+          adlibSegments.push(subSeg);
+        } else {
+          mainSegments.push(subSeg);
+        }
+      });
+    });
+
+    // Collapse awkward spaces before punctuation caused by adlib extraction
+    let sanitizedMainSegments = mainSegments.map(seg => ({
+      ...seg,
+      text: seg.text.replace(/\s+([.,!?;:]+)/g, '$1')
+    }));
+
+    // Ensure ad-libs are cleanly separated by a single space at the end
+    let sanitizedAdlibSegments = adlibSegments.map((seg, idx) => {
+      let text = seg.text.trim();
+      if (idx < adlibSegments.length - 1) {
+        text = text + ' ';
+      }
+      return { ...seg, text };
+    });
+
+    // Clean space between main text end and first adlib start
+    if (sanitizedMainSegments.length > 0 && sanitizedAdlibSegments.length > 0) {
+      const lastMainIdx = sanitizedMainSegments.length - 1;
+      sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.trimEnd() + ' ';
+    }
+
+    const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
+
+    if (lineArtistsSet.size === 0 && globalDefaultArtists.length > 0) {
+      globalDefaultArtists.forEach(a => lineArtistsSet.add(a));
+    }
+
     const finalArtistsArray = Array.from(lineArtistsSet);
-    const lineSinger = finalArtistsArray.join(', ');
+    const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : (defaultArtist || '');
     const displayText = finalSegments.map(s => s.text).join('');
-    let finalColor = '#ffffff';
+    let finalColor = colorPalette[defaultArtist] || '#ffffff';
     let lineIsGradient = false;
     let lineGradientStyle = '';
 
@@ -189,7 +235,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     result.push({
         text: displayText,
         segments: finalSegments,
-        singer: lineSinger, // Empty string if uncredited
+        singer: lineSinger,
         color: finalColor,
         isGradient: lineIsGradient,
         gradient: lineGradientStyle

@@ -40208,10 +40208,12 @@
             },
             {
               "text": "d.a. got that dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
               "text": ")",
@@ -40235,10 +40237,37 @@
           "isSplit": false
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40259,10 +40288,37 @@
           "isSplit": false
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40286,7 +40342,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40307,10 +40372,37 @@
           "isSplit": false
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40331,10 +40423,37 @@
           "isSplit": false
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40358,7 +40477,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40379,10 +40507,37 @@
           "isSplit": false
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40598,7 +40753,16 @@
           "text": "I'll await my trial date 'til then (What?)",
           "segments": [
             {
-              "text": "I'll await my trial date 'til then (What?)",
+              "text": "I'll await my trial date 'til then ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40619,10 +40783,37 @@
           "isSplit": false
         },
         {
-          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
+          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed  (Nah) (Yeah)",
           "segments": [
             {
-              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
+              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nah) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40646,7 +40837,16 @@
           "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)",
           "segments": [
             {
-              "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)",
+              "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Chill)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40694,7 +40894,16 @@
           "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)",
           "segments": [
             {
-              "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)",
+              "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Haha, yeah, hold up)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40718,7 +40927,16 @@
           "text": "And I'm still ride or die for the squad (Yeah)",
           "segments": [
             {
-              "text": "And I'm still ride or die for the squad (Yeah)",
+              "text": "And I'm still ride or die for the squad ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40862,7 +41080,16 @@
           "text": "They ain't never gonna get rid of the fight in the dog (Fight in the dog)",
           "segments": [
             {
-              "text": "They ain't never gonna get rid of the fight in the dog (Fight in the dog)",
+              "text": "They ain't never gonna get rid of the fight in the dog ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Fight in the dog)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40958,7 +41185,16 @@
           "text": "Bitch, you still on my dick or nah? (Nah)",
           "segments": [
             {
-              "text": "Bitch, you still on my dick or nah? (Nah)",
+              "text": "Bitch, you still on my dick or nah? ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -40982,7 +41218,16 @@
           "text": "If I suck, your wife is a straw (Straw)",
           "segments": [
             {
-              "text": "If I suck, your wife is a straw (Straw)",
+              "text": "If I suck, your wife is a straw ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Straw)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41027,10 +41272,37 @@
           "isSplit": false
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41051,10 +41323,37 @@
           "isSplit": false
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41078,7 +41377,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41099,10 +41407,37 @@
           "isSplit": false
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that)  (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that)  (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41123,10 +41458,37 @@
           "isSplit": false
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41150,7 +41512,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41171,10 +41542,37 @@
           "isSplit": false
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41195,10 +41593,37 @@
           "isSplit": false
         },
         {
-          "text": "Like trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)",
+          "text": "Like trying to fight off a gnat  (Like trying to fight off a gnat) (Yeah, yeah)",
           "segments": [
             {
-              "text": "Like trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)",
+              "text": "Like trying to fight off a gnat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Like trying to fight off a gnat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah, yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41232,13 +41657,24 @@
             },
             {
               "text": "d.a. got that dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
-              "text": " he sends to me (Uh-huh)",
+              "text": " he sends to me ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Uh-huh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41331,10 +41767,37 @@
           "isSplit": false
         },
         {
-          "text": "So vocalistically (What?), that's social distancing (Yeah)",
+          "text": "So vocalistically , that's social distancing (What?) (Yeah)",
           "segments": [
             {
-              "text": "So vocalistically (What?), that's social distancing (Yeah)",
+              "text": "So vocalistically ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": ", that's social distancing ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41347,8 +41810,8 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 99.16,
-          "end": 102.88,
+          "start": null,
+          "end": null,
           "wordSync": null,
           "pronunciation": null,
           "translation": "",
@@ -41382,7 +41845,16 @@
           "text": "With that Lysol and get way back (Shh)",
           "segments": [
             {
-              "text": "With that Lysol and get way back (Shh)",
+              "text": "With that Lysol and get way back ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Shh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41454,7 +41926,16 @@
           "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)",
           "segments": [
             {
-              "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)",
+              "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Face mask)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41502,7 +41983,16 @@
           "text": "This shit lookin' like a horror scene, like me metaphorically (Damn)",
           "segments": [
             {
-              "text": "This shit lookin' like a horror scene, like me metaphorically (Damn)",
+              "text": "This shit lookin' like a horror scene, like me metaphorically ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41574,7 +42064,16 @@
           "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)",
           "segments": [
             {
-              "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)",
+              "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Norma Jeane)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41619,10 +42118,28 @@
           "isSplit": false
         },
         {
-          "text": "'Cause I'm so fuckin' dope (Dope) and you're a fiend",
+          "text": "'Cause I'm so fuckin' dope  and you're a fiend (Dope)",
           "segments": [
             {
-              "text": "'Cause I'm so fuckin' dope (Dope) and you're a fiend",
+              "text": "'Cause I'm so fuckin' dope ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " and you're a fiend ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Dope)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41635,8 +42152,8 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 132.59,
-          "end": 135.5,
+          "start": null,
+          "end": null,
           "wordSync": null,
           "pronunciation": null,
           "translation": "",
@@ -41646,7 +42163,16 @@
           "text": "And that's the one thing that hasn't changed (Nope)",
           "segments": [
             {
-              "text": "And that's the one thing that hasn't changed (Nope)",
+              "text": "And that's the one thing that hasn't changed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nope)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41694,7 +42220,16 @@
           "text": "But I might need that Hydrochloroquine 'cause I got that (Yeah)",
           "segments": [
             {
-              "text": "But I might need that Hydrochloroquine 'cause I got that (Yeah)",
+              "text": "But I might need that Hydrochloroquine 'cause I got that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41742,7 +42277,16 @@
           "text": "Mom fed me Valium like air (Mmm)",
           "segments": [
             {
-              "text": "Mom fed me Valium like air (Mmm)",
+              "text": "Mom fed me Valium like air ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Mmm)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41766,7 +42310,16 @@
           "text": "Thought that's why they called it a high chair (Woah)",
           "segments": [
             {
-              "text": "Thought that's why they called it a high chair (Woah)",
+              "text": "Thought that's why they called it a high chair ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Woah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41790,7 +42343,16 @@
           "text": "I got a contact like eyewear (Woah)",
           "segments": [
             {
-              "text": "I got a contact like eyewear (Woah)",
+              "text": "I got a contact like eyewear ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Woah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -41814,7 +42376,16 @@
           "text": "Wait a minute, bitch, let me lie here (Uh)",
           "segments": [
             {
-              "text": "Wait a minute, bitch, let me lie here (Uh)",
+              "text": "Wait a minute, bitch, let me lie here ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Uh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42544,10 +43115,12 @@
             },
             {
               "text": "Dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
               "text": ")",
@@ -42667,10 +43240,37 @@
           "isSplit": false
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42691,10 +43291,37 @@
           "isSplit": false
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42718,7 +43345,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42739,10 +43375,37 @@
           "isSplit": false
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42763,10 +43426,37 @@
           "isSplit": false
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42790,7 +43480,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42811,10 +43510,37 @@
           "isSplit": false
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42838,7 +43564,16 @@
           "text": "It's like trying to fight off a gnat (Fight off a gnat)",
           "segments": [
             {
-              "text": "It's like trying to fight off a gnat (Fight off a gnat)",
+              "text": "It's like trying to fight off a gnat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Fight off a gnat)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42874,10 +43609,12 @@
             },
             {
               "text": "d.a. got that dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
               "text": ")",
@@ -42893,10 +43630,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 4.294379,
           "end": 6.521094,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -42917,10 +43654,12 @@
                 },
                 {
                   "text": "d.a. got that dope",
-                  "color": "#ffffff",
+                  "color": "#af8d8d",
                   "isGradient": false,
                   "gradient": "",
-                  "artists": []
+                  "artists": [
+                    "Eminem"
+                  ]
                 },
                 {
                   "text": ")",
@@ -42939,10 +43678,37 @@
           ]
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -42955,17 +43721,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 6.605295,
           "end": 8.255331,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Bars are like COVID)",
-              "charStart": 35,
-              "charEnd": 56,
-              "start": 7.805495,
+              "charStart": 36,
+              "charEnd": 57,
+              "start": 7.853888186926127,
               "end": 8.255331,
               "segments": [
                 {
@@ -42979,14 +43745,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(What?)",
-              "charStart": 57,
-              "charEnd": 64,
-              "start": 7.736143,
+              "charStart": 58,
+              "charEnd": 65,
+              "start": 7.837939948495626,
               "end": 8.255331,
               "segments": [
                 {
@@ -43000,16 +43765,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43022,17 +43813,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 8.361279,
           "end": 9.956032,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You get 'em right off the bat)",
-              "charStart": 30,
-              "charEnd": 61,
-              "start": 9.299176,
+              "charStart": 31,
+              "charEnd": 62,
+              "start": 9.333733093455612,
               "end": 9.956032,
               "segments": [
                 {
@@ -43046,14 +43837,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 62,
-              "charEnd": 68,
-              "start": 9.938654,
+              "charStart": 63,
+              "charEnd": 69,
+              "start": 9.489253927525223,
               "end": 9.956032,
               "segments": [
                 {
@@ -43067,8 +43857,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -43076,7 +43865,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43089,10 +43887,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 10.063915,
           "end": 11.667386,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43119,10 +43917,37 @@
           ]
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43135,17 +43960,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 11.760467,
           "end": 13.24929,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You took a bite off of that)",
-              "charStart": 33,
-              "charEnd": 62,
-              "start": 12.692831,
+              "charStart": 34,
+              "charEnd": 63,
+              "start": 12.726394782557785,
               "end": 13.24929,
               "segments": [
                 {
@@ -43159,14 +43984,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Damn)",
-              "charStart": 63,
-              "charEnd": 69,
-              "start": 12.868109,
+              "charStart": 64,
+              "charEnd": 70,
+              "start": 12.862334093460083,
               "end": 13.24929,
               "segments": [
                 {
@@ -43180,16 +44004,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43202,17 +44052,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 13.356908,
           "end": 15.150242,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(From martian to human)",
-              "charStart": 34,
-              "charEnd": 57,
-              "start": 14.529978,
+              "charStart": 35,
+              "charEnd": 58,
+              "start": 14.411704855035543,
               "end": 15.150242,
               "segments": [
                 {
@@ -43226,14 +44076,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 58,
-              "charEnd": 64,
-              "start": 14.65829,
+              "charStart": 59,
+              "charEnd": 65,
+              "start": 14.630830114437938,
               "end": 15.150242,
               "segments": [
                 {
@@ -43247,8 +44096,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -43256,7 +44104,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43269,10 +44126,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 15.241463,
           "end": 16.650163,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43299,10 +44156,37 @@
           ]
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43315,17 +44199,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 16.737423,
           "end": 18.448769,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(At me with machine guns)",
-              "charStart": 34,
-              "charEnd": 59,
-              "start": 17.845279,
+              "charStart": 35,
+              "charEnd": 60,
+              "start": 17.939598093464554,
               "end": 18.448769,
               "segments": [
                 {
@@ -43339,14 +44223,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
-              "text": "(brr)",
-              "charStart": 60,
-              "charEnd": 65,
-              "start": 18.048693,
+              "text": "(Brr)",
+              "charStart": 61,
+              "charEnd": 66,
+              "start": 17.980053020977856,
               "end": 18.448769,
               "segments": [
                 {
@@ -43360,8 +44243,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -43382,10 +44264,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 18.543427,
           "end": 19.637706,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43405,10 +44287,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 20.260716,
           "end": 21.556394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43428,10 +44310,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 21.832959,
           "end": 23.213501,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43451,10 +44333,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 23.377771,
           "end": 24.815824,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43474,10 +44356,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 24.931146,
           "end": 26.431233,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43497,10 +44379,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 26.56834,
           "end": 28.24317,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43520,10 +44402,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 28.34726,
           "end": 29.859426,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43543,17 +44425,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 29.961613,
           "end": 31.561689,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "I'll await my trial date 'til then (What?)",
           "segments": [
             {
-              "text": "I'll await my trial date 'til then (What?)",
+              "text": "I'll await my trial date 'til then ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43566,10 +44457,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 31.669606,
           "end": 33.91418,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43596,10 +44487,37 @@
           ]
         },
         {
-          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
+          "text": "Ain't nothin' you say could ever trump, mic, pencil get killed  (Nah) (Yeah)",
           "segments": [
             {
-              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed (Nah) (Yeah)",
+              "text": "Ain't nothin' you say could ever trump, mic, pencil get killed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nah) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43612,18 +44530,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 33.99135102097786,
           "end": 37.327751020976365,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Nah)",
-              "charStart": 63,
-              "charEnd": 68,
-              "start": 35.4063091659438,
-              "end": 35.88020916594231,
+              "charStart": 64,
+              "charEnd": 69,
+              "start": 35.437527876020845,
+              "end": 36.013827876017864,
               "segments": [
                 {
                   "text": "(Nah)",
@@ -43636,14 +44554,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 69,
-              "charEnd": 75,
-              "start": 37.07343992752075,
+              "charStart": 70,
+              "charEnd": 76,
+              "start": 36.98803802098232,
               "end": 37.327751020976365,
               "segments": [
                 {
@@ -43657,8 +44574,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -43666,7 +44582,16 @@
           "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)",
           "segments": [
             {
-              "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill (Chill)",
+              "text": "If you're hypersensitive, I wasn't referencin' the vice president, chill ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Chill)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43679,10 +44604,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 37.526635,
           "end": 40.741421,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43725,17 +44650,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 40.880812,
           "end": 44.084726,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)",
           "segments": [
             {
-              "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed (Haha, yeah, hold up)",
+              "text": "That's why I hence when I write ends up with the mic and pencil gettin' killed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Haha, yeah, hold up)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43748,10 +44682,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 44.220013,
           "end": 49.086566,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43781,7 +44715,16 @@
           "text": "And I'm still ride or die for the squad (Yeah)",
           "segments": [
             {
-              "text": "And I'm still ride or die for the squad (Yeah)",
+              "text": "And I'm still ride or die for the squad ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43794,10 +44737,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 49.180292,
           "end": 51.291906,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -43840,10 +44783,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 51.401779,
           "end": 52.519972,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43863,10 +44806,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 52.61777,
           "end": 54.366719,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43886,10 +44829,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 54.468941,
           "end": 56.063189,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43909,10 +44852,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 56.427665,
           "end": 57.747117,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -43932,17 +44875,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 58.004218,
           "end": 59.341873,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "They ain't never gonna get rid of the fight in the dog (Fight in the dog)",
           "segments": [
             {
-              "text": "They ain't never gonna get rid of the fight in the dog (Fight in the dog)",
+              "text": "They ain't never gonna get rid of the fight in the dog ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Fight in the dog)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -43955,10 +44907,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 59.459258,
           "end": 62.011351,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44001,10 +44953,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 62.09374,
           "end": 64.674558,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44024,10 +44976,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 64.766358,
           "end": 66.216394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44047,17 +44999,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 66.300455,
           "end": 68.007041,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "Bitch, you still on my dick or nah? (Nah)",
           "segments": [
             {
-              "text": "Bitch, you still on my dick or nah? (Nah)",
+              "text": "Bitch, you still on my dick or nah? ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44070,10 +45031,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 68.421138,
           "end": 69.979588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44103,7 +45064,16 @@
           "text": "If I suck, your wife is a straw (Straw)",
           "segments": [
             {
-              "text": "If I suck, your wife is a straw (Straw)",
+              "text": "If I suck, your wife is a straw ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Straw)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44116,10 +45086,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 70.091201,
           "end": 71.668422,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44162,17 +45132,44 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 71.789552,
           "end": 74.686658,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44185,17 +45182,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 74.789085,
           "end": 76.307267,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Bars are like COVID)",
-              "charStart": 35,
-              "charEnd": 56,
-              "start": 75.844174,
+              "charStart": 36,
+              "charEnd": 57,
+              "start": 75.84440504196466,
               "end": 76.307267,
               "segments": [
                 {
@@ -44209,14 +45206,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(What?)",
-              "charStart": 57,
-              "charEnd": 64,
-              "start": 76.015796,
+              "charStart": 58,
+              "charEnd": 65,
+              "start": 75.88598387602234,
               "end": 76.307267,
               "segments": [
                 {
@@ -44230,16 +45226,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44252,17 +45274,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 76.426389,
           "end": 77.985588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You get 'em right off the bat)",
-              "charStart": 30,
-              "charEnd": 61,
-              "start": 77.352894,
+              "charStart": 31,
+              "charEnd": 62,
+              "start": 77.3427539694854,
               "end": 77.985588,
               "segments": [
                 {
@@ -44276,14 +45298,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 62,
-              "charEnd": 68,
-              "start": 77.774372,
+              "charStart": 63,
+              "charEnd": 69,
+              "start": 77.55121302098084,
               "end": 77.985588,
               "segments": [
                 {
@@ -44297,8 +45318,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -44306,7 +45326,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44319,10 +45348,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 78.088959,
           "end": 79.631282,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44349,10 +45378,37 @@
           ]
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that)  (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that)  (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44365,17 +45421,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 79.728868,
           "end": 81.243845,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You took a bite off of that)",
-              "charStart": 33,
-              "charEnd": 62,
-              "start": 80.693436,
+              "charStart": 34,
+              "charEnd": 63,
+              "start": 80.70061609346158,
               "end": 81.243845,
               "segments": [
                 {
@@ -44389,14 +45445,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Damn)",
               "charStart": 64,
               "charEnd": 70,
-              "start": 81.00044,
+              "start": 80.94843802097637,
               "end": 81.243845,
               "segments": [
                 {
@@ -44410,16 +45465,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44432,17 +45513,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 81.380058,
-          "end": 83.183052,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 81.380058,
+          "end": 83.13243692752522,
           "isSplit": true,
           "adlibs": [
             {
               "text": "(From martian to human)",
-              "charStart": 34,
-              "charEnd": 57,
-              "start": 82.549017,
+              "charStart": 35,
+              "charEnd": 58,
+              "start": 82.55063502098083,
               "end": 83.183052,
               "segments": [
                 {
@@ -44456,14 +45537,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 58,
-              "charEnd": 64,
-              "start": 82.733637,
+              "charStart": 59,
+              "charEnd": 65,
+              "start": 82.68633802097933,
               "end": 83.183052,
               "segments": [
                 {
@@ -44477,8 +45557,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -44486,7 +45565,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44499,10 +45587,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 83.289568,
-          "end": 84.789239,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 83.26573692752224,
+          "end": 84.76723692752225,
           "isSplit": true,
           "adlibs": [
             {
@@ -44529,10 +45617,37 @@
           ]
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44545,17 +45660,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 84.903684,
           "end": 86.443384,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(At me with machine guns)",
-              "charStart": 34,
-              "charEnd": 59,
-              "start": 86.101627,
+              "charStart": 35,
+              "charEnd": 60,
+              "start": 85.94129192752075,
               "end": 86.443384,
               "segments": [
                 {
@@ -44569,14 +45684,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Brr)",
-              "charStart": 60,
-              "charEnd": 65,
-              "start": 86.146592,
+              "charStart": 61,
+              "charEnd": 66,
+              "start": 86.08508409345711,
               "end": 86.443384,
               "segments": [
                 {
@@ -44590,16 +45704,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "Like trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)",
+          "text": "Like trying to fight off a gnat  (Like trying to fight off a gnat) (Yeah, yeah)",
           "segments": [
             {
-              "text": "Like trying to fight off a gnat (Like trying to fight off a gnat) (Yeah, yeah)",
+              "text": "Like trying to fight off a gnat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Like trying to fight off a gnat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah, yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44612,18 +45752,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 86.554208,
           "end": 89.505362,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Like trying to fight off a gnat)",
-              "charStart": 32,
-              "charEnd": 65,
-              "start": 87.67369,
-              "end": 89.505362,
+              "charStart": 33,
+              "charEnd": 66,
+              "start": 87.4988428550415,
+              "end": 88.53334285504151,
               "segments": [
                 {
                   "text": "(Like trying to fight off a gnat)",
@@ -44636,14 +45776,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah, yeah)",
-              "charStart": 66,
-              "charEnd": 78,
-              "start": 88.266542,
+              "charStart": 67,
+              "charEnd": 79,
+              "start": 88.07714592751627,
               "end": 89.505362,
               "segments": [
                 {
@@ -44657,8 +45796,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -44676,13 +45814,24 @@
             },
             {
               "text": "d.a. got that dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
-              "text": " he sends to me (Uh-huh)",
+              "text": " he sends to me ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Uh-huh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44695,10 +45844,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 90.023836,
           "end": 92.674544,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44741,10 +45890,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 92.830986,
           "end": 95.423463,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44764,10 +45913,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 95.538649,
           "end": 97.126559,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44787,17 +45936,44 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 97.208289,
           "end": 99.702464,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
-          "text": "So vocalistically (What?), that's social distancing (Yeah)",
+          "text": "So vocalistically , that's social distancing (What?) (Yeah)",
           "segments": [
             {
-              "text": "So vocalistically (What?), that's social distancing (Yeah)",
+              "text": "So vocalistically ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": ", that's social distancing ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44810,18 +45986,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 99.793846,
-          "end": 103.006169,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 99.95288185504747,
+          "end": 103.00282909346008,
           "isSplit": true,
           "adlibs": [
             {
               "text": "(What?)",
-              "charStart": 18,
-              "charEnd": 25,
-              "start": 100.951809,
-              "end": 101.476534,
+              "charStart": 45,
+              "charEnd": 52,
+              "start": 101.0190648550415,
+              "end": 101.4947648550445,
               "segments": [
                 {
                   "text": "(What?)",
@@ -44834,15 +46010,14 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 52,
-              "charEnd": 58,
-              "start": 102.440039,
-              "end": 103.006169,
+              "charStart": 53,
+              "charEnd": 59,
+              "start": 102.56659392752076,
+              "end": 103.00282909346008,
               "segments": [
                 {
                   "text": "(Yeah)",
@@ -44855,8 +46030,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -44877,17 +46051,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 103.531888,
           "end": 105.12413,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "With that Lysol and get way back (Shh)",
           "segments": [
             {
-              "text": "With that Lysol and get way back (Shh)",
+              "text": "With that Lysol and get way back ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Shh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44900,10 +46083,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 105.222807,
           "end": 107.021414,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -44946,10 +46129,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 107.131717,
           "end": 108.525807,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -44969,17 +46152,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 108.621063,
           "end": 112.036883,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)",
           "segments": [
             {
-              "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask (Face mask)",
+              "text": "Bitch, back the fuck up like fifteen yards, these rhymes call for a face mask ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Face mask)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -44992,10 +46184,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 112.170397,
           "end": 116.394083,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45038,17 +46230,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 116.506449,
           "end": 119.399785,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "This shit lookin' like a horror scene, like me metaphorically (Damn)",
           "segments": [
             {
-              "text": "This shit lookin' like a horror scene, like me metaphorically (Damn)",
+              "text": "This shit lookin' like a horror scene, like me metaphorically ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45061,10 +46262,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 119.505566,
           "end": 122.666624,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45107,10 +46308,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 122.786611,
           "end": 123.934565,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45130,17 +46331,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 124.039042,
           "end": 125.666089,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)",
           "segments": [
             {
-              "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane (Norma Jeane)",
+              "text": "Who knows when this nightmare'll end, like Monroe, Norma Jeane ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Norma Jeane)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45153,10 +46363,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 125.770923,
           "end": 129.742854,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45199,17 +46409,35 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 129.84853,
           "end": 133.297374,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
-          "text": "'Cause I'm so fuckin' dope (Dope) and you're a fiend",
+          "text": "'Cause I'm so fuckin' dope  and you're a fiend (Dope)",
           "segments": [
             {
-              "text": "'Cause I'm so fuckin' dope (Dope) and you're a fiend",
+              "text": "'Cause I'm so fuckin' dope ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " and you're a fiend ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Dope)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45222,18 +46450,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 133.393133,
-          "end": 136.1049,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 133.60315109346007,
+          "end": 136.05305809345862,
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Dope)",
-              "charStart": 27,
-              "charEnd": 33,
-              "start": 134.983121,
-              "end": 135.550706,
+              "charStart": 47,
+              "charEnd": 53,
+              "start": 134.99447204196616,
+              "end": 135.32505109346604,
               "segments": [
                 {
                   "text": "(Dope)",
@@ -45246,8 +46474,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -45255,7 +46482,16 @@
           "text": "And that's the one thing that hasn't changed (Nope)",
           "segments": [
             {
-              "text": "And that's the one thing that hasn't changed (Nope)",
+              "text": "And that's the one thing that hasn't changed ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Nope)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45268,10 +46504,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 136.205815,
-          "end": 137.892737,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 136.1847580934616,
+          "end": 138.0743450934571,
           "isSplit": true,
           "adlibs": [
             {
@@ -45314,17 +46550,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 137.996989,
-          "end": 139.482849,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 138.23054509346008,
+          "end": 139.63714509346158,
           "isSplit": false
         },
         {
           "text": "But I might need that Hydrochloroquine 'cause I got that (Yeah)",
           "segments": [
             {
-              "text": "But I might need that Hydrochloroquine 'cause I got that (Yeah)",
+              "text": "But I might need that Hydrochloroquine 'cause I got that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45337,17 +46582,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 139.993237,
           "end": 143.509676,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Yeah)",
               "charStart": 57,
               "charEnd": 63,
-              "start": 143.38171,
+              "start": 142.90704202098232,
               "end": 143.509676,
               "segments": [
                 {
@@ -45383,17 +46628,26 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 143.615731,
           "end": 144.71664,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
           "text": "Mom fed me Valium like air (Mmm)",
           "segments": [
             {
-              "text": "Mom fed me Valium like air (Mmm)",
+              "text": "Mom fed me Valium like air ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Mmm)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45406,10 +46660,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 144.920861,
           "end": 146.733616,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45439,7 +46693,16 @@
           "text": "Thought that's why they called it a high chair (Woah)",
           "segments": [
             {
-              "text": "Thought that's why they called it a high chair (Woah)",
+              "text": "Thought that's why they called it a high chair ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Woah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45452,10 +46715,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 146.867971,
           "end": 148.182517,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45485,7 +46748,16 @@
           "text": "I got a contact like eyewear (Woah)",
           "segments": [
             {
-              "text": "I got a contact like eyewear (Woah)",
+              "text": "I got a contact like eyewear ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Woah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45498,10 +46770,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 148.336342,
           "end": 150.142668,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45531,7 +46803,16 @@
           "text": "Wait a minute, bitch, let me lie here (Uh)",
           "segments": [
             {
-              "text": "Wait a minute, bitch, let me lie here (Uh)",
+              "text": "Wait a minute, bitch, let me lie here ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Uh)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -45544,10 +46825,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 150.284232,
           "end": 151.858833,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45590,10 +46871,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 151.976399,
           "end": 153.23458,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45613,10 +46894,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 153.321716,
           "end": 154.768442,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45636,10 +46917,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 154.861439,
           "end": 156.7064,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45659,10 +46940,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 156.797556,
           "end": 158.869098,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45682,10 +46963,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 158.960565,
           "end": 160.028875,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45705,10 +46986,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 160.13488,
           "end": 161.809016,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45728,10 +47009,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 161.944517,
           "end": 163.475188,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45751,10 +47032,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 163.584683,
           "end": 165.651771,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45774,10 +47055,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 165.763856,
           "end": 168.041753,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45797,10 +47078,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 168.149611,
           "end": 169.461507,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45820,10 +47101,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 170.065416,
           "end": 171.850081,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45843,10 +47124,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 171.940246,
           "end": 173.425489,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45866,10 +47147,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 173.513318,
           "end": 175.176862,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45889,10 +47170,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 175.272676,
           "end": 176.888133,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45912,10 +47193,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 176.972409,
           "end": 178.509823,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45935,10 +47216,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 178.613835,
           "end": 179.985965,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45958,10 +47239,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 180.086704,
           "end": 181.740526,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45981,10 +47262,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 181.832532,
           "end": 183.55378,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46004,10 +47285,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 183.655208,
           "end": 185.691697,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46027,10 +47308,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 185.782491,
           "end": 186.802202,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46050,10 +47331,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 186.900402,
           "end": 188.812027,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46073,10 +47354,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 188.91481,
           "end": 190.743602,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46096,10 +47377,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 190.845591,
           "end": 191.582285,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46119,10 +47400,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 191.676583,
           "end": 193.504343,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46142,10 +47423,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 193.626579,
           "end": 195.661622,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46165,10 +47446,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 195.76654,
           "end": 197.216913,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46188,10 +47469,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 197.315076,
           "end": 198.858958,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46211,10 +47492,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 198.941023,
           "end": 200.544172,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46234,10 +47515,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 200.654493,
           "end": 202.278159,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46254,10 +47535,12 @@
             },
             {
               "text": "Dope",
-              "color": "#ffffff",
+              "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
-              "artists": []
+              "artists": [
+                "Eminem"
+              ]
             },
             {
               "text": ")",
@@ -46273,10 +47556,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 202.382264,
           "end": 204.413814,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46297,10 +47580,12 @@
                 },
                 {
                   "text": "Dope",
-                  "color": "#ffffff",
+                  "color": "#af8d8d",
                   "isGradient": false,
                   "gradient": "",
-                  "artists": []
+                  "artists": [
+                    "Eminem"
+                  ]
                 },
                 {
                   "text": ")",
@@ -46335,10 +47620,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 204.512753,
           "end": 205.66944,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46358,10 +47643,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 205.78973,
           "end": 207.086166,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46381,10 +47666,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 207.188495,
           "end": 208.988174,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46404,17 +47689,44 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 209.100114,
           "end": 210.822061,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
-          "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+          "text": "They say these bars are like COVID  (Bars are like COVID) (What?)",
           "segments": [
             {
-              "text": "They say these bars are like COVID (Bars are like COVID) (What?)",
+              "text": "They say these bars are like COVID ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Bars are like COVID) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(What?)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46427,17 +47739,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 210.920639,
           "end": 212.563029,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(Bars are like COVID)",
-              "charStart": 35,
-              "charEnd": 56,
-              "start": 212.031827,
+              "charStart": 36,
+              "charEnd": 57,
+              "start": 212.15320987602234,
               "end": 212.563029,
               "segments": [
                 {
@@ -46451,14 +47763,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(What?)",
-              "charStart": 57,
-              "charEnd": 64,
-              "start": 212.036641,
+              "charStart": 58,
+              "charEnd": 65,
+              "start": 212.05722809346008,
               "end": 212.563029,
               "segments": [
                 {
@@ -46472,16 +47783,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+          "text": "You get 'em right off the bat  (You get 'em right off the bat) (Yeah)",
           "segments": [
             {
-              "text": "You get 'em right off the bat (You get 'em right off the bat) (Yeah)",
+              "text": "You get 'em right off the bat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You get 'em right off the bat) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46494,17 +47831,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 212.690398,
           "end": 214.274455,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You get 'em right off the bat)",
-              "charStart": 30,
-              "charEnd": 61,
-              "start": 213.653422,
+              "charStart": 31,
+              "charEnd": 62,
+              "start": 213.667305855043,
               "end": 214.274455,
               "segments": [
                 {
@@ -46518,14 +47855,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 62,
-              "charEnd": 68,
-              "start": 214.014924,
+              "charStart": 63,
+              "charEnd": 69,
+              "start": 213.79243985503854,
               "end": 214.274455,
               "segments": [
                 {
@@ -46539,8 +47875,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -46548,7 +47883,16 @@
           "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
           "segments": [
             {
-              "text": "Infected with SARS and Corona (Infected with SARS and Corona)",
+              "text": "Infected with SARS and Corona ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Infected with SARS and Corona)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46561,10 +47905,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 214.386163,
           "end": 215.930533,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46591,10 +47935,37 @@
           ]
         },
         {
-          "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+          "text": "Like you took a bite off of that  (You took a bite off of that) (Damn)",
           "segments": [
             {
-              "text": "Like you took a bite off of that (You took a bite off of that) (Damn)",
+              "text": "Like you took a bite off of that ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(You took a bite off of that) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Damn)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46607,17 +47978,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 216.031144,
           "end": 217.501266,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(You took a bite off of that)",
-              "charStart": 33,
-              "charEnd": 62,
-              "start": 216.96964,
+              "charStart": 34,
+              "charEnd": 63,
+              "start": 216.90529809346157,
               "end": 217.501266,
               "segments": [
                 {
@@ -46631,14 +48002,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Damn)",
-              "charStart": 63,
-              "charEnd": 69,
-              "start": 217.118109,
+              "charStart": 64,
+              "charEnd": 70,
+              "start": 217.07666192752225,
               "end": 217.501266,
               "segments": [
                 {
@@ -46652,16 +48022,42 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
         {
-          "text": "And it goes from martian to human (From martian to human) (Yeah)",
+          "text": "And it goes from martian to human  (From martian to human) (Yeah)",
           "segments": [
             {
-              "text": "And it goes from martian to human (From martian to human) (Yeah)",
+              "text": "And it goes from martian to human ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(From martian to human) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Yeah)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46674,17 +48070,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 217.634917,
           "end": 219.217272,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(From martian to human)",
-              "charStart": 34,
-              "charEnd": 57,
-              "start": 218.664459,
+              "charStart": 35,
+              "charEnd": 58,
+              "start": 218.67028287602682,
               "end": 219.217272,
               "segments": [
                 {
@@ -46698,14 +48094,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 58,
-              "charEnd": 64,
-              "start": 218.918014,
+              "charStart": 59,
+              "charEnd": 65,
+              "start": 218.8643940934571,
               "end": 219.217272,
               "segments": [
                 {
@@ -46719,8 +48114,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -46728,7 +48122,16 @@
           "text": "That's how the virus attacks (That's how the virus attacks)",
           "segments": [
             {
-              "text": "That's how the virus attacks (That's how the virus attacks)",
+              "text": "That's how the virus attacks ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(That's how the virus attacks)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46741,10 +48144,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 219.313547,
           "end": 221.008175,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46771,10 +48174,37 @@
           ]
         },
         {
-          "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+          "text": "They come at me with machine guns  (At me with machine guns) (Brr)",
           "segments": [
             {
-              "text": "They come at me with machine guns (At me with machine guns) (Brr)",
+              "text": "They come at me with machine guns ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(At me with machine guns) ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Brr)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46787,17 +48217,17 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 221.116861,
           "end": 222.70939,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(At me with machine guns)",
-              "charStart": 34,
-              "charEnd": 59,
-              "start": 222.089815,
+              "charStart": 35,
+              "charEnd": 60,
+              "start": 222.090681855043,
               "end": 222.70939,
               "segments": [
                 {
@@ -46811,14 +48241,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Brr)",
-              "charStart": 60,
-              "charEnd": 65,
-              "start": 222.283141,
+              "charStart": 61,
+              "charEnd": 66,
+              "start": 222.3496121144454,
               "end": 222.70939,
               "segments": [
                 {
@@ -46832,8 +48261,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -46841,7 +48269,16 @@
           "text": "It's like trying to fight off a gnat (Fight off a gnat)",
           "segments": [
             {
-              "text": "It's like trying to fight off a gnat (Fight off a gnat)",
+              "text": "It's like trying to fight off a gnat ",
+              "color": "#af8d8d",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Eminem"
+              ]
+            },
+            {
+              "text": "(Fight off a gnat)",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -46854,10 +48291,10 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "translation": "",
+          "pronunciation": null,
           "start": 222.815095,
           "end": 224.63638,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
