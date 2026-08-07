@@ -33,7 +33,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  /* Container Query context so text sizes directly proportional to card width */
   container-type: inline-size;
 }
 
@@ -46,8 +45,8 @@
   display: block;
 }
 
-/* API Source Tags on Top-Left Corner (Vertically Stacked) */
-.card-source-tags {
+/* Top-Left Overlay Badges (Vertically Stacked) */
+.card-top-left-badges {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -81,6 +80,20 @@
   backdrop-filter: blur(4px);
   border: 1px solid rgba(251, 191, 36, 0.4);
   color: black;
+}
+
+/* Top-Left Explicit Tag */
+.card-explicit-tag {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  width: fit-content;
 }
 
 /* Play Button stays Top-Right */
@@ -119,32 +132,30 @@
   position: relative;
   z-index: 6;
   margin: 8px;
-  /* Keep container click-through to allow card clicking */
   pointer-events: none;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .card-info-text-only h4 {
   font-size: clamp(12px, 7.5cqw, var(--dyn-card-font-size, 1.5vh));
   font-weight: 700;
-  margin: 0 0 4px 0;
+  margin: 0;
   line-height: 1.3;
   color: #ffffff;
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
-  /* CRITICAL: Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
-  
-  /* Strict 2-Line Truncation */
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  /* autoprefixer: ignore next - Prevents React's compiler from breaking the ellipsis */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }
 
 .card-info-text-only p {
@@ -155,13 +166,9 @@
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
-  /* Reactivate pointer events strictly for the text so hover tooltips trigger */
   pointer-events: auto;
-  
-  /* Strict 2-Line Truncation */
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  /* autoprefixer: ignore next - Prevents React's compiler from breaking the ellipsis */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -178,24 +185,6 @@
 .artist-span {
   color: rgba(255, 255, 255, 0.95);
   background: rgba(0, 0, 0, 0.75);
-}
-
-/* ADDED SCOPE: Strict adherence to dark background to prevent CSS crossover */
-.song-card .explicit-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.85) !important;
-  color: #ffffff !important;
-  font-size: 10px;
-  font-weight: 800;
-  width: 15px;
-  height: 15px;
-  border-radius: 0px !important;
-  margin-left: 5px;
-  vertical-align: middle;
-  flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 480px) {

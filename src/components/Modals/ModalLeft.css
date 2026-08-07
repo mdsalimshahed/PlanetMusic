@@ -1,18 +1,17 @@
-/* --- src/components/ModalLeft.css --- */
-.modal-left-col {
+/* --- src/components/Modals/ModalLeft.css --- */
+.modal-left-col { 
    flex: var(--dyn-modal-split, 50);
    display: flex;
    flex-direction: column;
    overflow: hidden;
    min-height: 0;
    min-width: 0;
-   /* Prevent layout shift repaints */
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  transform: translateZ(0);
+   -webkit-backface-visibility: hidden;
+   backface-visibility: hidden;
+   transform: translateZ(0);
 }
 
-.modal-left-static {
+.modal-left-static { 
    display: flex;
    flex-direction: column;
    gap: clamp(10px, 1.5vw, 16px);
@@ -22,7 +21,7 @@
    min-width: 0; 
 }
 
-.modal-left-scrollable {
+.modal-left-scrollable { 
    flex: 1;
    display: flex;
    flex-direction: column;
@@ -32,16 +31,13 @@
    padding-bottom: 120px;
    min-height: 0;
    min-width: 0;
-  -webkit-overflow-scrolling: touch;
+   -webkit-overflow-scrolling: touch;
 }
 
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-/* CRITICAL FIX: Re-introduced a strict max-height. 
-   It is taller than the image to give the title more room, 
-   but strictly capped so it NEVER pushes the layout below off-screen! */
-.modal-top {
+.modal-top { 
    display: flex;
    flex-direction: row;
    gap: clamp(12px, 3vw, 24px);
@@ -51,8 +47,7 @@
    max-height: 180px; 
 }
 
-/* CRITICAL FIX: Album art is strictly reverted to its original, smaller size */
-.modal-cover {
+.modal-cover { 
    width: clamp(80px, 25vw, 140px);
    height: auto;
    aspect-ratio: 1 / 1;
@@ -62,21 +57,19 @@
    flex-shrink: 0; 
 }
 
-.modal-header-info {
+.modal-header-info { 
    flex: 1;
    min-width: 0;
    container-type: inline-size;
    display: flex;
    flex-direction: column;
    justify-content: flex-start;
-   max-height: 180px; /* Binds the text strictly to the new expanded container */
+   max-height: 180px;
    overflow: hidden;
    padding-top: 2px; 
 }
 
-/* Allow text to wrap and dynamically shrink based on container width */
-.modal-header-info h2 {
-   /* Caps the max size at either the slider value OR 12% of the container width, whichever is smaller */
+.modal-header-info h2 { 
    font-size: clamp(14px, min(var(--dyn-modal-font-size), 12cqw), var(--dyn-modal-font-size));
    font-weight: 800;
    line-height: 1.15;
@@ -84,14 +77,12 @@
    margin-bottom: 8px;
    letter-spacing: -1px;
    word-break: break-word;
-   /* Removed strict line clamp to prevent text from permanently cutting off */
    overflow-y: auto; 
    max-height: 100%;
    -webkit-overflow-scrolling: touch;
    flex-shrink: 1;
 }
 
-/* Keep the scrollbar hidden visually for a cleaner look */
 .modal-header-info h2::-webkit-scrollbar { display: none; }
 .modal-header-info h2 { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -103,24 +94,7 @@
   vertical-align: baseline;
 }
 
-.explicit-tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-base);
-  font-size: clamp(9px, 1vw, 11px);
-  font-weight: 800;
-  width: clamp(14px, 1.5vw, 18px);
-  height: clamp(14px, 1.5vw, 18px);
-  border-radius: 4px;
-  margin-left: 8px;
-  margin-right: 4px;
-  vertical-align: middle;
-  transform: translateY(-2px);
-}
-
-.modal-artist-row {
+.modal-artist-row { 
    display: flex;
    flex-direction: column;
    align-items: flex-start;
@@ -133,16 +107,15 @@
    flex-shrink: 0;
 }
 
-.modal-artist-row strong {
+.modal-artist-row strong { 
    color: var(--text-base);
    font-size: clamp(13px, 1.5vw, 16px);
    word-wrap: break-word;
 }
 
-.modal-artist-row .album-subtext {
+.modal-artist-row .album-subtext { 
    margin-left: 0;
-   font-size: clamp(13px, 1.5vw, 16px); /* Matches artist name size */
-   /* Prevent long album names from blowing out the layout */
+   font-size: clamp(13px, 1.5vw, 16px);
    display: -webkit-box;
    -webkit-line-clamp: 2;
    -webkit-box-orient: vertical;
@@ -150,16 +123,14 @@
    text-overflow: ellipsis;
 }
 
-/* SHRUNK: The details container is now much more compact */
 .modal-details {
   padding: clamp(10px, 1.5vw, 16px);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Allows more items to stay on 1 line */
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: clamp(8px, 1.5vw, 16px);
   border-radius: 12px;
 }
 
-/* SHRUNK: Tighter label text and reduced bottom margin */
 .detail-item label {
   font-size: clamp(9px, 0.9vw, 11px);
   color: rgba(255,255,255,0.6);
@@ -169,7 +140,6 @@
   display: block;
 }
 
-/* SHRUNK: Slightly scaled down info text */
 .detail-item p {
   margin: 0;
   font-size: clamp(12px, 1.3vw, 14px);
@@ -236,7 +206,6 @@
   gap: 12px;
 }
 
-/* TURNED LABELS INTO BADGE BUTTONS */
 .platform-label {
   width: 80px; 
   font-size: clamp(10px, 1.2vw, 12px);
@@ -253,7 +222,6 @@
   box-sizing: border-box;
 }
 
-/* Hover effects only apply to the active search links */
 a.platform-label:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -405,7 +373,6 @@ a.platform-label.yt-color:hover {
   gap: 10px;
 }
 
-/* --- SEGMENTED SLIDER FOR LYRICS VIEW MODES --- */
 .view-mode-segmented-slider {
   position: relative;
   display: flex;
@@ -485,14 +452,14 @@ a.platform-label.yt-color:hover {
   color: black;
 }
 
-.bottom-actions {
-   margin-top: auto;
-   padding-top: 16px;
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-  flex-wrap: wrap;
-   gap: 12px;
+.bottom-actions { 
+   margin-top: auto; 
+   padding-top: 16px; 
+   display: flex; 
+   justify-content: space-between; 
+   align-items: center; 
+   flex-wrap: wrap; 
+   gap: 12px; 
 }
 
 .return-dashboard-btn {
@@ -516,26 +483,26 @@ a.platform-label.yt-color:hover {
   transform: translateY(-2px);
 }
 
-.delete-icon-btn {
-   background: rgba(250, 36, 60, 0.15);
-   border: 1px solid rgba(250, 36, 60, 0.3);
-   color: #FA243C;
-   font-size: clamp(12px, 1.4vw, 14px);
-   font-weight: 600;
-   cursor: pointer;
-   transition: all 0.2s ease;
-   padding: 10px 20px;
-   border-radius: 500px;
-   display: flex;
-   align-items: center;
+.delete-icon-btn { 
+   background: rgba(250, 36, 60, 0.15); 
+   border: 1px solid rgba(250, 36, 60, 0.3); 
+   color: #FA243C; 
+   font-size: clamp(12px, 1.4vw, 14px); 
+   font-weight: 600; 
+   cursor: pointer; 
+   transition: all 0.2s ease; 
+   padding: 10px 20px; 
+   border-radius: 500px; 
+   display: flex; 
+   align-items: center; 
    gap: 8px; 
 }
 
-.delete-icon-btn:hover {
-   background: #FA243C;
-   color: white;
-   transform: translateY(-2px);
-   box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
+.delete-icon-btn:hover { 
+   background: #FA243C; 
+   color: white; 
+   transform: translateY(-2px); 
+   box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4); 
 }
 
 .search-google-btn {
@@ -551,25 +518,24 @@ a.platform-label.yt-color:hover {
   color: black;
 }
 
-.sync-instructions-left {
-   font-size: clamp(11px, 1.3vw, 13px);
-   color: rgba(255, 255, 255, 0.85);
-   padding: 16px;
-   background: rgba(0, 0, 0, 0.25);
-   border-radius: 12px;
-   line-height: 1.6;
-   margin-bottom: 20px;
-   border: 1px solid rgba(255, 255, 255, 0.05);
-   display: flex;
-  flex-direction: column;
-  gap: 6px;
+.sync-instructions-left { 
+   font-size: clamp(11px, 1.3vw, 13px); 
+   color: rgba(255, 255, 255, 0.85); 
+   padding: 16px; 
+   background: rgba(0, 0, 0, 0.25); 
+   border-radius: 12px; 
+   line-height: 1.6; 
+   margin-bottom: 20px; 
+   border: 1px solid rgba(255, 255, 255, 0.05); 
+   display: flex; 
+   flex-direction: column; 
+   gap: 6px; 
 }
 
 .sync-instructions-left strong { color: var(--accent); }
 .instruction-row { display: flex; gap: 8px; }
 .instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
 
-/* Subtext warning when no sync data is available */
 .no-sync-warning {
   font-size: clamp(11px, 1.3vw, 13px);
   color: rgba(255, 255, 255, 0.5);
@@ -578,7 +544,6 @@ a.platform-label.yt-color:hover {
   line-height: 1.4;
 }
 
-/* --- MOBILE RESPONSIVE STACKING --- */
 @media (max-width: 900px) {
   .modal-left-col {
     flex: none !important;
@@ -587,12 +552,11 @@ a.platform-label.yt-color:hover {
   }
   .modal-left-scrollable {
     padding-bottom: 0px; 
-    overflow: visible; 
+    overflow: visible;
   }
 }
 
 @media (max-width: 550px) {
-  /* Keeps the grid functional, just allows it to shrink tighter */
   .modal-details {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }

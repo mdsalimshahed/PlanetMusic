@@ -9,7 +9,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
   const ytUrl = song.customLinks?.yt || song.yt || '';
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
   const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
-
+  
   // Fallback to safely support old single-string structure if loading from localStorage cache
   const sources = song.sourceNames || (song.sourceName ? [song.sourceName] : []);
 
@@ -51,7 +51,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         img = null;
       }
     };
-
     img.onerror = () => {
       img.onload = null;
       img.onerror = null;
@@ -81,16 +80,21 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
-        {/* Source API Tags (Top-Left) - Only visible if NOT in the Vault */}
-        {!isSaved && sources.length > 0 && (
-           <div className="card-source-tags">
-             {sources.map(source => (
-               <div key={source} className={`card-source-tag ${source.toLowerCase()}`}>
-                 {source}
-               </div>
-             ))}
-           </div>
-        )}
+        {/* Top-Left Overlay Badges (Source API Tags + Explicit Tag) */}
+        <div className="card-top-left-badges">
+          {!isSaved && sources.length > 0 && (
+            sources.map(source => (
+              <div key={source} className={`card-source-tag ${source.toLowerCase()}`}>
+                {source}
+              </div>
+            ))
+          )}
+          {song.trackExplicitness === 'explicit' && (
+            <div className="card-explicit-tag" title="Explicit">
+              E
+            </div>
+          )}
+        </div>
 
         {/* Top-Right Quick Play Button */}
         {hasPlayableSource && (
@@ -98,7 +102,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
             className="play-card-btn"
             onClick={(e) => {
               e.stopPropagation();
-              // Pass playId to ensure a fresh reset/restart on every click
               setCurrentTrack({ ...song, playId: Date.now() });
             }}
             title={song.customLinks?.hasLocal ? "Play Local File" : (song.customLinks?.deezer ? "Play Deezer Stream" : (hasYtStream ? "Play YouTube Stream" : "Play Preview"))}
@@ -109,11 +112,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           </button>
         )}
 
-        {/* Text Overlay */}
+        {/* Floating Text Layer */}
         <div className="card-info-text-only">
           <h4 title={song.trackName}>
             <span className="text-fill-span">{song.trackName}</span>
-            {song.trackExplicitness === 'explicit' && <span className="explicit-tag" title="Explicit">E</span>}
           </h4>
           
           <p title={song.artistName}>

@@ -47,13 +47,6 @@ const ModalLeft = ({
   const hasLocalFile = Boolean(customData?.hasLocal);
   const hasArl = Boolean(settings?.deezerArl);
 
-  // Determine if playing in 30-second preview mode
-  const isPlayingPreview = Boolean(
-    currentTrack && 
-    currentTrack.trackId === selectedSong.trackId && 
-    (!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl))
-  );
-
   useEffect(() => {
     if (settings?.deezerArl && showDeezerNotice) {
       setShowDeezerNotice(false);
@@ -90,7 +83,6 @@ const ModalLeft = ({
     setShowSpotifyNotice(false);
     if (!settings?.deezerArl) {
       setShowDeezerNotice(true);
-      // Play 30s preview if no ARL exists
       setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'preview', playId: Date.now() });
     } else {
       setShowDeezerNotice(false);
@@ -127,7 +119,6 @@ const ModalLeft = ({
           <div className="modal-header-info">
             <h2>
               {mainTitle}
-              {selectedSong.trackExplicitness === 'explicit' && <span className="explicit-tag">E</span>}
               {extras.map((extra, idx) => (
                 <span key={idx} className="title-extra"> ({extra})</span>
               ))}
@@ -163,6 +154,12 @@ const ModalLeft = ({
             <div className="detail-item">
               <label>Duration</label>
               <p>{formatTime(selectedSong.trackTimeMillis)}</p>
+            </div>
+          )}
+          {selectedSong.trackExplicitness === 'explicit' && (
+            <div className="detail-item">
+              <label>Rating</label>
+              <p style={{ color: '#FA243C', fontWeight: 700 }}>Explicit</p>
             </div>
           )}
         </div>
@@ -275,21 +272,18 @@ const ModalLeft = ({
             </div>
           )}
 
-          {/* WARNING MESSAGE: Shown when falling back to 30s preview */}
           {(!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl)) && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
               <strong>Notice:</strong> Currently playing a 30-second preview snippet. To listen to the full song, please click <strong>Edit Info</strong> and add a YouTube/Deezer link or upload a local file (or set a Deezer ARL in Settings).
             </div>
           )}
 
-          {/* Missing Deezer ARL Notice */}
           {showDeezerNotice && !settings?.deezerArl && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
               A valid <strong>Deezer ARL token</strong> is required for Deezer streaming. Enter your token in Settings or add a YouTube link.
             </div>
           )}
 
-          {/* Spotify Warning */}
           {showSpotifyNotice && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#1DB954', border: '1px solid rgba(29, 185, 84, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(29, 185, 84, 0.1)', textAlign: 'left' }}>
               Opening Spotify in a new tab...
@@ -297,7 +291,6 @@ const ModalLeft = ({
           )}
         </div>
 
-        {/* LYRICS VIEW MODES */}
         {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
@@ -349,7 +342,6 @@ const ModalLeft = ({
           </div>
         )}
 
-        {/* WORKSPACE CONTROLS */}
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
           
