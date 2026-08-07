@@ -1,4 +1,4 @@
-/* --- src/components/ModalLeft.jsx --- */
+/* --- src/components/Modals/ModalLeft.jsx --- */
 import React, { useState, useEffect } from 'react';
 import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../utils/songHelpers';
 import './ModalLeft.css';
@@ -19,35 +19,44 @@ const Icon = ({ name }) => {
     case 'refresh': return <svg {...baseProps}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
     case 'zap': return <svg {...baseProps}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>;
     case 'translate': return <svg {...baseProps}><path d="M5 8l6 6"></path><path d="M4 14l6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="M22 22l-5-10-5 10"></path><path d="M14 18h6"></path></svg>;
-    case 'users': return <svg {...baseProps}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>;
+    case 'users': return <svg {...baseProps}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 1 0 7.75"></path></svg>;
     case 'plus': return <svg {...baseProps}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
     default: return null;
   }
 };
 
 const ModalLeft = ({ 
-    selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
-    handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
-    saveData, finalLinks, setCurrentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
-    startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
-    saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
-    handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
-    handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, settings
-  }) => {
+  selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
+  handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
+  saveData, finalLinks, setCurrentTrack, currentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
+  startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
+  saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
+  handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
+  handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, settings
+}) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
-  
-  // Notice states for Player buttons
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
 
-  // Checks directly against the pure original database entries
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
 
-  // Automatically clear warning if they added an ARL
+  const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
+  const hasYtLink = Boolean(extractYouTubeId(ytUrl));
+  const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
+  const hasLocalFile = Boolean(customData?.hasLocal);
+  const hasArl = Boolean(settings?.deezerArl);
+
+  // Determine if playing in 30-second preview mode
+  const isPlayingPreview = Boolean(
+    currentTrack && 
+    currentTrack.trackId === selectedSong.trackId && 
+    (!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl))
+  );
+
   useEffect(() => {
     if (settings?.deezerArl && showDeezerNotice) {
-        setShowDeezerNotice(false);
+      setShowDeezerNotice(false);
     }
   }, [settings?.deezerArl, showDeezerNotice]);
 
@@ -80,10 +89,12 @@ const ModalLeft = ({
   const handleDeezerPlay = () => {
     setShowSpotifyNotice(false);
     if (!settings?.deezerArl) {
-        setShowDeezerNotice(true);
+      setShowDeezerNotice(true);
+      // Play 30s preview if no ARL exists
+      setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'preview', playId: Date.now() });
     } else {
-        setShowDeezerNotice(false);
-        setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'deezer', playId: Date.now() });
+      setShowDeezerNotice(false);
+      setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'deezer', playId: Date.now() });
     }
   };
 
@@ -129,7 +140,6 @@ const ModalLeft = ({
             </div>
           </div>
         </div>
-
         <div className="modal-details glass-panel-light">
           {featuredArtists.length > 0 && (
             <div className="detail-item">
@@ -157,7 +167,6 @@ const ModalLeft = ({
           )}
         </div>
       </div>
-
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
           <div className="links-header"><label>Play Music From:</label></div>
@@ -208,7 +217,7 @@ const ModalLeft = ({
                   className="platform-label yt-color"
                   title="Click to search YouTube Music for this song link"
                 >
-                  YT Music 
+                  YT Music
                 </a>
                 <input 
                   type="text" 
@@ -237,7 +246,7 @@ const ModalLeft = ({
                 Spotify
               </button>
               
-              {customData.deezer && (
+              {hasDeezerLink && (
                 <button 
                   className="platform-btn deezer"
                   onClick={handleDeezerPlay}
@@ -245,13 +254,15 @@ const ModalLeft = ({
                   Deezer
                 </button>
               )}
-
-              <button 
-                className="platform-btn yt"
-                onClick={handleYtPlay}
-              >
-                YT Music
-              </button>
+              
+              {hasYtLink && (
+                <button 
+                  className="platform-btn yt"
+                  onClick={handleYtPlay}
+                >
+                  YT Music
+                </button>
+              )}
               
               {customData.hasLocal && (
                 <button 
@@ -264,22 +275,29 @@ const ModalLeft = ({
             </div>
           )}
 
-          {/* Missing Deezer ARL Persistent Warning */}
-          {showDeezerNotice && !settings?.deezerArl && (
+          {/* WARNING MESSAGE: Shown when falling back to 30s preview */}
+          {(!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl)) && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
-              ⚠️ A valid <strong>Deezer ARL token</strong> is required to stream from this source. Please provide one in the Settings page to continue.
+              <strong>Notice:</strong> Currently playing a 30-second preview snippet. To listen to the full song, please click <strong>Edit Info</strong> and add a YouTube/Deezer link or upload a local file (or set a Deezer ARL in Settings).
             </div>
           )}
 
-          {/* Spotify WIP Warning */}
+          {/* Missing Deezer ARL Notice */}
+          {showDeezerNotice && !settings?.deezerArl && (
+            <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
+              A valid <strong>Deezer ARL token</strong> is required for Deezer streaming. Enter your token in Settings or add a YouTube link.
+            </div>
+          )}
+
+          {/* Spotify Warning */}
           {showSpotifyNotice && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#1DB954', border: '1px solid rgba(29, 185, 84, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(29, 185, 84, 0.1)', textAlign: 'left' }}>
-              ⏳ Still working on it... Opening Spotify in a new tab shortly!
+              Opening Spotify in a new tab...
             </div>
           )}
         </div>
 
-        {/* LYRICS VIEW MODES (Always appears outside edit modes) */}
+        {/* LYRICS VIEW MODES */}
         {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
@@ -309,13 +327,13 @@ const ModalLeft = ({
                   </div>
                   
                   {lyricsViewMode === 'focused' && (
-                     <button 
-                       className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
-                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                     >
-                       <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
-                       {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
-                     </button>
+                    <button 
+                      className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
+                      onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                    >
+                      <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
+                      {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
+                    </button>
                   )}
                 </>
               ) : hasPlainLyrics ? (
@@ -331,7 +349,7 @@ const ModalLeft = ({
           </div>
         )}
 
-        {/* WORKSPACE CONTROLS (Always anchors the bottom buttons) */}
+        {/* WORKSPACE CONTROLS */}
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
           
@@ -341,31 +359,30 @@ const ModalLeft = ({
                 <span><strong>[Space]</strong> Play / Pause audio</span>
               </div>
               <div className="instruction-row">
-                <span><strong>[↓] Down Arrow</strong> Tap to set <strong>Start</strong> time. Tap again to set <strong>End</strong> and advance.</span>
+                <span><strong>[ ] Down Arrow</strong> Tap to set <strong>Start</strong> time. Tap again to set <strong>End</strong> and advance.</span>
               </div>
               <div className="instruction-row subtle">
-                <span><strong>[↑] Up Arrow</strong> Undo last timing & step back</span>
+                <span><strong>[ ] Up Arrow</strong> Undo last timing & step back</span>
               </div>
             </div>
           )}
-
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
-                <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>
-                  <Icon name="x" /> Close Editor
-                </button>
+              <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>
+                <Icon name="x" /> Close Editor
+              </button>
             ) : isSyncMode ? (
               <>
                 <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>
                   <Icon name="x" /> Cancel Sync
                 </button>
                 <button 
-                     className="edit-links-btn" 
-                     onClick={handleRefreshLyrics}
+                  className="edit-links-btn" 
+                  onClick={handleRefreshLyrics}
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
                   title="Wipe all timings and ad-lib splits from these lyrics"
                 >
-                    <Icon name="trash" /> Clear All Timings
+                  <Icon name="trash" /> Clear All Timings
                 </button>
                 <button className="edit-links-btn save-mode" onClick={saveSyncData}>
                   <Icon name="save" /> Save Timings
@@ -391,15 +408,14 @@ const ModalLeft = ({
                 </button>
                 
                 <button 
-                     className="edit-links-btn" 
-                     onClick={() => handleAutoSyncDatabases()} 
-                     disabled={isLrcFetching || isSyncLoading}
+                  className="edit-links-btn" 
+                  onClick={() => handleAutoSyncDatabases()}
+                  disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? <Icon name="clock" /> : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? <Icon name="refresh" /> : <Icon name="refresh" />) : <Icon name="zap" />)}
                   {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Show Manual Sync' : 'Show Auto-Sync') : 'Auto-Sync Lyrics')}
                 </button>
-
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
@@ -408,10 +424,10 @@ const ModalLeft = ({
                     </button>
                     
                     <button 
-                           className="edit-links-btn" 
-                           onClick={() => setIsTranslationManagerOpen(true)}
+                      className="edit-links-btn" 
+                      onClick={() => setIsTranslationManagerOpen(true)}
                     >
-                          <Icon name="translate" /> Edit Translation
+                      <Icon name="translate" /> Edit Translation
                     </button>
                     <button className="edit-links-btn" onClick={() => setIsImageManagerOpen(true)}>
                       <Icon name="users" /> Manage Artists
@@ -431,9 +447,7 @@ const ModalLeft = ({
             )}
           </div>
         </div>
-
         <div id="mobile-player-slot"></div>
-
         <div className="bottom-actions">
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
@@ -441,10 +455,10 @@ const ModalLeft = ({
             </button>
           ) : (
             <button className="edit-links-btn save-mode" onClick={(e) => {
-                toggleLibrary(e, selectedSong);
-                handleAutoSyncDatabases(true);
-                }}>
-                  <Icon name="plus" /> Add to Vault
+              toggleLibrary(e, selectedSong);
+              handleAutoSyncDatabases(true);
+            }}>
+              <Icon name="plus" /> Add to Vault
             </button>
           )}
           
