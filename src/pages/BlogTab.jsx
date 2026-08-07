@@ -1,353 +1,504 @@
-/* --- src/components/BlogTab.jsx --- */
-import React, { useState, useMemo } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+/* --- src/pages/BlogTab.jsx --- */
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit';
 import InFeedSponsor from '../components/Promos/InFeedSponsor';
+import { renderMarkdown } from '../utils/markdownUtils';
 
-const BLOG_POSTS = [
-  {
-    id: 'dual-search-engine',
-    title: 'Mastering the Dual Search Engine: Vault vs. Cosmos',
-    category: 'Core Features',
-    date: 'August 2026',
-    readTime: '4 min read',
-    summary: 'Learn how PlanetMusic seamlessly fuses your offline local Vault with live online music databases across iTunes and Deezer.',
-    tags: ['Search', 'Vault', 'Cosmos', 'Deezer', 'iTunes'],
-    content: (
-      <div className="blog-article-content">
-        <h2>Unifying Local Library & Online Music Discovery</h2>
-        <p>
-          PlanetMusic features a hybrid search engine designed to ensure you never lose track of saved songs while keeping the entire world of online music at your fingertips.
-        </p>
-        <h3>1. Instant Vault Search</h3>
-        <p>
-          As you type into the search bar, PlanetMusic instantly searches your personal saved <strong>Vault</strong> in real time. Matching tracks, artist names, and album titles filter smoothly without making external network calls.
-        </p>
-        <h3>2. Full Cosmos Dual-Column Search</h3>
-        <p>
-          Pressing <strong>Enter</strong> or clicking the search icon triggers a comprehensive <strong>Cosmos Search</strong>. This queries both iTunes and Deezer simultaneously, fusing identical track metadata into a unified results view:
-        </p>
-        <ul>
-          <li><strong>Exact-Match Fusion:</strong> Tracks found across both iTunes and Deezer are merged into a single card displaying both source tags.</li>
-          <li><strong>Underground & Explicit Support:</strong> Underground tracks, rare remixes, and explicit releases present on Deezer are seamlessly displayed alongside iTunes records.</li>
-        </ul>
-        <div className="blog-tip-box">
-          <strong>💡 Pro Tip:</strong> Saved songs in your Vault always take priority in instant search. To explore new online tracks, simply hit <strong>Enter</strong> to open the split Dual-Column view!
-        </div>
-      </div>
-    )
-  },
-  {
-    id: 'audio-streaming-engine',
-    title: 'Multi-Source Audio Engine: Local MP3s, Deezer HQ & YouTube',
-    category: 'Audio Engine',
-    date: 'August 2026',
-    readTime: '5 min read',
-    summary: 'Explore how PlanetMusic routes high-fidelity audio streams from IndexedDB storage, Deezer HQ servers, YouTube, and iTunes previews.',
-    tags: ['Audio', 'Streaming', 'Deezer ARL', 'IndexedDB', 'YouTube'],
-    content: (
-      <div className="blog-article-content">
-        <h2>Uncompromised Audio Quality & Intelligent Source Switching</h2>
-        <p>
-          Every track in PlanetMusic can pull audio from up to four different sources, automatically prioritizing the highest quality stream available.
-        </p>
-        <h3>Playback Hierarchy</h3>
-        <p>
-          When you click play on a track, PlanetMusic evaluates available audio sources in this exact order:
-        </p>
-        <ol>
-          <li><strong>Local Audio Files (IndexedDB):</strong> If you attach a local MP3/FLAC file in the editor, it is cached directly inside your browser’s IndexedDB for instant offline, lossless playback.</li>
-          <li><strong>Deezer HQ Streams:</strong> If a Deezer track link is present and you have entered a valid Deezer ARL token in <em>Settings</em>, full high-quality audio streams directly through our secure proxy.</li>
-          <li><strong>YouTube Audio Streams:</strong> If a YouTube link or ID is present, PlanetMusic connects directly to the YouTube iframe player API.</li>
-          <li><strong>iTunes Previews:</strong> Serves as a reliable 30-second fallback when no full-length audio link is connected.</li>
-        </ol>
-        <h3>Configuring Your Deezer ARL Token</h3>
-        <p>
-          To unlock full-length Deezer streaming, navigate to <strong>Settings &gt; Deezer ARL Token</strong>. Enter your personal cookie token from Deezer.com. Your token is stored 100% locally on your device and is never shared or exported in backup JSON files.
-        </p>
-      </div>
-    )
-  },
-  {
-    id: 'lyric-sync-workspace',
-    title: 'Interactive Lyric Sync Workspace & Floating Ad-Libs',
-    category: 'Lyrics & Syncing',
-    date: 'August 2026',
-    readTime: '6 min read',
-    summary: 'A complete step-by-step guide to timestamping lyrics using keyboard shortcuts, splitting ad-libs, and mapping auto-sync database timings.',
-    tags: ['Sync Engine', 'Keybindings', 'Ad-Libs', 'LRCLIB', 'YouLyrics'],
-    content: (
-      <div className="blog-article-content">
-        <h2>Frame-Accurate Precision Lyric Synchronization</h2>
-        <p>
-          The Sync Workspace allows you to build broadcast-quality, synchronized lyrics with millisecond precision, custom playback speeds, and floating background ad-libs.
-        </p>
-        <h3>Keyboard Sync Controls</h3>
-        <table className="blog-table">
-          <thead>
-            <tr>
-              <th>Key</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>Spacebar</code></td>
-              <td>Play / Pause audio playback</td>
-            </tr>
-            <tr>
-              <td><code>Down Arrow</code></td>
-              <td>1st Tap: Set line <strong>Start Time</strong><br/>2nd Tap: Set line <strong>End Time</strong> and advance to next line</td>
-            </tr>
-            <tr>
-              <td><code>Up Arrow</code></td>
-              <td>Undo last set timing & step back one line</td>
-            </tr>
-            <tr>
-              <td><code>Left / Right Arrow</code></td>
-              <td>Seek backward or forward by 1 second</td>
-            </tr>
-          </tbody>
-        </table>
-        <h3>Ad-Lib Splitting Engine</h3>
-        <p>
-          Background vocal ad-libs enclosed in parentheses <code>(like this)</code> can be isolated into independent floating nodes. Click <strong>Split Adlibs</strong> on any line in the workspace to detach the ad-lib. In <em>Focused View</em>, split ad-libs dynamically position themselves around the main lyrics based on available screen space!
-        </p>
-        <h3>Database Auto-Sync Mapping</h3>
-        <p>
-          Don't want to sync manually from scratch? Click <strong>Auto-Sync Lyrics</strong> on any song modal. PlanetMusic fetches word-by-word and line-by-line LRC timestamps from LRCLIB and YouLyrics databases. If you have custom Genius-formatted text, click <strong>Map Timings from Auto</strong> to map fetched timings onto your manual lyric lines!
-        </p>
-      </div>
-    )
-  },
-  {
-    id: 'translation-workspace',
-    title: 'Global Translation & Phonetic Transliteration Workspace',
-    category: 'Translation Engine',
-    date: 'August 2026',
-    readTime: '5 min read',
-    summary: 'Break down language barriers with automated Google Translate integration, phonetic pronunciations (Romaji, Pinyin, Devanagari), and bulk batching.',
-    tags: ['Translation', 'Transliteration', 'Romaji', 'Pinyin', 'Phonetics'],
-    content: (
-      <div className="blog-article-content">
-        <h2>Understand Any Song in Any Language</h2>
-        <p>
-          PlanetMusic includes a dedicated Translation & Transliteration Workspace, enabling you to translate foreign lyrics into English while generating phonetic pronunciation guides above and below every line.
-        </p>
-        <h3>Key Features</h3>
-        <ul>
-          <li><strong>Context Batch Translation:</strong> Groups lyrics by language and translates entire songs simultaneously while preserving poetic context and line alignment.</li>
-          <li><strong>Phonetic Pronunciation Guides:</strong> Converts non-Latin scripts (Japanese Kanji/Kana, Korean Hangul, Mandarin, Hindi Devanagari, Arabic, Russian Cyrillic) into clear Romanized phonetic text.</li>
-          <li><strong>Line-by-Line Refetch:</strong> Edit individual translations or click the refresh icon on any single line to re-translate specific phrases.</li>
-          <li><strong>Export & Import Text Files:</strong> Export formatted translation documents to <code>.txt</code> files for offline reading or re-import custom translations.</li>
-        </ul>
-        <div className="blog-tip-box">
-          <strong>💡 Rule for English Lines:</strong> Setting a line's language tag to <code>en</code> automatically clears translation overlays to keep the canvas clean!
-        </div>
-      </div>
-    )
-  },
-  {
-    id: 'visualizer-and-display-modes',
-    title: 'Dynamic Visualizer, Focused View & Multi-Artist Gradients',
-    category: 'UI & Design',
-    date: 'August 2026',
-    readTime: '4 min read',
-    summary: 'Discover how Live Sync View, Focused View, Web Audio visualizer bars, and multi-artist tag gradients elevate your listening experience.',
-    tags: ['Focused View', 'Gradients', 'Equalizer', 'Watermark', 'Canvas'],
-    content: (
-      <div className="blog-article-content">
-        <h2>An Immersive Visual Experience for Every Track</h2>
-        <p>
-          PlanetMusic goes beyond standard music players by turning lyric reading into a dynamic, beautiful canvas.
-        </p>
-        <h3>1. Live View vs. Focused View</h3>
-        <ul>
-          <li><strong>Live View:</strong> Displays a vertical, auto-scrolling feed of all upcoming and past lyric lines with smooth active line scaling.</li>
-          <li><strong>Focused View:</strong> Centers the currently active lyric line on screen, hiding clutter and positioning background ad-libs around the main text in 3D space.</li>
-        </ul>
-        <h3>2. Multi-Artist Tagging & Dual Gradients</h3>
-        <p>
-          Using Genius-style header tags like <code>[Verse 1: Artist A & Artist B]</code> or formatting symbols (<code>*Bold*</code>, <code>_Italics_</code>), PlanetMusic automatically calculates color palettes for each singer. When artists perform together, their text renders with vibrant dual-color linear gradients!
-        </p>
-        <h3>3. Real-Time Web Audio Equalizer</h3>
-        <p>
-          Playing local audio or Deezer streams connects to a 60-band Web Audio API frequency analyzer, driving a smooth audio visualizer equalizer along the bottom of the lyrics display.
-        </p>
-      </div>
-    )
-  },
-  {
-    id: 'backup-settings-customization',
-    title: 'Data Privacy, JSON Vault Backups & UI Customization',
-    category: 'Settings & Storage',
-    date: 'August 2026',
-    readTime: '3 min read',
-    summary: 'Learn how to export and import your full Vault backups, scale card sizes, adjust font ratios, and manage persistent local memory.',
-    tags: ['Backup', 'JSON Export', 'Customization', 'Settings', 'Privacy'],
-    content: (
-      <div className="blog-article-content">
-        <h2>Your Music Vault, Completely Under Your Control</h2>
-        <p>
-          PlanetMusic operates with a privacy-first philosophy. All your saved tracks, custom links, synced timings, and translations are stored locally inside your browser.
-        </p>
-        <h3>Exporting & Importing Backups</h3>
-        <p>
-          In the top bar, click the <strong>Export</strong> button to save your entire library and settings as a clean <code>PlanetMusic_Backup.json</code> file. To restore your library on another device or browser, simply click <strong>Import</strong> and select your backup file.
-        </p>
-        <h3>Extensive UI Customization</h3>
-        <p>
-          Head over to the <strong>Settings Tab</strong> to fine-tune every visual metric in the app:
-        </p>
-        <ul>
-          <li><strong>Canvas & Card Layout:</strong> Adjust track card width (vw), grid gaps, padding, and search split ratios.</li>
-          <li><strong>Lyrics Typography:</strong> Independently scale font sizes for Live View, Focused View, ad-libs, artist names, and translations.</li>
-          <li><strong>Artist Transition Timing:</strong> Set custom fade-in millisecond delays when singers switch during duet tracks.</li>
-        </ul>
-      </div>
-    )
+// SVG Icon Helper Component
+const Icon = ({ name, size = 18 }) => {
+  const props = {
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 2.5,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    style: { display: 'block', flexShrink: 0 }
+  };
+
+  switch (name) {
+    case 'plus':
+      return (
+        <svg {...props}>
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      );
+    case 'download':
+      return (
+        <svg {...props}>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      );
+    case 'download-single':
+      return (
+        <svg {...props}>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <polyline points="9 15 12 18 15 15"></polyline>
+        </svg>
+      );
+    case 'close':
+      return (
+        <svg {...props}>
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      );
+    case 'search':
+      return (
+        <svg {...props}>
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      );
+    case 'arrow-left':
+      return (
+        <svg {...props}>
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      );
+    default:
+      return null;
   }
-];
+};
 
 const BlogTab = ({ adsEnabled }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const pathParts = location.pathname.split('/').filter(Boolean);
-  const urlPostId = pathParts[0] === 'blog' && pathParts[1] ? pathParts[1] : null;
-
+  const [posts, setPosts] = useState([]);
+  const [isStudioOpen, setIsStudioOpen] = useState(false);
+  const [editingPostId, setEditingPostId] = useState(null);
+  const [activePost, setActivePost] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const bodyTextareaRef = useRef(null);
 
-  const categories = useMemo(() => {
-    const set = new Set(BLOG_POSTS.map(p => p.category));
-    return ['All', ...Array.from(set)];
+  const [formData, setFormData] = useState({
+    id: '',
+    title: '',
+    category: 'Core Features',
+    readTime: '4 min read',
+    summary: '',
+    tags: '',
+    heroImage: '',
+    content: ''
+  });
+
+  useEffect(() => {
+    fetch('/blog_posts.json')
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error('No public blog_posts.json found');
+      })
+      .then((data) => {
+        if (Array.isArray(data)) setPosts(data);
+      })
+      .catch(() => setPosts([]));
   }, []);
 
-  const filteredPosts = useMemo(() => {
-    return BLOG_POSTS.filter(post => {
-      const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch = !q || 
-        post.title.toLowerCase().includes(q) ||
-        post.summary.toLowerCase().includes(q) ||
-        post.tags.some(t => t.toLowerCase().includes(q));
-      
-      return matchesCategory && matchesSearch;
-    });
-  }, [searchQuery, selectedCategory]);
+  const categories = useMemo(() => {
+    const list = new Set(posts.map((p) => p.category));
+    return ['All', ...Array.from(list)];
+  }, [posts]);
 
-  const activePost = useMemo(() => {
-    return BLOG_POSTS.find(p => p.id === urlPostId) || null;
-  }, [urlPostId]);
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchCat = selectedCategory === 'All' || post.category === selectedCategory;
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch =
+        !q ||
+        (post.title && post.title.toLowerCase().includes(q)) ||
+        (post.summary && post.summary.toLowerCase().includes(q)) ||
+        (post.tags && post.tags.some((t) => t.toLowerCase().includes(q)));
+      return matchCat && matchSearch;
+    });
+  }, [posts, searchQuery, selectedCategory]);
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleOpenStudio = (postToEdit = null) => {
+    if (postToEdit) {
+      setEditingPostId(postToEdit.id);
+      setFormData({
+        id: postToEdit.id,
+        title: postToEdit.title || '',
+        category: postToEdit.category || 'Core Features',
+        readTime: postToEdit.readTime || '4 min read',
+        summary: postToEdit.summary || '',
+        tags: Array.isArray(postToEdit.tags) ? postToEdit.tags.join(', ') : postToEdit.tags || '',
+        heroImage: postToEdit.heroImage || '',
+        content: postToEdit.content || ''
+      });
+    } else {
+      setEditingPostId(null);
+      setFormData({
+        id: '',
+        title: '',
+        category: 'Core Features',
+        readTime: '4 min read',
+        summary: '',
+        tags: '',
+        heroImage: '',
+        content: ''
+      });
+    }
+    setIsStudioOpen(true);
+  };
+
+  const handleDeletePost = (e, postId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window.confirm('Delete this article from local workspace?')) {
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      if (activePost && activePost.id === postId) setActivePost(null);
+    }
+  };
+
+  const handleSaveArticle = (e) => {
+    e.preventDefault();
+    if (!formData.title || !formData.content) return alert('Title and Content required');
+
+    const genId =
+      formData.id.trim() ||
+      formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const tagsArr = formData.tags
+      .split(',')
+      .map((t) => t.trim().replace(/^#/, ''))
+      .filter(Boolean);
+
+    const articleObj = {
+      ...formData,
+      id: genId,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      tags: tagsArr.length > 0 ? tagsArr : ['Guide']
+    };
+
+    if (editingPostId) {
+      setPosts((prev) => prev.map((p) => (p.id === editingPostId ? articleObj : p)));
+    } else {
+      setPosts((prev) => [articleObj, ...prev.filter((p) => p.id !== genId)]);
+    }
+
+    setIsStudioOpen(false);
+  };
+
+  const handleExportCurrent = () => {
+    if (!formData.title && !formData.content) return alert('Workspace is empty');
+
+    const genId =
+      formData.id.trim() ||
+      formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const tagsArr = formData.tags
+      .split(',')
+      .map((t) => t.trim().replace(/^#/, ''))
+      .filter(Boolean);
+
+    const payload = [
+      {
+        ...formData,
+        id: genId || 'article-draft',
+        date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        tags: tagsArr
+      }
+    ];
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${genId || 'article'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportAll = () => {
+    if (posts.length === 0) return alert('No articles available');
+    const blob = new Blob([JSON.stringify(posts, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'blog_posts.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const insertMarkdown = (prefix, suffix = '') => {
+    const el = bodyTextareaRef.current;
+    if (!el) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const txt = formData.content.substring(start, end) || 'text';
+    const rep = `${prefix}${txt}${suffix}`;
+    setFormData((prev) => ({
+      ...prev,
+      content: prev.content.substring(0, start) + rep + prev.content.substring(end)
+    }));
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start + prefix.length, start + prefix.length + txt.length);
+    }, 50);
+  };
 
   return (
     <section className="view-section blog-tab-container">
-      <div className="blog-layout-wrapper">
-        
-        {/* --- MAIN CONTENT AREA --- */}
+      <div className={`blog-layout-wrapper ${isStudioOpen ? 'studio-active' : ''}`}>
         <div className="blog-main-content">
-          {activePost ? (
-            <div className="blog-reader-view glass-panel">
-              <Link 
-                to="/blog"
-                className="blog-back-btn glass-button"
-                style={{ textDecoration: 'none' }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Back to Articles
-              </Link>
+          {isStudioOpen ? (
+            <div className="blog-studio-card glass-panel">
+              <div className="blog-studio-header">
+                <h2>{editingPostId ? 'Edit Article Workspace' : 'New Article Workspace'}</h2>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button
+                    className="blog-icon-btn"
+                    onClick={handleExportCurrent}
+                    title="Export Current Article (JSON)"
+                  >
+                    <Icon name="download-single" />
+                  </button>
+                  <button
+                    className="blog-icon-btn close"
+                    onClick={() => setIsStudioOpen(false)}
+                    title="Close Workspace"
+                  >
+                    <Icon name="close" />
+                  </button>
+                </div>
+              </div>
 
+              <div className="blog-studio-grid">
+                {/* FORM COLUMN */}
+                <form onSubmit={handleSaveArticle} className="blog-studio-form">
+                  <div className="blog-form-row">
+                    <div className="blog-form-group flex-2">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        name="title"
+                        className="blog-input"
+                        placeholder="e.g., Ultimate Guide to Syncing Lyrics"
+                        value={formData.title}
+                        onChange={handleFormChange}
+                        required
+                      />
+                    </div>
+                    <div className="blog-form-group flex-1">
+                      <label>Category</label>
+                      <select
+                        name="category"
+                        className="blog-select"
+                        value={formData.category}
+                        onChange={handleFormChange}
+                      >
+                        <option value="Core Features">Core Features</option>
+                        <option value="Audio Engine">Audio Engine</option>
+                        <option value="Lyrics & Syncing">Lyrics & Syncing</option>
+                        <option value="Translation Engine">Translation Engine</option>
+                        <option value="UI & Design">UI & Design</option>
+                        <option value="Settings & Storage">Settings & Storage</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="blog-form-row">
+                    <div className="blog-form-group flex-1">
+                      <label>Read Time</label>
+                      <input
+                        type="text"
+                        name="readTime"
+                        className="blog-input"
+                        placeholder="e.g., 4 min read"
+                        value={formData.readTime}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                    <div className="blog-form-group flex-2">
+                      <label>Hashtags (Comma Separated)</label>
+                      <input
+                        type="text"
+                        name="tags"
+                        className="blog-input"
+                        placeholder="e.g., Syncing, Tutorial, Audio"
+                        value={formData.tags}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="blog-form-group">
+                    <label>Hero Image URL</label>
+                    <input
+                      type="text"
+                      name="heroImage"
+                      className="blog-input"
+                      placeholder="https://..."
+                      value={formData.heroImage}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+
+                  <div className="blog-form-group">
+                    <label>Summary</label>
+                    <textarea
+                      name="summary"
+                      className="blog-textarea short"
+                      placeholder="Brief overview of the article..."
+                      value={formData.summary}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+
+                  <div className="blog-form-group">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                      <label>Content (Markdown)</label>
+                      <div className="md-toolbar">
+                        <button type="button" onClick={() => insertMarkdown('**', '**')} title="Bold">B</button>
+                        <button type="button" onClick={() => insertMarkdown('*', '*')} title="Italic">I</button>
+                        <button type="button" onClick={() => insertMarkdown('## ')} title="Heading 2">H2</button>
+                        <button type="button" onClick={() => insertMarkdown('### ')} title="Heading 3">H3</button>
+                        <button type="button" onClick={() => insertMarkdown('- ')} title="Unordered List">List</button>
+                        <button type="button" onClick={() => insertMarkdown('> ')} title="Quote">Quote</button>
+                        <button type="button" onClick={() => insertMarkdown('`', '`')} title="Code">Code</button>
+                      </div>
+                    </div>
+                    <textarea
+                      ref={bodyTextareaRef}
+                      name="content"
+                      className="blog-textarea full"
+                      placeholder="Write your full article body in Markdown..."
+                      value={formData.content}
+                      onChange={handleFormChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="blog-studio-actions">
+                    <button type="submit" className="blog-submit-btn">
+                      {editingPostId ? 'Update Article' : 'Save Article'}
+                    </button>
+                  </div>
+                </form>
+
+                {/* PREVIEW COLUMN */}
+                <div className="blog-markdown-preview-pane">
+                  <span className="preview-pane-badge">Live Preview</span>
+                  <div className="blog-article-body" style={{ marginTop: '16px' }}>
+                    {formData.title && <h1 className="blog-article-title">{renderMarkdown(formData.title)}</h1>}
+                    {formData.summary && <p className="blog-article-summary">{renderMarkdown(formData.summary)}</p>}
+                    {formData.heroImage && <img src={formData.heroImage} alt="" className="blog-article-hero-img" />}
+                    <hr className="blog-divider" />
+                    {formData.content ? renderMarkdown(formData.content) : <p style={{ opacity: 0.5 }}>Your markdown preview will render here...</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : activePost ? (
+            <div className="blog-reader-view glass-panel">
+              <button className="blog-back-btn" onClick={() => setActivePost(null)}>
+                <Icon name="arrow-left" size={16} /> Back to Articles
+              </button>
+              
               <header className="blog-article-header">
                 <div className="blog-meta-badge-row">
                   <span className="blog-category-badge">{activePost.category}</span>
                   <span className="blog-meta-dot">•</span>
-                  <span className="blog-read-time">{activePost.readTime}</span>
+                  <span>{activePost.readTime}</span>
                   <span className="blog-meta-dot">•</span>
-                  <span className="blog-date">{activePost.date}</span>
+                  <span>{activePost.date}</span>
                 </div>
-                <h1 className="blog-article-title">{activePost.title}</h1>
-                <p className="blog-article-summary">{activePost.summary}</p>
-                
-                <div className="blog-tags-row">
-                  {activePost.tags.map(tag => (
-                    <span key={tag} className="blog-tag">#{tag}</span>
-                  ))}
-                </div>
+                <h1 className="blog-article-title">{renderMarkdown(activePost.title)}</h1>
+                <p className="blog-article-summary">{renderMarkdown(activePost.summary)}</p>
+                {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
               </header>
 
+              {activePost.tags && activePost.tags.length > 0 && (
+                <div className="blog-tags-row">
+                  {activePost.tags.map((t, idx) => (
+                    <span key={idx} className="blog-tag">#{t}</span>
+                  ))}
+                </div>
+              )}
+
               <hr className="blog-divider" />
+              <main className="blog-article-body">{renderMarkdown(activePost.content)}</main>
 
-              {/* IN-ARTICLE AD (Top of Article Body) */}
+              <button className="blog-back-btn bottom-back" onClick={() => setActivePost(null)}>
+                <Icon name="arrow-left" size={16} /> Back to Articles
+              </button>
+
+              {/* Bottom Large Sponsor Banner */}
               {adsEnabled && (
-                <SponsorUnit 
-                  testMode={true} 
-                  className="glass-panel dynamic-radius-override"
-                  style={{ margin: '0 0 32px 0', minHeight: '120px' }}
-                  adTitle="Sponsor Message"
-                  adSub="In-article advertisement flows naturally with content."
-                  format="fluid"
-                />
+                <div className="blog-bottom-sponsor-wrapper" style={{ marginTop: '40px' }}>
+                  <SponsorUnit
+                    testMode={true}
+                    className="glass-panel dynamic-radius-override blog-bottom-sponsor"
+                    style={{ minHeight: '280px' }}
+                    adTitle="Sponsored Feature"
+                    adSub="Check out our featured partner"
+                  />
+                </div>
               )}
-
-              <main className="blog-article-body">
-                {activePost.content}
-              </main>
-
-              {/* IN-ARTICLE AD (Bottom of Article Body) */}
-              {adsEnabled && (
-                <SponsorUnit 
-                  testMode={true} 
-                  className="glass-panel dynamic-radius-override"
-                  style={{ margin: '32px 0 0 0', minHeight: '120px' }}
-                  adTitle="Discover More"
-                  adSub="Bottom article sponsor message."
-                  format="fluid"
-                />
-              )}
-
-              <footer className="blog-article-footer">
-                <Link 
-                  to="/blog"
-                  className="blog-back-btn bottom-back glass-button"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                    Back to All Guides
-                </Link>
-              </footer>
             </div>
           ) : (
             <div className="blog-grid-view">
               <div className="blog-hero glass-panel">
-                <h1 className="blog-hero-title">Features, Guides & Documentation</h1>
-                <p className="blog-hero-sub">
-                  Everything you need to master PlanetMusic — from dual search engine discovery to precision lyric syncing and multi-source audio streaming.
-                </p>
-                
+                <div className="blog-hero-top">
+                  <div>
+                    <h1 className="blog-hero-title">Documentation & Articles</h1>
+                    <p className="blog-hero-sub">Explore guides, feature breakdowns, and engine technical notes.</p>
+                  </div>
+                  <div className="blog-hero-actions">
+                    <button
+                      className="blog-icon-btn action"
+                      onClick={() => handleOpenStudio()}
+                      title="Write New Article"
+                    >
+                      <Icon name="plus" />
+                    </button>
+                    {posts.length > 0 && (
+                      <button
+                        className="blog-icon-btn"
+                        onClick={handleExportAll}
+                        title="Export All Articles (JSON)"
+                      >
+                        <Icon name="download" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <div className="blog-controls-row">
                   <div className="blog-search-box">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
+                    <Icon name="search" size={16} />
                     <input
                       type="text"
-                      placeholder="Search guides, keybindings, features..."
+                      placeholder="Search articles, tags, or topics..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     {searchQuery && (
-                      <button className="blog-clear-search" onClick={() => setSearchQuery('')}>✕</button>
+                      <button className="blog-clear-search" onClick={() => setSearchQuery('')}>
+                        Clear
+                      </button>
                     )}
                   </div>
-                  
+
                   <div className="blog-categories-pills">
-                    {categories.map(cat => (
+                    {categories.map((cat) => (
                       <button
                         key={cat}
                         className={`category-pill ${selectedCategory === cat ? 'active' : ''}`}
@@ -366,39 +517,46 @@ const BlogTab = ({ adsEnabled }) => {
                     const showAdAfter = (idx + 1) % 4 === 0;
                     return (
                       <React.Fragment key={post.id}>
-                        <Link 
-                          to={`/blog/${post.id}`}
-                          className="blog-card glass-panel-light"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <div className="blog-card-top">
-                            <span className="blog-category-badge">{post.category}</span>
-                            <span className="blog-read-time">{post.readTime}</span>
-                          </div>
-                          <h3 className="blog-card-title">{post.title}</h3>
-                          <p className="blog-card-summary">{post.summary}</p>
-                          <div className="blog-card-bottom">
-                            <div className="blog-card-tags">
-                              {post.tags.slice(0, 3).map(tag => (
-                                <span key={tag} className="blog-mini-tag">#{tag}</span>
-                              ))}
+                        <div className="blog-card-wrapper">
+                          <div className="blog-card" onClick={() => setActivePost(post)}>
+                            {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
+                            <div className="blog-card-top">
+                              <span className="blog-category-badge">{post.category}</span>
+                              <span className="blog-read-time">{post.readTime}</span>
                             </div>
-                            <span className="blog-read-more">Read Guide →</span>
+                            <h3 className="blog-card-title">{post.title}</h3>
+                            <p className="blog-card-summary">{post.summary}</p>
+                            <div className="blog-card-bottom">
+                              <div className="blog-card-tags">
+                                {Array.isArray(post.tags) && post.tags.slice(0, 2).map((t, i) => (
+                                  <span key={i} className="blog-mini-tag">#{t}</span>
+                                ))}
+                              </div>
+                              <span className="blog-read-more">Read Article →</span>
+                            </div>
                           </div>
-                        </Link>
-
-                        {/* INJECT BLOG IN-FEED AD */}
-                        {adsEnabled && showAdAfter && <InFeedSponsor testMode={true} wrapperClass="blog-card glass-panel-light dynamic-radius-override" adClass="in-feed-blog-ad" />}
+                          <div className="blog-card-admin-controls">
+                            <button className="blog-admin-btn edit" onClick={() => handleOpenStudio(post)}>
+                              Edit
+                            </button>
+                            <button className="blog-admin-btn delete" onClick={(e) => handleDeletePost(e, post.id)}>
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                        {adsEnabled && showAdAfter && (
+                          <InFeedSponsor adClass="in-feed-blog-ad" testMode={true} wrapperClass="blog-card dynamic-radius-override" />
+                        )}
                       </React.Fragment>
                     );
                   })}
                 </div>
               ) : (
                 <div className="blog-empty-box glass-panel">
-                  <h3>No guides match your search</h3>
-                  <p>Try clearing filters or searching for terms like "sync", "audio", "translation", or "deezer".</p>
-                  <button className="sample-vault-btn" onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}>
-                    Reset Filters
+                  <h3>No articles found</h3>
+                  <p style={{ color: 'var(--text-subdued)', marginBottom: '20px' }}>Try searching for a different term or write a new post.</p>
+                  <button className="blog-icon-btn action" style={{ margin: '0 auto' }} onClick={() => handleOpenStudio()} title="Write New Article">
+                    <Icon name="plus" />
                   </button>
                 </div>
               )}
@@ -406,21 +564,21 @@ const BlogTab = ({ adsEnabled }) => {
           )}
         </div>
 
-        {/* --- DEDICATED SIDEBAR AREA --- */}
-        <aside className="blog-sidebar">
+        {/* Sidebar Sponsor Column: Shifts below workspace when active */}
+        <aside className={`blog-sidebar ${isStudioOpen ? 'studio-bottom' : ''}`}>
           {adsEnabled && (
             <>
-              <SponsorUnit 
-                testMode={true} 
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '600px' }}
+              <SponsorUnit
+                testMode={true}
+                className="glass-panel dynamic-radius-override blog-sidebar-sponsor-large"
+                style={{ minHeight: isStudioOpen ? '200px' : '600px', height: isStudioOpen ? '200px' : '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
-              <SponsorUnit 
-                testMode={true} 
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '300px' }}
+              <SponsorUnit
+                testMode={true}
+                className="glass-panel dynamic-radius-override blog-sidebar-sponsor-small"
+                style={{ minHeight: isStudioOpen ? '200px' : '300px', height: isStudioOpen ? '200px' : '300px' }}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
@@ -428,18 +586,6 @@ const BlogTab = ({ adsEnabled }) => {
           )}
         </aside>
       </div>
-
-      {/* BOTTOM SPONSOR AD (Anchors the bottom of the entire Blog tab) */}
-      {adsEnabled && (
-        <SponsorUnit 
-          testMode={true} 
-          className="glass-panel settings-promo-box dynamic-radius-override" 
-          style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Discover More"
-          adSub="Thank you for supporting PlanetMusic"
-        />
-      )}
-      
     </section>
   );
 };
