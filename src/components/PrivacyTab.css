@@ -1,28 +1,32 @@
 /* --- src/components/PrivacyTab.css --- */
 .privacy-tab-container {
-  max-width: 1400px;
+  max-width: 1400px; /* Widened to match the blog page and fit the sidebar */
   margin: 0 auto;
   width: 100%;
   padding-bottom: 80px;
   animation: privacyFadeIn 0.4s ease-out;
 }
+
 @keyframes privacyFadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- SIDEBAR LAYOUT --- */
 .privacy-layout-wrapper {
   display: flex;
   align-items: flex-start;
   gap: 32px;
   width: 100%;
 }
+
 .privacy-main-content {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
 }
+
 .privacy-sidebar {
   width: 320px;
   flex-shrink: 0;
@@ -33,14 +37,16 @@
   top: 24px;
 }
 
+/* HERO SECTION */
 .privacy-hero {
   padding: 36px 32px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 24px;
   margin-bottom: 32px;
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(10, 10, 25, 0.5) !important;
 }
+
 .privacy-hero-title {
   font-size: clamp(26px, 3.8vw, 38px);
   font-weight: 800;
@@ -50,12 +56,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .privacy-hero-sub {
   font-size: clamp(14px, 1.5vw, 16px);
   color: var(--text-subdued);
   line-height: 1.6;
   max-width: 850px;
 }
+
 .privacy-last-updated {
   display: inline-block;
   margin-top: 16px;
@@ -70,9 +78,10 @@
   letter-spacing: 0.5px;
 }
 
+/* MAIN CARD BODY */
 .privacy-card-body {
   padding: 40px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(10, 10, 25, 0.7) !important;
   text-align: left;
@@ -84,9 +93,11 @@
 .privacy-section {
   margin-bottom: 36px;
 }
+
 .privacy-section:last-child {
   margin-bottom: 0;
 }
+
 .privacy-section h2 {
   font-size: clamp(20px, 2.5vw, 24px);
   font-weight: 700;
@@ -97,20 +108,24 @@
   align-items: center;
   gap: 12px;
 }
+
 .privacy-section h3 {
   font-size: 17px;
   font-weight: 700;
   color: var(--accent);
   margin: 20px 0 10px 0;
 }
+
 .privacy-section p {
   margin-bottom: 16px;
 }
+
 .privacy-section ul, 
 .privacy-section ol {
   margin: 0 0 20px 24px;
   padding: 0;
 }
+
 .privacy-section li {
   margin-bottom: 10px;
 }
@@ -119,7 +134,7 @@
   background: rgba(251, 191, 36, 0.08);
   border-left: 4px solid var(--accent);
   padding: 20px 24px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 12px;
   margin: 24px 0;
   font-size: 15px;
   line-height: 1.6;
@@ -136,6 +151,7 @@
   margin: 36px 0;
 }
 
+/* RESPONSIVE STACKING */
 @media (max-width: 1024px) {
   .privacy-layout-wrapper {
     flex-direction: column;

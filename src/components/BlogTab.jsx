@@ -233,7 +233,6 @@ const BlogTab = ({ adsEnabled }) => {
         post.title.toLowerCase().includes(q) ||
         post.summary.toLowerCase().includes(q) ||
         post.tags.some(t => t.toLowerCase().includes(q));
-      
       return matchesCategory && matchesSearch;
     });
   }, [searchQuery, selectedCategory]);
@@ -272,7 +271,6 @@ const BlogTab = ({ adsEnabled }) => {
                 </div>
                 <h1 className="blog-article-title">{activePost.title}</h1>
                 <p className="blog-article-summary">{activePost.summary}</p>
-                
                 <div className="blog-tags-row">
                   {activePost.tags.map(tag => (
                     <span key={tag} className="blog-tag">#{tag}</span>
@@ -286,8 +284,8 @@ const BlogTab = ({ adsEnabled }) => {
               {adsEnabled && (
                 <SponsorUnit 
                   testMode={true} 
-                  className="glass-panel dynamic-radius-override"
-                  style={{ margin: '0 0 32px 0', minHeight: '120px' }}
+                  className="glass-panel"
+                  style={{ margin: '0 0 32px 0', minHeight: '120px', borderRadius: '16px' }}
                   adTitle="Sponsor Message"
                   adSub="In-article advertisement flows naturally with content."
                   format="fluid"
@@ -302,8 +300,8 @@ const BlogTab = ({ adsEnabled }) => {
               {adsEnabled && (
                 <SponsorUnit 
                   testMode={true} 
-                  className="glass-panel dynamic-radius-override"
-                  style={{ margin: '32px 0 0 0', minHeight: '120px' }}
+                  className="glass-panel"
+                  style={{ margin: '32px 0 0 0', minHeight: '120px', borderRadius: '16px' }}
                   adTitle="Discover More"
                   adSub="Bottom article sponsor message."
                   format="fluid"
@@ -345,7 +343,7 @@ const BlogTab = ({ adsEnabled }) => {
                       <button className="blog-clear-search" onClick={() => setSearchQuery('')}>✕</button>
                     )}
                   </div>
-                  
+
                   <div className="blog-categories-pills">
                     {categories.map(cat => (
                       <button
@@ -383,12 +381,12 @@ const BlogTab = ({ adsEnabled }) => {
                                 <span key={tag} className="blog-mini-tag">#{tag}</span>
                               ))}
                             </div>
-                            <span className="blog-read-more">Read Guide →</span>
+                            <span className="blog-read-more">Read Guide ➔</span>
                           </div>
                         </Link>
 
                         {/* INJECT BLOG IN-FEED AD */}
-                        {adsEnabled && showAdAfter && <InFeedSponsor testMode={true} wrapperClass="blog-card glass-panel-light dynamic-radius-override" adClass="in-feed-blog-ad" />}
+                        {adsEnabled && showAdAfter && <InFeedSponsor testMode={true} wrapperClass="blog-card glass-panel-light" adClass="in-feed-blog-ad" />}
                       </React.Fragment>
                     );
                   })}
@@ -412,15 +410,15 @@ const BlogTab = ({ adsEnabled }) => {
             <>
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '600px' }}
+                className="glass-panel" 
+                style={{ minHeight: '600px', borderRadius: '24px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '300px' }}
+                className="glass-panel" 
+                style={{ minHeight: '300px', borderRadius: '24px' }}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
@@ -433,7 +431,7 @@ const BlogTab = ({ adsEnabled }) => {
       {adsEnabled && (
         <SponsorUnit 
           testMode={true} 
-          className="glass-panel settings-promo-box dynamic-radius-override" 
+          className="glass-panel settings-promo-box" 
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Discover More"
           adSub="Thank you for supporting PlanetMusic"

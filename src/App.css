@@ -279,6 +279,7 @@ body {
 .column-scroll-area::-webkit-scrollbar {
   width: 6px;
 }
+
 .column-scroll-area::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
@@ -287,7 +288,7 @@ body {
 .column-empty-box {
   padding: 24px;
   text-align: center;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 12px;
   color: var(--text-subdued);
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed rgba(255, 255, 255, 0.1);
@@ -368,7 +369,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 14px;
   background: rgba(251, 191, 36, 0.08) !important;
   border: 1px solid rgba(251, 191, 36, 0.3) !important;
   margin-bottom: 24px;
@@ -457,7 +458,7 @@ body {
   background: rgba(15, 15, 25, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 32px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: 20px;
   text-align: center;
   max-width: 400px;
   width: 90%;
@@ -617,38 +618,4 @@ body {
 .ad-toggle-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   color: white;
-}
-
-/* ==========================================================================
-   GLOBAL BORDER RADIUS ENFORCEMENT
-   Guarantees all containers, cards, and ads instantly become sharp when 
-   the rounded corners setting is toggled off. Uses high specificity to override 
-   external stylesheets.
-   ========================================================================== */
-body .glass-panel,
-body .glass-panel-heavy,
-body .glass-panel-light,
-body .blog-hero,
-body .blog-card,
-body .blog-reader-view,
-body .blog-empty-box,
-body .privacy-hero,
-body .privacy-card-body,
-body .contact-hero,
-body .contact-card-body,
-body .info-block,
-body .settings-card,
-body .sample-vault-banner,
-body .confirm-dialog {
-    border-radius: var(--dyn-border-radius, 16px) !important;
-}
-
-/* Aggressively clip AdSense iframes and sponsor wrappers so they don't bleed out */
-body .settings-promo-box,
-body .sponsor-unit-wrapper,
-body .promo-box-container,
-body ins.adsbygoogle, 
-body iframe,
-body .dynamic-radius-override {
-    border-radius: var(--dyn-border-radius, 16px) !important;
 }

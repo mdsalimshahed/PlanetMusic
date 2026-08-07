@@ -28,7 +28,7 @@ const ConsentNotice = () => {
       backdropFilter: 'blur(10px)',
       border: '1px solid rgba(255, 255, 255, 0.15)',
       padding: '16px 24px',
-      borderRadius: 'var(--dyn-border-radius, 16px)',
+      borderRadius: '16px',
       display: 'flex',
       alignItems: 'center',
       gap: '20px',
