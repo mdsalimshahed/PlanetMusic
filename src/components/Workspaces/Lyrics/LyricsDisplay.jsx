@@ -1,27 +1,97 @@
-/* --- src/components/LyricsDisplay.jsx --- */
-import React, { useEffect, useRef } from 'react';
+/* --- src/components/Workspaces/Lyrics/LyricsDisplay.jsx --- */
+import React, { useEffect, useRef, useMemo } from 'react';
 import { LyricLineWrapper } from './LyricsLineRenderer';
 import { FocusedAdlibsTracker } from '../Sync/FocusedAdlibsTracker';
+import { parseLyrics } from '../../../utils/songHelpers';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({ 
-  isEditing, customData, handleDataChange, hasValidSyncData, 
-  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-  isPlaying, settings
-}) => {
+   isEditing, customData, handleDataChange, hasValidSyncData, 
+   lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+   isPlaying, settings }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
-
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
-  // EQUALIZER: Only activates for Web Audio API sources (local MP3/preview). YT streams stay gracefully idle.
+  // Parse editable lyrics in real-time for live preview calculation
+  const editParsedLyrics = useMemo(() => {
+    if (!isEditing || !customData.lyrics) return [];
+    return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
+  }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
+
+  // Primary color style resolver: Produces exact linear gradients for multi-artist lines and solid colors for single artists
+  const getArtistStyle = (item) => {
+    let artists = item.artists || [];
+    if (artists.length === 0 && item.singer) {
+      artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
+    }
+
+    if (artists.length > 1) {
+      const c1 = masterPalette[artists[0]] || '#ffffff';
+      const c2 = masterPalette[artists[1]] || '#ffffff';
+      return {
+        backgroundImage: `linear-gradient(90deg, ${c1}, ${c2})`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        display: 'inline-block'
+      };
+    } else if (artists.length === 1) {
+      const color = masterPalette[artists[0]] || item.color || '#ffffff';
+      return { color };
+    }
+
+    if (item.isGradient && item.gradient) {
+      return {
+        backgroundImage: item.gradient,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        display: 'inline-block'
+      };
+    }
+
+    return { color: item.color || '#ffffff' };
+  };
+
+  // Helper to render artist headers in preview view with independent colors for each artist name
+  const renderColoredSingerHeader = (singerString) => {
+    if (!singerString) {
+      const defaultSinger = selectedSong?.artistName || 'Default Artist';
+      return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
+    }
+
+    const artists = singerString.split(/\s*(?:,)\s*/i).filter(Boolean).map(a => a.trim());
+
+    return artists.map((artist, aIdx) => {
+      const artistColor = masterPalette[artist] || '#ffffff';
+      return (
+        <React.Fragment key={aIdx}>
+          <span style={{ color: artistColor }}>{artist}</span>
+          {aIdx < artists.length - 1 && <span style={{ color: 'rgba(255, 255, 255, 0.4)', margin: '0 4px' }}>, </span>}
+        </React.Fragment>
+      );
+    });
+  };
+
+  // Helper to get the primary left-border accent color for the preview card row
+  const getBorderAccentColor = (line) => {
+    let artists = line.artists || [];
+    if (artists.length === 0 && line.singer) {
+      artists = line.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
+    }
+    if (artists.length > 0) {
+      return masterPalette[artists[0]] || '#ffffff';
+    }
+    return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
+  };
+
+  // EQUALIZER: Only activates for Web Audio API sources (local MP3/preview).
   useEffect(() => {
     let rafId;
     let lastEqDraw = 0;
     const fadeOutTime = settings?.eqFadeOutTime ?? 500;
-    
+
     const renderEQ = (timestamp) => {
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
@@ -29,13 +99,13 @@ const LyricsDisplay = ({
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const freqData = window.globalFreqData;
           const bars = eqBarsRef.current;
-          
+
           if (freqData && bars) {
             for (let i = 0; i < bars.length; i++) {
               if (bars[i]) {
                 const raw = freqData[i % freqData.length] || 0;
                 const scale = 0.05 + (raw / 255) * 0.95;
-                
+
                 bars[i].style.transition = 'transform 0.05s ease-out';
                 bars[i].style.transform = `scaleY(${scale})`;
               }
@@ -67,7 +137,6 @@ const LyricsDisplay = ({
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
-
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -79,7 +148,6 @@ const LyricsDisplay = ({
 
   useEffect(() => {
     if (lyricsViewMode !== 'live' && lyricsViewMode !== 'focused') return;
-
     const clearAllActive = () => {
         cachedLinesRef.current.forEach(item => {
             if (item.isActive) {
@@ -95,13 +163,11 @@ const LyricsDisplay = ({
             }
         });
     };
-
     const handleTime = (e) => {
         if (!isPlayingCurrentSong) return;
         const time = e.detail;
         const lines = cachedLinesRef.current;
         let newActiveIndex = -1;
-
         for (let i = 0; i < lines.length; i++) {
             const { start, end, nextStart } = lines[i];
             if (!isNaN(start) && time >= start) {
@@ -109,11 +175,10 @@ const LyricsDisplay = ({
                 const isBeforeNext = isNaN(nextStart) || time < nextStart;
                 if (isBeforeEnd && isBeforeNext) {
                     newActiveIndex = i;
-                    break; 
+                    break;
                 }
             }
         }
-
         for (let i = 0; i < lines.length; i++) {
             const item = lines[i];
             const shouldBeActive = (i === newActiveIndex);
@@ -132,16 +197,13 @@ const LyricsDisplay = ({
                 item.isActive = false;
             }
         }
-
         const adlibs = cachedAdlibsRef.current;
         for (let i = 0; i < adlibs.length; i++) {
             const item = adlibs[i];
             if (isNaN(item.start)) continue;
-
             let targetState = 'hidden';
             if (time >= item.start && time <= item.end) targetState = 'active';
             else if (time >= item.start) targetState = 'visible';
-
             if (item.state !== targetState) {
                 const cl = item.node.classList;
                 if (targetState === 'active') {
@@ -158,23 +220,21 @@ const LyricsDisplay = ({
             }
         }
     };
-    
+
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
         }
     };
-
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
-    
+
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTime({ detail: initialTime });
     } else {
         clearAllActive();
     }
-
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTime);
         window.removeEventListener('globalPlayState', handlePlayState);
@@ -187,7 +247,7 @@ const LyricsDisplay = ({
       e.preventDefault();
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
-      
+
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
         if (node.nodeType === Node.ELEMENT_NODE) {
@@ -196,10 +256,10 @@ const LyricsDisplay = ({
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
-          
+
           const isBold = tag === 'b' || tag === 'strong' || fw === 'bold' || fw === '700' || parseInt(fw) >= 600;
           const isItalic = tag === 'i' || tag === 'em' || style.fontStyle === 'italic';
-          
+
           if (innerText.trim()) {
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
@@ -213,16 +273,11 @@ const LyricsDisplay = ({
         }
         return '';
       };
-      
-      let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
 
-      // RESTORED CTRL+Z NATIVE UNDO BEHAVIOR
-      // Using execCommand injects the paste securely into the browser's history timeline 
-      // without breaking the sequence, triggering the standard onChange event organically.
+      let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
       if (document.queryCommandSupported('insertText')) {
         document.execCommand('insertText', false, markdownText);
       } else {
-        // Fallback for extreme legacy browsers
         const textarea = e.target;
         const newVal = (customData.lyrics || '').substring(0, textarea.selectionStart) + markdownText + (customData.lyrics || '').substring(textarea.selectionEnd);
         handleDataChange({ target: { name: 'lyrics', value: newVal } });
@@ -233,18 +288,64 @@ const LyricsDisplay = ({
   return (
     <>
       {isEditing ? (
-        <textarea
-            name="lyrics"
-            value={customData.lyrics}
-          onChange={handleDataChange}
-            onPaste={handlePaste}
-          className="lyrics-textarea"
-          placeholder="Paste your lyrics here! Copying directly from Word or Google Docs will automatically convert Bold & Italics into Artist Tags!" 
-        />
+        <div className="edit-lyrics-container">
+          <div className="lyrics-textarea-wrapper">
+            <textarea
+              name="lyrics"
+              value={customData.lyrics}
+              onChange={handleDataChange}
+              onPaste={handlePaste}
+              className="lyrics-textarea"
+              placeholder="Paste your lyrics here! Format lines using [Artist Name:] tags or *italics* / **bold** formatting."
+            />
+          </div>
+
+          <div className="artist-preview-pane">
+            <div className="artist-preview-header">
+              <span className="artist-preview-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Artist Tag Preview
+              </span>
+              <span className="artist-preview-badge">{editParsedLyrics.length} lines</span>
+            </div>
+
+            <div className="artist-preview-scroll">
+              {editParsedLyrics.length > 0 ? (
+                editParsedLyrics.map((line, idx) => {
+                  const borderAccent = getBorderAccentColor(line);
+
+                  return (
+                    <div key={idx} className="preview-line-row" style={{ borderLeftColor: borderAccent }}>
+                      <span className="preview-line-singer">
+                        {renderColoredSingerHeader(line.singer)}
+                      </span>
+                      <div className="preview-line-text">
+                        {line.segments && line.segments.length > 0 ? (
+                          line.segments.map((seg, sIdx) => (
+                            <span key={sIdx} style={getArtistStyle(seg)}>
+                              {seg.text}
+                            </span>
+                          ))
+                        ) : (
+                          <span style={getArtistStyle(line)}>{line.text}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="preview-empty-text">Type lyrics on the left to see live artist separation...</div>
+              )}
+            </div>
+          </div>
+        </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-            className="live-lyrics-preview" 
-            ref={containerRef}
+          className="live-lyrics-preview" 
+          ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -298,7 +399,7 @@ const LyricsDisplay = ({
           })}
           
           <FocusedAdlibsTracker 
-              syncData={selectedSong?.syncData}
+             syncData={selectedSong?.syncData}
              handleLineClick={handleLineClick}
              masterPalette={masterPalette}
              isPlayingCurrentSong={isPlayingCurrentSong}
@@ -309,28 +410,13 @@ const LyricsDisplay = ({
           {liveParsedLyrics.length > 0 ? (
             liveParsedLyrics.map((line, i) => (
               <div key={i} style={{ textAlign: 'left' }} dir="auto">
-                {line.segments ? line.segments.map((seg, idx) => {
-                    let inlineColor = seg.color;
-                    let inlineIsGradient = seg.isGradient;
-                    let inlineGradient = seg.gradient;
-                    
-                    if (seg.artists && seg.artists.length > 0) {
-                      if (seg.artists.length > 1) {
-                          inlineIsGradient = true;
-                          const c1 = masterPalette[seg.artists[0]] || '#ffffff';
-                          const c2 = masterPalette[seg.artists[1]] || '#ffffff';
-                          inlineGradient = `linear-gradient(90deg, ${c1}, ${c2})`;
-                      } else {
-                          inlineColor = masterPalette[seg.artists[0]] || '#ffffff';
-                      }
-                    }
-
-                    return (
-                      <span key={idx} style={inlineIsGradient ? { backgroundImage: inlineGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' } : { color: inlineColor }}>
-                          {seg.text}
-                      </span>
-                    );
-                }) : line.text}
+                {line.segments ? line.segments.map((seg, idx) => (
+                  <span key={idx} style={getArtistStyle(seg)}>
+                    {seg.text}
+                  </span>
+                )) : (
+                  <span style={getArtistStyle(line)}>{line.text}</span>
+                )}
               </div>
             ))
           ) : (
@@ -340,7 +426,6 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
-
       {!isEditing && (
         <div className={`lyrics-equalizer`}>
           {Array.from({ length: 60 }).map((_, i) => (

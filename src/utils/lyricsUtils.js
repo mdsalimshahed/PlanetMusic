@@ -1,19 +1,23 @@
 /* --- src/utils/lyricsUtils.js --- */
+
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
+  let hasExplicitHeader = false;
   let activeTags = [];
   const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
     const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
     if (!cleanHtmlLine || cleanHtmlLine.startsWith('<!')) return;
+
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
       activeTags = [];
+      hasExplicitHeader = true;
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -133,7 +137,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         } else if (seg.marker === '') {
             artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
         } else {
-            artists = [];
+            // Unmapped formatting marker inside an explicit header block remains uncredited
+            artists = hasExplicitHeader ? [] : (currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists);
         }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
@@ -165,26 +170,18 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
-    if (lineArtistsSet.size === 0) {
-        const defaultRule = currentRules.find(r => r.marker === '');
-        if (defaultRule) {
-            defaultRule.artists.forEach(a => lineArtistsSet.add(a));
-        } else {
-            globalDefaultArtists.forEach(a => lineArtistsSet.add(a));
-        }
-    }
-
     const finalArtistsArray = Array.from(lineArtistsSet);
     const lineSinger = finalArtistsArray.join(', ');
     const displayText = finalSegments.map(s => s.text).join('');
-
     let finalColor = '#ffffff';
     let lineIsGradient = false;
     let lineGradientStyle = '';
 
     if (finalArtistsArray.length > 1) {
       lineIsGradient = true;
-      lineGradientStyle = `linear-gradient(90deg, ${colorPalette[finalArtistsArray[0]] || '#ffffff'}, ${colorPalette[finalArtistsArray[1]] || '#ffffff'})`;
+      const c1 = colorPalette[finalArtistsArray[0]] || '#ffffff';
+      const c2 = colorPalette[finalArtistsArray[1]] || '#ffffff';
+      lineGradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
     } else if (finalArtistsArray.length === 1) {
       finalColor = colorPalette[finalArtistsArray[0]] || '#ffffff';
     }
@@ -192,7 +189,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     result.push({
         text: displayText,
         segments: finalSegments,
-        singer: lineSinger,
+        singer: lineSinger, // Empty string if uncredited
         color: finalColor,
         isGradient: lineIsGradient,
         gradient: lineGradientStyle
@@ -291,6 +288,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
           }
 
           const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
+
           return {
             ...adlib,
             segments: adlibSegments,
@@ -300,6 +298,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
           };
         });
       }
+
       currentLrcIdx = bestMatchIdx + 1;
     }
 
@@ -333,6 +332,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       
       const text = rawText.replace(/<\d{2}:\d{2}\.\d{2,3}>/g, '').trim();
       if (!text) return;
+
       const startTime = (minutes * 60) + seconds;
       plainTextLyrics += text + "\n";
       
@@ -354,6 +354,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       }
 
       const segments = [{ text: text, color: defColor, isGradient: false, gradient: '', artists: [defaultArtist] }];
+
       syncData.push({
         start: startTime,
         end: null,
