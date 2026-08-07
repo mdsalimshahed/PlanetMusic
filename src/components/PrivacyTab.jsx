@@ -140,29 +140,28 @@ const PrivacyTab = ({ adsEnabled }) => {
             <>
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel" 
-                style={{ minHeight: '600px', borderRadius: '24px' }}
+                className="glass-panel dynamic-radius-override"
+                style={{ minHeight: '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
                 testMode={true} 
-                className="glass-panel" 
-                style={{ minHeight: '300px', borderRadius: '24px' }}
+                className="glass-panel dynamic-radius-override"
+                style={{ minHeight: '300px' }}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
             </>
           )}
         </aside>
-
       </div>
 
       {/* BOTTOM SPONSOR AD (Same format as Settings page) */}
       {adsEnabled && (
         <SponsorUnit 
           testMode={true} 
-          className="glass-panel settings-promo-box" 
+          className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor / Partner"
           adSub="Thank you for supporting PlanetMusic"
