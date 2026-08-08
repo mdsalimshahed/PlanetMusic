@@ -1,0 +1,74 @@
+[
+  {
+    "id": "how-player-audio-streams-custom-links-work",
+    "title": "How Player Audio Streams & Custom Links Work",
+    "category": "Tech & Audio",
+    "readTime": "4 min read",
+    "summary": "Learn how the player streams audio, matches reference track durations, formats custom links, and resolves Deezer URL redirects.",
+    "tags": [
+      "AudioPlayer",
+      "CustomLinks",
+      "Deezer",
+      "Duration",
+      "StreamSources"
+    ],
+    "heroImage": "",
+    "content": "The built-in player streams audio directly alongside your synced lyrics map. Understanding playback controls, local file imports, and link formatting ensures your music plays accurately.\n\nHere is how the player works and how to set up your audio sources.\n\n---\n\n## 1. Playing Music & Playback Controls\n\nControlling your track playback is fast and flexible:\n\n* **Playback Buttons:** Click the **Play / Pause** button on the bottom player bar or control panel to start or stop the audio.\n* **Keyboard Shortcut:** Press the **Spacebar** on your keyboard at any time to toggle playback instantly while working.\n* **Scrubbing Timeline:** Click along the audio progress bar to jump directly to any part of the song.\n\n---\n\n## 2. Adding Local Audio Files\n\nYou do not need an online streaming link to play your music. You can load audio files directly from your device:\n\n* **Selecting Local Audio:** Click the **Play Music From** field and choose the **Local File / File Upload** option.\n* **Supported Local Formats:** Load standard files like `.mp3`, `.wav`, or `.m4a`.\n* **Instant Speed:** Local files play immediately with zero network buffering and stay stored on your machine.\n\n---\n\n## 3. Matching Song Duration\n\nBefore choosing or pasting an audio source, look at the track details on the dashboard:\n\n> **CHECK THE DURATION:** Locate the track length listed **right beside the release date of the song**.\n\nSongs often have multiple versions (album cuts, radio edits, acoustic versions). Always pick an audio file or link that matches the **exact duration beside the release date**. If your audio stream is shorter or longer, your line timestamps will drift out of sync with the music.\n\n---\n\n## 4. Supported Platforms & Spotify Notice\n\nYou can paste external track links into your song settings:\n\n* **Supported Sources:** YouTube Music URLs, full Deezer web addresses, and direct Local MP3 files.\n* **Spotify Unsupported:** **Spotify links do NOT work.** Spotify enforces strict security and copyright protections that block external web players from playing their audio streams.\n\n---\n\n## 5. How to Format Deezer Links\n\nStandard Deezer mobile or desktop share links **will not work** in the player because they are shortened share buttons rather than complete web addresses.\n\n> **CRITICAL DEEZER WORKFLOW:** You must open shortened share links in a browser tab to get the full web address before pasting.\n\n### Step-by-Step Deezer Guide:\n\n1. In Deezer, click **Share** on the song and select **Copy Link**.\n2. Open a new tab in your web browser, paste the share link into the address bar, and press **Enter**.\n3. Wait a second for the page to finish loading so the full web address appears.\n4. Copy that complete URL from your browser address bar and paste it into the player field.\n\n### Link Examples:\n\n* ❌ **Short Share Link (Does Not Work):** `https://deezer.page.link/aB1cD2eF3gH`\n* ✅ **Full Web Address (Works):** `https://www.deezer.com/us/track/123456789`\n\n---\n\n## 6. Switching Audio Sources\n\nOnce you add your link or upload a file, click the **Play Music From** field to select or switch between your available audio sources anytime.",
+    "isCustom": false,
+    "date": "August 2026"
+  },
+  {
+    "id": "formatting-lyrics-singer-tags",
+    "title": "Formatting Lyrics & Singer Tags",
+    "category": "Lyrics & Syncing",
+    "readTime": "4 min read",
+    "summary": "Learn how to format section headers with artist colons, duet lines, and ad-lib parentheses for automatic colors and splits.",
+    "tags": [
+      "Lyrics",
+      "Formatting",
+      "Singers",
+      "Duets",
+      "Adlibs"
+    ],
+    "heroImage": "",
+    "content": "Formatting song lyrics lets the engine recognize which artist is singing each phrase and render unique singer colors in the preview window.\n\nHere is how to map section headers, text styles, and pasted online lyrics to your vocalists.\n\n---\n\n## 1. Multi-Artist Section Headers\n\nList up to **four artists** inside square brackets after a colon, assigning each vocalist a unique text style:\n\n`[Verse: Artist 1, _Artist 2_, **Artist 3**, **_Artist 4_**]`\n\n> **COLON RULE:** Only text **after the colon** is parsed for artist names. Header labels before the colon are ignored. If no colon exists `[Verse 1]`, the section **defaults to the primary track artist**.\n\n---\n\n## 2. The 4 Vocalist Text Styles\n\nThe engine uses four distinct text weights to route lyrics to the four artists listed in your section header:\n\n1. **Plain Text** = Artist 1\n2. **_Italics_** = Artist 2\n3. **Bold** = Artist 3\n4. **_Bold-Italics_** = Artist 4\n\n### Example Setup\n\n```text\n[Verse: Artist 1, _Artist 2_, **Artist 3**, **_Artist 4_**]\nArtist 1 sings this plain line, _(Artist 2 sings this italic adlib)_\n**Artist 3 sings this bold line**, **_Artist 4 sings this bold-italic line_**\n\n---\n\n## 3. Multiline & Online Copy-Pasting\n\nYou do not always have to format text manually from scratch:\n\n* **Understanding Online Lyrics:** Lyrics copied from sites like Genius or AZLyrics often come pre-formatted with italics for background vocals or bold text for featured artists. Pasting them into the editor automatically maps those styles to Artist 2, 3, or 4 based on your header!\n* **Multiline Styling:** Text formatting works across multiple lines simultaneously. Wrapping five consecutive lines in `_italics_` or `**bold**` assigns that entire verse block to the corresponding artist at once.\n\n---\n\n## 4. Live Preview Window Verification\n\nCheck the **Live Preview Window** as you type or paste lyrics:\n\n* **Dynamic Palette:** Each of the four text styles triggers a distinct artist theme color instantly.\n* **Layout Shifts:** Lines render with their assigned weights, colors, and split layouts in real time so you can verify artist assignment before saving.",
+    "isCustom": false,
+    "date": "August 2026"
+  },
+  {
+    "id": "how-to-search-and-save-songs-to-your-vault",
+    "title": "How to Search and Save Songs to Your Vault",
+    "category": "Core Features",
+    "readTime": "3 min read",
+    "summary": "A simple guide to searching online databases, discovering music across the Cosmos, and saving tracks directly to your personal Vault.",
+    "tags": [
+      "Search",
+      "Vault",
+      "Cosmos",
+      "Save",
+      "Library"
+    ],
+    "heroImage": "",
+    "content": "Searching for music and expanding your collection takes just a few clicks. You can filter through your saved songs or scan online databases across the entire music universe.\n\nHere is how to search for tracks and save them to your personal collection.\n\n---\n\n## 1. Searching Your Local Vault\n\nThe main search bar at the top of your dashboard filters your saved collection in real time.\n\n* **Instant Filtering:** Start typing an artist name, song title, or keyword to filter your local cards immediately.\n* **Resetting Your View:** Click the **Home** button in the top navigation bar to clear your active search query and return to your full collection view.\n\n---\n\n## 2. Searching the Cosmos\n\nIf a track is not in your saved collection, search online music databases using **Cosmos Search**.\n\n1. Type the song title or artist name into the main search box.\n2. Press **Enter** on your keyboard or click the **Search Icon** button.\n3. The dashboard splits your view into **Vault** results and **Cosmos** results.\n4. Online matches from public databases appear in the Cosmos column.\n\n---\n\n## 3. Adding Songs to Your Vault\n\nOnce you find the song you want in the search results, saving it takes one simple step:\n\n* Open the track by clicking on its song card, then click **Add to Vault** at the bottom of the left control panel.\n\n> **QUICK TIP:** Adding a track to your Vault automatically fetches available online lyrics and timing files so your song is ready to play immediately.\n\n---\n\n## 4. Where Saved Songs Go\n\nEvery saved track stays stored directly inside your **browser storage**.\n\n* **Home Dashboard:** Saved songs appear permanently on your **main home dashboard**.\n* **Instant Loading:** Tracks in your **Vault** load instantly without requiring a new search.\n* **Full Customization:** You can edit **lyrics**, **custom links**, and **artist details** for any saved song anytime.",
+    "isCustom": false,
+    "date": "August 2026"
+  },
+  {
+    "id": "how-to-sync-songs-with-music",
+    "title": "How to Sync Songs with Music",
+    "category": "Lyrics & Syncing",
+    "readTime": "3 min read",
+    "summary": "Learn how to map line timestamps, use keyboard shortcuts, split and loop ad-libs, and switch audio sources.",
+    "tags": [
+      "Syncing",
+      "AutoSync",
+      "Timings",
+      "Adlibs",
+      "AudioSources"
+    ],
+    "heroImage": "",
+    "content": "Syncing lyrics to music brings your songs to life with live scrolling and dynamic highlighting.\n\nHere is your complete guide to using the sync workspace.\n\n---\n\n## 1. Essential Keyboard Shortcuts\n\nControl your timing map using simple keyboard commands while the song plays:\n\n* **`Spacebar`** : Plays or pauses audio playback.\n* **`Down Arrow`** : Tap once to set the **Start** marker. Tap again to seal the **End** marker and jump to the next line.\n* **`Up Arrow`** : Clears the current line timing and steps back to the previous line.\n* **`Left` / `Right` Arrows** : Nudges audio position backward or forward by **1 second**.\n\n---\n\n## 2. Splitting & Syncing Ad-Libs\n\nBackground vocals, echoes, and chants wrapped in parentheses `(like this)` can be isolated by clicking **Split Adlibs**.\n\n> **CRITICAL RULE:** Ad-lib timestamps live inside their parent line. An ad-lib **cannot extend past the end timestamp** of its main line.\n\nFollow these four key rules when syncing ad-libs:\n\n1. **Sync the Main Line First:** Map the main sentence before touching the ad-lib. Make sure the main line's start and end times cover the entire vocal window, including the background echo.\n2. **Manual Click Required:** Standard line-by-line syncing with the `Down Arrow` **skips ad-lib lines entirely**. You must manually click an ad-lib line to select and sync it.\n3. **Automatic Parent Looping:** Clicking an un-synced ad-lib line automatically **loops audio** between the start and end markers of its main line.\n4. **Auto-Ending Shortcut:** Click the ad-lib line and tap `Down Arrow` **once** when the echo starts. Let the song play. The engine automatically assigns the main line's end marker to the ad-lib when playback reaches it.\n\n---\n\n## 3. Auto-Sync & Database Mapping\n\nSave time by pulling pre-timed files from open databases:\n\n* **Auto-Sync Lyrics:** Searches online libraries to fetch fully timed lyrics automatically.\n* **Map Timings from Auto:** Transfers time markers from public databases directly onto your custom typed text.\n\n---\n\n## 4. Switching Audio Sources\n\nDifferent audio files play at slightly different speeds or start points.\n\n> **QUICK TIP:** Click directly on the **Source Badge Name** (YouTube, Deezer, or Local MP3) in the top bar to cycle through available audio feeds instantly.\n\n---\n\n## 5. Saving or Resetting Your Map\n\n* **Clear All Timings:** Wipes every timestamp and ad-lib split clean so you can start over from scratch.\n* **Save Timings:** Locks your completed timing map to your browser, activating live scrolling across all view modes.",
+    "isCustom": false,
+    "date": "August 2026"
+  }
+]
