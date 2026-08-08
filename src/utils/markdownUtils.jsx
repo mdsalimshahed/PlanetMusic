@@ -1,22 +1,58 @@
 /* --- src/utils/markdownUtils.jsx --- */
 import React from 'react';
 
+// Vibrant bold text colors palette
+const BOLD_COLORS = [
+  '#fbbf24', // Amber Gold
+  '#1DB954', // Spotify Green
+  '#38bdf8', // Neon Sky Blue
+  '#a855f7', // Electric Purple
+  '#f43f5e', // Rose Coral
+  '#34d399', // Mint Emerald
+  '#fb923c', // Bright Orange
+  '#c084fc'  // Lavender
+];
+
+// Dynamic linear gradient mixes for Title Headings
+const GRADIENTS = [
+  'linear-gradient(135deg, #fbbf24 0%, #f43f5e 100%)',
+  'linear-gradient(135deg, #38bdf8 0%, #a855f7 100%)',
+  'linear-gradient(135deg, #1DB954 0%, #38bdf8 100%)',
+  'linear-gradient(135deg, #c084fc 0%, #f43f5e 100%)',
+  'linear-gradient(135deg, #fb923c 0%, #fbbf24 100%)',
+  'linear-gradient(135deg, #34d399 0%, #38bdf8 100%)',
+  'linear-gradient(135deg, #f43f5e 0%, #a855f7 100%)'
+];
+
+export const getRandomColor = () => {
+  return BOLD_COLORS[Math.floor(Math.random() * BOLD_COLORS.length)];
+};
+
+export const getRandomGradient = () => {
+  return GRADIENTS[Math.floor(Math.random() * GRADIENTS.length)];
+};
+
+const getGradientStyle = () => ({
+  backgroundImage: getRandomGradient(),
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  display: 'inline-block',
+  maxWidth: '100%'
+});
+
 export const renderMarkdown = (text) => {
   if (!text) return null;
 
-  // Split content into blocks by double or multi line breaks
   const blocks = text.split(/\n\n+/);
 
   return blocks.map((block, idx) => {
     const trimmed = block.trim();
     if (!trimmed) return null;
 
-    // 1. Standalone Horizontal Rule Divider (--- or ***)
     if (/^(---|[*]{3})$/.test(trimmed)) {
       return <hr key={idx} className="blog-divider" />;
     }
 
-    // 2. Block contains a horizontal divider along with text
     if (trimmed.includes('---')) {
       const subParts = trimmed.split(/\n?---\n?/);
       if (subParts.length > 1) {
@@ -41,26 +77,25 @@ export const renderMarkdown = (text) => {
   });
 };
 
-// Helper to render individual block elements
 const renderBlockUnit = (trimmed, key) => {
-  // Headings
   if (trimmed.startsWith('### ')) {
-    return <h3 key={key}>{parseInline(trimmed.replace(/^###\s+/, ''))}</h3>;
+    const content = trimmed.replace(/^###\s+/, '');
+    return <h3 key={key} style={getGradientStyle()}>{parseInline(content)}</h3>;
   }
   if (trimmed.startsWith('## ')) {
-    return <h2 key={key}>{parseInline(trimmed.replace(/^##\s+/, ''))}</h2>;
+    const content = trimmed.replace(/^##\s+/, '');
+    return <h2 key={key} style={getGradientStyle()}>{parseInline(content)}</h2>;
   }
   if (trimmed.startsWith('# ')) {
-    return <h1 key={key}>{parseInline(trimmed.replace(/^#\s+/, ''))}</h1>;
+    const content = trimmed.replace(/^#\s+/, '');
+    return <h1 key={key} style={getGradientStyle()}>{parseInline(content)}</h1>;
   }
 
-  // Blockquotes
   if (trimmed.startsWith('> ')) {
     const quoteText = trimmed.split('\n').map(l => l.replace(/^>\s*/, '')).join(' ');
     return <blockquote key={key} className="blog-tip-box">{parseInline(quoteText)}</blockquote>;
   }
 
-  // Code Blocks
   if (trimmed.startsWith('```')) {
     const code = trimmed.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/, '');
     return (
@@ -70,7 +105,6 @@ const renderBlockUnit = (trimmed, key) => {
     );
   }
 
-  // Unordered Lists
   if (/^[-*]\s+/m.test(trimmed)) {
     const items = trimmed.split('\n').filter(l => /^[-*]\s+/.test(l.trim()));
     return (
@@ -82,7 +116,6 @@ const renderBlockUnit = (trimmed, key) => {
     );
   }
 
-  // Standard Paragraph
   const lines = trimmed.split('\n');
   return (
     <p key={key}>
@@ -96,14 +129,19 @@ const renderBlockUnit = (trimmed, key) => {
   );
 };
 
-// Helper for inline formatting (**bold**, *italic*, `code`, [link](url))
 const parseInline = (text) => {
   if (!text) return '';
   const regex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\))/g;
   const parts = text.split(regex);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
+      const boldText = part.slice(2, -2);
+      const boldColor = getRandomColor();
+      return (
+        <strong key={i} style={{ color: boldColor, fontWeight: 800 }}>
+          {boldText}
+        </strong>
+      );
     }
     if (part.startsWith('*') && part.endsWith('*')) {
       return <em key={i}>{part.slice(1, -1)}</em>;

@@ -267,13 +267,16 @@
   font-weight: 600;
 }
 
+/* --- src/pages/BlogTab.css --- */
 .blog-card-title {
-  font-size: 19px;
-  font-weight: 700;
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: 800;
   line-height: 1.35;
-  color: white;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   letter-spacing: -0.3px;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .blog-card-summary {
@@ -864,4 +867,14 @@
   .blog-cards-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* --- Gradient Styling for Main Article Titles --- */
+.blog-article-title {
+   background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 50%, #c084fc 100%);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   display: inline-block;
+   font-weight: 800;
+   letter-spacing: -0.5px;
 }

@@ -4,9 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit';
 import InFeedSponsor from '../components/Promos/InFeedSponsor';
-import { renderMarkdown } from '../utils/markdownUtils';
+import { renderMarkdown, getRandomGradient } from '../utils/markdownUtils';
 
-// SVG Icon Helper Component
 const Icon = ({ name, size = 18 }) => {
   const props = {
     width: size,
@@ -83,7 +82,6 @@ const BlogTab = ({ adsEnabled }) => {
   const navigate = useNavigate();
   const params = useParams();
 
-  // ROUTING ENGINE DECODING: Parse sub-views directly from URL path (/blog/dev, /blog/custom, /blog/post/:id, etc.)
   const subPath = params['*'] || '';
   const pathTokens = subPath.split('/').filter(Boolean);
 
@@ -94,7 +92,6 @@ const BlogTab = ({ adsEnabled }) => {
   const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
   const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
 
-  // 1. DUAL BLOG ARCHITECTURE STATE
   const [devPosts, setDevPosts] = useState([]);
   const [customPosts, setCustomPosts] = useState(() => {
     const saved = localStorage.getItem('custom_blog_posts_storage');
@@ -118,7 +115,6 @@ const BlogTab = ({ adsEnabled }) => {
     content: ''
   });
 
-  // Always load Developer Blogs from public/blog_posts.json automatically
   useEffect(() => {
     fetch('/blog_posts.json')
       .then((res) => {
@@ -131,12 +127,10 @@ const BlogTab = ({ adsEnabled }) => {
       .catch(() => setDevPosts([]));
   }, []);
 
-  // Sync Custom Posts to LocalStorage whenever modified
   useEffect(() => {
     localStorage.setItem('custom_blog_posts_storage', JSON.stringify(customPosts));
   }, [customPosts]);
 
-  // Populate Creator Studio Form when editing via route (/blog/edit/:id)
   useEffect(() => {
     if (viewMode === 'studio' && activeArticleId) {
       const postToEdit = customPosts.find((p) => p.id === activeArticleId);
@@ -166,10 +160,8 @@ const BlogTab = ({ adsEnabled }) => {
     }
   }, [viewMode, activeArticleId, customPosts]);
 
-  // Determine active posts feed based on selected main section
   const currentFeed = blogSection === 'dev' ? devPosts : customPosts;
 
-  // Active post object for reader view (/blog/post/:id)
   const activePost = useMemo(() => {
     if (viewMode !== 'reader' || !activeArticleId) return null;
     return [...devPosts, ...customPosts].find((p) => p.id === activeArticleId) || null;
@@ -180,7 +172,6 @@ const BlogTab = ({ adsEnabled }) => {
     return ['All', ...Array.from(list)];
   }, [currentFeed]);
 
-  // Collect all existing category suggestions for the datalist auto-complete
   const allCategorySuggestions = useMemo(() => {
     const list = new Set([...devPosts, ...customPosts].map((p) => p.category).filter(Boolean));
     const defaults = ['Guides', 'Music Notes', 'Personal', 'Reviews', 'Tech & Audio', 'Lyrics & Syncing', 'Translation Engine', 'Core Features'];
@@ -258,7 +249,6 @@ const BlogTab = ({ adsEnabled }) => {
       setCustomPosts((prev) => [articleObj, ...prev.filter((p) => p.id !== genId)]);
     }
 
-    // Automatically navigate to Custom section on save
     navigate('/blog/custom');
   };
 
@@ -384,7 +374,6 @@ const BlogTab = ({ adsEnabled }) => {
               </div>
 
               <div className="blog-studio-grid">
-                {/* FORM COLUMN */}
                 <form onSubmit={handleSaveArticle} className="blog-studio-form">
                   <div className="blog-form-row">
                     <div className="blog-form-group flex-2">
@@ -400,7 +389,6 @@ const BlogTab = ({ adsEnabled }) => {
                       />
                     </div>
                     
-                    {/* EDITABLE CATEGORY FIELD WITH AUTO-COMPLETE DATALIST */}
                     <div className="blog-form-group flex-1">
                       <label>Category</label>
                       <input
@@ -501,7 +489,6 @@ const BlogTab = ({ adsEnabled }) => {
                   </div>
                 </form>
 
-                {/* PREVIEW COLUMN */}
                 <div className="blog-markdown-preview-pane">
                   <span className="preview-pane-badge">Live Preview</span>
                   <div className="blog-article-body" style={{ marginTop: '16px' }}>
@@ -561,7 +548,6 @@ const BlogTab = ({ adsEnabled }) => {
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
 
-              {/* Bottom Large Sponsor Banner */}
               {adsEnabled && (
                 <div className="blog-bottom-sponsor-wrapper" style={{ marginTop: '40px' }}>
                   <SponsorUnit
@@ -616,7 +602,6 @@ const BlogTab = ({ adsEnabled }) => {
                   </div>
                 </div>
 
-                {/* DUAL SECTION TOGGLE PILLS WITH URL ROUTING */}
                 <div style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '8px' }}>
                   <button
                     className={`category-pill ${blogSection === 'dev' ? 'active' : ''}`}
@@ -686,7 +671,17 @@ const BlogTab = ({ adsEnabled }) => {
                               <span className="blog-category-badge">{post.category}</span>
                               <span className="blog-read-time">{post.readTime}</span>
                             </div>
-                            <h3 className="blog-card-title">{post.title}</h3>
+                            <h3 
+                              className="blog-card-title"
+                              style={{
+                                backgroundImage: getRandomGradient(),
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                display: 'inline-block'
+                              }}
+                            >
+                              {post.title}
+                            </h3>
                             <p className="blog-card-summary">{post.summary}</p>
                             <div className="blog-card-bottom">
                               <div className="blog-card-tags">
@@ -697,7 +692,6 @@ const BlogTab = ({ adsEnabled }) => {
                               <span className="blog-read-more">Read Article</span>
                             </div>
                           </div>
-                          {/* Admin Controls are shown ONLY for Custom Blogs */}
                           {blogSection === 'custom' && (
                             <div className="blog-card-admin-controls">
                               <button className="blog-admin-btn edit" onClick={() => handleOpenStudio(post)}>
@@ -735,7 +729,6 @@ const BlogTab = ({ adsEnabled }) => {
           )}
         </div>
 
-        {/* Sidebar Sponsor Column: Shifts below workspace when active */}
         <aside className={`blog-sidebar ${viewMode === 'studio' ? 'studio-bottom' : ''}`}>
           {adsEnabled && (
             <>
