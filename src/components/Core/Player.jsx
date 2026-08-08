@@ -13,7 +13,6 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-// Reusable component that automatically scrolls overflowing text
 const MarqueeText = ({ text, className }) => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
@@ -61,7 +60,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const ytLastPerfRef = useRef(0);
   const fallbackTimerRef = useRef(null);
   
-  // Ref to hold the active fetch AbortController
+  const lastPolledTimeRef = useRef(-1);
   const abortControllerRef = useRef(null);
   
   const audioCacheRef = useRef(new Map());
@@ -79,7 +78,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const [hoverTime, setHoverTime] = useState(null);
   const [fallbackMessage, setFallbackMessage] = useState('');
   
-  // Array tracking sources that have structurally failed on this specific play attempt
   const [failedSources, setFailedSources] = useState([]);
 
   const [volume, setVolume] = useState(() => {
@@ -204,7 +202,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     }
   };
 
-  // Extract accent color
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
     let img = new Image();
@@ -242,12 +239,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
-  // Reset failed sources naturally on new play requests or source changes
   useEffect(() => {
     setFailedSources([]);
   }, [currentTrack?.trackId, currentTrack?.playId, currentTrack?.forceSource]);
 
-  // Strict Priority Track Resolution Engine
   useEffect(() => {
     if (!currentTrack) {
       if (abortControllerRef.current) {
@@ -270,6 +265,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       setFallbackMessage('');
       activeSourceRef.current = null;
       playIdRef.current = null;
+      lastPolledTimeRef.current = -1;
       globalClock.pause();
       globalClock.seek(0);
       emitPlayState(false, true);
@@ -286,7 +282,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     const extractedYtId = extractYouTubeId(ytUrl);
     const hasArl = Boolean(settings?.deezerArl?.trim());
 
-    // Strict priority hierarchy: Local > Deezer > YouTube > Preview
     const getBestSource = (exclude = []) => {
       if (hasLocal && !exclude.includes('local')) return 'local';
       if (dzUrl && hasArl && !exclude.includes('deezer')) return 'deezer';
@@ -334,6 +329,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       
       trackIdRef.current = trackId;
       playIdRef.current = currentTrack.playId;
+      lastPolledTimeRef.current = -1;
       setYtPlayerReady(false);
 
       const addToCache = (key, url) => {
@@ -404,6 +400,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               formData.append('arl_token', settings?.deezerArl?.trim() || '');
               formData.append('quality', '1');
               formData.append('action', 'stream');
+              formData.append('obfuscate', 'true'); // Opt-In Flag
               
               const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
                 method: 'POST',
@@ -413,7 +410,18 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               
               if (!response.ok) throw new Error("Deezer stream failed");
               
-              const blob = await response.blob();
+              const buffer = await response.arrayBuffer();
+              const data = new Uint8Array(buffer);
+              
+              if (response.headers.get('X-Audio-Obfuscated') === 'true') {
+                const OBFUSCATION_KEY = 0x5A;
+                const limit = Math.min(data.length, 2048);
+                for (let i = 0; i < limit; i++) {
+                  data[i] ^= OBFUSCATION_KEY;
+                }
+              }
+
+              const blob = new Blob([data], { type: 'audio/mpeg' });
               const url = URL.createObjectURL(blob);
               addToCache(cacheKey, url);
               
@@ -439,7 +447,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack, settings?.deezerArl, failedSources]);
 
-  // YouTube Player Initialization
   useEffect(() => {
     if (!ytVideoId) return;
     let playerInstance = null;
@@ -525,7 +532,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ytVideoId]);
 
-  // Sync clock time with UI
   useEffect(() => {
     let lastSecond = -1;
     const handleTimeUpdate = (e) => {
@@ -544,12 +550,20 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       if (ytVideoId && ytPlayerRef.current && isPlaying) {
         try {
           const ytTime = ytPlayerRef.current.getCurrentTime();
-          if (ytTime !== undefined) globalClock.updateAnchor(ytTime);
+          if (ytTime !== undefined && ytTime !== lastPolledTimeRef.current) {
+            globalClock.updateAnchor(ytTime);
+            lastPolledTimeRef.current = ytTime;
+          }
         } catch (err) {}
       } else if (audioRef.current && isPlaying) {
-        globalClock.updateAnchor(audioRef.current.currentTime);
+        const audioTime = audioRef.current.currentTime;
+        if (audioTime !== lastPolledTimeRef.current) {
+          globalClock.updateAnchor(audioTime);
+          lastPolledTimeRef.current = audioTime;
+        }
       }
     };
+    
     window.addEventListener('globalTimeUpdate', handleTimeUpdate);
     return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
   }, [duration, ytVideoId, isPlaying]);
@@ -562,7 +576,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioSrc, ytVideoId]);
 
-  // Global Seek Request
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;

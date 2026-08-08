@@ -1,4 +1,4 @@
-/* --- src/hooks/useSyncWorkspace.js --- */
+/* --- src/hooks/sync/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../../services/db';
 import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers';
@@ -15,18 +15,17 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
   const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
-  
-  // Dedicated local playback states for the Sync Workspace
+
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
   const [syncYtVideoId, setSyncYtVideoId] = useState(null);
   const [activeSyncSource, setActiveSyncSource] = useState(null);
-  const [manualSource, setManualSource] = useState(null); // Explicit user override state
+  const [manualSource, setManualSource] = useState(null);
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
-  
+
   const syncAudioRef = useRef(null);
   const syncYtPlayerRef = useRef(null);
   const activeLineRef = useRef(null);
@@ -35,8 +34,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
-  
-  // Caches binary audio blobs for the lifecycle of the track so we never re-request Deezer streams on toggle
   const cachedUrlsRef = useRef({ local: null, deezer: null });
 
   useEffect(() => {
@@ -60,11 +57,10 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     });
     return lines;
   }, [syncData]);
-  
+
   const workspaceLinesRef = useRef(workspaceLines);
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
-  // Handle global unmount memory clearance
   useEffect(() => {
     return () => {
       if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
@@ -82,15 +78,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setConstrainedEnd(null);
       setLoopRange(null);
       setManualSource(null);
-
-      // Clean up previous blobs from memory
       if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
       if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
       cachedUrlsRef.current = { local: null, deezer: null };
     }
   }, [selectedSong]);
 
-  // Compute available valid sources dynamically based on current track data
   const availableSources = useMemo(() => {
     const sources = [];
     if (customData.hasLocal) sources.push('local');
@@ -102,14 +95,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const computedSource = manualSource && availableSources.includes(manualSource)
     ? manualSource
-    : (availableSources[0] || null); // Local -> Deezer -> YouTube Strict Fallback
+    : (availableSources[0] || null);
 
-  // Load YouTube stream URL or local audio / deezer fetch
   useEffect(() => {
     const loadSyncAudio = async () => {
       if (isSyncMode && selectedSong) {
         const sourceToLoad = computedSource;
-
         if (!sourceToLoad) {
           setActiveSyncSource(null);
           setSyncYtVideoId(null);
@@ -118,7 +109,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           return;
         }
 
-        // Force stop players to prevent malfunction/overlap on rapid switching
         setIsSyncPlaying(false);
         workspaceClock.pause();
         if (syncAudioRef.current) {
@@ -170,6 +160,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             formData.append('arl_token', settings?.deezerArl || '');
             formData.append('quality', '1');
             formData.append('action', 'stream');
+            formData.append('obfuscate', 'true'); // Opt-In Flag
             
             const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
               method: 'POST',
@@ -178,10 +169,23 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
             if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
 
-            const blob = await response.blob();
+            // --- CLIENT-SIDE DECRYPTION PIPELINE FOR SYNC WORKSPACE ---
+            const buffer = await response.arrayBuffer();
+            const data = new Uint8Array(buffer);
+            
+            if (response.headers.get('X-Audio-Obfuscated') === 'true') {
+              const OBFUSCATION_KEY = 0x5A;
+              const limit = Math.min(data.length, 2048);
+              for (let i = 0; i < limit; i++) {
+                data[i] ^= OBFUSCATION_KEY;
+              }
+            }
+
+            const blob = new Blob([data], { type: 'audio/mpeg' });
             const url = URL.createObjectURL(blob);
             cachedUrlsRef.current.deezer = url;
             setSyncAudioSrc(url);
+
           } catch (e) {
             console.error("Deezer buffer issue, falling back:", e);
             if (availableSources.includes('youtube')) setManualSource('youtube');
@@ -195,7 +199,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     loadSyncAudio();
   }, [isSyncMode, computedSource, selectedSong]);
 
-  // Sync playback rate with workspace clock
   useEffect(() => {
     workspaceClock.setRate(playbackRate);
     if (isSyncMode) {
@@ -215,7 +218,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
   }, [isSyncMode, syncAudioSrc, playbackRate]);
 
-  // Pause Sync Player if Global Player plays
   useEffect(() => {
     const handleGlobalPlay = () => {
       if (syncYtPlayerRef.current) {
@@ -231,7 +233,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     return () => window.removeEventListener('globalPlayerDidPlay', handleGlobalPlay);
   }, []);
 
-  // AUTO SCROLL ACTIVE LINE
   useEffect(() => {
     if (isSyncMode && activeLineRef.current) {
       const container = activeLineRef.current.parentElement;
@@ -293,10 +294,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     if (availableSources.length === 0) {
       return alert("No full-length audio source available! Please add a Local MP3, Deezer link, or YouTube link to sync. iTunes Preview snippets are not allowed in the sync workspace.");
     }
-
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
     setIsSyncLoading(true);
-
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
     let initialData = [];
@@ -318,7 +317,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } else if (sourceData && sourceData.length > 0) {
       initialData = sourceData.map((node) => ({ ...node }));
     }
-
+    
     setSyncData(initialData);
     syncDataRef.current = initialData;
     setActiveSyncIndex(0);
@@ -330,7 +329,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const confirmRefreshLyrics = () => {
-    // Clear timing for currently active workspace mode only
     const resetData = syncDataRef.current.map(line => ({
       ...line,
       start: null,
@@ -381,7 +379,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       return;
     }
     if (!syncAudioRef.current) return;
-
     if (syncAudioRef.current.paused) {
       window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
       syncAudioRef.current.play().catch(e => console.log(e));
