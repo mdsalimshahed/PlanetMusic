@@ -1,4 +1,4 @@
-/* --- src/components/TranslationRow.jsx --- */
+/* --- src/components/Workspaces/Translation/TranslationRow.jsx --- */
 import React from 'react';
 
 const TranslationRow = ({
@@ -16,28 +16,31 @@ const TranslationRow = ({
 
   const renderTextWithYellowPunctuation = (text, baseStyle = {}, isAdlibChar = false) => {
     if (!text) return null;
-    const parts = text.split(/([.,!?;:"'()\[\]{}\- ]+)/);
-    return parts.map((part, pIdx) => {
-      const isPunct = /^[.,!?;:"'()\[\]{}\- ]+$/.test(part);
-      if (isPunct && !isAdlibChar) {
-        return (
-          <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
-            {part}
-          </span>
-        );
+    const chars = Array.from(text);
+    return chars.map((char, pIdx) => {
+      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
+      let style = { ...baseStyle };
+
+      if (isPunct && char.trim() !== '' && !isAdlibChar) {
+        style.color = '#fbbf24';
+        style.WebkitTextFillColor = '#fbbf24';
+        style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
       }
-      return <span key={pIdx} style={baseStyle}>{part}</span>;
+
+      return <span key={pIdx} style={style}>{char}</span>;
     });
   };
 
   const renderColoredOriginalText = () => {
     const isMainAndSplit = !line._meta.isAdlib && line.isSplit && line.adlibs;
+
     if (line.segments && line.segments.length > 0) {
       let globalCharIndex = 0;
       return line.segments.map((seg, idxSeg) => {
         let inlineColor = seg.color || '#ffffff';
         let inlineIsGradient = seg.isGradient || false;
         let inlineGradient = seg.gradient || '';
+
         if (seg.artists && seg.artists.length > 0) {
           if (seg.artists.length > 1) {
             inlineIsGradient = true;
@@ -48,10 +51,12 @@ const TranslationRow = ({
             inlineColor = masterPalette[seg.artists[0]] || inlineColor;
           }
         }
+
         const segChars = Array.from(seg.text);
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
           const isAdlibChar = isMainAndSplit && line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+
           let segStyle = inlineIsGradient ? {
             backgroundImage: inlineGradient,
             WebkitBackgroundClip: 'text',
@@ -59,6 +64,7 @@ const TranslationRow = ({
           } : {
             color: inlineColor
           };
+
           if (isAdlibChar) {
             segStyle = {
               ...segStyle,
@@ -67,22 +73,26 @@ const TranslationRow = ({
               textDecorationColor: '#ffffff'
             };
           }
+
           return (
             <React.Fragment key={cIdx}>
               {renderTextWithYellowPunctuation(char, segStyle, isAdlibChar)}
             </React.Fragment>
           );
         });
+
         return <React.Fragment key={idxSeg}>{charElements}</React.Fragment>;
       });
     }
 
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
+
     if (isMainAndSplit) {
       const chars = Array.from(line.displayText);
       return chars.map((char, cIdx) => {
         const isAdlibChar = line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
         let baseStyle = { color: defaultColor };
+
         if (isAdlibChar) {
           baseStyle = {
             ...baseStyle,
@@ -91,6 +101,7 @@ const TranslationRow = ({
             textDecorationColor: '#ffffff'
           };
         }
+
         return (
           <React.Fragment key={cIdx}>
             {renderTextWithYellowPunctuation(char, baseStyle, isAdlibChar)}
@@ -98,6 +109,7 @@ const TranslationRow = ({
         );
       });
     }
+
     return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor }, false);
   };
 
@@ -119,6 +131,7 @@ const TranslationRow = ({
             {renderColoredOriginalText()}
           </div>
         </div>
+
         <input
           className="tw-input tw-translit-input"
           value={line.displayPron || ''}
@@ -128,6 +141,7 @@ const TranslationRow = ({
           style={{ textAlign: 'left' }}
         />
       </div>
+
       <div className="tw-col tw-col-right">
         <textarea
           className="tw-input tw-translation-input"
@@ -138,6 +152,7 @@ const TranslationRow = ({
           style={{ textAlign: 'left' }}
         />
       </div>
+
       <div className="tw-col-actions">
         <button
           className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}

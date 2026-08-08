@@ -26,8 +26,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!syncData) return items;
-    let globalAdlibCounter = 0;
 
+    let globalAdlibCounter = 0;
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -50,6 +50,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
               } else { aTrans = aPron; }
             }
+
             let adlibTranslation = adlibObj?.translation || '';
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
 
@@ -86,11 +87,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
               const segChars = Array.from(seg.text || '');
               const renderedChars = segChars.map((char) => {
-                const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(char);
+                const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
                 let style = {};
 
-                if (isPunct) {
+                if (isPunct && char.trim() !== '') {
                   style.color = '#fbbf24';
+                  style.WebkitTextFillColor = '#fbbf24';
                   style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
                 } else if (inlineIsGradient) {
                   style.backgroundImage = inlineGradient;
@@ -278,9 +280,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             item.node.style.setProperty('--adlib-top', pos.top);
             item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
           }
-
           item.node.classList.add('active');
           item.isActive = true;
+
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;

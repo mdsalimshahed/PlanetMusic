@@ -19,6 +19,7 @@ export const SyncWorkspace = ({
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
+
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
 
@@ -88,8 +89,9 @@ export const SyncWorkspace = ({
       }
       const target = document.getElementById('sync-yt-target-container');
       if (!target) return;
+      
       target.innerHTML = '<div id="sync-yt-iframe" style="width:100%;height:100%;"></div>';
-
+      
       playerInstance = new window.YT.Player('sync-yt-iframe', {
         videoId: syncYtVideoId,
         host: 'https://www.youtube-nocookie.com',
@@ -138,6 +140,7 @@ export const SyncWorkspace = ({
         }
       });
     };
+
     initSyncYT();
 
     return () => {
@@ -171,7 +174,6 @@ export const SyncWorkspace = ({
           const node = adlibNodes[i];
           const start = parseFloat(node.dataset.start);
           const end = parseFloat(node.dataset.end);
-
           if (!isNaN(start)) {
             if (time >= start && time <= end) {
               if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
@@ -215,10 +217,8 @@ export const SyncWorkspace = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
-
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
-
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
@@ -303,8 +303,8 @@ export const SyncWorkspace = ({
     });
 
     const renderColoredChar = (c, cIdx) => {
-      const isPunct = /([.,!?;:"'()\[\]{}\- ]+)/.test(c.char);
-      let activeColor = isPunct ? '#fbbf24' : '#ffffff';
+      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
+      let activeColor = '#ffffff';
       let isGradient = false;
       let gradientStyle = '';
 
@@ -313,7 +313,6 @@ export const SyncWorkspace = ({
         if (!targetArtists && line.singer) {
           targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
         }
-
         if (targetArtists && targetArtists.length > 0) {
           if (targetArtists.length > 1) {
             isGradient = true;
@@ -332,6 +331,12 @@ export const SyncWorkspace = ({
 
       const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
       
+      if (isPunct && c.char.trim() !== '') {
+        style.color = '#fbbf24';
+        style.WebkitTextFillColor = '#fbbf24';
+        style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
+      }
+
       if (isMain && line.isSplit) {
         const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
         if (isAdlibChar) {
@@ -339,6 +344,7 @@ export const SyncWorkspace = ({
           style.textDecoration = 'line-through';
         }
       }
+
       return <span key={cIdx} style={style}>{c.char}</span>;
     };
 
@@ -379,14 +385,15 @@ export const SyncWorkspace = ({
     let pChunkIndex = 0;
     let currentPChunk = activeParsedChunks[0];
     let currentPChunkConsumed = 0;
-    let i = 0;
 
+    let i = 0;
     while (i < chars.length) {
       if (!currentPChunk) {
         alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
         i++;
         continue;
       }
+
       let chunkChars = [];
       const targetLen = Array.from(currentPChunk.text || '').length;
 
@@ -414,6 +421,7 @@ export const SyncWorkspace = ({
 
     const renderedChunksJSX = alignedChunks.map((chunk, chunkIdx) => {
       const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
+
       if (chunk.type === 'foreign' && chunk.trans) {
         const cleanTrans = normalizeTrans(chunk.trans);
         return (
@@ -449,8 +457,8 @@ export const SyncWorkspace = ({
       
       {/* Hidden container for YouTube IFrame in workspace */}
       <div 
-        id="sync-yt-target-container" 
-        style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+         id="sync-yt-target-container" 
+         style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
@@ -462,7 +470,6 @@ export const SyncWorkspace = ({
             >
               {isShowingAutoSync ? '  Auto Sync Mode' : '  Manual Sync Mode'}
             </button>
-
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
                   onClick={handleMapAutoSync} 
@@ -487,15 +494,15 @@ export const SyncWorkspace = ({
                           setManualSource(availableSources[nextIndex]);
                       }
                   };
-
+                  
                   const cursorStyle = isMultiple ? { cursor: 'pointer', userSelect: 'none', transition: 'transform 0.2s' } : {};
                   const title = isMultiple ? "Click to switch audio source" : "";
-
+                  
                   const Wrapper = ({ children }) => (
                     <span 
-                      onClick={cycleSource} 
-                      style={{...cursorStyle, display: 'inline-block'}} 
-                      title={title}
+                       onClick={cycleSource} 
+                       style={{...cursorStyle, display: 'inline-block'}} 
+                       title={title}
                       onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                       onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -506,6 +513,7 @@ export const SyncWorkspace = ({
                   if (activeSyncSource === 'youtube') return <Wrapper><span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>YT Music</span></Wrapper>;
                   if (activeSyncSource === 'local') return <Wrapper><span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>LOCAL</span></Wrapper>;
                   if (activeSyncSource === 'deezer') return <Wrapper><span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>DEEZER</span></Wrapper>;
+                  
                   return null;
               })()}
             </div>
@@ -531,7 +539,6 @@ export const SyncWorkspace = ({
           onChange={handleSyncSeek}
           style={{ '--progress': '0%' }}
           />
-
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
 
@@ -560,6 +567,7 @@ export const SyncWorkspace = ({
           const isActive = i === activeSyncIndex;
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
+          
           const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
@@ -568,7 +576,7 @@ export const SyncWorkspace = ({
 
           return (
             <div 
-                key={i} 
+                key={i}
                 ref={isActive ? activeLineRef : null}
               className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
               data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
@@ -582,6 +590,7 @@ export const SyncWorkspace = ({
                     const pEnd = item.parentRef.end !== null ? item.parentRef.end : (pStart + 5);
                     setLoopRange({ start: pStart, end: pEnd });
                     setConstrainedEnd(null);
+                    
                     workspaceClock.seek(pStart);
                     if (syncYtVideoId && syncYtPlayerRef.current) {
                       try {
@@ -630,7 +639,7 @@ export const SyncWorkspace = ({
       </div>
 
       <audio 
-         ref={syncAudioRef}
+          ref={syncAudioRef}
         src={syncAudioSrc || undefined}
         onLoadedMetadata={handleAudioLoaded}
         onDurationChange={handleAudioLoaded}

@@ -1,10 +1,7 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.css --- */
 
 /* General Lyrics Layout */
-.live-lyrics-preview,
-.focused-lyrics-preview,
-.debug-lyrics-preview,
-.lyrics-display {
+.live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
   position: relative;
   z-index: 1;
 }
@@ -68,6 +65,7 @@
 .lyrics-textarea::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
 
 /* --- ARTIST PREVIEW PANE --- */
 .artist-preview-pane {
@@ -173,7 +171,6 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
 
 .preview-line {
@@ -369,6 +366,7 @@
 }
 
 rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
+
 .primary-text { display: block; width: 100%; box-sizing: border-box; }
 
 rt.pronunciation-text, .pronunciation-text {
@@ -418,6 +416,7 @@ rt.pronunciation-text, .pronunciation-text {
 @media (max-width: 900px) {
   .edit-lyrics-container {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
   }
   .preview-line {
     font-size: clamp(16px, 4.5vw, min(var(--dyn-live-sync-font-size, 34px), 26px));
@@ -460,6 +459,7 @@ rt.pronunciation-text, .pronunciation-text {
   transition: transform 0.05s ease-out;
   will-change: transform;
 }
+
 
 /* --- Translation Overlay Styles --- */
 .chunk-translation {

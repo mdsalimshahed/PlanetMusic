@@ -3,13 +3,14 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { LyricLineWrapper } from './LyricsLineRenderer';
 import { FocusedAdlibsTracker } from '../Sync/FocusedAdlibsTracker';
 import { parseLyrics } from '../../../utils/songHelpers';
+import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
-const LyricsDisplay = ({ 
-    isEditing, customData, handleDataChange, hasValidSyncData, 
-    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-    isPlaying, settings }) => {
-
+const LyricsDisplay = ({
+     isEditing, customData, handleDataChange, hasValidSyncData,
+     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
+     isPlaying, settings
+}) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -23,34 +24,59 @@ const LyricsDisplay = ({
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
   }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
 
-  // Primary color style resolver
-  const getArtistStyle = (item) => {
+  // The REAL core engine character mapping and styling function
+  const renderColoredText = (item) => {
     let artists = item.artists || [];
     if (artists.length === 0 && item.singer) {
       artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     }
+
+    let isGradient = false;
+    let gradientStyle = '';
+    let activeColor = '#ffffff';
+
     if (artists.length > 1) {
+      isGradient = true;
       const c1 = masterPalette[artists[0]] || '#ffffff';
       const c2 = masterPalette[artists[1]] || '#ffffff';
-      return {
-        backgroundImage: `linear-gradient(90deg, ${c1}, ${c2})`,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        display: 'inline-block'
-      };
+      gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
     } else if (artists.length === 1) {
-      const color = masterPalette[artists[0]] || item.color || '#ffffff';
-      return { color };
+      activeColor = masterPalette[artists[0]] || item.color || '#ffffff';
+    } else if (item.isGradient && item.gradient) {
+      isGradient = true;
+      gradientStyle = item.gradient;
+    } else {
+      activeColor = item.color || '#ffffff';
     }
-    if (item.isGradient && item.gradient) {
-      return {
-        backgroundImage: item.gradient,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        display: 'inline-block'
-      };
-    }
-    return { color: item.color || '#ffffff' };
+
+    const chars = getGraphemes(item.text || '');
+    return chars.map((char, cIdx) => {
+      // The true Unicode punctuation checker used by the Live Sync / Focused core engine
+      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
+      let style = {};
+
+      if (isPunct && char.trim() !== '') {
+        style = {
+          color: '#fbbf24',
+          WebkitTextFillColor: '#fbbf24', // Force override any transparent clips
+          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)'
+        };
+      } else if (isGradient) {
+        style = {
+          backgroundImage: gradientStyle,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))'
+        };
+      } else {
+        style = { 
+          color: activeColor,
+          textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`
+        };
+      }
+
+      return <span key={cIdx} style={style}>{char}</span>;
+    });
   };
 
   // Helper to render artist headers in preview view
@@ -90,11 +116,13 @@ const LyricsDisplay = ({
 
     const renderEQ = (timestamp) => {
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
+      
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         if (timestamp - lastEqDraw > 33) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const freqData = window.globalFreqData;
           const bars = eqBarsRef.current;
+          
           if (freqData && bars) {
             for (let i = 0; i < bars.length; i++) {
               if (bars[i]) {
@@ -126,8 +154,7 @@ const LyricsDisplay = ({
   // RE-QUERY DOM ELEMENTS WHENEVER EDIT MODE CLOSES OR LYRICS/VIEW-MODES CHANGE
   useEffect(() => {
     if (isEditing) return;
-
-    // Small delay allows React to finish DOM paint after exiting edit mode
+    
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
@@ -137,6 +164,7 @@ const LyricsDisplay = ({
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
+        
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -144,7 +172,6 @@ const LyricsDisplay = ({
             state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
         }));
 
-        // Immediately trigger sync calculation on newly cached DOM nodes
         if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
             handleTimeUpdate(window.currentAudioTime);
         }
@@ -166,6 +193,7 @@ const LyricsDisplay = ({
         if (!isNaN(start) && time >= start) {
             const isBeforeEnd = isNaN(end) || time <= end;
             const isBeforeNext = isNaN(nextStart) || time < nextStart;
+            
             if (isBeforeEnd && isBeforeNext) {
                 newActiveIndex = i;
                 break;
@@ -238,6 +266,7 @@ const LyricsDisplay = ({
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
+    
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
@@ -264,20 +293,23 @@ const LyricsDisplay = ({
     const html = e.clipboardData.getData('text/html');
     if (html) {
       e.preventDefault();
+      
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
-
+      
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
+          
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
+          
           const isBold = tag === 'b' || tag === 'strong' || fw === 'bold' || fw === '700' || parseInt(fw) >= 600;
           const isItalic = tag === 'i' || tag === 'em' || style.fontStyle === 'italic';
-
+          
           if (innerText.trim()) {
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
@@ -286,14 +318,15 @@ const LyricsDisplay = ({
             if (isBold) wrapped = `**${wrapped}**`;
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
-
+          
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
           return innerText;
         }
         return '';
       };
-
+      
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
+      
       if (document.queryCommandSupported('insertText')) {
         document.execCommand('insertText', false, markdownText);
       } else {
@@ -329,6 +362,7 @@ const LyricsDisplay = ({
               </span>
               <span className="artist-preview-badge">{editParsedLyrics.length} lines</span>
             </div>
+            
             <div className="artist-preview-scroll">
               {editParsedLyrics.length > 0 ? (
                 editParsedLyrics.map((line, idx) => {
@@ -341,12 +375,12 @@ const LyricsDisplay = ({
                       <div className="preview-line-text">
                         {line.segments && line.segments.length > 0 ? (
                           line.segments.map((seg, sIdx) => (
-                            <span key={sIdx} style={getArtistStyle(seg)}>
-                              {seg.text}
-                            </span>
+                            <React.Fragment key={sIdx}>
+                              {renderColoredText(seg)}
+                            </React.Fragment>
                           ))
                         ) : (
-                          <span style={getArtistStyle(line)}>{line.text}</span>
+                          renderColoredText(line)
                         )}
                       </div>
                     </div>
@@ -427,11 +461,11 @@ const LyricsDisplay = ({
             liveParsedLyrics.map((line, i) => (
               <div key={i} style={{ textAlign: 'left' }} dir="auto">
                 {line.segments ? line.segments.map((seg, idx) => (
-                  <span key={idx} style={getArtistStyle(seg)}>
-                    {seg.text}
-                  </span>
+                  <React.Fragment key={idx}>
+                    {renderColoredText(seg)}
+                  </React.Fragment>
                 )) : (
-                  <span style={getArtistStyle(line)}>{line.text}</span>
+                  renderColoredText(line)
                 )}
               </div>
             ))
