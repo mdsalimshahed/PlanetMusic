@@ -26,11 +26,10 @@ const App = () => {
 
   // Parse routing variables from URL
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const activeTab = pathParts[0] === 'blog' ? 'blog' :
-                    pathParts[0] === 'settings' ? 'settings' :
-                    pathParts[0] === 'privacy' ? 'privacy' :
-                    pathParts[0] === 'contact' ? 'contact' : 'main';
-                      
+  const activeTab = pathParts[0] === 'blog' ? 'blog' : 
+                    pathParts[0] === 'settings' ? 'settings' : 
+                    pathParts[0] === 'privacy' ? 'privacy' : 
+                    pathParts[0] === 'contact' ? 'contact' : 'main';                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
   // Extract ?q= search parameter from URL for bookmarking
@@ -136,7 +135,7 @@ const App = () => {
   };
 
   return (
-    <div className="app-layout" style={dynamicStyles}>
+    <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
       <Background songs={library} />
       
       <Topbar 
@@ -347,7 +346,6 @@ const App = () => {
               {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
             </button>
           </div>
-
         </div>
       </main>
 

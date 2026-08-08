@@ -1,5 +1,5 @@
-/* --- src/hooks/useSyncLogic.js --- */
-import { useEffect } from 'react';
+/* --- src/hooks/sync/useSyncLogic.js --- */
+import { useEffect, useRef } from 'react';
 import { quickTransliterate } from '../../services/transliterator';
 import { workspaceClock } from '../../utils/clockEngine';
 import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
@@ -12,7 +12,10 @@ export const useSyncEngine = ({
   workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
   syncDataRef, updateWorkspaceData,
   loopRangeRef, setLoopRange,
-  constrainedEndRef, setConstrainedEnd }) => {
+  constrainedEndRef, setConstrainedEnd
+}) => {
+
+  const lastSyncTimeRef = useRef(0);
 
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
@@ -24,36 +27,28 @@ export const useSyncEngine = ({
     }
     
     let newIdx = -1;
-    for (let i = 0; i < wLines.length; i++) {
-      const item = wLines[i];
-      if (item.type !== 'main' || item.ref.start === null) continue;
-      
-      let nextStart = null;
-      for (let j = i + 1; j < wLines.length; j++) {
-        if (wLines[j].type === 'main' && wLines[j].ref.start !== null) {
-          nextStart = wLines[j].ref.start;
-          break;
-        }
-      }
-      
-      if (time >= item.ref.start) {
-        if (nextStart === null || time < nextStart) {
+    
+    // CRITICAL CPU FIX: O(1) Backwards traversal. 
+    // Instantly finds the active line without an O(N^2) inner loop.
+    for (let i = wLines.length - 1; i >= 0; i--) {
+        const item = wLines[i];
+        if (item.type !== 'main' || item.ref.start === null) continue;
+        
+        if (time >= item.ref.start) {
             if (item.ref.end !== null && time > item.ref.end) {
-                newIdx = -1;
+                newIdx = -1; // Time has passed this line's end, but hasn't reached the next line yet
             } else {
-                newIdx = i;
+                newIdx = i; // Time is actively inside this line
             }
-            break;
+            break; // Stop looping instantly once we find the target
         }
-      }
     }
     
     if (newIdx === -1) {
+        // Fallback for before the very first lyric
         for (let i = 0; i < wLines.length; i++) {
             if (wLines[i].type === 'main') {
-                if (wLines[i].ref.start === null) {
-                    newIdx = i;
-                }
+                if (wLines[i].ref.start === null) newIdx = i;
                 break;
             }
         }
@@ -73,15 +68,22 @@ export const useSyncEngine = ({
     const syncTick = () => {
       if (isSyncPlaying) {
         const time = workspaceClock.getCurrentTime();
-
-        // Sync native player anchor checks
-        if (syncYtVideoId && syncYtPlayerRef?.current) {
-          try {
-            const ytTime = syncYtPlayerRef.current.getCurrentTime();
-            if (ytTime !== undefined) workspaceClock.updateAnchor(ytTime);
-          } catch (e) {}
-        } else if (syncAudioRef?.current) {
-          workspaceClock.updateAnchor(syncAudioRef.current.currentTime);
+        
+        // DRIFT SYNC THROTTLE
+        const now = performance.now();
+        if (now - lastSyncTimeRef.current > 2000) {
+            if (syncYtVideoId && syncYtPlayerRef?.current) {
+              try {
+                const ytTime = syncYtPlayerRef.current.getCurrentTime();
+                if (ytTime !== undefined) {
+                    workspaceClock.updateAnchor(ytTime);
+                    lastSyncTimeRef.current = now;
+                }
+              } catch (e) {}
+            } else if (syncAudioRef?.current) {
+              workspaceClock.updateAnchor(syncAudioRef.current.currentTime);
+              lastSyncTimeRef.current = now;
+            }
         }
         
         const wLines = workspaceLinesRef.current;
@@ -131,7 +133,6 @@ export const useSyncEngine = ({
         } else {
           autoTrackSyncPlayback(time);
         }
-
         animationFrameId = requestAnimationFrame(syncTick);
       }
     };
@@ -146,13 +147,16 @@ export const useSyncEngine = ({
   }, [isSyncPlaying, syncYtVideoId]);
 };
 
+// ... (Keep useSyncKeyboard and useSyncActions exactly as they are) ...
+
 // ------------------------------------------------------------------
 // 2. KEYBOARD: Handles manual syncing and spacebar controls
 // ------------------------------------------------------------------
 export const useSyncKeyboard = ({
   isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-  loopRangeRef, isShowingAutoSync }) => {
+  loopRangeRef, isShowingAutoSync
+}) => {
 
   const getCurrentTime = () => {
     return workspaceClock.getCurrentTime();
@@ -169,6 +173,7 @@ export const useSyncKeyboard = ({
 
   useEffect(() => {
     if (!isSyncMode) return;
+
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
         if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
@@ -208,7 +213,6 @@ export const useSyncKeyboard = ({
         seekToTime(Math.max(0, getCurrentTime() - 1));
         return;
       }
-
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekToTime(getCurrentTime() + 1);
@@ -320,12 +324,13 @@ export const useSyncActions = ({
   updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
   isSyncMode, setSyncData, syncDataRef, setNotification,
   setIsLrcFetching, setIsTranslating, updateWorkspaceData,
-  setLoopRange, setDebugInfo }) => {
+  setLoopRange, setDebugInfo
+}) => {
 
   const handleSplitAdlibs = async (lineIndex) => {
     const data = [...syncDataRef.current];
     const line = data[lineIndex];
-    const lineChars = Array.from(line.text);
+    const lineChars = Array.from(line.text); 
     const adlibs = [];
     
     let inAdlib = false;
@@ -351,14 +356,17 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
+
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
+
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
                             text: overlapText
                         });
+
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -366,8 +374,11 @@ export const useSyncActions = ({
                     }
                     currentPos = segEnd;
                 }
+
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+
                 const pronData = await quickTransliterate(adlibText);
+
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -401,10 +412,12 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
+
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
     }
+
     const parsedLines = parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
     if (parsedLines.length === 0) {
       return alert("No manual lyrics available to map.");
@@ -469,6 +482,7 @@ export const useSyncActions = ({
             continue;
           }
           const cleanAutoText = normalize(targetAutoLine.text);
+          
           if (cleanAutoText.includes(cleanNextManual) && !cleanAutoText.startsWith(cleanManual)) {
             manualGroup.push(nextManual);
             nextManual++;
@@ -513,7 +527,7 @@ export const useSyncActions = ({
       ...selectedSong,
       syncData: updatedSyncData
     });
-
+    
     if (isSyncMode) {
       setSyncData(updatedSyncData);
       syncDataRef.current = updatedSyncData;
@@ -573,6 +587,7 @@ export const useSyncActions = ({
         if (lrcData?.syncedLyrics) {
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync?.length > 0);
+          
           if (lrcHasWordSync || !youParsed) {
             finalSyncData = lrcParsed.syncData; finalPlainText = lrcParsed.plainTextLyrics; hasWordSync = lrcHasWordSync; finalSource = 'LRCLIB API'; finalRawData = lrcData;
           } else {

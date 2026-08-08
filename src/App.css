@@ -368,7 +368,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  border-radius: var(--dyn-border-radius);
+  border-radius: var(--dyn-border-radius, 16px);
   background: rgba(251, 191, 36, 0.08) !important;
   border: 1px solid rgba(251, 191, 36, 0.3) !important;
   margin-bottom: 24px;
@@ -381,7 +381,8 @@ body {
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
   text-align: left;
-  flex: 1;
+  flex: 1 1 280px;
+  min-width: 250px;
 }
 
 .sample-banner-text strong {
@@ -392,6 +393,8 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: center; /* Ensures buttons center within this container */
 }
 
 .keep-sample-btn {
@@ -434,6 +437,16 @@ body {
   color: white;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(250, 36, 60, 0.3);
+}
+
+/* Elegantly center everything on smaller screens */
+@media (max-width: 550px) {
+  .sample-banner-actions {
+    width: 100%;
+  }
+  .sample-banner-text {
+    text-align: center;
+  }
 }
 
 /* --- Confirmation Modal --- */
@@ -651,4 +664,24 @@ body ins.adsbygoogle,
 body iframe,
 body .dynamic-radius-override {
     border-radius: var(--dyn-border-radius, 16px) !important;
+}
+
+/* ==========================================================================
+   PERFORMANCE DIAGNOSTICS (KILL-SWITCH)
+   Globally kills all CSS animations, transitions, and removes background fluid drops
+   ========================================================================== */
+.disable-animations *,
+.disable-animations *::before,
+.disable-animations *::after {
+  /* CRITICAL FIX: Force animations to instantly finish (0.001ms) instead of 'none'.
+     This ensures elements that rely on animations to become visible (like translations) still appear! */
+  animation-duration: 0.001ms !important;
+  animation-delay: 0s !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Specifically strip the fluid drops to completely zero out background composite repaints */
+.disable-animations .fluid-drops-container {
+  display: none !important;
 }

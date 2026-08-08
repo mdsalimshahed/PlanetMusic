@@ -1,4 +1,4 @@
-/* --- src/hooks/useAppStorage.js --- */
+/* --- src/hooks/data/useAppStorage.js --- */
 import { useState, useEffect } from 'react';
 
 export const useAppStorage = (urlSearchQuery) => {
@@ -23,7 +23,11 @@ export const useAppStorage = (urlSearchQuery) => {
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
       if (parsed.transliterationOpacity === undefined) parsed.transliterationOpacity = 0.8;
       if (parsed.cardWidth === undefined || parsed.cardWidth > 50) parsed.cardWidth = 12;
-      if (parsed.adsEnabled === undefined) parsed.adsEnabled = true; 
+      
+      // New Performance Setting
+      if (parsed.disableAnimations === undefined) parsed.disableAnimations = false;
+      
+      if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
       
       delete parsed.youtubeApiKey;
       delete parsed.spotifyClientId;
@@ -55,6 +59,7 @@ export const useAppStorage = (urlSearchQuery) => {
       transliterationColor: '#ffffff',
       transliterationOpacity: 0.8,
       deezerArl: '',
+      disableAnimations: false,
       adsEnabled: true
     };
   });

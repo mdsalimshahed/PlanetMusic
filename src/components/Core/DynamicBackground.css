@@ -27,7 +27,8 @@
 
 .active-watermark {
    z-index: 1;
-   opacity: 1 !important;
+   /* CRITICAL FIX: Use the CSS variable from React instead of forcing 1 */
+   opacity: var(--bg-opacity, 0.25) !important;
    visibility: visible !important;
    transition: opacity 0.6s ease-in-out, visibility 0s linear 0s !important;
 }
@@ -85,7 +86,6 @@
    justify-content: flex-end;
    align-items: center;
    gap: 0;
-   /* Wrapped the CSS variable inside the clamp to strictly bind its maximum growth */
    font-size: clamp(14px, 4vw, var(--dyn-artist-name-font-size, 42px));
    font-weight: 800;
    letter-spacing: -0.5px;
@@ -110,9 +110,30 @@
    white-space: pre-wrap;
 }
 
-/* Applies the min() cap matching the exact logic used in LyricsDisplay */
 @media (max-width: 900px) {
   .singer-name-corner {
     font-size: clamp(12px, 4vw, min(var(--dyn-artist-name-font-size, 42px), 20px));
   }
+}
+
+/* ==========================================================================
+   KILL-SWITCH OVERRIDES
+   Forces backgrounds to snap instantly and kills expensive GPU masks
+   ========================================================================== */
+.disable-animations .singer-watermark,
+.disable-animations .active-watermark,
+.disable-animations .inactive-watermark,
+.disable-animations .matrix-watermark-container,
+.disable-animations .active-matrix,
+.disable-animations .inactive-matrix,
+.disable-animations .singer-name-corner {
+    transition: none !important;
+}
+
+/* Strip the expensive alpha-mask compositing when in performance mode */
+.disable-animations .singer-watermark.active-watermark {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    /* Soften hard edges by multiplying your slider value by 0.6 */
+    opacity: calc(var(--bg-opacity, 0.25) * 0.6) !important; 
 }

@@ -15,19 +15,16 @@ const LyricsDisplay = ({
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   
-  // Canvas replacement for EQ
   const canvasRef = useRef(null);
-  const eqScalesRef = useRef(Array(60).fill(0.05)); // Store EQ state in ref to avoid re-renders
+  const eqScalesRef = useRef(Array(40).fill(0.05));
 
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
-  // Parse editable lyrics in real-time for live preview calculation
   const editParsedLyrics = useMemo(() => {
     if (!isEditing || !customData.lyrics) return [];
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
   }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
 
-  // The REAL core engine character mapping and styling function
   const renderColoredText = (item) => {
     let artists = item.artists || [];
     if (artists.length === 0 && item.singer) {
@@ -109,94 +106,126 @@ const LyricsDisplay = ({
     return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
   };
 
-  // HIGH-PERFORMANCE CANVAS EQUALIZER
+  // FULLY OPTIMIZED, FULL-WIDTH CANVAS EQUALIZER
   useEffect(() => {
+    if (settings?.disableAnimations || isEditing) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: true });
     let rafId;
     const pauseDecayFactor = 16 / Math.max((settings?.eqFadeOutTime ?? 500), 16);
+    let idleFrames = 0; 
+    const numBars = 40;
+
+    // CRITICAL CPU FIX: Track width/height via ResizeObserver to completely eliminate DOM layout thrashing.
+    let cw = canvas.clientWidth;
+    let ch = canvas.clientHeight;
+    canvas.width = cw;
+    canvas.height = ch;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        cw = entry.contentRect.width;
+        ch = entry.contentRect.height;
+        canvas.width = cw;
+        canvas.height = ch;
+      }
+    });
+    resizeObserver.observe(canvas);
 
     const renderEQ = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) {
+      // Use cached dimensions - NO browser reflows triggered here!
+      const displayWidth = cw;
+      const displayHeight = ch;
+      
+      if (displayWidth === 0 || displayHeight === 0) {
         rafId = requestAnimationFrame(renderEQ);
         return;
-      }
-
-      const ctx = canvas.getContext('2d', { alpha: true });
-      const displayWidth = canvas.clientWidth;
-      const displayHeight = canvas.clientHeight;
-      
-      // Auto-resize canvas buffer to match DOM element size for crisp rendering
-      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-        canvas.width = displayWidth;
-        canvas.height = displayHeight;
       }
 
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
       const scales = eqScalesRef.current;
       
-      // 1. Process Math (Lerping)
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
+        idleFrames = 0; 
+        
         window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
         const freqData = window.globalFreqData;
+        const bufferLength = freqData.length;
         
-        if (freqData) {
-          for (let i = 0; i < 60; i++) {
-            const raw = freqData[i % freqData.length] || 0;
-            const targetScale = 0.05 + (raw / 255) * 0.95;
-            
-            if (targetScale > scales[i]) {
-              scales[i] += (targetScale - scales[i]) * 0.4;
-            } else {
-              scales[i] += (targetScale - scales[i]) * 0.15;
-            }
+        for (let i = 0; i < numBars; i++) {
+          const percent = i / numBars;
+          const dataIndex = Math.floor(Math.pow(percent, 1.2) * (bufferLength * 0.6));
+          const safeIndex = Math.min(dataIndex, bufferLength - 1);
+          
+          const raw = freqData[safeIndex] || 0;
+          const normalized = raw / 255;
+          const emphasized = Math.pow(normalized, 3);
+          
+          const dampener = 0.6 + (percent * 0.6); 
+          const targetScale = 0.05 + (emphasized * 1.2 * dampener);
+          
+          if (targetScale > scales[i]) {
+            scales[i] += (targetScale - scales[i]) * 0.75; 
+          } else {
+            scales[i] += (targetScale - scales[i]) * 0.12; 
           }
         }
       } else {
-        for (let i = 0; i < 60; i++) {
+        let allSettled = true;
+        for (let i = 0; i < numBars; i++) {
           if (scales[i] > 0.051) {
             scales[i] += (0.05 - scales[i]) * pauseDecayFactor;
+            allSettled = false;
           } else if (scales[i] !== 0.05) {
             scales[i] = 0.05;
+            allSettled = false;
           }
         }
+        
+        if (allSettled) idleFrames++;
       }
 
-      // 2. Clear Screen
+      if (idleFrames > 5) {
+        rafId = requestAnimationFrame(renderEQ);
+        return; 
+      }
+
       ctx.clearRect(0, 0, displayWidth, displayHeight);
       ctx.fillStyle = '#ffffff';
 
-      // 3. Draw Geometry
-      const barWidth = 8;
-      const gap = 6;
-      const numBars = 60;
-      const totalWidth = (numBars * barWidth) + ((numBars - 1) * gap);
-      const startX = (displayWidth - totalWidth) / 2;
+      // CRITICAL DESIGN FIX: Calculate full-width dynamic spacing
+      const barSpacing = displayWidth / numBars;
+      const barWidth = Math.max(1, barSpacing * 0.75); // Bar takes up 75% of its available slot
+      const startX = (barSpacing - barWidth) / 2; // Center the bar perfectly within its slot
 
-      for (let i = 0; i < 60; i++) {
+      ctx.beginPath(); 
+      for (let i = 0; i < numBars; i++) {
         const barHeight = scales[i] * displayHeight;
-        const x = startX + i * (barWidth + gap);
+        const x = startX + (i * barSpacing);
         const y = displayHeight - barHeight;
-
-        // Draw custom rounded rectangle for the top edge
         const radius = Math.min(4, barHeight / 2);
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + barWidth - radius, y);
-        ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
-        ctx.lineTo(x + barWidth, displayHeight);
-        ctx.lineTo(x, displayHeight);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-        ctx.fill();
+
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, barWidth, barHeight, [radius, radius, 0, 0]);
+        } else {
+          ctx.rect(x, y, barWidth, barHeight);
+        }
       }
+      ctx.fill();
 
       rafId = requestAnimationFrame(renderEQ);
     };
 
     rafId = requestAnimationFrame(renderEQ);
-    return () => cancelAnimationFrame(rafId);
-  }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime]);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+    };
+  }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime, settings?.disableAnimations, isEditing]);
 
   // RE-QUERY DOM ELEMENTS WHENEVER EDIT MODE CLOSES OR LYRICS/VIEW-MODES CHANGE
   useEffect(() => {
@@ -259,7 +288,11 @@ const LyricsDisplay = ({
             if (lyricsViewMode === 'live' && containerRef.current) {
                 const offsetTop = item.node.offsetTop;
                 const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
-                containerRef.current.scrollTo({ top: scrollPos, behavior: 'smooth' });
+                
+                containerRef.current.scrollTo({ 
+                  top: scrollPos, 
+                  behavior: settings?.disableAnimations ? 'auto' : 'smooth' 
+                });
             }
         } else if (!shouldBeActive && item.isActive) {
             item.node.classList.remove('active');
@@ -334,7 +367,7 @@ const LyricsDisplay = ({
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-  }, [isEditing, lyricsViewMode, isPlayingCurrentSong, currentTrack]);
+  }, [isEditing, lyricsViewMode, isPlayingCurrentSong, currentTrack, settings?.disableAnimations]);
 
   const handlePaste = (e) => {
     const html = e.clipboardData.getData('text/html');
@@ -524,7 +557,7 @@ const LyricsDisplay = ({
         </div>
       )}
 
-      {!isEditing && (
+      {!isEditing && !settings?.disableAnimations && (
         <div className={`lyrics-equalizer`}>
           <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
         </div>

@@ -74,6 +74,15 @@ const LayoutSettings = ({ settings, handleChange, getSliderStyle }) => (
       name="cosmosSplitRatio" value={settings.cosmosSplitRatio} min={20} max={80} unit="%" 
       handleChange={handleChange} getSliderStyle={getSliderStyle} 
     />
+
+    <div className="group-divider" />
+    <h4 className="sub-group-title">Performance</h4>
+    <SettingToggle 
+      label="Disable Animations" 
+      description="Globally kills all CSS animations, transitions, and background motion to reduce battery drain."
+      name="disableAnimations" checked={settings.disableAnimations} 
+      handleChange={handleChange} 
+    />
   </div>
 );
 

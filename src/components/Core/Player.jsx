@@ -61,6 +61,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const fallbackTimerRef = useRef(null);
   
   const lastPolledTimeRef = useRef(-1);
+  const lastSyncTimeRef = useRef(0); // NEW: Tracks last time we polled native players
   const abortControllerRef = useRef(null);
   
   const audioCacheRef = useRef(new Map());
@@ -400,7 +401,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               formData.append('arl_token', settings?.deezerArl?.trim() || '');
               formData.append('quality', '1');
               formData.append('action', 'stream');
-              formData.append('obfuscate', 'true'); // Opt-In Flag
+              formData.append('obfuscate', 'true');
               
               const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
                 method: 'POST',
@@ -532,34 +533,44 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ytVideoId]);
 
+  // Sync clock time with UI
   useEffect(() => {
     let lastSecond = -1;
     const handleTimeUpdate = (e) => {
       const time = e.detail;
       const currentSecond = Math.floor(time);
 
+      // 1. UPDATE VISUAL SLIDER AT 60FPS FOR BUTTERY SMOOTHNESS
+      if (progressBarRef.current) {
+        progressBarRef.current.value = time;
+        progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
+      }
+
+      // 2. THROTTLE EXPENSIVE DOM TEXT RE-RENDERS TO 1FPS
       if (currentSecond !== lastSecond) {
-        if (progressBarRef.current) {
-          progressBarRef.current.value = time;
-          progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
-        }
         if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
         lastSecond = currentSecond;
       }
 
-      if (ytVideoId && ytPlayerRef.current && isPlaying) {
-        try {
-          const ytTime = ytPlayerRef.current.getCurrentTime();
-          if (ytTime !== undefined && ytTime !== lastPolledTimeRef.current) {
-            globalClock.updateAnchor(ytTime);
-            lastPolledTimeRef.current = ytTime;
+      // DRIFT SYNC THROTTLE: Only cross-origin poll native players once every 2 seconds
+      const now = performance.now();
+      if (now - lastSyncTimeRef.current > 2000) {
+        if (ytVideoId && ytPlayerRef.current && isPlaying) {
+          try {
+            const ytTime = ytPlayerRef.current.getCurrentTime();
+            if (ytTime !== undefined && ytTime !== lastPolledTimeRef.current) {
+              globalClock.updateAnchor(ytTime);
+              lastPolledTimeRef.current = ytTime;
+              lastSyncTimeRef.current = now;
+            }
+          } catch (err) {}
+        } else if (audioRef.current && isPlaying) {
+          const audioTime = audioRef.current.currentTime;
+          if (audioTime !== lastPolledTimeRef.current) {
+            globalClock.updateAnchor(audioTime);
+            lastPolledTimeRef.current = audioTime;
+            lastSyncTimeRef.current = now;
           }
-        } catch (err) {}
-      } else if (audioRef.current && isPlaying) {
-        const audioTime = audioRef.current.currentTime;
-        if (audioTime !== lastPolledTimeRef.current) {
-          globalClock.updateAnchor(audioTime);
-          lastPolledTimeRef.current = audioTime;
         }
       }
     };

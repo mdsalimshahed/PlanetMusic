@@ -10,6 +10,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     });
   const [displaySingerBg, setDisplaySingerBg] = useState(null);
   const [isSingerVisible, setIsSingerVisible] = useState(false);
+
   const [transitionTiming, setTransitionTiming] = useState(() => {
     const stored = localStorage.getItem('artistTransitionTime');
     return stored !== null ? parseInt(stored, 10) : 0;
@@ -93,20 +94,18 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [selectedSong]);
 
   const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
-       prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
+      prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
   ), []);
 
-  // SEEK HANDLER: Direct seek trigger with strict active-track validation
   const handleLineClick = useCallback((startTime) => {
     if (startTime === null || isSyncMode || isEditing || isImageManagerOpen || !selectedSong) return;
     
-    // Pass the full selectedSong object so Player.jsx correctly receives the seek request
     window.dispatchEvent(new CustomEvent('globalSeekRequest', { 
-      detail: { 
-        time: startTime, 
-        track: selectedSong 
-      } 
-    }));
+       detail: {
+         time: startTime,
+         track: selectedSong
+       }
+     }));
   }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong]);
 
   useEffect(() => {
@@ -138,6 +137,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     if (activeBgLineObj) {
       if (activeBgLineObj.singer) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+
         if (activeBgLineObj.singer !== displaySingerBg?.name) {
           setIsSingerVisible(false);
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
@@ -148,11 +148,12 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
               color: activeBgLineObj.isGradient ? '#fff' : activeBgLineObj.color
             });
             setIsSingerVisible(true);
-          }, transitionTiming);
+          }, settings?.disableAnimations ? 0 : transitionTiming); // CRITICAL FIX: Bypass delay if animations are disabled
           
         } else {
           setIsSingerVisible(true);
         }
+
       } else {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
@@ -171,7 +172,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
     };
-  }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming]);
+  }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
 
   return {
     lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics, 
