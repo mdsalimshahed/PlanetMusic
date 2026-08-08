@@ -25,11 +25,8 @@ export const normalizeTrans = (str) => {
 
 export const cleanTranslationText = (text) => {
   if (!text) return '';
-  return String(text)
-    .replace(/[()]/g, '')
-    .trim()
-    .replace(/[\p{P}\p{S}]+$/gu, '')
-    .trim();
+  // Only strip periods at the very end of the string, leaving !, ?, ", etc. completely intact
+  return String(text).replace(/\.+$/, '').trim();
 };
 
 export const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
