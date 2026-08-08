@@ -14,7 +14,9 @@ const LyricsDisplay = ({
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-  const eqBarsRef = useRef([]);
+  
+  // Canvas replacement for EQ
+  const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(60).fill(0.05)); // Store EQ state in ref to avoid re-renders
 
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
@@ -52,14 +54,13 @@ const LyricsDisplay = ({
 
     const chars = getGraphemes(item.text || '');
     return chars.map((char, cIdx) => {
-      // The true Unicode punctuation checker used by the Live Sync / Focused core engine
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = {};
 
       if (isPunct && char.trim() !== '') {
         style = {
           color: '#fbbf24',
-          WebkitTextFillColor: '#fbbf24', // Force override any transparent clips
+          WebkitTextFillColor: '#fbbf24',
           textShadow: '0 0 10px rgba(251, 191, 36, 0.6)'
         };
       } else if (isGradient) {
@@ -80,7 +81,6 @@ const LyricsDisplay = ({
     });
   };
 
-  // Helper to render artist headers in preview view
   const renderColoredSingerHeader = (singerString) => {
     if (!singerString) {
       const defaultSinger = selectedSong?.artistName || 'Default Artist';
@@ -109,50 +109,88 @@ const LyricsDisplay = ({
     return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
   };
 
-  // EQUALIZER
+  // HIGH-PERFORMANCE CANVAS EQUALIZER
   useEffect(() => {
     let rafId;
     const pauseDecayFactor = 16 / Math.max((settings?.eqFadeOutTime ?? 500), 16);
 
     const renderEQ = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        rafId = requestAnimationFrame(renderEQ);
+        return;
+      }
+
+      const ctx = canvas.getContext('2d', { alpha: true });
+      const displayWidth = canvas.clientWidth;
+      const displayHeight = canvas.clientHeight;
+      
+      // Auto-resize canvas buffer to match DOM element size for crisp rendering
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+      }
+
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
-      const bars = eqBarsRef.current;
       const scales = eqScalesRef.current;
       
+      // 1. Process Math (Lerping)
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
         const freqData = window.globalFreqData;
         
-        if (freqData && bars) {
-          for (let i = 0; i < bars.length; i++) {
-            if (bars[i]) {
-              // Map 1:1 across the frequency bins so all 60 bars get unique data
-              const raw = freqData[i % freqData.length] || 0;
-              const targetScale = 0.05 + (raw / 255) * 0.95;
-              
-              // Asymmetric Lerping: Fast punch up, smooth glide down
-              if (targetScale > scales[i]) {
-                scales[i] += (targetScale - scales[i]) * 0.4;
-              } else {
-                scales[i] += (targetScale - scales[i]) * 0.15;
-              }
-              
-              bars[i].style.transform = `scaleY(${scales[i]})`;
+        if (freqData) {
+          for (let i = 0; i < 60; i++) {
+            const raw = freqData[i % freqData.length] || 0;
+            const targetScale = 0.05 + (raw / 255) * 0.95;
+            
+            if (targetScale > scales[i]) {
+              scales[i] += (targetScale - scales[i]) * 0.4;
+            } else {
+              scales[i] += (targetScale - scales[i]) * 0.15;
             }
           }
         }
       } else {
-        // Smoothly fade out to 0.05 when paused honoring settings.eqFadeOutTime
-        for (let i = 0; i < bars.length; i++) {
-          if (bars[i] && scales[i] > 0.051) {
+        for (let i = 0; i < 60; i++) {
+          if (scales[i] > 0.051) {
             scales[i] += (0.05 - scales[i]) * pauseDecayFactor;
-            bars[i].style.transform = `scaleY(${scales[i]})`;
-          } else if (bars[i] && scales[i] !== 0.05) {
+          } else if (scales[i] !== 0.05) {
             scales[i] = 0.05;
-            bars[i].style.transform = `scaleY(0.05)`;
           }
         }
       }
+
+      // 2. Clear Screen
+      ctx.clearRect(0, 0, displayWidth, displayHeight);
+      ctx.fillStyle = '#ffffff';
+
+      // 3. Draw Geometry
+      const barWidth = 8;
+      const gap = 6;
+      const numBars = 60;
+      const totalWidth = (numBars * barWidth) + ((numBars - 1) * gap);
+      const startX = (displayWidth - totalWidth) / 2;
+
+      for (let i = 0; i < 60; i++) {
+        const barHeight = scales[i] * displayHeight;
+        const x = startX + i * (barWidth + gap);
+        const y = displayHeight - barHeight;
+
+        // Draw custom rounded rectangle for the top edge
+        const radius = Math.min(4, barHeight / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + barWidth - radius, y);
+        ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
+        ctx.lineTo(x + barWidth, displayHeight);
+        ctx.lineTo(x, displayHeight);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.fill();
+      }
+
       rafId = requestAnimationFrame(renderEQ);
     };
 
@@ -488,13 +526,7 @@ const LyricsDisplay = ({
 
       {!isEditing && (
         <div className={`lyrics-equalizer`}>
-          {Array.from({ length: 60 }).map((_, i) => (
-            <div
-              key={i}
-              className="eq-bar"
-              ref={(el) => eqBarsRef.current[i] = el}
-            />
-          ))}
+          <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
         </div>
       )}
     </>
