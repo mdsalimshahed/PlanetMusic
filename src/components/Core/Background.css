@@ -1,4 +1,4 @@
-/* --- src/components/Core/Background.css --- */
+/* --- src/components/Background.css --- */
 .falling-fluid-bg {
   position: fixed;
   top: 0;
@@ -14,16 +14,15 @@
 .fluid-drops-container {
   position: absolute;
   inset: -30%; /* Bleed outside bounds so drops don't clip at edges */
-  mix-blend-mode: screen; 
-  opacity: 0.7; /* Lowered slightly for cleaner blending without the blur filter */
-  transform: translateZ(0); /* Force hardware acceleration */
-  will-change: transform;
+  opacity: 0.7; /* Lowered slightly for cleaner blending */
+  /* CRITICAL GPU FIX: Removed 'mix-blend-mode: screen' and 'will-change: transform' 
+     from this full-screen container to prevent massive VRAM consumption */
 }
 
 .fluid-drop {
   position: absolute;
   top: -50vh; /* Start well above the screen */
-  will-change: transform;
+  will-change: transform; /* Hardware acceleration specifically isolated to moving elements */
   animation-name: fallAndMix;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -47,6 +46,5 @@
 .fluid-glass-overlay {
   position: absolute;
   inset: 0;
-  /* Dark frosted glass overlay (No expensive backdrop-filter needed anymore) */
-  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.9) 100%);
+  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.85) 100%);
 }

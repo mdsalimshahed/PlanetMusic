@@ -9,48 +9,63 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
   const ytUrl = song.customLinks?.yt || song.yt || '';
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
   const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
-  
+
   // Fallback to safely support old single-string structure if loading from localStorage cache
   const sources = song.sourceNames || (song.sourceName ? [song.sourceName] : []);
 
   useEffect(() => {
     if (!highResArt) return;
+    
+    let isMounted = true;
     let img = new Image();
     img.crossOrigin = 'Anonymous';
     
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d', { willReadFrequently: true });
-      
-      canvas.width = 5; 
-      canvas.height = 5;
-      context.drawImage(img, 0, 0, 5, 5);
-      
-      try {
-        const data = context.getImageData(0, 0, 5, 5).data;
-        let r = 0, g = 0, b = 0;
-        const pixelCount = data.length / 4;
-        
-        for (let i = 0; i < data.length; i += 4) {
-          r += data[i];
-          g += data[i + 1];
-          b += data[i + 2];
+      // CRITICAL CPU FIX: Defer canvas creation and pixel math to the browser's idle time.
+      // This prevents the main thread from locking up when 20+ cards render at once on the dashboard.
+      const processColors = () => {
+        if (!isMounted) return;
+        try {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d', { willReadFrequently: true });
+          
+          canvas.width = 5; 
+          canvas.height = 5;
+          context.drawImage(img, 0, 0, 5, 5);
+          
+          const data = context.getImageData(0, 0, 5, 5).data;
+          let r = 0, g = 0, b = 0;
+          const pixelCount = data.length / 4;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
+          }
+          
+          r = Math.floor(r / pixelCount);
+          g = Math.floor(g / pixelCount);
+          b = Math.floor(b / pixelCount);
+          
+          setAccentRGB(`${r}, ${g}, ${b}`);
+        } catch (e) {
+          console.warn('Could not extract color due to CORS restrictions');
+        } finally {
+          img.onload = null;
+          img.onerror = null;
+          img.src = '';
+          img = null;
         }
-        
-        r = Math.floor(r / pixelCount);
-        g = Math.floor(g / pixelCount);
-        b = Math.floor(b / pixelCount);
-        
-        setAccentRGB(`${r}, ${g}, ${b}`);
-      } catch (e) {
-        console.warn('Could not extract color due to CORS restrictions');
-      } finally {
-        img.onload = null;
-        img.onerror = null;
-        img.src = '';
-        img = null;
+      };
+
+      // Execute math only when the browser is idle, or fallback to a staggered timeout
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(processColors, { timeout: 2000 });
+      } else {
+        setTimeout(processColors, Math.random() * 300 + 100);
       }
     };
+
     img.onerror = () => {
       img.onload = null;
       img.onerror = null;
@@ -59,6 +74,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
     };
     
     img.src = highResArt;
+
+    return () => {
+      isMounted = false;
+    };
   }, [highResArt]);
 
   return (
