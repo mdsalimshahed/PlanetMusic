@@ -176,9 +176,17 @@ const BlogTab = ({ adsEnabled }) => {
   }, [viewMode, activeArticleId, devPosts, customPosts]);
 
   const categories = useMemo(() => {
-    const list = new Set(currentFeed.map((p) => p.category));
+    const list = new Set(currentFeed.map((p) => p.category).filter(Boolean));
     return ['All', ...Array.from(list)];
   }, [currentFeed]);
+
+  // Collect all existing category suggestions for the datalist auto-complete
+  const allCategorySuggestions = useMemo(() => {
+    const list = new Set([...devPosts, ...customPosts].map((p) => p.category).filter(Boolean));
+    const defaults = ['Guides', 'Music Notes', 'Personal', 'Reviews', 'Tech & Audio', 'Lyrics & Syncing', 'Translation Engine', 'Core Features'];
+    defaults.forEach((d) => list.add(d));
+    return Array.from(list);
+  }, [devPosts, customPosts]);
 
   const filteredPosts = useMemo(() => {
     return currentFeed.filter((post) => {
@@ -238,6 +246,7 @@ const BlogTab = ({ adsEnabled }) => {
     const articleObj = {
       ...formData,
       id: genId,
+      category: formData.category.trim() || 'General',
       isCustom: true,
       date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
       tags: tagsArr.length > 0 ? tagsArr : ['Personal']
@@ -268,6 +277,7 @@ const BlogTab = ({ adsEnabled }) => {
       {
         ...formData,
         id: genId || 'article-draft',
+        category: formData.category.trim() || 'General',
         isCustom: true,
         date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
         tags: tagsArr
@@ -383,26 +393,31 @@ const BlogTab = ({ adsEnabled }) => {
                         type="text"
                         name="title"
                         className="blog-input"
-                        placeholder="e.g., My Favorite Albums of the Year"
+                        placeholder="e.g., How to Sync Songs with Music"
                         value={formData.title}
                         onChange={handleFormChange}
                         required
                       />
                     </div>
+                    
+                    {/* EDITABLE CATEGORY FIELD WITH AUTO-COMPLETE DATALIST */}
                     <div className="blog-form-group flex-1">
                       <label>Category</label>
-                      <select
+                      <input
+                        type="text"
                         name="category"
-                        className="blog-select"
+                        className="blog-input"
+                        list="category-suggestions"
+                        placeholder="e.g., Lyrics & Syncing"
                         value={formData.category}
                         onChange={handleFormChange}
-                      >
-                        <option value="Guides">Guides</option>
-                        <option value="Music Notes">Music Notes</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Reviews">Reviews</option>
-                        <option value="Tech & Audio">Tech & Audio</option>
-                      </select>
+                        required
+                      />
+                      <datalist id="category-suggestions">
+                        {allCategorySuggestions.map((cat) => (
+                          <option key={cat} value={cat} />
+                        ))}
+                      </datalist>
                     </div>
                   </div>
 
@@ -424,7 +439,7 @@ const BlogTab = ({ adsEnabled }) => {
                         type="text"
                         name="tags"
                         className="blog-input"
-                        placeholder="e.g., Music, Thoughts, Playlist"
+                        placeholder="e.g., Syncing, Timings, Adlibs"
                         value={formData.tags}
                         onChange={handleFormChange}
                       />
@@ -581,7 +596,7 @@ const BlogTab = ({ adsEnabled }) => {
                         onClick={handleExportCustomAll}
                         title="Export All Custom Articles (JSON)"
                       >
-                        <Icon name="download" /> {/* SWAPPED: Export uses download icon */}
+                        <Icon name="download" />
                       </button>
                     )}
                     <input
@@ -596,7 +611,7 @@ const BlogTab = ({ adsEnabled }) => {
                       onClick={() => importFileInputRef.current?.click()}
                       title="Import Custom Articles (JSON)"
                     >
-                      <Icon name="upload" /> {/* SWAPPED: Import uses upload icon */}
+                      <Icon name="upload" />
                     </button>
                   </div>
                 </div>
