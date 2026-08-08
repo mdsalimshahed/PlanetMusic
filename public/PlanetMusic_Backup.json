@@ -34817,7 +34817,7 @@
       "collectionName": "no man's world - Single",
       "trackName": "no man's world",
       "collectionViewUrl": "https://music.apple.com/us/album/no-mans-world/1824132475?i=1824132476&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9e/99/3b/9e993b74-4e86-11f7-ec7f-cb638fd10e4f/mzaf_16386652171484928607.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7c/c6/77/7cc67754-46e2-68cf-0d7e-9c587c5b6aff/4547366760637.jpg/100x100bb.jpg",
       "collectionPrice": 1.99,
       "trackPrice": 1.29,
@@ -37143,7 +37143,8 @@
       },
       "artistColors": {
         "otoha": "#a8c7e6"
-      }
+      },
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9e/99/3b/9e993b74-4e86-11f7-ec7f-cb638fd10e4f/mzaf_16386652171484928607.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
@@ -65292,7 +65293,16 @@
           "text": "Tell me, how did a girl like me get into you? (Get into you)",
           "segments": [
             {
-              "text": "Tell me, how did a girl like me get into you? (Get into you)",
+              "text": "Tell me, how did a girl like me get into you? ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Get into you)",
               "color": "#ee8181",
               "isGradient": false,
               "gradient": "",
@@ -65670,7 +65680,7 @@
           "isSplit": false
         },
         {
-          "text": "What can I say? What can I do? (Uh-huh) (Uh-huh)",
+          "text": "What can I say? What can I do?  (Uh-huh) (Uh-huh)",
           "segments": [
             {
               "text": "What can I ",
@@ -65711,7 +65721,34 @@
               ]
             },
             {
-              "text": " (Uh-huh) (Uh-huh)",
+              "text": " ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Uh-huh) ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Uh-huh)",
               "color": "#ee8181",
               "isGradient": false,
               "gradient": "",
@@ -65732,10 +65769,10 @@
           "adlibs": [
             {
               "text": "(Uh-huh)",
-              "charStart": 31,
-              "charEnd": 39,
-              "start": 64.73909999999776,
-              "end": 65.18809999999776,
+              "charStart": 32,
+              "charEnd": 40,
+              "start": 64.79659900000037,
+              "end": 65.62559900000038,
               "segments": [
                 {
                   "text": "(Uh-huh)",
@@ -65752,9 +65789,9 @@
             },
             {
               "text": "(Uh-huh)",
-              "charStart": 40,
-              "charEnd": 48,
-              "start": 66.5365,
+              "charStart": 41,
+              "charEnd": 49,
+              "start": 66.56669999999926,
               "end": 67.18709999999776,
               "segments": [
                 {
@@ -66022,7 +66059,16 @@
           "text": "Why can't you say that you want it too? (Too)",
           "segments": [
             {
-              "text": "Why can't you say that you want it too? (Too)",
+              "text": "Why can't you say that you want it too? ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Too)",
               "color": "#ee8181",
               "isGradient": false,
               "gradient": "",
@@ -66229,7 +66275,16 @@
           "text": "Is it worth all the work if you can't be here with me? (Me)",
           "segments": [
             {
-              "text": "Is it worth all the work if you can't be here with me? (Me)",
+              "text": "Is it worth all the work if you can't be here with me? ",
+              "color": "#e4c295",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zara Larsson"
+              ]
+            },
+            {
+              "text": "(Me)",
               "color": "#e4c295",
               "isGradient": false,
               "gradient": "",
@@ -66298,7 +66353,16 @@
           "text": "Worries fade away when I hit the stage (Fade away)",
           "segments": [
             {
-              "text": "Worries fade away when I hit the stage (Fade away)",
+              "text": "Worries fade away when I hit the stage ",
+              "color": "#e4c295",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zara Larsson"
+              ]
+            },
+            {
+              "text": "(Fade away)",
               "color": "#e4c295",
               "isGradient": false,
               "gradient": "",
@@ -66501,7 +66565,7 @@
           "isSplit": false
         },
         {
-          "text": "What can I say? What can I do? (Uh-huh)  (Uh-huh)",
+          "text": "What can I say? What can I do?  (Uh-huh) (Uh-huh)",
           "segments": [
             {
               "text": "What can I ",
@@ -66542,7 +66606,34 @@
               ]
             },
             {
-              "text": " (Uh-huh)  (Uh-huh)",
+              "text": " ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Uh-huh) ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Uh-huh)",
               "color": "#ee8181",
               "isGradient": false,
               "gradient": "",
@@ -66563,10 +66654,10 @@
           "adlibs": [
             {
               "text": "(Uh-huh)",
-              "charStart": 31,
-              "charEnd": 39,
-              "start": 136.74579999999705,
-              "end": 137.1965999999978,
+              "charStart": 32,
+              "charEnd": 40,
+              "start": 136.7279170000002,
+              "end": 137.16011700000038,
               "segments": [
                 {
                   "text": "(Uh-huh)",
@@ -66585,7 +66676,7 @@
               "text": "(Uh-huh)",
               "charStart": 41,
               "charEnd": 49,
-              "start": 138.41200000000003,
+              "start": 138.52679999999984,
               "end": 138.74130000000076,
               "segments": [
                 {
@@ -66853,7 +66944,16 @@
           "text": "Why can't you say that you want it too? (Uh-huh)",
           "segments": [
             {
-              "text": "Why can't you say that you want it too? (Uh-huh)",
+              "text": "Why can't you say that you want it too? ",
+              "color": "#ee8181",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "PinkPantheress"
+              ]
+            },
+            {
+              "text": "(Uh-huh)",
               "color": "#ee8181",
               "isGradient": false,
               "gradient": "",
