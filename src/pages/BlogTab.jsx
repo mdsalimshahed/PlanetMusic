@@ -1,5 +1,6 @@
 /* --- src/pages/BlogTab.jsx --- */
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit';
 import InFeedSponsor from '../components/Promos/InFeedSponsor';
@@ -33,6 +34,14 @@ const Icon = ({ name, size = 18 }) => {
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      );
+    case 'upload':
+      return (
+        <svg {...props}>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
         </svg>
       );
     case 'download-single':
@@ -71,18 +80,37 @@ const Icon = ({ name, size = 18 }) => {
 };
 
 const BlogTab = ({ adsEnabled }) => {
-  const [posts, setPosts] = useState([]);
-  const [isStudioOpen, setIsStudioOpen] = useState(false);
-  const [editingPostId, setEditingPostId] = useState(null);
-  const [activePost, setActivePost] = useState(null);
+  const navigate = useNavigate();
+  const params = useParams();
+
+  // ROUTING ENGINE DECODING: Parse sub-views directly from URL path (/blog/dev, /blog/custom, /blog/post/:id, etc.)
+  const subPath = params['*'] || '';
+  const pathTokens = subPath.split('/').filter(Boolean);
+
+  const viewMode = pathTokens[0] === 'post' ? 'reader' :
+                   pathTokens[0] === 'write' ? 'studio' :
+                   pathTokens[0] === 'edit' ? 'studio' : 'grid';
+
+  const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
+  const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
+
+  // 1. DUAL BLOG ARCHITECTURE STATE
+  const [devPosts, setDevPosts] = useState([]);
+  const [customPosts, setCustomPosts] = useState(() => {
+    const saved = localStorage.getItem('custom_blog_posts_storage');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  
   const bodyTextareaRef = useRef(null);
+  const importFileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     id: '',
     title: '',
-    category: 'Core Features',
+    category: 'Guides',
     readTime: '4 min read',
     summary: '',
     tags: '',
@@ -90,6 +118,7 @@ const BlogTab = ({ adsEnabled }) => {
     content: ''
   });
 
+  // Always load Developer Blogs from public/blog_posts.json automatically
   useEffect(() => {
     fetch('/blog_posts.json')
       .then((res) => {
@@ -97,18 +126,62 @@ const BlogTab = ({ adsEnabled }) => {
         throw new Error('No public blog_posts.json found');
       })
       .then((data) => {
-        if (Array.isArray(data)) setPosts(data);
+        if (Array.isArray(data)) setDevPosts(data);
       })
-      .catch(() => setPosts([]));
+      .catch(() => setDevPosts([]));
   }, []);
 
+  // Sync Custom Posts to LocalStorage whenever modified
+  useEffect(() => {
+    localStorage.setItem('custom_blog_posts_storage', JSON.stringify(customPosts));
+  }, [customPosts]);
+
+  // Populate Creator Studio Form when editing via route (/blog/edit/:id)
+  useEffect(() => {
+    if (viewMode === 'studio' && activeArticleId) {
+      const postToEdit = customPosts.find((p) => p.id === activeArticleId);
+      if (postToEdit) {
+        setFormData({
+          id: postToEdit.id,
+          title: postToEdit.title || '',
+          category: postToEdit.category || 'Guides',
+          readTime: postToEdit.readTime || '4 min read',
+          summary: postToEdit.summary || '',
+          tags: Array.isArray(postToEdit.tags) ? postToEdit.tags.join(', ') : postToEdit.tags || '',
+          heroImage: postToEdit.heroImage || '',
+          content: postToEdit.content || ''
+        });
+      }
+    } else if (viewMode === 'studio' && !activeArticleId) {
+      setFormData({
+        id: '',
+        title: '',
+        category: 'Guides',
+        readTime: '4 min read',
+        summary: '',
+        tags: '',
+        heroImage: '',
+        content: ''
+      });
+    }
+  }, [viewMode, activeArticleId, customPosts]);
+
+  // Determine active posts feed based on selected main section
+  const currentFeed = blogSection === 'dev' ? devPosts : customPosts;
+
+  // Active post object for reader view (/blog/post/:id)
+  const activePost = useMemo(() => {
+    if (viewMode !== 'reader' || !activeArticleId) return null;
+    return [...devPosts, ...customPosts].find((p) => p.id === activeArticleId) || null;
+  }, [viewMode, activeArticleId, devPosts, customPosts]);
+
   const categories = useMemo(() => {
-    const list = new Set(posts.map((p) => p.category));
+    const list = new Set(currentFeed.map((p) => p.category));
     return ['All', ...Array.from(list)];
-  }, [posts]);
+  }, [currentFeed]);
 
   const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
+    return currentFeed.filter((post) => {
       const matchCat = selectedCategory === 'All' || post.category === selectedCategory;
       const q = searchQuery.toLowerCase().trim();
       const matchSearch =
@@ -118,7 +191,7 @@ const BlogTab = ({ adsEnabled }) => {
         (post.tags && post.tags.some((t) => t.toLowerCase().includes(q)));
       return matchCat && matchSearch;
     });
-  }, [posts, searchQuery, selectedCategory]);
+  }, [currentFeed, searchQuery, selectedCategory]);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -127,39 +200,25 @@ const BlogTab = ({ adsEnabled }) => {
 
   const handleOpenStudio = (postToEdit = null) => {
     if (postToEdit) {
-      setEditingPostId(postToEdit.id);
-      setFormData({
-        id: postToEdit.id,
-        title: postToEdit.title || '',
-        category: postToEdit.category || 'Core Features',
-        readTime: postToEdit.readTime || '4 min read',
-        summary: postToEdit.summary || '',
-        tags: Array.isArray(postToEdit.tags) ? postToEdit.tags.join(', ') : postToEdit.tags || '',
-        heroImage: postToEdit.heroImage || '',
-        content: postToEdit.content || ''
-      });
+      navigate(`/blog/edit/${postToEdit.id}`);
     } else {
-      setEditingPostId(null);
-      setFormData({
-        id: '',
-        title: '',
-        category: 'Core Features',
-        readTime: '4 min read',
-        summary: '',
-        tags: '',
-        heroImage: '',
-        content: ''
-      });
+      navigate('/blog/write');
     }
-    setIsStudioOpen(true);
+  };
+
+  const handleCloseStudio = () => {
+    navigate(blogSection === 'custom' ? '/blog/custom' : '/blog/dev');
   };
 
   const handleDeletePost = (e, postId) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm('Delete this article from local workspace?')) {
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
-      if (activePost && activePost.id === postId) setActivePost(null);
+    if (window.confirm('Delete this article from your Custom Vault?')) {
+      const updated = customPosts.filter((p) => p.id !== postId);
+      setCustomPosts(updated);
+      if (activeArticleId === postId) {
+        navigate('/blog/custom');
+      }
     }
   };
 
@@ -179,22 +238,23 @@ const BlogTab = ({ adsEnabled }) => {
     const articleObj = {
       ...formData,
       id: genId,
+      isCustom: true,
       date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-      tags: tagsArr.length > 0 ? tagsArr : ['Guide']
+      tags: tagsArr.length > 0 ? tagsArr : ['Personal']
     };
 
-    if (editingPostId) {
-      setPosts((prev) => prev.map((p) => (p.id === editingPostId ? articleObj : p)));
+    if (activeArticleId) {
+      setCustomPosts((prev) => prev.map((p) => (p.id === activeArticleId ? articleObj : p)));
     } else {
-      setPosts((prev) => [articleObj, ...prev.filter((p) => p.id !== genId)]);
+      setCustomPosts((prev) => [articleObj, ...prev.filter((p) => p.id !== genId)]);
     }
 
-    setIsStudioOpen(false);
+    // Automatically navigate to Custom section on save
+    navigate('/blog/custom');
   };
 
   const handleExportCurrent = () => {
     if (!formData.title && !formData.content) return alert('Workspace is empty');
-
     const genId =
       formData.id.trim() ||
       formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -208,6 +268,7 @@ const BlogTab = ({ adsEnabled }) => {
       {
         ...formData,
         id: genId || 'article-draft',
+        isCustom: true,
         date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
         tags: tagsArr
       }
@@ -217,24 +278,56 @@ const BlogTab = ({ adsEnabled }) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${genId || 'article'}.json`;
+    link.download = `${genId || 'custom_article'}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  const handleExportAll = () => {
-    if (posts.length === 0) return alert('No articles available');
-    const blob = new Blob([JSON.stringify(posts, null, 2)], { type: 'application/json' });
+  const handleExportCustomAll = () => {
+    if (customPosts.length === 0) return alert('No custom articles available to export');
+    const blob = new Blob([JSON.stringify(customPosts, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'blog_posts.json';
+    link.download = 'Custom_Blogs_Backup.json';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const handleImportCustom = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const imported = JSON.parse(event.target.result);
+        if (Array.isArray(imported)) {
+          const formattedImport = imported.map((p) => ({ ...p, isCustom: true }));
+          setCustomPosts((prev) => {
+            const merged = [...prev];
+            formattedImport.forEach((item) => {
+              const idx = merged.findIndex((m) => m.id === item.id);
+              if (idx >= 0) merged[idx] = item;
+              else merged.push(item);
+            });
+            return merged;
+          });
+          navigate('/blog/custom');
+          alert(`Successfully imported ${formattedImport.length} custom articles!`);
+        } else {
+          alert('Invalid blog JSON format.');
+        }
+      } catch (err) {
+        alert('Failed to parse blog JSON file.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = null;
   };
 
   const insertMarkdown = (prefix, suffix = '') => {
@@ -256,12 +349,12 @@ const BlogTab = ({ adsEnabled }) => {
 
   return (
     <section className="view-section blog-tab-container">
-      <div className={`blog-layout-wrapper ${isStudioOpen ? 'studio-active' : ''}`}>
+      <div className={`blog-layout-wrapper ${viewMode === 'studio' ? 'studio-active' : ''}`}>
         <div className="blog-main-content">
-          {isStudioOpen ? (
+          {viewMode === 'studio' ? (
             <div className="blog-studio-card glass-panel">
               <div className="blog-studio-header">
-                <h2>{editingPostId ? 'Edit Article Workspace' : 'New Article Workspace'}</h2>
+                <h2>{activeArticleId ? 'Edit Custom Article' : 'New Custom Article Workspace'}</h2>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   <button
                     className="blog-icon-btn"
@@ -272,7 +365,7 @@ const BlogTab = ({ adsEnabled }) => {
                   </button>
                   <button
                     className="blog-icon-btn close"
-                    onClick={() => setIsStudioOpen(false)}
+                    onClick={handleCloseStudio}
                     title="Close Workspace"
                   >
                     <Icon name="close" />
@@ -290,7 +383,7 @@ const BlogTab = ({ adsEnabled }) => {
                         type="text"
                         name="title"
                         className="blog-input"
-                        placeholder="e.g., Ultimate Guide to Syncing Lyrics"
+                        placeholder="e.g., My Favorite Albums of the Year"
                         value={formData.title}
                         onChange={handleFormChange}
                         required
@@ -304,12 +397,11 @@ const BlogTab = ({ adsEnabled }) => {
                         value={formData.category}
                         onChange={handleFormChange}
                       >
-                        <option value="Core Features">Core Features</option>
-                        <option value="Audio Engine">Audio Engine</option>
-                        <option value="Lyrics & Syncing">Lyrics & Syncing</option>
-                        <option value="Translation Engine">Translation Engine</option>
-                        <option value="UI & Design">UI & Design</option>
-                        <option value="Settings & Storage">Settings & Storage</option>
+                        <option value="Guides">Guides</option>
+                        <option value="Music Notes">Music Notes</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Reviews">Reviews</option>
+                        <option value="Tech & Audio">Tech & Audio</option>
                       </select>
                     </div>
                   </div>
@@ -332,7 +424,7 @@ const BlogTab = ({ adsEnabled }) => {
                         type="text"
                         name="tags"
                         className="blog-input"
-                        placeholder="e.g., Syncing, Tutorial, Audio"
+                        placeholder="e.g., Music, Thoughts, Playlist"
                         value={formData.tags}
                         onChange={handleFormChange}
                       />
@@ -356,7 +448,7 @@ const BlogTab = ({ adsEnabled }) => {
                     <textarea
                       name="summary"
                       className="blog-textarea short"
-                      placeholder="Brief overview of the article..."
+                      placeholder="Brief overview of your custom post..."
                       value={formData.summary}
                       onChange={handleFormChange}
                     />
@@ -380,7 +472,7 @@ const BlogTab = ({ adsEnabled }) => {
                       ref={bodyTextareaRef}
                       name="content"
                       className="blog-textarea full"
-                      placeholder="Write your full article body in Markdown..."
+                      placeholder="Write your custom article in Markdown..."
                       value={formData.content}
                       onChange={handleFormChange}
                       required
@@ -389,7 +481,7 @@ const BlogTab = ({ adsEnabled }) => {
 
                   <div className="blog-studio-actions">
                     <button type="submit" className="blog-submit-btn">
-                      {editingPostId ? 'Update Article' : 'Save Article'}
+                      {activeArticleId ? 'Update Article' : 'Save Custom Article'}
                     </button>
                   </div>
                 </form>
@@ -407,19 +499,28 @@ const BlogTab = ({ adsEnabled }) => {
                 </div>
               </div>
             </div>
-          ) : activePost ? (
+          ) : viewMode === 'reader' && activePost ? (
             <div className="blog-reader-view glass-panel">
-              <button className="blog-back-btn" onClick={() => setActivePost(null)}>
+              <button 
+                className="blog-back-btn" 
+                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev')}
+              >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
               
               <header className="blog-article-header">
                 <div className="blog-meta-badge-row">
                   <span className="blog-category-badge">{activePost.category}</span>
-                  <span className="blog-meta-dot">•</span>
+                  <span className="blog-meta-dot"> </span>
                   <span>{activePost.readTime}</span>
-                  <span className="blog-meta-dot">•</span>
+                  <span className="blog-meta-dot"> </span>
                   <span>{activePost.date}</span>
+                  {activePost.isCustom && (
+                    <>
+                      <span className="blog-meta-dot"> </span>
+                      <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>[Custom]</span>
+                    </>
+                  )}
                 </div>
                 <h1 className="blog-article-title">{renderMarkdown(activePost.title)}</h1>
                 <p className="blog-article-summary">{renderMarkdown(activePost.summary)}</p>
@@ -435,9 +536,13 @@ const BlogTab = ({ adsEnabled }) => {
               )}
 
               <hr className="blog-divider" />
+
               <main className="blog-article-body">{renderMarkdown(activePost.content)}</main>
 
-              <button className="blog-back-btn bottom-back" onClick={() => setActivePost(null)}>
+              <button 
+                className="blog-back-btn bottom-back" 
+                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev')}
+              >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
 
@@ -459,27 +564,65 @@ const BlogTab = ({ adsEnabled }) => {
               <div className="blog-hero glass-panel">
                 <div className="blog-hero-top">
                   <div>
-                    <h1 className="blog-hero-title">Documentation & Articles</h1>
-                    <p className="blog-hero-sub">Explore guides, feature breakdowns, and engine technical notes.</p>
+                    <h1 className="blog-hero-title">Documentation & Blogs</h1>
+                    <p className="blog-hero-sub">Explore official system guides or create your own personal articles.</p>
                   </div>
                   <div className="blog-hero-actions">
                     <button
                       className="blog-icon-btn action"
                       onClick={() => handleOpenStudio()}
-                      title="Write New Article"
+                      title="Create Custom Article"
                     >
                       <Icon name="plus" />
                     </button>
-                    {posts.length > 0 && (
+                    {blogSection === 'custom' && customPosts.length > 0 && (
                       <button
                         className="blog-icon-btn"
-                        onClick={handleExportAll}
-                        title="Export All Articles (JSON)"
+                        onClick={handleExportCustomAll}
+                        title="Export All Custom Articles (JSON)"
                       >
-                        <Icon name="download" />
+                        <Icon name="download" /> {/* SWAPPED: Export uses download icon */}
                       </button>
                     )}
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      ref={importFileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleImportCustom}
+                    />
+                    <button
+                      className="blog-icon-btn"
+                      onClick={() => importFileInputRef.current?.click()}
+                      title="Import Custom Articles (JSON)"
+                    >
+                      <Icon name="upload" /> {/* SWAPPED: Import uses upload icon */}
+                    </button>
                   </div>
+                </div>
+
+                {/* DUAL SECTION TOGGLE PILLS WITH URL ROUTING */}
+                <div style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '8px' }}>
+                  <button
+                    className={`category-pill ${blogSection === 'dev' ? 'active' : ''}`}
+                    style={{ fontSize: '14px', padding: '10px 24px' }}
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      navigate('/blog/dev');
+                    }}
+                  >
+                    Developer Blogs ({devPosts.length})
+                  </button>
+                  <button
+                    className={`category-pill ${blogSection === 'custom' ? 'active' : ''}`}
+                    style={{ fontSize: '14px', padding: '10px 24px' }}
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      navigate('/blog/custom');
+                    }}
+                  >
+                    Custom Blogs ({customPosts.length})
+                  </button>
                 </div>
 
                 <div className="blog-controls-row">
@@ -487,7 +630,7 @@ const BlogTab = ({ adsEnabled }) => {
                     <Icon name="search" size={16} />
                     <input
                       type="text"
-                      placeholder="Search articles, tags, or topics..."
+                      placeholder={`Search ${blogSection === 'dev' ? 'developer' : 'custom'} articles, tags, or topics...`}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -519,7 +662,10 @@ const BlogTab = ({ adsEnabled }) => {
                     return (
                       <React.Fragment key={post.id}>
                         <div className="blog-card-wrapper">
-                          <div className="blog-card" onClick={() => setActivePost(post)}>
+                          <div 
+                            className="blog-card" 
+                            onClick={() => navigate(`/blog/post/${post.id}`)}
+                          >
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
                             <div className="blog-card-top">
                               <span className="blog-category-badge">{post.category}</span>
@@ -533,17 +679,20 @@ const BlogTab = ({ adsEnabled }) => {
                                   <span key={i} className="blog-mini-tag">#{t}</span>
                                 ))}
                               </div>
-                              <span className="blog-read-more">Read Article →</span>
+                              <span className="blog-read-more">Read Article</span>
                             </div>
                           </div>
-                          <div className="blog-card-admin-controls">
-                            <button className="blog-admin-btn edit" onClick={() => handleOpenStudio(post)}>
-                              Edit
-                            </button>
-                            <button className="blog-admin-btn delete" onClick={(e) => handleDeletePost(e, post.id)}>
-                              Delete
-                            </button>
-                          </div>
+                          {/* Admin Controls are shown ONLY for Custom Blogs */}
+                          {blogSection === 'custom' && (
+                            <div className="blog-card-admin-controls">
+                              <button className="blog-admin-btn edit" onClick={() => handleOpenStudio(post)}>
+                                Edit
+                              </button>
+                              <button className="blog-admin-btn delete" onClick={(e) => handleDeletePost(e, post.id)}>
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                         {adsEnabled && showAdAfter && (
                           <InFeedSponsor adClass="in-feed-blog-ad" testMode={true} wrapperClass="blog-card dynamic-radius-override" />
@@ -554,11 +703,17 @@ const BlogTab = ({ adsEnabled }) => {
                 </div>
               ) : (
                 <div className="blog-empty-box glass-panel">
-                  <h3>No articles found</h3>
-                  <p style={{ color: 'var(--text-subdued)', marginBottom: '20px' }}>Try searching for a different term or write a new post.</p>
-                  <button className="blog-icon-btn action" style={{ margin: '0 auto' }} onClick={() => handleOpenStudio()} title="Write New Article">
-                    <Icon name="plus" />
-                  </button>
+                  <h3>No {blogSection === 'dev' ? 'developer' : 'custom'} articles found</h3>
+                  <p style={{ color: 'var(--text-subdued)', marginBottom: '20px' }}>
+                    {blogSection === 'custom' 
+                      ? 'You haven\'t created any custom articles yet. Click the + button above to write one!' 
+                      : 'Try searching for a different term.'}
+                  </p>
+                  {blogSection === 'custom' && (
+                    <button className="blog-icon-btn action" style={{ margin: '0 auto' }} onClick={() => handleOpenStudio()} title="Write New Article">
+                      <Icon name="plus" />
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -566,20 +721,20 @@ const BlogTab = ({ adsEnabled }) => {
         </div>
 
         {/* Sidebar Sponsor Column: Shifts below workspace when active */}
-        <aside className={`blog-sidebar ${isStudioOpen ? 'studio-bottom' : ''}`}>
+        <aside className={`blog-sidebar ${viewMode === 'studio' ? 'studio-bottom' : ''}`}>
           {adsEnabled && (
             <>
               <SponsorUnit
                 testMode={true}
                 className="glass-panel dynamic-radius-override blog-sidebar-sponsor-large"
-                style={{ minHeight: isStudioOpen ? '200px' : '600px', height: isStudioOpen ? '200px' : '600px' }}
+                style={{ minHeight: viewMode === 'studio' ? '200px' : '600px', height: viewMode === 'studio' ? '200px' : '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit
                 testMode={true}
                 className="glass-panel dynamic-radius-override blog-sidebar-sponsor-small"
-                style={{ minHeight: isStudioOpen ? '200px' : '300px', height: isStudioOpen ? '200px' : '300px' }}
+                style={{ minHeight: viewMode === 'studio' ? '200px' : '300px', height: viewMode === 'studio' ? '200px' : '300px' }}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
