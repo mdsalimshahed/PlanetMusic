@@ -13,7 +13,6 @@ const formatTime = (seconds) => {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 };
 
-// Reusable component that automatically scrolls overflowing text
 const MarqueeText = ({ text, className }) => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
@@ -59,8 +58,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const activeSourceRef = useRef(null);
   const playIdRef = useRef(null);
   const ytLastPerfRef = useRef(0);
-  
-  // Ref to hold the active fetch AbortController
+  const fallbackTimerRef = useRef(null);
   const abortControllerRef = useRef(null);
   
   const audioCacheRef = useRef(new Map());
@@ -76,6 +74,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const [accentColor, setAccentColor] = useState('#ffffff');
   const [pendingSeek, setPendingSeek] = useState(null);
   const [hoverTime, setHoverTime] = useState(null);
+  const [fallbackMessage, setFallbackMessage] = useState('');
 
   const [volume, setVolume] = useState(() => {
     const savedVolume = localStorage.getItem('playerVolume');
@@ -91,9 +90,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
   useEffect(() => {
     return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+      if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);
       audioCacheRef.current.forEach(url => URL.revokeObjectURL(url));
       audioCacheRef.current.clear();
     };
@@ -107,21 +105,22 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
   useEffect(() => {
     if (selectedSong && isStacked) {
-      setTimeout(() => {
-        setSlotNode(document.getElementById('mobile-player-slot'));
-      }, 50);
+      setTimeout(() => setSlotNode(document.getElementById('mobile-player-slot')), 50);
     } else {
       setSlotNode(null);
     }
   }, [selectedSong, isStacked]);
 
   const emitPlayState = (playing, ended = false) => {
-    if (playing) {
-      globalClock.start(window.currentAudioTime || 0);
-    } else {
-      globalClock.pause();
-    }
+    if (playing) globalClock.start(window.currentAudioTime || 0);
+    else globalClock.pause();
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
+  };
+
+  const triggerFallbackMessage = (msg) => {
+    setFallbackMessage(msg);
+    if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);
+    fallbackTimerRef.current = setTimeout(() => setFallbackMessage(''), 4000);
   };
 
   useEffect(() => {
@@ -162,9 +161,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   };
 
   useEffect(() => {
-    if (!window.globalFreqData) {
-      window.globalFreqData = new Uint8Array(64);
-    }
+    if (!window.globalFreqData) window.globalFreqData = new Uint8Array(64);
   }, []);
 
   useEffect(() => {
@@ -201,7 +198,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     }
   };
 
-  // Extract accent color
   useEffect(() => {
     if (!currentTrack || !currentTrack.artworkUrl100) return;
     let img = new Image();
@@ -210,52 +206,36 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       try {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        canvas.width = 5;
-        canvas.height = 5;
+        canvas.width = 5; canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
-        
         const data = ctx.getImageData(0, 0, 5, 5).data;
         let r = 0, g = 0, b = 0, count = 0;
         
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
-            r += data[i];
-            g += data[i+1];
-            b += data[i+2];
-            count++;
+            r += data[i]; g += data[i+1]; b += data[i+2]; count++;
           }
         }
-        
         if (count > 0) {
-          r = Math.floor(r / count);
-          g = Math.floor(g / count);
-          b = Math.floor(b / count);
-          const boost = 30; 
-          r = Math.min(255, r + boost);
-          g = Math.min(255, g + boost);
-          b = Math.min(255, b + boost);
+          r = Math.min(255, Math.floor(r / count) + 30);
+          g = Math.min(255, Math.floor(g / count) + 30);
+          b = Math.min(255, Math.floor(b / count) + 30);
           setAccentColor(`rgb(${r}, ${g}, ${b})`);
         }
       } catch (e) {
         setAccentColor('#ffffff'); 
       } finally {
-        img.onload = null;
-        img.onerror = null;
-        img.src = '';
-        img = null;
+        img.onload = null; img.onerror = null; img.src = ''; img = null;
       }
     };
     img.onerror = () => {
       setAccentColor('#ffffff');
-      img.onload = null;
-      img.onerror = null;
-      img.src = '';
-      img = null;
+      img.onload = null; img.onerror = null; img.src = ''; img = null;
     };
     img.src = currentTrack.artworkUrl100;
   }, [currentTrack?.artworkUrl100]);
 
-  // Main Track & Strict Priority Source Engine
+  // Strict Priority Track Resolution Engine
   useEffect(() => {
     if (!currentTrack) {
       if (abortControllerRef.current) {
@@ -275,6 +255,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       setIsPlaying(false);
       setIsBuffering(false);
       setActiveSource(null);
+      setFallbackMessage('');
       activeSourceRef.current = null;
       playIdRef.current = null;
       globalClock.pause();
@@ -291,33 +272,19 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     const dzUrl = currentTrack.customLinks?.deezer || '';
     const ytUrl = currentTrack.customLinks?.yt || currentTrack.yt || '';
     const extractedYtId = extractYouTubeId(ytUrl);
-    const hasArl = Boolean(settings?.deezerArl);
+    const hasArl = Boolean(settings?.deezerArl?.trim());
 
-    // Strict priority hierarchy: Local > Deezer > YouTube
+    // Strict priority hierarchy: Local > Deezer > YouTube > Preview
+    // (Preview is strictly for Cosmos searches. Vault tracks have preview cleared)
     const getBestSource = (exclude = []) => {
       if (hasLocal && !exclude.includes('local')) return 'local';
-      if (dzUrl && hasArl && !exclude.includes('deezer')) return 'deezer';
+      if (dzUrl && !exclude.includes('deezer')) return 'deezer';
       if (extractedYtId && !exclude.includes('youtube')) return 'youtube';
+      if (currentTrack.previewUrl && !exclude.includes('preview')) return 'preview';
       return null;
     };
 
-    let intendedSource = null;
-
-    if (currentTrack.forceSource) {
-      if (currentTrack.forceSource === 'local' && hasLocal) intendedSource = 'local';
-      else if (currentTrack.forceSource === 'deezer' && dzUrl && hasArl) intendedSource = 'deezer';
-      else if (currentTrack.forceSource === 'youtube' && extractedYtId) intendedSource = 'youtube';
-      else if (currentTrack.forceSource === 'deezer' && !hasArl) {
-        // User forced Deezer but has no ARL. Default to next tier: YT Music.
-        if (extractedYtId) intendedSource = 'youtube';
-        else if (hasLocal) intendedSource = 'local';
-      }
-    }
-    
-    if (!intendedSource) {
-      intendedSource = getBestSource();
-    }
-
+    let intendedSource = getBestSource();
     const isNewPlayAction = currentTrack.playId && currentTrack.playId !== playIdRef.current;
     const trackChanged = trackId !== trackIdRef.current;
     const sourceChanged = intendedSource !== activeSourceRef.current;
@@ -371,8 +338,12 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
           setAudioSrc(undefined);
           setYtVideoId(extractedYtId);
           setActiveSource('youtube');
+        } else if (source === 'preview') {
+          setYtVideoId(null);
+          setAudioSrc(currentTrack.previewUrl);
+          setActiveSource('preview');
         } else {
-          setYtVideoId(null); // Ensure YT is detached for native audio
+          setYtVideoId(null);
 
           if (source === 'local') {
             const file = await getAudioFile(trackId);
@@ -382,16 +353,23 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               setAudioSrc(url);
               setActiveSource('local');
             } else {
-              // Missing local file fallback to next tier
+              triggerFallbackMessage("Local audio missing. Falling back...");
               loadAudio(getBestSource(['local']));
             }
           } else if (source === 'deezer') {
+            if (!hasArl) {
+              triggerFallbackMessage("Deezer ARL required. Falling back to YT...");
+              loadAudio(getBestSource(['deezer']));
+              return;
+            }
+
             const cacheKey = `deezer_${trackId}`;
             if (audioCacheRef.current.has(cacheKey)) {
               setActiveSource('deezer');
               setAudioSrc(audioCacheRef.current.get(cacheKey));
               return;
             }
+            
             setActiveSource('deezer');
             setIsBuffering(true);
             const controller = new AbortController();
@@ -401,7 +379,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               const formData = new FormData();
               formData.append('session_id', `stream_${Date.now()}`);
               formData.append('url', dzUrl);
-              formData.append('arl_token', settings?.deezerArl || '');
+              formData.append('arl_token', settings?.deezerArl?.trim() || '');
               formData.append('quality', '1');
               formData.append('action', 'stream');
               
@@ -410,6 +388,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
                 body: formData,
                 signal: controller.signal
               });
+              
               if (!response.ok) throw new Error("Deezer stream failed");
               
               const blob = await response.blob();
@@ -420,12 +399,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
                 setAudioSrc(url);
               }
             } catch (e) {
-              if (e.name === 'AbortError') {
-                console.log('Deezer fetch request cancelled for new selection.');
-                return;
-              }
+              if (e.name === 'AbortError') return;
               console.error("Deezer buffer error:", e);
-              // Fallback to youtube/local seamlessly
+              triggerFallbackMessage("Deezer stream failed. Falling back to YT...");
               loadAudio(getBestSource(['deezer', 'local']));
             } finally {
               if (abortControllerRef.current === controller) {
@@ -440,7 +416,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     }
   }, [currentTrack, settings?.deezerArl]);
 
-  // YouTube Player Initialization
   useEffect(() => {
     if (!ytVideoId) return;
     let playerInstance = null;
@@ -459,21 +434,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         videoId: ytVideoId,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
-          autoplay: 1,
-          playsinline: 1,
-          rel: 0,
-          enablejsapi: 1,
-          suggestedQuality: 'small',
-          origin: window.location.origin
+          autoplay: 1, playsinline: 1, rel: 0, enablejsapi: 1,
+          suggestedQuality: 'small', origin: window.location.origin
         },
         events: {
           onReady: (event) => {
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
-              if (typeof event.target.setPlaybackQuality === 'function') {
-                event.target.setPlaybackQuality('small');
-              }
+              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('small');
               event.target.setVolume(volume * 100);
               const dur = event.target.getDuration();
               if (dur && !isNaN(dur)) setDuration(dur);
@@ -487,9 +456,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               event.target.playVideo();
               setIsPlaying(true);
               emitPlayState(true, false);
-            } catch (e) {
-              console.warn("YouTube onReady play error:", e);
-            }
+            } catch (e) {}
           },
           onStateChange: (event) => {
             if (event.data === window.YT.PlayerState.PLAYING) {
@@ -499,18 +466,14 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
               emitPlayState(true, false);
               
               if (ytPlayerRef.current) {
-                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') {
-                  ytPlayerRef.current.setPlaybackQuality('small');
-                }
+                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('small');
                 const dur = ytPlayerRef.current.getDuration();
                 if (dur && !isNaN(dur)) setDuration(dur);
               }
             } else if (event.data === window.YT.PlayerState.PAUSED) {
-              setIsPlaying(false);
-              emitPlayState(false, false);
+              setIsPlaying(false); emitPlayState(false, false);
             } else if (event.data === window.YT.PlayerState.ENDED) {
-              setIsPlaying(false);
-              emitPlayState(false, true);
+              setIsPlaying(false); emitPlayState(false, true);
             }
           },
           onError: (event) => {
@@ -518,7 +481,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
             setYtVideoId(null);
             setYtPlayerReady(false);
             setAudioSrc(undefined);
-            setActiveSource(null); // Kills player instead of falling back to iTunes
+            setActiveSource(null);
+            triggerFallbackMessage("YouTube stream unavailable.");
           }
         }
       });
@@ -535,7 +499,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     };
   }, [ytVideoId]);
 
-  // Sync clock time with UI
   useEffect(() => {
     let lastSecond = -1;
     const handleTimeUpdate = (e) => {
@@ -547,9 +510,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
           progressBarRef.current.value = time;
           progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
         }
-        if (currentTimeRef.current) {
-          currentTimeRef.current.innerText = formatTime(time);
-        }
+        if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
         lastSecond = currentSecond;
       }
 
@@ -569,13 +530,10 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   useEffect(() => {
     if (!ytVideoId && audioSrc && audioRef.current) {
       audioRef.current.volume = volume;
-      if (pendingSeek === null) {
-        attemptPlay();
-      }
+      if (pendingSeek === null) attemptPlay();
     }
   }, [audioSrc, ytVideoId]);
 
-  // Global Seek Request
   useEffect(() => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
@@ -680,7 +638,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const handleLoadedMetadata = () => {
     if (audioRef.current && !ytVideoId) {
       setDuration(audioRef.current.duration);
-      
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         globalClock.seek(pendingSeek);
@@ -707,12 +664,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       emitPlayState(isPlaying, isEnded);
     }
     
-    if (progressBarRef.current) {
-      progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
-    }
-    if (currentTimeRef.current) {
-      currentTimeRef.current.innerText = formatTime(time);
-    }
+    if (progressBarRef.current) progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
+    if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
   };
 
   const handleContainerClick = (e) => {
@@ -740,9 +693,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       progressBarRef.current.value = time;
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
-    if (currentTimeRef.current) {
-      currentTimeRef.current.innerText = formatTime(time);
-    }
+    if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
   };
 
   const handleProgressMouseMove = (e) => {
@@ -755,9 +706,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
   const handleProgressMouseLeave = () => {
     setHoverTime(null);
-    if (progressBarRef.current) {
-      progressBarRef.current.style.setProperty('--hover-progress', `0%`);
-    }
+    if (progressBarRef.current) progressBarRef.current.style.setProperty('--hover-progress', `0%`);
   };
 
   const handleVolumeChange = (e) => {
@@ -811,10 +760,15 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
             <MarqueeText className="track-title" text={currentTrack.trackName} />
             <MarqueeText className="artist-name" text={currentTrack.artistName} />
             <p className="source-text">
-              {isBuffering ? "Buffering Stream..." : (
+              {fallbackMessage ? (
+                <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{fallbackMessage}</span>
+              ) : isBuffering ? (
+                "Buffering Stream..."
+              ) : (
                 activeSource === 'youtube' ? "YT Music Stream" :
                 activeSource === 'local' ? "Local Audio File" :
                 activeSource === 'deezer' ? "Deezer HQ Stream" :
+                activeSource === 'preview' ? "iTunes Preview (30s)" :
                 "No Playable Source Available"
               )}
             </p>
@@ -902,15 +856,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       <div 
         id="yt-player-container" 
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '1px',
-          height: '1px',
-          opacity: 0.01,
-          pointerEvents: 'none',
-          overflow: 'hidden',
-          zIndex: -1
+          position: 'fixed', top: 0, left: 0, width: '1px', height: '1px',
+          opacity: 0.01, pointerEvents: 'none', overflow: 'hidden', zIndex: -1
         }}
       ></div>
       {playerUI && (slotNode ? createPortal(playerUI, slotNode) : playerUI)}

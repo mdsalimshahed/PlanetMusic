@@ -15,7 +15,7 @@ export const SyncWorkspace = ({
   syncAudioRef, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
   selectedSong, isShowingAutoSync, toggleWorkspaceMode, handleMapAutoSync,
-  availableSources, setManualSource
+  availableSources, setManualSource, setNotification
 }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
@@ -24,7 +24,6 @@ export const SyncWorkspace = ({
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
 
-  // Extract accent color
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
     let img = new Image();
@@ -33,8 +32,7 @@ export const SyncWorkspace = ({
       try {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        canvas.width = 5;
-        canvas.height = 5;
+        canvas.width = 5; canvas.height = 5;
         ctx.drawImage(img, 0, 0, 5, 5);
         
         const data = ctx.getImageData(0, 0, 5, 5).data;
@@ -42,43 +40,29 @@ export const SyncWorkspace = ({
         
         for (let i = 0; i < data.length; i += 4) {
           if (data[i+3] > 127 && (data[i] > 20 || data[i+1] > 20 || data[i+2] > 20)) {
-            r += data[i];
-            g += data[i+1];
-            b += data[i+2];
-            count++;
+            r += data[i]; g += data[i+1]; b += data[i+2]; count++;
           }
         }
         
         if (count > 0) {
-          r = Math.floor(r / count);
-          g = Math.floor(g / count);
-          b = Math.floor(b / count);
-          const boost = 30; 
-          r = Math.min(255, r + boost);
-          g = Math.min(255, g + boost);
-          b = Math.min(255, b + boost);
+          r = Math.min(255, Math.floor(r / count) + 30);
+          g = Math.min(255, Math.floor(g / count) + 30);
+          b = Math.min(255, Math.floor(b / count) + 30);
           setAccentColor(`rgb(${r}, ${g}, ${b})`);
         }
       } catch (e) {
         setAccentColor('var(--accent)'); 
       } finally {
-        img.onload = null;
-        img.onerror = null;
-        img.src = '';
-        img = null;
+        img.onload = null; img.onerror = null; img.src = ''; img = null;
       }
     };
     img.onerror = () => {
       setAccentColor('var(--accent)');
-      img.onload = null;
-      img.onerror = null;
-      img.src = '';
-      img = null;
+      img.onload = null; img.onerror = null; img.src = ''; img = null;
     };
     img.src = selectedSong.artworkUrl100;
   }, [selectedSong?.artworkUrl100]);
 
-  // YouTube Player for Sync Workspace
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
@@ -97,11 +81,7 @@ export const SyncWorkspace = ({
         videoId: syncYtVideoId,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
-          autoplay: 0,
-          playsinline: 1,
-          rel: 0,
-          enablejsapi: 1,
-          origin: window.location.origin
+          autoplay: 0, playsinline: 1, rel: 0, enablejsapi: 1, origin: window.location.origin
         },
         events: {
           onReady: (event) => {
@@ -192,7 +172,6 @@ export const SyncWorkspace = ({
   const localHandleSplitAdlibs = async (lineIndex) => {
     const data = [...syncData];
     const line = data[lineIndex];
-    // Array.from is perfectly fine here because charStart/End math is based purely on JS array length code points
     const lineChars = Array.from(line.text); 
     const adlibs = [];
     
@@ -265,16 +244,9 @@ export const SyncWorkspace = ({
     const isRTL = isRTLLanguage(line.text);
     
     const pronStyle = {
-      fontSize: '0.55em',
-      color: '#ffffff',
-      opacity: 0.85,
-      textShadow: 'none',
-      fontWeight: '800',
-      textTransform: 'uppercase',
-      letterSpacing: '0.5px',
-      textAlign: 'left',
-      marginTop: '4px',
-      display: 'inline-block'
+      fontSize: '0.55em', color: '#ffffff', opacity: 0.85, textShadow: 'none',
+      fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px',
+      textAlign: 'left', marginTop: '4px', display: 'inline-block'
     };
 
     let parsedChunks = null;
@@ -289,20 +261,18 @@ export const SyncWorkspace = ({
           fullTrans = parsed.full;
         } catch(e) {}
       } else if (cleanPron.startsWith('[')) {
-        try {
-          parsedChunks = JSON.parse(cleanPron);
-        } catch(e) {}
+        try { parsedChunks = JSON.parse(cleanPron); } catch(e) {}
       }
     }
 
     const chars = [];
     let gIdx = 0;
-    let cpIdx = 0; // Keep track of code point index precisely for highlighting adlib regions
+    let cpIdx = 0; 
     
     segments.forEach(seg => {
-      const segChars = getGraphemes(seg.text); // Switch from Array.from to getGraphemes
+      const segChars = getGraphemes(seg.text);
       segChars.forEach(char => {
-        const cpLen = Array.from(char).length; // Advance by the grapheme's length in codepoints
+        const cpLen = Array.from(char).length; 
         chars.push({ char, seg, globalIndex: gIdx++, cpStart: cpIdx, cpEnd: cpIdx + cpLen });
         cpIdx += cpLen;
       });
@@ -344,7 +314,6 @@ export const SyncWorkspace = ({
       }
 
       if (isMain && line.isSplit) {
-        // Validate visual match using our codepoint tracker (which corresponds correctly with JS array map)
         const isAdlibChar = line.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
         if (isAdlibChar) {
           style.opacity = 0.2;
@@ -406,7 +375,7 @@ export const SyncWorkspace = ({
 
       while (currentPChunkConsumed < targetLen && i < chars.length) {
         chunkChars.push(chars[i]);
-        currentPChunkConsumed += Array.from(chars[i].char).length; // Advance by true code point size of grapheme
+        currentPChunkConsumed += Array.from(chars[i].char).length;
         i++;
       }
       
@@ -462,7 +431,6 @@ export const SyncWorkspace = ({
         '--player-accent': accentColor
       }}>
       
-      {/* Hidden container for YouTube IFrame in workspace */}
       <div 
          id="sync-yt-target-container" 
          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
@@ -495,10 +463,21 @@ export const SyncWorkspace = ({
                   const isMultiple = availableSources && availableSources.length > 1;
                   const cycleSource = () => {
                       if (isMultiple) {
-                          const currentIndex = availableSources.indexOf(activeSyncSource || computedSource);
+                          const currentIndex = availableSources.indexOf(activeSyncSource);
                           const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
                           const nextIndex = (effectiveIndex + 1) % availableSources.length;
-                          setManualSource(availableSources[nextIndex]);
+                          
+                          const upcomingSource = availableSources[nextIndex];
+                          if (upcomingSource === 'deezer' && !Boolean(localStorage.getItem('appSettings') ? JSON.parse(localStorage.getItem('appSettings')).deezerArl : false)) {
+                             if (setNotification) {
+                               setNotification({ show: true, message: 'Deezer ARL required. Falling back to next source.', progress: 100 });
+                               setTimeout(() => setNotification({ show: false }), 3500);
+                             }
+                             const fallbackIndex = (nextIndex + 1) % availableSources.length;
+                             setManualSource(availableSources[fallbackIndex]);
+                          } else {
+                             setManualSource(upcomingSource);
+                          }
                       }
                   };
                   
