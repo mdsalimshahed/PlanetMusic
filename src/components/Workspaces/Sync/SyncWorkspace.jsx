@@ -1,9 +1,10 @@
-/* --- src/components/SyncWorkspace.jsx --- */
+/* --- src/components/Workspaces/Sync/SyncWorkspace.jsx --- */
 import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { quickTransliterate } from '../../../services/transliterator';
 import { workspaceClock } from '../../../utils/clockEngine';
 import { normalizeTrans } from '../Lyrics/LyricsLineRenderer';
+import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './SyncWorkspace.css';
 
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
@@ -191,7 +192,8 @@ export const SyncWorkspace = ({
   const localHandleSplitAdlibs = async (lineIndex) => {
     const data = [...syncData];
     const line = data[lineIndex];
-    const lineChars = Array.from(line.text);
+    // Array.from is perfectly fine here because charStart/End math is based purely on JS array length code points
+    const lineChars = Array.from(line.text); 
     const adlibs = [];
     
     let inAdlib = false;
@@ -295,10 +297,14 @@ export const SyncWorkspace = ({
 
     const chars = [];
     let gIdx = 0;
+    let cpIdx = 0; // Keep track of code point index precisely for highlighting adlib regions
+    
     segments.forEach(seg => {
-      const segChars = Array.from(seg.text);
+      const segChars = getGraphemes(seg.text); // Switch from Array.from to getGraphemes
       segChars.forEach(char => {
-        chars.push({ char, seg, globalIndex: gIdx++ });
+        const cpLen = Array.from(char).length; // Advance by the grapheme's length in codepoints
+        chars.push({ char, seg, globalIndex: gIdx++, cpStart: cpIdx, cpEnd: cpIdx + cpLen });
+        cpIdx += cpLen;
       });
     });
 
@@ -338,7 +344,8 @@ export const SyncWorkspace = ({
       }
 
       if (isMain && line.isSplit) {
-        const isAdlibChar = line.adlibs?.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+        // Validate visual match using our codepoint tracker (which corresponds correctly with JS array map)
+        const isAdlibChar = line.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
         if (isAdlibChar) {
           style.opacity = 0.2;
           style.textDecoration = 'line-through';
@@ -399,7 +406,7 @@ export const SyncWorkspace = ({
 
       while (currentPChunkConsumed < targetLen && i < chars.length) {
         chunkChars.push(chars[i]);
-        currentPChunkConsumed++;
+        currentPChunkConsumed += Array.from(chars[i].char).length; // Advance by true code point size of grapheme
         i++;
       }
       

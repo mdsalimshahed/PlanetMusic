@@ -1,7 +1,8 @@
-/* --- src/components/FocusedAdlibsTracker.jsx --- */
+/* --- src/components/Workspaces/Sync/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect } from 'react';
 import { normalizeTrans, renderFormattedTranslation } from "../Lyrics/LyricsLineRenderer";
 import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
+import { getGraphemes } from '../../LyricsRenderer/textUtils';
 
 // GLOBAL CACHE: Persists calculated ad-lib positions in memory even if you go to the dashboard!
 // Only clears mathematically if window size or song lyrics change.
@@ -62,7 +63,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               textAlign: 'center',
               marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
               display: 'inline-block',
-              whiteSpace: 'nowrap' // FIX: Ensure ad-lib transliterations do not independently wrap internally
+              whiteSpace: 'nowrap'
             };
 
             const segs = adlibObj.segments || [{ text: adlibObj.text }];
@@ -85,7 +86,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 }
               }
 
-              const segChars = Array.from(seg.text || '');
+              // Use Unicode graphemes instead of JS array to prevent international text tearing
+              const segChars = getGraphemes(seg.text || '');
               const renderedChars = segChars.map((char) => {
                 const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
                 let style = {};
@@ -162,7 +164,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             cols,
             activeSingersList,
             activeNames: lineActiveNames,
-            parentStart: node.start, // <--- CRITICAL FIX: Direct link back to parent DOM element
+            parentStart: node.start,
             rendered: renderAdlibPure(adlib)
           });
         });
@@ -171,7 +173,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
-  // Update DOM Ref cache quietly when components mount
   useEffect(() => {
     if (containerRef.current) {
       cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line')).map((node, i) => {
@@ -196,7 +197,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   }, [adlibsToRender]);
 
   // ------------------------------------------------------------------
-  // JIT (JUST-IN-TIME) PLACEMENT CACHE ENGINE - ZERO IDLE CPU USAGE
+  // JIT (JUST-IN-TIME) PLACEMENT CACHE ENGINE
   // ------------------------------------------------------------------
   useEffect(() => {
     const clearActiveNodes = () => {
@@ -224,29 +225,20 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         const shouldBeActive = time >= item.start && time <= item.end;
 
         if (shouldBeActive && !item.isActive) {
-          
-          // Use Browser Memory Cache mapping Window Size + Unique Adlib Key
           const cacheKey = `${item.sessionSeed}_${item.key}_${window.innerWidth}x${window.innerHeight}`;
           let pos = adlibPlacementCache.get(cacheKey);
 
-          // JIT Calculation ONLY if missing from memory cache
           if (!pos) {
             const container = containerRef.current?.parentElement;
             if (container) {
               const containerRect = container.getBoundingClientRect();
               
-              // CRITICAL FIX: Bypass the `.active` class race condition completely!
-              // Select the exact DOM node this ad-lib belongs to, even if it hasn't animated in yet.
               const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
               const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
               const singerNode = container.querySelector('.singer-name-corner.visible');
               
               const cBox = getRelativeRect(lyricsNode, containerRect);
 
-              // CRITICAL DOM MEASUREMENT FIX:
-              // If this JIT calculation fires milliseconds before LyricsDisplay applies 
-              // the '.active' class, the main text is physically sitting 20px lower (pre-transition state).
-              // We must mathematically reverse this 20px shift to calculate bounds against its TRUE resting place.
               if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
                   cBox.top -= 20;
                   cBox.bottom -= 20;
@@ -269,12 +261,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 item.sessionSeed
               );
               
-              // Cache it so it never runs math again for this screen size!
               adlibPlacementCache.set(cacheKey, pos);
             }
           }
 
-          // Apply variables instantly
           if (pos) {
             item.node.style.setProperty('--adlib-left', pos.left);
             item.node.style.setProperty('--adlib-top', pos.top);

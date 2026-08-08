@@ -1,5 +1,6 @@
 /* --- src/components/Workspaces/Translation/TranslationRow.jsx --- */
 import React from 'react';
+import { getGraphemes } from '../../LyricsRenderer/textUtils';
 
 const TranslationRow = ({
   line,
@@ -16,7 +17,7 @@ const TranslationRow = ({
 
   const renderTextWithYellowPunctuation = (text, baseStyle = {}, isAdlibChar = false) => {
     if (!text) return null;
-    const chars = Array.from(text);
+    const chars = getGraphemes(text);
     return chars.map((char, pIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = { ...baseStyle };
@@ -36,6 +37,7 @@ const TranslationRow = ({
 
     if (line.segments && line.segments.length > 0) {
       let globalCharIndex = 0;
+      let cpIdx = 0;
       return line.segments.map((seg, idxSeg) => {
         let inlineColor = seg.color || '#ffffff';
         let inlineIsGradient = seg.isGradient || false;
@@ -52,10 +54,14 @@ const TranslationRow = ({
           }
         }
 
-        const segChars = Array.from(seg.text);
+        const segChars = getGraphemes(seg.text);
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
-          const isAdlibChar = isMainAndSplit && line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+          const cpLen = Array.from(char).length;
+          const currentCpStart = cpIdx;
+          cpIdx += cpLen;
+
+          const isAdlibChar = isMainAndSplit && line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
 
           let segStyle = inlineIsGradient ? {
             backgroundImage: inlineGradient,
@@ -88,9 +94,14 @@ const TranslationRow = ({
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
 
     if (isMainAndSplit) {
-      const chars = Array.from(line.displayText);
+      const chars = getGraphemes(line.displayText);
+      let cpIdx = 0;
       return chars.map((char, cIdx) => {
-        const isAdlibChar = line.adlibs.some(a => cIdx >= a.charStart && cIdx < a.charEnd);
+        const cpLen = Array.from(char).length;
+        const currentCpStart = cpIdx;
+        cpIdx += cpLen;
+
+        const isAdlibChar = line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
         let baseStyle = { color: defaultColor };
 
         if (isAdlibChar) {
