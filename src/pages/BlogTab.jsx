@@ -373,6 +373,7 @@ const BlogTab = ({ adsEnabled }) => {
                         <button type="button" onClick={() => insertMarkdown('- ')} title="Unordered List">List</button>
                         <button type="button" onClick={() => insertMarkdown('> ')} title="Quote">Quote</button>
                         <button type="button" onClick={() => insertMarkdown('`', '`')} title="Code">Code</button>
+                        <button type="button" onClick={() => insertMarkdown('\n---\n')} title="Horizontal Divider">---</button>
                       </div>
                     </div>
                     <textarea
