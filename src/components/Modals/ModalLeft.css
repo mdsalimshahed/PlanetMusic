@@ -1,86 +1,86 @@
 /* --- src/components/Modals/ModalLeft.css --- */
-.modal-left-col { 
-   flex: var(--dyn-modal-split, 50);
-   display: flex;
-   flex-direction: column;
-   overflow: hidden;
-   min-height: 0;
-   min-width: 0;
-   -webkit-backface-visibility: hidden;
-   backface-visibility: hidden;
-   transform: translateZ(0);
+.modal-left-col {
+    flex: var(--dyn-modal-split, 50);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
-.modal-left-static { 
-   display: flex;
-   flex-direction: column;
-   gap: clamp(10px, 1.5vw, 16px);
-   flex-shrink: 0;
-   padding-right: 12px;
-   margin-bottom: clamp(10px, 1.5vw, 16px);
-   min-width: 0; 
+.modal-left-static {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.5vw, 16px);
+    flex-shrink: 0;
+    padding-right: 12px;
+    margin-bottom: clamp(10px, 1.5vw, 16px);
+    min-width: 0;
 }
 
-.modal-left-scrollable { 
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   gap: clamp(12px, 2vw, 20px);
-   overflow-y: auto;
-   padding-right: 12px;
-   padding-bottom: 120px;
-   min-height: 0;
-   min-width: 0;
-   -webkit-overflow-scrolling: touch;
+.modal-left-scrollable {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2vw, 20px);
+    overflow-y: auto;
+    padding-right: 12px;
+    padding-bottom: 120px;
+    min-height: 0;
+    min-width: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
-.modal-top { 
-   display: flex;
-   flex-direction: row;
-   gap: clamp(12px, 3vw, 24px);
-   align-items: flex-start;
-   flex-shrink: 0;
-   min-width: 0;
-   max-height: 180px; 
+.modal-top {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(12px, 3vw, 24px);
+    align-items: flex-start;
+    flex-shrink: 0;
+    min-width: 0;
+    max-height: 180px;
 }
 
-.modal-cover { 
-   width: clamp(80px, 25vw, 140px);
-   height: auto;
-   aspect-ratio: 1 / 1;
-   object-fit: cover;
-   border-radius: 0; 
-   box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-   flex-shrink: 0; 
+.modal-cover {
+    width: clamp(80px, 25vw, 140px);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    flex-shrink: 0;
 }
 
-.modal-header-info { 
-   flex: 1;
-   min-width: 0;
-   container-type: inline-size;
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
-   max-height: 180px;
-   overflow: hidden;
-   padding-top: 2px; 
+.modal-header-info {
+    flex: 1;
+    min-width: 0;
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-height: 180px;
+    overflow: hidden;
+    padding-top: 2px;
 }
 
-.modal-header-info h2 { 
-   font-size: clamp(14px, min(var(--dyn-modal-font-size), 12cqw), var(--dyn-modal-font-size));
-   font-weight: 800;
-   line-height: 1.15;
-   margin-top: 0;
-   margin-bottom: 8px;
-   letter-spacing: -1px;
-   word-break: break-word;
-   overflow-y: auto; 
-   max-height: 100%;
-   -webkit-overflow-scrolling: touch;
-   flex-shrink: 1;
+.modal-header-info h2 {
+    font-size: clamp(14px, min(var(--dyn-modal-font-size), 12cqw), var(--dyn-modal-font-size));
+    font-weight: 800;
+    line-height: 1.15;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+    word-break: break-word;
+    overflow-y: auto;
+    max-height: 100%;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 1;
 }
 
 .modal-header-info h2::-webkit-scrollbar { display: none; }
@@ -94,33 +94,33 @@
   vertical-align: baseline;
 }
 
-.modal-artist-row { 
-   display: flex;
-   flex-direction: column;
-   align-items: flex-start;
-   gap: 2px;
-   font-size: clamp(12px, 1.4vw, 15px);
-   color: rgba(255,255,255,0.7);
-   margin-bottom: 0;
-   line-height: 1.4;
-   min-width: 0;
-   flex-shrink: 0;
+.modal-artist-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: clamp(12px, 1.4vw, 15px);
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0;
+    line-height: 1.4;
+    min-width: 0;
+    flex-shrink: 0;
 }
 
-.modal-artist-row strong { 
-   color: var(--text-base);
-   font-size: clamp(13px, 1.5vw, 16px);
-   word-wrap: break-word;
+.modal-artist-row strong {
+    color: var(--text-base);
+    font-size: clamp(13px, 1.5vw, 16px);
+    word-wrap: break-word;
 }
 
-.modal-artist-row .album-subtext { 
-   margin-left: 0;
-   font-size: clamp(13px, 1.5vw, 16px);
-   display: -webkit-box;
-   -webkit-line-clamp: 2;
-   -webkit-box-orient: vertical;
-   overflow: hidden;
-   text-overflow: ellipsis;
+.modal-artist-row .album-subtext {
+    margin-left: 0;
+    font-size: clamp(13px, 1.5vw, 16px);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .modal-details {
@@ -452,14 +452,14 @@ a.platform-label.yt-color:hover {
   color: black;
 }
 
-.bottom-actions { 
-   margin-top: auto; 
-   padding-top: 16px; 
-   display: flex; 
-   justify-content: space-between; 
-   align-items: center; 
-   flex-wrap: wrap; 
-   gap: 12px; 
+.bottom-actions {
+    margin-top: auto;
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .return-dashboard-btn {
@@ -483,26 +483,26 @@ a.platform-label.yt-color:hover {
   transform: translateY(-2px);
 }
 
-.delete-icon-btn { 
-   background: rgba(250, 36, 60, 0.15); 
-   border: 1px solid rgba(250, 36, 60, 0.3); 
-   color: #FA243C; 
-   font-size: clamp(12px, 1.4vw, 14px); 
-   font-weight: 600; 
-   cursor: pointer; 
-   transition: all 0.2s ease; 
-   padding: 10px 20px; 
-   border-radius: 500px; 
-   display: flex; 
-   align-items: center; 
-   gap: 8px; 
+.delete-icon-btn {
+    background: rgba(250, 36, 60, 0.15);
+    border: 1px solid rgba(250, 36, 60, 0.3);
+    color: #FA243C;
+    font-size: clamp(12px, 1.4vw, 14px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 10px 20px;
+    border-radius: 500px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.delete-icon-btn:hover { 
-   background: #FA243C; 
-   color: white; 
-   transform: translateY(-2px); 
-   box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4); 
+.delete-icon-btn:hover {
+    background: #FA243C;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
 }
 
 .search-google-btn {
@@ -518,23 +518,54 @@ a.platform-label.yt-color:hover {
   color: black;
 }
 
-.sync-instructions-left { 
-   font-size: clamp(11px, 1.3vw, 13px); 
-   color: rgba(255, 255, 255, 0.85); 
-   padding: 16px; 
-   background: rgba(0, 0, 0, 0.25); 
-   border-radius: 12px; 
-   line-height: 1.6; 
-   margin-bottom: 20px; 
-   border: 1px solid rgba(255, 255, 255, 0.05); 
-   display: flex; 
-   flex-direction: column; 
-   gap: 6px; 
+/* --- SYNC INSTRUCTIONS LEFT WITH KEYBOARD BADGES --- */
+.sync-instructions-left {
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: rgba(255, 255, 255, 0.85);
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.sync-instructions-left strong { color: var(--accent); }
-.instruction-row { display: flex; gap: 8px; }
-.instruction-row.subtle { color: rgba(255, 255, 255, 0.5); margin-top: 4px; }
+.sync-instructions-left strong { 
+    color: var(--accent); 
+}
+
+.instruction-row { 
+    display: flex; 
+    align-items: center;
+    gap: 10px; 
+}
+
+.instruction-row.subtle { 
+    color: rgba(255, 255, 255, 0.6); 
+    margin-top: 2px; 
+}
+
+/* Modal Keyboard Badge Styling */
+.modal-kbd-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent, #fbbf24);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    min-width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
 
 .no-sync-warning {
   font-size: clamp(11px, 1.3vw, 13px);
@@ -551,7 +582,7 @@ a.platform-label.yt-color:hover {
     margin-top: 12px;
   }
   .modal-left-scrollable {
-    padding-bottom: 0px; 
+    padding-bottom: 0px;
     overflow: visible;
   }
 }
