@@ -263,7 +263,7 @@
 
 .focused-line .main-lyrics-layer {
   display: inline-flex !important;
-  flex-wrap: wrap !important;
+  flex-wrap: wrap !important;   
   justify-content: center !important;
   align-items: center !important;
   text-align: center !important;
@@ -456,8 +456,8 @@ rt.pronunciation-text, .pronunciation-text {
   flex-shrink: 0;
   transform: scaleY(0.05);
   transform-origin: bottom;
-  transition: transform 0.05s ease-out;
   will-change: transform;
+  /* transition REMOVED: JS handles interpolation at 60fps for a buttery smooth EQ without DOM thrashing */
 }
 
 

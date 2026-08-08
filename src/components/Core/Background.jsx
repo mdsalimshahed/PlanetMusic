@@ -1,4 +1,4 @@
-/* --- src/components/Background.jsx --- */
+/* --- src/components/Core/Background.jsx --- */
 import React, { useMemo } from 'react';
 import './Background.css';
 
@@ -38,9 +38,10 @@ const Background = () => {
             key={drop.id}
             className="fluid-drop"
             style={{
-              backgroundColor: drop.color,
-              width: `${drop.size}vw`,
-              height: `${drop.size}vw`,
+              // Pre-baked blur via radial gradient (Zero GPU strain)
+              background: `radial-gradient(circle, ${drop.color} 0%, transparent 60%)`,
+              width: `${drop.size * 2}vw`, // Scaled up to accommodate the gradient fade
+              height: `${drop.size * 2}vw`,
               left: `${drop.left}vw`,
               animationDuration: `${drop.duration}s`,
               animationDelay: `${drop.delay}s`,
@@ -50,7 +51,7 @@ const Background = () => {
         ))}
       </div>
       
-      {/* Dark frosted glass overlay to ensure dashboard text remains readable */}
+      {/* Dark gradient overlay to ensure dashboard text remains readable */}
       <div className="fluid-glass-overlay"></div>
     </div>
   );

@@ -8,6 +8,7 @@ class ClockEngine {
   constructor() {
     this.anchorTime = 0;       // Audio time in seconds reported by player
     this.anchorPerf = 0;       // performance.now() timestamp when anchor was set
+    this.lastPlayerTime = -1;  // Tracks the last reported time to ignore stale reads
     this.playbackRate = 1.0;
     this.isPlaying = false;
     this.eventName = 'globalTimeUpdate';
@@ -30,20 +31,29 @@ class ClockEngine {
   // Called when YouTube or Audio emits a position update
   updateAnchor(playerTime, forceReset = false) {
     const now = performance.now();
+
     if (!this.isPlaying || forceReset) {
       this.anchorTime = playerTime;
       this.anchorPerf = now;
+      this.lastPlayerTime = playerTime;
       return;
     }
 
-    const currentEstimated = this.getCurrentTime();
-    const drift = Math.abs(currentEstimated - playerTime);
+    // CRITICAL FIX: Only calculate drift if the media element ACTUALLY updated its time!
+    // Because we poll at 60fps but audio.currentTime only updates every ~250ms,
+    // polling stale times was causing false drifts and snapping the clock backward.
+    if (playerTime !== this.lastPlayerTime) {
+      const currentEstimated = this.getCurrentTime();
+      const drift = Math.abs(currentEstimated - playerTime);
 
-    // If drift is over 150ms (e.g. user seeks or video buffers), snap anchor immediately.
-    // Otherwise, ignore tiny postMessage jitter to maintain smooth local ticking.
-    if (drift > 0.15) {
-      this.anchorTime = playerTime;
-      this.anchorPerf = now;
+      // If drift is over 150ms (e.g. user seeks or video buffers), snap anchor immediately.
+      // Otherwise, ignore tiny postMessage jitter to maintain smooth local ticking.
+      if (drift > 0.15) {
+        this.anchorTime = playerTime;
+        this.anchorPerf = now;
+      }
+      
+      this.lastPlayerTime = playerTime;
     }
   }
 
@@ -56,6 +66,7 @@ class ClockEngine {
   start(initialTime = 0) {
     this.anchorTime = initialTime;
     this.anchorPerf = performance.now();
+    this.lastPlayerTime = initialTime;
     this.isPlaying = true;
     this.tick();
   }
@@ -75,16 +86,15 @@ class ClockEngine {
   seek(time) {
     this.anchorTime = time;
     this.anchorPerf = performance.now();
+    this.lastPlayerTime = time;
     window.currentAudioTime = time;
     window.dispatchEvent(new CustomEvent(this.eventName, { detail: time }));
   }
 
   tick = () => {
     if (!this.isPlaying) return;
-
     const time = this.getCurrentTime();
     window.currentAudioTime = time;
-
     window.dispatchEvent(new CustomEvent(this.eventName, { detail: time }));
     this.animFrameId = requestAnimationFrame(this.tick);
   };

@@ -1,4 +1,4 @@
-/* --- src/components/Background.css --- */
+/* --- src/components/Core/Background.css --- */
 .falling-fluid-bg {
   position: fixed;
   top: 0;
@@ -14,17 +14,15 @@
 .fluid-drops-container {
   position: absolute;
   inset: -30%; /* Bleed outside bounds so drops don't clip at edges */
-  /* Heavy blur merges the hard edges into a liquid mesh */
-  filter: blur(60px); 
-  /* Screen blend mode forces overlapping colors to mix brightly */
   mix-blend-mode: screen; 
-  opacity: 0.85;
+  opacity: 0.7; /* Lowered slightly for cleaner blending without the blur filter */
+  transform: translateZ(0); /* Force hardware acceleration */
+  will-change: transform;
 }
 
 .fluid-drop {
   position: absolute;
   top: -50vh; /* Start well above the screen */
-  border-radius: 50%;
   will-change: transform;
   animation-name: fallAndMix;
   animation-timing-function: linear;
@@ -36,14 +34,12 @@
     transform: translate3d(0, 0, 0) scale(0.8) rotate(0deg);
   }
   33% {
-    /* Drift horizontally using the random CSS variable */
     transform: translate3d(var(--sway-target), 70vh, 0) scale(1.2) rotate(120deg);
   }
   66% {
     transform: translate3d(calc(var(--sway-target) * -0.5), 140vh, 0) scale(0.9) rotate(240deg);
   }
   100% {
-    /* End well below the screen */
     transform: translate3d(0, 220vh, 0) scale(1.1) rotate(360deg);
   }
 }
@@ -51,7 +47,6 @@
 .fluid-glass-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.85) 100%);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  /* Dark frosted glass overlay (No expensive backdrop-filter needed anymore) */
+  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.9) 100%);
 }

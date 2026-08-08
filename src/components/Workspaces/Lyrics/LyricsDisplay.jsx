@@ -15,6 +15,7 @@ const LyricsDisplay = ({
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const eqBarsRef = useRef([]);
+  const eqScalesRef = useRef(Array(60).fill(0.05)); // Store EQ state in ref to avoid re-renders
 
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
@@ -111,35 +112,43 @@ const LyricsDisplay = ({
   // EQUALIZER
   useEffect(() => {
     let rafId;
-    let lastEqDraw = 0;
-    const fadeOutTime = settings?.eqFadeOutTime ?? 500;
+    const pauseDecayFactor = 16 / Math.max((settings?.eqFadeOutTime ?? 500), 16);
 
-    const renderEQ = (timestamp) => {
+    const renderEQ = () => {
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
+      const bars = eqBarsRef.current;
+      const scales = eqScalesRef.current;
       
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
-        if (timestamp - lastEqDraw > 33) {
-          window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
-          const freqData = window.globalFreqData;
-          const bars = eqBarsRef.current;
-          
-          if (freqData && bars) {
-            for (let i = 0; i < bars.length; i++) {
-              if (bars[i]) {
-                const raw = freqData[i % freqData.length] || 0;
-                const scale = 0.05 + (raw / 255) * 0.95;
-                bars[i].style.transition = 'transform 0.05s ease-out';
-                bars[i].style.transform = `scaleY(${scale})`;
+        window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
+        const freqData = window.globalFreqData;
+        
+        if (freqData && bars) {
+          for (let i = 0; i < bars.length; i++) {
+            if (bars[i]) {
+              // Map 1:1 across the frequency bins so all 60 bars get unique data
+              const raw = freqData[i % freqData.length] || 0;
+              const targetScale = 0.05 + (raw / 255) * 0.95;
+              
+              // Asymmetric Lerping: Fast punch up, smooth glide down
+              if (targetScale > scales[i]) {
+                scales[i] += (targetScale - scales[i]) * 0.4;
+              } else {
+                scales[i] += (targetScale - scales[i]) * 0.15;
               }
+              
+              bars[i].style.transform = `scaleY(${scales[i]})`;
             }
           }
-          lastEqDraw = timestamp;
         }
       } else {
-        const bars = eqBarsRef.current;
+        // Smoothly fade out to 0.05 when paused honoring settings.eqFadeOutTime
         for (let i = 0; i < bars.length; i++) {
-          if (bars[i] && bars[i].style.transform !== 'scaleY(0.05)') {
-            bars[i].style.transition = `transform ${fadeOutTime}ms ease-out`;
+          if (bars[i] && scales[i] > 0.051) {
+            scales[i] += (0.05 - scales[i]) * pauseDecayFactor;
+            bars[i].style.transform = `scaleY(${scales[i]})`;
+          } else if (bars[i] && scales[i] !== 0.05) {
+            scales[i] = 0.05;
             bars[i].style.transform = `scaleY(0.05)`;
           }
         }
