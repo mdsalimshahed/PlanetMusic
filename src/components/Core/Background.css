@@ -1,5 +1,5 @@
-/* --- src/components/Background.css --- */
-.falling-fluid-bg {
+/* --- src/components/Core/Background.css --- */
+.dynamic-circle-bg {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,35 +11,39 @@
   pointer-events: none;
 }
 
-.fluid-drops-container {
+.circles-container {
   position: absolute;
-  inset: -30%; /* Bleed outside bounds so drops don't clip at edges */
-  opacity: 0.7; /* Lowered slightly for cleaner blending */
-  /* CRITICAL GPU FIX: Removed 'mix-blend-mode: screen' and 'will-change: transform' 
-     from this full-screen container to prevent massive VRAM consumption */
+  inset: -20%; /* Bleed outside bounds so circles don't clip at edges */
+  opacity: 0.8; 
 }
 
-.fluid-drop {
+.floating-circle {
   position: absolute;
-  top: -50vh; /* Start well above the screen */
-  will-change: transform; /* Hardware acceleration specifically isolated to moving elements */
-  animation-name: fallAndMix;
-  animation-timing-function: linear;
+  border-radius: 50%;
+  will-change: transform, opacity; /* Hardware acceleration isolated to moving elements */
+  animation-name: floatAndPop;
+  animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  opacity: 0; /* Base state to ensure they are hidden before animation starts */
+  transform: translate3d(0, 0, 0) scale(0);
 }
 
-@keyframes fallAndMix {
+@keyframes floatAndPop {
   0% {
-    transform: translate3d(0, 0, 0) scale(0.8) rotate(0deg);
+    transform: translate3d(0, 0, 0) scale(0);
+    opacity: 0;
   }
-  33% {
-    transform: translate3d(var(--sway-target), 70vh, 0) scale(1.2) rotate(120deg);
+  25% {
+    opacity: 0.6;
+    transform: translate3d(calc(var(--move-x) * 0.25), calc(var(--move-y) * 0.25), 0) scale(1);
   }
-  66% {
-    transform: translate3d(calc(var(--sway-target) * -0.5), 140vh, 0) scale(0.9) rotate(240deg);
+  75% {
+    opacity: 0.6;
+    transform: translate3d(calc(var(--move-x) * 0.75), calc(var(--move-y) * 0.75), 0) scale(1.1);
   }
   100% {
-    transform: translate3d(0, 220vh, 0) scale(1.1) rotate(360deg);
+    transform: translate3d(var(--move-x), var(--move-y), 0) scale(0);
+    opacity: 0;
   }
 }
 

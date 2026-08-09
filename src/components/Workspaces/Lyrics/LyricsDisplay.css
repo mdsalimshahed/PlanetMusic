@@ -217,7 +217,6 @@
   max-width: 100%;
   max-height: 90%;
   overflow-y: auto;
-  /* Heavily increased padding to prevent the text shadow from clipping on scroll boundaries */
   padding: 40px 24px;
   box-sizing: border-box;
   text-align: center;
@@ -408,13 +407,13 @@ rt.pronunciation-text,
 .focused-line.active rt.pronunciation-text, 
 .focused-line.active .pronunciation-text {
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Strong drop shadow added */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); 
 }
 
 .focused-line .pronunciation-text {
   opacity: 0;
   transform: translate3d(0, -8px, 0);
-  padding: 12px 16px; /* Added padding to prevent shadow clipping */
+  padding: 12px 16px; 
 }
 
 .focused-line.active .pronunciation-text {
@@ -573,7 +572,7 @@ rt.pronunciation-text,
   width: auto;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 12px 16px; /* Added heavy padding to prevent shadow clipping */
+  padding: 12px 16px; 
   text-align: center;
   pointer-events: none;
   z-index: 10;
@@ -590,7 +589,7 @@ rt.pronunciation-text,
   text-wrap: balance;
   text-wrap: pretty;
   color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.9) * 100%), transparent);
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Strong drop shadow restored */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); 
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;
@@ -612,4 +611,65 @@ rt.pronunciation-text,
     visibility: visible;
     transform: translateY(0);
   }
+}
+
+/* --- Plain View Layout (Grouped Artist Blocks) --- */
+.plain-section-header {
+  font-size: clamp(12px, 1.4vw, 14px);
+  font-weight: 800;
+  color: #fbbf24;
+  margin: 32px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lyrics-display > ReactFragment:first-child .plain-section-header,
+.lyrics-display > div:first-child .plain-section-header {
+  margin-top: 0 !important;
+}
+
+.plain-artist-block {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-left: 3px solid #ffffff; /* Overridden via inline style */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+.plain-artist-block:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.plain-artist-name {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.plain-block-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plain-lyric-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.5;
+}
+
+.plain-lyric-translation {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  text-shadow: none !important;
 }

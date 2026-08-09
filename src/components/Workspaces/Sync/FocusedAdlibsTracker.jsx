@@ -16,7 +16,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   // If the lyrics remain the same, the seed is identical (persists across dashboard returns).
   // If lyrics change, the seed changes automatically, naturally wiping the cache!
   const sessionSeed = useMemo(() => {
-    if (!syncData || syncData.length === 0) return 'empty_seed';
+    if (!Array.isArray(syncData) || syncData.length === 0) return 'empty_seed';
     const textHash = syncData.map(d => d.text).join('').substring(0, 50);
     return `seed_${Math.floor(pseudoRandom(textHash) * 100000)}`;
   }, [syncData]);
@@ -26,9 +26,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   // ------------------------------------------------------------------
   const adlibsToRender = useMemo(() => {
     const items = [];
-    if (!syncData) return items;
+    if (!Array.isArray(syncData)) return items;
 
     let globalAdlibCounter = 0;
+
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -37,6 +38,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
         node.adlibs.forEach((adlib, j) => {
           if (adlib.start === null) return;
+
           const key = `adlib-${adlib.start}-${j}`;
           const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -170,6 +172,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         });
       }
     });
+
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
@@ -238,12 +241,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               const singerNode = container.querySelector('.singer-name-corner.visible');
               
               const cBox = getRelativeRect(lyricsNode, containerRect);
-
               if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
                   cBox.top -= 20;
                   cBox.bottom -= 20;
               }
-
               const sBox = getRelativeRect(singerNode, containerRect);
               
               pos = generateSafeAdlibPosition(
@@ -270,9 +271,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             item.node.style.setProperty('--adlib-top', pos.top);
             item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
           }
+
           item.node.classList.add('active');
           item.isActive = true;
-
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;

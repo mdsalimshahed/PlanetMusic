@@ -7,15 +7,19 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   let hasExplicitHeader = false;
   let activeTags = [];
+  let pendingHeader = null; // Track the latest section header
+
   const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
     const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
     if (!cleanHtmlLine || cleanHtmlLine.startsWith('<!')) return;
+
     const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
       activeTags = [];
       hasExplicitHeader = true;
+      pendingHeader = line; // Save the raw bracketed header (e.g. "[Verse 1]")
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -42,6 +46,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 }
             }
         });
+
         unmarkedStr = unmarkedStr.trim();
         const unmarkedTokens = unmarkedStr.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean);
         
@@ -53,8 +58,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 }
             });
         }
+
         const allMentioned = [...explicitArtists, ...unmarkedTokens].map(n => n.trim()).filter(n => n.toLowerCase() !== 'both' && n.toLowerCase() !== 'all');
         const contextArtists = allMentioned.length > 0 ? [...new Set(allMentioned)] : globalDefaultArtists;
+
         currentRules = parsedTokens.map(pt => {
             const lowerName = pt.name.toLowerCase();
             let ruleArtists = [];
@@ -62,9 +69,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             else ruleArtists = pt.name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
             return { marker: pt.marker, artists: ruleArtists };
         });
+
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
+
       } else {
-        // Heading with no colon (e.g. [Verse 1]) defaults to main artist
         currentRules = [{ marker: '', artists: globalDefaultArtists }];
       }
       return;
@@ -81,6 +89,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         
         const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
         const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
+
         if (isOpeningBoundary && !isClosingBoundary) {
             activeTags.push(chunk);
         } else if (isClosingBoundary && !isOpeningBoundary) {
@@ -132,8 +141,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         } else if (seg.marker === '') {
             artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
         } else {
-            // Uncredited line: marker (e.g. _) was used in lyrics but deliberately NOT defined in the heading rule.
-            // Leave artists empty so it does NOT default to main artist.
             artists = [];
         }
 
@@ -166,7 +173,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
-    // --- RE-ORDER ADLIBS & SANITIZE PUNCTUATION SPACING ---
     const mainSegments = [];
     const adlibSegments = [];
 
@@ -184,13 +190,11 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       });
     });
 
-    // Collapse awkward spaces before punctuation caused by adlib extraction
     let sanitizedMainSegments = mainSegments.map(seg => ({
       ...seg,
       text: seg.text.replace(/\s+([.,!?;:]+)/g, '$1')
     }));
 
-    // Ensure ad-libs are cleanly separated by a single space at the end
     let sanitizedAdlibSegments = adlibSegments.map((seg, idx) => {
       let text = seg.text.trim();
       if (idx < adlibSegments.length - 1) {
@@ -199,7 +203,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       return { ...seg, text };
     });
 
-    // Clean space between main text end and first adlib start
     if (sanitizedMainSegments.length > 0 && sanitizedAdlibSegments.length > 0) {
       const lastMainIdx = sanitizedMainSegments.length - 1;
       sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.trimEnd() + ' ';
@@ -207,11 +210,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
 
-    // Only assign lineSinger if explicit artists exist on this line
     const finalArtistsArray = Array.from(lineArtistsSet);
     const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : '';
-
     const displayText = finalSegments.map(s => s.text).join('');
+
     let finalColor = '#ffffff';
     let lineIsGradient = false;
     let lineGradientStyle = '';
@@ -231,8 +233,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         singer: lineSinger,
         color: finalColor,
         isGradient: lineIsGradient,
-        gradient: lineGradientStyle
+        gradient: lineGradientStyle,
+        sectionHeader: pendingHeader // Attach the header to the first line following it
       });
+
+    // Reset pending header so it doesn't get copied to subsequent lines
+    pendingHeader = null; 
   });
 
   return result;
@@ -260,12 +266,14 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
     for (let i = currentLrcIdx; i < Math.min(currentLrcIdx + 15, lrcSyncData.length); i++) {
       const cleanLrc = normalize(lrcSyncData[i].text);
       if (!cleanLrc && !cleanGenius) continue;
+
       let score = 0;
       if (cleanGenius === cleanLrc && cleanGenius !== '') {
         score = 100;
       } else if (cleanGenius && cleanLrc && (cleanGenius.includes(cleanLrc) || cleanLrc.includes(cleanGenius))) {
         score = 60 + (Math.min(cleanGenius.length, cleanLrc.length) / Math.max(cleanGenius.length, cleanLrc.length)) * 40;
       }
+
       if (score > highestScore && score > 35) {
         highestScore = score;
         bestMatchIdx = i;
@@ -307,6 +315,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
               const segChars = Array.from(seg.text);
               const segStart = currentPos;
               const segEnd = currentPos + segChars.length;
+
               const overlapStart = Math.max(adlib.charStart, segStart);
               const overlapEnd = Math.min(adlib.charEnd, segEnd);
 
@@ -325,7 +334,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
           }
 
           const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
-
           return {
             ...adlib,
             segments: adlibSegments,
@@ -335,7 +343,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
           };
         });
       }
-
       currentLrcIdx = bestMatchIdx + 1;
     }
 
@@ -369,6 +376,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       
       const text = rawText.replace(/<\d{2}:\d{2}\.\d{2,3}>/g, '').trim();
       if (!text) return;
+
       const startTime = (minutes * 60) + seconds;
       plainTextLyrics += text + "\n";
       

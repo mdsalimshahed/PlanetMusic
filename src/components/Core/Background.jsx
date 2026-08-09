@@ -14,38 +14,52 @@ const VIBRANT_PALETTE = [
 ];
 
 const Background = () => {
-  // Generate random falling liquid drops once on load
-  const liquidDrops = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => {
-      const size = Math.random() * 25 + 20; // 20vw to 45vw
+  // Generate random floating and disappearing circles once on load
+  const circles = useMemo(() => {
+    return Array.from({ length: 45 }).map((_, i) => {
+      const size = Math.random() * 15 + 5; // Radius size ranging from 5vw to 20vw
+      const startX = Math.random() * 100; // Start anywhere from 0 to 100vw
+      const startY = Math.random() * 100; // Start anywhere from 0 to 100vh
+      
+      // Determine how far and in what direction the circle will drift during its lifespan
+      const moveX = (Math.random() - 0.5) * 40; // Drift horizontally between -20vw and +20vw
+      const moveY = (Math.random() - 0.5) * 40; // Drift vertically between -20vh and +20vh
+      
+      const duration = Math.random() * 12 + 8; // Animation lifespan between 8s and 20s
+      const delay = Math.random() * -25; // Negative delay so the screen is already populated on load
+
       return {
         id: i,
         color: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length],
         size: size,
-        left: Math.random() * 110 - 10, // -10vw to 100vw
-        duration: Math.random() * 15 + 15, // 15s to 30s falling speed
-        delay: Math.random() * -30, // Negative delay so they are already falling on load
-        swayX: (Math.random() * 40) - 20 // Random horizontal drift (-20vw to +20vw)
+        startX: startX,
+        startY: startY,
+        moveX: moveX,
+        moveY: moveY,
+        duration: duration,
+        delay: delay
       };
     });
   }, []);
 
   return (
-    <div className="falling-fluid-bg">
-      <div className="fluid-drops-container">
-        {liquidDrops.map(drop => (
+    <div className="dynamic-circle-bg">
+      <div className="circles-container">
+        {circles.map(circle => (
           <div
-            key={drop.id}
-            className="fluid-drop"
+            key={circle.id}
+            className="floating-circle"
             style={{
               // Pre-baked blur via radial gradient (Zero GPU strain)
-              background: `radial-gradient(circle, ${drop.color} 0%, transparent 60%)`,
-              width: `${drop.size * 2}vw`, // Scaled up to accommodate the gradient fade
-              height: `${drop.size * 2}vw`,
-              left: `${drop.left}vw`,
-              animationDuration: `${drop.duration}s`,
-              animationDelay: `${drop.delay}s`,
-              '--sway-target': `${drop.swayX}vw`
+              background: `radial-gradient(circle, ${circle.color} 0%, transparent 70%)`,
+              width: `${circle.size * 2}vw`, // Scaled up to accommodate the gradient fade
+              height: `${circle.size * 2}vw`,
+              left: `${circle.startX}vw`,
+              top: `${circle.startY}vh`,
+              animationDuration: `${circle.duration}s`,
+              animationDelay: `${circle.delay}s`,
+              '--move-x': `${circle.moveX}vw`,
+              '--move-y': `${circle.moveY}vh`
             }}
           />
         ))}
