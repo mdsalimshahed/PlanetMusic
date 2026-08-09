@@ -1,4 +1,4 @@
-/* --- src/components/Background.css --- */
+/* --- src/components/Core/Background.css --- */
 .falling-fluid-bg {
   position: fixed;
   top: 0;
@@ -13,33 +13,44 @@
 
 .fluid-drops-container {
   position: absolute;
-  inset: -30%; /* Bleed outside bounds so drops don't clip at edges */
-  opacity: 0.7; /* Lowered slightly for cleaner blending */
-  /* CRITICAL GPU FIX: Removed 'mix-blend-mode: screen' and 'will-change: transform' 
-     from this full-screen container to prevent massive VRAM consumption */
+  inset: -10%; /* Slight bleed outside bounds */
+  opacity: 0.85;
 }
 
-.fluid-drop {
+/* Wrapper handles the instantaneous teleporting (Zero layout reflows) */
+.ambient-wrapper {
   position: absolute;
-  top: -50vh; /* Start well above the screen */
-  will-change: transform; /* Hardware acceleration specifically isolated to moving elements */
-  animation-name: fallAndMix;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  left: 0;
+  top: 0;
+  /* No transition here so it snaps instantly while invisible */
 }
 
-@keyframes fallAndMix {
+/* Inner circle handles the GPU-accelerated breathing */
+.pop-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation-name: popInOut;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  opacity: 0; /* Start invisible */
+  transform-origin: center;
+  will-change: opacity, transform; /* Signals GPU to optimize */
+}
+
+/* Breathes in and out of existence */
+@keyframes popInOut {
   0% {
-    transform: translate3d(0, 0, 0) scale(0.8) rotate(0deg);
+    opacity: 0;
+    transform: scale(0.6);
   }
-  33% {
-    transform: translate3d(var(--sway-target), 70vh, 0) scale(1.2) rotate(120deg);
-  }
-  66% {
-    transform: translate3d(calc(var(--sway-target) * -0.5), 140vh, 0) scale(0.9) rotate(240deg);
+  50% {
+    opacity: var(--max-opacity, 0.5);
+    transform: scale(1.1);
   }
   100% {
-    transform: translate3d(0, 220vh, 0) scale(1.1) rotate(360deg);
+    opacity: 0;
+    transform: scale(0.6);
   }
 }
 

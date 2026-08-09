@@ -1,10 +1,10 @@
-/* --- src/components/ContactTab.jsx --- */
+/* --- src/pages/ContactTab.jsx --- */
 import React, { useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit';
 
 const ContactTab = ({ adsEnabled }) => {
-  const [formData, setFormData] = useState({ name: '', subject: 'General Inquiry', message: '' });
+  const [formData, setFormData] = useState({ name: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
 
@@ -28,7 +28,7 @@ const ContactTab = ({ adsEnabled }) => {
           // Get your free access key from https://web3forms.com/
           access_key: "YOUR_ACCESS_KEY_HERE", 
           name: formData.name || "Anonymous User",
-          subject: formData.subject,
+          subject: formData.subject || "General Inquiry",
           message: formData.message,
         }),
       });
@@ -36,7 +36,7 @@ const ContactTab = ({ adsEnabled }) => {
       
       if (result.success) {
         setSubmitStatus('success');
-        setFormData({ name: '', subject: 'General Inquiry', message: '' });
+        setFormData({ name: '', subject: '', message: '' });
       } else {
         setSubmitStatus('error');
       }
@@ -70,7 +70,7 @@ const ContactTab = ({ adsEnabled }) => {
           <div className="contact-card-body glass-panel">
             <form onSubmit={handleSubmit} className="contact-form">
               
-              <div className="contact-form-group">
+               <div className="contact-form-group">
                 <label>Name (Optional)</label>
                 <input 
                   type="text" 
@@ -84,18 +84,15 @@ const ContactTab = ({ adsEnabled }) => {
 
               <div className="contact-form-group">
                 <label>Subject</label>
-                <select 
+                <input 
+                  type="text" 
                   name="subject" 
                   className="contact-input" 
                   value={formData.subject}
                   onChange={handleChange}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <option value="General Inquiry">General Inquiry</option>
-                  <option value="Bug Report / Technical Issue">Bug Report / Technical Issue</option>
-                  <option value="Feedback / Feature Request">Feedback / Feature Request</option>
-                  <option value="DMCA / Copyright Notice">DMCA / Copyright Notice</option>
-                </select>
+                  placeholder="What is this regarding?" 
+                  required
+                />
               </div>
 
               <div className="contact-form-group">
@@ -103,7 +100,7 @@ const ContactTab = ({ adsEnabled }) => {
                 <textarea 
                   name="message" 
                   className="contact-textarea" 
-                  required 
+                  required
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Write your message here..."
@@ -122,16 +119,15 @@ const ContactTab = ({ adsEnabled }) => {
                 
                 {submitStatus === 'success' && (
                   <span style={{ color: '#4ade80', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                    ✅ Message sent successfully!
+                      Message sent successfully!
                   </span>
                 )}
                 {submitStatus === 'error' && (
                   <span style={{ color: '#FA243C', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                    ❌ Failed to send. Please try again.
+                      Failed to send. Please try again.
                   </span>
                 )}
               </div>
-
             </form>
 
             <div className="contact-info-blocks">
@@ -144,7 +140,6 @@ const ContactTab = ({ adsEnabled }) => {
                 <p>If you lost your library, ensure your browser has not cleared your LocalStorage or IndexedDB data.</p>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -169,6 +164,7 @@ const ContactTab = ({ adsEnabled }) => {
             </>
           )}
         </aside>
+
       </div>
 
       {/* BOTTOM SPONSOR AD (Matches Settings Page Format) */}
