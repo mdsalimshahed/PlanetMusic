@@ -2,15 +2,18 @@
 import React from 'react';
 import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
-export const renderFormattedTranslation = (text) => {
+export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
+      const shadow = isFocused 
+        ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+        : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
           {part}
         </span>
       );
@@ -143,7 +146,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
             <span style={{ display: 'inline-block', whiteSpace: isFocused ? 'normal' : 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
             {cleanTrans ? (
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-                {renderFormattedTranslation(cleanTrans)}
+                {renderFormattedTranslation(cleanTrans, isFocused)}
               </span>
             ) : null}
           </span>

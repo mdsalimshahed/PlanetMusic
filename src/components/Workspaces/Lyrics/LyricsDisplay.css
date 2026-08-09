@@ -404,16 +404,21 @@ rt.pronunciation-text,
 }
 
 .preview-line.active rt.pronunciation-text, 
+.preview-line.active .pronunciation-text {
+  color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Live mode keeps the bottom angle */
+}
+
 .focused-line.active rt.pronunciation-text, 
 .focused-line.active .pronunciation-text {
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); 
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Focused mode centered shadow */
 }
 
 .focused-line .pronunciation-text {
   opacity: 0;
   transform: translate3d(0, -8px, 0);
-  padding: 12px 16px; 
+  /* Padding removed to keep it tight and close to the lyrics */
 }
 
 .focused-line.active .pronunciation-text {
@@ -572,7 +577,7 @@ rt.pronunciation-text,
   width: auto;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 12px 16px; 
+  padding: 0 8px; 
   text-align: center;
   pointer-events: none;
   z-index: 10;
@@ -589,7 +594,7 @@ rt.pronunciation-text,
   text-wrap: balance;
   text-wrap: pretty;
   color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.9) * 100%), transparent);
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); 
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Centered shadow */
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;
@@ -672,4 +677,15 @@ rt.pronunciation-text,
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
   text-shadow: none !important;
+}
+
+@media (max-width: 600px) {
+  .plain-lyric-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .plain-artist-tag {
+    text-align: left;
+    min-width: auto;
+  }
 }

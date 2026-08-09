@@ -81,10 +81,14 @@ const StandardLine = ({
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+      style.filter = isFocused 
+        ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
+        : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
     } else {
       style.color = activeColor;
-      style.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      style.textShadow = isFocused 
+        ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` 
+        : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
@@ -156,7 +160,7 @@ const StandardLine = ({
                 textAlign: 'center'
               }}
             >
-              {renderFormattedTranslation(displayTranslation)}
+              {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
 
@@ -182,7 +186,7 @@ const StandardLine = ({
       </span>
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
-          {renderFormattedTranslation(displayPronString)}
+          {renderFormattedTranslation(displayPronString, isFocused)}
         </span>
       )}
     </div>
