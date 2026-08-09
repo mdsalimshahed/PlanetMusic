@@ -52,6 +52,7 @@ const TranslationWorkspace = ({
     activeRowRef,
     cancelTranslationRef,
     handleRefreshWorkspace,
+    handleSpaceNonSpacedLanguages,
     handleTranslateAll,
     handleTranslateWithContext,
     handleRefetch,
@@ -115,12 +116,12 @@ const TranslationWorkspace = ({
         onConfirm={confirmModalState.onConfirm}
         onCancel={() => setConfirmModalState(prev => ({ ...prev, isOpen: false }))}
       />
-
       <TranslationHeader
         isTranslatingAll={isTranslatingAll}
         translateProgress={translateProgress}
         handleTranslateAll={handleTranslateAll}
         handleTranslateWithContext={handleTranslateWithContext}
+        handleSpaceNonSpacedLanguages={handleSpaceNonSpacedLanguages}
         handleRefreshWorkspace={handleRefreshWorkspace}
         handleExport={handleExport}
         handleImportText={handleImportText}
@@ -128,14 +129,12 @@ const TranslationWorkspace = ({
         handleSave={handleSave}
         cancelTranslationRef={cancelTranslationRef}
       />
-
       {showSuccessBanner && (
         <div className="tw-success-banner">
-          <span className="tw-success-icon">✓</span>
+          <span className="tw-success-icon"> </span>
           <span>All lines translated successfully! Click <strong>Save Changes</strong> to apply to lyrics.</span>
         </div>
       )}
-
       <div className="tw-list glass-panel-light" ref={listContainerRef}>
         {workspaceData.map((line, idx) => (
           <TranslationRow

@@ -1,4 +1,4 @@
-/* --- src/components/TranslationWorkspace.css --- */
+/* --- src/components/Workspaces/Translation/TranslationWorkspace.css --- */
 .tw-container {
     display: flex;
     flex-direction: column;
@@ -227,6 +227,37 @@
     font-weight: 500;
     font-family: monospace;
     letter-spacing: 0.5px;
+}
+
+/* --- SPACED LINE FIELD STYLES --- */
+.tw-spaced-field-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.tw-spaced-field-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #00f5d4;
+    text-align: left;
+}
+
+.tw-spaced-input {
+    color: #00f5d4 !important;
+    font-weight: 600;
+    border-color: rgba(0, 245, 212, 0.3) !important;
+    background: rgba(0, 245, 212, 0.05) !important;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.tw-spaced-input:focus {
+    border-color: #00f5d4 !important;
+    box-shadow: 0 0 10px rgba(0, 245, 212, 0.3) !important;
 }
 
 .tw-col-actions {

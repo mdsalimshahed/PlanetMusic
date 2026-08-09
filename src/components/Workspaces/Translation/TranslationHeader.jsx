@@ -1,4 +1,4 @@
-/* --- src/components/TranslationHeader.jsx --- */
+/* --- src/components/Workspaces/Translation/TranslationHeader.jsx --- */
 import React, { useRef } from 'react';
 
 const TranslationHeader = ({
@@ -6,6 +6,7 @@ const TranslationHeader = ({
   translateProgress,
   handleTranslateAll,
   handleTranslateWithContext,
+  handleSpaceNonSpacedLanguages,
   handleRefreshWorkspace,
   handleExport,
   handleImportText,
@@ -25,13 +26,13 @@ const TranslationHeader = ({
           {isTranslatingAll ? (
             <>
               <span className="tw-spinner"></span>
-              <span>Stop Translation</span>
+              <span>Stop Action</span>
             </>
           ) : (
             'Translate All'
           )}
         </button>
-        
+
         <button
           className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
           onClick={handleTranslateWithContext}
@@ -39,7 +40,16 @@ const TranslationHeader = ({
         >
           Translate with Context
         </button>
-        
+
+        <button
+          className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+          onClick={handleSpaceNonSpacedLanguages}
+          style={{ background: 'rgba(0, 245, 212, 0.15)', borderColor: '#00f5d4', color: '#00f5d4' }}
+          title="Group Japanese and Chinese lines and run brute-force alignment to add spaces"
+        >
+          Space Non-Spaced Languages
+        </button>
+
         <button
           className="tw-btn"
           onClick={handleRefreshWorkspace}
@@ -49,11 +59,11 @@ const TranslationHeader = ({
         >
           Refresh Lyrics
         </button>
-        
+
         <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll}>
           Export Text
         </button>
-        
+
         <input
           type="file"
           accept=".txt,text/plain"
@@ -64,9 +74,9 @@ const TranslationHeader = ({
         <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll}>
           Import Text
         </button>
-        
+
         <div className="tw-header-spacer"></div>
-        
+
         <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
         <button
           className="tw-btn tw-btn-save"

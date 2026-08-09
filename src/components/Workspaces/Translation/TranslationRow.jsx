@@ -14,6 +14,10 @@ const TranslationRow = ({
 }) => {
   const isAdlib = line._meta.isAdlib;
   const isTranslating = activeTranslatingId === line.rowId;
+  const langTag = (line.lang || 'auto').toLowerCase();
+  
+  const hasAsianChars = /[\u3000-\u303f\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\uac00-\ud7af\u0e00-\u0e7f]/.test(line.displayText);
+  const isAsianLanguage = langTag === 'ja' || langTag.startsWith('zh') || (langTag === 'auto' && hasAsianChars);
 
   const renderTextWithYellowPunctuation = (text, baseStyle = {}, isAdlibChar = false) => {
     if (!text) return null;
@@ -21,20 +25,17 @@ const TranslationRow = ({
     return chars.map((char, pIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = { ...baseStyle };
-
       if (isPunct && char.trim() !== '' && !isAdlibChar) {
         style.color = '#fbbf24';
         style.WebkitTextFillColor = '#fbbf24';
         style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
       }
-
       return <span key={pIdx} style={style}>{char}</span>;
     });
   };
 
   const renderColoredOriginalText = () => {
     const isMainAndSplit = !line._meta.isAdlib && line.isSplit && line.adlibs;
-
     if (line.segments && line.segments.length > 0) {
       let globalCharIndex = 0;
       let cpIdx = 0;
@@ -42,7 +43,6 @@ const TranslationRow = ({
         let inlineColor = seg.color || '#ffffff';
         let inlineIsGradient = seg.isGradient || false;
         let inlineGradient = seg.gradient || '';
-
         if (seg.artists && seg.artists.length > 0) {
           if (seg.artists.length > 1) {
             inlineIsGradient = true;
@@ -53,16 +53,13 @@ const TranslationRow = ({
             inlineColor = masterPalette[seg.artists[0]] || inlineColor;
           }
         }
-
         const segChars = getGraphemes(seg.text);
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
           const cpLen = Array.from(char).length;
           const currentCpStart = cpIdx;
           cpIdx += cpLen;
-
           const isAdlibChar = isMainAndSplit && line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
-
           let segStyle = inlineIsGradient ? {
             backgroundImage: inlineGradient,
             WebkitBackgroundClip: 'text',
@@ -70,7 +67,6 @@ const TranslationRow = ({
           } : {
             color: inlineColor
           };
-
           if (isAdlibChar) {
             segStyle = {
               ...segStyle,
@@ -79,20 +75,16 @@ const TranslationRow = ({
               textDecorationColor: '#ffffff'
             };
           }
-
           return (
             <React.Fragment key={cIdx}>
               {renderTextWithYellowPunctuation(char, segStyle, isAdlibChar)}
             </React.Fragment>
           );
         });
-
         return <React.Fragment key={idxSeg}>{charElements}</React.Fragment>;
       });
     }
-
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
-
     if (isMainAndSplit) {
       const chars = getGraphemes(line.displayText);
       let cpIdx = 0;
@@ -100,10 +92,8 @@ const TranslationRow = ({
         const cpLen = Array.from(char).length;
         const currentCpStart = cpIdx;
         cpIdx += cpLen;
-
         const isAdlibChar = line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
         let baseStyle = { color: defaultColor };
-
         if (isAdlibChar) {
           baseStyle = {
             ...baseStyle,
@@ -112,7 +102,6 @@ const TranslationRow = ({
             textDecorationColor: '#ffffff'
           };
         }
-
         return (
           <React.Fragment key={cIdx}>
             {renderTextWithYellowPunctuation(char, baseStyle, isAdlibChar)}
@@ -120,7 +109,6 @@ const TranslationRow = ({
         );
       });
     }
-
     return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor }, false);
   };
 
@@ -136,7 +124,7 @@ const TranslationRow = ({
             className="tw-lang-tag-input"
             value={line.lang || 'auto'}
             onChange={(e) => handleChange(idx, 'lang', e.target.value.toLowerCase().trim())}
-            title="Language Tag (e.g. auto, ko, ja, en, es)"
+            title="Language Tag (e.g. auto, ko, ja, zh, en, es)"
           />
           <div className="tw-original-text" dir="ltr" style={{ textAlign: 'left', flex: 1 }}>
             {renderColoredOriginalText()}
@@ -151,6 +139,21 @@ const TranslationRow = ({
           dir="ltr"
           style={{ textAlign: 'left' }}
         />
+
+        {/* Spaced Line Output Field for Non-Spaced Languages */}
+        {isAsianLanguage && (
+          <div className="tw-spaced-field-wrapper">
+            <span className="tw-spaced-field-label">Spaced Word Line:</span>
+            <input
+              type="text"
+              className="tw-input tw-spaced-input"
+              value={line.spacedText || ''}
+              onChange={(e) => handleChange(idx, 'spacedText', e.target.value)}
+              placeholder="Click 'Space Non-Spaced Languages' above to generate..."
+              dir="ltr"
+            />
+          </div>
+        )}
       </div>
 
       <div className="tw-col tw-col-right">
