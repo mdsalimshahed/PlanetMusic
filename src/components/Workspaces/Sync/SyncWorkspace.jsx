@@ -243,7 +243,7 @@ export const SyncWorkspace = ({
     const isRTL = isRTLLanguage(line.spacedText || line.text);
     
     const pronStyle = {
-      fontSize: '0.55em', color: '#ffffff', opacity: 0.85, textShadow: 'none',
+      fontSize: '0.55em', color: '#ffffff', opacity: 0.85,
       fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px',
       textAlign: 'left', marginTop: '4px', display: 'inline-block'
     };
@@ -304,12 +304,20 @@ export const SyncWorkspace = ({
         }
       }
 
-      const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
+      const style = isGradient ? { 
+        backgroundImage: gradientStyle, 
+        WebkitBackgroundClip: 'text', 
+        WebkitTextFillColor: 'transparent',
+        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9))'
+      } : { 
+        color: activeColor,
+        textShadow: '0 4px 8px rgba(0,0,0,0.9)'
+      };
       
       if (isPunct && c.char.trim() !== '') {
         style.color = '#fbbf24';
         style.WebkitTextFillColor = '#fbbf24';
-        style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
+        style.textShadow = '0 2px 6px rgba(0, 0, 0, 0.9)';
       }
 
       if (isMain && line.isSplit) {

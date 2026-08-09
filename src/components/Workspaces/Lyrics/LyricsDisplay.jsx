@@ -6,7 +6,6 @@ import { parseLyrics } from '../../../utils/songHelpers';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
-// Safely injects spaces into colored segments without overriding original tags
 export const injectSpacesIntoSegments = (segments, spacedText) => {
   if (!spacedText || !segments || segments.length === 0) return segments;
   const newSegments = [];
@@ -102,19 +101,19 @@ const LyricsDisplay = ({
         style = {
           color: '#fbbf24',
           WebkitTextFillColor: '#fbbf24',
-          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)'
+          textShadow: '0 2px 6px rgba(0, 0, 0, 0.9)'
         };
       } else if (isGradient) {
         style = {
           backgroundImage: gradientStyle,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))'
+          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9))'
         };
       } else {
         style = { 
           color: activeColor,
-          textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`
+          textShadow: '0 4px 8px rgba(0,0,0,0.9)'
         };
       }
 
