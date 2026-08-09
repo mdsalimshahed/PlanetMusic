@@ -1,7 +1,9 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.css --- */
-
 /* General Lyrics Layout */
-.live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
+.live-lyrics-preview,
+.focused-lyrics-preview,
+.debug-lyrics-preview,
+.lyrics-display {
   position: relative;
   z-index: 1;
 }
@@ -65,7 +67,6 @@
 .lyrics-textarea::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 .lyrics-textarea::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
 
 /* --- ARTIST PREVIEW PANE --- */
 .artist-preview-pane {
@@ -171,6 +172,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
 
 .preview-line {
@@ -206,6 +208,7 @@
   padding: 20px;
   position: relative;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -215,15 +218,17 @@
   left: 50%;
   width: 100%;
   max-width: 100%;
+  max-height: 90%;
+  overflow-y: auto;
   padding: 0 24px;
   box-sizing: border-box;
   text-align: center;
-  font-size: clamp(18px, 6vw, var(--dyn-focused-sync-font-size, 42px));
+  font-size: clamp(16px, 5vw, var(--dyn-focused-sync-font-size, 42px));
   font-weight: 900;
   line-height: 1.35;
   white-space: normal;
-  word-break: normal;
-  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   text-wrap: balance;
   text-wrap: pretty;
   opacity: 0;
@@ -233,6 +238,11 @@
   will-change: opacity, transform;
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  scrollbar-width: none;
+}
+
+.focused-line::-webkit-scrollbar {
+  display: none;
 }
 
 .focused-line.active {
@@ -263,7 +273,7 @@
 
 .focused-line .main-lyrics-layer {
   display: inline-flex !important;
-  flex-wrap: wrap !important;   
+  flex-wrap: wrap !important;
   justify-content: center !important;
   align-items: center !important;
   text-align: center !important;
@@ -271,8 +281,8 @@
   width: auto !important;
   box-sizing: border-box !important;
   white-space: normal !important;
-  word-break: normal !important;
-  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
 }
 
 .focused-adlibs-container {
@@ -294,9 +304,9 @@
   line-height: 1.35;
   text-align: center;
   white-space: normal;
-  word-break: normal;
-  overflow-wrap: break-word;
-  max-width: 80%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 85%;
   box-sizing: border-box;
   opacity: 0;
   transform: translate3d(-50%, calc(-50% + 20px), 0) rotate(var(--adlib-rot, 0deg));
@@ -373,10 +383,14 @@ rt.pronunciation-text, .pronunciation-text {
   font-size: var(--dyn-translit-font-size, 0.55em);
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 0.8) * 100%), transparent);
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  max-width: 100%;
 }
 
 .preview-line.active rt.pronunciation-text, 
@@ -422,7 +436,7 @@ rt.pronunciation-text, .pronunciation-text {
     font-size: clamp(16px, 4.5vw, min(var(--dyn-live-sync-font-size, 34px), 26px));
   }
   .focused-line {
-    font-size: clamp(18px, 5.5vw, min(var(--dyn-focused-sync-font-size, 42px), 28px));
+    font-size: clamp(16px, 5vw, min(var(--dyn-focused-sync-font-size, 42px), 28px));
   }
   .focused-adlib-line {
     font-size: clamp(11px, 3.5vw, min(var(--dyn-focused-adlib-font-size, 28px), 18px));
@@ -457,9 +471,7 @@ rt.pronunciation-text, .pronunciation-text {
   transform: scaleY(0.05);
   transform-origin: bottom;
   will-change: transform;
-  /* transition REMOVED: JS handles interpolation at 60fps for a buttery smooth EQ without DOM thrashing */
 }
-
 
 /* --- Translation Overlay Styles --- */
 .chunk-translation {
