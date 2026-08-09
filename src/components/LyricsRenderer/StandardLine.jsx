@@ -16,13 +16,16 @@ const StandardLine = ({
   transClass,
   basePronStyle,
   displayTranslation,
-  pronString }) => {
+  pronString
+}) => {
   const currentTime = window.currentAudioTime || 0;
+
   const renderColoredChar = (c, globalIdx) => {
     // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
     if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd)) {
       return null;
     }
+
     let adlibProps = {};
     if (savedNode?.isSplit && !isFocused) {
       const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
@@ -41,10 +44,12 @@ const StandardLine = ({
         };
       }
     }
+
     const isPunct = isPunctuationChar(c.char);
     let activeColor = isPunct ? '#fbbf24' : '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
+
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
       if (!targetArtists && lineObj.singer) {
@@ -65,16 +70,20 @@ const StandardLine = ({
         gradientStyle = c.seg.gradient || '';
       }
     }
+
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+    
+    // REMOVED GLOW: Standard drop-shadow is used instead of the 30px glowing text-shadow
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused ? '30px' : '20px'} rgba(255,255,255,0.4))`;
+      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9))`;
     } else {
       style.color = activeColor;
-      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
+      style.textShadow = `0 4px 8px rgba(0,0,0,0.9)`;
     }
+
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
@@ -166,7 +175,6 @@ const StandardLine = ({
           </span>
         </span>
       </span>
-
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {renderFormattedTranslation(displayPronString)}
