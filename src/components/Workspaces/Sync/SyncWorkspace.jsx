@@ -5,6 +5,7 @@ import { quickTransliterate } from '../../../services/transliterator';
 import { workspaceClock } from '../../../utils/clockEngine';
 import { normalizeTrans } from '../Lyrics/LyricsLineRenderer';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
+import { injectSpacesIntoSegments } from '../Lyrics/LyricsDisplay';
 import './SyncWorkspace.css';
 
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
@@ -20,7 +21,6 @@ export const SyncWorkspace = ({
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
-
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
 
@@ -66,7 +66,6 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
-
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -121,9 +120,7 @@ export const SyncWorkspace = ({
         }
       });
     };
-
     initSyncYT();
-
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -148,7 +145,6 @@ export const SyncWorkspace = ({
          progressSliderRef.current.style.setProperty('--progress', `${(time / max) * 100}%`);
       }
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
-
       if (containerRef.current) {
         const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
         for (let i = 0; i < adlibNodes.length; i++) {
@@ -213,10 +209,8 @@ export const SyncWorkspace = ({
                     }
                     currentPos = segEnd;
                 }
-
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
                 const pronData = await quickTransliterate(adlibText);
-
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -240,8 +234,13 @@ export const SyncWorkspace = ({
 
   const renderWorkspaceLine = (line, isMain) => {
     const pronString = line.pronunciation;
-    const segments = line.segments || [{ text: line.text }];
-    const isRTL = isRTLLanguage(line.text);
+    let segments = line.segments || [{ text: line.text }];
+    
+    if (line.spacedText) {
+        segments = injectSpacesIntoSegments(segments, line.spacedText);
+    }
+
+    const isRTL = isRTLLanguage(line.spacedText || line.text);
     
     const pronStyle = {
       fontSize: '0.55em', color: '#ffffff', opacity: 0.85, textShadow: 'none',
@@ -267,8 +266,8 @@ export const SyncWorkspace = ({
 
     const chars = [];
     let gIdx = 0;
-    let cpIdx = 0; 
-    
+    let cpIdx = 0;
+      
     segments.forEach(seg => {
       const segChars = getGraphemes(seg.text);
       segChars.forEach(char => {
@@ -354,25 +353,23 @@ export const SyncWorkspace = ({
 
     let activeParsedChunks = parsedChunks;
     if (!activeParsedChunks) {
-      activeParsedChunks = [{ type: 'main', trans: '', text: line.text }];
+      activeParsedChunks = [{ type: 'main', trans: '', text: line.spacedText || line.text }];
     }
 
     let alignedChunks = [];
     let pChunkIndex = 0;
     let currentPChunk = activeParsedChunks[0];
     let currentPChunkConsumed = 0;
-
     let i = 0;
+
     while (i < chars.length) {
       if (!currentPChunk) {
         alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
         i++;
         continue;
       }
-
       let chunkChars = [];
       const targetLen = Array.from(currentPChunk.text || '').length;
-
       while (currentPChunkConsumed < targetLen && i < chars.length) {
         chunkChars.push(chars[i]);
         currentPChunkConsumed += Array.from(chars[i].char).length;
@@ -387,7 +384,6 @@ export const SyncWorkspace = ({
           isMain: true
         });
       }
-
       if (currentPChunkConsumed >= targetLen) {
         pChunkIndex++;
         currentPChunk = activeParsedChunks[pChunkIndex];
@@ -432,23 +428,23 @@ export const SyncWorkspace = ({
       }}>
       
       <div 
-         id="sync-yt-target-container" 
-         style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+          id="sync-yt-target-container" 
+          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <button 
-                onClick={toggleWorkspaceMode} 
-                className="edit-links-btn"
+                 onClick={toggleWorkspaceMode} 
+                 className="edit-links-btn"
                style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
             >
               {isShowingAutoSync ? '  Auto Sync Mode' : '  Manual Sync Mode'}
             </button>
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
-                  onClick={handleMapAutoSync} 
-                  className="edit-links-btn"
+                   onClick={handleMapAutoSync} 
+                   className="edit-links-btn"
                  style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
                 title="Map Auto-Sync timings to these manual lyrics"
               >
@@ -456,7 +452,6 @@ export const SyncWorkspace = ({
               </button>
             )}
          </div>
-
          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               {(() => {
@@ -486,9 +481,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                       onClick={cycleSource} 
-                       style={{...cursorStyle, display: 'inline-block'}} 
-                       title={title}
+                        onClick={cycleSource} 
+                        style={{...cursorStyle, display: 'inline-block'}} 
+                        title={title}
                       onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                       onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -520,7 +515,7 @@ export const SyncWorkspace = ({
         <input 
             type="range" className="custom-slider sync-slider"
             min="0" max={syncDuration || 1} step="0.001"
-            defaultValue="0"
+            defaultValue="0" 
           ref={progressSliderRef}
           onChange={handleSyncSeek}
           style={{ '--progress': '0%' }}
@@ -554,8 +549,9 @@ export const SyncWorkspace = ({
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
           
-          const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
+          const hasParentheses = isMain && /\([^)]+\)/.test(line.spacedText || line.text);
           let boundedEnd = Number.MAX_VALUE;
+
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }

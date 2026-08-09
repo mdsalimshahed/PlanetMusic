@@ -6,15 +6,59 @@ import { parseLyrics } from '../../../utils/songHelpers';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
-const LyricsDisplay = ({
-     isEditing, customData, handleDataChange, hasValidSyncData,
-     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-     isPlaying, settings
+// Safely injects spaces into colored segments without overriding original tags
+export const injectSpacesIntoSegments = (segments, spacedText) => {
+  if (!spacedText || !segments || segments.length === 0) return segments;
+  const newSegments = [];
+  let spacedIdx = 0;
+  const spacedChars = Array.from(spacedText);
+  
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    const segChars = Array.from(seg.text || '');
+    let newSegText = '';
+    
+    let segCharIdx = 0;
+    while (segCharIdx < segChars.length && spacedIdx < spacedChars.length) {
+      const sChar = spacedChars[spacedIdx];
+      if (/^\s+$/.test(sChar)) {
+        newSegText += sChar;
+        spacedIdx++;
+      } else {
+        newSegText += sChar;
+        spacedIdx++;
+        segCharIdx++;
+      }
+    }
+    
+    while (i < segments.length - 1 && spacedIdx < spacedChars.length && /^\s+$/.test(spacedChars[spacedIdx])) {
+        newSegText += spacedChars[spacedIdx];
+        spacedIdx++;
+    }
+    
+    if (i === segments.length - 1) {
+        while (spacedIdx < spacedChars.length) {
+            newSegText += spacedChars[spacedIdx];
+            spacedIdx++;
+        }
+    }
+    
+    newSegments.push({
+      ...seg,
+      text: newSegText
+    });
+  }
+  return newSegments;
+};
+
+const LyricsDisplay = ({ 
+    isEditing, customData, handleDataChange, hasValidSyncData, 
+    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+    isPlaying, settings
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-  
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
 
@@ -30,7 +74,7 @@ const LyricsDisplay = ({
     if (artists.length === 0 && item.singer) {
       artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     }
-
+    
     let isGradient = false;
     let gradientStyle = '';
     let activeColor = '#ffffff';
@@ -106,10 +150,8 @@ const LyricsDisplay = ({
     return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
   };
 
-  // FULLY OPTIMIZED, FULL-WIDTH CANVAS EQUALIZER
   useEffect(() => {
     if (settings?.disableAnimations || isEditing) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -119,7 +161,6 @@ const LyricsDisplay = ({
     let idleFrames = 0; 
     const numBars = 40;
 
-    // CRITICAL CPU FIX: Track width/height via ResizeObserver to completely eliminate DOM layout thrashing.
     let cw = canvas.clientWidth;
     let ch = canvas.clientHeight;
     canvas.width = cw;
@@ -136,7 +177,6 @@ const LyricsDisplay = ({
     resizeObserver.observe(canvas);
 
     const renderEQ = () => {
-      // Use cached dimensions - NO browser reflows triggered here!
       const displayWidth = cw;
       const displayHeight = ch;
       
@@ -149,8 +189,7 @@ const LyricsDisplay = ({
       const scales = eqScalesRef.current;
       
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
-        idleFrames = 0; 
-        
+        idleFrames = 0;          
         window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
         const freqData = window.globalFreqData;
         const bufferLength = freqData.length;
@@ -195,11 +234,10 @@ const LyricsDisplay = ({
 
       ctx.clearRect(0, 0, displayWidth, displayHeight);
       ctx.fillStyle = '#ffffff';
-
-      // CRITICAL DESIGN FIX: Calculate full-width dynamic spacing
+      
       const barSpacing = displayWidth / numBars;
-      const barWidth = Math.max(1, barSpacing * 0.75); // Bar takes up 75% of its available slot
-      const startX = (barSpacing - barWidth) / 2; // Center the bar perfectly within its slot
+      const barWidth = Math.max(1, barSpacing * 0.75);
+      const startX = (barSpacing - barWidth) / 2;
 
       ctx.beginPath(); 
       for (let i = 0; i < numBars; i++) {
@@ -227,7 +265,6 @@ const LyricsDisplay = ({
     };
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime, settings?.disableAnimations, isEditing]);
 
-  // RE-QUERY DOM ELEMENTS WHENEVER EDIT MODE CLOSES OR LYRICS/VIEW-MODES CHANGE
   useEffect(() => {
     if (isEditing) return;
     
@@ -257,7 +294,6 @@ const LyricsDisplay = ({
     return () => clearTimeout(timer);
   }, [isEditing, liveParsedLyrics, lyricsViewMode, selectedSong?.syncData]);
 
-  // DEDICATED TIME UPDATE PROCESSOR
   const handleTimeUpdate = (time) => {
     if (isEditing || !isPlayingCurrentSong) return;
 
@@ -346,7 +382,6 @@ const LyricsDisplay = ({
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
-    
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
@@ -373,7 +408,6 @@ const LyricsDisplay = ({
     const html = e.clipboardData.getData('text/html');
     if (html) {
       e.preventDefault();
-      
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
       
@@ -474,8 +508,8 @@ const LyricsDisplay = ({
         </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-          className="live-lyrics-preview" 
-          ref={containerRef}
+           className="live-lyrics-preview" 
+           ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -483,17 +517,29 @@ const LyricsDisplay = ({
           {liveParsedLyrics.map((line, i) => {
             let nextStart = 'NaN';
             const syncList = selectedSong?.syncData || [];
+            const savedNode = syncList[i];
+
             for (let j = i + 1; j < syncList.length; j++) {
                 if (syncList[j]?.start != null) {
                     nextStart = syncList[j].start;
                     break;
                 }
             }
+
+            let displayLineObj = line;
+            if (savedNode?.spacedText) {
+                displayLineObj = {
+                    ...line,
+                    text: savedNode.spacedText,
+                    segments: injectSpacesIntoSegments(line.segments || [{ text: line.text }], savedNode.spacedText)
+                };
+            }
+
             return (
                 <LyricLineWrapper
                   key={i}
-                  lineObj={line}
-                  savedNode={syncList[i]}
+                  lineObj={displayLineObj}
+                  savedNode={savedNode}
                   nextStart={nextStart}
                   viewMode="live"
                   handleLineClick={handleLineClick}
@@ -508,17 +554,28 @@ const LyricsDisplay = ({
           {liveParsedLyrics.map((line, i) => {
              let nextStart = 'NaN';
              const syncList = selectedSong?.syncData || [];
+             const savedNode = syncList[i];
              for (let j = i + 1; j < syncList.length; j++) {
                  if (syncList[j]?.start != null) {
                      nextStart = syncList[j].start;
                      break;
                  }
              }
+
+             let displayLineObj = line;
+             if (savedNode?.spacedText) {
+                 displayLineObj = {
+                     ...line,
+                     text: savedNode.spacedText,
+                     segments: injectSpacesIntoSegments(line.segments || [{ text: line.text }], savedNode.spacedText)
+                 };
+             }
+
              return (
                  <LyricLineWrapper
                      key={i}
-                     lineObj={line}
-                     savedNode={syncList[i]}
+                     lineObj={displayLineObj}
+                     savedNode={savedNode}
                      nextStart={nextStart}
                      viewMode="focused"
                      handleLineClick={handleLineClick}
@@ -527,40 +584,32 @@ const LyricsDisplay = ({
                  />
              )
           })}
-          
           <FocusedAdlibsTracker 
-            syncData={selectedSong?.syncData}
-            handleLineClick={handleLineClick}
-            masterPalette={masterPalette}
-            isPlayingCurrentSong={isPlayingCurrentSong}
+             syncData={selectedSong?.syncData} 
+             handleLineClick={handleLineClick} 
+             masterPalette={masterPalette} 
+             isPlayingCurrentSong={isPlayingCurrentSong} 
           />
         </div>
-      ) : (
+      ) : hasValidSyncData && lyricsViewMode === 'plain' ? (
         <div className="lyrics-display">
-          {liveParsedLyrics.length > 0 ? (
-            liveParsedLyrics.map((line, i) => (
-              <div key={i} style={{ textAlign: 'left' }} dir="auto">
-                {line.segments ? line.segments.map((seg, idx) => (
-                  <React.Fragment key={idx}>
-                    {renderColoredText(seg)}
-                  </React.Fragment>
-                )) : (
-                  renderColoredText(line)
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="no-lyrics-empty-state">
-              <p>No lyrics found in your Vault.</p>
-            </div>
-          )}
+          {customData.lyrics || "No lyrics provided yet. Go to Edit to add lyrics!"}
+        </div>
+      ) : (
+        <div className="no-lyrics-empty-state">
+           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}>
+             <path d="M9 18V5l12-2v13"></path>
+             <circle cx="6" cy="18" r="3"></circle>
+             <circle cx="18" cy="16" r="3"></circle>
+           </svg>
+           <p>No timings found.</p>
         </div>
       )}
 
       {!isEditing && !settings?.disableAnimations && (
-        <div className={`lyrics-equalizer`}>
-          <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
-        </div>
+         <div className="lyrics-equalizer">
+           <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
+         </div>
       )}
     </>
   );

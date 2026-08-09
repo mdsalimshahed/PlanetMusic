@@ -1,4 +1,4 @@
-/* --- src/transliterator.js --- */
+/* --- src/services/transliterator.js --- */
 import { numberToEnglishWords } from '../utils/numberToWords';
 
 // Clear legacy memory caches from localStorage
@@ -88,7 +88,10 @@ export const quickTransliterate = async (text, sl = 'auto') => {
   return await getGoogleData(clean, sl);
 };
 
+// Treats any line containing spaces between words as a spaced script
 const isSpacedScript = (text) => {
+  if (!text) return true;
+  if (/\S\s+\S/.test(text.trim())) return true;
   return !/[\u4e00-\u9fa5\u3040-\u30ff]/.test(text || '');
 };
 

@@ -3,6 +3,7 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { normalizeTrans, renderFormattedTranslation } from "../Lyrics/LyricsLineRenderer";
 import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
+import { injectSpacesIntoSegments } from '../Lyrics/LyricsDisplay';
 
 // GLOBAL CACHE: Persists calculated ad-lib positions in memory even if you go to the dashboard!
 // Only clears mathematically if window size or song lyrics change.
@@ -29,6 +30,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     if (!syncData) return items;
 
     let globalAdlibCounter = 0;
+    
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
         const lineActiveNames = node.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -44,6 +46,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const renderAdlibPure = (adlibObj) => {
             let aPron = adlibObj?.pronunciation;
             let aTrans = '';
+            
             if (typeof aPron === 'string') {
               if (aPron.startsWith('{')) {
                 try { aTrans = JSON.parse(aPron).full || ''; } catch (e) {}
@@ -51,7 +54,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
               } else { aTrans = aPron; }
             }
-
+            
             let adlibTranslation = adlibObj?.translation || '';
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
 
@@ -66,7 +69,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               whiteSpace: 'nowrap'
             };
 
-            const segs = adlibObj.segments || [{ text: adlibObj.text }];
+            const segs = adlibObj.spacedText 
+              ? injectSpacesIntoSegments(adlibObj.segments || [{ text: adlibObj.text }], adlibObj.spacedText) 
+              : (adlibObj.segments || [{ text: adlibObj.text }]);
+              
             const renderedSegments = [];
             let charIdxCounter = 0;
 
@@ -88,6 +94,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
               // Use Unicode graphemes instead of JS array to prevent international text tearing
               const segChars = getGraphemes(seg.text || '');
+              
               const renderedChars = segChars.map((char) => {
                 const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
                 let style = {};
@@ -170,6 +177,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         });
       }
     });
+
     return items;
   }, [syncData, masterPalette, sessionSeed]);
 
@@ -219,7 +227,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const handleTime = (e) => {
       const time = e.detail;
       const nodes = cachedTrackNodesRef.current;
-
+      
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
@@ -238,12 +246,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               const singerNode = container.querySelector('.singer-name-corner.visible');
               
               const cBox = getRelativeRect(lyricsNode, containerRect);
-
               if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
                   cBox.top -= 20;
                   cBox.bottom -= 20;
               }
-
               const sBox = getRelativeRect(singerNode, containerRect);
               
               pos = generateSafeAdlibPosition(
@@ -270,9 +276,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             item.node.style.setProperty('--adlib-top', pos.top);
             item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
           }
+
           item.node.classList.add('active');
           item.isActive = true;
-
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;
