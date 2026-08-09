@@ -1,9 +1,6 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.css --- */
 /* General Lyrics Layout */
-.live-lyrics-preview,
-.focused-lyrics-preview,
-.debug-lyrics-preview,
-.lyrics-display {
+.live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
   position: relative;
   z-index: 1;
 }
@@ -220,7 +217,8 @@
   max-width: 100%;
   max-height: 90%;
   overflow-y: auto;
-  padding: 0 24px;
+  /* Heavily increased padding to prevent the text shadow from clipping on scroll boundaries */
+  padding: 40px 24px;
   box-sizing: border-box;
   text-align: center;
   font-size: clamp(16px, 5vw, var(--dyn-focused-sync-font-size, 42px));
@@ -331,19 +329,22 @@
   backface-visibility: hidden;
 }
 
-.adlib-node.adlib-hidden, .adlib-node.adlib-hidden .pronunciation-text {
+.adlib-node.adlib-hidden,
+.adlib-node.adlib-hidden .pronunciation-text {
   opacity: 0 !important;
   transform: translate3d(0, 8px, 0) !important;
   filter: grayscale(100%) !important;
 }
 
-.adlib-node.adlib-visible, .adlib-node.adlib-visible .pronunciation-text {
+.adlib-node.adlib-visible,
+.adlib-node.adlib-visible .pronunciation-text {
   opacity: 0.6 !important;
   transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
 }
 
-.adlib-node.adlib-active, .adlib-node.adlib-active .pronunciation-text {
+.adlib-node.adlib-active,
+.adlib-node.adlib-active .pronunciation-text {
   opacity: 1 !important;
   transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
@@ -375,11 +376,21 @@
   margin: 0;
 }
 
-rt.sync-pronunciation { font-size: clamp(9px, 1vw, 11px); color: inherit; opacity: 0.6; font-style: italic; }
+rt.sync-pronunciation {
+  font-size: clamp(9px, 1vw, 11px);
+  color: inherit;
+  opacity: 0.6;
+  font-style: italic;
+}
 
-.primary-text { display: block; width: 100%; box-sizing: border-box; }
+.primary-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-rt.pronunciation-text, .pronunciation-text {
+rt.pronunciation-text,
+.pronunciation-text {
   font-size: var(--dyn-translit-font-size, 0.55em);
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 0.8) * 100%), transparent);
   font-weight: 700;
@@ -397,12 +408,13 @@ rt.pronunciation-text, .pronunciation-text {
 .focused-line.active rt.pronunciation-text, 
 .focused-line.active .pronunciation-text {
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
-  text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.5);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Strong drop shadow added */
 }
 
 .focused-line .pronunciation-text {
   opacity: 0;
   transform: translate3d(0, -8px, 0);
+  padding: 12px 16px; /* Added padding to prevent shadow clipping */
 }
 
 .focused-line.active .pronunciation-text {
@@ -411,7 +423,11 @@ rt.pronunciation-text, .pronunciation-text {
   transition: opacity 0.5s ease 0.1s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
 }
 
-.sync-text, .primary-text { display: inline-block; background-size: 100% 100%; background-repeat: no-repeat; }
+.sync-text, .primary-text {
+  display: inline-block;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 
 .no-lyrics-empty-state {
   display: flex;
@@ -425,7 +441,11 @@ rt.pronunciation-text, .pronunciation-text {
   color: var(--text-subdued);
 }
 
-.no-lyrics-empty-state p { font-size: clamp(14px, 1.6vw, 16px); font-weight: 500; margin: 0; }
+.no-lyrics-empty-state p {
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-weight: 500;
+  margin: 0;
+}
 
 @media (max-width: 900px) {
   .edit-lyrics-container {
@@ -553,7 +573,7 @@ rt.pronunciation-text, .pronunciation-text {
   width: auto;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 0 8px;
+  padding: 12px 16px; /* Added heavy padding to prevent shadow clipping */
   text-align: center;
   pointer-events: none;
   z-index: 10;
@@ -570,7 +590,7 @@ rt.pronunciation-text, .pronunciation-text {
   text-wrap: balance;
   text-wrap: pretty;
   color: color-mix(in srgb, var(--dyn-trans-color, #ffffff) calc(var(--dyn-trans-opacity, 0.9) * 100%), transparent);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Strong drop shadow restored */
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;

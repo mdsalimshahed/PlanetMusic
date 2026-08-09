@@ -10,7 +10,7 @@ export const renderFormattedTranslation = (text) => {
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' }}>
           {part}
         </span>
       );
@@ -60,6 +60,7 @@ export const groupWords = (elements, charData, isFocused) => {
       words.push(elements[i]);
       continue;
     }
+
     const char = charData[i] ? charData[i].char : '';
     // Properly chunk spaces and CJK without destroying the element's color spans
     if (/\s/.test(char) || isCJ(char)) {
@@ -72,8 +73,8 @@ export const groupWords = (elements, charData, isFocused) => {
       currentWord.push(elements[i]);
     }
   }
-  flushWord('end');
 
+  flushWord('end');
   return words;
 };
 
@@ -81,11 +82,13 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   let alignedChunks = [];
   if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
+
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const chunkGraphemeCount = getGraphemes(chunkText).length;
       const chunkChars = chars.slice(charIdxPointer, charIdxPointer + chunkGraphemeCount);
       charIdxPointer += chunkGraphemeCount;
+
       if (chunkChars.length > 0) {
         alignedChunks.push({
           type: chunk.type,
@@ -94,6 +97,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         });
       }
     });
+
     if (charIdxPointer < chars.length) {
       alignedChunks.push({
         type: 'main',
@@ -112,7 +116,9 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   return alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
+
     const groupedText = groupWords(renderedText, chunk.chars, isFocused);
+
     if (isRTL) {
       return (
         <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>

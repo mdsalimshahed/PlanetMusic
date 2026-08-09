@@ -16,24 +16,30 @@ const StandardLine = ({
   transClass,
   basePronStyle,
   displayTranslation,
-  pronString }) => {
+  pronString
+}) => {
   const currentTime = window.currentAudioTime || 0;
+
   const renderColoredChar = (c, globalIdx) => {
     // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
     if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd)) {
       return null;
     }
+
     let adlibProps = {};
+
     if (savedNode?.isSplit && !isFocused) {
       const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
       if (adlib && adlib.start !== null) {
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
         let initialClass = 'adlib-hidden';
+
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
+
         adlibProps = {
           className: `adlib-node ${initialClass}`,
           'data-start': start,
@@ -41,15 +47,18 @@ const StandardLine = ({
         };
       }
     }
+
     const isPunct = isPunctuationChar(c.char);
     let activeColor = isPunct ? '#fbbf24' : '#ffffff';
     let isGradient = false;
     let gradientStyle = '';
+
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
+
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -65,16 +74,19 @@ const StandardLine = ({
         gradientStyle = c.seg.gradient || '';
       }
     }
+
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 ${isFocused ? '30px' : '20px'} rgba(255,255,255,0.4))`;
+      style.filter = `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
     } else {
       style.color = activeColor;
-      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 ${isFocused ? '30px' : '20px'} ${activeColor}80`;
+      style.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
+
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
@@ -90,6 +102,7 @@ const StandardLine = ({
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -97,10 +110,10 @@ const StandardLine = ({
     } else if (parsedChunks) {
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
       shouldRenderBlockPron = true;
-    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-      displayPronString = normalizeTrans(pronString);
-      shouldRenderBlockPron = true;
     }
+  } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    displayPronString = normalizeTrans(pronString);
+    shouldRenderBlockPron = true;
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
@@ -135,9 +148,9 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span 
-              className={`chunk-translation ${transClass}`} 
-              dir="ltr"
+            <span
+               className={`chunk-translation ${transClass}`}
+               dir="ltr"
               style={{
                 textWrap: 'balance',
                 textAlign: 'center'
@@ -146,6 +159,7 @@ const StandardLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
+
           <span
             className="main-lyrics-layer"
             style={{
@@ -166,7 +180,6 @@ const StandardLine = ({
           </span>
         </span>
       </span>
-
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {renderFormattedTranslation(displayPronString)}
