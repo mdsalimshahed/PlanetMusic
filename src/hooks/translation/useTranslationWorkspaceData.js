@@ -1,4 +1,4 @@
-/* --- src/hooks/useTranslationWorkspaceData.js --- */
+/* --- src/hooks/translation/useTranslationWorkspaceData.js --- */
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { parseLyrics } from '../../utils/songHelpers';
 
@@ -38,15 +38,18 @@ export const useTranslationWorkspaceData = ({
         end: null,
         translation: '',
         pronunciation: null,
-        lang: 'auto'
+        lang: 'auto',
+        spacingText: ''
       }));
     }
     if (!sourceData) sourceData = [];
 
     const mapped = [];
+
     sourceData.forEach((line, i) => {
       let mainText = line.text;
       const parsedLineObj = parsedLyricsColorMap[i] || null;
+      
       let pron = line.pronunciation || '';
       let displayPron = pron;
       if (typeof pron === 'string') {
@@ -64,6 +67,7 @@ export const useTranslationWorkspaceData = ({
       }
 
       const isEn = line.lang === 'en';
+      
       mapped.push({
         ...line,
         rowId: `main-${i}`,
@@ -73,6 +77,7 @@ export const useTranslationWorkspaceData = ({
         pronunciation: isEn ? '' : pron,
         displayPron: isEn ? '' : displayPron,
         lang: line.lang || 'auto',
+        spacingText: line.spacingText || '',
         _meta: { isAdlib: false, lineIndex: i }
       });
 
@@ -93,6 +98,7 @@ export const useTranslationWorkspaceData = ({
               } catch (e) {}
             }
           }
+          
           const isAdlibEn = adlib.lang === 'en';
           mapped.push({
             ...adlib,
@@ -103,6 +109,7 @@ export const useTranslationWorkspaceData = ({
             pronunciation: isAdlibEn ? '' : aPron,
             displayPron: isAdlibEn ? '' : aDisplayPron,
             lang: adlib.lang || 'auto',
+            spacingText: adlib.spacingText || '',
             _meta: { isAdlib: true, lineIndex: i, adlibIndex: j }
           });
         });
@@ -114,35 +121,35 @@ export const useTranslationWorkspaceData = ({
   useEffect(() => {
     const loaded = loadSourceWorkspaceData();
     setWorkspaceData(loaded);
-    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang }))));
+    // Track spacingText inside the unsaved changes snapshot
+    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText }))));
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSong?.trackId, selectedSong?.syncData, selectedSong?.autoSyncData]);
 
   const hasUnsavedChanges = useMemo(() => {
-    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang })));
+    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText })));
     return currentSnapshot !== initialDataSnapshot;
   }, [workspaceData, initialDataSnapshot]);
 
   const handleChange = (index, field, value) => {
     const newData = [...workspaceData];
+
     if (field === 'lang') {
       const cleanLang = value.toLowerCase().trim();
       newData[index].lang = cleanLang;
-      // RULE: If language tag is set to "en", wipe translation & transliteration fields
       if (cleanLang === 'en') {
         newData[index].translation = '';
         newData[index].displayPron = '';
         newData[index].pronunciation = '';
       }
     } else if (field === 'displayPron') {
-      // If manually typing transliteration on an "en" line, change tag away from "en"
       if (newData[index].lang === 'en' && value) {
         newData[index].lang = 'auto';
       }
       newData[index].displayPron = value;
-      let currentPron = newData[index].pronunciation;
 
+      let currentPron = newData[index].pronunciation;
       if (newData[index]._meta.isAdlib) {
         newData[index].pronunciation = formatAdlibPronunciation(newData[index].displayText, value);
       } else if (currentPron && currentPron.startsWith('{')) {
@@ -157,19 +164,21 @@ export const useTranslationWorkspaceData = ({
         newData[index].pronunciation = value;
       }
     } else if (field === 'translation') {
-      // If manually typing translation on an "en" line, change tag away from "en"
       if (newData[index].lang === 'en' && value) {
         newData[index].lang = 'auto';
       }
       newData[index].translation = value;
     } else {
+      // Safely catches and sets 'spacingText' implicitly 
       newData[index][field] = value;
     }
+
     setWorkspaceData(newData);
   };
 
   const handleSave = (cancelTranslationRef) => {
     cancelTranslationRef.current = true;
+    
     let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
     if ((!sourceData || sourceData.length === 0) && customData?.lyrics) {
       sourceData = parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette).map(l => ({
@@ -182,11 +191,13 @@ export const useTranslationWorkspaceData = ({
       }));
     }
     if (!sourceData) sourceData = [];
+
     const newSyncData = JSON.parse(JSON.stringify(sourceData));
 
     workspaceData.forEach(item => {
       const meta = item._meta;
       const isEn = item.lang === 'en';
+      
       let finalPron = isEn ? '' : item.pronunciation;
       let finalTrans = isEn ? '' : (item.translation || '');
 
@@ -217,6 +228,7 @@ export const useTranslationWorkspaceData = ({
             target.translation = finalTrans;
             target.pronunciation = finalPron;
             target.lang = item.lang || 'auto';
+            target.spacingText = item.spacingText || ''; 
           }
         }
       } else {
@@ -225,6 +237,7 @@ export const useTranslationWorkspaceData = ({
           target.translation = finalTrans;
           target.pronunciation = finalPron;
           target.lang = item.lang || 'auto';
+          target.spacingText = item.spacingText || ''; 
         }
       }
     });
@@ -234,8 +247,10 @@ export const useTranslationWorkspaceData = ({
       syncData: newSyncData,
       autoSyncData: selectedSong.autoSyncData ? newSyncData : selectedSong.autoSyncData
     };
+
     updateSongInLibrary(updatedSong);
     setIsTranslationManagerOpen(false);
+    
     setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 2000);
   };
@@ -244,6 +259,7 @@ export const useTranslationWorkspaceData = ({
     const textContent = workspaceData.map(line =>
       `[lang: ${line.lang || 'auto'}]\n${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
     ).join('\n');
+
     const blob = new Blob([textContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -258,13 +274,16 @@ export const useTranslationWorkspaceData = ({
   const handleImportText = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const text = e.target.result;
         if (!text || !text.trim()) return alert("The selected text file is empty.");
+
         const blocks = text.split(/\r?\n\s*\r?\n/).map(b => b.trim()).filter(Boolean);
         if (blocks.length === 0) return alert("Could not parse blocks in text file.");
+
         const newData = [...workspaceData];
         let importedCount = 0;
 
@@ -277,6 +296,7 @@ export const useTranslationWorkspaceData = ({
             importedLang = lines[0].replace('[lang:', '').replace(']', '').trim();
             lines.shift();
           }
+
           if (lines.length === 0) return;
 
           const originalText = lines[0];
@@ -293,6 +313,7 @@ export const useTranslationWorkspaceData = ({
           let targetIndex = newData.findIndex(
             w => w.displayText.toLowerCase() === originalText.toLowerCase()
           );
+
           if (targetIndex === -1 && blockIdx < newData.length) {
             targetIndex = blockIdx;
           }
@@ -327,6 +348,7 @@ export const useTranslationWorkspaceData = ({
 
         setWorkspaceData(newData);
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        
         setNotification({ show: true, message: `Overwrote workspace data for ${importedCount} lines!`, progress: 100 });
         setTimeout(() => setNotification({ show: false }), 2500);
       } catch (err) {
