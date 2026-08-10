@@ -15,10 +15,10 @@ const SplitLine = ({
   transClass,
   basePronStyle,
   displayTranslation,
-  pronString
+  pronString,
+  hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
-  const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
 
   const blocks = [];
   let currentBlock = null;
@@ -81,11 +81,9 @@ const SplitLine = ({
     return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
-  // Separate main blocks and ad-lib blocks so main text can be cleanly grouped together
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
 
-  // Render Main Lyrics Group
   const renderedMainElements = mainBlocks.map((blk, bIdx) => {
     const alignedMainJSX = alignChunksWithTransliteration(
       blk.chars,
@@ -132,7 +130,6 @@ const SplitLine = ({
     );
   });
 
-  // Render Ad-lib Blocks
   const renderedAdlibElements = adlibBlocks.map((blk, bIdx) => {
     const adlib = blk.adlibObj;
     if (!adlib) return null;
@@ -165,7 +162,12 @@ const SplitLine = ({
       }
     }
 
-    const adlibTranslation = cleanTranslationText(adlib.translation);
+    // --- STRIP PARENTHESES ONLY FROM ADLIB TRANSLATIONS ---
+    let adlibTranslation = cleanTranslationText(adlib.translation);
+    if (adlibTranslation) {
+      adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
+    }
+    // ------------------------------------------------------
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
       blk.chars,
@@ -249,7 +251,13 @@ const SplitLine = ({
   }
 
   const hasMainTranslation = !!displayTranslation;
-  const hasAdlibTranslation = savedNode?.adlibs?.some(a => cleanTranslationText(a.translation));
+  
+  // Adjusted dependency check to ensure we only look for adlib translations after stripping parens
+  const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
+    let t = cleanTranslationText(a.translation);
+    return t && t.replace(/[()（）]/g, '').trim().length > 0;
+  });
+  
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
   const translationSpaceCalc = 'calc(var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-top-padding, 8px) + 0.5vh)';
 
