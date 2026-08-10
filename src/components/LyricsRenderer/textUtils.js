@@ -1,5 +1,4 @@
 /* --- src/components/LyricsRenderer/textUtils.js --- */
-
 export const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
 
 export const isPunctuationChar = (char) => /^[\p{P}\p{S}\s]+$/u.test(char);
@@ -34,6 +33,7 @@ export const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC
 export const parsePronunciation = (pronString) => {
   let parsedChunks = null;
   let fullTrans = null;
+
   if (typeof pronString === 'string') {
     const cleanPron = pronString.trim();
     if (cleanPron.startsWith('{')) {
@@ -48,5 +48,6 @@ export const parsePronunciation = (pronString) => {
       } catch (e) {}
     }
   }
+
   return { parsedChunks, fullTrans };
 };

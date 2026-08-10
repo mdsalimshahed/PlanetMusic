@@ -1,90 +1,67 @@
 /* --- src/components/Core/Background.jsx --- */
-import React, { useMemo, useState, useRef, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import './Background.css';
 
-// A highly vibrant, expanded multi-color palette
+// A highly vibrant, multi-color palette (No dark purples)
 const VIBRANT_PALETTE = [
-  '#ff0a54', '#ff7000', '#ffc300', '#00f5d4', '#00bbf9', 
-  '#f15bb5', '#38b000', '#8a2be2', '#00ff00', '#ff00ff', 
-  '#ffff00', '#00ffff', '#ff4500', '#ff007f', '#adff2f'
+  '#ff0a54', // Vivid Pink
+  '#ff7000', // Bright Orange
+  '#ffc300', // Bright Yellow
+  '#00f5d4', // Aqua/Cyan
+  '#00bbf9', // Bright Blue
+  '#f15bb5', // Magenta
+  '#38b000', // Lime Green
 ];
 
-// Simple deterministic pseudo-random number generator
-const getStableRandom = (seed) => {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-};
-
-// Isolated component that teleports itself safely while invisible
-const AmbientCircle = React.memo(({ circle }) => {
-  const [pos, setPos] = useState({ x: circle.initialX, y: circle.initialY });
-  const iterationRef = useRef(0);
-
-  // Fires exactly when the animation reaches 100% (opacity is 0)
-  const handleIteration = useCallback(() => {
-    iterationRef.current += 1;
-    
-    // Generate new seeds based on iteration count so it moves randomly forever
-    const newSeedX = circle.id * 100 + iterationRef.current * 13;
-    const newSeedY = circle.id * 200 + iterationRef.current * 17;
-    
-    setPos({
-      x: getStableRandom(newSeedX) * 110 - 10, // -10vw to 100vw
-      y: getStableRandom(newSeedY) * 110 - 10  // -10vh to 100vh
-    });
-  }, [circle.id]);
-
-  return (
-    <div 
-      className="ambient-wrapper"
-      style={{
-        width: `${circle.size}vw`,
-        height: `${circle.size}vw`,
-        transform: `translate3d(${pos.x}vw, ${pos.y}vh, 0)`
-      }}
-    >
-      <div
-        className="pop-circle"
-        onAnimationIteration={handleIteration}
-        style={{
-          background: `radial-gradient(circle, ${circle.color} 0%, transparent 70%)`,
-          animationDuration: `${circle.duration}s`,
-          animationDelay: `${circle.delay}s`,
-          '--max-opacity': circle.maxOpacity
-        }}
-      />
-    </div>
-  );
-});
-
 const Background = () => {
-  // Generate the initial parameters once on mount
-  const ambientCircles = useMemo(() => {
-    return Array.from({ length: 25 }).map((_, i) => {
-      const seedBase = i + 1;
+  // Generate random floating and disappearing circles once on load
+  const circles = useMemo(() => {
+    return Array.from({ length: 45 }).map((_, i) => {
+      const size = Math.random() * 15 + 5; // Radius size ranging from 5vw to 20vw
+      const startX = Math.random() * 100; // Start anywhere from 0 to 100vw
+      const startY = Math.random() * 100; // Start anywhere from 0 to 100vh
       
-      const size = getStableRandom(seedBase * 1.1) * 30 + 15; 
-      const maxOpacity = getStableRandom(seedBase * 7.7) * 0.4 + 0.3; 
-      const colorIndex = Math.floor(getStableRandom(seedBase * 6.6) * VIBRANT_PALETTE.length);
+      // Determine how far and in what direction the circle will drift during its lifespan
+      const moveX = (Math.random() - 0.5) * 40; // Drift horizontally between -20vw and +20vw
+      const moveY = (Math.random() - 0.5) * 40; // Drift vertically between -20vh and +20vh
       
+      const duration = Math.random() * 12 + 8; // Animation lifespan between 8s and 20s
+      const delay = Math.random() * -25; // Negative delay so the screen is already populated on load
+
       return {
         id: i,
-        color: VIBRANT_PALETTE[colorIndex],
+        color: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length],
         size: size,
-        initialX: getStableRandom(seedBase * 2.2) * 100 - 10, 
-        initialY: getStableRandom(seedBase * 3.3) * 100 - 10,  
-        duration: getStableRandom(seedBase * 4.4) * 8 + 8, // 8s to 16s cycle
-        delay: getStableRandom(seedBase * 5.5) * -20, // Negative start stagger
-        maxOpacity: maxOpacity
+        startX: startX,
+        startY: startY,
+        moveX: moveX,
+        moveY: moveY,
+        duration: duration,
+        delay: delay
       };
     });
   }, []);
 
   return (
-    <div className="falling-fluid-bg">
-      <div className="fluid-drops-container">
-        {ambientCircles.map(circle => (
-          <AmbientCircle key={circle.id} circle={circle} />
+    <div className="dynamic-circle-bg">
+      <div className="circles-container">
+        {circles.map(circle => (
+          <div
+            key={circle.id}
+            className="floating-circle"
+            style={{
+              // Pre-baked blur via radial gradient (Zero GPU strain)
+              background: `radial-gradient(circle, ${circle.color} 0%, transparent 70%)`,
+              width: `${circle.size * 2}vw`, // Scaled up to accommodate the gradient fade
+              height: `${circle.size * 2}vw`,
+              left: `${circle.startX}vw`,
+              top: `${circle.startY}vh`,
+              animationDuration: `${circle.duration}s`,
+              animationDelay: `${circle.delay}s`,
+              '--move-x': `${circle.moveX}vw`,
+              '--move-y': `${circle.moveY}vh`
+            }}
+          />
         ))}
       </div>
       

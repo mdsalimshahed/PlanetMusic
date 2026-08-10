@@ -15,9 +15,11 @@ const SplitLine = ({
   transClass,
   basePronStyle,
   displayTranslation,
-  pronString
+  pronString,
+  hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
+
   const blocks = [];
   let currentBlock = null;
 
@@ -48,7 +50,6 @@ const SplitLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -66,6 +67,7 @@ const SplitLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -79,11 +81,9 @@ const SplitLine = ({
     return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
-  // Separate main blocks and ad-lib blocks so main text can be cleanly grouped together
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
 
-  // Render Main Lyrics Group
   const renderedMainElements = mainBlocks.map((blk, bIdx) => {
     const alignedMainJSX = alignChunksWithTransliteration(
       blk.chars,
@@ -92,7 +92,8 @@ const SplitLine = ({
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
-      false
+      false,
+      hasSpacingText
     );
 
     return (
@@ -129,15 +130,14 @@ const SplitLine = ({
     );
   });
 
-  // Render Ad-lib Blocks
   const renderedAdlibElements = adlibBlocks.map((blk, bIdx) => {
     const adlib = blk.adlibObj;
     if (!adlib) return null;
 
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
-    let initialClass = 'adlib-hidden';
 
+    let initialClass = 'adlib-hidden';
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
       else if (currentTime > end) initialClass = 'adlib-visible';
@@ -162,7 +162,12 @@ const SplitLine = ({
       }
     }
 
-    const adlibTranslation = cleanTranslationText(adlib.translation);
+    // --- STRIP PARENTHESES ONLY FROM ADLIB TRANSLATIONS ---
+    let adlibTranslation = cleanTranslationText(adlib.translation);
+    if (adlibTranslation) {
+      adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
+    }
+    // ------------------------------------------------------
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
       blk.chars,
@@ -171,7 +176,8 @@ const SplitLine = ({
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
-      false
+      false,
+      hasSpacingText
     );
 
     return (
@@ -233,18 +239,25 @@ const SplitLine = ({
   });
 
   let displayPronString = null;
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
     } else if (parsedChunks) {
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
-    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-      displayPronString = normalizeTrans(pronString);
     }
+  } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    displayPronString = normalizeTrans(pronString);
   }
 
   const hasMainTranslation = !!displayTranslation;
-  const hasAdlibTranslation = savedNode?.adlibs?.some(a => cleanTranslationText(a.translation));
+  
+  // Adjusted dependency check to ensure we only look for adlib translations after stripping parens
+  const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
+    let t = cleanTranslationText(a.translation);
+    return t && t.replace(/[()（）]/g, '').trim().length > 0;
+  });
+  
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
   const translationSpaceCalc = 'calc(var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-top-padding, 8px) + 0.5vh)';
 
@@ -317,6 +330,7 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
+
           {renderedMainElements}
         </span>
 

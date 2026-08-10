@@ -19,6 +19,7 @@ const StandardLine = ({
   pronString
 }) => {
   const currentTime = window.currentAudioTime || 0;
+  const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
 
   const renderColoredChar = (c, globalIdx) => {
     // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
@@ -32,11 +33,13 @@ const StandardLine = ({
       if (adlib && adlib.start !== null) {
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
+
         let initialClass = 'adlib-hidden';
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
         }
+
         adlibProps = {
           className: `adlib-node ${initialClass}`,
           'data-start': start,
@@ -72,16 +75,19 @@ const StandardLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-    
-    // REMOVED GLOW: Standard drop-shadow is used instead of the 30px glowing text-shadow
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9))`;
+      style.filter = isFocused
+         ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+         : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
     } else {
       style.color = activeColor;
-      style.textShadow = `0 4px 8px rgba(0,0,0,0.9)`;
+      style.textShadow = isFocused
+         ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`
+         : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
@@ -94,11 +100,13 @@ const StandardLine = ({
     renderColoredChar,
     basePronStyle,
     isRTL,
-    isFocused
+    isFocused,
+    hasSpacingText
   );
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -106,10 +114,10 @@ const StandardLine = ({
     } else if (parsedChunks) {
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
       shouldRenderBlockPron = true;
-    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-      displayPronString = normalizeTrans(pronString);
-      shouldRenderBlockPron = true;
     }
+  } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    displayPronString = normalizeTrans(pronString);
+    shouldRenderBlockPron = true;
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
@@ -144,15 +152,15 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span 
-              className={`chunk-translation ${transClass}`} 
-              dir="ltr"
+            <span
+               className={`chunk-translation ${transClass}`}
+               dir="ltr"
               style={{
                 textWrap: 'balance',
                 textAlign: 'center'
               }}
             >
-              {renderFormattedTranslation(displayTranslation)}
+              {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
           <span
@@ -177,7 +185,7 @@ const StandardLine = ({
       </span>
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
-          {renderFormattedTranslation(displayPronString)}
+          {renderFormattedTranslation(displayPronString, isFocused)}
         </span>
       )}
     </div>

@@ -1,4 +1,4 @@
-/* --- src/components/LyricsLineRenderer.jsx --- */
+/* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.jsx --- */
 import React, { useMemo } from 'react';
 import { getGraphemes, cleanTranslationText, isRTLLanguage, parsePronunciation } from '../../LyricsRenderer/textUtils';
 import SplitLine from '../../LyricsRenderer/SplitLine';
@@ -10,9 +10,7 @@ export { renderFormattedTranslation } from '../../LyricsRenderer/Formatters';
 
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
-  const segments = lineObj.segments || [];
   const isRTL = isRTLLanguage(lineObj.text || '');
-
   let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
 
   const normalizeForMatch = (str) =>
@@ -23,11 +21,9 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
 
   const cleanMainText = normalizeForMatch(lineObj?.text);
   const cleanTransText = normalizeForMatch(rawTranslation);
-
   const displayTranslation = (cleanMainText && cleanMainText === cleanTransText) ? '' : rawTranslation;
 
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
-
   const basePronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
     fontWeight: '800',
@@ -36,29 +32,66 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     textAlign: 'center',
     marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
     display: 'inline-block',
-    whiteSpace: 'nowrap' // FIX: Force transliteration chunks to never wrap internally
+    whiteSpace: 'nowrap'
   };
 
   const { parsedChunks, fullTrans } = parsePronunciation(pronString);
-
   const chars = [];
   let gIdx = 0;
-  let cpIdx = 0; // Track exact Code Point Index to bridge getGraphemes and Array.from
+  let originalCpIdx = 0; // Track exact Code Point Index to bridge getGraphemes and Array.from
 
-  segments.forEach(seg => {
-    const segChars = getGraphemes(seg.text);
-    segChars.forEach(char => {
+  // 1. Core Fix: Check the saved database node for the custom spacing string
+  const activeSpacingText = savedNode?.spacingText || lineObj?.spacingText || '';
+  const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
+  const activeDisplayText = useSpacingText ? activeSpacingText : (lineObj.text || '');
+
+  // 2. Safely map segments to the new Spaced Text
+  if (useSpacingText) {
+    const spacedGraphemes = getGraphemes(activeDisplayText);
+    let segmentPointer = 0;
+    let charPointerInSegment = 0;
+    const segments = lineObj.segments || [];
+
+    spacedGraphemes.forEach(char => {
+      const isSpace = /\s/.test(char);
       const cpLen = Array.from(char).length;
+      let currentSeg = segments[segmentPointer];
+
       chars.push({ 
         char, 
-        seg, 
+        seg: currentSeg, 
         globalIndex: gIdx++, 
-        cpStart: cpIdx, 
-        cpEnd: cpIdx + cpLen 
+        cpStart: originalCpIdx, 
+        cpEnd: originalCpIdx + cpLen 
       });
-      cpIdx += cpLen;
+
+      if (!isSpace) {
+        originalCpIdx += cpLen;
+        charPointerInSegment += getGraphemes(char).length;
+        if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text).length) {
+          segmentPointer++;
+          charPointerInSegment = 0;
+        }
+      }
     });
-  });
+  } else {
+    // Legacy mapping
+    const segments = lineObj.segments || [];
+    segments.forEach(seg => {
+      const segChars = getGraphemes(seg.text);
+      segChars.forEach(char => {
+        const cpLen = Array.from(char).length;
+        chars.push({ 
+          char, 
+          seg, 
+          globalIndex: gIdx++, 
+          cpStart: originalCpIdx, 
+          cpEnd: originalCpIdx + cpLen 
+        });
+        originalCpIdx += cpLen;
+      });
+    });
+  }
 
   const commonProps = {
     lineObj,
@@ -72,15 +105,14 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     transClass,
     basePronStyle,
     displayTranslation,
-    pronString
+    pronString,
+    hasSpacingText: useSpacingText // Injecting new flag
   };
 
-  // --- SPLIT LINE PATH FOR LIVE MODE (MAIN + ADLIBS IN SEPARATE CONTAINERS) ---
   if (!isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
     return <SplitLine {...commonProps} />;
   }
 
-  // --- STANDARD PATH (UNSPLIT / FOCUSED VIEW) ---
   return <StandardLine {...commonProps} isFocused={isFocused} />;
 };
 

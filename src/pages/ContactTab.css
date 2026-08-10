@@ -111,6 +111,7 @@
   border: none;
   padding: 14px 24px;
   border-radius: 500px;
+  font-family: inherit; /* Applied the inherited web font */
   font-size: 15px;
   font-weight: 800;
   cursor: pointer;

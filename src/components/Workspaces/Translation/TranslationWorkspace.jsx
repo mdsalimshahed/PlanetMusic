@@ -1,4 +1,4 @@
-/* --- src/components/TranslationWorkspace.jsx --- */
+/* --- src/components/Workspaces/Translation/TranslationWorkspace.jsx --- */
 import React, { useState, useEffect } from 'react';
 import ConfirmModal from '../../Modals/ConfirmModal';
 import TranslationHeader from './TranslationHeader';
@@ -46,11 +46,13 @@ const TranslationWorkspace = ({
 
   const {
     isTranslatingAll,
+    isAutoSpacing,
     activeTranslatingId,
     showSuccessBanner,
     translateProgress,
     activeRowRef,
     cancelTranslationRef,
+    handleAutoSpacing,
     handleRefreshWorkspace,
     handleSpaceNonSpacedLanguages,
     handleTranslateAll,
@@ -73,10 +75,12 @@ const TranslationWorkspace = ({
       const workspaceContainer = document.querySelector('.tw-container');
       const modalOverlay = document.querySelector('.confirm-modal-overlay');
       if (modalOverlay && modalOverlay.contains(e.target)) return;
+
       if (workspaceContainer && !workspaceContainer.contains(e.target)) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
+
         const pendingTarget = e.target;
         setConfirmModalState({
           isOpen: true,
@@ -97,6 +101,7 @@ const TranslationWorkspace = ({
         });
       }
     };
+
     window.addEventListener('click', handleGlobalCaptureClick, true);
     return () => {
       window.removeEventListener('click', handleGlobalCaptureClick, true);
@@ -118,7 +123,9 @@ const TranslationWorkspace = ({
       />
       <TranslationHeader
         isTranslatingAll={isTranslatingAll}
+        isAutoSpacing={isAutoSpacing}
         translateProgress={translateProgress}
+        handleAutoSpacing={handleAutoSpacing}
         handleTranslateAll={handleTranslateAll}
         handleTranslateWithContext={handleTranslateWithContext}
         handleSpaceNonSpacedLanguages={handleSpaceNonSpacedLanguages}

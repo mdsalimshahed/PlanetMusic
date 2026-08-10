@@ -28,10 +28,11 @@ const ContactTab = ({ adsEnabled }) => {
           // Get your free access key from https://web3forms.com/
           access_key: "YOUR_ACCESS_KEY_HERE", 
           name: formData.name || "Anonymous User",
-          subject: formData.subject || "General Inquiry",
+          subject: formData.subject,
           message: formData.message,
         }),
       });
+
       const result = await response.json();
       
       if (result.success) {
@@ -70,7 +71,7 @@ const ContactTab = ({ adsEnabled }) => {
           <div className="contact-card-body glass-panel">
             <form onSubmit={handleSubmit} className="contact-form">
               
-               <div className="contact-form-group">
+              <div className="contact-form-group">
                 <label>Name (Optional)</label>
                 <input 
                   type="text" 
@@ -90,7 +91,7 @@ const ContactTab = ({ adsEnabled }) => {
                   className="contact-input" 
                   value={formData.subject}
                   onChange={handleChange}
-                  placeholder="What is this regarding?" 
+                  placeholder="What is this regarding?"
                   required
                 />
               </div>
@@ -100,7 +101,7 @@ const ContactTab = ({ adsEnabled }) => {
                 <textarea 
                   name="message" 
                   className="contact-textarea" 
-                  required
+                  required 
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Write your message here..."

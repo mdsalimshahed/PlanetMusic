@@ -10,51 +10,6 @@ const formatAdlibPronunciation = (adlibText, displayPron) => {
   });
 };
 
-export const buildChunkedPronunciation = (text, displayPron) => {
-  if (!displayPron || !displayPron.trim()) return '';
-  const cleanText = (text || '').trim();
-  if (!cleanText) return displayPron;
-
-  const transWords = displayPron
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(w => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim());
-
-  const tokens = cleanText.split(/(\s+)/);
-  const chunks = [];
-  let wordIndex = 0;
-
-  for (const token of tokens) {
-    if (!token) continue;
-    if (/^\s+$/.test(token)) {
-      chunks.push({ type: 'en', text: token, trans: '' });
-    } else {
-      const isEnToken = Array.from(token).every(c => /^[\p{Script=Latin}\p{M}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(c));
-      const currentTrans = transWords[wordIndex] || '';
-
-      if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
-        chunks.push({ type: 'en', text: token, trans: '' });
-        continue;
-      }
-
-      if (isEnToken) {
-        chunks.push({ type: 'en', text: token, trans: '' });
-        const cleanToken = token.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim().toLowerCase();
-        const cleanTransWord = (transWords[wordIndex] || '').toLowerCase();
-        if (cleanTransWord === cleanToken && cleanToken !== '') {
-          wordIndex++;
-        }
-      } else {
-        chunks.push({ type: 'foreign', text: token, trans: currentTrans || token });
-        wordIndex++;
-      }
-    }
-  }
-
-  return JSON.stringify({ full: displayPron.trim(), chunks });
-};
-
 export const useTranslationWorkspaceData = ({
   selectedSong,
   customData,
@@ -83,16 +38,20 @@ export const useTranslationWorkspaceData = ({
         end: null,
         translation: '',
         pronunciation: null,
-        lang: 'auto'
+        lang: 'auto',
+        spacingText: ''
       }));
     }
     if (!sourceData) sourceData = [];
+
     const mapped = [];
     sourceData.forEach((line, i) => {
       let mainText = line.text;
       const parsedLineObj = parsedLyricsColorMap[i] || null;
+      
       let pron = line.pronunciation || '';
       let displayPron = pron;
+
       if (typeof pron === 'string') {
         if (pron.startsWith('{')) {
           try {
@@ -106,20 +65,19 @@ export const useTranslationWorkspaceData = ({
           } catch (e) {}
         }
       }
-      const isEn = line.lang === 'en';
-      const effectiveLineText = mainText || line.text || '';
-      const hasSpacesInText = /\S\s+\S/.test(effectiveLineText);
 
+      const isEn = line.lang === 'en';
+      
       mapped.push({
         ...line,
         rowId: `main-${i}`,
         segments: parsedLineObj?.segments || line.segments,
-        displayText: effectiveLineText,
-        spacedText: line.spacedText || (hasSpacesInText ? effectiveLineText : ''),
+        displayText: mainText || line.text,
         translation: isEn ? '' : (line.translation || ''),
         pronunciation: isEn ? '' : pron,
         displayPron: isEn ? '' : displayPron,
         lang: line.lang || 'auto',
+        spacingText: line.spacingText || '',
         _meta: { isAdlib: false, lineIndex: i }
       });
 
@@ -127,6 +85,7 @@ export const useTranslationWorkspaceData = ({
         line.adlibs.forEach((adlib, j) => {
           let aPron = adlib.pronunciation || '';
           let aDisplayPron = aPron;
+
           if (typeof aPron === 'string') {
             if (aPron.startsWith('{')) {
               try {
@@ -140,17 +99,18 @@ export const useTranslationWorkspaceData = ({
               } catch (e) {}
             }
           }
+          
           const isAdlibEn = adlib.lang === 'en';
           mapped.push({
             ...adlib,
             rowId: `adlib-${i}-${j}`,
             segments: adlib.segments,
             displayText: adlib.text,
-            spacedText: adlib.spacedText || (/\S\s+\S/.test(adlib.text) ? adlib.text : ''),
             translation: isAdlibEn ? '' : (adlib.translation || ''),
             pronunciation: isAdlibEn ? '' : aPron,
             displayPron: isAdlibEn ? '' : aDisplayPron,
             lang: adlib.lang || 'auto',
+            spacingText: adlib.spacingText || '',
             _meta: { isAdlib: true, lineIndex: i, adlibIndex: j }
           });
         });
@@ -162,18 +122,19 @@ export const useTranslationWorkspaceData = ({
   useEffect(() => {
     const loaded = loadSourceWorkspaceData();
     setWorkspaceData(loaded);
-    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacedText }))));
+    setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText }))));
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSong?.trackId, selectedSong?.syncData, selectedSong?.autoSyncData]);
 
   const hasUnsavedChanges = useMemo(() => {
-    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacedText })));
+    const currentSnapshot = JSON.stringify(workspaceData.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText })));
     return currentSnapshot !== initialDataSnapshot;
   }, [workspaceData, initialDataSnapshot]);
 
   const handleChange = (index, field, value) => {
     const newData = [...workspaceData];
+
     if (field === 'lang') {
       const cleanLang = value.toLowerCase().trim();
       newData[index].lang = cleanLang;
@@ -188,12 +149,26 @@ export const useTranslationWorkspaceData = ({
       }
       newData[index].displayPron = value;
       let currentPron = newData[index].pronunciation;
+
       if (newData[index]._meta.isAdlib) {
         newData[index].pronunciation = formatAdlibPronunciation(newData[index].displayText, value);
       } else if (currentPron && currentPron.startsWith('{')) {
         try {
           let p = JSON.parse(currentPron);
           p.full = value;
+          
+          // CORE UI FIX: Distribute space-separated edits perfectly to the parsed chunks!
+          if (newData[index].spacingText?.trim()) {
+              const newTransWords = value.split(/\s+/).filter(Boolean);
+              let tIdx = 0;
+              p.chunks.forEach(c => {
+                  if (c.type === 'foreign') {
+                      c.trans = newTransWords[tIdx] !== undefined ? newTransWords[tIdx] : '';
+                      tIdx++;
+                  }
+              });
+          }
+          
           newData[index].pronunciation = JSON.stringify(p);
         } catch (e) {
           newData[index].pronunciation = value;
@@ -209,11 +184,13 @@ export const useTranslationWorkspaceData = ({
     } else {
       newData[index][field] = value;
     }
+    
     setWorkspaceData(newData);
   };
 
   const handleSave = (cancelTranslationRef) => {
     cancelTranslationRef.current = true;
+    
     let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
     if ((!sourceData || sourceData.length === 0) && customData?.lyrics) {
       sourceData = parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette).map(l => ({
@@ -226,37 +203,33 @@ export const useTranslationWorkspaceData = ({
       }));
     }
     if (!sourceData) sourceData = [];
+
     const newSyncData = JSON.parse(JSON.stringify(sourceData));
 
     workspaceData.forEach(item => {
       const meta = item._meta;
       const isEn = item.lang === 'en';
-
-      const effectiveText = (item.spacedText && item.spacedText.trim())
-        ? item.spacedText.trim()
-        : ''; // We only want to save the spacing format, not overwrite text
-
-      let displayPron = item.displayPron ? item.displayPron.trim() : '';
-      let finalTrans = isEn ? '' : (item.translation || '');
+      
       let finalPron = isEn ? '' : item.pronunciation;
+      let finalTrans = isEn ? '' : (item.translation || '');
 
-      if (!isEn && displayPron) {
-        const lang = (item.lang || 'auto').toLowerCase();
-        const hasAsianChars = /[\u3000-\u303f\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\uac00-\ud7af\u0e00-\u0e7f]/.test(item.displayText);
-        const hasSpaces = /\S\s+\S/.test(effectiveText);
-
-        if (hasSpaces || (hasAsianChars && /\s/.test(effectiveText))) {
-          finalPron = buildChunkedPronunciation(effectiveText, displayPron);
+      if (!isEn) {
+        if (meta.isAdlib) {
+          if (item.displayPron) {
+            finalPron = formatAdlibPronunciation(item.displayText, item.displayPron);
+          } else {
+            finalPron = null;
+          }
         } else if (typeof finalPron === 'string' && finalPron.startsWith('{')) {
           try {
             let p = JSON.parse(finalPron);
-            p.full = displayPron;
+            p.full = item.displayPron || '';
             finalPron = JSON.stringify(p);
           } catch (e) {
-            finalPron = displayPron;
+            finalPron = item.displayPron || '';
           }
         } else {
-          finalPron = displayPron;
+          finalPron = item.displayPron || '';
         }
       }
 
@@ -264,24 +237,23 @@ export const useTranslationWorkspaceData = ({
         if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
           const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
           if (target) {
-            target.spacedText = effectiveText;
             target.translation = finalTrans;
             target.pronunciation = finalPron;
             target.lang = item.lang || 'auto';
+            target.spacingText = item.spacingText || ''; 
           }
         }
       } else {
         const target = newSyncData[meta.lineIndex];
         if (target) {
-          target.spacedText = effectiveText;
           target.translation = finalTrans;
           target.pronunciation = finalPron;
           target.lang = item.lang || 'auto';
+          target.spacingText = item.spacingText || ''; 
         }
       }
     });
 
-    // CAREFUL FIX: Only save syncData. NEVER overwrite `lyrics` with stripped database text.
     const updatedSong = {
       ...selectedSong,
       syncData: newSyncData,
@@ -290,14 +262,16 @@ export const useTranslationWorkspaceData = ({
 
     updateSongInLibrary(updatedSong);
     setIsTranslationManagerOpen(false);
+    
     setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 2000);
   };
 
   const handleExport = () => {
     const textContent = workspaceData.map(line =>
-      `[lang: ${line.lang || 'auto'}]\n${line.spacedText || line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
+      `[lang: ${line.lang || 'auto'}]\n${line.displayText}\n${line.displayPron ? line.displayPron + '\n' : ''}${line.translation ? line.translation + '\n' : ''}`
     ).join('\n');
+
     const blob = new Blob([textContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -312,47 +286,55 @@ export const useTranslationWorkspaceData = ({
   const handleImportText = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const text = e.target.result;
         if (!text || !text.trim()) return alert("The selected text file is empty.");
+
         const blocks = text.split(/\r?\n\s*\r?\n/).map(b => b.trim()).filter(Boolean);
         if (blocks.length === 0) return alert("Could not parse blocks in text file.");
+
         const newData = [...workspaceData];
         let importedCount = 0;
+
         blocks.forEach((block, blockIdx) => {
           let lines = block.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
           if (lines.length === 0) return;
+
           let importedLang = 'auto';
           if (lines[0].startsWith('[lang:') && lines[0].endsWith(']')) {
             importedLang = lines[0].replace('[lang:', '').replace(']', '').trim();
             lines.shift();
           }
           if (lines.length === 0) return;
+
           const originalText = lines[0];
           let importedPron = '';
           let importedTrans = '';
+
           if (lines.length === 2) {
             importedTrans = lines[1];
           } else if (lines.length >= 3) {
             importedPron = lines[1];
             importedTrans = lines[2];
           }
+
           let targetIndex = newData.findIndex(
-            w => w.displayText.toLowerCase() === originalText.toLowerCase() || (w.spacedText && w.spacedText.toLowerCase() === originalText.toLowerCase())
+            w => w.displayText.toLowerCase() === originalText.toLowerCase()
           );
+
           if (targetIndex === -1 && blockIdx < newData.length) {
             targetIndex = blockIdx;
           }
+
           if (targetIndex !== -1) {
             const isEn = importedLang === 'en';
             newData[targetIndex].lang = importedLang;
             newData[targetIndex].translation = isEn ? '' : importedTrans;
             newData[targetIndex].displayPron = isEn ? '' : importedPron;
-            if (/\S\s+\S/.test(originalText)) {
-              newData[targetIndex].spacedText = originalText;
-            }
+
             if (isEn) {
               newData[targetIndex].pronunciation = '';
             } else if (newData[targetIndex]._meta.isAdlib) {
@@ -374,10 +356,13 @@ export const useTranslationWorkspaceData = ({
             importedCount++;
           }
         });
+
         setWorkspaceData(newData);
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        
         setNotification({ show: true, message: `Overwrote workspace data for ${importedCount} lines!`, progress: 100 });
         setTimeout(() => setNotification({ show: false }), 2500);
+
       } catch (err) {
         console.error("Text import error:", err);
         alert("Failed to parse text file.");

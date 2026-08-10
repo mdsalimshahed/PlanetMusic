@@ -2,15 +2,18 @@
 import React from 'react';
 import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
-export const renderFormattedTranslation = (text) => {
+export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
+      const shadow = isFocused
+         ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+        : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
           {part}
         </span>
       );
@@ -19,7 +22,7 @@ export const renderFormattedTranslation = (text) => {
   });
 };
 
-export const groupWords = (elements, charData, isFocused) => {
+export const groupWords = (elements, charData, isFocused, hasSpacingText = false) => {
   const words = [];
   let currentWord = [];
   let hyphenCount = 0;
@@ -61,8 +64,12 @@ export const groupWords = (elements, charData, isFocused) => {
       continue;
     }
     const char = charData[i] ? charData[i].char : '';
+
     // Properly chunk spaces and CJK without destroying the element's color spans
-    if (/\s/.test(char) || isCJ(char)) {
+    const isSpace = /\s/.test(char);
+    const shouldBreak = hasSpacingText ? isSpace : (isSpace || isCJ(char));
+
+    if (shouldBreak) {
       flushWord(i);
       words.push(elements[i]); // Push the actual styled element directly
     } else {
@@ -73,19 +80,86 @@ export const groupWords = (elements, charData, isFocused) => {
     }
   }
   flushWord('end');
-
   return words;
 };
 
-export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused) => {
+export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
-  if (parsedChunks && Array.isArray(parsedChunks)) {
+
+  // --- 1:1 Word Mapping for Manually Spaced Lyrics ---
+  if (hasSpacingText) {
+    const wordBlocks = [];
+    let currentBlock = [];
+
+    chars.forEach((c) => {
+      if (/\s/.test(c.char)) {
+        if (currentBlock.length > 0) {
+          wordBlocks.push(currentBlock);
+          currentBlock = [];
+        }
+        wordBlocks.push([c]);
+      } else {
+        currentBlock.push(c);
+      }
+    });
+    if (currentBlock.length > 0) wordBlocks.push(currentBlock);
+
+    const transString = fullTrans || (parsedChunks && parsedChunks.map(p => p.trans || p.text).join(' ')) || '';
+    const transWords = transString.split(/\s+/).filter(Boolean);
+    let transIdx = 0;
+
+    wordBlocks.forEach((block) => {
+      const isSpaceBlock = block.length === 1 && /\s/.test(block[0].char);
+      if (isSpaceBlock) {
+        alignedChunks.push({ type: 'main', trans: '', chars: block });
+      } else {
+        const blockText = block.map(c => c.char).join('');
+        // Ensure English parts within the spaced Japanese lyrics skip the transliteration chunk wrapper
+        const isEnglish = /^[\p{Script=Latin}\p{P}\p{S}\p{N}]+$/u.test(blockText);
+        
+        if (isEnglish) {
+           alignedChunks.push({ type: 'en', trans: '', chars: block });
+           transIdx++; // FIX: Advance the pointer so the skipped English transliteration is discarded!
+        } else {
+           const assignedTrans = transWords[transIdx] || '';
+           transIdx++;
+           alignedChunks.push({ type: 'foreign', trans: assignedTrans, chars: block });
+        }
+      }
+    });
+  } 
+  else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
-      const chunkGraphemeCount = getGraphemes(chunkText).length;
-      const chunkChars = chars.slice(charIdxPointer, charIdxPointer + chunkGraphemeCount);
-      charIdxPointer += chunkGraphemeCount;
+      
+      // --- Smart character slicing to align spaces correctly ---
+      const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
+      let charsToConsume = 0;
+      let tempPointer = charIdxPointer;
+
+      if (nonSpaceGraphemes.length > 0) {
+        let matched = 0;
+        // Consume characters until we match the expected amount of visible characters
+        while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
+          if (!/\s/.test(chars[tempPointer].char)) {
+            matched++;
+          }
+          charsToConsume++;
+          tempPointer++;
+        }
+      } else {
+        // If it's a pure space chunk, only consume characters if they are actually spaces
+        while (tempPointer < chars.length && /\s/.test(chars[tempPointer].char)) {
+          charsToConsume++;
+          tempPointer++;
+        }
+      }
+
+      const chunkChars = chars.slice(charIdxPointer, charIdxPointer + charsToConsume);
+      charIdxPointer += charsToConsume;
+      // -----------------------------------------------------------------
+
       if (chunkChars.length > 0) {
         alignedChunks.push({
           type: chunk.type,
@@ -94,6 +168,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         });
       }
     });
+
     if (charIdxPointer < chars.length) {
       alignedChunks.push({
         type: 'main',
@@ -112,7 +187,9 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   return alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
-    const groupedText = groupWords(renderedText, chunk.chars, isFocused);
+
+    const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+
     if (isRTL) {
       return (
         <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
@@ -120,7 +197,8 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         </span>
       );
     } else {
-      if (chunk.trans && chunk.trans.trim()) {
+      // Exclude English chunks from receiving transliterations
+      if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
         const cleanTrans = normalizeTrans(chunk.trans);
         return (
           <span
@@ -137,7 +215,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
             <span style={{ display: 'inline-block', whiteSpace: isFocused ? 'normal' : 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
             {cleanTrans ? (
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-                {renderFormattedTranslation(cleanTrans)}
+                {renderFormattedTranslation(cleanTrans, isFocused)}
               </span>
             ) : null}
           </span>

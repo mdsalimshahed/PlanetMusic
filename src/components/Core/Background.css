@@ -1,5 +1,5 @@
 /* --- src/components/Core/Background.css --- */
-.falling-fluid-bg {
+.dynamic-circle-bg {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,46 +11,39 @@
   pointer-events: none;
 }
 
-.fluid-drops-container {
+.circles-container {
   position: absolute;
-  inset: -10%; /* Slight bleed outside bounds */
-  opacity: 0.85;
+  inset: -20%; /* Bleed outside bounds so circles don't clip at edges */
+  opacity: 0.8; 
 }
 
-/* Wrapper handles the instantaneous teleporting (Zero layout reflows) */
-.ambient-wrapper {
+.floating-circle {
   position: absolute;
-  left: 0;
-  top: 0;
-  /* No transition here so it snaps instantly while invisible */
-}
-
-/* Inner circle handles the GPU-accelerated breathing */
-.pop-circle {
-  width: 100%;
-  height: 100%;
   border-radius: 50%;
-  animation-name: popInOut;
+  will-change: transform, opacity; /* Hardware acceleration isolated to moving elements */
+  animation-name: floatAndPop;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-  opacity: 0; /* Start invisible */
-  transform-origin: center;
-  will-change: opacity, transform; /* Signals GPU to optimize */
+  opacity: 0; /* Base state to ensure they are hidden before animation starts */
+  transform: translate3d(0, 0, 0) scale(0);
 }
 
-/* Breathes in and out of existence */
-@keyframes popInOut {
+@keyframes floatAndPop {
   0% {
+    transform: translate3d(0, 0, 0) scale(0);
     opacity: 0;
-    transform: scale(0.6);
   }
-  50% {
-    opacity: var(--max-opacity, 0.5);
-    transform: scale(1.1);
+  25% {
+    opacity: 0.6;
+    transform: translate3d(calc(var(--move-x) * 0.25), calc(var(--move-y) * 0.25), 0) scale(1);
+  }
+  75% {
+    opacity: 0.6;
+    transform: translate3d(calc(var(--move-x) * 0.75), calc(var(--move-y) * 0.75), 0) scale(1.1);
   }
   100% {
+    transform: translate3d(var(--move-x), var(--move-y), 0) scale(0);
     opacity: 0;
-    transform: scale(0.6);
   }
 }
 

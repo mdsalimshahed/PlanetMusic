@@ -102,11 +102,15 @@ const isRomanChar = (char) => {
 
 export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
   let completed = 0;
-  const promises = linesArray.map(async (lineText) => {
+  const promises = linesArray.map(async (item) => {
     const updateProgress = () => {
       completed++;
       if (onProgress) onProgress(completed, linesArray.length);
     };
+
+    // Support receiving object definitions to catch the spacing flag
+    const lineText = typeof item === 'object' ? item.text : item;
+    const hasSpacing = typeof item === 'object' ? item.hasSpacing : false;
 
     if (!lineText) {
       updateProgress();
@@ -123,7 +127,8 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
     const fullTrans = fullData.transliteration || '';
     const chunks = [];
     
-    if (isSpacedScript(cleanLine)) {
+    // Core Fix: If the string has custom spacing, force it into the Korean-style Spaced Script pipeline!
+    if (hasSpacing || isSpacedScript(cleanLine)) {
       const transWords = fullTrans
         .split(/\s+/)
         .filter(Boolean)
@@ -137,6 +142,7 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
         if (/^\s+$/.test(token)) {
           chunks.push({ type: 'en', text: token, trans: '' });
         } else {
+          // Detects English words natively and tags them as type 'en'
           const isEnToken = Array.from(token).every(c => isRomanChar(c));
           let currentTrans = transWords[wordIndex] || '';
           
