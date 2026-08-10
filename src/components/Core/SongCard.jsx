@@ -1,15 +1,16 @@
-/* --- src/components/SongCard.jsx --- */
+/* --- src/components/Core/SongCard.jsx --- */
 import React, { useState, useEffect } from 'react';
 import { extractYouTubeId } from '../../utils/songHelpers';
 import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
+  
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
   const ytUrl = song.customLinks?.yt || song.yt || '';
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
   const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
-
+  
   // Fallback to safely support old single-string structure if loading from localStorage cache
   const sources = song.sourceNames || (song.sourceName ? [song.sourceName] : []);
 
@@ -82,10 +83,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
 
   return (
     <div 
-      className="song-card" 
-      onClick={() => setSelectedSong(song)}
+       className="song-card" 
+       onClick={() => setSelectedSong(song)}
       style={{ 
-        '--card-accent-rgb': accentRGB
+         '--card-accent-rgb': accentRGB
       }}
     >
       <div className="artwork-wrapper">
@@ -96,6 +97,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           loading="lazy"
           decoding="async"
           fetchPriority="low"
+          crossOrigin="anonymous" 
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
@@ -118,7 +120,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         {/* Top-Right Quick Play Button */}
         {hasPlayableSource && (
           <button 
-            className="play-card-btn"
+             className="play-card-btn"
             onClick={(e) => {
               e.stopPropagation();
               setCurrentTrack({ ...song, playId: Date.now() });

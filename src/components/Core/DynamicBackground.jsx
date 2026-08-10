@@ -36,17 +36,17 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
 
     return (
       <img 
-        src={finalImgUrl} 
-        loading="lazy" 
-        decoding="async" 
-        alt="" 
-        className={`singer-watermark full-screen-watermark ${imgClass}`} 
-      />
+         src={finalImgUrl} 
+         loading="lazy" 
+         decoding="async" 
+         alt="" 
+         className={`singer-watermark full-screen-watermark ${imgClass}`} 
+       />
     );
   } else {
     return (
       <div 
-        className={`matrix-watermark-container ${matrixClass}`}
+         className={`matrix-watermark-container ${matrixClass}`}
         style={{ gridTemplateColumns: `repeat(${layer.cols}, 1fr)` }}
       >
         {Array.from({ length: layer.cols * 2 }).map((_, cellIdx) => {
@@ -59,12 +59,12 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
             <div key={`cell-${cellIdx}`} className="matrix-cell">
               {finalImgUrl && (
                 <img 
-                  src={finalImgUrl} 
-                  loading="lazy" 
-                  decoding="async" 
-                  alt="" 
-                  className={`singer-watermark matrix-cell-img ${imgClass}`} 
-                />
+                   src={finalImgUrl} 
+                   loading="lazy" 
+                   decoding="async" 
+                   alt="" 
+                   className={`singer-watermark matrix-cell-img ${imgClass}`} 
+                 />
               )}
             </div>
           );
@@ -80,12 +80,27 @@ const DynamicBackground = ({
   liveParsedLyrics
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
-  
+
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
+    
   const activeComboKey = activeNames.join('|');
   const isMulti = activeNames.length > 1;
+
+  // --- PRELOADER ENGINE (Fixes Artist Image Pop-In) ---
+  useEffect(() => {
+    if (!allPotentialSingers) return;
+    
+    allPotentialSingers.forEach(singer => {
+      const finalImgUrl = customData.artistImages?.[singer] ?? globalArtistData?.images?.[singer] ?? singerImages[singer];
+      if (finalImgUrl) {
+        // Creates a silent background request to force the browser to cache the image into memory
+        const preloader = new Image();
+        preloader.src = finalImgUrl;
+      }
+    });
+  }, [allPotentialSingers, customData.artistImages, globalArtistData.images, singerImages]);
 
   // --- LAYER STACK GARBAGE COLLECTION ENGINE ---
   const [layers, setLayers] = useState([]);
@@ -102,11 +117,11 @@ const DynamicBackground = ({
          return [...filtered, existing];
       }
       
-      const newLayer = {
-         key: activeComboKey,
-         names: activeNames,
-         isMulti,
-         cols: Math.max(2, activeNames.length)
+      const newLayer = { 
+         key: activeComboKey, 
+         names: activeNames, 
+         isMulti, 
+         cols: Math.max(2, activeNames.length) 
       };
       return [...prev, newLayer];
     });
@@ -133,9 +148,9 @@ const DynamicBackground = ({
       {/* RENDER ALL ACTIVE AND FADING LAYERS */}
       {layers.map(layer => (
         <BackgroundLayer 
-          key={layer.key} 
-          layer={layer} 
-          isActive={isSingerVisible && layer.key === activeComboKey}
+           key={layer.key} 
+           layer={layer} 
+           isActive={isSingerVisible && layer.key === activeComboKey}
           customData={customData}
           globalArtistData={globalArtistData}
           singerImages={singerImages}
@@ -167,6 +182,7 @@ const DynamicBackground = ({
           </div>
         );
       })}
+
     </div>
   );
 };
