@@ -3,11 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { quickTransliterate } from '../../../services/transliterator';
 import { workspaceClock } from '../../../utils/clockEngine';
-import { normalizeTrans } from '../Lyrics/LyricsLineRenderer';
-import { getGraphemes } from '../../LyricsRenderer/textUtils';
+import { LyricLineWrapper } from '../Lyrics/LyricsLineRenderer';
 import './SyncWorkspace.css';
-
-const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
 
 export const SyncWorkspace = ({
   syncData, activeSyncIndex, setActiveSyncIndex, syncDuration, setSyncDuration,
@@ -20,7 +17,6 @@ export const SyncWorkspace = ({
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
-
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
 
@@ -66,7 +62,6 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
-
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -121,9 +116,7 @@ export const SyncWorkspace = ({
         }
       });
     };
-
     initSyncYT();
-
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -148,7 +141,6 @@ export const SyncWorkspace = ({
          progressSliderRef.current.style.setProperty('--progress', `${(time / max) * 100}%`);
       }
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
-
       if (containerRef.current) {
         const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
         for (let i = 0; i < adlibNodes.length; i++) {
@@ -213,10 +205,8 @@ export const SyncWorkspace = ({
                     }
                     currentPos = segEnd;
                 }
-
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
                 const pronData = await quickTransliterate(adlibText);
-
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -238,202 +228,16 @@ export const SyncWorkspace = ({
     }
   };
 
-  const renderWorkspaceLine = (line, isMain) => {
-    const pronString = line.pronunciation;
-    const segments = line.segments || [{ text: line.text }];
-    const isRTL = isRTLLanguage(line.text);
-    
-    const pronStyle = {
-      fontSize: '0.55em', color: '#ffffff', opacity: 0.85, textShadow: 'none',
-      fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px',
-      textAlign: 'left', marginTop: '4px', display: 'inline-block'
-    };
-
-    let parsedChunks = null;
-    let fullTrans = null;
-
-    if (typeof pronString === 'string') {
-      const cleanPron = pronString.trim();
-      if (cleanPron.startsWith('{')) {
-        try {
-          const parsed = JSON.parse(cleanPron);
-          parsedChunks = parsed.chunks;
-          fullTrans = parsed.full;
-        } catch(e) {}
-      } else if (cleanPron.startsWith('[')) {
-        try { parsedChunks = JSON.parse(cleanPron); } catch(e) {}
-      }
-    }
-
-    const chars = [];
-    let gIdx = 0;
-    let cpIdx = 0; 
-    
-    segments.forEach(seg => {
-      const segChars = getGraphemes(seg.text);
-      segChars.forEach(char => {
-        const cpLen = Array.from(char).length; 
-        chars.push({ char, seg, globalIndex: gIdx++, cpStart: cpIdx, cpEnd: cpIdx + cpLen });
-        cpIdx += cpLen;
-      });
-    });
-
-    const renderColoredChar = (c, cIdx) => {
-      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
-      let activeColor = '#ffffff';
-      let isGradient = false;
-      let gradientStyle = '';
-
-      if (!isPunct && c.seg) {
-        let targetArtists = c.seg.artists;
-        if (!targetArtists && line.singer) {
-          targetArtists = line.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-        }
-        if (targetArtists && targetArtists.length > 0) {
-          if (targetArtists.length > 1) {
-            isGradient = true;
-            const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-            const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-            gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-          } else {
-            activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-          }
-        } else {
-          activeColor = c.seg.color || '#ffffff';
-          isGradient = c.seg.isGradient || false;
-          gradientStyle = c.seg.gradient || '';
-        }
-      }
-
-      const style = isGradient ? { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } : { color: activeColor };
-      
-      if (isPunct && c.char.trim() !== '') {
-        style.color = '#fbbf24';
-        style.WebkitTextFillColor = '#fbbf24';
-        style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
-      }
-
-      if (isMain && line.isSplit) {
-        const isAdlibChar = line.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
-        if (isAdlibChar) {
-          style.opacity = 0.2;
-          style.textDecoration = 'line-through';
-        }
-      }
-
-      return <span key={cIdx} style={style}>{c.char}</span>;
-    };
-
-    const renderedChars = chars.map((c, cIdx) => renderColoredChar(c, cIdx));
-
-    let fullTransText = '';
-    if (fullTrans) {
-      fullTransText = normalizeTrans(fullTrans);
-    } else if (parsedChunks) {
-      fullTransText = parsedChunks.map(c => normalizeTrans(c.trans || (isRTL ? c.text : ''))).join(' ').trim();
-    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-      fullTransText = normalizeTrans(pronString);
-    }
-
-    if (!isMain || isRTL) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-          <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', verticalAlign: 'bottom' }}>
-            <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-block' }} dir={isRTL ? "rtl" : "ltr"}>
-              {renderedChars}
-            </span>
-            {fullTransText ? (
-              <span className="pronunciation-text" style={pronStyle} dir="ltr">
-                {fullTransText}
-              </span>
-            ) : null}
-          </span>
-        </div>
-      );
-    }
-
-    let activeParsedChunks = parsedChunks;
-    if (!activeParsedChunks) {
-      activeParsedChunks = [{ type: 'main', trans: '', text: line.text }];
-    }
-
-    let alignedChunks = [];
-    let pChunkIndex = 0;
-    let currentPChunk = activeParsedChunks[0];
-    let currentPChunkConsumed = 0;
-
-    let i = 0;
-    while (i < chars.length) {
-      if (!currentPChunk) {
-        alignedChunks.push({ type: 'main', chars: [chars[i]], text: chars[i].char, trans: '' });
-        i++;
-        continue;
-      }
-
-      let chunkChars = [];
-      const targetLen = Array.from(currentPChunk.text || '').length;
-
-      while (currentPChunkConsumed < targetLen && i < chars.length) {
-        chunkChars.push(chars[i]);
-        currentPChunkConsumed += Array.from(chars[i].char).length;
-        i++;
-      }
-      
-      if (chunkChars.length > 0) {
-        alignedChunks.push({
-          type: currentPChunk.type,
-          trans: currentPChunk.trans,
-          chars: chunkChars,
-          isMain: true
-        });
-      }
-
-      if (currentPChunkConsumed >= targetLen) {
-        pChunkIndex++;
-        currentPChunk = activeParsedChunks[pChunkIndex];
-        currentPChunkConsumed = 0;
-      }
-    }
-
-    const renderedChunksJSX = alignedChunks.map((chunk, chunkIdx) => {
-      const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
-
-      if (chunk.type === 'foreign' && chunk.trans) {
-        const cleanTrans = normalizeTrans(chunk.trans);
-        return (
-          <span key={chunkIdx} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'bottom', margin: '0 2px' }}>
-            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap' }}>{renderedText}</span>
-            <span className="pronunciation-text" style={pronStyle} dir="ltr">{cleanTrans}</span>
-          </span>
-        );
-      } else {
-        return (
-          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'bottom', display: 'inline-block' }}>
-            {renderedText}
-          </span>
-        );
-      }
-    });
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%' }}>
-        <span className="sync-text" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', display: 'inline-flex', alignItems: 'baseline', textAlign: 'left' }} dir="ltr">
-          {renderedChunksJSX}
-        </span>
-      </div>
-    );
-  };
-
   return (
     <div className="sync-mode-container" style={{
         '--workspace-accent': accentColor,
         '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
         '--player-accent': accentColor
       }}>
-      
+       
       <div 
-         id="sync-yt-target-container" 
-         style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+          id="sync-yt-target-container" 
+          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
@@ -441,16 +245,17 @@ export const SyncWorkspace = ({
             <button 
                 onClick={toggleWorkspaceMode} 
                 className="edit-links-btn"
-               style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
+                style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
             >
-              {isShowingAutoSync ? '  Auto Sync Mode' : '  Manual Sync Mode'}
+              {isShowingAutoSync ? 'Auto Sync Mode' : 'Manual Sync Mode'}
             </button>
+
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
                   onClick={handleMapAutoSync} 
                   className="edit-links-btn"
-                 style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
-                title="Map Auto-Sync timings to these manual lyrics"
+                  style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
+                  title="Map Auto-Sync timings to these manual lyrics"
               >
                   Map Timings from Auto
               </button>
@@ -486,11 +291,11 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                       onClick={cycleSource} 
-                       style={{...cursorStyle, display: 'inline-block'}} 
-                       title={title}
-                      onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
-                      onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
+                        onClick={cycleSource} 
+                        style={{...cursorStyle, display: 'inline-block'}} 
+                        title={title}
+                        onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
+                        onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
                       {children}
                     </span>
@@ -521,10 +326,10 @@ export const SyncWorkspace = ({
             type="range" className="custom-slider sync-slider"
             min="0" max={syncDuration || 1} step="0.001"
             defaultValue="0"
-          ref={progressSliderRef}
-          onChange={handleSyncSeek}
-          style={{ '--progress': '0%' }}
-          />
+            ref={progressSliderRef}
+            onChange={handleSyncSeek}
+            style={{ '--progress': '0%' }}
+        />
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
 
@@ -540,7 +345,7 @@ export const SyncWorkspace = ({
             min="0.5" max="2.0" step="0.05"
             value={playbackRate} onChange={handleSpeedChange}
             style={{ '--progress': `${((playbackRate - 0.5) / 1.5) * 100}%` }}
-          />
+        />
         <div className="speed-ticks">
           <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
         </div>
@@ -560,14 +365,29 @@ export const SyncWorkspace = ({
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
 
+          let nextStart = 'NaN';
+          const syncList = syncData || [];
+          for (let j = item.lineIndex + 1; j < syncList.length; j++) {
+              if (syncList[j]?.start != null) {
+                  nextStart = syncList[j].start;
+                  break;
+              }
+          }
+
+          // Combine raw sync line data with active spacing properties
+          const populatedLineObj = {
+            ...line,
+            spacingText: line.spacingText || selectedSong?.syncData?.[item.lineIndex]?.spacingText || ''
+          };
+
           return (
             <div 
                 key={i}
                 ref={isActive ? activeLineRef : null}
-              className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
-              data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
-              data-end={!isMain ? boundedEnd : 'NaN'}
-              onClick={() => {
+                className={`sync-line ${isActive ? 'active' : ''} ${isRecording ? 'recording' : ''} ${isSynced ? 'synced' : ''} ${!isMain ? 'nested-adlib workspace-adlib-line' : ''}`}
+                data-start={!isMain ? (line.start !== null ? line.start : 'NaN') : 'NaN'}
+                data-end={!isMain ? boundedEnd : 'NaN'}
+                onClick={() => {
                 setActiveSyncIndex(i);
                 
                 if (!isMain) {
@@ -602,7 +422,15 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                {renderWorkspaceLine(line, isMain)}
+                <LyricLineWrapper
+                  lineObj={populatedLineObj}
+                  savedNode={populatedLineObj}
+                  nextStart={nextStart}
+                  viewMode="live"
+                  handleLineClick={() => {}}
+                  masterPalette={masterPalette}
+                  isPlayingCurrentSong={isSyncPlaying}
+                />
                 
                 {isMain && hasParentheses && (
                   <button 
@@ -625,7 +453,7 @@ export const SyncWorkspace = ({
       </div>
 
       <audio 
-          ref={syncAudioRef}
+        ref={syncAudioRef}
         src={syncAudioSrc || undefined}
         onLoadedMetadata={handleAudioLoaded}
         onDurationChange={handleAudioLoaded}
