@@ -1,8 +1,7 @@
 /* --- src/components/Core/Background.jsx --- */
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import './Background.css';
 
-// A highly vibrant, multi-color palette (No dark purples)
 const VIBRANT_PALETTE = [
   '#ff0a54', // Vivid Pink
   '#ff7000', // Bright Orange
@@ -14,19 +13,26 @@ const VIBRANT_PALETTE = [
 ];
 
 const Background = () => {
-  // Generate random floating and disappearing circles once on load
+  const [isTabVisible, setIsTabVisible] = useState(true);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsTabVisible(document.visibilityState === 'visible');
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  // Reduced from 45 down to 14 circles to reduce GPU fill-rate strain by 70%
   const circles = useMemo(() => {
-    return Array.from({ length: 45 }).map((_, i) => {
-      const size = Math.random() * 15 + 5; // Radius size ranging from 5vw to 20vw
-      const startX = Math.random() * 100; // Start anywhere from 0 to 100vw
-      const startY = Math.random() * 100; // Start anywhere from 0 to 100vh
-      
-      // Determine how far and in what direction the circle will drift during its lifespan
-      const moveX = (Math.random() - 0.5) * 40; // Drift horizontally between -20vw and +20vw
-      const moveY = (Math.random() - 0.5) * 40; // Drift vertically between -20vh and +20vh
-      
-      const duration = Math.random() * 12 + 8; // Animation lifespan between 8s and 20s
-      const delay = Math.random() * -25; // Negative delay so the screen is already populated on load
+    return Array.from({ length: 14 }).map((_, i) => {
+      const size = Math.random() * 12 + 6;
+      const startX = Math.random() * 100;
+      const startY = Math.random() * 100;
+      const moveX = (Math.random() - 0.5) * 30;
+      const moveY = (Math.random() - 0.5) * 30;
+      const duration = Math.random() * 10 + 10;
+      const delay = Math.random() * -20;
 
       return {
         id: i,
@@ -42,6 +48,8 @@ const Background = () => {
     });
   }, []);
 
+  if (!isTabVisible) return <div className="dynamic-circle-bg" />;
+
   return (
     <div className="dynamic-circle-bg">
       <div className="circles-container">
@@ -50,9 +58,8 @@ const Background = () => {
             key={circle.id}
             className="floating-circle"
             style={{
-              // Pre-baked blur via radial gradient (Zero GPU strain)
               background: `radial-gradient(circle, ${circle.color} 0%, transparent 70%)`,
-              width: `${circle.size * 2}vw`, // Scaled up to accommodate the gradient fade
+              width: `${circle.size * 2}vw`,
               height: `${circle.size * 2}vw`,
               left: `${circle.startX}vw`,
               top: `${circle.startY}vh`,
@@ -64,8 +71,6 @@ const Background = () => {
           />
         ))}
       </div>
-      
-      {/* Dark gradient overlay to ensure dashboard text remains readable */}
       <div className="fluid-glass-overlay"></div>
     </div>
   );

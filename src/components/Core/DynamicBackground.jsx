@@ -21,6 +21,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
     } else {
       setRenderedActive(false);
     }
+
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
     };
@@ -32,21 +33,22 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
   if (!layer.isMulti) {
     const singerName = layer.names[0];
     const finalImgUrl = customData.artistImages?.[singerName] ?? globalArtistData?.images?.[singerName] ?? singerImages[singerName];
+
     if (!finalImgUrl) return null;
 
     return (
-      <img 
-         src={finalImgUrl} 
-         loading="lazy" 
-         decoding="async" 
-         alt="" 
-         className={`singer-watermark full-screen-watermark ${imgClass}`} 
-       />
+      <img
+          src={finalImgUrl}
+          loading="lazy"
+          decoding="async"
+          alt=""
+          className={`singer-watermark full-screen-watermark ${imgClass}`}
+        />
     );
   } else {
     return (
-      <div 
-         className={`matrix-watermark-container ${matrixClass}`}
+      <div
+          className={`matrix-watermark-container ${matrixClass}`}
         style={{ gridTemplateColumns: `repeat(${layer.cols}, 1fr)` }}
       >
         {Array.from({ length: layer.cols * 2 }).map((_, cellIdx) => {
@@ -58,13 +60,13 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
           return (
             <div key={`cell-${cellIdx}`} className="matrix-cell">
               {finalImgUrl && (
-                <img 
-                   src={finalImgUrl} 
-                   loading="lazy" 
-                   decoding="async" 
-                   alt="" 
-                   className={`singer-watermark matrix-cell-img ${imgClass}`} 
-                 />
+                <img
+                    src={finalImgUrl}
+                    loading="lazy"
+                    decoding="async"
+                    alt=""
+                    className={`singer-watermark matrix-cell-img ${imgClass}`}
+                  />
               )}
             </div>
           );
@@ -84,7 +86,7 @@ const DynamicBackground = ({
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
-    
+       
   const activeComboKey = activeNames.join('|');
   const isMulti = activeNames.length > 1;
 
@@ -104,9 +106,14 @@ const DynamicBackground = ({
 
   // --- LAYER STACK GARBAGE COLLECTION ENGINE ---
   const [layers, setLayers] = useState([]);
-  const gcTimeoutRef = useRef(null);
+  const prevKeyRef = useRef(null);
+  const activeKeyRef = useRef(null);
 
   useEffect(() => {
+    const prevKey = prevKeyRef.current;
+    activeKeyRef.current = activeComboKey;
+    prevKeyRef.current = activeComboKey;
+
     if (!activeComboKey) return;
 
     setLayers(prev => {
@@ -117,23 +124,30 @@ const DynamicBackground = ({
          return [...filtered, existing];
       }
       
-      const newLayer = { 
-         key: activeComboKey, 
-         names: activeNames, 
-         isMulti, 
-         cols: Math.max(2, activeNames.length) 
-      };
+      const newLayer = {
+          key: activeComboKey,
+          names: activeNames,
+          isMulti,
+          cols: Math.max(2, activeNames.length)
+       };
       return [...prev, newLayer];
     });
 
-    if (gcTimeoutRef.current) clearTimeout(gcTimeoutRef.current);
+    // CRITICAL VRAM FIX: Instead of a global timeout that gets repeatedly cancelled, 
+    // we schedule an independent cleanup specifically for the layer that just deactivated.
+    if (prevKey && prevKey !== activeComboKey) {
+      setTimeout(() => {
+        setLayers(curr => {
+          // Only physically remove the old image node from the DOM if it hasn't 
+          // become the active singer again during the 850ms transition window.
+          if (activeKeyRef.current !== prevKey) {
+            return curr.filter(l => l.key !== prevKey);
+          }
+          return curr;
+        });
+      }, 850);
+    }
     
-    // Garbage collection: 850ms allows the 0.8s CSS fade out to fully complete 
-    // before physically removing the old images from the DOM to free VRAM.
-    gcTimeoutRef.current = setTimeout(() => {
-      setLayers(curr => curr.filter(l => l.key === activeComboKey));
-    }, 850);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeComboKey]);
 
@@ -147,10 +161,10 @@ const DynamicBackground = ({
       
       {/* RENDER ALL ACTIVE AND FADING LAYERS */}
       {layers.map(layer => (
-        <BackgroundLayer 
-           key={layer.key} 
-           layer={layer} 
-           isActive={isSingerVisible && layer.key === activeComboKey}
+        <BackgroundLayer
+            key={layer.key}
+            layer={layer}
+            isActive={isSingerVisible && layer.key === activeComboKey}
           customData={customData}
           globalArtistData={globalArtistData}
           singerImages={singerImages}
@@ -182,7 +196,6 @@ const DynamicBackground = ({
           </div>
         );
       })}
-
     </div>
   );
 };

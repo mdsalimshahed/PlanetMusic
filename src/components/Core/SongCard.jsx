@@ -5,13 +5,11 @@ import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
-  
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
   const ytUrl = song.customLinks?.yt || song.yt || '';
   const hasYtStream = Boolean(extractYouTubeId(ytUrl));
   const hasPlayableSource = Boolean(song.previewUrl || song.customLinks?.hasLocal || song.customLinks?.deezer || hasYtStream);
-  
-  // Fallback to safely support old single-string structure if loading from localStorage cache
+
   const sources = song.sourceNames || (song.sourceName ? [song.sourceName] : []);
 
   useEffect(() => {
@@ -20,37 +18,42 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
     let isMounted = true;
     let img = new Image();
     img.crossOrigin = 'Anonymous';
-    
+
     img.onload = () => {
-      // CRITICAL CPU FIX: Defer canvas creation and pixel math to the browser's idle time.
-      // This prevents the main thread from locking up when 20+ cards render at once on the dashboard.
+      // Skip canvas color math on narrow/mobile viewports to preserve RAM and battery
+      if (window.innerWidth <= 600) {
+        if (isMounted) setAccentRGB('20, 20, 30');
+        return;
+      }
+
       const processColors = () => {
         if (!isMounted) return;
         try {
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d', { willReadFrequently: true });
           
-          canvas.width = 5; 
-          canvas.height = 5;
-          context.drawImage(img, 0, 0, 5, 5);
+          canvas.width = 3; 
+          canvas.height = 3;
+          context.drawImage(img, 0, 0, 3, 3);
           
-          const data = context.getImageData(0, 0, 5, 5).data;
+          const data = context.getImageData(0, 0, 3, 3).data;
           let r = 0, g = 0, b = 0;
           const pixelCount = data.length / 4;
-          
+
           for (let i = 0; i < data.length; i += 4) {
             r += data[i];
             g += data[i + 1];
             b += data[i + 2];
           }
-          
+
           r = Math.floor(r / pixelCount);
           g = Math.floor(g / pixelCount);
           b = Math.floor(b / pixelCount);
-          
+
           setAccentRGB(`${r}, ${g}, ${b}`);
         } catch (e) {
-          console.warn('Could not extract color due to CORS restrictions');
+          // Fallback on CORS error
+          setAccentRGB('20, 20, 30');
         } finally {
           img.onload = null;
           img.onerror = null;
@@ -59,11 +62,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         }
       };
 
-      // Execute math only when the browser is idle, or fallback to a staggered timeout
       if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(processColors, { timeout: 2000 });
+        window.requestIdleCallback(processColors, { timeout: 3000 });
       } else {
-        setTimeout(processColors, Math.random() * 300 + 100);
+        setTimeout(processColors, Math.random() * 400 + 200);
       }
     };
 
@@ -73,9 +75,8 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
       img.src = '';
       img = null;
     };
-    
-    img.src = highResArt;
 
+    img.src = highResArt;
     return () => {
       isMounted = false;
     };
@@ -83,10 +84,10 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
 
   return (
     <div 
-       className="song-card" 
-       onClick={() => setSelectedSong(song)}
-      style={{ 
-         '--card-accent-rgb': accentRGB
+      className="song-card" 
+      onClick={() => setSelectedSong(song)}
+      style={{
+        '--card-accent-rgb': accentRGB
       }}
     >
       <div className="artwork-wrapper">
@@ -101,7 +102,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
-        {/* Top-Left Overlay Badges (Source API Tags + Explicit Tag) */}
         <div className="card-top-left-badges">
           {!isSaved && sources.length > 0 && (
             sources.map(source => (
@@ -117,10 +117,9 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           )}
         </div>
 
-        {/* Top-Right Quick Play Button */}
         {hasPlayableSource && (
           <button 
-             className="play-card-btn"
+            className="play-card-btn"
             onClick={(e) => {
               e.stopPropagation();
               setCurrentTrack({ ...song, playId: Date.now() });
@@ -133,7 +132,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           </button>
         )}
 
-        {/* Floating Text Layer */}
         <div className="card-info-text-only">
           <h4 title={song.trackName}>
             <span className="text-fill-span">{song.trackName}</span>

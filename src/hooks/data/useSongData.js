@@ -7,15 +7,18 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
+
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
   });
+
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
+
   const previousTrackId = useRef(null);
   
-  // Track to prevent infinite fetch loops
+  // Track to prevent infinite fetch loops within the same active session
   const hasFetchedDeezerMetaRef = useRef(new Set());
 
   const trackNameStr = selectedSong?.trackName || '';
@@ -23,6 +26,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const featuredArtists = trackNameData.featuredArtists;
 
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+
   const basePalette = useMemo(() => {
       return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
   }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
@@ -45,7 +49,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setIsTranslationManagerOpen(false);
         setSingerImages({});
       }
+
       const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+      
       setCustomData({
         spotify: selectedSong.customLinks?.spotify || '',
         yt: selectedSong.customLinks?.yt || '',
@@ -59,38 +65,67 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     }
   }, [selectedSong]);
 
-  // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved
+  // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved OR a custom Deezer link is added
   useEffect(() => {
     if (isSaved && selectedSong) {
+      // --- PERMANENT EFFICIENCY FIX ---
+      // If we have already fetched and bound the Deezer metadata to this song in the vault, 
+      // skip the network request entirely.
+      if (selectedSong.hasDeezerMetaBound) return;
+
       const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') ||
                             (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
-      
+                            
+      const customDzUrl = selectedSong.customLinks?.deezer;
+      let targetId = null;
+
       if (isDeezerOnly) {
-        const tId = selectedSong.trackId;
-        if (!hasFetchedDeezerMetaRef.current.has(tId)) {
-          hasFetchedDeezerMetaRef.current.add(tId);
+        targetId = String(selectedSong.trackId).replace('dz_', '');
+      } else if (customDzUrl) {
+        const match = customDzUrl.match(/track\/(\d+)/i);
+        if (match) targetId = match[1];
+      }
+
+      // Read settings directly to check if an ARL exists
+      const appSettings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+      const hasArl = Boolean(appSettings.deezerArl?.trim());
+
+      if (targetId && hasArl) {
+        if (!hasFetchedDeezerMetaRef.current.has(targetId)) {
+          hasFetchedDeezerMetaRef.current.add(targetId);
           
           const fetchDeezerMeta = async () => {
             try {
-              const realId = tId.replace('dz_', '');
-              const res = await fetch(`https://ytdownloader-jnt0.onrender.com/track-info-deezer/${realId}`);
+              const res = await fetch(`https://ytdownloader-jnt0.onrender.com/track-info-deezer/${targetId}`);
               const json = await res.json();
               
               if (json.success && json.data) {
-                const updatedSong = { ...selectedSong };
-                let modified = false;
+                // Permanently flag the song so we never fetch this again
+                const updatedSong = { ...selectedSong, hasDeezerMetaBound: true }; 
+                let modified = true; 
                 
                 if (json.data.release_date && !updatedSong.releaseDate) {
                   updatedSong.releaseDate = json.data.release_date;
-                  modified = true;
                 }
                 
                 if (json.data.extracted_genres && json.data.extracted_genres.length > 0) {
                   const validGenres = json.data.extracted_genres.filter(g => g !== "Not Specified");
                   if (validGenres.length > 0 && !updatedSong.primaryGenreName) {
                     updatedSong.primaryGenreName = validGenres.join(', ');
-                    modified = true;
                   }
+                }
+
+                // BIND EXPLICITNESS TO SONG
+                // Deezer uses explicit_lyrics (boolean) and explicit_content_lyrics (int status code)
+                const isExplicit = json.data.explicit_lyrics === true || 
+                                   json.data.explicit_content_lyrics === 1 || 
+                                   json.data.explicit_content_lyrics === 2 || 
+                                   json.data.explicit_content_lyrics === 4;
+
+                if (isExplicit && updatedSong.trackExplicitness !== 'explicit') {
+                  updatedSong.trackExplicitness = 'explicit';
+                } else if (!isExplicit && updatedSong.trackExplicitness === 'explicit') {
+                  updatedSong.trackExplicitness = 'notExplicit';
                 }
                 
                 if (modified) {
@@ -109,7 +144,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   useEffect(() => {
     if (!selectedSong) return;
-
+    
     allPotentialSingers.forEach(async (singerName) => {
       const cleanName = singerName.trim();
       if (cleanName && singerImages[cleanName] === undefined && !customData.artistImages?.[cleanName] && !globalArtistData.images?.[cleanName]) {
@@ -156,6 +191,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
+
     let updatedAutoSyncData = selectedSong.autoSyncData;
     if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
@@ -173,7 +209,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     
     // Close editor view first to unmount editing UI elements
     setIsEditing(false);
-
     // Commit updated song payload to vault and active player state simultaneously
     updateSongInLibrary(updatedSongPayload);
   };
@@ -192,13 +227,13 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
         updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
+
     let updatedAutoSyncData = selectedSong.autoSyncData;
     if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
        updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
 
     setIsImageManagerOpen(false);
-
     updateSongInLibrary({
       ...selectedSong,
       artistImages: customData.artistImages,
@@ -211,13 +246,14 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const isSingle = selectedSong?.trackCount === 1 || selectedSong?.collectionName === selectedSong?.trackName;
   const releaseType = isSingle ? 'Single' : selectedSong?.collectionName || 'Single';
   const highResArt = selectedSong?.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
+  
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
   const searchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`) : '';
   const ytSearchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`) : '';
-
+  
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,

@@ -6,17 +6,17 @@ import { parseLyrics } from '../../../utils/songHelpers';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
-const LyricsDisplay = ({
-       isEditing, customData, handleDataChange, hasValidSyncData,
-       lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-       isPlaying, settings 
+const LyricsDisplay = ({ 
+  isEditing, customData, handleDataChange, hasValidSyncData, 
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+  isPlaying, settings 
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
-  
+
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
   const editParsedLyrics = useMemo(() => {
@@ -24,7 +24,6 @@ const LyricsDisplay = ({
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
   }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
 
-  // Aggregate lines into distinct artist blocks dynamically for Plain View
   const groupedPlainLyrics = useMemo(() => {
     if (lyricsViewMode !== 'plain') return [];
     const groups = [];
@@ -83,6 +82,7 @@ const LyricsDisplay = ({
     }
 
     const chars = getGraphemes(item.text || '');
+
     return chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = {};
@@ -106,6 +106,7 @@ const LyricsDisplay = ({
           textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`
         };
       }
+
       return <span key={cIdx} style={style}>{char}</span>;
     });
   };
@@ -135,6 +136,7 @@ const LyricsDisplay = ({
     }
 
     const chars = getGraphemes(item.text || '');
+
     return chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = {};
@@ -154,6 +156,7 @@ const LyricsDisplay = ({
       } else {
         style = { color: activeColor };
       }
+
       return <span key={cIdx} style={style}>{char}</span>;
     });
   };
@@ -188,15 +191,16 @@ const LyricsDisplay = ({
     return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
   };
 
-  // --- EQUALIZER CANVAS RENDERER (CAPPED TO 24 FPS) ---
+  // --- EQUALIZER CANVAS RENDERER (60FPS WITH DATA INTERPOLATION) ---
+  // --- EQUALIZER CANVAS RENDERER (NATIVE REFRESH RATE WITH 15FPS DATA POLLING) ---
   useEffect(() => {
     if (settings?.disableAnimations || isEditing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d', { alpha: true });
-    let rafId;
-    const pauseDecayFactor = 16 / Math.max((settings?.eqFadeOutTime ?? 500), 16);
+    let rafId = null;
+    const pauseDecayFactor = 0.05; // Adjusted for native 60/120hz frames
     let idleFrames = 0; 
     const numBars = 40;
     
@@ -215,20 +219,12 @@ const LyricsDisplay = ({
     });
     resizeObserver.observe(canvas);
 
-    let lastDrawTime = 0;
-    const fpsInterval = 1000 / 24; // 41.6ms interval for cinematic 24fps
+    let lastPollTime = 0;
+    // PULL DATA ONLY 24 TIMES A SECOND (EXTREMELY LIGHT ON CPU)
+    const pollInterval = 1000 / 24; // 24Hz polling for audio data
+    const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
-      if (!lastDrawTime) lastDrawTime = timestamp;
-      const elapsed = timestamp - lastDrawTime;
-
-      // Throttle render loop to ~24 FPS to save massive amounts of mobile GPU processing
-      if (elapsed < fpsInterval) {
-        rafId = requestAnimationFrame(renderEQ);
-        return;
-      }
-      lastDrawTime = timestamp - (elapsed % fpsInterval);
-
       const displayWidth = cw;
       const displayHeight = ch;
       
@@ -238,52 +234,65 @@ const LyricsDisplay = ({
       }
 
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
-      const scales = eqScalesRef.current;
+      const currentScales = eqScalesRef.current;
       
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         idleFrames = 0;
         
-        window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
-        const freqData = window.globalFreqData;
-        const bufferLength = freqData.length;
-        
+        // 1. DATA POLLING: Only fetch audio frequencies every ~66ms
+        if (timestamp - lastPollTime >= pollInterval) {
+          window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
+          const freqData = window.globalFreqData;
+          const bufferLength = freqData.length;
+          
+          for (let i = 0; i < numBars; i++) {
+            const percent = i / numBars;
+            const dataIndex = Math.floor(Math.pow(percent, 1.2) * (bufferLength * 0.6));
+            const safeIndex = Math.min(dataIndex, bufferLength - 1);
+            
+            const raw = freqData[safeIndex] || 0;
+            const normalized = raw / 255;
+            const emphasized = Math.pow(normalized, 3);
+            
+            const dampener = 0.6 + (percent * 0.6); 
+            targetScales[i] = 0.05 + (emphasized * 1.2 * dampener);
+          }
+          lastPollTime = timestamp;
+        }
+
+        // 2. NATIVE FPS INTERPOLATION: Glide smoothly at 60hz/120hz
         for (let i = 0; i < numBars; i++) {
-          const percent = i / numBars;
-          const dataIndex = Math.floor(Math.pow(percent, 1.2) * (bufferLength * 0.6));
-          const safeIndex = Math.min(dataIndex, bufferLength - 1);
-          
-          const raw = freqData[safeIndex] || 0;
-          const normalized = raw / 255;
-          const emphasized = Math.pow(normalized, 3);
-          
-          const dampener = 0.6 + (percent * 0.6); 
-          const targetScale = 0.05 + (emphasized * 1.2 * dampener);
-          
-          if (targetScale > scales[i]) {
-            scales[i] += (targetScale - scales[i]) * 0.75; 
+          if (targetScales[i] > currentScales[i]) {
+            // Adjusted attack factor for native framerates
+            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.25; 
           } else {
-            scales[i] += (targetScale - scales[i]) * 0.12; 
+            // Adjusted decay factor for fluid dropping
+            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.08; 
           }
         }
       } else {
+        // Paused/Idle graceful settling
         let allSettled = true;
         for (let i = 0; i < numBars; i++) {
-          if (scales[i] > 0.051) {
-            scales[i] += (0.05 - scales[i]) * pauseDecayFactor;
+          if (currentScales[i] > 0.051) {
+            currentScales[i] += (0.05 - currentScales[i]) * pauseDecayFactor;
             allSettled = false;
-          } else if (scales[i] !== 0.05) {
-            scales[i] = 0.05;
+          } else if (currentScales[i] !== 0.05) {
+            currentScales[i] = 0.05;
             allSettled = false;
           }
         }
         if (allSettled) idleFrames++;
       }
 
+      // 3. IDLE RAF HALT: Shut off rendering loop to preserve battery when settled
       if (idleFrames > 5) {
-        rafId = requestAnimationFrame(renderEQ);
+        ctx.clearRect(0, 0, displayWidth, displayHeight);
+        rafId = null;
         return; 
       }
 
+      // 4. UNTHROTTLED CANVAS DRAW
       ctx.clearRect(0, 0, displayWidth, displayHeight);
       ctx.fillStyle = '#ffffff';
       
@@ -293,7 +302,7 @@ const LyricsDisplay = ({
 
       ctx.beginPath(); 
       for (let i = 0; i < numBars; i++) {
-        const barHeight = scales[i] * displayHeight;
+        const barHeight = currentScales[i] * displayHeight;
         const x = startX + (i * barSpacing);
         const y = displayHeight - barHeight;
         const radius = Math.min(4, barHeight / 2);
@@ -306,13 +315,16 @@ const LyricsDisplay = ({
       }
       ctx.fill();
 
+      // Loop natively without any FPS capping
       rafId = requestAnimationFrame(renderEQ);
     };
 
-    rafId = requestAnimationFrame(renderEQ);
+    if (isPlaying && isPlayingCurrentSong) {
+      rafId = requestAnimationFrame(renderEQ);
+    }
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       resizeObserver.disconnect();
     };
   }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime, settings?.disableAnimations, isEditing]);
@@ -348,7 +360,6 @@ const LyricsDisplay = ({
 
   const handleTimeUpdate = (time) => {
     if (isEditing || !isPlayingCurrentSong) return;
-
     const lines = cachedLinesRef.current;
     let newActiveIndex = -1;
 
@@ -377,9 +388,9 @@ const LyricsDisplay = ({
                 const offsetTop = item.node.offsetTop;
                 const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
                 
-                containerRef.current.scrollTo({ 
-                  top: scrollPos, 
-                  behavior: settings?.disableAnimations ? 'auto' : 'smooth' 
+                containerRef.current.scrollTo({
+                   top: scrollPos,
+                   behavior: settings?.disableAnimations ? 'auto' : 'smooth'
                 });
             }
         } else if (!shouldBeActive && item.isActive) {
@@ -392,8 +403,8 @@ const LyricsDisplay = ({
     for (let i = 0; i < adlibs.length; i++) {
         const item = adlibs[i];
         if (isNaN(item.start)) continue;
-
         let targetState = 'hidden';
+
         if (time >= item.start && time <= item.end) targetState = 'active';
         else if (time >= item.start) targetState = 'visible';
 
@@ -434,7 +445,6 @@ const LyricsDisplay = ({
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
-    
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
@@ -482,15 +492,12 @@ const LyricsDisplay = ({
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
             let wrapped = innerText.trim();
-
             if (isItalic) wrapped = `_${wrapped}_`;
             if (isBold) wrapped = `**${wrapped}**`;
-
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
           
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
-
           return innerText;
         }
         return '';
@@ -565,8 +572,8 @@ const LyricsDisplay = ({
         </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-            className="live-lyrics-preview" 
-            ref={containerRef}
+          className="live-lyrics-preview" 
+          ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -637,7 +644,6 @@ const LyricsDisplay = ({
                   displayHeader = displayHeader.split(':')[0].trim();
                 }
               }
-
               return (
               <React.Fragment key={group.id}>
                 {group.sectionHeader && (
@@ -647,8 +653,8 @@ const LyricsDisplay = ({
                 )}
                 
                 <div 
-                    className="plain-artist-block"
-                    style={{ borderLeftColor: group.borderColor }}
+                  className="plain-artist-block"
+                  style={{ borderLeftColor: group.borderColor }}
                 >
                   <div className="plain-artist-name">
                     {renderColoredSingerHeader(group.singer)}
@@ -681,7 +687,6 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
-
       {!isEditing && !settings?.disableAnimations && (
         <div className={`lyrics-equalizer`}>
           <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
