@@ -18,6 +18,8 @@ const SplitLine = ({
   pronString
 }) => {
   const currentTime = window.currentAudioTime || 0;
+  const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
+
   const blocks = [];
   let currentBlock = null;
 
@@ -48,7 +50,6 @@ const SplitLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -66,6 +67,7 @@ const SplitLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -92,7 +94,8 @@ const SplitLine = ({
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
-      false
+      false,
+      hasSpacingText
     );
 
     return (
@@ -136,8 +139,8 @@ const SplitLine = ({
 
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
-    let initialClass = 'adlib-hidden';
 
+    let initialClass = 'adlib-hidden';
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
       else if (currentTime > end) initialClass = 'adlib-visible';
@@ -171,7 +174,8 @@ const SplitLine = ({
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
-      false
+      false,
+      hasSpacingText
     );
 
     return (
@@ -233,14 +237,15 @@ const SplitLine = ({
   });
 
   let displayPronString = null;
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
     } else if (parsedChunks) {
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
-    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-      displayPronString = normalizeTrans(pronString);
     }
+  } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    displayPronString = normalizeTrans(pronString);
   }
 
   const hasMainTranslation = !!displayTranslation;
@@ -317,6 +322,7 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
+
           {renderedMainElements}
         </span>
 

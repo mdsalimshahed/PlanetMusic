@@ -45,13 +45,13 @@ export const useTranslationWorkspaceData = ({
     if (!sourceData) sourceData = [];
 
     const mapped = [];
-
     sourceData.forEach((line, i) => {
       let mainText = line.text;
       const parsedLineObj = parsedLyricsColorMap[i] || null;
       
       let pron = line.pronunciation || '';
       let displayPron = pron;
+
       if (typeof pron === 'string') {
         if (pron.startsWith('{')) {
           try {
@@ -85,6 +85,7 @@ export const useTranslationWorkspaceData = ({
         line.adlibs.forEach((adlib, j) => {
           let aPron = adlib.pronunciation || '';
           let aDisplayPron = aPron;
+
           if (typeof aPron === 'string') {
             if (aPron.startsWith('{')) {
               try {
@@ -121,7 +122,6 @@ export const useTranslationWorkspaceData = ({
   useEffect(() => {
     const loaded = loadSourceWorkspaceData();
     setWorkspaceData(loaded);
-    // Track spacingText inside the unsaved changes snapshot
     setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText }))));
     setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,14 +148,27 @@ export const useTranslationWorkspaceData = ({
         newData[index].lang = 'auto';
       }
       newData[index].displayPron = value;
-
       let currentPron = newData[index].pronunciation;
+
       if (newData[index]._meta.isAdlib) {
         newData[index].pronunciation = formatAdlibPronunciation(newData[index].displayText, value);
       } else if (currentPron && currentPron.startsWith('{')) {
         try {
           let p = JSON.parse(currentPron);
           p.full = value;
+          
+          // CORE UI FIX: Distribute space-separated edits perfectly to the parsed chunks!
+          if (newData[index].spacingText?.trim()) {
+              const newTransWords = value.split(/\s+/).filter(Boolean);
+              let tIdx = 0;
+              p.chunks.forEach(c => {
+                  if (c.type === 'foreign') {
+                      c.trans = newTransWords[tIdx] !== undefined ? newTransWords[tIdx] : '';
+                      tIdx++;
+                  }
+              });
+          }
+          
           newData[index].pronunciation = JSON.stringify(p);
         } catch (e) {
           newData[index].pronunciation = value;
@@ -169,10 +182,9 @@ export const useTranslationWorkspaceData = ({
       }
       newData[index].translation = value;
     } else {
-      // Safely catches and sets 'spacingText' implicitly 
       newData[index][field] = value;
     }
-
+    
     setWorkspaceData(newData);
   };
 
@@ -296,7 +308,6 @@ export const useTranslationWorkspaceData = ({
             importedLang = lines[0].replace('[lang:', '').replace(']', '').trim();
             lines.shift();
           }
-
           if (lines.length === 0) return;
 
           const originalText = lines[0];
@@ -351,6 +362,7 @@ export const useTranslationWorkspaceData = ({
         
         setNotification({ show: true, message: `Overwrote workspace data for ${importedCount} lines!`, progress: 100 });
         setTimeout(() => setNotification({ show: false }), 2500);
+
       } catch (err) {
         console.error("Text import error:", err);
         alert("Failed to parse text file.");

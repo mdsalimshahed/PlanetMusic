@@ -19,6 +19,7 @@ const StandardLine = ({
   pronString
 }) => {
   const currentTime = window.currentAudioTime || 0;
+  const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
 
   const renderColoredChar = (c, globalIdx) => {
     // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
@@ -27,14 +28,13 @@ const StandardLine = ({
     }
 
     let adlibProps = {};
-
     if (savedNode?.isSplit && !isFocused) {
       const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
       if (adlib && adlib.start !== null) {
         const start = adlib.start;
         const end = adlib.end !== null ? adlib.end : start + 5;
-        let initialClass = 'adlib-hidden';
 
+        let initialClass = 'adlib-hidden';
         if (isPlayingCurrentSong) {
           if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
           else if (currentTime > end) initialClass = 'adlib-visible';
@@ -58,7 +58,6 @@ const StandardLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -81,14 +80,14 @@ const StandardLine = ({
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
-      style.filter = isFocused 
-        ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
-        : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+      style.filter = isFocused
+         ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+         : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
     } else {
       style.color = activeColor;
-      style.textShadow = isFocused 
-        ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` 
-        : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      style.textShadow = isFocused
+         ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`
+         : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
@@ -101,7 +100,8 @@ const StandardLine = ({
     renderColoredChar,
     basePronStyle,
     isRTL,
-    isFocused
+    isFocused,
+    hasSpacingText
   );
 
   let shouldRenderBlockPron = false;
@@ -163,7 +163,6 @@ const StandardLine = ({
               {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
-
           <span
             className="main-lyrics-layer"
             style={{
