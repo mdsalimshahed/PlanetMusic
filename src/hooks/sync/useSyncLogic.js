@@ -14,7 +14,6 @@ export const useSyncEngine = ({
   loopRangeRef, setLoopRange,
   constrainedEndRef, setConstrainedEnd
 }) => {
-
   const lastSyncTimeRef = useRef(0);
 
   const autoTrackSyncPlayback = (time) => {
@@ -29,23 +28,21 @@ export const useSyncEngine = ({
     let newIdx = -1;
     
     // CRITICAL CPU FIX: O(1) Backwards traversal. 
-    // Instantly finds the active line without an O(N^2) inner loop.
     for (let i = wLines.length - 1; i >= 0; i--) {
         const item = wLines[i];
         if (item.type !== 'main' || item.ref.start === null) continue;
         
         if (time >= item.ref.start) {
             if (item.ref.end !== null && time > item.ref.end) {
-                newIdx = -1; // Time has passed this line's end, but hasn't reached the next line yet
+                newIdx = -1; 
             } else {
-                newIdx = i; // Time is actively inside this line
+                newIdx = i; 
             }
-            break; // Stop looping instantly once we find the target
+            break; 
         }
     }
     
     if (newIdx === -1) {
-        // Fallback for before the very first lyric
         for (let i = 0; i < wLines.length; i++) {
             if (wLines[i].type === 'main') {
                 if (wLines[i].ref.start === null) newIdx = i;
@@ -69,7 +66,6 @@ export const useSyncEngine = ({
       if (isSyncPlaying) {
         const time = workspaceClock.getCurrentTime();
         
-        // DRIFT SYNC THROTTLE
         const now = performance.now();
         if (now - lastSyncTimeRef.current > 2000) {
             if (syncYtVideoId && syncYtPlayerRef?.current) {
@@ -147,8 +143,6 @@ export const useSyncEngine = ({
   }, [isSyncPlaying, syncYtVideoId]);
 };
 
-// ... (Keep useSyncKeyboard and useSyncActions exactly as they are) ...
-
 // ------------------------------------------------------------------
 // 2. KEYBOARD: Handles manual syncing and spacebar controls
 // ------------------------------------------------------------------
@@ -157,7 +151,6 @@ export const useSyncKeyboard = ({
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
   loopRangeRef, isShowingAutoSync
 }) => {
-
   const getCurrentTime = () => {
     return workspaceClock.getCurrentTime();
   };
@@ -213,6 +206,7 @@ export const useSyncKeyboard = ({
         seekToTime(Math.max(0, getCurrentTime() - 1));
         return;
       }
+
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekToTime(getCurrentTime() + 1);
@@ -271,6 +265,7 @@ export const useSyncKeyboard = ({
           }
         }
         updateWorkspaceData(data);
+
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (isShowingAutoSync && currentItem.type === 'main') {
@@ -356,17 +351,14 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
-
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
-
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
                             text: overlapText
                         });
-
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -374,9 +366,7 @@ export const useSyncActions = ({
                     }
                     currentPos = segEnd;
                 }
-
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
-
                 const pronData = await quickTransliterate(adlibText);
 
                 adlibs.push({
@@ -412,7 +402,6 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
-
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
@@ -481,6 +470,7 @@ export const useSyncActions = ({
             nextManual++;
             continue;
           }
+
           const cleanAutoText = normalize(targetAutoLine.text);
           
           if (cleanAutoText.includes(cleanNextManual) && !cleanAutoText.startsWith(cleanManual)) {
@@ -535,6 +525,39 @@ export const useSyncActions = ({
     
     setNotification({ show: true, message: 'Sequentially mapped Auto-Sync timings to Manual Lyrics!', progress: 100 });
     setTimeout(() => setNotification({ show: false }), 2500);
+  };
+
+  // --- NEW OFFSET FEATURE ---
+  const handleShiftTimings = (offset) => {
+    if (!offset || isNaN(offset)) return;
+    const data = [...syncDataRef.current];
+    let shifted = false;
+    
+    const shiftNode = (node) => {
+      if (node.start !== null) {
+        node.start = Math.max(0, Number((node.start + offset).toFixed(3)));
+        shifted = true;
+      }
+      if (node.end !== null) {
+        node.end = Math.max(0, Number((node.end + offset).toFixed(3)));
+        shifted = true;
+      }
+    };
+
+    data.forEach(line => {
+      shiftNode(line);
+      if (line.isSplit && line.adlibs) {
+        line.adlibs.forEach(shiftNode);
+      }
+    });
+
+    if (shifted) {
+      updateWorkspaceData(data);
+      if (setNotification) {
+        setNotification({ show: true, message: `Shifted all timings by ${offset > 0 ? '+' : ''}${offset}s`, progress: 100 });
+        setTimeout(() => setNotification({ show: false }), 2000);
+      }
+    }
   };
 
   const handleAutoSyncDatabases = async (forceSync = false) => {
@@ -630,16 +653,17 @@ export const useSyncActions = ({
         }
         setNotification({ show: true, message: 'Imported plain lyrics.', progress: 100 });
       }
+
     } catch (error) {
       console.error(error); alert("Error fetching lyrics.");
       setNotification({ show: false });
-    } finally {
-       setIsLrcFetching(false);
-       setTimeout(() => setNotification({ show: false }), 3000);
+    } finally { 
+      setIsLrcFetching(false); 
+      setTimeout(() => setNotification({ show: false }), 3000);
     }
   };
 
   const handleTranslate = async () => {};
 
-  return { handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync };
+  return { handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, handleShiftTimings };
 };

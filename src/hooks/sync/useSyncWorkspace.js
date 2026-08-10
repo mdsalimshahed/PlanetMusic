@@ -23,12 +23,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
+
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
 
   const syncAudioRef = useRef(null);
   const syncYtPlayerRef = useRef(null);
   const activeLineRef = useRef(null);
+
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
   const constrainedEndRef = useRef(constrainedEnd);
@@ -78,6 +80,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setConstrainedEnd(null);
       setLoopRange(null);
       setManualSource(null);
+      
       if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
       if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
       cachedUrlsRef.current = { local: null, deezer: null };
@@ -93,8 +96,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     return sources;
   }, [customData.hasLocal, customData.deezer, customData.yt, selectedSong]);
 
-  const computedSource = manualSource && availableSources.includes(manualSource)
-    ? manualSource
+  const computedSource = manualSource && availableSources.includes(manualSource) 
+    ? manualSource 
     : (availableSources[0] || null);
 
   useEffect(() => {
@@ -111,6 +114,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
         setIsSyncPlaying(false);
         workspaceClock.pause();
+
         if (syncAudioRef.current) {
           syncAudioRef.current.pause();
           syncAudioRef.current.currentTime = 0;
@@ -160,7 +164,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             formData.append('arl_token', settings?.deezerArl || '');
             formData.append('quality', '1');
             formData.append('action', 'stream');
-            formData.append('obfuscate', 'true'); // Opt-In Flag
+            formData.append('obfuscate', 'true'); 
             
             const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
               method: 'POST',
@@ -169,7 +173,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
             if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
 
-            // --- CLIENT-SIDE DECRYPTION PIPELINE FOR SYNC WORKSPACE ---
             const buffer = await response.arrayBuffer();
             const data = new Uint8Array(buffer);
             
@@ -185,7 +188,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             const url = URL.createObjectURL(blob);
             cachedUrlsRef.current.deezer = url;
             setSyncAudioSrc(url);
-
           } catch (e) {
             console.error("Deezer buffer issue, falling back:", e);
             if (availableSources.includes('youtube')) setManualSource('youtube');
@@ -196,6 +198,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
         }
       }
     };
+
     loadSyncAudio();
   }, [isSyncMode, computedSource, selectedSong]);
 
@@ -280,7 +283,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   });
 
   const {
-      handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync
+      handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, handleShiftTimings
     } = useSyncActions({
     selectedSong, isSaved, customData, setCustomData, masterPalette,
     updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
@@ -291,11 +294,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const startSyncMode = async () => {
     if (!isSaved) return alert("Please add this song to your Vault first before syncing!");
+    
     if (availableSources.length === 0) {
       return alert("No full-length audio source available! Please add a Local MP3, Deezer link, or YouTube link to sync. iTunes Preview snippets are not allowed in the sync workspace.");
     }
+
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
     setIsSyncLoading(true);
+
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
     let initialData = [];
@@ -415,6 +421,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
-    availableSources, setManualSource
+    availableSources, setManualSource, handleShiftTimings
   };
 };

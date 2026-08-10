@@ -12,14 +12,19 @@ export const SyncWorkspace = ({
   syncAudioRef, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
   selectedSong, isShowingAutoSync, toggleWorkspaceMode, handleMapAutoSync,
-  availableSources, setManualSource, setNotification
+  availableSources, setManualSource, setNotification, handleShiftTimings
 }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
-  const cachedAdlibNodesRef = useRef([]); // DOM Cache Ref for Performance
+  const cachedAdlibNodesRef = useRef([]); 
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
+  
+  // Font Scale Control State - INITIALIZED TO 0.5 (50%)
+  const [lyricScale, setLyricScale] = useState(0.5);
+  const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
+  const currentFontSize = Math.max(12, 34 * lyricScale); // Prevents it from going completely microscopic
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
@@ -133,7 +138,6 @@ export const SyncWorkspace = ({
     }
   };
 
-  // --- DOM CACHE FOR ADLIB NODES ---
   useEffect(() => {
     const timer = setTimeout(() => {
       if (containerRef.current) {
@@ -153,7 +157,6 @@ export const SyncWorkspace = ({
       }
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
       
-      // Use cached DOM nodes instead of thrashing the DOM query selector
       const adlibNodes = cachedAdlibNodesRef.current;
       for (let i = 0; i < adlibNodes.length; i++) {
         const node = adlibNodes[i];
@@ -218,6 +221,7 @@ export const SyncWorkspace = ({
                 }
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
                 const pronData = await quickTransliterate(adlibText);
+
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -243,28 +247,31 @@ export const SyncWorkspace = ({
     <div className="sync-mode-container" style={{
         '--workspace-accent': accentColor,
         '--workspace-accent-glow': `color-mix(in srgb, ${accentColor} 25%, transparent)`,
-        '--player-accent': accentColor
+        '--player-accent': accentColor,
+        '--workspace-lyric-size': `${currentFontSize}px`
       }}>
-       
+      
       <div 
-          id="sync-yt-target-container" 
-          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+           id="sync-yt-target-container" 
+           style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
-         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button 
-                onClick={toggleWorkspaceMode} 
-                className="edit-links-btn"
+                 onClick={toggleWorkspaceMode} 
+                 className="edit-links-btn"
                 style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
             >
               {isShowingAutoSync ? 'Auto Sync Mode' : 'Manual Sync Mode'}
             </button>
-
+            <button className="edit-links-btn" onClick={cycleScale} style={{ background: 'rgba(255, 255, 255, 0.1)', borderColor: 'rgba(255, 255, 255, 0.2)', color: 'white', margin: 0 }}>
+              Text Size: {lyricScale * 100}%
+            </button>
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
-                  onClick={handleMapAutoSync} 
-                  className="edit-links-btn"
+                   onClick={handleMapAutoSync} 
+                   className="edit-links-btn"
                   style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
                   title="Map Auto-Sync timings to these manual lyrics"
               >
@@ -302,9 +309,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                        onClick={cycleSource} 
-                        style={{...cursorStyle, display: 'inline-block'}} 
-                        title={title}
+                         onClick={cycleSource} 
+                         style={{...cursorStyle, display: 'inline-block'}} 
+                         title={title}
                         onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -344,21 +351,35 @@ export const SyncWorkspace = ({
         <span className="precise-time">{formatPreciseTime(syncDuration)}</span>
       </div>
 
-      <div className="sync-speed-deck glass-panel">
-        <div className="speed-label-container">
-          <span>Speed: <strong>{playbackRate.toFixed(2)}x</strong></span>
-          {playbackRate !== 1.0 && (
-            <button className="speed-reset-btn" onClick={() => handleSpeedChange({ target: { value: 1.0 }})}>Reset</button>
-          )}
+      <div className="sync-controls-row">
+        <div className="sync-speed-deck glass-panel" style={{ flex: 1 }}>
+          <div className="speed-label-container">
+            <span>Speed: <strong>{playbackRate.toFixed(2)}x</strong></span>
+            {playbackRate !== 1.0 && (
+              <button className="speed-reset-btn" onClick={() => handleSpeedChange({ target: { value: 1.0 }})}>Reset</button>
+            )}
+          </div>
+          <input 
+              type="range" className="custom-slider speed-slider"
+              min="0.5" max="2.0" step="0.05"
+              value={playbackRate} onChange={handleSpeedChange}
+              style={{ '--progress': `${((playbackRate - 0.5) / 1.5) * 100}%` }}
+          />
+          <div className="speed-ticks">
+            <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
+          </div>
         </div>
-        <input 
-            type="range" className="custom-slider speed-slider"
-            min="0.5" max="2.0" step="0.05"
-            value={playbackRate} onChange={handleSpeedChange}
-            style={{ '--progress': `${((playbackRate - 0.5) / 1.5) * 100}%` }}
-        />
-        <div className="speed-ticks">
-          <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
+
+        <div className="sync-offset-deck glass-panel" style={{ flex: 1 }}>
+           <div className="speed-label-container">
+             <span>Global Offset (Shift Timings)</span>
+           </div>
+           <div className="offset-buttons">
+              <button className="offset-btn" onClick={() => handleShiftTimings(-1)} title="Shift all timings backward by 1 second">-1.0s</button>
+              <button className="offset-btn" onClick={() => handleShiftTimings(-0.1)} title="Shift all timings backward by 0.1 seconds">-0.1s</button>
+              <button className="offset-btn" onClick={() => handleShiftTimings(0.1)} title="Shift all timings forward by 0.1 seconds">+0.1s</button>
+              <button className="offset-btn" onClick={() => handleShiftTimings(1)} title="Shift all timings forward by 1 second">+1.0s</button>
+           </div>
         </div>
       </div>
 
@@ -385,7 +406,6 @@ export const SyncWorkspace = ({
               }
           }
 
-          // Combine raw sync line data with active spacing properties
           const populatedLineObj = {
             ...line,
             spacingText: line.spacingText || selectedSong?.syncData?.[item.lineIndex]?.spacingText || ''
