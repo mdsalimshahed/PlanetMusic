@@ -6,10 +6,10 @@ import { parseLyrics } from '../../../utils/songHelpers';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
-const LyricsDisplay = ({ 
-    isEditing, customData, handleDataChange, hasValidSyncData, 
-    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-    isPlaying, settings
+const LyricsDisplay = ({     
+  isEditing, customData, handleDataChange, hasValidSyncData,     
+  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,     
+  isPlaying, settings 
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -33,7 +33,7 @@ const LyricsDisplay = ({
     liveParsedLyrics.forEach((line, i) => {
       if (!currentGroup || line.sectionHeader || line.singer !== currentGroup.singer) {
         if (currentGroup) groups.push(currentGroup);
-        
+                 
         let borderColor = line.color || '#ffffff';
         if (line.isGradient) {
           const firstArtist = line.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean)[0]?.trim();
@@ -53,7 +53,7 @@ const LyricsDisplay = ({
       }
       currentGroup.lines.push(line);
     });
-    
+         
     if (currentGroup) groups.push(currentGroup);
     return groups;
   }, [liveParsedLyrics, lyricsViewMode, selectedSong?.artistName, masterPalette]);
@@ -83,7 +83,6 @@ const LyricsDisplay = ({
     }
 
     const chars = getGraphemes(item.text || '');
-
     return chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let style = {};
@@ -107,13 +106,10 @@ const LyricsDisplay = ({
           textShadow: `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`
         };
       }
-
       return <span key={cIdx} style={style}>{char}</span>;
     });
   };
 
-  // HIGHLY OPTIMIZED RENDERER FOR PLAIN TEXT MODE
-  // Wraps the entire segment in a single span instead of mapping every single character
   const renderPlainColoredText = (item) => {
     let artists = item.artists || [];
     if (artists.length === 0 && item.singer) {
@@ -138,19 +134,29 @@ const LyricsDisplay = ({
       activeColor = item.color || '#ffffff';
     }
 
-    let style = {};
+    const chars = getGraphemes(item.text || '');
+    return chars.map((char, cIdx) => {
+      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
+      let style = {};
 
-    if (isGradient) {
-      style = {
-        backgroundImage: gradientStyle,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent'
-      };
-    } else {
-      style = { color: activeColor };
-    }
+      if (isPunct && char.trim() !== '') {
+        style = {
+          color: '#fbbf24',
+          WebkitTextFillColor: '#fbbf24',
+          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)'
+        };
+      } else if (isGradient) {
+        style = {
+          backgroundImage: gradientStyle,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        };
+      } else {
+        style = { color: activeColor };
+      }
 
-    return <span style={style}>{item.text}</span>;
+      return <span key={cIdx} style={style}>{char}</span>;
+    });
   };
 
   const renderColoredSingerHeader = (singerString) => {
@@ -158,9 +164,9 @@ const LyricsDisplay = ({
       const defaultSinger = selectedSong?.artistName || 'Default Artist';
       return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
     }
-    
+         
     const artists = singerString.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
-    
+         
     return artists.map((artist, aIdx) => {
       const artistColor = masterPalette[artist] || '#ffffff';
       return (
@@ -194,7 +200,7 @@ const LyricsDisplay = ({
     const pauseDecayFactor = 16 / Math.max((settings?.eqFadeOutTime ?? 500), 16);
     let idleFrames = 0; 
     const numBars = 40;
-
+    
     let cw = canvas.clientWidth;
     let ch = canvas.clientHeight;
     canvas.width = cw;
@@ -213,7 +219,7 @@ const LyricsDisplay = ({
     const renderEQ = () => {
       const displayWidth = cw;
       const displayHeight = ch;
-      
+             
       if (displayWidth === 0 || displayHeight === 0) {
         rafId = requestAnimationFrame(renderEQ);
         return;
@@ -221,26 +227,25 @@ const LyricsDisplay = ({
 
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
       const scales = eqScalesRef.current;
-      
+             
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
-        idleFrames = 0;
-          
+        idleFrames = 0;           
         window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
         const freqData = window.globalFreqData;
         const bufferLength = freqData.length;
-        
+                 
         for (let i = 0; i < numBars; i++) {
           const percent = i / numBars;
           const dataIndex = Math.floor(Math.pow(percent, 1.2) * (bufferLength * 0.6));
           const safeIndex = Math.min(dataIndex, bufferLength - 1);
-          
+                     
           const raw = freqData[safeIndex] || 0;
           const normalized = raw / 255;
           const emphasized = Math.pow(normalized, 3);
-          
+                     
           const dampener = 0.6 + (percent * 0.6); 
           const targetScale = 0.05 + (emphasized * 1.2 * dampener);
-          
+                     
           if (targetScale > scales[i]) {
             scales[i] += (targetScale - scales[i]) * 0.75; 
           } else {
@@ -258,7 +263,7 @@ const LyricsDisplay = ({
             allSettled = false;
           }
         }
-        
+                 
         if (allSettled) idleFrames++;
       }
 
@@ -302,7 +307,7 @@ const LyricsDisplay = ({
 
   useEffect(() => {
     if (isEditing) return;
-    
+         
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
@@ -312,7 +317,7 @@ const LyricsDisplay = ({
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
-        
+                 
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
             start: parseFloat(node.dataset.start),
@@ -337,11 +342,10 @@ const LyricsDisplay = ({
 
     for (let i = 0; i < lines.length; i++) {
         const { start, end, nextStart } = lines[i];
-
         if (!isNaN(start) && time >= start) {
             const isBeforeEnd = isNaN(end) || time <= end;
             const isBeforeNext = isNaN(nextStart) || time < nextStart;
-            
+                         
             if (isBeforeEnd && isBeforeNext) {
                 newActiveIndex = i;
                 break;
@@ -352,19 +356,19 @@ const LyricsDisplay = ({
     for (let i = 0; i < lines.length; i++) {
         const item = lines[i];
         const shouldBeActive = (i === newActiveIndex);
-        
+                 
         if (shouldBeActive && !item.isActive) {
             item.node.classList.add('active');
             item.isActive = true;
-            
+                         
             if (lyricsViewMode === 'live' && containerRef.current) {
                 const offsetTop = item.node.offsetTop;
                 const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
-                
-                containerRef.current.scrollTo({ 
-                  top: scrollPos, 
-                  behavior: settings?.disableAnimations ? 'auto' : 'smooth' 
-                });
+                                 
+                containerRef.current.scrollTo({
+                   top: scrollPos,
+                   behavior: settings?.disableAnimations ? 'auto' : 'smooth' 
+                 });
             }
         } else if (!shouldBeActive && item.isActive) {
             item.node.classList.remove('active');
@@ -418,7 +422,7 @@ const LyricsDisplay = ({
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
-    
+         
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
@@ -443,26 +447,25 @@ const LyricsDisplay = ({
 
   const handlePaste = (e) => {
     const html = e.clipboardData.getData('text/html');
-
     if (html) {
       e.preventDefault();
-      
+             
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
-      
+             
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
-          
+                     
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
-          
+                     
           const isBold = tag === 'b' || tag === 'strong' || fw === 'bold' || fw === '700' || parseInt(fw) >= 600;
           const isItalic = tag === 'i' || tag === 'em' || style.fontStyle === 'italic';
-          
+                     
           if (innerText.trim()) {
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
@@ -473,15 +476,15 @@ const LyricsDisplay = ({
 
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
-          
+                     
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
           return innerText;
         }
         return '';
       };
-      
+             
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
-      
+             
       if (document.queryCommandSupported('insertText')) {
         document.execCommand('insertText', false, markdownText);
       } else {
@@ -517,7 +520,7 @@ const LyricsDisplay = ({
               </span>
               <span className="artist-preview-badge">{editParsedLyrics.length} lines</span>
             </div>
-            
+                         
             <div className="artist-preview-scroll">
               {editParsedLyrics.length > 0 ? (
                 editParsedLyrics.map((line, idx) => {
@@ -549,8 +552,8 @@ const LyricsDisplay = ({
         </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-          className="live-lyrics-preview" 
-          ref={containerRef}
+           className="live-lyrics-preview" 
+           ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -604,7 +607,7 @@ const LyricsDisplay = ({
                  />
              )
           })}
-          
+                     
           <FocusedAdlibsTracker 
             syncData={selectedSong?.syncData}
             handleLineClick={handleLineClick}
@@ -631,15 +634,14 @@ const LyricsDisplay = ({
                     {displayHeader}
                   </div>
                 )}
-                
+                                 
                 <div 
-                  className="plain-artist-block" 
-                  style={{ borderLeftColor: group.borderColor }}
+                   className="plain-artist-block" 
+                   style={{ borderLeftColor: group.borderColor }}
                 >
                   <div className="plain-artist-name">
                     {renderColoredSingerHeader(group.singer)}
                   </div>
-
                   <div className="plain-block-lines">
                     {group.lines.map((line, lIdx) => (
                       <div key={lIdx} className="plain-lyric-line" dir="auto">
@@ -658,7 +660,6 @@ const LyricsDisplay = ({
                       </div>
                     ))}
                   </div>
-
                 </div>
               </React.Fragment>
             )})
