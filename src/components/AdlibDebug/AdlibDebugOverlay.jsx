@@ -23,13 +23,14 @@ const getClosestPoints = (r1, r2) => {
 };
 
 const AdlibDebugOverlay = ({ 
-  currentSingerBg, 
-  isSingerVisible, 
-  masterPalette,
+   currentSingerBg, 
+   isSingerVisible, 
+   masterPalette,
   selectedSong
 }) => {
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
+  const cachedFocusedAdlibsRef = useRef([]);
 
   // HUD UI States
   const [isIdle, setIsIdle] = useState(true);
@@ -48,10 +49,18 @@ const AdlibDebugOverlay = ({
     syncDataRef.current = selectedSong?.syncData || [];
   }, [selectedSong?.syncData]);
 
+  // --- DOM CACHE FOR DEBUG OVERLAY ---
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      cachedFocusedAdlibsRef.current = Array.from(document.querySelectorAll('.focused-adlib-line'));
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [selectedSong?.syncData]);
+
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
-      
+         
   const isMulti = activeNames.length > 1;
   const cols = Math.max(2, activeNames.length);
 
@@ -86,6 +95,7 @@ const AdlibDebugOverlay = ({
         }
       }
     }
+
     if (hasValidBounds) {
       return {
         top: minTop - overlayRect.top,
@@ -103,7 +113,8 @@ const AdlibDebugOverlay = ({
     const trackActiveLyrics = () => {
       if (!overlayRef.current) return;
       
-      const activeAdlibs = document.querySelectorAll('.focused-adlib-line.active');
+      // Use cached DOM nodes instead of `document.querySelectorAll` to fix DOM thrashing
+      const activeAdlibs = cachedFocusedAdlibsRef.current.filter(node => node.classList.contains('active'));
       
       // ZERO CPU IDLE CHECK
       setIsIdle(activeAdlibs.length === 0);
@@ -139,6 +150,7 @@ const AdlibDebugOverlay = ({
       const safeBottom = canvasBottom - EDGE_PAD_Y;
 
       const activeLine = document.querySelector('.focused-line.active');
+
       const newBoxes = [];
 
       if (activeLine) {
@@ -211,7 +223,6 @@ const AdlibDebugOverlay = ({
           lyricsClipped = true;
         }
       }
-
       if (singerBox) {
         if (
           singerBox.left < canvasLeft ||
@@ -330,6 +341,7 @@ const AdlibDebugOverlay = ({
           });
         });
       }
+
       setSafeZones(newSafeZones);
 
       adlibBoxes.forEach((adlibBox, idx) => {
@@ -351,7 +363,6 @@ const AdlibDebugOverlay = ({
 
         const centerX = adlibBox.left + adlibBox.width / 2;
         const centerY = adlibBox.top + adlibBox.height / 2;
-
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
         const actualRot = parseFloat(adlibBox.rotation) || 0;
@@ -498,10 +509,10 @@ const AdlibDebugOverlay = ({
         {radialLines.map(line => (
           <g key={line.id}>
             <line 
-              x1={line.x1} y1={line.y1} 
-              x2={line.x2} y2={line.y2} 
-              stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
-            />
+               x1={line.x1} y1={line.y1} 
+               x2={line.x2} y2={line.y2} 
+               stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
+             />
             <circle cx={line.x2} cy={line.y2} r="4" fill="#ff00ff" />
             <circle cx={line.x1} cy={line.y1} r="3" fill="#ffffff" />
           </g>
@@ -537,11 +548,11 @@ const AdlibDebugOverlay = ({
               <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 <div>
                   <strong>Adlib {stat.id + 1} Radial:</strong>
-                  {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}° `}
+                  {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}°`}
                   {stat.isRotationCorrect ? (
-                    <span style={{color: '#4ade80'}}>✓ Valid</span>
+                    <span style={{color: '#4ade80'}}> ✓ Valid</span>
                   ) : (
-                    <span style={{color: '#ef4444'}}>✕ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
+                    <span style={{color: '#ef4444'}}> ✗ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
                   )}
                 </div>
                 <div>
@@ -549,7 +560,7 @@ const AdlibDebugOverlay = ({
                     stat.isCorrect ? (
                       <span style={{color: '#4ade80'}}>✓ Correct Quadrant</span>
                     ) : (
-                      <span style={{color: '#ef4444'}}>✕ Wrong (in {stat.quadArtist}'s quad)</span>
+                      <span style={{color: '#ef4444'}}>✗ Wrong (in {stat.quadArtist}'s quad)</span>
                     )
                   ) : 'Full Screen'}
                 </div>
@@ -590,8 +601,8 @@ const AdlibDebugOverlay = ({
             
             return (
               <div 
-                key={cellIdx} 
-                className={`debug-matrix-cell ${isDimmed ? 'dimmed' : ''}`}
+                 key={cellIdx} 
+                 className={`debug-matrix-cell ${isDimmed ? 'dimmed' : ''}`}
                 style={{ borderColor: artistColor }}
               >
               </div>

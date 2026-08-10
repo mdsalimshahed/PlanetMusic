@@ -17,6 +17,7 @@ export const SyncWorkspace = ({
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
+  const cachedAdlibNodesRef = useRef([]); // DOM Cache Ref for Performance
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
 
@@ -132,6 +133,16 @@ export const SyncWorkspace = ({
     }
   };
 
+  // --- DOM CACHE FOR ADLIB NODES ---
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        cachedAdlibNodesRef.current = Array.from(containerRef.current.querySelectorAll('.workspace-adlib-line'));
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [workspaceLines]);
+
   useEffect(() => {
     const handleWorkspaceTime = (e) => {
       const time = e.detail;
@@ -141,18 +152,18 @@ export const SyncWorkspace = ({
          progressSliderRef.current.style.setProperty('--progress', `${(time / max) * 100}%`);
       }
       if (preciseTimeRef.current) preciseTimeRef.current.innerText = formatPreciseTime(time);
-      if (containerRef.current) {
-        const adlibNodes = containerRef.current.querySelectorAll('.workspace-adlib-line');
-        for (let i = 0; i < adlibNodes.length; i++) {
-          const node = adlibNodes[i];
-          const start = parseFloat(node.dataset.start);
-          const end = parseFloat(node.dataset.end);
-          if (!isNaN(start)) {
-            if (time >= start && time <= end) {
-              if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
-            } else {
-              if (node.classList.contains('adlib-playing')) node.classList.remove('adlib-playing');
-            }
+      
+      // Use cached DOM nodes instead of thrashing the DOM query selector
+      const adlibNodes = cachedAdlibNodesRef.current;
+      for (let i = 0; i < adlibNodes.length; i++) {
+        const node = adlibNodes[i];
+        const start = parseFloat(node.dataset.start);
+        const end = parseFloat(node.dataset.end);
+        if (!isNaN(start)) {
+          if (time >= start && time <= end) {
+            if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
+          } else {
+            if (node.classList.contains('adlib-playing')) node.classList.remove('adlib-playing');
           }
         }
       }
