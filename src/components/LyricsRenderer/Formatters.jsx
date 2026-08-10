@@ -86,7 +86,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
 
-  // --- ADDITION: 1:1 Word Mapping for Manually Spaced Lyrics ---
+  // --- 1:1 Word Mapping for Manually Spaced Lyrics ---
   if (hasSpacingText) {
     const wordBlocks = [];
     let currentBlock = [];
@@ -119,6 +119,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         
         if (isEnglish) {
            alignedChunks.push({ type: 'en', trans: '', chars: block });
+           transIdx++; // FIX: Advance the pointer so the skipped English transliteration is discarded!
         } else {
            const assignedTrans = transWords[transIdx] || '';
            transIdx++;
