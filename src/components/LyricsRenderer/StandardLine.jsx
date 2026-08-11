@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/StandardLine.jsx --- */
 import React from 'react';
-import { isPunctuationChar, normalizeTrans } from './textUtils';
+import { isPunctuationChar, normalizeTrans, isCJ } from './textUtils';
 import { alignChunksWithTransliteration, renderFormattedTranslation } from './Formatters';
 
 const StandardLine = ({
@@ -22,7 +22,6 @@ const StandardLine = ({
   const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
 
   const renderColoredChar = (c, globalIdx) => {
-    // Match on Code Point Index instead of Grapheme to catch correct Ad-libs seamlessly
     if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd)) {
       return null;
     }
@@ -58,6 +57,7 @@ const StandardLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
+
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -106,6 +106,7 @@ const StandardLine = ({
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
+  const isCJKLine = chars.some(c => isCJ(c.char));
 
   if (isRTL) {
     if (fullTrans) {
@@ -116,8 +117,14 @@ const StandardLine = ({
       shouldRenderBlockPron = true;
     }
   } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-    displayPronString = normalizeTrans(pronString);
-    shouldRenderBlockPron = true;
+    if (!isCJKLine && !parsedChunks) {
+      const cleanOrig = lineObj.text.toLowerCase().replace(/[\W_]+/g, '');
+      const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
+      if (cleanOrig !== cleanPron) {
+        displayPronString = normalizeTrans(pronString);
+        shouldRenderBlockPron = true;
+      }
+    }
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
@@ -163,6 +170,7 @@ const StandardLine = ({
               {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
+
           <span
             className="main-lyrics-layer"
             style={{
@@ -183,6 +191,7 @@ const StandardLine = ({
           </span>
         </span>
       </span>
+
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {renderFormattedTranslation(displayPronString, isFocused)}

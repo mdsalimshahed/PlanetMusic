@@ -19,6 +19,7 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
+
   const blocks = [];
   let currentBlock = null;
 
@@ -83,21 +84,16 @@ const SplitLine = ({
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
-  
-  const isCJKLine = chars.some(c => isCJ(c.char));
+
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
 
-  // SOURCE OF TRUTH OVERRIDE: If the user inputted a custom string in the workspace, 
-  // it forces the chunker to use it and discards the hidden JSON chunks.
   if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
     effectiveFullTrans = pronString;
-    effectiveParsedChunks = null; 
+    effectiveParsedChunks = null;
   }
 
   const renderedMainElements = mainBlocks.map((blk, bIdx) => {
-    // FIX: Spaces left between adlibs are pure punctuation blocks. 
-    // They must NOT inherit the full sentence's transliteration, which caused the extra "MAGE" bug.
     const isOnlyPunct = blk.chars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
     const alignedMainJSX = alignChunksWithTransliteration(
@@ -179,7 +175,7 @@ const SplitLine = ({
 
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      adlibTranslation = adlibTranslation.replace(/[()（） ]/g, '').trim();
+      adlibTranslation = adlibTranslation.replace(/[()  ]/g, '').trim();
     }
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
@@ -210,9 +206,9 @@ const SplitLine = ({
         }}
       >
         {adlibTranslation ? (
-          <span 
-             className={`chunk-translation ${transClass}`} 
-             dir="ltr"
+          <span
+              className={`chunk-translation ${transClass}`}
+              dir="ltr"
              style={{
                position: 'absolute',
                top: 0,
@@ -230,6 +226,7 @@ const SplitLine = ({
             {renderFormattedTranslation(adlibTranslation)}
           </span>
         ) : null}
+
         <span
           className="primary-text"
           style={{
@@ -251,8 +248,9 @@ const SplitLine = ({
     );
   });
 
-  // Determines whether to print the pronunciation flush-left at the very bottom of the entire line 
   let displayPronString = null;
+  const isCJKLine = chars.some(c => isCJ(c.char));
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -260,8 +258,7 @@ const SplitLine = ({
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
     }
   } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-    // Only render at the bottom if the engine did NOT render it inline (which it does for CJK and Spaced)
-    if (!hasSpacingText && !isCJKLine) {
+    if (!isCJKLine && !parsedChunks) {
        const cleanOrig = lineObj.text.toLowerCase().replace(/[\W_]+/g, '');
        const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
        if (cleanOrig !== cleanPron) {
@@ -271,18 +268,17 @@ const SplitLine = ({
   }
 
   const hasMainTranslation = !!displayTranslation;
-  
   const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
     let t = cleanTranslationText(a.translation);
-    return t && t.replace(/[()（） ]/g, '').trim().length > 0;
+    return t && t.replace(/[()  ]/g, '').trim().length > 0;
   });
 
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
   const translationSpaceCalc = 'calc(var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-top-padding, 8px) + 0.5vh)';
 
   return (
-    <div 
-       style={{
+    <div
+        style={{
          display: 'flex',
          flexDirection: 'column',
          alignItems: 'flex-start',
@@ -327,9 +323,9 @@ const SplitLine = ({
           }}
         >
           {displayTranslation ? (
-            <span 
-               className={`chunk-translation ${transClass}`} 
-               dir="ltr"
+            <span
+                className={`chunk-translation ${transClass}`}
+                dir="ltr"
                style={{
                  position: 'absolute',
                  top: 0,
@@ -348,8 +344,10 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
+
           {renderedMainElements}
         </span>
+
         {renderedAdlibElements}
       </span>
 
@@ -358,6 +356,7 @@ const SplitLine = ({
           {renderFormattedTranslation(displayPronString)}
         </div>
       )}
+
     </div>
   );
 };

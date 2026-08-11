@@ -5,12 +5,13 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
+
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
-      const shadow = isFocused 
-        ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+      const shadow = isFocused
+         ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
@@ -65,7 +66,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
-    const shouldBreak = hasSpacingText ? isSpace : (isSpace || isCJ(char));
+    const shouldBreak = hasSpacingText ? isSpace : isSpace;
 
     if (shouldBreak) {
       flushWord(i);
@@ -84,185 +85,123 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
 
-  // --- 1:1 Word Mapping for Manually Spaced Lyrics ---
-  if (hasSpacingText) {
-    const wordBlocks = [];
-    let currentBlock = [];
-    
-    chars.forEach((c) => {
-      if (/\s/.test(c.char)) {
-        if (currentBlock.length > 0) {
-          wordBlocks.push(currentBlock);
-          currentBlock = [];
+  // 1. Structured JSON Organic Chunks
+  if (parsedChunks && Array.isArray(parsedChunks)) {
+    let charIdxPointer = 0;
+    parsedChunks.forEach((chunk) => {
+      const chunkText = chunk.text || '';
+      const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
+      let charsToConsume = 0;
+      let tempPointer = charIdxPointer;
+
+      if (nonSpaceGraphemes.length > 0) {
+        let matched = 0;
+        while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
+          if (!/\s/.test(chars[tempPointer].char)) {
+            matched++;
+          }
+          charsToConsume++;
+          tempPointer++;
         }
-        wordBlocks.push([c]);
       } else {
-        currentBlock.push(c);
+        while (tempPointer < chars.length && /\s/.test(chars[tempPointer].char)) {
+          charsToConsume++;
+          tempPointer++;
+        }
+      }
+
+      const chunkChars = chars.slice(charIdxPointer, charIdxPointer + charsToConsume);
+      charIdxPointer += charsToConsume;
+
+      if (chunkChars.length > 0) {
+        const cClean = chunkText.toLowerCase().replace(/[\W_]+/g, '');
+        const tClean = (chunk.trans || '').toLowerCase().replace(/[\W_]+/g, '');
+        
+        if (chunk.type === 'en' || (cClean && cClean === tClean)) {
+           alignedChunks.push({ type: 'en', trans: '', chars: chunkChars });
+        } else {
+           alignedChunks.push({ type: chunk.type || 'foreign', trans: chunk.trans, chars: chunkChars });
+        }
       }
     });
-    if (currentBlock.length > 0) wordBlocks.push(currentBlock);
-
-    const transString = fullTrans || (parsedChunks && parsedChunks.map(p => p.trans || p.text).join(' ')) || '';
-    const transWords = transString.split(/\s+/).filter(Boolean);
-    let transIdx = 0;
-
-    wordBlocks.forEach((block) => {
-      const isSpaceBlock = block.length === 1 && /\s/.test(block[0].char);
-      if (isSpaceBlock) {
-        alignedChunks.push({ type: 'main', trans: '', chars: block });
-        return;
-      }
-
-      const blockText = block.map(c => c.char).join('');
-      const hasCJK = block.some(c => isCJ(c.char));
-      const isLatin = /^[\p{Script=Latin}\d\p{P}\p{S}\s]+$/u.test(blockText);
-
-      // If it contains Japanese/Chinese characters, it consumes exactly 1 transliteration token
-      if (hasCJK || !isLatin) {
-         const assignedTrans = transWords[transIdx] || '';
-         transIdx++;
-         alignedChunks.push({ type: 'foreign', trans: assignedTrans, chars: block });
-      } 
-      // If it's an English/Latin block, safely consume tokens to stay synced but mute the rendering
-      else {
-         const bClean = blockText.toLowerCase().replace(/[\W_]+/g, '');
-         if (!bClean) {
-            alignedChunks.push({ type: 'en', trans: '', chars: block });
-         } else {
-            let tCleanAccum = '';
-            while (transIdx < transWords.length) {
-               const currTrans = transWords[transIdx];
-               const currClean = currTrans.toLowerCase().replace(/[\W_]+/g, '');
-               tCleanAccum += currClean;
-               transIdx++;
-               
-               // If the accumulated API tokens match or exceed the English word (e.g. "man'" + "s" >= "mans")
-               if (tCleanAccum === bClean || tCleanAccum.length >= bClean.length) {
-                   break;
-               }
-            }
-            alignedChunks.push({ type: 'en', trans: '', chars: block });
-         }
-      }
-    });
-  } 
-  // --- Legacy / Unspaced Mapping ---
-  else if (parsedChunks && Array.isArray(parsedChunks)) {
-    const isCJKLine = chars.some(c => isCJ(c.char));
     
+    if (charIdxPointer < chars.length) {
+      alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
+    }
+  } 
+  // 2. Organic Spaced Fallback for CJK with English
+  else {
+    const isCJKLine = chars.some(c => isCJ(c.char));
     if (isCJKLine) {
       const origString = chars.map(c => c.char).join('');
-      const transString = fullTrans || parsedChunks.map(p => p.trans || p.text).join(' ');
-      const hasLatinWords = /[\p{Script=Latin}\d]{2,}/u.test(origString); 
+      const transString = fullTrans || '';
       
-      if (!hasLatinWords) {
-        alignedChunks = [{ type: 'main', trans: transString, chars: chars }];
-      } else {
-        // CJK Line with English: Split into separate chunks so English parts don't get redundant Romaji
-        let blocks = [];
-        let currentBlock = [];
-        let isLatinMode = null;
-
-        chars.forEach(c => {
-          const isLatin = /^[\p{Script=Latin}\d\s'’".,!?:\-&()\[\]]+$/u.test(c.char);
-          if (isLatinMode === null) {
-            isLatinMode = isLatin;
-            currentBlock.push(c);
-          } else if (isLatinMode === isLatin) {
-            currentBlock.push(c);
-          } else {
-            blocks.push({ isLatin: isLatinMode, chars: currentBlock });
-            isLatinMode = isLatin;
-            currentBlock = [c];
-          }
-        });
-        if (currentBlock.length > 0) blocks.push({ isLatin: isLatinMode, chars: currentBlock });
-
-        const transWords = transString.split(/\s+/).filter(Boolean);
-        let tIdx = 0;
-
-        blocks.forEach(b => {
-          const blockStr = b.chars.map(c => c.char).join('');
-          if (b.isLatin && blockStr.trim().length > 0) {
-            const latinWords = blockStr.split(/\s+/).filter(Boolean);
-            latinWords.forEach(lw => {
-              const lwClean = lw.toLowerCase().replace(/[\W_]+/g, '');
-              if (tIdx < transWords.length) {
-                 const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
-                 if (twClean === lwClean || twClean.includes(lwClean) || lwClean.includes(twClean)) {
-                     tIdx++;
-                 }
-              }
-            });
-            alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
-          } else if (!b.isLatin) {
-            let cjkTrans = [];
-            const nextLatinBlock = blocks.find(nb => nb.isLatin && nb !== b && blocks.indexOf(nb) > blocks.indexOf(b) && nb.chars.map(c=>c.char).join('').trim().length > 0);
-            const nextLatinFirstWord = nextLatinBlock ? nextLatinBlock.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0] : null;
-
-            while (tIdx < transWords.length) {
-              if (nextLatinFirstWord) {
-                 const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
-                 const nlwClean = nextLatinFirstWord.toLowerCase().replace(/[\W_]+/g, '');
-                 if (twClean === nlwClean) {
-                    break; 
-                 }
-              }
-              cjkTrans.push(transWords[tIdx]);
-              tIdx++;
-            }
-            alignedChunks.push({ type: 'main', trans: cjkTrans.join(' '), chars: b.chars });
-          } else {
-            alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
-          }
-        });
-      }
-    } else {
-      // Non-CJK API Parsing
-      let charIdxPointer = 0;
-      parsedChunks.forEach((chunk) => {
-        const chunkText = chunk.text || '';
-        const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
-        let charsToConsume = 0;
-        let tempPointer = charIdxPointer;
-
-        if (nonSpaceGraphemes.length > 0) {
-          let matched = 0;
-          while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
-            if (!/\s/.test(chars[tempPointer].char)) {
-              matched++;
-            }
-            charsToConsume++;
-            tempPointer++;
-          }
+      let blocks = [];
+      let currentBlock = [];
+      let isLatinMode = null;
+      
+      chars.forEach(c => {
+        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(c.char);
+        if (isLatinMode === null) {
+          isLatinMode = isLatin;
+          currentBlock.push(c);
+        } else if (isLatinMode === isLatin) {
+          currentBlock.push(c);
         } else {
-          while (tempPointer < chars.length && /\s/.test(chars[tempPointer].char)) {
-            charsToConsume++;
-            tempPointer++;
-          }
-        }
-
-        const chunkChars = chars.slice(charIdxPointer, charIdxPointer + charsToConsume);
-        charIdxPointer += charsToConsume;
-
-        if (chunkChars.length > 0) {
-          const cClean = chunkText.toLowerCase().replace(/[\W_]+/g, '');
-          const tClean = (chunk.trans || '').toLowerCase().replace(/[\W_]+/g, '');
-          if (cClean && cClean === tClean) {
-             alignedChunks.push({ type: 'en', trans: '', chars: chunkChars });
-          } else {
-             alignedChunks.push({ type: chunk.type, trans: chunk.trans, chars: chunkChars });
-          }
+          blocks.push({ isLatin: isLatinMode, chars: currentBlock });
+          isLatinMode = isLatin;
+          currentBlock = [c];
         }
       });
+      if (currentBlock.length > 0) blocks.push({ isLatin: isLatinMode, chars: currentBlock });
+
+      const transWords = transString.split(/\s+/).filter(Boolean);
+      let tIdx = 0;
       
-      if (charIdxPointer < chars.length) {
-        alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
-      }
+      blocks.forEach(b => {
+        const blockStr = b.chars.map(c => c.char).join('');
+        if (b.isLatin && blockStr.trim().length > 0) {
+          const latinWords = blockStr.split(/\s+/).filter(Boolean);
+          latinWords.forEach(lw => {
+            const lwClean = lw.toLowerCase().replace(/[\W_]+/g, '');
+            if (tIdx < transWords.length) {
+               const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
+               if (twClean === lwClean || twClean.includes(lwClean) || lwClean.includes(twClean)) {
+                   tIdx++;
+               }
+            }
+          });
+          alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
+        } else if (!b.isLatin) {
+          let cjkTrans = [];
+          const nextLatinBlock = blocks.find(nb => nb.isLatin && nb !== b && blocks.indexOf(nb) > blocks.indexOf(b) && nb.chars.map(c=>c.char).join('').trim().length > 0);
+          const nextLatinFirstWord = nextLatinBlock ? nextLatinBlock.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0] : null;
+          const nlwClean = nextLatinFirstWord ? nextLatinFirstWord.toLowerCase().replace(/[\W_]+/g, '') : '';
+
+          while (tIdx < transWords.length) {
+            if (nlwClean) {
+              let matchFound = false;
+              let lookAhead = '';
+              for (let i = tIdx; i < Math.min(tIdx + 4, transWords.length); i++) {
+                lookAhead += transWords[i].toLowerCase().replace(/[\W_]+/g, '');
+                if (lookAhead === nlwClean) {
+                  matchFound = true;
+                  break;
+                }
+              }
+              if (matchFound) break;
+            }
+            cjkTrans.push(transWords[tIdx]);
+            tIdx++;
+          }
+          alignedChunks.push({ type: 'main', trans: cjkTrans.join(' '), chars: b.chars });
+        } else {
+          alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
+        }
+      });
+    } else {
+      alignedChunks = [{ type: 'main', trans: fullTrans || '', chars: chars }];
     }
-  } else {
-    const isCJKLine = chars.some(c => isCJ(c.char));
-    alignedChunks = [{ type: 'main', trans: isCJKLine ? (fullTrans || '') : '', chars: chars }];
   }
 
   return alignedChunks.map((chunk, chunkIdx) => {

@@ -1,7 +1,6 @@
 /* --- src/services/transliterator.js --- */
 import { numberToEnglishWords } from '../utils/numberToWords';
 
-// Clear legacy memory caches from localStorage
 try {
   localStorage.removeItem('globalTranslationCache');
   localStorage.removeItem('pm_translation_memory_v1');
@@ -25,8 +24,8 @@ const getGoogleData = async (text, sl = 'auto') => {
     
     let translation = '';
     let transliteration = '';
-    let srcLang = data?.[2] || 'auto'; // Extracted directly from Google's response
-    
+    let srcLang = data?.[2] || 'auto';
+
     if (data && data[0]) {
       for (let i = 0; i < data[0].length; i++) {
         if (data[0][i][0] && data[0][i][1]) {
@@ -52,47 +51,10 @@ const getGoogleData = async (text, sl = 'auto') => {
   }
 };
 
-const fetchNumberTranslation = async (engWord, tl) => {
-  if (tl === 'auto' || tl === 'en') return engWord;
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${encodeURIComponent(tl)}&dt=t&dt=rm&q=${encodeURIComponent(engWord)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    let translation = '';
-    let transliteration = '';
-    
-    if (data && data[0]) {
-      for (let i = 0; i < data[0].length; i++) {
-        if (data[0][i][0] && data[0][i][1]) {
-          translation += data[0][i][0];
-        }
-      }
-      const last = data[0][data[0].length - 1];
-      if (last && (last[2] || last[3]) && !last[1]) {
-        transliteration = last[2] || last[3] || '';
-      } else if (data[0].length > 1) {
-        const possibleRom = data[0].find(item => item[2] || item[3]);
-        if (possibleRom) transliteration = possibleRom[2] || possibleRom[3];
-      }
-    }
-    return transliteration ? transliteration.trim() : translation.trim();
-  } catch (e) {
-    return engWord;
-  }
-};
-
 export const quickTransliterate = async (text, sl = 'auto') => {
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return { translation: '', transliteration: null, srcLang: 'auto' };
   return await getGoogleData(clean, sl);
-};
-
-// Treats any line containing spaces between words as a spaced script
-const isSpacedScript = (text) => {
-  if (!text) return true;
-  if (/\S\s+\S/.test(text.trim())) return true;
-  return !/[\u4e00-\u9fa5\u3040-\u30ff]/.test(text || '');
 };
 
 const isRomanChar = (char) => {
@@ -108,10 +70,7 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       if (onProgress) onProgress(completed, linesArray.length);
     };
 
-    // Support receiving object definitions to catch the spacing flag
     const lineText = typeof item === 'object' ? item.text : item;
-    const hasSpacing = typeof item === 'object' ? item.hasSpacing : false;
-
     if (!lineText) {
       updateProgress();
       return null;
@@ -125,102 +84,36 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
     
     const fullData = await quickTransliterate(cleanLine, targetLang);
     const fullTrans = fullData.transliteration || '';
-    const chunks = [];
     
-    // Core Fix: If the string has custom spacing, force it into the Korean-style Spaced Script pipeline!
-    if (hasSpacing || isSpacedScript(cleanLine)) {
-      const transWords = fullTrans
-        .split(/\s+/)
-        .filter(Boolean)
-        .map(w => w.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim());
-        
-      const tokens = cleanLine.split(/(\s+)/);
-      let wordIndex = 0;
+    // Split by organic space boundaries (matching `const blocks = textInput.split(/\s+/)`)
+    const tokens = cleanLine.split(/(\s+)/);
+    const chunks = [];
+
+    for (const token of tokens) {
+      if (!token) continue;
       
-      for (const token of tokens) {
-        if (!token) continue;
-        if (/^\s+$/.test(token)) {
+      if (/^\s+$/.test(token)) {
+        chunks.push({ type: 'en', text: token, trans: '' });
+      } else {
+        const isEnToken = Array.from(token).every(c => isRomanChar(c));
+        
+        if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
+          chunks.push({ type: 'en', text: token, trans: '' });
+          continue;
+        }
+
+        if (isEnToken) {
+          // English token: Strictly mute pronunciation!
           chunks.push({ type: 'en', text: token, trans: '' });
         } else {
-          // Detects English words natively and tags them as type 'en'
-          const isEnToken = Array.from(token).every(c => isRomanChar(c));
-          let currentTrans = transWords[wordIndex] || '';
-          
-          if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
-            chunks.push({ type: 'en', text: token, trans: '' });
-            continue;
-          }
-          
-          if (/^[\d,]+$/.test(token)) {
-            const cleanNum = token.replace(/,/g, '');
-            const engWord = numberToEnglishWords(cleanNum);
-            let translatedNum = token;
-            if (engWord) {
-                translatedNum = await fetchNumberTranslation(engWord, targetLang);
-            }
-            chunks.push({ type: 'foreign', text: token, trans: translatedNum });
-            
-            if (transWords[wordIndex] === token) wordIndex++;
-          } else if (isEnToken) {
-            chunks.push({ type: 'en', text: token, trans: '' });
-            
-            const cleanToken = token.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim().toLowerCase();
-            const cleanTransWord = (transWords[wordIndex] || '').toLowerCase();
-            
-            if (cleanTransWord === cleanToken && cleanToken !== '') {
-              wordIndex++;
-            }
-          } else {
-            chunks.push({ type: 'foreign', text: token, trans: currentTrans || token });
-            wordIndex++;
-          }
-        }
-      }
-    } else {
-      let currentType = null;
-      let currentText = '';
-      
-      for (const char of cleanLine) {
-        const type = isRomanChar(char) ? 'en' : 'foreign';
-        if (currentType === null) {
-          currentType = type;
-          currentText = char;
-        } else if (currentType === type) {
-          currentText += char;
-        } else {
-          chunks.push({ type: currentType, text: currentText });
-          currentType = type;
-          currentText = char;
-        }
-      }
-      if (currentText) {
-        chunks.push({ type: currentType, text: currentText });
-      }
-      
-      for (let j = 0; j < chunks.length; j++) {
-        if (chunks[j].type === 'foreign' && chunks[j].text.trim()) {
-          const textKey = chunks[j].text.trim();
-          
-          if (/^[\d,]+$/.test(textKey)) {
-            const cleanNum = textKey.replace(/,/g, '');
-            const engWord = numberToEnglishWords(cleanNum);
-            let translatedNum = textKey;
-            if (engWord) {
-                translatedNum = await fetchNumberTranslation(engWord, targetLang);
-            }
-            chunks[j].trans = translatedNum;
-          } else {
-            const chunkData = await quickTransliterate(textKey, targetLang);
-            let cleanChunkTrans = chunkData.transliteration || chunks[j].text;
-            cleanChunkTrans = cleanChunkTrans.replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '').trim();
-            chunks[j].trans = cleanChunkTrans;
-          }
-        } else {
-          chunks[j].trans = '';
+          // CJK token: Fetch pronunciation specifically for this block
+          const chunkData = await quickTransliterate(token, targetLang);
+          const chunkTrans = chunkData.transliteration || '';
+          chunks.push({ type: 'foreign', text: token, trans: chunkTrans });
         }
       }
     }
-    
+
     updateProgress();
     
     const hasForeign = chunks.some(c => c.type === 'foreign' && c.text.trim());
@@ -238,6 +131,5 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       };
     }
   });
-
   return await Promise.all(promises);
 };
