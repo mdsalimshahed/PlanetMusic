@@ -103,8 +103,12 @@ const extractPunctuationMap = (block) => {
  * PRECISE PORT OF PYTHON chinese_and_japanese(line) BRUTE FORCE ALGORITHM
  */
 const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
-  const fetchResMain = await fetchGoogleWithLang(line.replace(/\s+/g, ''), sl);
-  let k = fetchResMain.transliteration || fullPron || fetchResMain.translation || '';
+  // Use the isolated pronunciation chunk passed down from the tokenization step
+  let k = fullPron;
+  if (!k) {
+    const fetchResMain = await fetchGoogleWithLang(line.replace(/\s+/g, ''), sl);
+    k = fetchResMain.transliteration || fetchResMain.translation || '';
+  }
 
   let pronCleaned = cleanPunctuationPythonStyle(k.toLowerCase());
   let liner_main = pronCleaned.split(/\s+/).filter(t => t.length > 0).reverse();
@@ -193,7 +197,6 @@ const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
     } else {
       let line1 = w;
       
-      // FIXED: Checks against the top level target array
       let liner_main1 = liner_main.slice(word_gotten).reverse();
 
       let w1 = '';
@@ -231,6 +234,7 @@ const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
 
   return add_to;
 };
+
 // ============================================================================
 
 export const useTranslationProcess = ({
@@ -362,14 +366,13 @@ export const useTranslationProcess = ({
     setIsAutoSpacing(true);
     cancelTranslationRef.current = false;
     setTranslateProgress({ current: 0, total: targetIndices.length });
-    setNotification({ show: true, message: 'Phase 1: Running Brute Force...', progress: 0 });
+    setNotification({ show: true, message: 'Running Brute Force Engine...', progress: 0 });
 
-    let phase1Completed = 0;
+    let completedCount = 0;
 
-    // --- PHASE 1: SIMULTANEOUS PARALLEL BRUTE FORCE ---
-    const phase1Promises = targetIndices.map(async (idx) => {
+    const phasePromises = targetIndices.map(async (idx) => {
       if (cancelTranslationRef.current) return null;
-      let line = workspaceData[idx]; // captures baseline state
+      let line = workspaceData[idx]; 
       
       let textInput = line.displayText || '';
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
@@ -377,24 +380,71 @@ export const useTranslationProcess = ({
       }
       textInput = textInput.replace(/\s+/g, ' ').trim();
 
-      const blocks = textInput.split(/\s+/).filter(b => b.length > 0);
-      const resultBlocks = [];
+      // 1. Tokenize into Latin vs CJK groups
+      let blocks = [];
+      let currentMode = null;
+      let currentText = "";
+      const chars = Array.from(textInput);
 
-      for (let block of blocks) {
-        const { cleanText, purePunctuation, punctMap } = extractPunctuationMap(block);
+      for (let c of chars) {
+          if (/\s/.test(c)) {
+              currentText += c;
+              continue;
+          }
+          let mode = isSpacelessScript(c) ? 'cjk' : 'latin';
+          if (currentMode === null) {
+              currentMode = mode;
+              currentText += c;
+          } else if (currentMode === mode) {
+              currentText += c;
+          } else {
+              blocks.push({ mode: currentMode, text: currentText });
+              currentMode = mode;
+              currentText = c;
+          }
+      }
+      if (currentText) blocks.push({ mode: currentMode, text: currentText });
+      blocks = blocks.map(b => ({ mode: b.mode, text: b.text.trim() })).filter(b => b.text);
+
+      // 2. Fetch delimited pronunciations
+      const delimitedText = blocks.map(b => b.text).join(' ♫ ');
+      const gData = await fetchGoogleWithLang(delimitedText, line.lang);
+      const delimitedPron = gData.transliteration || gData.translation || '';
+
+      let pronChunks = delimitedPron.split(/♫|♪/).map(s => s.trim());
+      
+      // 3. Reconstruct Pronunciation, forcing Latin chunks to retain their exact original text
+      let finalPronChunks = [];
+      for (let i = 0; i < blocks.length; i++) {
+          if (blocks[i].mode === 'latin') {
+              finalPronChunks.push(blocks[i].text);
+          } else {
+              finalPronChunks.push(pronChunks[i] || '');
+          }
+      }
+      
+      const newDisplayPron = finalPronChunks.join(' ').replace(/\s+/g, ' ').trim();
+
+      // 4. Run Brute Force execution specifically isolated to the CJK chunks
+      const resultBlocks = [];
+      for (let bIdx = 0; bIdx < blocks.length; bIdx++) {
+        if (cancelTranslationRef.current) break;
+        const block = blocks[bIdx];
+        
+        if (block.mode === 'latin') {
+            resultBlocks.push(block.text);
+            continue;
+        }
+
+        const blockPron = finalPronChunks[bIdx] || '';
+        const { cleanText, purePunctuation, punctMap } = extractPunctuationMap(block.text);
+        
         if (purePunctuation) {
             resultBlocks.push(purePunctuation);
             continue;
         }
-        if (!isSpacelessScript(cleanText)) {
-            resultBlocks.push(block);
-            continue;
-        }
 
-        const blockData = await fetchGoogleWithLang(cleanText, line.lang);
-        let blockPron = blockData.transliteration || cleanText;
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
-
         let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
 
         let resultArr = [];
@@ -407,20 +457,21 @@ export const useTranslationProcess = ({
           resultArr.push(`${prefixPunct}${item.text}${suffixPunct}`);
           charOffset += itemLength;
         });
+        
         resultBlocks.push(resultArr.join(' '));
       }
 
       let newSpacingText = resultBlocks.join(' ').trim();
 
-      phase1Completed++;
-      const progressPct = Math.round((phase1Completed / targetIndices.length) * 100);
-      setTranslateProgress({ current: phase1Completed, total: targetIndices.length });
-      setNotification({ show: true, message: `Phase 1: Auto Spacing (${phase1Completed}/${targetIndices.length})...`, progress: progressPct });
+      completedCount++;
+      const progressPct = Math.round((completedCount / targetIndices.length) * 100);
+      setTranslateProgress({ current: completedCount, total: targetIndices.length });
+      setNotification({ show: true, message: `Auto Spacing (${completedCount}/${targetIndices.length})...`, progress: progressPct });
 
-      return { idx, newSpacingText, line };
+      return { idx, newSpacingText, newDisplayPron };
     });
 
-    const phase1Results = await Promise.all(phase1Promises);
+    const phaseResults = await Promise.all(phasePromises);
 
     if (cancelTranslationRef.current) {
         setIsAutoSpacing(false);
@@ -428,102 +479,23 @@ export const useTranslationProcess = ({
         return;
     }
 
-    // Apply Phase 1 results immediately to the UI
+    // 5. Apply the mapped data back to the workspace UI
     setWorkspaceData(prev => {
       const next = [...prev];
-      phase1Results.forEach(res => {
-        if (res) next[res.idx] = { ...next[res.idx], spacingText: res.newSpacingText };
+      phaseResults.forEach(res => {
+        if (res) {
+          next[res.idx] = { 
+              ...next[res.idx], 
+              spacingText: res.newSpacingText,
+              displayPron: res.newDisplayPron
+          };
+        }
       });
       return next;
     });
 
-    // --- PHASE 2: WORD COUNT VERIFICATION & ONE-BY-ONE CORRECTION ---
-    setNotification({ show: true, message: 'Phase 2: Verifying word counts...', progress: 100 });
-
-    for (let i = 0; i < phase1Results.length; i++) {
-       if (cancelTranslationRef.current) break;
-       let res = phase1Results[i];
-       if (!res) continue;
-
-       let idx = res.idx;
-       let line = res.line;
-       
-       let spacingWords = res.newSpacingText.split(/\s+/).filter(Boolean);
-       
-       let pronString = line.displayPron;
-       if (!pronString) {
-          let fetchResMain = await fetchGoogleWithLang(line.displayText.replace(/\s+/g, ''), line.lang);
-          pronString = fetchResMain.transliteration || fetchResMain.translation || '';
-       }
-       
-       let pronWords = cleanPunctuationPythonStyle(pronString).split(/\s+/).filter(Boolean);
-
-       if (spacingWords.length !== pronWords.length && spacingWords.length > pronWords.length) {
-           setActiveTranslatingId(line.rowId);
-           setNotification({ 
-             show: true, 
-             message: `Line ${idx+1} Mismatch | Spacing: ${spacingWords.length} words | Pron: ${pronWords.length} words. Correcting...`, 
-             progress: 100 
-           });
-
-           let wordProns = [];
-           for (let word of spacingWords) {
-               let contextStr = `${line.displayText.replace(/\s+/g, '')} ♫ ${word}`;
-               let fetchRes = await fetchGoogleWithLang(contextStr, line.lang);
-               let rawP = fetchRes.transliteration || fetchRes.translation || '';
-               let lastSeg = rawP.includes('♫') ? rawP.split('♫').pop() : (rawP.includes('?') ? rawP.split('?').pop() : (rawP.includes('♪') ? rawP.split('♪').pop() : rawP.split(' ').pop()));
-               lastSeg = lastSeg.replace(/^[-., ]+/, '').trim();
-               wordProns.push(cleanPunctuationPythonStyle(lastSeg).toLowerCase().replace(/\s+/g, ''));
-           }
-
-           let correctedWords = [];
-           let pIdx = 0;
-           let tempText = '';
-           let tempPronAccum = '';
-
-           for (let j = 0; j < spacingWords.length; j++) {
-               tempText += spacingWords[j];
-               tempPronAccum += wordProns[j];
-               
-               let targetPron = pronWords[pIdx] ? cleanPunctuationPythonStyle(pronWords[pIdx]).toLowerCase().replace(/\s+/g, '') : '';
-               
-               if (!targetPron) {
-                   continue;
-               }
-
-               if (tempPronAccum === targetPron) {
-                   correctedWords.push(tempText);
-                   tempText = ''; tempPronAccum = ''; pIdx++;
-               } else if (targetPron.startsWith(tempPronAccum)) {
-                   if (j === spacingWords.length - 1) correctedWords.push(tempText);
-                   continue;
-               } else {
-                   correctedWords.push(tempText);
-                   tempText = ''; tempPronAccum = ''; pIdx++;
-               }
-           }
-
-           if (tempText) {
-               if (correctedWords.length > 0) correctedWords[correctedWords.length-1] += tempText;
-               else correctedWords.push(tempText);
-           }
-
-           let finalSpacing = correctedWords.join(' ');
-           
-           setWorkspaceData(prev => {
-               const next = [...prev];
-               next[idx] = { ...next[idx], spacingText: finalSpacing };
-               return next;
-           });
-
-           await new Promise(resolve => setTimeout(resolve, 1500)); // Pause to let user see UI update live
-       }
-    }
-
-    if (!cancelTranslationRef.current) {
-      setNotification({ show: true, message: 'Auto Spacing and Verification complete!', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
-    }
+    setNotification({ show: true, message: 'Auto Spacing complete!', progress: 100 });
+    setTimeout(() => setNotification({ show: false }), 2000);
 
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);

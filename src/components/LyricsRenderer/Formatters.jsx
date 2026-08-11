@@ -5,7 +5,6 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
-
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
@@ -78,6 +77,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       currentWord.push(elements[i]);
     }
   }
+
   flushWord('end');
   return words;
 };
@@ -85,8 +85,71 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
 
-  // 1. Structured JSON Organic Chunks
-  if (parsedChunks && Array.isArray(parsedChunks)) {
+  // --- NEW: Exact 1:1 Mapping Logic for Spaced Text ---
+  let canDo1to1 = false;
+  let spacedWordsBlocks = [];
+  let pronWords = [];
+
+  if (hasSpacingText && fullTrans) {
+    let currentBlock = [];
+    chars.forEach(c => {
+      if (/\s/.test(c.char)) {
+        if (currentBlock.length > 0) {
+          spacedWordsBlocks.push(currentBlock);
+          currentBlock = [];
+        }
+      } else {
+        currentBlock.push(c);
+      }
+    });
+    if (currentBlock.length > 0) spacedWordsBlocks.push(currentBlock);
+
+    pronWords = fullTrans.split(/\s+/).filter(Boolean);
+
+    if (spacedWordsBlocks.length === pronWords.length && spacedWordsBlocks.length > 0) {
+      canDo1to1 = true;
+    }
+  }
+
+  if (canDo1to1) {
+    let tIdx = 0;
+    let currentBlock = [];
+
+    chars.forEach(c => {
+      if (/\s/.test(c.char)) {
+        if (currentBlock.length > 0) {
+          const textStr = currentBlock.map(x => x.char).join('');
+          const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
+          const isOnlyPunct = /^[\p{P}\p{S}]+$/u.test(textStr);
+          
+          if (isOnlyPunct || isLatin) {
+             alignedChunks.push({ type: 'main', trans: '', chars: currentBlock });
+          } else {
+             alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlock });
+          }
+          tIdx++;
+          currentBlock = [];
+        }
+        alignedChunks.push({ type: 'space', trans: '', chars: [c] });
+      } else {
+        currentBlock.push(c);
+      }
+    });
+
+    if (currentBlock.length > 0) {
+       const textStr = currentBlock.map(x => x.char).join('');
+       const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
+       const isOnlyPunct = /^[\p{P}\p{S}]+$/u.test(textStr);
+       
+       if (isOnlyPunct || isLatin) {
+          alignedChunks.push({ type: 'main', trans: '', chars: currentBlock });
+       } else {
+          alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlock });
+       }
+    }
+  } 
+  // --- 1. Structured JSON Organic Chunks (Legacy) ---
+  else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
@@ -129,7 +192,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
     }
   } 
-  // 2. Organic Spaced Fallback for CJK with English
+  // --- 2. Organic Spaced Fallback for CJK with English (Legacy) ---
   else {
     const isCJKLine = chars.some(c => isCJ(c.char));
     if (isCJKLine) {
@@ -207,7 +270,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   return alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
-
+    
     const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
 
     if (isRTL) {
@@ -227,7 +290,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
               flexDirection: 'column',
               alignItems: 'center',
               verticalAlign: 'bottom',
-              margin: '0 2px',
+              margin: hasSpacingText ? '0' : '0 2px',
               maxWidth: '100%'
             }}
           >
