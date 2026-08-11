@@ -4,10 +4,11 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
+  
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   let hasExplicitHeader = false;
   let activeTags = [];
-  let pendingHeader = null; // Track the latest section header
+  let pendingHeader = null; 
 
   const normalizeMarker = (m) => m.split('').sort().join('');
 
@@ -19,7 +20,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     if (headerMatch) {
       activeTags = [];
       hasExplicitHeader = true;
-      pendingHeader = line; // Save the raw bracketed header (e.g. "[Verse 1]")
+      pendingHeader = line; 
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -27,6 +28,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let unmarkedStr = singersPart;
         const parsedTokens = [];
         const explicitArtists = [];
+
         const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
@@ -67,6 +69,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             let ruleArtists = [];
             if (lowerName === 'both' || lowerName === 'all') ruleArtists = contextArtists;
             else ruleArtists = pt.name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
+
             return { marker: pt.marker, artists: ruleArtists };
         });
 
@@ -163,13 +166,13 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         const cleanSegText = seg.text.replace(/[_*~]+/g, '');
         if (cleanSegText.length > 0) {
-            rawSegments.push({
-                  text: cleanSegText,
-                  color: segColor,
-                  isGradient: segIsGradient,
-                  gradient: segGradient,
-                  artists: artists
-              });
+            rawSegments.push({ 
+                text: cleanSegText, 
+                color: segColor, 
+                isGradient: segIsGradient, 
+                gradient: segGradient, 
+                artists: artists 
+            });
         }
     });
 
@@ -177,10 +180,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     const adlibSegments = [];
 
     rawSegments.forEach(seg => {
-      const parts = seg.text.split(/(\([^)]+\))/g);
+      // FIX: Check for standard OR full-width Asian parentheses
+      const parts = seg.text.split(/([(\uFF08][^)\uFF09]+[)\uFF09])/g);
+      
       parts.forEach(part => {
         if (!part) return;
-        const isAdlib = /^\([^)]+\)$/.test(part);
+        const isAdlib = /^[(\uFF08][^)\uFF09]+[)\uFF09]$/.test(part);
         const subSeg = { ...seg, text: part };
         if (isAdlib) {
           adlibSegments.push(subSeg);
@@ -209,7 +214,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     }
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
-
     const finalArtistsArray = Array.from(lineArtistsSet);
     const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : '';
     const displayText = finalSegments.map(s => s.text).join('');
@@ -234,10 +238,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         color: finalColor,
         isGradient: lineIsGradient,
         gradient: lineGradientStyle,
-        sectionHeader: pendingHeader // Attach the header to the first line following it
+        sectionHeader: pendingHeader
       });
 
-    // Reset pending header so it doesn't get copied to subsequent lines
     pendingHeader = null; 
   });
 
@@ -250,6 +253,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   if (parsedLines.length === 0) return lrcSyncData;
 
   let currentLrcIdx = 0;
+
   const normalize = (str) => {
     if (!str) return '';
     return str
@@ -325,6 +329,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
                       ...seg,
                       text: overlapText
                   });
+
                   const isOnlyPunctuationOrSpace = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u;
                   if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                       if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -332,8 +337,8 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
               }
               currentPos = segEnd;
           }
-
           const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
+
           return {
             ...adlib,
             segments: adlibSegments,
@@ -343,6 +348,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
           };
         });
       }
+
       currentLrcIdx = bestMatchIdx + 1;
     }
 

@@ -4,30 +4,21 @@ import { normalizeTrans, renderFormattedTranslation } from "../Lyrics/LyricsLine
 import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 
-// GLOBAL CACHE: Persists calculated ad-lib positions in memory even if you go to the dashboard!
-// Only clears mathematically if window size or song lyrics change.
 const adlibPlacementCache = new Map();
 
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
 
-  // Generate a totally stable session seed based directly on the lyrics.
-  // If the lyrics remain the same, the seed is identical (persists across dashboard returns).
-  // If lyrics change, the seed changes automatically, naturally wiping the cache!
   const sessionSeed = useMemo(() => {
     if (!Array.isArray(syncData) || syncData.length === 0) return 'empty_seed';
     const textHash = syncData.map(d => d.text).join('').substring(0, 50);
     return `seed_${Math.floor(pseudoRandom(textHash) * 100000)}`;
   }, [syncData]);
 
-  // ------------------------------------------------------------------
-  // AD-LIB COMPILATION & RENDER GENERATOR
-  // ------------------------------------------------------------------
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!Array.isArray(syncData)) return items;
-
     let globalAdlibCounter = 0;
 
     syncData.forEach((node) => {
@@ -38,7 +29,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
         node.adlibs.forEach((adlib, j) => {
           if (adlib.start === null) return;
-
           const key = `adlib-${adlib.start}-${j}`;
           const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
@@ -46,6 +36,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const renderAdlibPure = (adlibObj) => {
             let aPron = adlibObj?.pronunciation;
             let aTrans = '';
+            
             if (typeof aPron === 'string') {
               if (aPron.startsWith('{')) {
                 try { aTrans = JSON.parse(aPron).full || ''; } catch (e) {}
@@ -55,7 +46,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             }
 
             let adlibTranslation = adlibObj?.translation || '';
-            if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()]/g, '').trim();
+            // FIX: Strip standard OR full-width Asian parentheses from translation render
+            if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
 
             const basePronStyle = {
               fontSize: 'var(--dyn-translit-font-size, 0.55em)',
@@ -88,8 +80,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 }
               }
 
-              // Use Unicode graphemes instead of JS array to prevent international text tearing
               const segChars = getGraphemes(seg.text || '');
+
               const renderedChars = segChars.map((char) => {
                 const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
                 let style = {};
@@ -199,9 +191,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     }
   }, [adlibsToRender]);
 
-  // ------------------------------------------------------------------
-  // JIT (JUST-IN-TIME) PLACEMENT CACHE ENGINE
-  // ------------------------------------------------------------------
   useEffect(() => {
     const clearActiveNodes = () => {
       if (cachedTrackNodesRef.current.length > 0) {
@@ -222,7 +211,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const handleTime = (e) => {
       const time = e.detail;
       const nodes = cachedTrackNodesRef.current;
-
+      
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;

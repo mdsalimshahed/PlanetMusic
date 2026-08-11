@@ -19,7 +19,6 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
-
   const blocks = [];
   let currentBlock = null;
 
@@ -50,6 +49,7 @@ const SplitLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
+
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -136,7 +136,7 @@ const SplitLine = ({
 
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
-
+    
     let initialClass = 'adlib-hidden';
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
@@ -165,7 +165,8 @@ const SplitLine = ({
     // --- STRIP PARENTHESES ONLY FROM ADLIB TRANSLATIONS ---
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
+      // FIX: Strip standard OR full-width Asian parentheses
+      adlibTranslation = adlibTranslation.replace(/[()（） ]/g, '').trim();
     }
     // ------------------------------------------------------
 
@@ -197,8 +198,8 @@ const SplitLine = ({
         }}
       >
         {adlibTranslation ? (
-          <span
-             className={`chunk-translation ${transClass}`}
+          <span 
+             className={`chunk-translation ${transClass}`} 
              dir="ltr"
              style={{
                position: 'absolute',
@@ -239,7 +240,6 @@ const SplitLine = ({
   });
 
   let displayPronString = null;
-
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -252,17 +252,16 @@ const SplitLine = ({
 
   const hasMainTranslation = !!displayTranslation;
   
-  // Adjusted dependency check to ensure we only look for adlib translations after stripping parens
   const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
     let t = cleanTranslationText(a.translation);
-    return t && t.replace(/[()（）]/g, '').trim().length > 0;
+    return t && t.replace(/[()（） ]/g, '').trim().length > 0;
   });
-  
+
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
   const translationSpaceCalc = 'calc(var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-font-size, 0.55em) + var(--dyn-trans-top-padding, 8px) + 0.5vh)';
 
   return (
-    <div
+    <div 
        style={{
          display: 'flex',
          flexDirection: 'column',
@@ -295,7 +294,6 @@ const SplitLine = ({
           boxSizing: 'border-box'
         }}
       >
-        {/* Strictly group the main lyrics together so main translation is bound ONLY to them */}
         <span
           className="main-text-group"
           style={{
@@ -309,8 +307,8 @@ const SplitLine = ({
           }}
         >
           {displayTranslation ? (
-            <span
-               className={`chunk-translation ${transClass}`}
+            <span 
+               className={`chunk-translation ${transClass}`} 
                dir="ltr"
                style={{
                  position: 'absolute',
@@ -330,11 +328,8 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
-
           {renderedMainElements}
         </span>
-
-        {/* Ad-lib elements rendered completely separately */}
         {renderedAdlibElements}
       </span>
 

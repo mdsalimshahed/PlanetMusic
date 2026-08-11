@@ -21,10 +21,9 @@ export const SyncWorkspace = ({
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
   
-  // Font Scale Control State - INITIALIZED TO 0.5 (50%)
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
-  const currentFontSize = Math.max(12, 34 * lyricScale); // Prevents it from going completely microscopic
+  const currentFontSize = Math.max(12, 34 * lyricScale); 
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
@@ -186,13 +185,15 @@ export const SyncWorkspace = ({
     let adlibText = '';
     
     for (let i = 0; i < lineChars.length; i++) {
-        if (lineChars[i] === '(' && !inAdlib) {
+        // FIX: Check for standard OR full-width left parenthesis
+        if ((lineChars[i] === '(' || lineChars[i] === '（') && !inAdlib) {
             inAdlib = true;
             charStart = i;
-            adlibText = '(';
+            adlibText = lineChars[i];
         } else if (inAdlib) {
             adlibText += lineChars[i];
-            if (lineChars[i] === ')') {
+            // FIX: Check for standard OR full-width right parenthesis
+            if (lineChars[i] === ')' || lineChars[i] === '）') {
                 inAdlib = false;
                 const charEnd = i + 1;
                 
@@ -212,7 +213,7 @@ export const SyncWorkspace = ({
                             ...seg,
                             text: overlapText
                         });
-                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
+                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}（）\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
                         }
@@ -273,7 +274,7 @@ export const SyncWorkspace = ({
                    onClick={handleMapAutoSync} 
                    className="edit-links-btn"
                   style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
-                  title="Map Auto-Sync timings to these manual lyrics"
+                  title="Map Timings from Auto to Manual Lyrics"
               >
                   Map Timings from Auto
               </button>
@@ -391,7 +392,8 @@ export const SyncWorkspace = ({
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
           
-          const hasParentheses = isMain && /\([^)]+\)/.test(line.text);
+          // FIX: Detect standard OR full-width parentheses to render split button
+          const hasParentheses = isMain && /[(\uFF08][^)\uFF09]+[)\uFF09]/.test(line.text);
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);

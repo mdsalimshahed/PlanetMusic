@@ -15,7 +15,8 @@ export const getGraphemes = (str) => {
 export const normalizeTrans = (str) => {
   if (!str) return '';
   return str
-    .replace(/[()\[\]{}]/g, '')
+    // FIX: Include full-width Asian parentheses in the cleaner
+    .replace(/[()\[\]{}（）]/g, '')
     .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'")
     .replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '')
     .replace(/\s+/g, ' ')
@@ -24,7 +25,6 @@ export const normalizeTrans = (str) => {
 
 export const cleanTranslationText = (text) => {
   if (!text) return '';
-  // Only strip periods at the very end of the string, leaving !, ?, ", etc. completely intact
   return String(text).replace(/\.+$/, '').trim();
 };
 
@@ -48,6 +48,6 @@ export const parsePronunciation = (pronString) => {
       } catch (e) {}
     }
   }
-
+  
   return { parsedChunks, fullTrans };
 };

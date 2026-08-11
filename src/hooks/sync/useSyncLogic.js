@@ -333,13 +333,15 @@ export const useSyncActions = ({
     let adlibText = '';
     
     for (let i = 0; i < lineChars.length; i++) {
-        if (lineChars[i] === '(' && !inAdlib) {
+        // FIX: Detect standard OR full-width left parenthesis
+        if ((lineChars[i] === '(' || lineChars[i] === '（') && !inAdlib) {
             inAdlib = true;
             charStart = i;
-            adlibText = '(';
+            adlibText = lineChars[i];
         } else if (inAdlib) {
             adlibText += lineChars[i];
-            if (lineChars[i] === ')') {
+            // FIX: Detect standard OR full-width right parenthesis
+            if (lineChars[i] === ')' || lineChars[i] === '）') {
                 inAdlib = false;
                 const charEnd = i + 1;
                 
@@ -359,7 +361,8 @@ export const useSyncActions = ({
                             ...seg,
                             text: overlapText
                         });
-                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\- ]*$/;
+                        // FIX: Ensure full-width Asian parentheses are treated as punctuation too
+                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}（）\- ]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
                         }
@@ -527,7 +530,6 @@ export const useSyncActions = ({
     setTimeout(() => setNotification({ show: false }), 2500);
   };
 
-  // --- NEW OFFSET FEATURE ---
   const handleShiftTimings = (offset) => {
     if (!offset || isNaN(offset)) return;
     const data = [...syncDataRef.current];

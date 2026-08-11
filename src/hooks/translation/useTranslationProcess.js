@@ -16,6 +16,7 @@ const normalizeForComparison = (str) =>
     .replace(/[\p{P}\p{S}\s]/gu, '')
     .trim();
 
+// NO CACHING. Every request hits the API fresh.
 const fetchGoogleWithLang = async (text, sl = 'auto') => {
   if (!text || text === '') return { translation: '', transliteration: null, srcLang: 'auto' };
 
@@ -56,7 +57,7 @@ const fetchGoogleWithLang = async (text, sl = 'auto') => {
 };
 
 // ============================================================================
-// EXACT BRUTE-FORCE ALIGNMENT ENGINE HELPERS (From translation_tab_2.html)
+// EXACT BRUTE-FORCE ALIGNMENT ENGINE HELPERS 
 // ============================================================================
 const isSpacelessScript = (char) => {
   return /[\u3000-\u303f\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\uac00-\ud7af\u0e00-\u0e7f\uff00-\uffef]/.test(char);
@@ -191,6 +192,8 @@ const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       }
     } else {
       let line1 = w;
+      
+      // FIXED: Checks against the top level target array
       let liner_main1 = liner_main.slice(word_gotten).reverse();
 
       let w1 = '';
@@ -264,15 +267,16 @@ export const useTranslationProcess = ({
 
   const fetchSingleLine = async (line) => {
     const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
-    let textToTranslate = hasSpacing ? line.spacingText : line.displayText;
     
-    if (!hasSpacing && !line._meta.isAdlib && line.isSplit && line.adlibs) {
+    // Clean string from adlibs before fetching
+    let textToTranslate = hasSpacing ? line.spacingText : line.displayText;
+    if (!hasSpacing && !line._meta?.isAdlib && line.isSplit && line.adlibs) {
       line.adlibs.forEach(a => {
         textToTranslate = textToTranslate.replace(a.text, '');
       });
     }
-    
     textToTranslate = textToTranslate.replace(/\s+/g, ' ').trim();
+
     if (!textToTranslate) return null;
     
     try {
@@ -338,7 +342,7 @@ export const useTranslationProcess = ({
   };
 
   // ============================================================================
-  // FULLY PARALLELIZED AUTO-SPACING ENGINE
+  // AUTO-SPACING ENGINE
   // ============================================================================
   const handleAutoSpacing = async () => {
     if (isAutoSpacing || isTranslatingAll) return;
@@ -359,80 +363,140 @@ export const useTranslationProcess = ({
     setIsAutoSpacing(true);
     cancelTranslationRef.current = false;
     setTranslateProgress({ current: 0, total: targetIndices.length });
-    setNotification({ show: true, message: 'Starting Auto Spacing Engine...', progress: 0 });
+    setNotification({ show: true, message: 'Phase 1: Running Brute Force...', progress: 0 });
 
     let currentData = [...workspaceData];
-    let completedCount = 0;
 
-    const spacingPromises = targetIndices.map(async (i) => {
-      if (cancelTranslationRef.current) return null;
+    // --- PHASE 1: BRUTE FORCE & OVERWRITE ---
+    for (let i = 0; i < targetIndices.length; i++) {
+      if (cancelTranslationRef.current) break;
+      let idx = targetIndices[i];
+      let line = currentData[idx];
       
-      const line = currentData[i];
-      const textInput = line.displayText;
-      const blocks = textInput.split(/\s+/).filter(b => b.length > 0);
+      // Clean string from adlibs before fetching
+      let textInput = line.displayText || '';
+      if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
+        line.adlibs.forEach(a => { textInput = textInput.replace(a.text, ''); });
+      }
+      textInput = textInput.replace(/\s+/g, ' ').trim();
 
-      const blockPromises = blocks.map(async (block) => {
-        if (cancelTranslationRef.current) return '';
+      const blocks = textInput.split(/\s+/).filter(b => b.length > 0);
+      const resultBlocks = [];
+
+      for (let block of blocks) {
         const { cleanText, purePunctuation, punctMap } = extractPunctuationMap(block);
-        
-        if (purePunctuation) return purePunctuation;
-        if (!isSpacelessScript(cleanText)) return block;
+        if (purePunctuation) {
+            resultBlocks.push(purePunctuation);
+            continue;
+        }
+        if (!isSpacelessScript(cleanText)) {
+            resultBlocks.push(block);
+            continue;
+        }
 
         const blockData = await fetchGoogleWithLang(cleanText, line.lang);
         let blockPron = blockData.transliteration || cleanText;
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
-        const pronTokens = cleanPron.trim().split(/\s+/).filter(t => t.length > 0);
 
-        let alignedItems = [];
-        if (pronTokens.length === 1) {
-            alignedItems = [{ text: cleanText, pron: cleanPron }];
-        } else {
-            alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
-        }
-        
-        if (cancelTranslationRef.current) return '';
+        let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
 
         let resultArr = [];
         let charOffset = 0;
         alignedItems.forEach(item => {
-          let itemLength = item.text.length;
+          let itemLength = item.text.length; // Uses character length to map the punctuation correctly
           let prefixPunct = punctMap[charOffset] ? punctMap[charOffset].prefix : '';
           let suffixPunct = punctMap[charOffset + itemLength - 1] ? punctMap[charOffset + itemLength - 1].suffix : '';
           
-          let restoredText = `${prefixPunct}${item.text}${suffixPunct}`;
-          resultArr.push(restoredText);
+          resultArr.push(`${prefixPunct}${item.text}${suffixPunct}`);
           charOffset += itemLength;
         });
-        
-        return resultArr.join(' ');
-      });
+        resultBlocks.push(resultArr.join(' '));
+      }
 
-      const resolvedBlocks = await Promise.all(blockPromises);
-      if (cancelTranslationRef.current) return null;
-
-      const newSpacingText = resolvedBlocks.join(' ').trim();
-
-      completedCount++;
-      const progressPct = Math.round((completedCount / targetIndices.length) * 100);
-      setTranslateProgress({ current: completedCount, total: targetIndices.length });
-      setNotification({ show: true, message: `Auto Spacing (${completedCount}/${targetIndices.length})...`, progress: progressPct });
-
-      return { index: i, spacingText: newSpacingText };
-    });
-
-    const results = await Promise.all(spacingPromises);
-
-    if (!cancelTranslationRef.current) {
-      results.forEach(res => {
-        if (res) {
-          currentData[res.index] = { ...currentData[res.index], spacingText: res.spacingText };
-        }
-      });
-      setWorkspaceData(currentData);
-      setNotification({ show: true, message: 'Auto Spacing complete!', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
+      let newSpacingText = resultBlocks.join(' ').trim();
+      currentData[idx] = { ...line, spacingText: newSpacingText };
+      setWorkspaceData([...currentData]); // Overwrite spacing field live on screen
     }
 
+    // --- PHASE 2: WORD COUNT VERIFICATION & ONE-BY-ONE CORRECTION ---
+    setNotification({ show: true, message: 'Phase 2: Verifying word counts...', progress: 100 });
+
+    for (let i = 0; i < targetIndices.length; i++) {
+       if (cancelTranslationRef.current) break;
+       let idx = targetIndices[i];
+       let line = currentData[idx];
+       
+       let spacingWords = line.spacingText.split(/\s+/).filter(Boolean);
+       
+       let pronString = line.displayPron;
+       if (!pronString) {
+          let fetchResMain = await fetchGoogleWithLang(line.displayText.replace(/\s+/g, ''), line.lang);
+          pronString = fetchResMain.transliteration || fetchResMain.translation || '';
+       }
+       
+       let pronWords = cleanPunctuationPythonStyle(pronString).split(/\s+/).filter(Boolean);
+
+       // Literally checks if word count inside Spacing Field is higher than Pronunciation Field word count
+       if (spacingWords.length !== pronWords.length && spacingWords.length > pronWords.length) {
+           setActiveTranslatingId(line.rowId);
+           setNotification({ 
+             show: true, 
+             message: `Line ${idx+1} Mismatch | Spacing: ${spacingWords.length} words | Pronunciation: ${pronWords.length} words. Correcting...`, 
+             progress: 100 
+           });
+
+           let wordProns = [];
+           for (let word of spacingWords) {
+               let contextStr = `${line.displayText.replace(/\s+/g, '')} ♫ ${word}`;
+               let fetchRes = await fetchGoogleWithLang(contextStr, line.lang);
+               let rawP = fetchRes.transliteration || fetchRes.translation || '';
+               let lastSeg = rawP.includes('♫') ? rawP.split('♫').pop() : (rawP.includes('?') ? rawP.split('?').pop() : (rawP.includes('♪') ? rawP.split('♪').pop() : rawP.split(' ').pop()));
+               lastSeg = lastSeg.replace(/^[-., ]+/, '').trim();
+               wordProns.push(cleanPunctuationPythonStyle(lastSeg).toLowerCase().replace(/\s+/g, ''));
+           }
+
+           let correctedWords = [];
+           let pIdx = 0;
+           let tempText = '';
+           let tempPronAccum = '';
+
+           for (let j = 0; j < spacingWords.length; j++) {
+               tempText += spacingWords[j];
+               tempPronAccum += wordProns[j];
+               
+               let targetPron = pronWords[pIdx] ? cleanPunctuationPythonStyle(pronWords[pIdx]).toLowerCase().replace(/\s+/g, '') : '';
+               
+               if (!targetPron) {
+                   continue;
+               }
+
+               if (tempPronAccum === targetPron) {
+                   correctedWords.push(tempText);
+                   tempText = ''; tempPronAccum = ''; pIdx++;
+               } else if (targetPron.startsWith(tempPronAccum)) {
+                   if (j === spacingWords.length - 1) correctedWords.push(tempText);
+                   continue;
+               } else {
+                   correctedWords.push(tempText);
+                   tempText = ''; tempPronAccum = ''; pIdx++;
+               }
+           }
+
+           if (tempText) {
+               if (correctedWords.length > 0) correctedWords[correctedWords.length-1] += tempText;
+               else correctedWords.push(tempText);
+           }
+
+           let finalSpacing = correctedWords.join(' ');
+           currentData[idx] = { ...line, spacingText: finalSpacing };
+           setWorkspaceData([...currentData]);
+
+           await new Promise(resolve => setTimeout(resolve, 1500)); // Pause to let user see the update in the UI
+       }
+    }
+
+    setNotification({ show: true, message: 'Auto Spacing and Verification complete!', progress: 100 });
+    setTimeout(() => setNotification({ show: false }), 2000);
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);
   };
@@ -450,30 +514,24 @@ export const useTranslationProcess = ({
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
     
-    let currentData = [...workspaceData];
-    let completedCount = 0;
-
-    const promises = currentData.map(async (line, i) => {
+    // NO BATCHING OR CHUNKING. SIMULTANEOUS REQUESTS.
+    const promises = workspaceData.map(async (line, idx) => {
       if (cancelTranslationRef.current) return null;
       
       if (line.lang === 'en') {
-        completedCount++;
-        setTranslateProgress({ current: completedCount, total: currentData.length });
-        return { index: i, data: { ...line, translation: '', displayPron: '', pronunciation: '' } };
+        return { index: idx, data: { ...line, translation: '', displayPron: '', pronunciation: '' } };
       }
       
       const res = await fetchSingleLine(line);
-      
-      completedCount++;
-      const progressPct = Math.round((completedCount / currentData.length) * 100);
-      setTranslateProgress({ current: completedCount, total: currentData.length });
-      setNotification({ show: true, message: `Translating (${completedCount}/${currentData.length})...`, progress: progressPct });
-
       if (!res) return null;
 
       let rawTransText = res.translation !== undefined ? String(res.translation).trim() : '';
       
-      const baselineText = line.spacingText?.trim() ? line.spacingText : line.displayText;
+      let baselineText = line.spacingText?.trim() ? line.spacingText : line.displayText;
+      if (!line.spacingText?.trim() && !line._meta?.isAdlib && line.isSplit && line.adlibs) {
+        line.adlibs.forEach(a => { baselineText = baselineText.replace(a.text, ''); });
+      }
+
       const normOriginal = normalizeForComparison(baselineText);
       const normTranslated = normalizeForComparison(rawTransText);
       
@@ -504,7 +562,7 @@ export const useTranslationProcess = ({
       }
       
       return {
-        index: i,
+        index: idx,
         data: {
           ...line,
           translation: rawTransText,
@@ -522,22 +580,28 @@ export const useTranslationProcess = ({
       return;
     }
 
-    const newData = [...currentData];
-    results.forEach(r => {
-      if (r) newData[r.index] = r.data;
+    setWorkspaceData(prev => {
+      const next = [...prev];
+      results.forEach(r => {
+        if (r) next[r.index] = r.data;
+      });
+      return next;
     });
     
-    setWorkspaceData(newData);
+    setTranslateProgress({ current: workspaceData.length, total: workspaceData.length });
+
+    if (!cancelTranslationRef.current) {
+      setShowSuccessBanner(true);
+      if (listContainerRef.current) {
+        listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      setNotification({ show: true, message: 'All lines translated! Ready to Save.', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 2000);
+      setTimeout(() => setShowSuccessBanner(false), 4000);
+    }
+
     setIsTranslatingAll(false);
     setActiveTranslatingId(null);
-    
-    setShowSuccessBanner(true);
-    if (listContainerRef.current) {
-      listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    setNotification({ show: true, message: 'All lines translated! Ready to Save.', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 2000);
-    setTimeout(() => setShowSuccessBanner(false), 4000);
   };
 
   const handleTranslateWithContext = async () => {
@@ -605,7 +669,7 @@ export const useTranslationProcess = ({
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ q: combinedText })
+          body: newSearchParams({ q: combinedText }) // using URLSearchParams without window requirement
         });
         const data = await response.json();
         
@@ -632,66 +696,66 @@ export const useTranslationProcess = ({
         
         if (cancelTranslationRef.current) break;
 
-        items.forEach((item, i) => {
-          const targetIdx = item.index;
-          const line = currentData[targetIdx];
+        setWorkspaceData(prev => {
+          const next = [...prev];
           
-          let rawTransText = (isAligned && translatedSegments[i] !== undefined)
-              ? translatedSegments[i]
-              : (batchPronunciations[i]?.translation || line.translation);
-              
-          if (rawTransText) rawTransText = String(rawTransText).trim();
-          
-          const normOrig = normalizeForComparison(cleanTexts[i].text);
-          const normTrans = normalizeForComparison(rawTransText);
-          
-          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
-          const finalLang = isEnglishMatch ? 'en' : (detectedLang || line.lang || 'auto');
-          
-          let displayPron = line.displayPron;
-          let finalPron = batchPronunciations[i]?.pronunciation || line.pronunciation;
-          
-          if (isEnglishMatch || finalLang === 'en') {
-            rawTransText = '';
-            displayPron = '';
-            finalPron = '';
-          } else {
-            if (batchPronunciations[i]?.pronunciation) {
-              try {
-                const p = JSON.parse(batchPronunciations[i].pronunciation);
-                displayPron = p.full || p.chunks.map(ch => ch.trans || ch.text).join('');
-              } catch (e) {}
-            } else if (rawTransText && !/[^\x00-\x7F]/.test(cleanTexts[i].text)) {
+          items.forEach((item, i) => {
+            const targetIdx = item.index;
+            const line = next[targetIdx];
+            
+            let rawTransText = (isAligned && translatedSegments[i] !== undefined)
+                ? translatedSegments[i]
+                : (batchPronunciations[i]?.translation || line.translation);
+                
+            if (rawTransText) rawTransText = String(rawTransText).trim();
+            
+            const normOrig = normalizeForComparison(cleanTexts[i].text);
+            const normTrans = normalizeForComparison(rawTransText);
+            
+            const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+            const finalLang = isEnglishMatch ? 'en' : (detectedLang || line.lang || 'auto');
+            
+            let displayPron = line.displayPron;
+            let finalPron = batchPronunciations[i]?.pronunciation || line.pronunciation;
+            
+            if (isEnglishMatch || finalLang === 'en') {
+              rawTransText = '';
               displayPron = '';
               finalPron = '';
+            } else {
+              if (batchPronunciations[i]?.pronunciation) {
+                try {
+                  const p = JSON.parse(batchPronunciations[i].pronunciation);
+                  displayPron = p.full || p.chunks.map(ch => ch.trans || ch.text).join('');
+                } catch (e) {}
+              } else if (rawTransText && !/[^\x00-\x7F]/.test(cleanTexts[i].text)) {
+                displayPron = '';
+                finalPron = '';
+              }
             }
-          }
 
-          if (!isEnglishMatch && line._meta.isAdlib) {
-            finalPron = formatAdlibPronunciation(line.displayText, displayPron);
-          }
+            if (!isEnglishMatch && line._meta.isAdlib) {
+              finalPron = formatAdlibPronunciation(line.displayText, displayPron);
+            }
+            
+            next[targetIdx] = {
+              ...line,
+              translation: isEnglishMatch ? '' : rawTransText,
+              pronunciation: isEnglishMatch ? '' : finalPron,
+              displayPron: isEnglishMatch ? '' : displayPron,
+              lang: finalLang
+            };
+          });
           
-          currentData[targetIdx] = {
-            ...line,
-            translation: isEnglishMatch ? '' : rawTransText,
-            pronunciation: isEnglishMatch ? '' : finalPron,
-            displayPron: isEnglishMatch ? '' : displayPron,
-            lang: finalLang
-          };
+          return next;
         });
-
-        setWorkspaceData([...currentData]);
 
       } catch (err) {
         console.error("Context translation error:", err);
       }
     }
     
-    const completedAll = !cancelTranslationRef.current;
-    setIsTranslatingAll(false);
-    setActiveTranslatingId(null);
-    
-    if (completedAll) {
+    if (!cancelTranslationRef.current) {
       setShowSuccessBanner(true);
       if (listContainerRef.current) {
         listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
@@ -700,6 +764,9 @@ export const useTranslationProcess = ({
       setTimeout(() => setNotification({ show: false }), 2000);
       setTimeout(() => setShowSuccessBanner(false), 4000);
     }
+
+    setIsTranslatingAll(false);
+    setActiveTranslatingId(null);
   };
 
   const handleRefetch = async (index) => {
@@ -771,6 +838,7 @@ export const useTranslationProcess = ({
       });
       return;
     }
+    
     cancelTranslationRef.current = true;
     setIsTranslationManagerOpen(false);
   };
