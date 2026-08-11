@@ -37,6 +37,7 @@ const SplitLine = ({
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     }
   });
+
   if (currentBlock) blocks.push(currentBlock);
 
   const renderColoredCharForSplit = (c, globalIdx) => {
@@ -84,7 +85,7 @@ const SplitLine = ({
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
-
+  
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
 
@@ -149,6 +150,7 @@ const SplitLine = ({
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
     
     let initialClass = 'adlib-hidden';
+
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
       else if (currentTime > end) initialClass = 'adlib-visible';
@@ -175,7 +177,7 @@ const SplitLine = ({
 
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      adlibTranslation = adlibTranslation.replace(/[()  ]/g, '').trim();
+      adlibTranslation = adlibTranslation.replace(/[() ]/g, '').trim();
     }
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
@@ -226,7 +228,6 @@ const SplitLine = ({
             {renderFormattedTranslation(adlibTranslation)}
           </span>
         ) : null}
-
         <span
           className="primary-text"
           style={{
@@ -270,7 +271,7 @@ const SplitLine = ({
   const hasMainTranslation = !!displayTranslation;
   const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
     let t = cleanTranslationText(a.translation);
-    return t && t.replace(/[()  ]/g, '').trim().length > 0;
+    return t && t.replace(/[() ]/g, '').trim().length > 0;
   });
 
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
@@ -344,19 +345,15 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation)}
             </span>
           ) : null}
-
           {renderedMainElements}
         </span>
-
         {renderedAdlibElements}
       </span>
-
       {displayPronString && (
         <div className="pronunciation-text" style={{ ...basePronStyle, whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'break-word', marginTop: '8px', display: 'block', textAlign: 'left', maxWidth: '100%' }} dir="ltr">
           {renderFormattedTranslation(displayPronString)}
         </div>
       )}
-
     </div>
   );
 };

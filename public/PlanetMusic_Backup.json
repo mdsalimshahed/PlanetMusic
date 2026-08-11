@@ -2672,13 +2672,13 @@
       "collectionName": "Music To Be Murdered By",
       "trackName": "I Will (feat. KXNG Crooked, Royce da 5'9\" & Joell Ortiz)",
       "collectionViewUrl": "https://music.apple.com/us/album/i-will-feat-kxng-crooked-royce-da-59-joell-ortiz/1495269622?i=1495269882&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/af/21/0e/af210e59-8f07-f64c-ba65-47ab2ec927b3/mzaf_1462296159964752091.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/c6/3f/7a/c63f7a28-4e53-1ae2-cfae-5d211e0c256c/20UMGIM02955.rgb.jpg/100x100bb.jpg",
       "collectionPrice": 11.99,
       "trackPrice": 1.29,
       "releaseDate": "2020-01-17T08:00:00Z",
       "collectionExplicitness": "cleaned",
-      "trackExplicitness": "cleaned",
+      "trackExplicitness": "explicit",
       "discCount": 1,
       "discNumber": 1,
       "trackCount": 20,
@@ -5930,7 +5930,9 @@
       ],
       "artistColors": {
         "Eminem": "#ff0033"
-      }
+      },
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/af/21/0e/af210e59-8f07-f64c-ba65-47ab2ec927b3/mzaf_1462296159964752091.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
@@ -5942,13 +5944,13 @@
       "collectionName": "Music To Be Murdered By",
       "trackName": "Godzilla (feat. Juice WRLD)",
       "collectionViewUrl": "https://music.apple.com/us/album/godzilla-feat-juice-wrld/1495269622?i=1495269629&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/94/c0/1e/94c01e57-e670-3ef0-7928-816c80b8425e/mzaf_554535386096240021.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/c6/3f/7a/c63f7a28-4e53-1ae2-cfae-5d211e0c256c/20UMGIM02955.rgb.jpg/100x100bb.jpg",
       "collectionPrice": 11.99,
       "trackPrice": 1.29,
       "releaseDate": "2020-01-17T08:00:00Z",
       "collectionExplicitness": "cleaned",
-      "trackExplicitness": "cleaned",
+      "trackExplicitness": "explicit",
       "discCount": 1,
       "discNumber": 1,
       "trackCount": 20,
@@ -11563,7 +11565,9 @@
           "translation": "",
           "isSplit": false
         }
-      ]
+      ],
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/94/c0/1e/94c01e57-e670-3ef0-7928-816c80b8425e/mzaf_554535386096240021.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
@@ -17812,13 +17816,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Intro: Elly]",
+          "translation": "",
+          "pronunciation": null,
           "start": 11.195054,
           "end": 13.228887,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -17837,13 +17840,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 13.351471,
           "end": 15.746055,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -17862,13 +17864,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 16.575941,
           "end": 18.548238,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -17887,13 +17888,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 18.678737,
           "end": 21.441545,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -17912,16 +17912,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
+          "translation": "",
+          "pronunciation": null,
           "start": 21.577037,
           "end": 24.421439,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -17937,13 +17936,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "The past that I threw away everything",
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 24.421439,
           "end": 27.134751,
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
-          "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -17962,16 +17960,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 27.134751,
           "end": 28.704744,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "独り で 生きていく から",
+          "text": "独りで生きていくから",
           "segments": [
             {
               "text": "独りで生きていくから",
@@ -17987,13 +17984,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Because I'll live alone",
+          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 28.704744,
           "end": 32.533375,
-          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
-          "translation": "Because I'll live alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りで生きていくから",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -18012,16 +18008,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 32.533375,
           "end": 34.375027,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "すぐ に 忘れられない your face",
+          "text": "すぐに忘れられない your face",
           "segments": [
             {
               "text": "すぐに忘れられない your face",
@@ -18037,13 +18032,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "I can't forget your face",
+          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "start": 34.520324,
           "end": 37.679632,
-          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
-          "translation": "I can't forget your face",
-          "isSplit": false,
-          "rawUnspacedText": "すぐに忘れられない your face",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -18062,16 +18056,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 37.786643,
           "end": 39.471936,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きていけないでしょ",
+          "text": "一人じゃ生きていけないでしょ",
           "segments": [
             {
               "text": "一人じゃ生きていけないでしょ",
@@ -18087,13 +18080,12 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "You can't live alone, can you?",
+          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 39.471936,
           "end": 43.15788,
-          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
-          "translation": "You can't live alone, can you?",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないでしょ",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "I'm so fine",
@@ -18112,13 +18104,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Verse 1: Jeonghwa, _Hani_, **Hyelin**, _**Solji**_]",
+          "translation": "",
+          "pronunciation": null,
           "start": 43.15788,
           "end": 45.282982,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "I'm so fine",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "私なら it's okay",
@@ -18137,13 +18128,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "For me it's okay",
+          "pronunciation": "{\"full\":\"Watashinara it' s okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" it's okay\",\"trans\":\"\"}]}",
           "start": 45.399361,
           "end": 47.900153,
-          "pronunciation": "{\"full\":\"Watashinara it' s okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" it's okay\",\"trans\":\"\"}]}",
-          "translation": "For me it's okay",
-          "isSplit": false,
-          "rawUnspacedText": "私なら it's okay",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "不意に I'm so crying",
@@ -18162,16 +18152,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Suddenly I'm so crying",
+          "pronunciation": "{\"full\":\"Fui ni I' m so crying\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不意に\",\"trans\":\"Fui ni\"},{\"type\":\"en\",\"text\":\" I'm so crying\",\"trans\":\"\"}]}",
           "start": 47.996106,
           "end": 50.52284,
-          "pronunciation": "{\"full\":\"Fui ni I' m so crying\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不意に\",\"trans\":\"Fui ni\"},{\"type\":\"en\",\"text\":\" I'm so crying\",\"trans\":\"\"}]}",
-          "translation": "Suddenly I'm so crying",
-          "isSplit": false,
-          "rawUnspacedText": "不意に I'm so crying",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "愛 に 飢え てる の",
+          "text": "愛に飢えてるの",
           "segments": [
             {
               "text": "愛に飢えてるの",
@@ -18187,16 +18176,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "I'm hungry for love",
+          "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
           "start": 50.52284,
           "end": 53.323786,
-          "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
-          "translation": "I'm hungry for love",
-          "isSplit": false,
-          "rawUnspacedText": "愛に飢えてるの",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "誰にも きっと 近づかない よう に",
+          "text": "誰にもきっと近づかないように",
           "segments": [
             {
               "text": "誰にもきっと近づかないように",
@@ -18212,13 +18200,12 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Don't let anyone get close to you",
+          "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
           "start": 53.808238,
           "end": 58.497698,
-          "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
-          "translation": "Don't let anyone get close to you",
-          "isSplit": false,
-          "rawUnspacedText": "誰にもきっと近づかないように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Might change my mind, like 'my oh my'",
@@ -18237,16 +18224,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 58.733846,
           "end": 63.86805,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Might change my mind, like 'my oh my'",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "間違い だけ を 照らす moonlight",
+          "text": "間違いだけを照らす moonlight",
           "segments": [
             {
               "text": "間違いだけを照らす moonlight",
@@ -18263,16 +18249,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": "[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]",
+          "translation": "The moonlight shines only on mistakes",
+          "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" moonlight\",\"trans\":\"\"}]}",
           "start": 63.986814,
           "end": 66.33093,
-          "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" moonlight\",\"trans\":\"\"}]}",
-          "translation": "The moonlight shines only on mistakes",
-          "isSplit": false,
-          "rawUnspacedText": "間違いだけを照らす moonlight",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "もう二度と 戻れない good night",
+          "text": "もう二度と戻れない good night",
           "segments": [
             {
               "text": "もう二度と戻れない good night",
@@ -18289,16 +18274,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
+          "translation": "I can never go back good night",
+          "pronunciation": "{\"full\":\"Mōnidoto modorenai guddo night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" good night\",\"trans\":\"\"}]}",
           "start": 66.466275,
           "end": 69.128029,
-          "pronunciation": "{\"full\":\"Mōnidoto modorenai guddo night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" good night\",\"trans\":\"\"}]}",
-          "translation": "I can never go back good night",
-          "isSplit": false,
-          "rawUnspacedText": "もう二度と戻れない good night",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "望み は 一つ so far",
+          "text": "望みは一つ so far",
           "segments": [
             {
               "text": "望みは一つ so far",
@@ -18314,16 +18298,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "I only have one hope so far",
+          "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" so far\",\"trans\":\"\"}]}",
           "start": 69.260294,
           "end": 71.512073,
-          "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" so far\",\"trans\":\"\"}]}",
-          "translation": "I only have one hope so far",
-          "isSplit": false,
-          "rawUnspacedText": "望みは一つ so far",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "お願いだから どう か",
+          "text": "お願いだからどうか",
           "segments": [
             {
               "text": "お願いだからどうか",
@@ -18339,16 +18322,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Please, please",
+          "pronunciation": "{\"full\":\"Onegaidakara dō ka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"お願いだからどうか\",\"trans\":\"Onegaidakara dō ka\"}]}",
           "start": 71.512073,
           "end": 74.539548,
-          "pronunciation": "{\"full\":\"Onegaidakara dō ka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"お願いだからどうか\",\"trans\":\"Onegaidakara dō ka\"}]}",
-          "translation": "Please, please",
-          "isSplit": false,
-          "rawUnspacedText": "お願いだからどうか",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた だけな の time goes by",
+          "text": "あなただけなの time goes by",
           "segments": [
             {
               "text": "あなただけなの time goes by",
@@ -18365,16 +18347,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
+          "translation": "It's just you time goes by",
+          "pronunciation": "{\"full\":\"Anata dakena no time goes by\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなただけなの\",\"trans\":\"Anata dakena no\"},{\"type\":\"en\",\"text\":\" time goes by\",\"trans\":\"\"}]}",
           "start": 74.539548,
           "end": 77.099273,
-          "pronunciation": "{\"full\":\"Anata dakena no time goes by\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなただけなの\",\"trans\":\"Anata dakena no\"},{\"type\":\"en\",\"text\":\" time goes by\",\"trans\":\"\"}]}",
-          "translation": "It's just you time goes by",
-          "isSplit": false,
-          "rawUnspacedText": "あなただけなの time goes by",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "好きなだけ 嫌 って more",
+          "text": "好きなだけ嫌って more",
           "segments": [
             {
               "text": "好きなだけ嫌って more",
@@ -18391,13 +18372,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
+          "translation": "Hate it as much as you like, more",
+          "pronunciation": "{\"full\":\"Sukinadake iya tte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "start": 77.222056,
           "end": 79.950447,
-          "pronunciation": "{\"full\":\"Sukinadake iya tte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
-          "translation": "Hate it as much as you like, more",
-          "isSplit": false,
-          "rawUnspacedText": "好きなだけ嫌って more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Like gallows bird",
@@ -18416,13 +18396,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 80.117165,
           "end": 81.327785,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Like gallows bird",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "繰り返した love makes me",
@@ -18441,16 +18420,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "repeated love makes me",
+          "pronunciation": "{\"full\":\"Kurikaeshita love meikusu me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" love makes me\",\"trans\":\"\"}]}",
           "start": 81.446022,
           "end": 84.711451,
-          "pronunciation": "{\"full\":\"Kurikaeshita love meikusu me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" love makes me\",\"trans\":\"\"}]}",
-          "translation": "repeated love makes me",
-          "isSplit": false,
-          "rawUnspacedText": "繰り返した love makes me",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Bad, 誰にも 止められない",
+          "text": "Bad, 誰にも止められない",
           "segments": [
             {
               "text": "Bad, 誰にも止められない",
@@ -18466,61 +18444,18 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
+          "translation": "Bad, no one can stop me",
+          "pronunciation": "{\"full\":\"Baddo, darenimo tomerarenai\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"誰にも止められない\",\"trans\":\"Darenimo tomerarenai\"}]}",
           "start": 84.880972,
           "end": 90.318577,
-          "pronunciation": "{\"full\":\"Baddo, darenimo tomerarenai\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"誰にも止められない\",\"trans\":\"Darenimo tomerarenai\"}]}",
-          "translation": "Bad, no one can stop me",
-          "isSplit": false,
-          "rawUnspacedText": "Bad, 誰にも止められない",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Why",
+          "text": "Why (Please, break my heart)",
           "segments": [
             {
-              "text": "Why",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            }
-          ],
-          "singer": "Solji",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "start": 90.435003,
-          "end": 93.462625,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(Please, break my heart)",
-              "charStart": 4,
-              "charEnd": 28,
-              "start": 91.093897,
-              "end": 93.099467,
-              "segments": [],
-              "singer": "Solji",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(Please, break my heart)"
-            }
-          ],
-          "rawUnspacedText": "Why",
-          "lang": "en"
-        },
-        {
-          "text": "(Please, break my heart)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "Why (",
               "color": "#f986a3",
               "isGradient": false,
               "gradient": "",
@@ -18547,31 +18482,60 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "singer": "Solji, Elly",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break my heart)",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 90.34927794850307,
+          "end": 93.14777794850308,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Please, break my heart)",
+              "charStart": 4,
+              "charEnd": 28,
+              "start": 91.22030285504299,
+              "end": 93.14777794850308,
+              "segments": [
+                {
+                  "text": "(",
+                  "color": "#f986a3",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Solji"
+                  ]
+                },
+                {
+                  "text": "Please, break my heart",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                },
+                {
+                  "text": ")",
+                  "color": "#f986a3",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Solji"
+                  ]
+                }
+              ],
+              "singer": "Elly",
+              "pronunciation": null
+            }
+          ]
         },
         {
-          "text": "(Please, break me down)",
+          "text": "Please, break me down",
           "segments": [
-            {
-              "text": "(",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            },
             {
               "text": "Please, break me down",
               "color": "#a3f986",
@@ -18580,31 +18544,21 @@
               "artists": [
                 "Elly"
               ]
-            },
-            {
-              "text": ")",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
             }
           ],
           "singer": "Elly",
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 93.584632,
-          "end": 95.405379,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break me down)",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 93.31706909346157,
+          "end": 95.5738290209868,
+          "isSplit": false
         },
         {
-          "text": "ごめん ね じゃ 足りない",
+          "text": "ごめんねじゃ足りない",
           "segments": [
             {
               "text": "ごめんねじゃ足りない",
@@ -18620,16 +18574,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 95.405379,
-          "end": 100.405379,
-          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "sectionHeader": null,
           "translation": "Sorry is not enough",
-          "isSplit": false,
-          "rawUnspacedText": "ごめんねじゃ足りない",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "start": 95.59563994850308,
+          "end": 98.26623994850456,
+          "isSplit": false
         },
         {
-          "text": "あなた を 愛し てる",
+          "text": "あなたを愛してる",
           "segments": [
             {
               "text": "あなたを愛してる",
@@ -18645,16 +18598,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": 100.405379,
-          "end": 101.730075,
-          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "sectionHeader": null,
           "translation": "i love you",
-          "isSplit": false,
-          "rawUnspacedText": "あなたを愛してる",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "start": 98.34563994850308,
+          "end": 100.95363994850308,
+          "isSplit": false
         },
         {
-          "text": "そのまま このまま midnight",
+          "text": "そのままこのまま midnight",
           "segments": [
             {
               "text": "そのままこのまま midnight",
@@ -18670,16 +18622,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Just like this midnight",
+          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
           "start": 101.730075,
           "end": 104.188596,
-          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
-          "translation": "Just like this midnight",
-          "isSplit": false,
-          "rawUnspacedText": "そのままこのまま midnight",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "自由 に 飛び立て fly more",
+          "text": "自由に飛び立て fly more",
           "segments": [
             {
               "text": "自由に飛び立て fly more",
@@ -18695,13 +18646,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Fly away freely, fly more",
+          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
           "start": 104.346337,
           "end": 106.974788,
-          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
-          "translation": "Fly away freely, fly more",
-          "isSplit": false,
-          "rawUnspacedText": "自由に飛び立て fly more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -18720,16 +18670,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
+          "translation": "",
+          "pronunciation": null,
           "start": 107.101238,
           "end": 109.685907,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -18745,13 +18694,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "The past that I threw away everything",
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 109.685907,
           "end": 112.33477,
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
-          "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -18770,16 +18718,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 112.33477,
           "end": 113.893465,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "独り で 生きていく から",
+          "text": "独りで生きていくから",
           "segments": [
             {
               "text": "独りで生きていくから",
@@ -18795,13 +18742,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Because I'll live alone",
+          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 113.893465,
           "end": 117.580143,
-          "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
-          "translation": "Because I'll live alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りで生きていくから",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -18820,16 +18766,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 117.580143,
           "end": 119.793062,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "すぐ に 忘れられない your face",
+          "text": "すぐに忘れられない your face",
           "segments": [
             {
               "text": "すぐに忘れられない your face",
@@ -18845,13 +18790,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "I can't forget your face",
+          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "start": 119.927507,
           "end": 123.020703,
-          "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
-          "translation": "I can't forget your face",
-          "isSplit": false,
-          "rawUnspacedText": "すぐに忘れられない your face",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -18870,16 +18814,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 123.115318,
           "end": 124.686462,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きていけないでしょ",
+          "text": "一人じゃ生きていけないでしょ",
           "segments": [
             {
               "text": "一人じゃ生きていけないでしょ",
@@ -18895,19 +18838,36 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "You can't live alone, can you?",
+          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 124.686462,
           "end": 128.281526,
-          "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
-          "translation": "You can't live alone, can you?",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないでしょ",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "I'm in fan-fan-fantasy",
+          "text": "I'm in fan-fan-fantasy (I feel blue blue)",
           "segments": [
             {
-              "text": "I'm in fan-fan-fantasy",
+              "text": "I'm in fan-fan-fantasy (",
+              "color": "#a3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Elly"
+              ]
+            },
+            {
+              "text": "I feel blue blue",
+              "color": "#08f3f7",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jeonghwa"
+              ]
+            },
+            {
+              "text": ")",
               "color": "#a3f986",
               "isGradient": false,
               "gradient": "",
@@ -18916,15 +18876,15 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
-          "start": 128.281526,
-          "end": 130.728264,
-          "wordSync": null,
-          "pronunciation": "",
+          "singer": "Elly, Jeonghwa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
+          "sectionHeader": "[Verse 3: Elly, _Jeonghwa_, **Hani**, _**Solji**_]",
           "translation": "",
+          "pronunciation": null,
+          "start": 128.281526,
+          "end": 130.51806392751925,
           "isSplit": true,
           "adlibs": [
             {
@@ -18933,67 +18893,35 @@
               "charEnd": 41,
               "start": 129.500915,
               "end": 130.728264,
-              "segments": [],
-              "singer": "Elly",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(I feel blue blue)"
-            }
-          ],
-          "rawUnspacedText": "I'm in fan-fan-fantasy",
-          "lang": "en"
-        },
-        {
-          "text": "(I feel blue blue)",
-          "segments": [
-            {
-              "text": "(",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            },
-            {
-              "text": "I feel blue blue",
-              "color": "#08f3f7",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Jeonghwa"
-              ]
-            },
-            {
-              "text": ")",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            }
-          ],
-          "singer": "Jeonghwa",
-          "color": "#08f3f7",
-          "isGradient": false,
-          "gradient": "",
-          "start": 130.824393,
-          "end": 133.327932,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(I feel blue blue)",
-              "charStart": 20,
-              "charEnd": 38,
-              "start": 132.234371,
-              "end": 133.327932,
-              "segments": [],
+              "segments": [
+                {
+                  "text": "(",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                },
+                {
+                  "text": "I feel blue blue",
+                  "color": "#08f3f7",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jeonghwa"
+                  ]
+                },
+                {
+                  "text": ")",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                }
+              ],
               "singer": "Jeonghwa",
               "pronunciation": "",
               "translation": "",
@@ -19001,41 +18929,13 @@
               "lang": "en",
               "rawUnspacedText": "(I feel blue blue)"
             }
-          ],
-          "rawUnspacedText": "(I feel blue blue)",
-          "lang": "en"
+          ]
         },
         {
-          "text": "これは fan-fan-fantasy",
+          "text": "これは fan-fan-fantasy (I feel blue blue)",
           "segments": [
             {
-              "text": "これは fan-fan-fantasy",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            }
-          ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
-          "translation": "This is fan-fan-fantasy",
-          "isSplit": false,
-          "rawUnspacedText": "これは fan-fan-fantasy",
-          "lang": "ja"
-        },
-        {
-          "text": "(I feel blue blue)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "これは fan-fan-fantasy (",
               "color": "#a3f986",
               "isGradient": false,
               "gradient": "",
@@ -19062,21 +18962,59 @@
               ]
             }
           ],
-          "singer": "Jeonghwa",
-          "color": "#08f3f7",
-          "isGradient": false,
-          "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(I feel blue blue)",
-          "lang": "en"
+          "singer": "Elly, Jeonghwa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
+          "sectionHeader": null,
+          "translation": "This is fan-fan-fantasy",
+          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
+          "start": 130.59756392751925,
+          "end": 133.17736392751627,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(I feel blue blue)",
+              "charStart": 20,
+              "charEnd": 38,
+              "start": 132.18791385503704,
+              "end": 133.17736392751627,
+              "segments": [
+                {
+                  "text": "(",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                },
+                {
+                  "text": "I feel blue blue",
+                  "color": "#08f3f7",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jeonghwa"
+                  ]
+                },
+                {
+                  "text": ")",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                }
+              ],
+              "singer": "Jeonghwa",
+              "pronunciation": null
+            }
+          ]
         },
         {
-          "text": "キャパオーバーしそう に",
+          "text": "キャパオーバーしそうに",
           "segments": [
             {
               "text": "キャパオーバーしそうに",
@@ -19092,16 +19030,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Looks like I'm going to exceed my capacity",
+          "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
           "start": 133.327932,
           "end": 134.782073,
-          "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
-          "translation": "Looks like I'm going to exceed my capacity",
-          "isSplit": false,
-          "rawUnspacedText": "キャパオーバーしそうに",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた が したい よう に",
+          "text": "あなたが　したいように",
           "segments": [
             {
               "text": "あなたが　したいように",
@@ -19117,16 +19054,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "as you want",
+          "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
           "start": 134.861813,
           "end": 136.455853,
-          "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
-          "translation": "as you want",
-          "isSplit": false,
-          "rawUnspacedText": "あなたが　したいように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "まだ 夢 から 覚めない みたい に",
+          "text": "まだ夢から覚めないみたいに",
           "segments": [
             {
               "text": "まだ夢から覚めないみたいに",
@@ -19142,16 +19078,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "It's like I haven't woken up from a dream yet",
+          "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
           "start": 136.516142,
           "end": 138.790478,
-          "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
-          "translation": "It's like I haven't woken up from a dream yet",
-          "isSplit": false,
-          "rawUnspacedText": "まだ夢から覚めないみたいに",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "回る 回る 時計 が tick tack",
+          "text": "回る回る時計が tick tack",
           "segments": [
             {
               "text": "回る回る時計が tick tack",
@@ -19167,16 +19102,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "The spinning clock tick tack",
+          "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tikku tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" tick tack\",\"trans\":\"\"}]}",
           "start": 138.812082,
           "end": 141.100215,
-          "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tikku tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" tick tack\",\"trans\":\"\"}]}",
-          "translation": "The spinning clock tick tack",
-          "isSplit": false,
-          "rawUnspacedText": "回る回る時計が tick tack",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "好きな だけ 笑って more",
+          "text": "好きなだけ笑って more",
           "segments": [
             {
               "text": "好きなだけ笑って more",
@@ -19192,16 +19126,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Laugh as much as you like more",
+          "pronunciation": "{\"full\":\"Sukina dake waratte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "start": 141.186851,
           "end": 143.897193,
-          "pronunciation": "{\"full\":\"Sukina dake waratte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
-          "translation": "Laugh as much as you like more",
-          "isSplit": false,
-          "rawUnspacedText": "好きなだけ笑って more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "油断 しないで",
+          "text": "油断しないで",
           "segments": [
             {
               "text": "油断しないで",
@@ -19217,13 +19150,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "Don't let your guard down",
+          "pronunciation": "{\"full\":\"Yudan shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"油断しないで\",\"trans\":\"Yudan shinaide\"}]}",
           "start": 143.897193,
           "end": 145.131033,
-          "pronunciation": "{\"full\":\"Yudan shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"油断しないで\",\"trans\":\"Yudan shinaide\"}]}",
-          "translation": "Don't let your guard down",
-          "isSplit": false,
-          "rawUnspacedText": "油断しないで",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Don't let me go before",
@@ -19242,13 +19174,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 145.131033,
           "end": 146.449335,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Don't let me go before",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Love makes me",
@@ -19267,16 +19198,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 146.554323,
           "end": 148.412821,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Love makes me",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "Bad, 始まらない よう に",
+          "text": "Bad, 始まらないように",
           "segments": [
             {
               "text": "Bad, 始まらないように",
@@ -19292,61 +19222,18 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
+          "translation": "Bad, don't start",
+          "pronunciation": "{\"full\":\"Baddo, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
           "start": 149.125263,
           "end": 154.24918,
-          "pronunciation": "{\"full\":\"Baddo, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
-          "translation": "Bad, don't start",
-          "isSplit": false,
-          "rawUnspacedText": "Bad, 始まらないように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Bye",
+          "text": "Bye (Please, break my heart)",
           "segments": [
             {
-              "text": "Bye",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            }
-          ],
-          "singer": "Solji",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "start": 154.338883,
-          "end": 157.14129,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(Please, break my heart)",
-              "charStart": 4,
-              "charEnd": 28,
-              "start": 155.156168,
-              "end": 157.14129,
-              "segments": [],
-              "singer": "Solji",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(Please, break my heart)"
-            }
-          ],
-          "rawUnspacedText": "Bye",
-          "lang": "en"
-        },
-        {
-          "text": "(Please, break my heart)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "Bye (",
               "color": "#f986a3",
               "isGradient": false,
               "gradient": "",
@@ -19373,30 +19260,60 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
-          "start": 171.092167,
-          "end": 173.086787,
-          "pronunciation": "",
+          "singer": "Solji, Elly",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break my heart)",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 154.54094409346305,
+          "end": 157.26544409346306,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Please, break my heart)",
+              "charStart": 4,
+              "charEnd": 28,
+              "start": null,
+              "end": null,
+              "segments": [
+                {
+                  "text": "(",
+                  "color": "#f986a3",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Solji"
+                  ]
+                },
+                {
+                  "text": "Please, break my heart",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                },
+                {
+                  "text": ")",
+                  "color": "#f986a3",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Solji"
+                  ]
+                }
+              ],
+              "singer": "Elly",
+              "pronunciation": null
+            }
+          ]
         },
         {
-          "text": "(Please, break me down)",
+          "text": "Please, break me down",
           "segments": [
-            {
-              "text": "(",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            },
             {
               "text": "Please, break me down",
               "color": "#a3f986",
@@ -19405,31 +19322,21 @@
               "artists": [
                 "Elly"
               ]
-            },
-            {
-              "text": ")",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
             }
           ],
           "singer": "Elly",
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 173.22958,
-          "end": 175.512293,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break me down)",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 157.40916309346306,
+          "end": 159.5205630934616,
+          "isSplit": false
         },
         {
-          "text": "ごめん ね じゃ 足りない",
+          "text": "ごめんねじゃ足りない",
           "segments": [
             {
               "text": "ごめんねじゃ足りない",
@@ -19445,17 +19352,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "sectionHeader": null,
           "translation": "Sorry is not enough",
-          "isSplit": false,
-          "rawUnspacedText": "ごめんねじゃ足りない",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
+          "start": 159.60216309346308,
+          "end": 162.1873630934586,
+          "isSplit": false
         },
         {
-          "text": "あなた を 愛し てる",
+          "text": "あなたを愛してる",
           "segments": [
             {
               "text": "あなたを愛してる",
@@ -19471,17 +19376,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "sectionHeader": null,
           "translation": "i love you",
-          "isSplit": false,
-          "rawUnspacedText": "あなたを愛してる",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
+          "start": 162.2688630934586,
+          "end": 165.2415630934616,
+          "isSplit": false
         },
         {
-          "text": "そのまま このまま midnight",
+          "text": "そのままこのまま midnight",
           "segments": [
             {
               "text": "そのままこのまま midnight",
@@ -19497,17 +19400,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
+          "sectionHeader": null,
           "translation": "Just like this midnight",
-          "isSplit": false,
-          "rawUnspacedText": "そのままこのまま midnight",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
+          "start": 165.62166309346307,
+          "end": 168.1149630934601,
+          "isSplit": false
         },
         {
-          "text": "自由 に 飛び立て fly more",
+          "text": "自由に飛び立て fly more",
           "segments": [
             {
               "text": "自由に飛び立て fly more",
@@ -19523,14 +19424,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
+          "sectionHeader": null,
           "translation": "Fly away freely, fly more",
-          "isSplit": false,
-          "rawUnspacedText": "自由に飛び立て fly more",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
+          "start": 168.20026309345712,
+          "end": 170.98296309346009,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -19549,13 +19448,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 176.53254,
-          "end": 178.368817,
-          "pronunciation": "",
+          "sectionHeader": "[Bridge: Elly]",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 171.04473816593932,
+          "end": 173.2718381659408,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -19574,13 +19472,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 178.489517,
-          "end": 181.360962,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 173.5260381659438,
+          "end": 175.5810381659438,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -19599,13 +19496,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 181.863278,
-          "end": 183.855174,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 176.41333816594081,
+          "end": 178.47470892752074,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -19624,13 +19520,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 183.993957,
-          "end": 186.037457,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 178.56810892751926,
+          "end": 181.56990892752373,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -19649,13 +19544,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 187.131903,
-          "end": 189.058883,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 181.94060892751926,
+          "end": 183.93480892752223,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -19674,13 +19568,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 189.178743,
-          "end": 191.898559,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 184.21780892752224,
+          "end": 186.27820892752075,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -19699,13 +19592,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 224.474218,
-          "end": 226.486699,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 187.06350892752522,
+          "end": 189.09030892752224,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -19724,13 +19616,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 226.592706,
-          "end": 229.098669,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 189.54190892752374,
+          "end": 192.26570892752073,
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -19749,17 +19640,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 192.36520892752074,
+          "end": 195.05510892751926,
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -19775,14 +19664,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
+          "sectionHeader": null,
           "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
+          "start": 195.13720892752076,
+          "end": 197.62100892752522,
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -19801,17 +19688,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 197.71460892751927,
+          "end": 199.23790892752373,
+          "isSplit": false
         },
         {
-          "text": "独り は 寂しいけど",
+          "text": "独りは寂しいけど",
           "segments": [
             {
               "text": "独りは寂しいけど",
@@ -19827,14 +19712,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
+          "sectionHeader": null,
           "translation": "I feel lonely when I'm alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りは寂しいけど",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
+          "start": 199.32860892751927,
+          "end": 203.01320892752074,
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -19853,17 +19736,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 203.09910892751927,
+          "end": 205.06910892751927,
+          "isSplit": false
         },
         {
-          "text": "会いたい わ すぐ に そば に 来て よ",
+          "text": "会いたいわ　すぐにそばに来てよ",
           "segments": [
             {
               "text": "会いたいわ　すぐにそばに来てよ",
@@ -19879,14 +19760,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
+          "sectionHeader": null,
           "translation": "I want to see you, please come to my side right away",
-          "isSplit": false,
-          "rawUnspacedText": "会いたいわ　すぐにそばに来てよ",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
+          "start": 205.14720892752075,
+          "end": 208.2635089275252,
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -19905,17 +19784,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 208.34880892752224,
+          "end": 209.85410892751926,
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きて いけないけど",
+          "text": "一人じゃ生きていけないけど",
           "segments": [
             {
               "text": "一人じゃ生きていけないけど",
@@ -19931,14 +19808,12 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
+          "sectionHeader": null,
           "translation": "I can't live alone",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないけど",
-          "lang": "ja"
+          "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
+          "start": 209.94140892752372,
+          "end": 215.71490892752374,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -19957,13 +19832,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 229.742187,
-          "end": 231.766178,
-          "pronunciation": "",
+          "sectionHeader": "[Outro: Elly]",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 224.37530892752224,
+          "end": 226.34060892751927,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -19982,13 +19856,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 237.188045,
-          "end": 239.484792,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 226.67280892752223,
+          "end": 228.99400892752521,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20007,13 +19880,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 240.521221,
-          "end": 242.296402,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 229.72830892752222,
+          "end": 231.73600892752523,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20032,13 +19904,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 245.710346,
-          "end": 247.625939,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 234.99075002098232,
+          "end": 237.23335002097636,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -20057,13 +19928,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 247.791787,
-          "end": 250.363256,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 237.48605002097932,
+          "end": 239.59615002098082,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20082,13 +19952,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 251.159991,
-          "end": 253.052339,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 240.33315002098084,
+          "end": 242.49635002097637,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20107,14 +19976,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 245.72291585504598,
+          "end": 247.784215855043,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -20133,13 +20000,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": 253.219093,
-          "end": 256.977711,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 248.0513158550445,
+          "end": 250.4451158550415,
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20158,14 +20024,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 251.10441585504597,
+          "end": 253.21935002097635,
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -20184,17 +20048,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "",
+          "sectionHeader": null,
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "pronunciation": null,
+          "start": 253.31355002097933,
+          "end": 256.70085002097636,
+          "isSplit": false
         }
       ],
-      "lyrics": "[EXID「Break My Heart」の歌詞]\n\n[Intro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 1: Jeonghwa, _Hani_, **Hyelin**, _**Solji**_]\nI'm so fine\n_私なら it's okay_\n不意に I'm so crying\n_愛に飢えてるの_\n**誰にもきっと近づかないように**\n_**Might change my mind, like 'my oh my'**_\n\n[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]\n間違いだけを照らす moonlight\nもう二度と戻れない good night\n_望みは一つ so far\nお願いだからどうか_\nあなただけなの time goes by\n好きなだけ嫌って more\n**Like gallows bird\n繰り返した love makes me**\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 誰にも止められない\nWhy\n(_Please, break my heart_)\n(_Please, break me down_)\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 3: Elly, _Jeonghwa_, **Hani**, _**Solji**_]\nI'm in fan-fan-fantasy\n(_I feel blue blue_)\nこれは fan-fan-fantasy\n(_I feel blue blue_)\nキャパオーバーしそうに\nあなたが　したいように\nまだ夢から覚めないみたいに\n**回る回る時計が tick tack\n好きなだけ笑って more**\n_**油断しないで\nDon't let me go before\nLove makes me**_\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 始まらないように\nBye\n(_Please, break my heart_)\n(_Please, break me down_)\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Bridge: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りは寂しいけど\n_Sonic, sonic, boom, super sonic\n会いたいわ　すぐにそばに来てよ_\n**Baby, baby, I loved you\n一人じゃ生きていけないけど**\n\n[Outro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down",
+      "lyrics": "[EXID「Break My Heart」の歌詞]\n\n[Intro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 1: Jeonghwa, _Hani_, **Hyelin**, _**Solji**_]\nI'm so fine\n_私なら it's okay_\n不意に I'm so crying\n_愛に飢えてるの_\n**誰にもきっと近づかないように**\n_**Might change my mind, like 'my oh my'**_\n\n[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]\n間違いだけを照らす moonlight\nもう二度と戻れない good night\n_望みは一つ so far\nお願いだからどうか_\nあなただけなの time goes by\n好きなだけ嫌って more\n**Like gallows bird\n繰り返した love makes me**\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 誰にも止められない\nWhy (_Please, break my heart_)\n_Please, break me down_\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りで生きていくから\n_Sonic, sonic, boom, super sonic\nすぐに忘れられない your face_\n**Baby, baby, I loved you\n一人じゃ生きていけないでしょ**\n\n[Verse 3: Elly, _Jeonghwa_, **Hani**, _**Solji**_]\nI'm in fan-fan-fantasy (_I feel blue blue_)\nこれは fan-fan-fantasy (_I feel blue blue_)\nキャパオーバーしそうに\nあなたが　したいように\nまだ夢から覚めないみたいに\n**回る回る時計が tick tack\n好きなだけ笑って more**\n_**油断しないで\nDon't let me go before\nLove makes me**_\n\n[Chorus: Solji, _Elly_, **Hyelin**]\nBad, 始まらないように\nBye (_Please, break my heart_)\n_Please, break me down_\n**ごめんねじゃ足りない\nあなたを愛してる\nそのままこのまま midnight**\n自由に飛び立て fly more\n\n[Bridge: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down\n\n[Refrain: Hani, _Jeonghwa_, **Hyelin**]\nSorry sorry, I'm sorry so much\n何もかも捨てた過去は\nBaby, baby, I loved you\n独りは寂しいけど\n_Sonic, sonic, boom, super sonic\n会いたいわ　すぐにそばに来てよ_\n**Baby, baby, I loved you\n一人じゃ生きていけないけど**\n\n[Outro: Elly]\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break my heart\nPlease, break me down\nPlease, break my heart\nPlease, break me down",
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=3i2YCVTC7rc",
@@ -20232,13 +20094,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Intro: Elly]",
           "start": 11.195054,
           "end": 13.228887,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -20257,13 +20118,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 13.351471,
           "end": 15.746055,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -20282,13 +20142,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 16.575941,
           "end": 18.548238,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -20307,13 +20166,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 18.678737,
           "end": 21.441545,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -20332,16 +20190,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
           "start": 21.577037,
           "end": 24.421439,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -20357,13 +20214,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 24.421439,
           "end": 27.134751,
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -20382,16 +20238,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 27.134751,
           "end": 28.704744,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "独り で 生きていく から",
+          "text": "独りで生きていくから",
           "segments": [
             {
               "text": "独りで生きていくから",
@@ -20407,13 +20262,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 28.704744,
           "end": 32.533375,
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "translation": "Because I'll live alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りで生きていくから",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -20432,16 +20286,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 32.533375,
           "end": 34.375027,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "すぐ に 忘れられない your face",
+          "text": "すぐに忘れられない your face",
           "segments": [
             {
               "text": "すぐに忘れられない your face",
@@ -20457,13 +20310,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 34.520324,
           "end": 37.679632,
           "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "translation": "I can't forget your face",
-          "isSplit": false,
-          "rawUnspacedText": "すぐに忘れられない your face",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -20482,16 +20334,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 37.786643,
           "end": 39.471936,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きていけないでしょ",
+          "text": "一人じゃ生きていけないでしょ",
           "segments": [
             {
               "text": "一人じゃ生きていけないでしょ",
@@ -20507,13 +20358,12 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 39.471936,
           "end": 43.15788,
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "translation": "You can't live alone, can you?",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないでしょ",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "I'm so fine",
@@ -20532,13 +20382,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Verse 1: Jeonghwa, _Hani_, **Hyelin**, _**Solji**_]",
           "start": 43.15788,
           "end": 45.282982,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "I'm so fine",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "私なら it's okay",
@@ -20557,13 +20406,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 45.399361,
           "end": 47.900153,
           "pronunciation": "{\"full\":\"Watashinara it' s okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" it's okay\",\"trans\":\"\"}]}",
           "translation": "For me it's okay",
-          "isSplit": false,
-          "rawUnspacedText": "私なら it's okay",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "不意に I'm so crying",
@@ -20582,16 +20430,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 47.996106,
           "end": 50.52284,
           "pronunciation": "{\"full\":\"Fui ni I' m so crying\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不意に\",\"trans\":\"Fui ni\"},{\"type\":\"en\",\"text\":\" I'm so crying\",\"trans\":\"\"}]}",
           "translation": "Suddenly I'm so crying",
-          "isSplit": false,
-          "rawUnspacedText": "不意に I'm so crying",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "愛 に 飢え てる の",
+          "text": "愛に飢えてるの",
           "segments": [
             {
               "text": "愛に飢えてるの",
@@ -20607,16 +20454,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 50.52284,
           "end": 53.323786,
           "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
           "translation": "I'm hungry for love",
-          "isSplit": false,
-          "rawUnspacedText": "愛に飢えてるの",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "誰にも きっと 近づかない よう に",
+          "text": "誰にもきっと近づかないように",
           "segments": [
             {
               "text": "誰にもきっと近づかないように",
@@ -20632,13 +20478,12 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 53.808238,
           "end": 58.497698,
           "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
           "translation": "Don't let anyone get close to you",
-          "isSplit": false,
-          "rawUnspacedText": "誰にもきっと近づかないように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Might change my mind, like 'my oh my'",
@@ -20657,16 +20502,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 58.733846,
           "end": 63.86805,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Might change my mind, like 'my oh my'",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "間違い だけ を 照らす moonlight",
+          "text": "間違いだけを照らす moonlight",
           "segments": [
             {
               "text": "間違いだけを照らす moonlight",
@@ -20683,16 +20527,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": "[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]",
           "start": 63.986814,
           "end": 66.33093,
           "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" moonlight\",\"trans\":\"\"}]}",
           "translation": "The moonlight shines only on mistakes",
-          "isSplit": false,
-          "rawUnspacedText": "間違いだけを照らす moonlight",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "もう二度と 戻れない good night",
+          "text": "もう二度と戻れない good night",
           "segments": [
             {
               "text": "もう二度と戻れない good night",
@@ -20709,16 +20552,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
           "start": 66.466275,
           "end": 69.128029,
           "pronunciation": "{\"full\":\"Mōnidoto modorenai guddo night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" good night\",\"trans\":\"\"}]}",
           "translation": "I can never go back good night",
-          "isSplit": false,
-          "rawUnspacedText": "もう二度と戻れない good night",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "望み は 一つ so far",
+          "text": "望みは一つ so far",
           "segments": [
             {
               "text": "望みは一つ so far",
@@ -20734,16 +20576,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 69.260294,
           "end": 71.512073,
           "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" so far\",\"trans\":\"\"}]}",
           "translation": "I only have one hope so far",
-          "isSplit": false,
-          "rawUnspacedText": "望みは一つ so far",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "お願いだから どう か",
+          "text": "お願いだからどうか",
           "segments": [
             {
               "text": "お願いだからどうか",
@@ -20759,16 +20600,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 71.512073,
           "end": 74.539548,
           "pronunciation": "{\"full\":\"Onegaidakara dō ka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"お願いだからどうか\",\"trans\":\"Onegaidakara dō ka\"}]}",
           "translation": "Please, please",
-          "isSplit": false,
-          "rawUnspacedText": "お願いだからどうか",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた だけな の time goes by",
+          "text": "あなただけなの time goes by",
           "segments": [
             {
               "text": "あなただけなの time goes by",
@@ -20785,16 +20625,15 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
           "start": 74.539548,
           "end": 77.099273,
           "pronunciation": "{\"full\":\"Anata dakena no time goes by\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなただけなの\",\"trans\":\"Anata dakena no\"},{\"type\":\"en\",\"text\":\" time goes by\",\"trans\":\"\"}]}",
           "translation": "It's just you time goes by",
-          "isSplit": false,
-          "rawUnspacedText": "あなただけなの time goes by",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "好きなだけ 嫌 って more",
+          "text": "好きなだけ嫌って more",
           "segments": [
             {
               "text": "好きなだけ嫌って more",
@@ -20811,13 +20650,12 @@
           "color": "#ffffff",
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
+          "sectionHeader": null,
           "start": 77.222056,
           "end": 79.950447,
           "pronunciation": "{\"full\":\"Sukinadake iya tte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "translation": "Hate it as much as you like, more",
-          "isSplit": false,
-          "rawUnspacedText": "好きなだけ嫌って more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Like gallows bird",
@@ -20836,13 +20674,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 80.117165,
           "end": 81.327785,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Like gallows bird",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "繰り返した love makes me",
@@ -20861,16 +20698,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 81.446022,
           "end": 84.711451,
           "pronunciation": "{\"full\":\"Kurikaeshita love meikusu me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" love makes me\",\"trans\":\"\"}]}",
           "translation": "repeated love makes me",
-          "isSplit": false,
-          "rawUnspacedText": "繰り返した love makes me",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Bad, 誰にも 止められない",
+          "text": "Bad, 誰にも止められない",
           "segments": [
             {
               "text": "Bad, 誰にも止められない",
@@ -20886,61 +20722,18 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
           "start": 84.880972,
           "end": 90.318577,
           "pronunciation": "{\"full\":\"Baddo, darenimo tomerarenai\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"誰にも止められない\",\"trans\":\"Darenimo tomerarenai\"}]}",
           "translation": "Bad, no one can stop me",
-          "isSplit": false,
-          "rawUnspacedText": "Bad, 誰にも止められない",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Why",
+          "text": "Why (Please, break my heart)",
           "segments": [
             {
-              "text": "Why",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            }
-          ],
-          "singer": "Solji",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "start": 90.435003,
-          "end": 93.462625,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(Please, break my heart)",
-              "charStart": 4,
-              "charEnd": 28,
-              "start": 91.093897,
-              "end": 93.099467,
-              "segments": [],
-              "singer": "Solji",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(Please, break my heart)"
-            }
-          ],
-          "rawUnspacedText": "Why",
-          "lang": "en"
-        },
-        {
-          "text": "(Please, break my heart)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "Why (",
               "color": "#f986a3",
               "isGradient": false,
               "gradient": "",
@@ -20967,31 +20760,21 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
+          "singer": "Solji, Elly",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break my heart)",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "(Please, break me down)",
+          "text": "Please, break me down",
           "segments": [
-            {
-              "text": "(",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            },
             {
               "text": "Please, break me down",
               "color": "#a3f986",
@@ -21000,31 +20783,21 @@
               "artists": [
                 "Elly"
               ]
-            },
-            {
-              "text": ")",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
             }
           ],
           "singer": "Elly",
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 93.584632,
           "end": 95.405379,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break me down)",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "ごめん ね じゃ 足りない",
+          "text": "ごめんねじゃ足りない",
           "segments": [
             {
               "text": "ごめんねじゃ足りない",
@@ -21040,16 +20813,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 95.405379,
           "end": 100.405379,
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "translation": "Sorry is not enough",
-          "isSplit": false,
-          "rawUnspacedText": "ごめんねじゃ足りない",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた を 愛し てる",
+          "text": "あなたを愛してる",
           "segments": [
             {
               "text": "あなたを愛してる",
@@ -21065,16 +20837,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 100.405379,
           "end": 101.730075,
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "translation": "i love you",
-          "isSplit": false,
-          "rawUnspacedText": "あなたを愛してる",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "そのまま このまま midnight",
+          "text": "そのままこのまま midnight",
           "segments": [
             {
               "text": "そのままこのまま midnight",
@@ -21090,16 +20861,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 101.730075,
           "end": 104.188596,
           "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
           "translation": "Just like this midnight",
-          "isSplit": false,
-          "rawUnspacedText": "そのままこのまま midnight",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "自由 に 飛び立て fly more",
+          "text": "自由に飛び立て fly more",
           "segments": [
             {
               "text": "自由に飛び立て fly more",
@@ -21115,13 +20885,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 104.346337,
           "end": 106.974788,
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
           "translation": "Fly away freely, fly more",
-          "isSplit": false,
-          "rawUnspacedText": "自由に飛び立て fly more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -21140,16 +20909,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
           "start": 107.101238,
           "end": 109.685907,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -21165,13 +20933,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 109.685907,
           "end": 112.33477,
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -21190,16 +20957,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 112.33477,
           "end": 113.893465,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "独り で 生きていく から",
+          "text": "独りで生きていくから",
           "segments": [
             {
               "text": "独りで生きていくから",
@@ -21215,13 +20981,12 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 113.893465,
           "end": 117.580143,
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "translation": "Because I'll live alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りで生きていくから",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -21240,16 +21005,15 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 117.580143,
           "end": 119.793062,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "すぐ に 忘れられない your face",
+          "text": "すぐに忘れられない your face",
           "segments": [
             {
               "text": "すぐに忘れられない your face",
@@ -21265,13 +21029,12 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 119.927507,
           "end": 123.020703,
           "pronunciation": "{\"full\":\"Sugu ni wasurerarenai your face\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"すぐに忘れられない\",\"trans\":\"Sugu ni wasurerarenai\"},{\"type\":\"en\",\"text\":\" your face\",\"trans\":\"\"}]}",
           "translation": "I can't forget your face",
-          "isSplit": false,
-          "rawUnspacedText": "すぐに忘れられない your face",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -21290,16 +21053,15 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 123.115318,
           "end": 124.686462,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きていけないでしょ",
+          "text": "一人じゃ生きていけないでしょ",
           "segments": [
             {
               "text": "一人じゃ生きていけないでしょ",
@@ -21315,19 +21077,36 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 124.686462,
           "end": 128.281526,
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "translation": "You can't live alone, can you?",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないでしょ",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "I'm in fan-fan-fantasy",
+          "text": "I'm in fan-fan-fantasy (I feel blue blue)",
           "segments": [
             {
-              "text": "I'm in fan-fan-fantasy",
+              "text": "I'm in fan-fan-fantasy (",
+              "color": "#a3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Elly"
+              ]
+            },
+            {
+              "text": "I feel blue blue",
+              "color": "#08f3f7",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jeonghwa"
+              ]
+            },
+            {
+              "text": ")",
               "color": "#a3f986",
               "isGradient": false,
               "gradient": "",
@@ -21336,10 +21115,11 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
+          "singer": "Elly, Jeonghwa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
+          "sectionHeader": "[Verse 3: Elly, _Jeonghwa_, **Hani**, _**Solji**_]",
           "start": 128.281526,
           "end": 130.728264,
           "wordSync": null,
@@ -21353,67 +21133,35 @@
               "charEnd": 41,
               "start": 129.500915,
               "end": 130.728264,
-              "segments": [],
-              "singer": "Elly",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(I feel blue blue)"
-            }
-          ],
-          "rawUnspacedText": "I'm in fan-fan-fantasy",
-          "lang": "en"
-        },
-        {
-          "text": "(I feel blue blue)",
-          "segments": [
-            {
-              "text": "(",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            },
-            {
-              "text": "I feel blue blue",
-              "color": "#08f3f7",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Jeonghwa"
-              ]
-            },
-            {
-              "text": ")",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            }
-          ],
-          "singer": "Jeonghwa",
-          "color": "#08f3f7",
-          "isGradient": false,
-          "gradient": "",
-          "start": 130.824393,
-          "end": 133.327932,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(I feel blue blue)",
-              "charStart": 20,
-              "charEnd": 38,
-              "start": 132.234371,
-              "end": 133.327932,
-              "segments": [],
+              "segments": [
+                {
+                  "text": "(",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                },
+                {
+                  "text": "I feel blue blue",
+                  "color": "#08f3f7",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jeonghwa"
+                  ]
+                },
+                {
+                  "text": ")",
+                  "color": "#a3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Elly"
+                  ]
+                }
+              ],
               "singer": "Jeonghwa",
               "pronunciation": "",
               "translation": "",
@@ -21421,41 +21169,13 @@
               "lang": "en",
               "rawUnspacedText": "(I feel blue blue)"
             }
-          ],
-          "rawUnspacedText": "(I feel blue blue)",
-          "lang": "en"
+          ]
         },
         {
-          "text": "これは fan-fan-fantasy",
+          "text": "これは fan-fan-fantasy (I feel blue blue)",
           "segments": [
             {
-              "text": "これは fan-fan-fantasy",
-              "color": "#a3f986",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Elly"
-              ]
-            }
-          ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
-          "start": null,
-          "end": null,
-          "wordSync": null,
-          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
-          "translation": "This is fan-fan-fantasy",
-          "isSplit": false,
-          "rawUnspacedText": "これは fan-fan-fantasy",
-          "lang": "ja"
-        },
-        {
-          "text": "(I feel blue blue)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "これは fan-fan-fantasy (",
               "color": "#a3f986",
               "isGradient": false,
               "gradient": "",
@@ -21482,21 +21202,20 @@
               ]
             }
           ],
-          "singer": "Jeonghwa",
-          "color": "#08f3f7",
-          "isGradient": false,
-          "gradient": "",
+          "singer": "Elly, Jeonghwa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(I feel blue blue)",
-          "lang": "en"
+          "pronunciation": "{\"full\":\"Kore wa fan - fan - fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" fan-fan-fantasy\",\"trans\":\"\"}]}",
+          "translation": "This is fan-fan-fantasy",
+          "isSplit": false
         },
         {
-          "text": "キャパオーバーしそう に",
+          "text": "キャパオーバーしそうに",
           "segments": [
             {
               "text": "キャパオーバーしそうに",
@@ -21512,16 +21231,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 133.327932,
           "end": 134.782073,
           "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
           "translation": "Looks like I'm going to exceed my capacity",
-          "isSplit": false,
-          "rawUnspacedText": "キャパオーバーしそうに",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた が したい よう に",
+          "text": "あなたが　したいように",
           "segments": [
             {
               "text": "あなたが　したいように",
@@ -21537,16 +21255,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 134.861813,
           "end": 136.455853,
           "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
           "translation": "as you want",
-          "isSplit": false,
-          "rawUnspacedText": "あなたが　したいように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "まだ 夢 から 覚めない みたい に",
+          "text": "まだ夢から覚めないみたいに",
           "segments": [
             {
               "text": "まだ夢から覚めないみたいに",
@@ -21562,16 +21279,15 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 136.516142,
           "end": 138.790478,
           "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
           "translation": "It's like I haven't woken up from a dream yet",
-          "isSplit": false,
-          "rawUnspacedText": "まだ夢から覚めないみたいに",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "回る 回る 時計 が tick tack",
+          "text": "回る回る時計が tick tack",
           "segments": [
             {
               "text": "回る回る時計が tick tack",
@@ -21587,16 +21303,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 138.812082,
           "end": 141.100215,
           "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tikku tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" tick tack\",\"trans\":\"\"}]}",
           "translation": "The spinning clock tick tack",
-          "isSplit": false,
-          "rawUnspacedText": "回る回る時計が tick tack",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "好きな だけ 笑って more",
+          "text": "好きなだけ笑って more",
           "segments": [
             {
               "text": "好きなだけ笑って more",
@@ -21612,16 +21327,15 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 141.186851,
           "end": 143.897193,
           "pronunciation": "{\"full\":\"Sukina dake waratte moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" more\",\"trans\":\"\"}]}",
           "translation": "Laugh as much as you like more",
-          "isSplit": false,
-          "rawUnspacedText": "好きなだけ笑って more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "油断 しないで",
+          "text": "油断しないで",
           "segments": [
             {
               "text": "油断しないで",
@@ -21637,13 +21351,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 143.897193,
           "end": 145.131033,
           "pronunciation": "{\"full\":\"Yudan shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"油断しないで\",\"trans\":\"Yudan shinaide\"}]}",
           "translation": "Don't let your guard down",
-          "isSplit": false,
-          "rawUnspacedText": "油断しないで",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Don't let me go before",
@@ -21662,13 +21375,12 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 145.131033,
           "end": 146.449335,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Don't let me go before",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Love makes me",
@@ -21687,16 +21399,15 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 146.554323,
           "end": 148.412821,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Love makes me",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "Bad, 始まらない よう に",
+          "text": "Bad, 始まらないように",
           "segments": [
             {
               "text": "Bad, 始まらないように",
@@ -21712,61 +21423,18 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
           "start": 149.125263,
           "end": 154.24918,
           "pronunciation": "{\"full\":\"Baddo, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad, \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
           "translation": "Bad, don't start",
-          "isSplit": false,
-          "rawUnspacedText": "Bad, 始まらないように",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "Bye",
+          "text": "Bye (Please, break my heart)",
           "segments": [
             {
-              "text": "Bye",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            }
-          ],
-          "singer": "Solji",
-          "color": "#f986a3",
-          "isGradient": false,
-          "gradient": "",
-          "start": 154.338883,
-          "end": 157.14129,
-          "wordSync": null,
-          "pronunciation": "",
-          "translation": "",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(Please, break my heart)",
-              "charStart": 4,
-              "charEnd": 28,
-              "start": 155.156168,
-              "end": 157.14129,
-              "segments": [],
-              "singer": "Solji",
-              "pronunciation": "",
-              "translation": "",
-              "language": "en",
-              "lang": "en",
-              "rawUnspacedText": "(Please, break my heart)"
-            }
-          ],
-          "rawUnspacedText": "Bye",
-          "lang": "en"
-        },
-        {
-          "text": "(Please, break my heart)",
-          "segments": [
-            {
-              "text": "(",
+              "text": "Bye (",
               "color": "#f986a3",
               "isGradient": false,
               "gradient": "",
@@ -21793,30 +21461,20 @@
               ]
             }
           ],
-          "singer": "Elly",
-          "color": "#a3f986",
-          "isGradient": false,
-          "gradient": "",
+          "singer": "Solji, Elly",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986a3, #a3f986)",
+          "sectionHeader": null,
           "start": 171.092167,
           "end": 173.086787,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break my heart)",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "(Please, break me down)",
+          "text": "Please, break me down",
           "segments": [
-            {
-              "text": "(",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
-            },
             {
               "text": "Please, break me down",
               "color": "#a3f986",
@@ -21825,31 +21483,21 @@
               "artists": [
                 "Elly"
               ]
-            },
-            {
-              "text": ")",
-              "color": "#f986a3",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Solji"
-              ]
             }
           ],
           "singer": "Elly",
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 173.22958,
           "end": 175.512293,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "(Please, break me down)",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "ごめん ね じゃ 足りない",
+          "text": "ごめんねじゃ足りない",
           "segments": [
             {
               "text": "ごめんねじゃ足りない",
@@ -21865,17 +21513,16 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "translation": "Sorry is not enough",
-          "isSplit": false,
-          "rawUnspacedText": "ごめんねじゃ足りない",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "あなた を 愛し てる",
+          "text": "あなたを愛してる",
           "segments": [
             {
               "text": "あなたを愛してる",
@@ -21891,17 +21538,16 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "translation": "i love you",
-          "isSplit": false,
-          "rawUnspacedText": "あなたを愛してる",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "そのまま このまま midnight",
+          "text": "そのままこのまま midnight",
           "segments": [
             {
               "text": "そのままこのまま midnight",
@@ -21917,17 +21563,16 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Sonomama konomama midnight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"そのままこのまま\",\"trans\":\"Sonomama konomama\"},{\"type\":\"en\",\"text\":\" midnight\",\"trans\":\"\"}]}",
           "translation": "Just like this midnight",
-          "isSplit": false,
-          "rawUnspacedText": "そのままこのまま midnight",
-          "lang": "ja"
+          "isSplit": false
         },
         {
-          "text": "自由 に 飛び立て fly more",
+          "text": "自由に飛び立て fly more",
           "segments": [
             {
               "text": "自由に飛び立て fly more",
@@ -21943,14 +21588,13 @@
           "color": "#f986a3",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly moa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" fly more\",\"trans\":\"\"}]}",
           "translation": "Fly away freely, fly more",
-          "isSplit": false,
-          "rawUnspacedText": "自由に飛び立て fly more",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -21969,13 +21613,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Bridge: Elly]",
           "start": 176.53254,
           "end": 178.368817,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -21994,13 +21637,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 178.489517,
           "end": 181.360962,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22019,13 +21661,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 181.863278,
           "end": 183.855174,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22044,13 +21685,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 183.993957,
           "end": 186.037457,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22069,13 +21709,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 187.131903,
           "end": 189.058883,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22094,13 +21733,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 189.178743,
           "end": 191.898559,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22119,13 +21757,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 224.474218,
           "end": 226.486699,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22144,13 +21781,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 226.592706,
           "end": 229.098669,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Sorry sorry, I'm sorry so much",
@@ -22169,17 +21805,16 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Refrain: Hani, _Jeonghwa_, **Hyelin**]",
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sorry sorry, I'm sorry so much",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "何もかも 捨てた 過去 は",
+          "text": "何もかも捨てた過去は",
           "segments": [
             {
               "text": "何もかも捨てた過去は",
@@ -22195,14 +21830,13 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "translation": "The past that I threw away everything",
-          "isSplit": false,
-          "rawUnspacedText": "何もかも捨てた過去は",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -22221,17 +21855,16 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "独り は 寂しいけど",
+          "text": "独りは寂しいけど",
           "segments": [
             {
               "text": "独りは寂しいけど",
@@ -22247,14 +21880,13 @@
           "color": "#fad900",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
           "translation": "I feel lonely when I'm alone",
-          "isSplit": false,
-          "rawUnspacedText": "独りは寂しいけど",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Sonic, sonic, boom, super sonic",
@@ -22273,17 +21905,16 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Sonic, sonic, boom, super sonic",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "会いたい わ すぐ に そば に 来て よ",
+          "text": "会いたいわ　すぐにそばに来てよ",
           "segments": [
             {
               "text": "会いたいわ　すぐにそばに来てよ",
@@ -22299,14 +21930,13 @@
           "color": "#08f3f7",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
           "translation": "I want to see you, please come to my side right away",
-          "isSplit": false,
-          "rawUnspacedText": "会いたいわ　すぐにそばに来てよ",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Baby, baby, I loved you",
@@ -22325,17 +21955,16 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Baby, baby, I loved you",
-          "lang": "en"
+          "isSplit": false
         },
         {
-          "text": "一人 じゃ 生きて いけないけど",
+          "text": "一人じゃ生きていけないけど",
           "segments": [
             {
               "text": "一人じゃ生きていけないけど",
@@ -22351,14 +21980,13 @@
           "color": "#dc86f9",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
           "translation": "I can't live alone",
-          "isSplit": false,
-          "rawUnspacedText": "一人じゃ生きていけないけど",
-          "lang": "ja"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22377,13 +22005,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Outro: Elly]",
           "start": 229.742187,
           "end": 231.766178,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22402,13 +22029,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 237.188045,
           "end": 239.484792,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22427,13 +22053,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 240.521221,
           "end": 242.296402,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22452,13 +22077,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 245.710346,
           "end": 247.625939,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22477,13 +22101,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 247.791787,
           "end": 250.363256,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22502,13 +22125,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 251.159991,
           "end": 253.052339,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22527,14 +22149,13 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22553,13 +22174,12 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": 253.219093,
           "end": 256.977711,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break my heart",
@@ -22578,14 +22198,13 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break my heart",
-          "lang": "en"
+          "isSplit": false
         },
         {
           "text": "Please, break me down",
@@ -22604,14 +22223,13 @@
           "color": "#a3f986",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
           "start": null,
           "end": null,
           "wordSync": null,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false,
-          "rawUnspacedText": "Please, break me down",
-          "lang": "en"
+          "isSplit": false
         }
       ],
       "forceSource": "deezer",
@@ -27501,13 +27119,13 @@
       "collectionName": "Kamikaze",
       "trackName": "The Ringer",
       "collectionViewUrl": "https://music.apple.com/us/album/the-ringer/1434766532?i=1434766540&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/0e/67/79/0e67790f-423b-d873-eb91-4332db325788/mzaf_14083471969206045461.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/03/c2/54/03c2540d-b9f3-9807-b429-da23cbb854a2/00602577046421.rgb.jpg/100x100bb.jpg",
       "collectionPrice": 10.99,
       "trackPrice": 1.29,
       "releaseDate": "2018-08-31T12:00:00Z",
       "collectionExplicitness": "cleaned",
-      "trackExplicitness": "cleaned",
+      "trackExplicitness": "explicit",
       "discCount": 1,
       "discNumber": 1,
       "trackCount": 13,
@@ -35554,7 +35172,9 @@
         }
       ],
       "forceSource": "youtube",
-      "playId": 1785758893832
+      "playId": 1785758893832,
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/0e/67/79/0e67790f-423b-d873-eb91-4332db325788/mzaf_14083471969206045461.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
@@ -37893,7 +37513,8 @@
       "artistColors": {
         "otoha": "#a8c7e6"
       },
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9e/99/3b/9e993b74-4e86-11f7-ec7f-cb638fd10e4f/mzaf_16386652171484928607.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/9e/99/3b/9e993b74-4e86-11f7-ec7f-cb638fd10e4f/mzaf_16386652171484928607.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -40931,7 +40552,7 @@
       "trackPrice": 1.29,
       "releaseDate": "2020-12-18T08:00:00Z",
       "collectionExplicitness": "cleaned",
-      "trackExplicitness": "cleaned",
+      "trackExplicitness": "explicit",
       "discCount": 2,
       "discNumber": 1,
       "trackCount": 16,
@@ -49106,7 +48727,8 @@
       "artistColors": {
         "Eminem": "#af8d8d"
       },
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b4/b9/d0/b4b9d07d-ae14-771b-ce3b-e8fb05518cca/mzaf_7891314427945022185.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b4/b9/d0/b4b9d07d-ae14-771b-ce3b-e8fb05518cca/mzaf_7891314427945022185.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -62434,7 +62056,8 @@
       ],
       "lyrics": "Love all my moods and keep me off the deep end\nMidsummer's pool and I fill it with secrets\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nWatch me break down and then use it against me\nWatching me drown like a beach on the concrete\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nPleasure's got a thousand faces\nBut none of them will play the realest\nMirror all the ways, I'm 'lone\nSpiking all my right brain senses\nI'm naive, impulsive even\nFalling too fast\nI'm forgetful\nWhen it's hurtful, why let it last?\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nAll that good shit on the table to eat\nPassion and pain taste the same when I'm weak\nIf you break my bones, if you br-\nI'ma hurt my soul, I'ma hur-\nBroken cassette with the love songs repeating\nFollow my pattern in darkness, I see it\nI see an end, I pretend that I don't\nSayin' I'll stay, I'm afraid that I won't\nIf you break my bones, I'ma hurt my soul\nGonna fuck it out again and again, hmm\nStuff me full off lies that I swallow down\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me (Hmm)\nPassion's got a thousand faces\nBut none of them will play the realest\nMirror all the ways, I'm 'lone\nSpiking all my right brain senses\nI'm naive, impulsive even\nFalling too fast\nI'm forgetful\nWhen it's hurtful, why let it last?\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nAll that good shit on the table to eat\nPassion and pain taste the same when I'm weak\nIf you break my bones, if you br-\nI'ma hurt my soul, I'ma hur-\nBreak my bones, swallow down\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nYou're gonna get what you've givin' to me\nAll that good shit on the table to eat\nPassion and pain taste the same when I'm weak",
       "artistImages": {},
-      "artistColors": {}
+      "artistColors": {},
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -62446,7 +62069,7 @@
       "collectionName": "The Death of Slim Shady (Coup De Grâce)",
       "trackName": "Renaissance",
       "collectionViewUrl": "https://music.apple.com/us/album/renaissance/1758367372?i=1758367375&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f9/4f/87/f94f873d-c206-a0da-5cf5-4c47988a3b03/mzaf_8361792408900527561.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/0d/86/51/0d865117-46e2-e8ee-c10f-23abf3396899/24UMGIM76442.rgb.jpg/100x100bb.jpg",
       "collectionPrice": 13.99,
       "trackPrice": 1.29,
@@ -64250,7 +63873,9 @@
       "artistImages": {
         "Eminem": "https://people.com/thmb/4wJ5HrDKCfr8olcuuGcGB2RgK8g=/4000x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(2332x313:2334x315)/eminem-082923-9324ad3c6bd645f2812e3df15443833c.jpg"
       },
-      "artistColors": {}
+      "artistColors": {},
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f9/4f/87/f94f873d-c206-a0da-5cf5-4c47988a3b03/mzaf_8361792408900527561.plus.aac.p.m4a"
     },
     {
       "trackId": "dz_3588926901",
@@ -64260,7 +63885,7 @@
       "artworkUrl100": "https://cdn-images.dzcdn.net/images/cover/f2be3085c69d623de17f54115c31514e/250x250-000000-80-0-0.jpg",
       "trackTimeMillis": 184000,
       "previewUrl": "",
-      "trackExplicitness": "explicit",
+      "trackExplicitness": "notExplicit",
       "sourceNames": [
         "Deezer"
       ],
@@ -68205,7 +67830,8 @@
         "Zara Larsson": "#e4c295"
       },
       "forceSource": "youtube",
-      "playId": 1785924713932
+      "playId": 1785924713932,
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",

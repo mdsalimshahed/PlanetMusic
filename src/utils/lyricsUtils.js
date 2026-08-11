@@ -4,11 +4,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
-  
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   let hasExplicitHeader = false;
   let activeTags = [];
-  let pendingHeader = null; 
+  let pendingHeader = null;
 
   const normalizeMarker = (m) => m.split('').sort().join('');
 
@@ -20,7 +19,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     if (headerMatch) {
       activeTags = [];
       hasExplicitHeader = true;
-      pendingHeader = line; 
+      pendingHeader = line;
       const content = headerMatch[1];
       
       if (content.includes(':')) {
@@ -28,7 +27,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let unmarkedStr = singersPart;
         const parsedTokens = [];
         const explicitArtists = [];
-
         const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
@@ -69,12 +67,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             let ruleArtists = [];
             if (lowerName === 'both' || lowerName === 'all') ruleArtists = contextArtists;
             else ruleArtists = pt.name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
-
             return { marker: pt.marker, artists: ruleArtists };
         });
 
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
-
       } else {
         currentRules = [{ marker: '', artists: globalDefaultArtists }];
       }
@@ -180,7 +176,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     const adlibSegments = [];
 
     rawSegments.forEach(seg => {
-      // FIX: Check for standard OR full-width Asian parentheses
       const parts = seg.text.split(/([(\uFF08][^)\uFF09]+[)\uFF09])/g);
       
       parts.forEach(part => {
@@ -195,10 +190,17 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       });
     });
 
-    let sanitizedMainSegments = mainSegments.map(seg => ({
-      ...seg,
-      text: seg.text.replace(/\s+([.,!?;:]+)/g, '$1')
-    }));
+    // --- CORE FIX: Cross-segment boundary space cleanup ---
+    let sanitizedMainSegments = [...mainSegments];
+    for (let i = 0; i < sanitizedMainSegments.length; i++) {
+        // Internal cleanup
+        sanitizedMainSegments[i].text = sanitizedMainSegments[i].text.replace(/\s+([.,!?;:\])}，。！？；：」）】]+)/g, '$1');
+        
+        // Boundary cleanup across different segments
+        if (i > 0 && /^[.,!?;:\])}，。！？；：」）】]/.test(sanitizedMainSegments[i].text)) {
+            sanitizedMainSegments[i-1].text = sanitizedMainSegments[i-1].text.replace(/\s+$/, '');
+        }
+    }
 
     let sanitizedAdlibSegments = adlibSegments.map((seg, idx) => {
       let text = seg.text.trim();
@@ -210,14 +212,13 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     if (sanitizedMainSegments.length > 0 && sanitizedAdlibSegments.length > 0) {
       const lastMainIdx = sanitizedMainSegments.length - 1;
-      sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.trimEnd() + ' ';
+      sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.replace(/\s+$/, '') + ' ';
     }
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
     const finalArtistsArray = Array.from(lineArtistsSet);
     const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : '';
-    const displayText = finalSegments.map(s => s.text).join('');
-
+    
     let finalColor = '#ffffff';
     let lineIsGradient = false;
     let lineGradientStyle = '';
@@ -232,7 +233,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     }
 
     result.push({
-        text: displayText,
+        text: finalSegments.map(s => s.text).join(''),
         segments: finalSegments,
         singer: lineSinger,
         color: finalColor,
@@ -240,7 +241,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         gradient: lineGradientStyle,
         sectionHeader: pendingHeader
       });
-
     pendingHeader = null; 
   });
 
@@ -253,7 +253,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   if (parsedLines.length === 0) return lrcSyncData;
 
   let currentLrcIdx = 0;
-
   const normalize = (str) => {
     if (!str) return '';
     return str
@@ -270,14 +269,12 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
     for (let i = currentLrcIdx; i < Math.min(currentLrcIdx + 15, lrcSyncData.length); i++) {
       const cleanLrc = normalize(lrcSyncData[i].text);
       if (!cleanLrc && !cleanGenius) continue;
-
       let score = 0;
       if (cleanGenius === cleanLrc && cleanGenius !== '') {
         score = 100;
       } else if (cleanGenius && cleanLrc && (cleanGenius.includes(cleanLrc) || cleanLrc.includes(cleanGenius))) {
         score = 60 + (Math.min(cleanGenius.length, cleanLrc.length) / Math.max(cleanGenius.length, cleanLrc.length)) * 40;
       }
-
       if (score > highestScore && score > 35) {
         highestScore = score;
         bestMatchIdx = i;
@@ -319,7 +316,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
               const segChars = Array.from(seg.text);
               const segStart = currentPos;
               const segEnd = currentPos + segChars.length;
-
               const overlapStart = Math.max(adlib.charStart, segStart);
               const overlapEnd = Math.min(adlib.charEnd, segEnd);
 
@@ -337,6 +333,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
               }
               currentPos = segEnd;
           }
+
           const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
 
           return {
