@@ -6,17 +6,16 @@ import './ModalLeft.css';
 // SVG Icon Helper (Extended with Arrow Icons for Sync Controls)
 const Icon = ({ name }) => {
   const baseProps = { 
-    width: 14, 
-    height: 14, 
-    viewBox: '0 0 24 24', 
-    fill: 'none', 
-    stroke: 'currentColor', 
-    strokeWidth: 2, 
-    strokeLinecap: 'round', 
-    strokeLinejoin: 'round', 
-    style: { flexShrink: 0 } 
-  };
-
+     width: 14, 
+     height: 14, 
+     viewBox: '0 0 24 24', 
+     fill: 'none', 
+     stroke: 'currentColor', 
+     strokeWidth: 2, 
+     strokeLinecap: 'round', 
+     strokeLinejoin: 'round', 
+     style: { flexShrink: 0 } 
+   };
   switch (name) {
     case 'arrow-up':
       return <svg {...baseProps}><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>;
@@ -71,9 +70,10 @@ const ModalLeft = ({
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
-  
+
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
+
   const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
   const hasYtLink = Boolean(extractYouTubeId(ytUrl));
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
@@ -223,7 +223,6 @@ const ModalLeft = ({
                   placeholder="Paste Spotify URL..." 
                 />
               </div>
-
               <div className="platform-input-row">
                 <a 
                   href={finalLinks.deezer} 
@@ -242,7 +241,6 @@ const ModalLeft = ({
                   placeholder="Paste Deezer Track URL..." 
                 />
               </div>
-
               <div className="platform-input-row">
                 <a 
                   href={finalLinks.yt} 
@@ -274,16 +272,16 @@ const ModalLeft = ({
           ) : (
             <div className="platform-links">
               <button 
-                className="platform-btn spotify" 
-                onClick={handleSpotifyPlay}
+                 className="platform-btn spotify" 
+                 onClick={handleSpotifyPlay}
               >
                 Spotify
               </button>
               
               {hasDeezerLink && (
                 <button 
-                  className="platform-btn deezer" 
-                  onClick={handleDeezerPlay}
+                   className="platform-btn deezer" 
+                   onClick={handleDeezerPlay}
                 >
                   Deezer
                 </button>
@@ -291,8 +289,8 @@ const ModalLeft = ({
               
               {hasYtLink && (
                 <button 
-                  className="platform-btn yt" 
-                  onClick={handleYtPlay}
+                   className="platform-btn yt" 
+                   onClick={handleYtPlay}
                 >
                   YT Music
                 </button>
@@ -300,8 +298,8 @@ const ModalLeft = ({
               
               {customData.hasLocal && (
                 <button 
-                  className="platform-btn local" 
-                  onClick={handleLocalPlay}
+                   className="platform-btn local" 
+                   onClick={handleLocalPlay}
                 >
                   Local Audio File
                 </button>
@@ -337,19 +335,19 @@ const ModalLeft = ({
                   <div className="view-mode-segmented-slider">
                     <div className={`slider-pill ${lyricsViewMode}`}></div>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`}
+                      className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`} 
                       onClick={() => setLyricsViewMode('live')}
                     >
                       Live
                     </button>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`}
+                      className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`} 
                       onClick={() => setLyricsViewMode('focused')}
                     >
                       Focused
                     </button>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`}
+                      className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`} 
                       onClick={() => setLyricsViewMode('plain')}
                     >
                       Plain Text
@@ -358,7 +356,7 @@ const ModalLeft = ({
                   
                   {lyricsViewMode === 'focused' && (
                     <button 
-                      className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
+                      className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`} 
                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                     >
                       <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
@@ -411,8 +409,8 @@ const ModalLeft = ({
                   <Icon name="x" /> Cancel Sync
                 </button>
                 <button 
-                  className="edit-links-btn" 
-                  onClick={handleRefreshLyrics}
+                   className="edit-links-btn" 
+                   onClick={handleRefreshLyrics}
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
                   title="Wipe all timings and ad-lib splits from these lyrics"
                 >
@@ -427,6 +425,9 @@ const ModalLeft = ({
                 <button className="edit-links-btn save-mode" onClick={saveData}>
                   <Icon name="save" /> Save Info & Lyrics
                 </button>
+                <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}&gl=us&hl=en`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn" title="Search Google US region to easily find platform links">
+                  <Icon name="search" /> Find Platform Links (US)
+                </a>
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">
                   <Icon name="search" /> Search Google for Lyrics
                 </a>
@@ -442,8 +443,8 @@ const ModalLeft = ({
                 </button>
                 
                 <button 
-                  className="edit-links-btn" 
-                  onClick={() => handleAutoSyncDatabases()}
+                   className="edit-links-btn" 
+                   onClick={() => handleAutoSyncDatabases()}
                   disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
@@ -459,8 +460,8 @@ const ModalLeft = ({
                     </button>
                     
                     <button 
-                      className="edit-links-btn" 
-                      onClick={() => setIsTranslationManagerOpen(true)}
+                       className="edit-links-btn" 
+                       onClick={() => setIsTranslationManagerOpen(true)}
                     >
                       <Icon name="translate" /> Edit Translation
                     </button>
@@ -474,6 +475,7 @@ const ModalLeft = ({
                     <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
                       <Icon name="plus" /> Add Custom Lyrics
                     </button>
+
                     <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">
                       <Icon name="search" /> Search Google
                     </a>
