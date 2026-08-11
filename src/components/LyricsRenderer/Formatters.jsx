@@ -9,8 +9,8 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
-      const shadow = isFocused
-         ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+      const shadow = isFocused 
+        ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
@@ -63,15 +63,16 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       words.push(elements[i]);
       continue;
     }
-    const char = charData[i] ? charData[i].char : '';
 
+    const char = charData[i] ? charData[i].char : '';
+    
     // Properly chunk spaces and CJK without destroying the element's color spans
     const isSpace = /\s/.test(char);
     const shouldBreak = hasSpacingText ? isSpace : (isSpace || isCJ(char));
 
     if (shouldBreak) {
       flushWord(i);
-      words.push(elements[i]); // Push the actual styled element directly
+      words.push(elements[i]); // Push the actual styled element directly (No nowrap wrapper for CJK)
     } else {
       if (char === '-') {
         hyphenCount++;
@@ -90,7 +91,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   if (hasSpacingText) {
     const wordBlocks = [];
     let currentBlock = [];
-
+    
     chars.forEach((c) => {
       if (/\s/.test(c.char)) {
         if (currentBlock.length > 0) {
@@ -119,7 +120,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         
         if (isEnglish) {
            alignedChunks.push({ type: 'en', trans: '', chars: block });
-           transIdx++; // FIX: Advance the pointer so the skipped English transliteration is discarded!
+           transIdx++; // Advance the pointer so the skipped English transliteration is discarded
         } else {
            const assignedTrans = transWords[transIdx] || '';
            transIdx++;
@@ -128,53 +129,68 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       }
     });
   } 
+  
+  // --- Legacy / Unspaced Mapping ---
   else if (parsedChunks && Array.isArray(parsedChunks)) {
-    let charIdxPointer = 0;
-    parsedChunks.forEach((chunk) => {
-      const chunkText = chunk.text || '';
-      
-      // --- Smart character slicing to align spaces correctly ---
-      const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
-      let charsToConsume = 0;
-      let tempPointer = charIdxPointer;
+    // Detect if the line contains CJK scripts
+    const isCJKLine = chars.some(c => isCJ(c.char));
+    
+    if (isCJKLine) {
+      // LEGACY FORMAT RESTORED: If it is a Japanese/Chinese line and there is no Spacing Text, 
+      // completely ignore the character-by-character chunks. Fuse everything into ONE solid block.
+      alignedChunks = [{
+        type: 'main',
+        trans: fullTrans || parsedChunks.map(p => p.trans || p.text).join(' '),
+        chars: chars
+      }];
+    } else {
+      let charIdxPointer = 0;
+      parsedChunks.forEach((chunk) => {
+        const chunkText = chunk.text || '';
+        
+        // --- Smart character slicing to align spaces correctly ---
+        const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
+        let charsToConsume = 0;
+        let tempPointer = charIdxPointer;
 
-      if (nonSpaceGraphemes.length > 0) {
-        let matched = 0;
-        // Consume characters until we match the expected amount of visible characters
-        while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
-          if (!/\s/.test(chars[tempPointer].char)) {
-            matched++;
+        if (nonSpaceGraphemes.length > 0) {
+          let matched = 0;
+          // Consume characters until we match the expected amount of visible characters
+          while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
+            if (!/\s/.test(chars[tempPointer].char)) {
+              matched++;
+            }
+            charsToConsume++;
+            tempPointer++;
           }
-          charsToConsume++;
-          tempPointer++;
+        } else {
+          // If it's a pure space chunk, only consume characters if they are actually spaces
+          while (tempPointer < chars.length && /\s/.test(chars[tempPointer].char)) {
+            charsToConsume++;
+            tempPointer++;
+          }
         }
-      } else {
-        // If it's a pure space chunk, only consume characters if they are actually spaces
-        while (tempPointer < chars.length && /\s/.test(chars[tempPointer].char)) {
-          charsToConsume++;
-          tempPointer++;
+
+        const chunkChars = chars.slice(charIdxPointer, charIdxPointer + charsToConsume);
+        charIdxPointer += charsToConsume;
+
+        // -----------------------------------------------------------------
+        if (chunkChars.length > 0) {
+          alignedChunks.push({
+            type: chunk.type,
+            trans: chunk.trans,
+            chars: chunkChars
+          });
         }
-      }
-
-      const chunkChars = chars.slice(charIdxPointer, charIdxPointer + charsToConsume);
-      charIdxPointer += charsToConsume;
-      // -----------------------------------------------------------------
-
-      if (chunkChars.length > 0) {
+      });
+      
+      if (charIdxPointer < chars.length) {
         alignedChunks.push({
-          type: chunk.type,
-          trans: chunk.trans,
-          chars: chunkChars
+          type: 'main',
+          trans: '',
+          chars: chars.slice(charIdxPointer)
         });
       }
-    });
-
-    if (charIdxPointer < chars.length) {
-      alignedChunks.push({
-        type: 'main',
-        trans: '',
-        chars: chars.slice(charIdxPointer)
-      });
     }
   } else {
     alignedChunks = [{

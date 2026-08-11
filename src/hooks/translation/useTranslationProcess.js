@@ -16,16 +16,8 @@ const normalizeForComparison = (str) =>
     .replace(/[\p{P}\p{S}\s]/gu, '')
     .trim();
 
-// Global translation cache matching the HTML source to prevent API rate-limiting during parallel brute-forcing
-const translationCache = new Map();
-
 const fetchGoogleWithLang = async (text, sl = 'auto') => {
   if (!text || text === '') return { translation: '', transliteration: null, srcLang: 'auto' };
-  
-  const cacheKey = `${text}_${sl}`;
-  if (translationCache.has(cacheKey)) {
-    return translationCache.get(cacheKey);
-  }
 
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
@@ -52,13 +44,11 @@ const fetchGoogleWithLang = async (text, sl = 'auto') => {
       }
     }
     
-    const result = {
+    return {
       translation: translation.trim(),
       transliteration: transliteration ? transliteration.trim() : null,
       srcLang
     };
-    translationCache.set(cacheKey, result);
-    return result;
   } catch (error) {
     console.warn("Google Translate API error:", error);
     return { translation: '', transliteration: null, srcLang: sl || 'auto' };
@@ -201,10 +191,7 @@ const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       }
     } else {
       let line1 = w;
-      let fetchRes1 = await fetchGoogleWithLang(line1, sl);
-      let k1 = fetchRes1.transliteration || fetchRes1.translation || '';
-      let pron1 = cleanPunctuationPythonStyle(k1.toLowerCase());
-      let liner_main1 = pron1.split(/\s+/).filter(x => x.length > 0);
+      let liner_main1 = liner_main.slice(word_gotten).reverse();
 
       let w1 = '';
       let character1 = '';
@@ -212,6 +199,7 @@ const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       let word_gotten1 = 0;
 
       for (let char1 of Array.from(line1)) {
+        if (cancelRef && cancelRef.current) break;
         character1 = char1;
         w1 = w1 + character1;
         let fetchRes11 = await fetchGoogleWithLang(`(${line1}) — ${w1}`, sl);
@@ -671,7 +659,7 @@ export const useTranslationProcess = ({
             if (batchPronunciations[i]?.pronunciation) {
               try {
                 const p = JSON.parse(batchPronunciations[i].pronunciation);
-                displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+                displayPron = p.full || p.chunks.map(ch => ch.trans || ch.text).join('');
               } catch (e) {}
             } else if (rawTransText && !/[^\x00-\x7F]/.test(cleanTexts[i].text)) {
               displayPron = '';
