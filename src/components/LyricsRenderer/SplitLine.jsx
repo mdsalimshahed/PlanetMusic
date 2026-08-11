@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
 import React from 'react';
-import { isPunctuationChar, normalizeTrans, cleanTranslationText } from './textUtils';
+import { isPunctuationChar, normalizeTrans, cleanTranslationText, isCJ } from './textUtils';
 import { alignChunksWithTransliteration, renderFormattedTranslation } from './Formatters';
 
 const SplitLine = ({
@@ -83,12 +83,23 @@ const SplitLine = ({
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
+  
+  const isCJKLine = chars.some(c => isCJ(c.char));
+  let effectiveFullTrans = fullTrans;
+  let effectiveParsedChunks = parsedChunks;
+
+  if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    effectiveFullTrans = pronString;
+    effectiveParsedChunks = null; 
+  }
 
   const renderedMainElements = mainBlocks.map((blk, bIdx) => {
+    const isOnlyPunct = blk.chars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
+    
     const alignedMainJSX = alignChunksWithTransliteration(
       blk.chars,
-      parsedChunks,
-      fullTrans,
+      isOnlyPunct ? null : effectiveParsedChunks,
+      isOnlyPunct ? '' : effectiveFullTrans,
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
@@ -162,13 +173,10 @@ const SplitLine = ({
       }
     }
 
-    // --- STRIP PARENTHESES ONLY FROM ADLIB TRANSLATIONS ---
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      // FIX: Strip standard OR full-width Asian parentheses
       adlibTranslation = adlibTranslation.replace(/[()（） ]/g, '').trim();
     }
-    // ------------------------------------------------------
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
       blk.chars,
@@ -247,7 +255,14 @@ const SplitLine = ({
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
     }
   } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-    displayPronString = normalizeTrans(pronString);
+    if (!hasSpacingText && !isCJKLine) {
+       // Only render at bottom if the pronunciation string is genuinely different from the source English line
+       const cleanOrig = lineObj.text.toLowerCase().replace(/[^\w]/g, '');
+       const cleanPron = pronString.toLowerCase().replace(/[^\w]/g, '');
+       if (cleanOrig !== cleanPron) {
+           displayPronString = normalizeTrans(pronString);
+       }
+    }
   }
 
   const hasMainTranslation = !!displayTranslation;
