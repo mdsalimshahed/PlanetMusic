@@ -7,9 +7,9 @@ import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({ 
-  isEditing, customData, handleDataChange, hasValidSyncData, 
-  lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
-  isPlaying, settings 
+   isEditing, customData, handleDataChange, hasValidSyncData, 
+   lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack, 
+   isPlaying, settings 
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -24,25 +24,69 @@ const LyricsDisplay = ({
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
   }, [isEditing, customData.lyrics, selectedSong?.artistName, masterPalette]);
 
+  const getBorderAccentColor = (line) => {
+    let artists = line.artists || [];
+    if (artists.length === 0 && line.singer) {
+      artists = line.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
+    }
+    if (artists.length > 0) {
+      return masterPalette[artists[0]] || '#ffffff';
+    }
+    // Return white for uncredited lines instead of falling back to the main artist color
+    return line.color || '#ffffff'; 
+  };
+
+  // Grouped lyrics specifically for the Edit Mode preview
+  const editGroupedLyrics = useMemo(() => {
+    if (!isEditing || !customData.lyrics) return [];
+    const groups = [];
+    let currentGroup = null;
+
+    editParsedLyrics.forEach((line, i) => {
+      // If line.singer is empty (e.g. unmapped formatted text), group it as 'Uncredited'
+      const effectiveSinger = line.singer || 'Uncredited';
+
+      if (!currentGroup || effectiveSinger !== currentGroup.singer) {
+        if (currentGroup) groups.push(currentGroup);
+        
+        currentGroup = {
+          id: `edit-group-${i}`,
+          singer: effectiveSinger,
+          borderColor: getBorderAccentColor(line),
+          lines: []
+        };
+      }
+      currentGroup.lines.push(line);
+    });
+
+    if (currentGroup) groups.push(currentGroup);
+    return groups;
+  }, [editParsedLyrics, selectedSong?.artistName, masterPalette, isEditing, customData.lyrics]);
+
   const groupedPlainLyrics = useMemo(() => {
     if (lyricsViewMode !== 'plain') return [];
     const groups = [];
     let currentGroup = null;
 
     liveParsedLyrics.forEach((line, i) => {
-      if (!currentGroup || line.sectionHeader || line.singer !== currentGroup.singer) {
+      // If line.singer is empty (e.g. unmapped formatted text), group it as 'Uncredited'
+      const effectiveSinger = line.singer || 'Uncredited';
+
+      if (!currentGroup || line.sectionHeader || effectiveSinger !== currentGroup.singer) {
         if (currentGroup) groups.push(currentGroup);
         
         let borderColor = line.color || '#ffffff';
         if (line.isGradient) {
-          const firstArtist = line.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean)[0]?.trim();
+          const firstArtist = effectiveSinger.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean)[0]?.trim();
           borderColor = masterPalette[firstArtist] || '#ffffff';
+        } else if (!line.singer) {
+          borderColor = '#ffffff';
         }
 
         currentGroup = {
           id: `group-${i}`,
           sectionHeader: line.sectionHeader,
-          singer: line.singer || selectedSong?.artistName || 'Unknown',
+          singer: effectiveSinger,
           color: line.color,
           borderColor: borderColor,
           gradient: line.gradient,
@@ -180,19 +224,7 @@ const LyricsDisplay = ({
     });
   };
 
-  const getBorderAccentColor = (line) => {
-    let artists = line.artists || [];
-    if (artists.length === 0 && line.singer) {
-      artists = line.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
-    }
-    if (artists.length > 0) {
-      return masterPalette[artists[0]] || '#ffffff';
-    }
-    return line.color || masterPalette[selectedSong?.artistName] || '#ffffff';
-  };
-
-  // --- EQUALIZER CANVAS RENDERER (60FPS WITH DATA INTERPOLATION) ---
-  // --- EQUALIZER CANVAS RENDERER (NATIVE REFRESH RATE WITH 15FPS DATA POLLING) ---
+  // --- EQUALIZER CANVAS RENDERER ---
   useEffect(() => {
     if (settings?.disableAnimations || isEditing) return;
     const canvas = canvasRef.current;
@@ -200,7 +232,7 @@ const LyricsDisplay = ({
     
     const ctx = canvas.getContext('2d', { alpha: true });
     let rafId = null;
-    const pauseDecayFactor = 0.05; // Adjusted for native 60/120hz frames
+    const pauseDecayFactor = 0.05; 
     let idleFrames = 0; 
     const numBars = 40;
     
@@ -220,8 +252,7 @@ const LyricsDisplay = ({
     resizeObserver.observe(canvas);
 
     let lastPollTime = 0;
-    // PULL DATA ONLY 24 TIMES A SECOND (EXTREMELY LIGHT ON CPU)
-    const pollInterval = 1000 / 24; // 24Hz polling for audio data
+    const pollInterval = 1000 / 24; 
     const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
@@ -239,7 +270,6 @@ const LyricsDisplay = ({
       if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
         idleFrames = 0;
         
-        // 1. DATA POLLING: Only fetch audio frequencies every ~66ms
         if (timestamp - lastPollTime >= pollInterval) {
           window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
           const freqData = window.globalFreqData;
@@ -260,18 +290,14 @@ const LyricsDisplay = ({
           lastPollTime = timestamp;
         }
 
-        // 2. NATIVE FPS INTERPOLATION: Glide smoothly at 60hz/120hz
         for (let i = 0; i < numBars; i++) {
           if (targetScales[i] > currentScales[i]) {
-            // Adjusted attack factor for native framerates
             currentScales[i] += (targetScales[i] - currentScales[i]) * 0.25; 
           } else {
-            // Adjusted decay factor for fluid dropping
             currentScales[i] += (targetScales[i] - currentScales[i]) * 0.08; 
           }
         }
       } else {
-        // Paused/Idle graceful settling
         let allSettled = true;
         for (let i = 0; i < numBars; i++) {
           if (currentScales[i] > 0.051) {
@@ -285,14 +311,12 @@ const LyricsDisplay = ({
         if (allSettled) idleFrames++;
       }
 
-      // 3. IDLE RAF HALT: Shut off rendering loop to preserve battery when settled
       if (idleFrames > 5) {
         ctx.clearRect(0, 0, displayWidth, displayHeight);
         rafId = null;
         return; 
       }
 
-      // 4. UNTHROTTLED CANVAS DRAW
       ctx.clearRect(0, 0, displayWidth, displayHeight);
       ctx.fillStyle = '#ffffff';
       
@@ -300,7 +324,7 @@ const LyricsDisplay = ({
       const barWidth = Math.max(1, barSpacing * 0.75); 
       const startX = (barSpacing - barWidth) / 2; 
 
-      ctx.beginPath(); 
+      ctx.beginPath();
       for (let i = 0; i < numBars; i++) {
         const barHeight = currentScales[i] * displayHeight;
         const x = startX + (i * barSpacing);
@@ -315,7 +339,6 @@ const LyricsDisplay = ({
       }
       ctx.fill();
 
-      // Loop natively without any FPS capping
       rafId = requestAnimationFrame(renderEQ);
     };
 
@@ -360,6 +383,7 @@ const LyricsDisplay = ({
 
   const handleTimeUpdate = (time) => {
     if (isEditing || !isPlayingCurrentSong) return;
+
     const lines = cachedLinesRef.current;
     let newActiveIndex = -1;
 
@@ -403,8 +427,8 @@ const LyricsDisplay = ({
     for (let i = 0; i < adlibs.length; i++) {
         const item = adlibs[i];
         if (isNaN(item.start)) continue;
-        let targetState = 'hidden';
 
+        let targetState = 'hidden';
         if (time >= item.start && time <= item.end) targetState = 'active';
         else if (time >= item.start) targetState = 'visible';
 
@@ -477,6 +501,7 @@ const LyricsDisplay = ({
       
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
+
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
@@ -492,8 +517,10 @@ const LyricsDisplay = ({
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
             let wrapped = innerText.trim();
+
             if (isItalic) wrapped = `_${wrapped}_`;
             if (isBold) wrapped = `**${wrapped}**`;
+
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
           
@@ -542,28 +569,29 @@ const LyricsDisplay = ({
             </div>
             
             <div className="artist-preview-scroll">
-              {editParsedLyrics.length > 0 ? (
-                editParsedLyrics.map((line, idx) => {
-                  const borderAccent = getBorderAccentColor(line);
-                  return (
-                    <div key={idx} className="preview-line-row" style={{ borderLeftColor: borderAccent }}>
-                      <span className="preview-line-singer">
-                        {renderColoredSingerHeader(line.singer)}
-                      </span>
-                      <div className="preview-line-text">
-                        {line.segments && line.segments.length > 0 ? (
-                          line.segments.map((seg, sIdx) => (
-                            <React.Fragment key={sIdx}>
-                              {renderColoredText(seg)}
-                            </React.Fragment>
-                          ))
-                        ) : (
-                          renderColoredText(line)
-                        )}
-                      </div>
+              {editGroupedLyrics.length > 0 ? (
+                editGroupedLyrics.map((group, idx) => (
+                  <div key={idx} className="preview-line-row" style={{ borderLeftColor: group.borderColor, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span className="preview-line-singer">
+                      {renderColoredSingerHeader(group.singer)}
+                    </span>
+                    <div className="preview-line-text-group" style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                      {group.lines.map((line, lIdx) => (
+                        <div key={lIdx} className="preview-line-text" dir="auto">
+                          {line.segments && line.segments.length > 0 ? (
+                            line.segments.map((seg, sIdx) => (
+                              <React.Fragment key={sIdx}>
+                                {renderPlainColoredText(seg)}
+                              </React.Fragment>
+                            ))
+                          ) : (
+                            renderPlainColoredText(line)
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  );
-                })
+                  </div>
+                ))
               ) : (
                 <div className="preview-empty-text">Type lyrics on the left to see live artist separation...</div>
               )}
@@ -572,8 +600,8 @@ const LyricsDisplay = ({
         </div>
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <div 
-          className="live-lyrics-preview" 
-          ref={containerRef}
+           className="live-lyrics-preview" 
+           ref={containerRef}
           style={{
             '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px`
           }}
@@ -587,6 +615,7 @@ const LyricsDisplay = ({
                     break;
                 }
             }
+
             return (
                 <LyricLineWrapper
                   key={i}
@@ -612,6 +641,7 @@ const LyricsDisplay = ({
                      break;
                  }
              }
+
              return (
                  <LyricLineWrapper
                      key={i}
@@ -644,6 +674,7 @@ const LyricsDisplay = ({
                   displayHeader = displayHeader.split(':')[0].trim();
                 }
               }
+
               return (
               <React.Fragment key={group.id}>
                 {group.sectionHeader && (
@@ -687,6 +718,7 @@ const LyricsDisplay = ({
           )}
         </div>
       )}
+
       {!isEditing && !settings?.disableAnimations && (
         <div className={`lyrics-equalizer`}>
           <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
