@@ -367,10 +367,9 @@ export const useTranslationProcess = ({
 
     let currentData = [...workspaceData];
 
-    // --- PHASE 1: BRUTE FORCE & OVERWRITE ---
-    for (let i = 0; i < targetIndices.length; i++) {
-      if (cancelTranslationRef.current) break;
-      let idx = targetIndices[i];
+    // --- PHASE 1: SIMULTANEOUS PARALLEL BRUTE FORCE ---
+    const phase1Promises = targetIndices.map(async (idx) => {
+      if (cancelTranslationRef.current) return null;
       let line = currentData[idx];
       
       // Clean string from adlibs before fetching
@@ -403,7 +402,7 @@ export const useTranslationProcess = ({
         let resultArr = [];
         let charOffset = 0;
         alignedItems.forEach(item => {
-          let itemLength = item.text.length; // Uses character length to map the punctuation correctly
+          let itemLength = item.text.length; 
           let prefixPunct = punctMap[charOffset] ? punctMap[charOffset].prefix : '';
           let suffixPunct = punctMap[charOffset + itemLength - 1] ? punctMap[charOffset + itemLength - 1].suffix : '';
           
@@ -414,9 +413,24 @@ export const useTranslationProcess = ({
       }
 
       let newSpacingText = resultBlocks.join(' ').trim();
-      currentData[idx] = { ...line, spacingText: newSpacingText };
-      setWorkspaceData([...currentData]); // Overwrite spacing field live on screen
+      return { idx, newSpacingText };
+    });
+
+    const phase1Results = await Promise.all(phase1Promises);
+
+    if (cancelTranslationRef.current) {
+        setIsAutoSpacing(false);
+        setActiveTranslatingId(null);
+        return;
     }
+
+    // Apply all Phase 1 results immediately to the UI
+    phase1Results.forEach(res => {
+      if (res) {
+        currentData[res.idx] = { ...currentData[res.idx], spacingText: res.newSpacingText };
+      }
+    });
+    setWorkspaceData([...currentData]);
 
     // --- PHASE 2: WORD COUNT VERIFICATION & ONE-BY-ONE CORRECTION ---
     setNotification({ show: true, message: 'Phase 2: Verifying word counts...', progress: 100 });
@@ -441,7 +455,7 @@ export const useTranslationProcess = ({
            setActiveTranslatingId(line.rowId);
            setNotification({ 
              show: true, 
-             message: `Line ${idx+1} Mismatch | Spacing: ${spacingWords.length} words | Pronunciation: ${pronWords.length} words. Correcting...`, 
+             message: `Line ${idx+1} Mismatch | Spacing: ${spacingWords.length} words | Pron: ${pronWords.length} words. Correcting...`, 
              progress: 100 
            });
 
@@ -669,7 +683,7 @@ export const useTranslationProcess = ({
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: newSearchParams({ q: combinedText }) // using URLSearchParams without window requirement
+          body: new URLSearchParams({ q: combinedText }) 
         });
         const data = await response.json();
         
