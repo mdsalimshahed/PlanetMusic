@@ -110,20 +110,39 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       const isSpaceBlock = block.length === 1 && /\s/.test(block[0].char);
       if (isSpaceBlock) {
         alignedChunks.push({ type: 'main', trans: '', chars: block });
-      } else {
-        const blockText = block.map(c => c.char).join('');
-        const assignedTrans = transWords[transIdx] || '';
-        transIdx++;
-        
-        // Exact English Match Filter: If the transliteration perfectly matches the base word, mute it.
-        const bClean = blockText.toLowerCase().replace(/[^\w]/g, '');
-        const tClean = assignedTrans.toLowerCase().replace(/[^\w]/g, '');
-        
-        if (bClean && bClean === tClean) {
-           alignedChunks.push({ type: 'en', trans: '', chars: block });
-        } else {
-           alignedChunks.push({ type: 'foreign', trans: assignedTrans, chars: block });
-        }
+        return;
+      }
+
+      const blockText = block.map(c => c.char).join('');
+      const hasCJK = block.some(c => isCJ(c.char));
+      const isLatin = /^[\p{Script=Latin}\d\p{P}\p{S}\s]+$/u.test(blockText);
+
+      // If it contains Japanese/Chinese characters, it consumes exactly 1 transliteration token
+      if (hasCJK || !isLatin) {
+         const assignedTrans = transWords[transIdx] || '';
+         transIdx++;
+         alignedChunks.push({ type: 'foreign', trans: assignedTrans, chars: block });
+      } 
+      // If it's an English/Latin block, safely consume tokens to stay synced but mute the rendering
+      else {
+         const bClean = blockText.toLowerCase().replace(/[\W_]+/g, '');
+         if (!bClean) {
+            alignedChunks.push({ type: 'en', trans: '', chars: block });
+         } else {
+            let tCleanAccum = '';
+            while (transIdx < transWords.length) {
+               const currTrans = transWords[transIdx];
+               const currClean = currTrans.toLowerCase().replace(/[\W_]+/g, '');
+               tCleanAccum += currClean;
+               transIdx++;
+               
+               // If the accumulated API tokens match or exceed the English word (e.g. "man'" + "s" >= "mans")
+               if (tCleanAccum === bClean || tCleanAccum.length >= bClean.length) {
+                   break;
+               }
+            }
+            alignedChunks.push({ type: 'en', trans: '', chars: block });
+         }
       }
     });
   } 
@@ -134,7 +153,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     if (isCJKLine) {
       const origString = chars.map(c => c.char).join('');
       const transString = fullTrans || parsedChunks.map(p => p.trans || p.text).join(' ');
-      
       const hasLatinWords = /[\p{Script=Latin}\d]{2,}/u.test(origString); 
       
       if (!hasLatinWords) {
@@ -168,15 +186,14 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
           if (b.isLatin && blockStr.trim().length > 0) {
             const latinWords = blockStr.split(/\s+/).filter(Boolean);
             latinWords.forEach(lw => {
-              const lwClean = lw.toLowerCase().replace(/[^\w]/g, '');
+              const lwClean = lw.toLowerCase().replace(/[\W_]+/g, '');
               if (tIdx < transWords.length) {
-                 const twClean = transWords[tIdx].toLowerCase().replace(/[^\w]/g, '');
+                 const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
                  if (twClean === lwClean || twClean.includes(lwClean) || lwClean.includes(twClean)) {
                      tIdx++;
                  }
               }
             });
-            // Mute the pronunciation for the English chunk
             alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
           } else if (!b.isLatin) {
             let cjkTrans = [];
@@ -185,8 +202,8 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
 
             while (tIdx < transWords.length) {
               if (nextLatinFirstWord) {
-                 const twClean = transWords[tIdx].toLowerCase().replace(/[^\w]/g, '');
-                 const nlwClean = nextLatinFirstWord.toLowerCase().replace(/[^\w]/g, '');
+                 const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
+                 const nlwClean = nextLatinFirstWord.toLowerCase().replace(/[\W_]+/g, '');
                  if (twClean === nlwClean) {
                     break; 
                  }
@@ -229,9 +246,8 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         charIdxPointer += charsToConsume;
 
         if (chunkChars.length > 0) {
-          // Exact Match English Filter
-          const cClean = chunkText.toLowerCase().replace(/[^\w]/g, '');
-          const tClean = (chunk.trans || '').toLowerCase().replace(/[^\w]/g, '');
+          const cClean = chunkText.toLowerCase().replace(/[\W_]+/g, '');
+          const tClean = (chunk.trans || '').toLowerCase().replace(/[\W_]+/g, '');
           if (cClean && cClean === tClean) {
              alignedChunks.push({ type: 'en', trans: '', chars: chunkChars });
           } else {

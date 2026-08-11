@@ -268,7 +268,6 @@ export const useTranslationProcess = ({
   const fetchSingleLine = async (line) => {
     const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
     
-    // Clean string from adlibs before fetching
     let textToTranslate = hasSpacing ? line.spacingText : line.displayText;
     if (!hasSpacing && !line._meta?.isAdlib && line.isSplit && line.adlibs) {
       line.adlibs.forEach(a => {
@@ -324,15 +323,15 @@ export const useTranslationProcess = ({
         setIsAutoSpacing(false);
         setActiveTranslatingId(null);
         
-        const wipedData = workspaceData.map(line => ({
+        setWorkspaceData(prev => prev.map(line => ({
           ...line,
           translation: '',
           displayPron: '',
           pronunciation: '',
           spacingText: '', 
           lang: 'auto'
-        }));
-        setWorkspaceData(wipedData);
+        })));
+        
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
         
         setNotification({ show: true, message: 'Wiped all translation and transliteration fields!', progress: 100 });
@@ -365,14 +364,13 @@ export const useTranslationProcess = ({
     setTranslateProgress({ current: 0, total: targetIndices.length });
     setNotification({ show: true, message: 'Phase 1: Running Brute Force...', progress: 0 });
 
-    let currentData = [...workspaceData];
+    let phase1Completed = 0;
 
     // --- PHASE 1: SIMULTANEOUS PARALLEL BRUTE FORCE ---
     const phase1Promises = targetIndices.map(async (idx) => {
       if (cancelTranslationRef.current) return null;
-      let line = currentData[idx];
+      let line = workspaceData[idx]; // captures baseline state
       
-      // Clean string from adlibs before fetching
       let textInput = line.displayText || '';
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
         line.adlibs.forEach(a => { textInput = textInput.replace(a.text, ''); });
@@ -413,7 +411,13 @@ export const useTranslationProcess = ({
       }
 
       let newSpacingText = resultBlocks.join(' ').trim();
-      return { idx, newSpacingText };
+
+      phase1Completed++;
+      const progressPct = Math.round((phase1Completed / targetIndices.length) * 100);
+      setTranslateProgress({ current: phase1Completed, total: targetIndices.length });
+      setNotification({ show: true, message: `Phase 1: Auto Spacing (${phase1Completed}/${targetIndices.length})...`, progress: progressPct });
+
+      return { idx, newSpacingText, line };
     });
 
     const phase1Results = await Promise.all(phase1Promises);
@@ -424,23 +428,27 @@ export const useTranslationProcess = ({
         return;
     }
 
-    // Apply all Phase 1 results immediately to the UI
-    phase1Results.forEach(res => {
-      if (res) {
-        currentData[res.idx] = { ...currentData[res.idx], spacingText: res.newSpacingText };
-      }
+    // Apply Phase 1 results immediately to the UI
+    setWorkspaceData(prev => {
+      const next = [...prev];
+      phase1Results.forEach(res => {
+        if (res) next[res.idx] = { ...next[res.idx], spacingText: res.newSpacingText };
+      });
+      return next;
     });
-    setWorkspaceData([...currentData]);
 
     // --- PHASE 2: WORD COUNT VERIFICATION & ONE-BY-ONE CORRECTION ---
     setNotification({ show: true, message: 'Phase 2: Verifying word counts...', progress: 100 });
 
-    for (let i = 0; i < targetIndices.length; i++) {
+    for (let i = 0; i < phase1Results.length; i++) {
        if (cancelTranslationRef.current) break;
-       let idx = targetIndices[i];
-       let line = currentData[idx];
+       let res = phase1Results[i];
+       if (!res) continue;
+
+       let idx = res.idx;
+       let line = res.line;
        
-       let spacingWords = line.spacingText.split(/\s+/).filter(Boolean);
+       let spacingWords = res.newSpacingText.split(/\s+/).filter(Boolean);
        
        let pronString = line.displayPron;
        if (!pronString) {
@@ -450,7 +458,6 @@ export const useTranslationProcess = ({
        
        let pronWords = cleanPunctuationPythonStyle(pronString).split(/\s+/).filter(Boolean);
 
-       // Literally checks if word count inside Spacing Field is higher than Pronunciation Field word count
        if (spacingWords.length !== pronWords.length && spacingWords.length > pronWords.length) {
            setActiveTranslatingId(line.rowId);
            setNotification({ 
@@ -502,15 +509,22 @@ export const useTranslationProcess = ({
            }
 
            let finalSpacing = correctedWords.join(' ');
-           currentData[idx] = { ...line, spacingText: finalSpacing };
-           setWorkspaceData([...currentData]);
+           
+           setWorkspaceData(prev => {
+               const next = [...prev];
+               next[idx] = { ...next[idx], spacingText: finalSpacing };
+               return next;
+           });
 
-           await new Promise(resolve => setTimeout(resolve, 1500)); // Pause to let user see the update in the UI
+           await new Promise(resolve => setTimeout(resolve, 1500)); // Pause to let user see UI update live
        }
     }
 
-    setNotification({ show: true, message: 'Auto Spacing and Verification complete!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 2000);
+    if (!cancelTranslationRef.current) {
+      setNotification({ show: true, message: 'Auto Spacing and Verification complete!', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 2000);
+    }
+
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);
   };
@@ -528,15 +542,27 @@ export const useTranslationProcess = ({
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
     
+    let completedCount = 0;
+
     // NO BATCHING OR CHUNKING. SIMULTANEOUS REQUESTS.
     const promises = workspaceData.map(async (line, idx) => {
       if (cancelTranslationRef.current) return null;
       
       if (line.lang === 'en') {
+        completedCount++;
+        const progressPct = Math.round((completedCount / workspaceData.length) * 100);
+        setTranslateProgress({ current: completedCount, total: workspaceData.length });
+        setNotification({ show: true, message: `Translating (${completedCount}/${workspaceData.length})...`, progress: progressPct });
         return { index: idx, data: { ...line, translation: '', displayPron: '', pronunciation: '' } };
       }
       
       const res = await fetchSingleLine(line);
+      
+      completedCount++;
+      const progressPct = Math.round((completedCount / workspaceData.length) * 100);
+      setTranslateProgress({ current: completedCount, total: workspaceData.length });
+      setNotification({ show: true, message: `Translating (${completedCount}/${workspaceData.length})...`, progress: progressPct });
+
       if (!res) return null;
 
       let rawTransText = res.translation !== undefined ? String(res.translation).trim() : '';
@@ -602,8 +628,6 @@ export const useTranslationProcess = ({
       return next;
     });
     
-    setTranslateProgress({ current: workspaceData.length, total: workspaceData.length });
-
     if (!cancelTranslationRef.current) {
       setShowSuccessBanner(true);
       if (listContainerRef.current) {
@@ -631,22 +655,23 @@ export const useTranslationProcess = ({
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Grouping lines by language...', progress: 0 });
     
-    let currentData = [...workspaceData];
-    
-    for (let i = 0; i < currentData.length; i++) {
-      if (currentData[i].lang === 'en') {
-        currentData[i] = {
-          ...currentData[i],
-          translation: '',
-          displayPron: '',
-          pronunciation: ''
-        };
-      }
-    }
-    setWorkspaceData([...currentData]);
+    setWorkspaceData(prev => {
+        const next = [...prev];
+        for (let i = 0; i < next.length; i++) {
+          if (next[i].lang === 'en') {
+            next[i] = {
+              ...next[i],
+              translation: '',
+              displayPron: '',
+              pronunciation: ''
+            };
+          }
+        }
+        return next;
+    });
     
     const groups = {};
-    currentData.forEach((line, index) => {
+    workspaceData.forEach((line, index) => {
       if (line.lang === 'en') return;
       const lang = line.lang || 'auto';
       if (!groups[lang]) groups[lang] = [];
@@ -663,7 +688,7 @@ export const useTranslationProcess = ({
       setNotification({ show: true, message: `Translating [${lang}] group (${items.length} lines)...`, progress: 20 });
 
       if (items.length > 0) {
-        setActiveTranslatingId(currentData[items[0].index].rowId);
+        setActiveTranslatingId(workspaceData[items[0].index].rowId);
       }
 
       const cleanTexts = items.map(({ line }) => {
@@ -791,39 +816,41 @@ export const useTranslationProcess = ({
     const res = await fetchSingleLine(line);
     
     if (res) {
-      const newData = [...workspaceData];
-      
-      let rawTransText = res.translation !== undefined ? res.translation : newData[index].translation;
-      if (rawTransText) rawTransText = String(rawTransText).trim();
-      
-      const baselineText = line.spacingText?.trim() ? line.spacingText : line.displayText;
-      const normOrig = normalizeForComparison(baselineText);
-      const normTrans = normalizeForComparison(rawTransText);
-      
-      const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
-      const finalLang = isEnglishMatch ? 'en' : (res.srcLang || line.lang || 'auto');
-      
-      let displayPron = '';
-      if (!isEnglishMatch && res.pronunciation) {
-        try {
-          const p = JSON.parse(res.pronunciation);
-          displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-        } catch (e) {}
-      }
-      
-      newData[index].lang = finalLang;
-      newData[index].translation = isEnglishMatch ? '' : rawTransText;
-      newData[index].displayPron = isEnglishMatch ? '' : displayPron;
-      
-      if (isEnglishMatch) {
-        newData[index].pronunciation = '';
-      } else if (line._meta.isAdlib) {
-        newData[index].pronunciation = formatAdlibPronunciation(line.displayText, displayPron);
-      } else {
-        newData[index].pronunciation = res.pronunciation || '';
-      }
-      
-      setWorkspaceData(newData);
+      setWorkspaceData(prev => {
+          const next = [...prev];
+          
+          let rawTransText = res.translation !== undefined ? res.translation : next[index].translation;
+          if (rawTransText) rawTransText = String(rawTransText).trim();
+          
+          let baselineText = next[index].spacingText?.trim() ? next[index].spacingText : next[index].displayText;
+          if (!next[index].spacingText?.trim() && !next[index]._meta?.isAdlib && next[index].isSplit && next[index].adlibs) {
+            next[index].adlibs.forEach(a => { baselineText = baselineText.replace(a.text, ''); });
+          }
+
+          const normOrig = normalizeForComparison(baselineText);
+          const normTrans = normalizeForComparison(rawTransText);
+          
+          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+          const finalLang = isEnglishMatch ? 'en' : (res.srcLang || next[index].lang || 'auto');
+          
+          let displayPron = '';
+          if (!isEnglishMatch && res.pronunciation) {
+            try {
+              const p = JSON.parse(res.pronunciation);
+              displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
+            } catch (e) {}
+          }
+          
+          next[index] = {
+              ...next[index],
+              lang: finalLang,
+              translation: isEnglishMatch ? '' : rawTransText,
+              displayPron: isEnglishMatch ? '' : displayPron,
+              pronunciation: isEnglishMatch ? '' : (next[index]._meta?.isAdlib ? formatAdlibPronunciation(next[index].displayText, displayPron) : (res.pronunciation || ''))
+          };
+
+          return next;
+      });
     }
     
     setActiveTranslatingId(null);

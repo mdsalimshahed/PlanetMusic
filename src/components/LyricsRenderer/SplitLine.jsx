@@ -88,12 +88,16 @@ const SplitLine = ({
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
 
+  // SOURCE OF TRUTH OVERRIDE: If the user inputted a custom string in the workspace, 
+  // it forces the chunker to use it and discards the hidden JSON chunks.
   if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
     effectiveFullTrans = pronString;
     effectiveParsedChunks = null; 
   }
 
   const renderedMainElements = mainBlocks.map((blk, bIdx) => {
+    // FIX: Spaces left between adlibs are pure punctuation blocks. 
+    // They must NOT inherit the full sentence's transliteration, which caused the extra "MAGE" bug.
     const isOnlyPunct = blk.chars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
     const alignedMainJSX = alignChunksWithTransliteration(
@@ -247,6 +251,7 @@ const SplitLine = ({
     );
   });
 
+  // Determines whether to print the pronunciation flush-left at the very bottom of the entire line 
   let displayPronString = null;
   if (isRTL) {
     if (fullTrans) {
@@ -255,10 +260,10 @@ const SplitLine = ({
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
     }
   } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    // Only render at the bottom if the engine did NOT render it inline (which it does for CJK and Spaced)
     if (!hasSpacingText && !isCJKLine) {
-       // Only render at bottom if the pronunciation string is genuinely different from the source English line
-       const cleanOrig = lineObj.text.toLowerCase().replace(/[^\w]/g, '');
-       const cleanPron = pronString.toLowerCase().replace(/[^\w]/g, '');
+       const cleanOrig = lineObj.text.toLowerCase().replace(/[\W_]+/g, '');
+       const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
        if (cleanOrig !== cleanPron) {
            displayPronString = normalizeTrans(pronString);
        }
