@@ -45153,10 +45153,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Intro: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 4.294379,
           "end": 6.521094,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45242,10 +45243,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 6.605295,
           "end": 8.255331,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45336,10 +45338,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 8.361279,
           "end": 9.956032,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45412,10 +45415,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 10.063915,
           "end": 11.667386,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45485,10 +45489,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 11.760467,
           "end": 13.24929,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45579,10 +45584,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 13.356908,
           "end": 15.150242,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45655,10 +45661,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 15.241463,
           "end": 16.650163,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45728,10 +45735,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 16.737423,
           "end": 18.448769,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -45795,10 +45803,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 18.543427,
           "end": 19.637706,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45818,10 +45827,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Verse 1: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 20.260716,
           "end": 21.556394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45841,10 +45851,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 21.832959,
           "end": 23.213501,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45864,10 +45875,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 23.377771,
           "end": 24.815824,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45887,10 +45899,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 24.931146,
           "end": 26.431233,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45910,10 +45923,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 26.56834,
           "end": 28.24317,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45933,10 +45947,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 28.34726,
           "end": 29.859426,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45956,10 +45971,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 29.961613,
           "end": 31.561689,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -45988,10 +46004,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 31.669606,
           "end": 33.91418,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46061,10 +46078,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 33.99135102097786,
           "end": 37.327751020976365,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46137,10 +46155,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 37.526635,
           "end": 40.741421,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46183,10 +46202,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 40.880812,
           "end": 44.084726,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46215,10 +46235,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 44.220013,
           "end": 49.086566,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46270,10 +46291,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 49.180292,
           "end": 51.291906,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46316,10 +46338,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 51.401779,
           "end": 52.519972,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46339,10 +46362,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 52.61777,
           "end": 54.366719,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46362,10 +46386,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 54.468941,
           "end": 56.063189,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46385,10 +46410,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 56.427665,
           "end": 57.747117,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46408,10 +46434,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 58.004218,
           "end": 59.341873,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46440,10 +46467,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 59.459258,
           "end": 62.011351,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46486,10 +46514,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 62.09374,
           "end": 64.674558,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46509,10 +46538,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 64.766358,
           "end": 66.216394,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46532,10 +46562,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 66.300455,
           "end": 68.007041,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46564,10 +46595,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 68.421138,
           "end": 69.979588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46619,10 +46651,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 70.091201,
           "end": 71.668422,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46665,10 +46698,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 71.789552,
           "end": 74.686658,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -46715,10 +46749,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 74.789085,
           "end": 76.307267,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46809,10 +46844,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 76.426389,
           "end": 77.985588,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46885,10 +46921,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 78.088959,
           "end": 79.631282,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -46958,10 +46995,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 79.728868,
           "end": 81.243845,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47052,10 +47090,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 81.380058,
           "end": 83.13243692752522,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47128,10 +47167,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 83.26573692752224,
           "end": 84.76723692752225,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47201,10 +47241,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 84.903684,
           "end": 86.443384,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47295,10 +47336,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 86.554208,
           "end": 89.505362,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47387,10 +47429,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Verse 2: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 90.023836,
           "end": 92.674544,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47433,10 +47476,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 92.830986,
           "end": 95.423463,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47456,10 +47500,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 95.538649,
           "end": 97.126559,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47479,17 +47524,18 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 97.208289,
           "end": 99.702464,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
-          "text": "So vocalistically , that's social distancing (What?) (Yeah)",
+          "text": "So vocalistically, that's social distancing (What?) (Yeah)",
           "segments": [
             {
-              "text": "So vocalistically ",
+              "text": "So vocalistically",
               "color": "#af8d8d",
               "isGradient": false,
               "gradient": "",
@@ -47529,18 +47575,19 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 99.95288185504747,
           "end": 103.00282909346008,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(What?)",
-              "charStart": 45,
-              "charEnd": 52,
-              "start": 101.0190648550415,
-              "end": 101.4947648550445,
+              "charStart": 44,
+              "charEnd": 51,
+              "start": 101.1189810000015,
+              "end": 101.5569810000015,
               "segments": [
                 {
                   "text": "(What?)",
@@ -47553,14 +47600,13 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "(Yeah)",
-              "charStart": 53,
-              "charEnd": 59,
-              "start": 102.56659392752076,
+              "charStart": 52,
+              "charEnd": 58,
+              "start": 102.79578100000224,
               "end": 103.00282909346008,
               "segments": [
                 {
@@ -47574,8 +47620,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -47596,10 +47641,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
-          "start": 103.531888,
-          "end": 105.12413,
-          "pronunciation": null,
+          "sectionHeader": null,
           "translation": "",
+          "pronunciation": null,
+          "start": 103.61182909346009,
+          "end": 105.19162909346083,
           "isSplit": false
         },
         {
@@ -47628,10 +47674,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 105.222807,
           "end": 107.021414,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47674,10 +47721,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 107.131717,
           "end": 108.525807,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47697,10 +47745,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 108.621063,
           "end": 112.036883,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47729,10 +47778,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 112.170397,
           "end": 116.394083,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47775,10 +47825,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 116.506449,
           "end": 119.399785,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47807,10 +47858,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 119.505566,
           "end": 122.666624,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47853,10 +47905,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 122.786611,
           "end": 123.934565,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47876,10 +47929,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 124.039042,
           "end": 125.666089,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47908,10 +47962,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 125.770923,
           "end": 129.742854,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -47954,10 +48009,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 129.84853,
           "end": 133.297374,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -47995,10 +48051,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 133.60315109346007,
           "end": 136.05305809345862,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48050,10 +48107,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 136.1847580934616,
           "end": 138.0743450934571,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48096,10 +48154,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 138.23054509346008,
           "end": 139.63714509346158,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48128,10 +48187,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 139.993237,
           "end": 143.509676,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48174,10 +48234,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 143.615731,
           "end": 144.71664,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48206,10 +48267,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 144.920861,
           "end": 146.733616,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48261,10 +48323,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 146.867971,
           "end": 148.182517,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48316,10 +48379,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 148.336342,
           "end": 150.142668,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48371,10 +48435,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 150.284232,
           "end": 151.858833,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -48417,10 +48482,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 151.976399,
           "end": 153.23458,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48440,10 +48506,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 153.321716,
           "end": 154.768442,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48463,10 +48530,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 154.861439,
           "end": 156.7064,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48486,10 +48554,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 156.797556,
           "end": 158.869098,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48509,10 +48578,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 158.960565,
           "end": 160.028875,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48532,10 +48602,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 160.13488,
           "end": 161.809016,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48555,10 +48626,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 161.944517,
           "end": 163.475188,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48578,10 +48650,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 163.584683,
           "end": 165.651771,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48601,10 +48674,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 165.763856,
           "end": 168.041753,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48624,10 +48698,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 168.149611,
           "end": 169.461507,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48647,10 +48722,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 170.065416,
           "end": 171.850081,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48670,10 +48746,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 171.940246,
           "end": 173.425489,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48693,10 +48770,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 173.513318,
           "end": 175.176862,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48716,10 +48794,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 175.272676,
           "end": 176.888133,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48739,10 +48818,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 176.972409,
           "end": 178.509823,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48762,10 +48842,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 178.613835,
           "end": 179.985965,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48785,10 +48866,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 180.086704,
           "end": 181.740526,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48808,10 +48890,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 181.832532,
           "end": 183.55378,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48831,10 +48914,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 183.655208,
           "end": 185.691697,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48854,10 +48938,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 185.782491,
           "end": 186.802202,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48877,10 +48962,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 186.900402,
           "end": 188.812027,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48900,10 +48986,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 188.91481,
           "end": 190.743602,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48923,10 +49010,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 190.845591,
           "end": 191.582285,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48946,10 +49034,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 191.676583,
           "end": 193.504343,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48969,10 +49058,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 193.626579,
           "end": 195.661622,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -48992,10 +49082,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 195.76654,
           "end": 197.216913,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49015,10 +49106,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 197.315076,
           "end": 198.858958,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49038,10 +49130,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 198.941023,
           "end": 200.544172,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49061,10 +49154,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 200.654493,
           "end": 202.278159,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49100,10 +49194,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 202.382264,
           "end": 204.413814,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49162,10 +49257,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 204.512753,
           "end": 205.66944,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49185,10 +49281,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 205.78973,
           "end": 207.086166,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49208,10 +49305,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 207.188495,
           "end": 208.988174,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49231,10 +49329,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 209.100114,
           "end": 210.822061,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": false
         },
         {
@@ -49281,10 +49380,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": "[Chorus: Eminem]",
+          "translation": "",
+          "pronunciation": null,
           "start": 210.920639,
           "end": 212.563029,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49375,10 +49475,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 212.690398,
           "end": 214.274455,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49451,10 +49552,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 214.386163,
           "end": 215.930533,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49524,10 +49626,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 216.031144,
           "end": 217.501266,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49618,10 +49721,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 217.634917,
           "end": 219.217272,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49694,10 +49798,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 219.313547,
           "end": 221.008175,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49767,10 +49872,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 221.116861,
           "end": 222.70939,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -49843,10 +49949,11 @@
           "color": "#af8d8d",
           "isGradient": false,
           "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
           "start": 222.815095,
           "end": 224.63638,
-          "pronunciation": null,
-          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
