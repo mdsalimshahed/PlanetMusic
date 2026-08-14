@@ -31,10 +31,10 @@ const MarqueeText = ({ text, className }) => {
 
   return (
     <div 
-      className={`marquee-container ${className}`} 
-      ref={containerRef}
+       className={`marquee-container ${className}`} 
+       ref={containerRef}
       style={{ 
-        WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none',
+         WebkitMaskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none',
         maskImage: isOverflowing ? 'linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent)' : 'none'
       }}
     >
@@ -54,6 +54,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const sourceRef = useRef(null);
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
+
   const trackIdRef = useRef(null);
   const activeSourceRef = useRef(null);
   const playIdRef = useRef(null);
@@ -61,9 +62,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const fallbackTimerRef = useRef(null);
   
   const lastPolledTimeRef = useRef(-1);
-  const lastSyncTimeRef = useRef(0); // NEW: Tracks last time we polled native players
+  const lastSyncTimeRef = useRef(0); 
+
   const abortControllerRef = useRef(null);
-  
   const audioCacheRef = useRef(new Map());
   const MAX_CACHE_SIZE = 5;
 
@@ -78,7 +79,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const [pendingSeek, setPendingSeek] = useState(null);
   const [hoverTime, setHoverTime] = useState(null);
   const [fallbackMessage, setFallbackMessage] = useState('');
-  
   const [failedSources, setFailedSources] = useState([]);
 
   const [volume, setVolume] = useState(() => {
@@ -292,7 +292,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
     };
 
     let intendedSource = null;
-
     if (currentTrack.forceSource && !failedSources.includes(currentTrack.forceSource)) {
       if (currentTrack.forceSource === 'local' && hasLocal) intendedSource = 'local';
       else if (currentTrack.forceSource === 'deezer' && dzUrl) intendedSource = 'deezer';
@@ -363,7 +362,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
           setActiveSource('preview');
         } else {
           setYtVideoId(null);
-
           if (source === 'local') {
             const file = await getAudioFile(trackId);
             if (file) {
@@ -451,7 +449,6 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   useEffect(() => {
     if (!ytVideoId) return;
     let playerInstance = null;
-
     const initYTPlayer = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initYTPlayer, 100);
@@ -540,19 +537,16 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       const time = e.detail;
       const currentSecond = Math.floor(time);
 
-      // 1. UPDATE VISUAL SLIDER AT 60FPS FOR BUTTERY SMOOTHNESS
       if (progressBarRef.current) {
         progressBarRef.current.value = time;
         progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
       }
 
-      // 2. THROTTLE EXPENSIVE DOM TEXT RE-RENDERS TO 1FPS
       if (currentSecond !== lastSecond) {
         if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
         lastSecond = currentSecond;
       }
 
-      // DRIFT SYNC THROTTLE: Only cross-origin poll native players once every 2 seconds
       const now = performance.now();
       if (now - lastSyncTimeRef.current > 2000) {
         if (ytVideoId && ytPlayerRef.current && isPlaying) {
@@ -649,13 +643,23 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   };
 
   const openModal = () => {
-    if (currentTrack && setSelectedSong) setSelectedSong(currentTrack);
+    if (currentTrack && setSelectedSong) {
+      // PREVENT ROUTER COLLISION:
+      // If the user clicks the background of the player while already inside the 
+      // modal for this specific song, do nothing! This prevents App.jsx from catching 
+      // the selection and resetting the URL back to `/live`.
+      if (selectedSong && String(selectedSong.trackId) === String(currentTrack.trackId)) {
+        return; 
+      }
+      setSelectedSong(currentTrack);
+    }
   };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       const activeTag = document.activeElement?.tagName?.toLowerCase();
       if (activeTag === 'input' || activeTag === 'textarea') return;
+
       if (!currentTrack) return;
       if (document.querySelector('.sync-mode-container')) return;
 
@@ -667,6 +671,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         const cur = window.currentAudioTime || 0;
         const newTime = Math.max(0, cur - 5);
         globalClock.seek(newTime);
+
         if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
           try { ytPlayerRef.current.seekTo(newTime, true); } catch (err) {}
         } else if (audioRef.current) {
@@ -678,6 +683,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         const maxTime = duration || 100;
         const newTime = Math.min(maxTime, cur + 5);
         globalClock.seek(newTime);
+
         if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
           try { ytPlayerRef.current.seekTo(newTime, true); } catch (err) {}
         } else if (audioRef.current) {
@@ -685,6 +691,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         }
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -726,6 +733,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   const handleContainerClick = (e) => {
     if (e.target === progressBarRef.current) return;
     if (!progressBarRef.current || !duration) return;
+
     const rect = progressBarRef.current.getBoundingClientRect();
     const percent = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
     const time = percent * duration;
@@ -791,7 +799,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
 
   const playerUI = currentTrack ? (
     <div 
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
+       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
       onClick={openModal}
       style={{ '--player-accent': accentColor, cursor: 'pointer' }}
     >
@@ -799,9 +807,9 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         <div className="player-info">
           <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
             <img 
-              src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
-              alt="Album art" 
-              className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
+               src={currentTrack.artworkUrl100?.replace('100x100', '100x100') || undefined} 
+               alt="Album art" 
+               className={`album-art ${isPlaying ? 'playing' : 'paused'}`}
             />
             <div className={`play-overlay ${!isPlaying ? 'show-play' : ''}`}>
               {isPlaying ? (
@@ -844,8 +852,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
             <div className="volume-slider-wrapper">
               <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>{Math.round(volume * 100)}%</div>
               <input 
-                type="range" 
-                className="custom-slider volume-slider"
+                 type="range" 
+                 className="custom-slider volume-slider"
                 min="0" max="1" step="0.01"
                 value={volume}
                 onChange={handleVolumeChange}
@@ -866,24 +874,24 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
       <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
         <span className="time-text" ref={currentTimeRef}>0:00</span>
         <div 
-          className="progress-container"
+           className="progress-container"
           onClick={handleContainerClick}
           onMouseMove={handleProgressMouseMove}
           onMouseLeave={handleProgressMouseLeave}
           onTouchStart={handleProgressMouseLeave}
         >
           <div 
-            className="progress-tooltip" 
-            style={{ 
-              opacity: hoverTime !== null ? 1 : 0,
+             className="progress-tooltip" 
+             style={{ 
+               opacity: hoverTime !== null ? 1 : 0,
               left: hoverTime !== null ? `${(hoverTime / (duration || 1)) * 100}%` : '0%'
             }}
           >
             {formatTime(hoverTime || 0)}
           </div>
           <input 
-            type="range" 
-            className="custom-slider progress-slider"
+             type="range" 
+             className="custom-slider progress-slider"
             ref={progressBarRef}
             min="0" max={duration || 100}
             defaultValue="0"
@@ -899,7 +907,7 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
   return (
     <>
       <audio 
-        ref={audioRef}
+         ref={audioRef}
         crossOrigin="anonymous"
         src={audioSrc || undefined} 
         onLoadedMetadata={handleLoadedMetadata}
@@ -909,8 +917,8 @@ const Player = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, 
         onContextMenu={(e) => e.preventDefault()}
       />
       <div 
-        id="yt-player-container" 
-        style={{
+         id="yt-player-container" 
+         style={{
           position: 'fixed',
           top: 0,
           left: 0,
