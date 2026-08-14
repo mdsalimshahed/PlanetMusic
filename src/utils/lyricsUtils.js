@@ -1,9 +1,11 @@
 /* --- src/utils/lyricsUtils.js --- */
+
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
+  
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   let hasExplicitHeader = false;
   let activeTags = [];
@@ -27,6 +29,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let unmarkedStr = singersPart;
         const parsedTokens = [];
         const explicitArtists = [];
+
         const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
@@ -69,8 +72,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             else ruleArtists = pt.name.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
             return { marker: pt.marker, artists: ruleArtists };
         });
-
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
+
       } else {
         currentRules = [{ marker: '', artists: globalDefaultArtists }];
       }
@@ -182,6 +185,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         if (!part) return;
         const isAdlib = /^[(\uFF08][^)\uFF09]+[)\uFF09]$/.test(part);
         const subSeg = { ...seg, text: part };
+
         if (isAdlib) {
           adlibSegments.push(subSeg);
         } else {
@@ -193,11 +197,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     // --- CORE FIX: Cross-segment boundary space cleanup ---
     let sanitizedMainSegments = [...mainSegments];
     for (let i = 0; i < sanitizedMainSegments.length; i++) {
-        // Internal cleanup
-        sanitizedMainSegments[i].text = sanitizedMainSegments[i].text.replace(/\s+([.,!?;:\])}，。！？；：」）】]+)/g, '$1');
+        sanitizedMainSegments[i].text = sanitizedMainSegments[i].text.replace(/\s+([.,!?;:\])} ]+)/g, '$1');
         
-        // Boundary cleanup across different segments
-        if (i > 0 && /^[.,!?;:\])}，。！？；：」）】]/.test(sanitizedMainSegments[i].text)) {
+        if (i > 0 && /^[.,!?;:\])} ]/.test(sanitizedMainSegments[i].text)) {
             sanitizedMainSegments[i-1].text = sanitizedMainSegments[i-1].text.replace(/\s+$/, '');
         }
     }
@@ -241,18 +243,18 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         gradient: lineGradientStyle,
         sectionHeader: pendingHeader
       });
-    pendingHeader = null; 
+      pendingHeader = null;
   });
 
   return result;
 };
+
 
 export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, colorPalette) => {
   if (!rawLyrics) return lrcSyncData;
   const parsedLines = parseLyrics(rawLyrics, defaultArtist, colorPalette);
   if (parsedLines.length === 0) return lrcSyncData;
 
-  let currentLrcIdx = 0;
   const normalize = (str) => {
     if (!str) return '';
     return str
@@ -261,108 +263,103 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       .replace(/[\p{P}\p{S}\s]/gu, '');
   };
 
-  const mergedData = parsedLines.map((geniusLine) => {
-    const cleanGenius = normalize(geniusLine.text);
-    let bestMatchIdx = -1;
-    let highestScore = 0;
+  // 1. Longest Common Subsequence (LCS) Matrix Algorithm
+  // This accurately aligns old lines to new lines dynamically.
+  const m = parsedLines.length;
+  const n = lrcSyncData.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
 
-    for (let i = currentLrcIdx; i < Math.min(currentLrcIdx + 15, lrcSyncData.length); i++) {
-      const cleanLrc = normalize(lrcSyncData[i].text);
-      if (!cleanLrc && !cleanGenius) continue;
-      let score = 0;
-      if (cleanGenius === cleanLrc && cleanGenius !== '') {
-        score = 100;
-      } else if (cleanGenius && cleanLrc && (cleanGenius.includes(cleanLrc) || cleanLrc.includes(cleanGenius))) {
-        score = 60 + (Math.min(cleanGenius.length, cleanLrc.length) / Math.max(cleanGenius.length, cleanLrc.length)) * 40;
-      }
-      if (score > highestScore && score > 35) {
-        highestScore = score;
-        bestMatchIdx = i;
+  for (let i = 1; i <= m; i++) {
+    const cleanNew = normalize(parsedLines[i - 1].text);
+    for (let j = 1; j <= n; j++) {
+      const cleanOld = normalize(lrcSyncData[j - 1].text);
+      if (cleanNew === cleanOld && cleanNew !== '') {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
     }
+  }
 
-    let start = null;
-    let end = null;
-    let wordSync = null;
-    let pronunciation = geniusLine.pronunciation || null;
-    let translation = geniusLine.translation || '';
-    let isSplit = false;
-    let adlibs = undefined;
-
-    if (bestMatchIdx !== -1) {
-      const matchedNode = lrcSyncData[bestMatchIdx];
-      start = matchedNode.start !== undefined ? matchedNode.start : null;
-      end = matchedNode.end !== undefined ? matchedNode.end : null;
-      
-      if (matchedNode.translation !== undefined) {
-        translation = matchedNode.translation;
-      }
-      if (matchedNode.pronunciation !== undefined) {
-        pronunciation = matchedNode.pronunciation;
-      }
-      if (highestScore > 90) {
-        wordSync = matchedNode.wordSync;
-      }
-      
-      isSplit = matchedNode.isSplit || false;
-      
-      if (matchedNode.adlibs) {
-        adlibs = matchedNode.adlibs.map(adlib => {
-          const adlibSegments = [];
-          const adlibArtistsSet = new Set();
-          let currentPos = 0;
-
-          for (const seg of geniusLine.segments) {
-              const segChars = Array.from(seg.text);
-              const segStart = currentPos;
-              const segEnd = currentPos + segChars.length;
-              const overlapStart = Math.max(adlib.charStart, segStart);
-              const overlapEnd = Math.min(adlib.charEnd, segEnd);
-
-              if (overlapStart < overlapEnd) {
-                  const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
-                  adlibSegments.push({
-                      ...seg,
-                      text: overlapText
-                  });
-
-                  const isOnlyPunctuationOrSpace = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u;
-                  if (!isOnlyPunctuationOrSpace.test(overlapText)) {
-                      if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
-                  }
-              }
-              currentPos = segEnd;
-          }
-
-          const derivedSinger = Array.from(adlibArtistsSet).join(', ') || geniusLine.singer;
-
-          return {
-            ...adlib,
-            segments: adlibSegments,
-            singer: derivedSinger,
-            translation: adlib.translation !== undefined ? adlib.translation : '',
-            pronunciation: adlib.pronunciation !== undefined ? adlib.pronunciation : null
-          };
-        });
-      }
-
-      currentLrcIdx = bestMatchIdx + 1;
+  // 2. Backtrack to find exact perfect alignments
+  let i = m;
+  let j = n;
+  const alignment = []; 
+  
+  while (i > 0 && j > 0) {
+    const cleanNew = normalize(parsedLines[i - 1].text);
+    const cleanOld = normalize(lrcSyncData[j - 1].text);
+    
+    if (cleanNew === cleanOld && cleanNew !== '') {
+      alignment.push({ newIndex: i - 1, oldIndex: j - 1 });
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
     }
+  }
+  alignment.reverse();
 
-    return {
-      ...geniusLine,
-      start,
-      end,
-      wordSync,
-      pronunciation,
-      translation,
-      isSplit,
-      adlibs
-    };
+  // Create mapping from New Indexed Position -> Old Node Reference
+  const matchMap = {};
+  alignment.forEach(match => {
+    matchMap[match.newIndex] = match.oldIndex;
+  });
+
+  // 3. Assemble and wipe heavily altered sequences
+  const mergedData = parsedLines.map((newLine, idx) => {
+    const oldIdx = matchMap[idx];
+    
+    if (oldIdx !== undefined) {
+      // 100% Match: Copy everything over
+      const matchedNode = lrcSyncData[oldIdx];
+      
+      let isSplit = false;
+      let newAdlibs = undefined;
+      
+      // Strict constraint: Only preserve adlib splits if the text punctuation strictly matches
+      // (otherwise character position indices could be misaligned and crash the render)
+      if (matchedNode.isSplit && matchedNode.adlibs) {
+        if (newLine.text === matchedNode.text) {
+          isSplit = matchedNode.isSplit;
+          newAdlibs = matchedNode.adlibs;
+        }
+      }
+
+      return {
+        ...newLine,
+        start: matchedNode.start !== undefined ? matchedNode.start : null,
+        end: matchedNode.end !== undefined ? matchedNode.end : null,
+        wordSync: matchedNode.wordSync || null,
+        pronunciation: matchedNode.pronunciation !== undefined ? matchedNode.pronunciation : null,
+        translation: matchedNode.translation !== undefined ? matchedNode.translation : '',
+        spacingText: matchedNode.spacingText || '',
+        lang: matchedNode.lang || 'auto',
+        isSplit: isSplit,
+        adlibs: newAdlibs
+      };
+    } else {
+      // Modified Line: Completely wipe timings, adlibs, and translations as requested
+      return {
+        ...newLine,
+        start: null,
+        end: null,
+        wordSync: null,
+        pronunciation: null,
+        translation: '',
+        spacingText: '',
+        lang: 'auto',
+        isSplit: false,
+        adlibs: undefined
+      };
+    }
   });
 
   return mergedData;
 };
+
 
 export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
   const lines = lrcString.split('\n');
@@ -379,7 +376,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
       
       const text = rawText.replace(/<\d{2}:\d{2}\.\d{2,3}>/g, '').trim();
       if (!text) return;
-
+      
       const startTime = (minutes * 60) + seconds;
       plainTextLyrics += text + "\n";
       

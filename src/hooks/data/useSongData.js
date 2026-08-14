@@ -7,7 +7,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
-
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     return stored ? JSON.parse(stored) : { images: {}, colors: {} };
@@ -26,7 +25,6 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const featuredArtists = trackNameData.featuredArtists;
 
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
-
   const basePalette = useMemo(() => {
       return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
   }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
@@ -73,9 +71,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       // skip the network request entirely.
       if (selectedSong.hasDeezerMetaBound) return;
 
-      const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') ||
-                            (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
-                            
+      const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') || 
+                           (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
+                           
       const customDzUrl = selectedSong.customLinks?.deezer;
       let targetId = null;
 
@@ -102,7 +100,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
               if (json.success && json.data) {
                 // Permanently flag the song so we never fetch this again
                 const updatedSong = { ...selectedSong, hasDeezerMetaBound: true }; 
-                let modified = true; 
+                let modified = true;
                 
                 if (json.data.release_date && !updatedSong.releaseDate) {
                   updatedSong.releaseDate = json.data.release_date;
@@ -136,6 +134,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
               console.error("Failed to fetch Deezer metadata:", e);
             }
           };
+
           fetchDeezerMeta();
         }
       }
@@ -188,12 +187,14 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const saveData = () => {
     let updatedSyncData = selectedSong.syncData;
-    if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
+    
+    // Enforce strict merging regardless of whether timestamps exist yet to prevent index displacement
+    if (updatedSyncData && customData.lyrics) {
       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
-
+    
     let updatedAutoSyncData = selectedSong.autoSyncData;
-    if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
+    if (updatedAutoSyncData && customData.lyrics) {
       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
 
@@ -218,18 +219,19 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       images: { ...globalArtistData.images, ...customData.artistImages },
       colors: { ...globalArtistData.colors, ...customData.artistColors }
     };
+    
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
     setGlobalArtistData(newGlobal);
     
     const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
 
     let updatedSyncData = selectedSong.syncData;
-    if (updatedSyncData && updatedSyncData.some(l => l.start !== null) && customData.lyrics) {
+    if (updatedSyncData && customData.lyrics) {
         updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
-
+    
     let updatedAutoSyncData = selectedSong.autoSyncData;
-    if (updatedAutoSyncData && updatedAutoSyncData.some(l => l.start !== null) && customData.lyrics) {
+    if (updatedAutoSyncData && customData.lyrics) {
        updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, newMasterPalette);
     }
 
@@ -246,14 +248,13 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const isSingle = selectedSong?.trackCount === 1 || selectedSong?.collectionName === selectedSong?.trackName;
   const releaseType = isSingle ? 'Single' : selectedSong?.collectionName || 'Single';
   const highResArt = selectedSong?.artworkUrl100?.replace(/100x100bb/g, '1000x1000bb').replace(/100x100/g, '1000x1000');
-  
   const minutes = selectedSong ? Math.floor(selectedSong.trackTimeMillis / 60000) : 0;
   const seconds = selectedSong ? ((selectedSong.trackTimeMillis % 60000) / 1000).toFixed(0) : 0;
   const timeString = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
   const searchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`) : '';
   const ytSearchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`) : '';
-  
+
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
