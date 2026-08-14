@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { LyricLineWrapper } from './LyricsLineRenderer';
 import { FocusedAdlibsTracker } from '../Sync/FocusedAdlibsTracker';
+import LyricsEqualizer from './LyricsEqualizer';
 import { parseLyrics } from '../../../utils/songHelpers';
 import { getGraphemes } from '../../LyricsRenderer/textUtils';
 import './LyricsDisplay.css';
@@ -14,8 +15,6 @@ const LyricsDisplay = ({
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-  const canvasRef = useRef(null);
-  const eqScalesRef = useRef(Array(40).fill(0.05));
 
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
 
@@ -46,11 +45,12 @@ const LyricsDisplay = ({
       // If line.singer is empty (e.g. unmapped formatted text), group it as 'Uncredited'
       const effectiveSinger = line.singer || 'Uncredited';
 
-      if (!currentGroup || effectiveSinger !== currentGroup.singer) {
+      if (!currentGroup || line.sectionHeader || effectiveSinger !== currentGroup.singer) {
         if (currentGroup) groups.push(currentGroup);
         
         currentGroup = {
           id: `edit-group-${i}`,
+          sectionHeader: line.sectionHeader,
           singer: effectiveSinger,
           borderColor: getBorderAccentColor(line),
           lines: []
@@ -223,134 +223,6 @@ const LyricsDisplay = ({
       );
     });
   };
-
-  // --- EQUALIZER CANVAS RENDERER ---
-  useEffect(() => {
-    if (settings?.disableAnimations || isEditing) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let rafId = null;
-    const pauseDecayFactor = 0.05; 
-    let idleFrames = 0; 
-    const numBars = 40;
-    
-    let cw = canvas.clientWidth;
-    let ch = canvas.clientHeight;
-    canvas.width = cw;
-    canvas.height = ch;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        cw = entry.contentRect.width;
-        ch = entry.contentRect.height;
-        canvas.width = cw;
-        canvas.height = ch;
-      }
-    });
-    resizeObserver.observe(canvas);
-
-    let lastPollTime = 0;
-    const pollInterval = 1000 / 24; 
-    const targetScales = new Float32Array(numBars).fill(0.05);
-
-    const renderEQ = (timestamp) => {
-      const displayWidth = cw;
-      const displayHeight = ch;
-      
-      if (displayWidth === 0 || displayHeight === 0) {
-        rafId = requestAnimationFrame(renderEQ);
-        return;
-      }
-
-      const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
-      const currentScales = eqScalesRef.current;
-      
-      if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
-        idleFrames = 0;
-        
-        if (timestamp - lastPollTime >= pollInterval) {
-          window.globalAudioAnalyser.getByteFrequencyData(window.globalFreqData);
-          const freqData = window.globalFreqData;
-          const bufferLength = freqData.length;
-          
-          for (let i = 0; i < numBars; i++) {
-            const percent = i / numBars;
-            const dataIndex = Math.floor(Math.pow(percent, 1.2) * (bufferLength * 0.6));
-            const safeIndex = Math.min(dataIndex, bufferLength - 1);
-            
-            const raw = freqData[safeIndex] || 0;
-            const normalized = raw / 255;
-            const emphasized = Math.pow(normalized, 3);
-            
-            const dampener = 0.6 + (percent * 0.6); 
-            targetScales[i] = 0.05 + (emphasized * 1.2 * dampener);
-          }
-          lastPollTime = timestamp;
-        }
-
-        for (let i = 0; i < numBars; i++) {
-          if (targetScales[i] > currentScales[i]) {
-            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.25; 
-          } else {
-            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.08; 
-          }
-        }
-      } else {
-        let allSettled = true;
-        for (let i = 0; i < numBars; i++) {
-          if (currentScales[i] > 0.051) {
-            currentScales[i] += (0.05 - currentScales[i]) * pauseDecayFactor;
-            allSettled = false;
-          } else if (currentScales[i] !== 0.05) {
-            currentScales[i] = 0.05;
-            allSettled = false;
-          }
-        }
-        if (allSettled) idleFrames++;
-      }
-
-      if (idleFrames > 5) {
-        ctx.clearRect(0, 0, displayWidth, displayHeight);
-        rafId = null;
-        return; 
-      }
-
-      ctx.clearRect(0, 0, displayWidth, displayHeight);
-      ctx.fillStyle = '#ffffff';
-      
-      const barSpacing = displayWidth / numBars;
-      const barWidth = Math.max(1, barSpacing * 0.75); 
-      const startX = (barSpacing - barWidth) / 2; 
-
-      ctx.beginPath();
-      for (let i = 0; i < numBars; i++) {
-        const barHeight = currentScales[i] * displayHeight;
-        const x = startX + (i * barSpacing);
-        const y = displayHeight - barHeight;
-        const radius = Math.min(4, barHeight / 2);
-
-        if (ctx.roundRect) {
-          ctx.roundRect(x, y, barWidth, barHeight, [radius, radius, 0, 0]);
-        } else {
-          ctx.rect(x, y, barWidth, barHeight);
-        }
-      }
-      ctx.fill();
-
-      rafId = requestAnimationFrame(renderEQ);
-    };
-
-    if (isPlaying && isPlayingCurrentSong) {
-      rafId = requestAnimationFrame(renderEQ);
-    }
-
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
-    };
-  }, [isPlaying, isPlayingCurrentSong, settings?.eqFadeOutTime, settings?.disableAnimations, isEditing]);
 
   useEffect(() => {
     if (isEditing) return;
@@ -570,28 +442,45 @@ const LyricsDisplay = ({
             
             <div className="artist-preview-scroll">
               {editGroupedLyrics.length > 0 ? (
-                editGroupedLyrics.map((group, idx) => (
-                  <div key={idx} className="preview-line-row" style={{ borderLeftColor: group.borderColor, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span className="preview-line-singer">
-                      {renderColoredSingerHeader(group.singer)}
-                    </span>
-                    <div className="preview-line-text-group" style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
-                      {group.lines.map((line, lIdx) => (
-                        <div key={lIdx} className="preview-line-text" dir="auto">
-                          {line.segments && line.segments.length > 0 ? (
-                            line.segments.map((seg, sIdx) => (
-                              <React.Fragment key={sIdx}>
-                                {renderPlainColoredText(seg)}
-                              </React.Fragment>
-                            ))
-                          ) : (
-                            renderPlainColoredText(line)
-                          )}
+                editGroupedLyrics.map((group, idx) => {
+                  let displayHeader = '';
+                  if (group.sectionHeader) {
+                    displayHeader = group.sectionHeader.replace(/[\[\]]/g, '');
+                    if (displayHeader.includes(':')) {
+                      displayHeader = displayHeader.split(':')[0].trim();
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={group.id}>
+                      {group.sectionHeader && (
+                        <div className="plain-section-header" style={{ marginTop: idx === 0 ? '0' : '24px', fontSize: '11px', paddingBottom: '4px', marginBottom: '8px' }}>
+                          {displayHeader}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                ))
+                      )}
+                      <div className="preview-line-row" style={{ borderLeftColor: group.borderColor, display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '8px' }}>
+                        <span className="preview-line-singer">
+                          {renderColoredSingerHeader(group.singer)}
+                        </span>
+                        <div className="preview-line-text-group" style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                          {group.lines.map((line, lIdx) => (
+                            <div key={lIdx} className="preview-line-text" dir="auto">
+                              {line.segments && line.segments.length > 0 ? (
+                                line.segments.map((seg, sIdx) => (
+                                  <React.Fragment key={sIdx}>
+                                    {renderPlainColoredText(seg)}
+                                  </React.Fragment>
+                                ))
+                              ) : (
+                                renderPlainColoredText(line)
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                })
               ) : (
                 <div className="preview-empty-text">Type lyrics on the left to see live artist separation...</div>
               )}
@@ -719,11 +608,12 @@ const LyricsDisplay = ({
         </div>
       )}
 
-      {!isEditing && !settings?.disableAnimations && (
-        <div className={`lyrics-equalizer`}>
-          <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
-        </div>
-      )}
+      <LyricsEqualizer 
+        isPlaying={isPlaying} 
+        isPlayingCurrentSong={isPlayingCurrentSong} 
+        disableAnimations={settings?.disableAnimations} 
+        isEditing={isEditing} 
+      />
     </>
   );
 };

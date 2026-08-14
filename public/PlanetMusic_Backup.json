@@ -10,7 +10,7 @@
       "collectionName": "Dónde Están Los Ladrones",
       "trackName": "Ojos Así",
       "collectionViewUrl": "https://music.apple.com/us/album/ojos-as%C3%AD/192682818?i=192683270&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/b1/d4/4f/b1d44f97-521c-b182-679f-33c2b3adf98e/mzaf_3241067612832151265.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/e5/6d/96/e56d9688-0239-7c8f-f907-7614c0f9860b/mzi.uffuznlo.jpg/100x100bb.jpg",
       "collectionPrice": 9.99,
       "trackPrice": 1.29,
@@ -2660,7 +2660,9 @@
           "isSplit": false
         }
       ],
-      "playId": 1786121138990
+      "playId": 1786121138990,
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/b1/d4/4f/b1d44f97-521c-b182-679f-33c2b3adf98e/mzaf_3241067612832151265.plus.aac.p.m4a"
     },
     {
       "wrapperType": "track",
@@ -17724,7 +17726,8 @@
           "isSplit": false
         }
       ],
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/a0/b2/e8/a0b2e8ad-dfbd-2341-acde-8b5265221aaf/mzaf_2352049349943638457.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/a0/b2/e8/a0b2e8ad-dfbd-2341-acde-8b5265221aaf/mzaf_2352049349943638457.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -17951,7 +17954,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll live alone",
+          "translation": "Because I'll live alone",
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 28.704744,
           "end": 32.533375,
@@ -18055,7 +18058,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I can't live alone",
+          "translation": "You can't live alone, can you?",
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 39.471936,
           "end": 43.15788,
@@ -18107,7 +18110,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "It's okay",
+          "translation": "For me it's okay",
           "pronunciation": "{\"full\":\"Watashinara it's okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"it's\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"okay\",\"trans\":\"\"}]}",
           "start": 45.399361,
           "end": 47.900153,
@@ -18159,7 +18162,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'm so hungry for love",
+          "translation": "I'm hungry for love",
           "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
           "start": 50.52284,
           "end": 53.323786,
@@ -18185,7 +18188,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll definitely stay away from anyone",
+          "translation": "Don't let anyone get close to you",
           "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
           "start": 53.808238,
           "end": 58.497698,
@@ -18238,7 +18241,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": "[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]",
-          "translation": "The moonlight that only shines on my mistakes",
+          "translation": "The moonlight shines only on mistakes",
           "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"moonlight\",\"trans\":\"\"}]}",
           "start": 63.986814,
           "end": 66.33093,
@@ -18265,7 +18268,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": null,
-          "translation": "I can never go back Good night",
+          "translation": "I can never go back good night",
           "pronunciation": "{\"full\":\"Mōnidoto modorenai good night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"good\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"night\",\"trans\":\"\"}]}",
           "start": 66.466275,
           "end": 69.128029,
@@ -18291,7 +18294,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I only have one wish so far",
+          "translation": "I only have one hope so far",
           "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"so\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"far\",\"trans\":\"\"}]}",
           "start": 69.260294,
           "end": 71.512073,
@@ -18371,7 +18374,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": null,
-          "translation": "Hate me as much as you want and more",
+          "translation": "Hate it as much as you like, more",
           "pronunciation": "{\"full\":\"Sukinadake iya tte more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 77.222056,
           "end": 79.950447,
@@ -18423,7 +18426,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Repeated love makes me",
+          "translation": "repeated love makes me",
           "pronunciation": "{\"full\":\"Kurikaeshita love makes me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"love\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"makes\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"me\",\"trans\":\"\"}]}",
           "start": 81.446022,
           "end": 84.711451,
@@ -18588,7 +18591,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Sorry isn't enough",
+          "translation": "Sorry is not enough",
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 95.59563994850308,
           "end": 98.26623994850456,
@@ -18614,7 +18617,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I love you",
+          "translation": "i love you",
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 98.34563994850308,
           "end": 100.95363994850308,
@@ -18666,7 +18669,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Freely fly more",
+          "translation": "Fly away freely, fly more",
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fly\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 104.346337,
           "end": 106.974788,
@@ -18718,7 +18721,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I've thrown away everything in the past",
+          "translation": "The past that I threw away everything",
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 109.685907,
           "end": 112.33477,
@@ -18770,7 +18773,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll live alone",
+          "translation": "Because I'll live alone",
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 113.893465,
           "end": 117.580143,
@@ -18874,7 +18877,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "You can't live alone",
+          "translation": "You can't live alone, can you?",
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 124.686462,
           "end": 128.281526,
@@ -19007,7 +19010,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
           "sectionHeader": null,
-          "translation": "This is a fan-fan-fantasy",
+          "translation": "This is fan-fan-fantasy",
           "pronunciation": "{\"full\":\"Kore wa fan-fan-fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fan-fan-fantasy\",\"trans\":\"\"}]}",
           "start": 130.59756392751925,
           "end": 133.17736392751627,
@@ -19076,7 +19079,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'm about to reach my capacity",
+          "translation": "Looks like I'm going to exceed my capacity",
           "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
           "start": 133.327932,
           "end": 134.782073,
@@ -19102,7 +19105,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Do what you want",
+          "translation": "as you want",
           "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
           "start": 134.861813,
           "end": 136.455853,
@@ -19128,7 +19131,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Like you haven't woken up from a dream yet",
+          "translation": "It's like I haven't woken up from a dream yet",
           "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
           "start": 136.516142,
           "end": 138.790478,
@@ -19154,7 +19157,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "The clock ticks tack as it spins",
+          "translation": "The spinning clock tick tack",
           "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tick tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"tick\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"tack\",\"trans\":\"\"}]}",
           "start": 138.812082,
           "end": 141.100215,
@@ -19180,7 +19183,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Laugh as much as you like and more",
+          "translation": "Laugh as much as you like more",
           "pronunciation": "{\"full\":\"Sukina dake waratte more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 141.186851,
           "end": 143.897193,
@@ -19284,7 +19287,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
-          "translation": "Bad, don't let it start",
+          "translation": "Bad, don't start",
           "pronunciation": "{\"full\":\"Bad, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
           "start": 149.125263,
           "end": 154.24918,
@@ -19423,7 +19426,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Sorry isn't enough",
+          "translation": "Sorry is not enough",
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 159.60216309346308,
           "end": 162.1873630934586,
@@ -19449,7 +19452,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I love you",
+          "translation": "i love you",
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 162.2688630934586,
           "end": 165.2415630934616,
@@ -19501,7 +19504,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Freely fly away and fly more",
+          "translation": "Fly away freely, fly more",
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fly\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 168.20026309345712,
           "end": 170.98296309346009,
@@ -19761,7 +19764,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I've thrown away everything in the past",
+          "translation": "The past that I threw away everything",
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 195.13720892752076,
           "end": 197.62100892752522,
@@ -19813,7 +19816,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I feel lonely being alone",
+          "translation": "I feel lonely when I'm alone",
           "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
           "start": 199.32860892751927,
           "end": 203.01320892752074,
@@ -19865,7 +19868,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I want to see you, please come by my side soon",
+          "translation": "I want to see you, please come to my side right away",
           "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
           "start": 205.14720892752075,
           "end": 208.2635089275252,
@@ -19917,7 +19920,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I can't live alone though",
+          "translation": "I can't live alone",
           "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
           "start": 209.94140892752372,
           "end": 215.71490892752374,
@@ -20407,7 +20410,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll live alone",
+          "translation": "Because I'll live alone",
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 28.704744,
           "end": 32.533375,
@@ -20511,7 +20514,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I can't live alone",
+          "translation": "You can't live alone, can you?",
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 39.471936,
           "end": 43.15788,
@@ -20563,7 +20566,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "It's okay",
+          "translation": "For me it's okay",
           "pronunciation": "{\"full\":\"Watashinara it's okay\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"私なら\",\"trans\":\"Watashinara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"it's\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"okay\",\"trans\":\"\"}]}",
           "start": 45.399361,
           "end": 47.900153,
@@ -20615,7 +20618,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'm so hungry for love",
+          "translation": "I'm hungry for love",
           "pronunciation": "{\"full\":\"Ai ni ue teru no\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"愛に飢えてるの\",\"trans\":\"Ai ni ue teru no\"}]}",
           "start": 50.52284,
           "end": 53.323786,
@@ -20641,7 +20644,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll definitely stay away from anyone",
+          "translation": "Don't let anyone get close to you",
           "pronunciation": "{\"full\":\"Darenimo kitto chikadzukanai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"誰にもきっと近づかないように\",\"trans\":\"Darenimo kitto chikadzukanai yō ni\"}]}",
           "start": 53.808238,
           "end": 58.497698,
@@ -20694,7 +20697,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": "[Verse 2: Hani & Jeonghwa, _Elly_, **Solji**]",
-          "translation": "The moonlight that only shines on my mistakes",
+          "translation": "The moonlight shines only on mistakes",
           "pronunciation": "{\"full\":\"Machigai dake o terasu moonlight\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"間違いだけを照らす\",\"trans\":\"Machigai dake o terasu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"moonlight\",\"trans\":\"\"}]}",
           "start": 63.986814,
           "end": 66.33093,
@@ -20721,7 +20724,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": null,
-          "translation": "I can never go back Good night",
+          "translation": "I can never go back good night",
           "pronunciation": "{\"full\":\"Mōnidoto modorenai good night\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"もう二度と戻れない\",\"trans\":\"Mōnidoto modorenai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"good\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"night\",\"trans\":\"\"}]}",
           "start": 66.466275,
           "end": 69.128029,
@@ -20747,7 +20750,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I only have one wish so far",
+          "translation": "I only have one hope so far",
           "pronunciation": "{\"full\":\"Nozomi wa hitotsu so far\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"望みは一つ\",\"trans\":\"Nozomi wa hitotsu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"so\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"far\",\"trans\":\"\"}]}",
           "start": 69.260294,
           "end": 71.512073,
@@ -20827,7 +20830,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fad900, #08f3f7)",
           "sectionHeader": null,
-          "translation": "Hate me as much as you want and more",
+          "translation": "Hate it as much as you like, more",
           "pronunciation": "{\"full\":\"Sukinadake iya tte more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ嫌って\",\"trans\":\"Sukinadake iya tte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 77.222056,
           "end": 79.950447,
@@ -20879,7 +20882,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Repeated love makes me",
+          "translation": "repeated love makes me",
           "pronunciation": "{\"full\":\"Kurikaeshita love makes me\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"繰り返した\",\"trans\":\"Kurikaeshita\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"love\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"makes\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"me\",\"trans\":\"\"}]}",
           "start": 81.446022,
           "end": 84.711451,
@@ -21044,7 +21047,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Sorry isn't enough",
+          "translation": "Sorry is not enough",
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 95.59563994850308,
           "end": 98.26623994850456,
@@ -21070,7 +21073,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I love you",
+          "translation": "i love you",
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 98.34563994850308,
           "end": 100.95363994850308,
@@ -21122,7 +21125,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Freely fly more",
+          "translation": "Fly away freely, fly more",
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fly\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 104.346337,
           "end": 106.974788,
@@ -21174,7 +21177,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I've thrown away everything in the past",
+          "translation": "The past that I threw away everything",
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 109.685907,
           "end": 112.33477,
@@ -21226,7 +21229,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'll live alone",
+          "translation": "Because I'll live alone",
           "pronunciation": "{\"full\":\"Hitori de ikiteiku kara\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りで生きていくから\",\"trans\":\"Hitori de ikiteiku kara\"}]}",
           "start": 113.893465,
           "end": 117.580143,
@@ -21330,7 +21333,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "You can't live alone",
+          "translation": "You can't live alone, can you?",
           "pronunciation": "{\"full\":\"Hitori ja ikiteikenaidesho\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないでしょ\",\"trans\":\"Hitori ja ikiteikenaidesho\"}]}",
           "start": 124.686462,
           "end": 128.281526,
@@ -21463,7 +21466,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #a3f986, #08f3f7)",
           "sectionHeader": null,
-          "translation": "This is a fan-fan-fantasy",
+          "translation": "This is fan-fan-fantasy",
           "pronunciation": "{\"full\":\"Kore wa fan-fan-fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"これは\",\"trans\":\"Koreha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fan-fan-fantasy\",\"trans\":\"\"}]}",
           "start": 130.59756392751925,
           "end": 133.17736392751627,
@@ -21532,7 +21535,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I'm about to reach my capacity",
+          "translation": "Looks like I'm going to exceed my capacity",
           "pronunciation": "{\"full\":\"Kyapaōbā shi-sō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"キャパオーバーしそうに\",\"trans\":\"Kyapaōbā shi-sō ni\"}]}",
           "start": 133.327932,
           "end": 134.782073,
@@ -21558,7 +21561,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Do what you want",
+          "translation": "as you want",
           "pronunciation": "{\"full\":\"Anata ga shitai yō ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたが\",\"trans\":\"Anata ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"したいように\",\"trans\":\"Shitai yō ni\"}]}",
           "start": 134.861813,
           "end": 136.455853,
@@ -21584,7 +21587,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Like you haven't woken up from a dream yet",
+          "translation": "It's like I haven't woken up from a dream yet",
           "pronunciation": "{\"full\":\"Mada yume kara samenai mitai ni\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"まだ夢から覚めないみたいに\",\"trans\":\"Mada yume kara samenai mitai ni\"}]}",
           "start": 136.516142,
           "end": 138.790478,
@@ -21610,7 +21613,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "The clock ticks tack as it spins",
+          "translation": "The spinning clock tick tack",
           "pronunciation": "{\"full\":\"Mawaru mawaru tokei ga tick tack\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"回る回る時計が\",\"trans\":\"Mawaru mawaru tokei ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"tick\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"tack\",\"trans\":\"\"}]}",
           "start": 138.812082,
           "end": 141.100215,
@@ -21636,7 +21639,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Laugh as much as you like and more",
+          "translation": "Laugh as much as you like more",
           "pronunciation": "{\"full\":\"Sukina dake waratte more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"好きなだけ笑って\",\"trans\":\"Sukina dake waratte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 141.186851,
           "end": 143.897193,
@@ -21740,7 +21743,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Chorus: Solji, _Elly_, **Hyelin**]",
-          "translation": "Bad, don't let it start",
+          "translation": "Bad, don't start",
           "pronunciation": "{\"full\":\"Bad, hajimaranai yō ni\",\"chunks\":[{\"type\":\"en\",\"text\":\"Bad,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"始まらないように\",\"trans\":\"Hajimaranai yō ni\"}]}",
           "start": 149.125263,
           "end": 154.24918,
@@ -21879,7 +21882,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Sorry isn't enough",
+          "translation": "Sorry is not enough",
           "pronunciation": "{\"full\":\"Gomen ne ja tarinai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"ごめんねじゃ足りない\",\"trans\":\"Gomen ne ja tarinai\"}]}",
           "start": 159.60216309346308,
           "end": 162.1873630934586,
@@ -21905,7 +21908,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I love you",
+          "translation": "i love you",
           "pronunciation": "{\"full\":\"Anata o aishi teru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなたを愛してる\",\"trans\":\"Anata o aishi teru\"}]}",
           "start": 162.2688630934586,
           "end": 165.2415630934616,
@@ -21957,7 +21960,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Freely fly away and fly more",
+          "translation": "Fly away freely, fly more",
           "pronunciation": "{\"full\":\"Jiyū ni tobitate fly more\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"自由に飛び立て\",\"trans\":\"Jiyū ni tobitate\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fly\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"more\",\"trans\":\"\"}]}",
           "start": 168.20026309345712,
           "end": 170.98296309346009,
@@ -22217,7 +22220,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I've thrown away everything in the past",
+          "translation": "The past that I threw away everything",
           "pronunciation": "{\"full\":\"Nanimokamo suteta kako wa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何もかも捨てた過去は\",\"trans\":\"Nanimokamo suteta kako wa\"}]}",
           "start": 195.13720892752076,
           "end": 197.62100892752522,
@@ -22269,7 +22272,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I feel lonely being alone",
+          "translation": "I feel lonely when I'm alone",
           "pronunciation": "{\"full\":\"Hitori wa sabishīkedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"独りは寂しいけど\",\"trans\":\"Hitori wa sabishīkedo\"}]}",
           "start": 199.32860892751927,
           "end": 203.01320892752074,
@@ -22321,7 +22324,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I want to see you, please come by my side soon",
+          "translation": "I want to see you, please come to my side right away",
           "pronunciation": "{\"full\":\"Aitai wa sugu ni soba ni kite yo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"会いたいわ\",\"trans\":\"Aitai wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"すぐにそばに来てよ\",\"trans\":\"Sugu ni soba ni kite yo\"}]}",
           "start": 205.14720892752075,
           "end": 208.2635089275252,
@@ -22373,7 +22376,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I can't live alone though",
+          "translation": "I can't live alone",
           "pronunciation": "{\"full\":\"Hitori ja ikite ikenaikedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一人じゃ生きていけないけど\",\"trans\":\"Hitori ja ikite ikenaikedo\"}]}",
           "start": 209.94140892752372,
           "end": 215.71490892752374,
@@ -22644,7 +22647,8 @@
       ],
       "forceSource": "deezer",
       "playId": 1786113883479,
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/72/55/b1/7255b100-7a75-b2c7-6ac7-94542a6875c1/mzaf_2046585669710218773.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/72/55/b1/7255b100-7a75-b2c7-6ac7-94542a6875c1/mzaf_2046585669710218773.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -27609,7 +27613,8 @@
       },
       "forceSource": "youtube",
       "playId": 1785768026663,
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/ce/52/10/ce52102c-7e3a-2cd2-d611-fd52e546690f/mzaf_790575226303532229.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/ce/52/10/ce52102c-7e3a-2cd2-d611-fd52e546690f/mzaf_790575226303532229.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -39075,7 +39080,8 @@
         }
       ],
       "playId": 1785756672629,
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/37/5b/c9/375bc9c9-3fb8-d464-af99-f78626a41fc2/mzaf_9940817355958664213.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/37/5b/c9/375bc9c9-3fb8-d464-af99-f78626a41fc2/mzaf_9940817355958664213.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -54172,7 +54178,8 @@
       ],
       "forceSource": "youtube",
       "playId": 1785914333374,
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d9/e3/24/d9e3249b-bffc-3d28-238b-e05a841a981f/mzaf_10846567522721603451.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/d9/e3/24/d9e3249b-bffc-3d28-238b-e05a841a981f/mzaf_10846567522721603451.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -60149,7 +60156,8 @@
       "artistColors": {},
       "forceSource": "deezer",
       "playId": 1786027366447,
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/76/84/e3/7684e33d-0587-6b84-2e37-c248c6ca65ab/mzaf_14403055186920078057.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/76/84/e3/7684e33d-0587-6b84-2e37-c248c6ca65ab/mzaf_14403055186920078057.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     },
     {
       "wrapperType": "track",
@@ -60161,7 +60169,7 @@
       "collectionName": "Medicina - Single",
       "trackName": "Medicina",
       "collectionViewUrl": "https://music.apple.com/us/album/medicina/1410963427?i=1410965215&uo=4",
-      "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/95/b4/20/95b420c4-24e3-0c13-efc3-30ffdb1dcdd4/mzaf_13211085106312023278.plus.aac.p.m4a",
+      "previewUrl": "",
       "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b8/e6/1d/b8e61df7-3a9d-6254-246c-b57be06b6eac/190296905476.jpg/100x100bb.jpg",
       "collectionPrice": 1.29,
       "trackPrice": 1.29,
@@ -63432,7 +63440,9 @@
           ]
         }
       ],
-      "playId": 1785907018926
+      "playId": 1785907018926,
+      "hasDeezerMetaBound": true,
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/95/b4/20/95b420c4-24e3-0c13-efc3-30ffdb1dcdd4/mzaf_13211085106312023278.plus.aac.p.m4a"
     },
     {
       "trackId": "dz_963643392",
@@ -71987,13 +71997,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 1: Adawa]",
-          "translation": "None of them are like me",
-          "pronunciation": "{\"full\":\"Tāmen dōu bù xiàng wǒ\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们都不像我\",\"trans\":\"Tāmen dōu bù xiàng wǒ\"}]}",
           "start": 3.882400062948465,
           "end": 4.992800062946975,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "他们 都 不 像 我"
+          "pronunciation": "{\"full\":\"Tāmen dōu bù xiàng wǒ\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们都不像我\",\"trans\":\"Tāmen dōu bù xiàng wǒ\"}]}",
+          "translation": "None of them are like me",
+          "isSplit": false
         },
         {
           "text": "他们的眼睛都红了",
@@ -72013,13 +72021,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Their eyes are red",
-          "pronunciation": "{\"full\":\"Tāmen de yǎnjīng dōu hóngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们的眼睛都红了\",\"trans\":\"Tāmen de yǎnjīng dōu hóngle\"}]}",
           "start": 5.068200062945484,
           "end": 6.350140927519261,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "他们 的 眼睛 都 红了"
+          "pronunciation": "{\"full\":\"Tāmen de yǎnjīng dōu hóngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们的眼睛都红了\",\"trans\":\"Tāmen de yǎnjīng dōu hóngle\"}]}",
+          "translation": "Their eyes are red",
+          "isSplit": false
         },
         {
           "text": "他们知道我的感觉没法代替",
@@ -72039,13 +72045,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "They know that my feelings cannot be replaced",
-          "pronunciation": "{\"full\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们知道我的感觉没法代替\",\"trans\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\"}]}",
           "start": 6.413340927514791,
           "end": 8.075740927520751,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "他们 知道 我 的 感觉 没 法 代替"
+          "pronunciation": "{\"full\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们知道我的感觉没法代替\",\"trans\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\"}]}",
+          "translation": "They know that my feelings cannot be replaced",
+          "isSplit": false
         },
         {
           "text": "时间太紧 不要在意 谁的怀疑",
@@ -72065,13 +72069,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Time is too tight, don’t care who doubts",
-          "pronunciation": "{\"full\":\"Shíjiān tài jǐn bùyào zàiyì shéi de huáiyí\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"时间太紧\",\"trans\":\"Shíjiān tài jǐn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不要在意\",\"trans\":\"Bùyào zàiyì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"谁的怀疑\",\"trans\":\"Shéi de huáiyí\"}]}",
           "start": 8.138240927520751,
           "end": 9.776340927514791,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "时间 太 紧  不要 在意  谁 的 怀疑"
+          "pronunciation": "{\"full\":\"Shíjiān tài jǐn bùyào zàiyì shéi de huáiyí\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"时间太紧\",\"trans\":\"Shíjiān tài jǐn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不要在意\",\"trans\":\"Bùyào zàiyì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"谁的怀疑\",\"trans\":\"Shéi de huáiyí\"}]}",
+          "translation": "Time is too tight, don’t care who doubts",
+          "isSplit": false
         },
         {
           "text": "终于推开这扇门了",
@@ -72091,13 +72093,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Finally opened the door",
-          "pronunciation": "{\"full\":\"Zhōngyú tuī kāi zhè shàn ménle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"终于推开这扇门了\",\"trans\":\"Zhōngyú tuī kāi zhè shàn ménle\"}]}",
           "start": 9.847340927514791,
           "end": 11.311940927516282,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "终于 推 开 这 扇 门了"
+          "pronunciation": "{\"full\":\"Zhōngyú tuī kāi zhè shàn ménle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"终于推开这扇门了\",\"trans\":\"Zhōngyú tuī kāi zhè shàn ménle\"}]}",
+          "translation": "Finally opened the door",
+          "isSplit": false
         },
         {
           "text": "摆脱困境了",
@@ -72117,13 +72117,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Get out of trouble",
-          "pronunciation": "{\"full\":\"Bǎituō kùnjìngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"摆脱困境了\",\"trans\":\"Bǎituō kùnjìngle\"}]}",
           "start": 11.39584092751479,
           "end": 12.353840927514792,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "摆脱 困境了"
+          "pronunciation": "{\"full\":\"Bǎituō kùnjìngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"摆脱困境了\",\"trans\":\"Bǎituō kùnjìngle\"}]}",
+          "translation": "Get out of trouble",
+          "isSplit": false
         },
         {
           "text": "太多路途 这斗争 兄弟们认得",
@@ -72143,13 +72141,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Too many roads, brothers recognize this struggle",
-          "pronunciation": "{\"full\":\"Tài duō lùtú zhè dòuzhēng xiōngdìmen rèndé\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"太多路途\",\"trans\":\"Tài duō lùtú\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这斗争\",\"trans\":\"Zhè dòuzhēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"兄弟们认得\",\"trans\":\"Xiōngdìmen rèndé\"}]}",
           "start": 12.416740927520753,
           "end": 13.817740927520752,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "太 多 路途  这 斗争  兄弟们 认得"
+          "pronunciation": "{\"full\":\"Tài duō lùtú zhè dòuzhēng xiōngdìmen rèndé\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"太多路途\",\"trans\":\"Tài duō lùtú\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这斗争\",\"trans\":\"Zhè dòuzhēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"兄弟们认得\",\"trans\":\"Xiōngdìmen rèndé\"}]}",
+          "translation": "Too many roads, brothers recognize this struggle",
+          "isSplit": false
         },
         {
           "text": "Come on, MVP 已经产生 就在这个天地 打破这平稳",
@@ -72169,13 +72165,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Come on, MVP has been born Just in this world, breaking this stability",
-          "pronunciation": "{\"full\":\"Come on, MVP yǐjīng chǎnshēng jiù zài zhège tiāndì dǎpò zhè píngwěn\",\"chunks\":[{\"type\":\"en\",\"text\":\"Come\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"MVP\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"已经产生\",\"trans\":\"Yǐjīng chǎnshēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"就在这个天地\",\"trans\":\"Jiù zài zhège tiāndì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"打破这平稳\",\"trans\":\"Dǎpò zhè píngwěn\"}]}",
           "start": 13.884940927516281,
           "end": 17.765340927514792,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "Come on, MVP 已经 产生  就 在 这个 天地  打破 这 平稳"
+          "pronunciation": "{\"full\":\"Come on, MVP yǐjīng chǎnshēng jiù zài zhège tiāndì dǎpò zhè píngwěn\",\"chunks\":[{\"type\":\"en\",\"text\":\"Come\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"MVP\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"已经产生\",\"trans\":\"Yǐjīng chǎnshēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"就在这个天地\",\"trans\":\"Jiù zài zhège tiāndì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"打破这平稳\",\"trans\":\"Dǎpò zhè píngwěn\"}]}",
+          "translation": "Come on, MVP has been born Just in this world, breaking this stability",
+          "isSplit": false
         },
         {
           "text": "上天的礼物和后天的经历让我像是老兵一样的战斗",
@@ -72195,13 +72189,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "God’s gift and acquired experience make me fight like a veteran",
-          "pronunciation": "{\"full\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"上天的礼物和后天的经历让我像是老兵一样的战斗\",\"trans\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\"}]}",
           "start": 17.82584092751479,
           "end": 21.334040927517773,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "上天 的 礼物 和 后天 的 经历 让 我 像 是 老兵 一样 的 战斗"
+          "pronunciation": "{\"full\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"上天的礼物和后天的经历让我像是老兵一样的战斗\",\"trans\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\"}]}",
+          "translation": "God’s gift and acquired experience make me fight like a veteran",
+          "isSplit": false
         },
         {
           "text": "不同的时间和故事让我能驾驭所有不只是这个伴奏",
@@ -72221,13 +72213,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Different times and stories allow me to control all the accompaniments that are not just this one",
-          "pronunciation": "{\"full\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不同的时间和故事让我能驾驭所有不只是这个伴奏\",\"trans\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\"}]}",
           "start": 21.395040927517773,
           "end": 24.72834092751479,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "不同 的 时间 和 故事 让 我 能 驾驭 所有 不 只是 这个 伴奏"
+          "pronunciation": "{\"full\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不同的时间和故事让我能驾驭所有不只是这个伴奏\",\"trans\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\"}]}",
+          "translation": "Different times and stories allow me to control all the accompaniments that are not just this one",
+          "isSplit": false
         },
         {
           "text": "都看透 看够这暗斗 烂透的感受",
@@ -72247,13 +72237,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "See it all, see enough of this secret fight, the rotten feeling",
-          "pronunciation": "{\"full\":\"Dōu kàntòu kàn gòu zhè àn dòu làn tòu de gǎnshòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"都看透\",\"trans\":\"Dōu kàntòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"看够这暗斗\",\"trans\":\"Kàn gòu zhè àn dòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"烂透的感受\",\"trans\":\"Làn tòu de gǎnshòu\"}]}",
           "start": 24.80534092751479,
           "end": 28.03354092751777,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "都 看透  看 够 这 暗 斗  烂 透 的 感受"
+          "pronunciation": "{\"full\":\"Dōu kàntòu kàn gòu zhè àn dòu làn tòu de gǎnshòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"都看透\",\"trans\":\"Dōu kàntòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"看够这暗斗\",\"trans\":\"Kàn gòu zhè àn dòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"烂透的感受\",\"trans\":\"Làn tòu de gǎnshòu\"}]}",
+          "translation": "See it all, see enough of this secret fight, the rotten feeling",
+          "isSplit": false
         },
         {
           "text": "全部都赶走 做了了一些牺牲",
@@ -72273,13 +72261,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Drive them all away, make some sacrifices",
-          "pronunciation": "{\"full\":\"Quánbù dōu gǎn zǒu zuòliǎoliǎo yīxiē xīshēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"全部都赶走\",\"trans\":\"Quánbù dōu gǎn zǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"做了了一些牺牲\",\"trans\":\"Zuòliǎoliǎo yīxiē xīshēng\"}]}",
           "start": 28.093540927517772,
           "end": 29.678740927520753,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "全部 都 赶 走  做了了 一些 牺牲"
+          "pronunciation": "{\"full\":\"Quánbù dōu gǎn zǒu zuòliǎoliǎo yīxiē xīshēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"全部都赶走\",\"trans\":\"Quánbù dōu gǎn zǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"做了了一些牺牲\",\"trans\":\"Zuòliǎoliǎo yīxiē xīshēng\"}]}",
+          "translation": "Drive them all away, make some sacrifices",
+          "isSplit": false
         },
         {
           "text": "恐惧过后穿好 黑夜中的披风",
@@ -72299,13 +72285,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Put on the cloak in the night after the fear",
-          "pronunciation": "{\"full\":\"Kǒngjù guòhòu chuān hǎo hēiyè zhōng de pīfēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"恐惧过后穿好\",\"trans\":\"Kǒngjù guòhòu chuān hǎo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"黑夜中的披风\",\"trans\":\"Hēiyè zhōng de pīfēng\"}]}",
           "start": 29.738240927520753,
           "end": 31.387140927519262,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "恐惧 过后 穿 好  黑夜 中 的 披风"
+          "pronunciation": "{\"full\":\"Kǒngjù guòhòu chuān hǎo hēiyè zhōng de pīfēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"恐惧过后穿好\",\"trans\":\"Kǒngjù guòhòu chuān hǎo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"黑夜中的披风\",\"trans\":\"Hēiyè zhōng de pīfēng\"}]}",
+          "translation": "Put on the cloak in the night after the fear",
+          "isSplit": false
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -72325,13 +72309,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Refrain: Adawa, **Henry Lau**]",
-          "translation": "",
-          "pronunciation": "",
           "start": 31.45764092751926,
           "end": 34.90244092751628,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -72351,13 +72333,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 34.96334092751479,
           "end": 38.51844092751628,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says, you're just a person",
@@ -72377,13 +72357,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 38.576940927516276,
           "end": 41.60323392751926,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -72403,13 +72381,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 41.66363392751777,
           "end": 45.305417927519265,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72438,10 +72414,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 45.37641792751926,
           "end": 48.90651792752075,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -72467,9 +72443,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72498,10 +72472,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 48.97581792752523,
           "end": 52.39011792752224,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -72527,9 +72501,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72558,10 +72530,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 52.468017927520755,
           "end": 57.676317927525226,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -72587,9 +72559,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Woo!",
@@ -72609,13 +72579,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 57.98561792752224,
           "end": 58.642917927519264,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "举起这姿态 不在乎失败",
@@ -72635,13 +72603,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 2: Adawa]",
-          "translation": "Hold up this gesture, don’t care about failure",
-          "pronunciation": "{\"full\":\"Jǔ qǐ zhè zītài bùzàihū shībài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"举起这姿态\",\"trans\":\"Jǔ qǐ zhè zītài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不在乎失败\",\"trans\":\"Bùzàihū shībài\"}]}",
           "start": 59.36131792752522,
           "end": 62.37223100000447,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "举 起 这 姿态  不在乎 失败"
+          "pronunciation": "{\"full\":\"Jǔ qǐ zhè zītài bùzàihū shībài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"举起这姿态\",\"trans\":\"Jǔ qǐ zhè zītài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不在乎失败\",\"trans\":\"Bùzàihū shībài\"}]}",
+          "translation": "Hold up this gesture, don’t care about failure",
+          "isSplit": false
         },
         {
           "text": "危机在胜利之外",
@@ -72661,13 +72627,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Crisis is beyond victory",
-          "pronunciation": "{\"full\":\"Wéijī zài shènglì zhī wài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"危机在胜利之外\",\"trans\":\"Wéijī zài shènglì zhī wài\"}]}",
           "start": 62.437231000004466,
           "end": 64.27913100000298,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "危机 在 胜利 之 外"
+          "pronunciation": "{\"full\":\"Wéijī zài shènglì zhī wài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"危机在胜利之外\",\"trans\":\"Wéijī zài shènglì zhī wài\"}]}",
+          "translation": "Crisis is beyond victory",
+          "isSplit": false
         },
         {
           "text": "I'm my hero tonight",
@@ -72687,13 +72651,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 64.34263100000298,
           "end": 66.32083100000595,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "浇不灭的气派",
@@ -72713,13 +72675,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Indestructible magnificence",
-          "pronunciation": "{\"full\":\"Jiāo bù miè de qìpài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"浇不灭的气派\",\"trans\":\"Jiāo bù miè de qìpài\"}]}",
           "start": 66.38993099999999,
           "end": 68.14583100000596,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "浇 不 灭 的 气派"
+          "pronunciation": "{\"full\":\"Jiāo bù miè de qìpài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"浇不灭的气派\",\"trans\":\"Jiāo bù miè de qìpài\"}]}",
+          "translation": "Indestructible magnificence",
+          "isSplit": false
         },
         {
           "text": "Don't you cut my sine",
@@ -72739,13 +72699,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 68.206931,
           "end": 69.76323100000447,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "抹去我的平庸",
@@ -72765,13 +72723,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Erase my mediocrity",
-          "pronunciation": "{\"full\":\"Mǒ qù wǒ de píngyōng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"抹去我的平庸\",\"trans\":\"Mǒ qù wǒ de píngyōng\"}]}",
           "start": 69.835931,
           "end": 71.33953100000149,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "抹 去 我 的 平庸"
+          "pronunciation": "{\"full\":\"Mǒ qù wǒ de píngyōng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"抹去我的平庸\",\"trans\":\"Mǒ qù wǒ de píngyōng\"}]}",
+          "translation": "Erase my mediocrity",
+          "isSplit": false
         },
         {
           "text": "我必须学会自己来掌控",
@@ -72791,13 +72747,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I must learn to control myself",
-          "pronunciation": "{\"full\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"我必须学会自己来掌控\",\"trans\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\"}]}",
           "start": 71.40213100000298,
           "end": 72.81328592752521,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "我 必须 学会 自己 来 掌控"
+          "pronunciation": "{\"full\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"我必须学会自己来掌控\",\"trans\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\"}]}",
+          "translation": "I must learn to control myself",
+          "isSplit": false
         },
         {
           "text": "Life is stereo 不会简单的像 mono",
@@ -72817,13 +72771,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Life is stereo, it will not be as simple as mono",
-          "pronunciation": "{\"full\":\"Life is stereo bù huì jiǎndān de xiàng mono\",\"chunks\":[{\"type\":\"en\",\"text\":\"Life\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"is\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"stereo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会简单的像\",\"trans\":\"Bù huì jiǎndān de xiàng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"mono\",\"trans\":\"\"}]}",
           "start": 72.88618592752373,
           "end": 75.99078592752522,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "Life is stereo 不 会 简单 的 像 mono"
+          "pronunciation": "{\"full\":\"Life is stereo bù huì jiǎndān de xiàng mono\",\"chunks\":[{\"type\":\"en\",\"text\":\"Life\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"is\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"stereo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会简单的像\",\"trans\":\"Bù huì jiǎndān de xiàng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"mono\",\"trans\":\"\"}]}",
+          "translation": "Life is stereo, it will not be as simple as mono",
+          "isSplit": false
         },
         {
           "text": "Turn off the phone",
@@ -72843,13 +72795,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 76.05128592752521,
           "end": 77.26628592752522,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "定准这方位 on the road",
@@ -72869,13 +72819,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Set this direction on the road",
-          "pronunciation": "{\"full\":\"Dìngzhǔn zhè fāngwèi on the road\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"定准这方位\",\"trans\":\"Dìngzhǔn zhè fāngwèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"the\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"road\",\"trans\":\"\"}]}",
           "start": 77.32598592752075,
           "end": 79.41518592752374,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "定准 这 方位 on the road"
+          "pronunciation": "{\"full\":\"Dìngzhǔn zhè fāngwèi on the road\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"定准这方位\",\"trans\":\"Dìngzhǔn zhè fāngwèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"the\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"road\",\"trans\":\"\"}]}",
+          "translation": "Set this direction on the road",
+          "isSplit": false
         },
         {
           "text": "不接受命运对我的宣判 每天努力不会敷衍",
@@ -72895,13 +72843,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Don’t accept the sentence of fate for me, I will work hard every day and I will not be perfunctory",
-          "pronunciation": "{\"full\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn měitiān nǔlì bù huì fūyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不接受命运对我的宣判\",\"trans\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"每天努力不会敷衍\",\"trans\":\"Měitiān nǔlì bù huì fūyǎn\"}]}",
           "start": 79.47828592752522,
           "end": 83.13038592751926,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "不 接受 命运 对 我 的 宣判  每天 努力 不 会 敷衍"
+          "pronunciation": "{\"full\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn měitiān nǔlì bù huì fūyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不接受命运对我的宣判\",\"trans\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"每天努力不会敷衍\",\"trans\":\"Měitiān nǔlì bù huì fūyǎn\"}]}",
+          "translation": "Don’t accept the sentence of fate for me, I will work hard every day and I will not be perfunctory",
+          "isSplit": false
         },
         {
           "text": "所有的配角都靠边站 我必须要拿下这主演",
@@ -72921,13 +72867,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "All the supporting roles have to stand aside. I must win the leading role",
-          "pronunciation": "{\"full\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn wǒ bìxū yào ná xià zhè zhǔyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"所有的配角都靠边站\",\"trans\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我必须要拿下这主演\",\"trans\":\"Wǒ bìxū yào ná xià zhè zhǔyǎn\"}]}",
           "start": 83.19268592752373,
           "end": 87.08738592751926,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "所有 的 配角 都 靠边 站  我 必须 要 拿 下 这 主演"
+          "pronunciation": "{\"full\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn wǒ bìxū yào ná xià zhè zhǔyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"所有的配角都靠边站\",\"trans\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我必须要拿下这主演\",\"trans\":\"Wǒ bìxū yào ná xià zhè zhǔyǎn\"}]}",
+          "translation": "All the supporting roles have to stand aside. I must win the leading role",
+          "isSplit": false
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -72947,13 +72891,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Refrain: Henry Lau]",
-          "translation": "",
-          "pronunciation": "",
           "start": 87.14988592751926,
           "end": 90.58458592752224,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -72973,13 +72915,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 90.64848592752075,
           "end": 94.05088592751926,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says you're just a person",
@@ -72999,13 +72939,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 94.11128592752522,
           "end": 97.25018592752373,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -73025,13 +72963,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 97.30988592751926,
           "end": 101.02778592752523,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73060,10 +72996,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 101.09328592752522,
           "end": 104.63418592752373,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73089,9 +73025,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73120,10 +73054,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 104.69708592752224,
           "end": 108.07507216593784,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73149,9 +73083,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73180,10 +73112,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 108.13947216593635,
           "end": 111.67857418691868,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73209,9 +73141,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Woo!",
@@ -73231,13 +73161,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 113.67142694850456,
           "end": 114.13232692752075,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "永远都不觉得累",
@@ -73257,13 +73185,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 3: Shayiting EL]",
-          "translation": "Never feel tired",
-          "pronunciation": "{\"full\":\"Yǒngyuǎn dōu bù juédé lèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都不觉得累\",\"trans\":\"Yǒngyuǎn dōu bù juédé lèi\"}]}",
           "start": 114.20512692751777,
           "end": 115.29342692752223,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "永远 都 不 觉得 累"
+          "pronunciation": "{\"full\":\"Yǒngyuǎn dōu bù juédé lèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都不觉得累\",\"trans\":\"Yǒngyuǎn dōu bù juédé lèi\"}]}",
+          "translation": "Never feel tired",
+          "isSplit": false
         },
         {
           "text": "每天在 rising 修炼着 押韵和技巧",
@@ -73283,13 +73209,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Practice rhymes and skills in rising every day",
-          "pronunciation": "{\"full\":\"Měitiān zài rising xiūliànzhe yāyùn hé jìqiǎo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"每天在\",\"trans\":\"Měitiān zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rising\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"修炼着\",\"trans\":\"Xiūliànzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"押韵和技巧\",\"trans\":\"Yāyùn hé jìqiǎo\"}]}",
           "start": 115.36562692751777,
           "end": 116.92532292751777,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "每天 在 rising 修炼着  押韵 和 技巧"
+          "pronunciation": "{\"full\":\"Měitiān zài rising xiūliànzhe yāyùn hé jìqiǎo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"每天在\",\"trans\":\"Měitiān zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rising\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"修炼着\",\"trans\":\"Xiūliànzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"押韵和技巧\",\"trans\":\"Yāyùn hé jìqiǎo\"}]}",
+          "translation": "Practice rhymes and skills in rising every day",
+          "isSplit": false
         },
         {
           "text": "永远都 帅你一 倍",
@@ -73309,13 +73233,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I will always be twice as handsome as you",
-          "pronunciation": "{\"full\":\"Yǒngyuǎn dōu shuài nǐ yī bèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都\",\"trans\":\"Yǒngyuǎn dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"帅你一\",\"trans\":\"Shuài nǐ yī\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"倍\",\"trans\":\"Bèi\"}]}",
           "start": 116.98832292751777,
           "end": 118.85859192752523,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "永远 都  帅 你 一  倍"
+          "pronunciation": "{\"full\":\"Yǒngyuǎn dōu shuài nǐ yī bèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都\",\"trans\":\"Yǒngyuǎn dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"帅你一\",\"trans\":\"Shuài nǐ yī\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"倍\",\"trans\":\"Bèi\"}]}",
+          "translation": "I will always be twice as handsome as you",
+          "isSplit": false
         },
         {
           "text": "背靠背 干着杯 舞池里 灯光下 晃动着 他们都 排成一队",
@@ -73335,13 +73257,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Back to back Cheers, swaying on the dance floor under the lights, they are all lined up",
-          "pronunciation": "{\"full\":\"Bèikàobèi gānzhāo bēi wǔchí lǐ dēngguāng xià huàngdòngzhe tāmen dōu pái chéng yī duì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"背靠背\",\"trans\":\"Bèikàobèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"干着杯\",\"trans\":\"Gānzhāo bēi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"舞池里\",\"trans\":\"Wǔchí lǐ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"灯光下\",\"trans\":\"Dēngguāng xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"晃动着\",\"trans\":\"Huàngdòngzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"他们都\",\"trans\":\"Tāmen dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"排成一队\",\"trans\":\"Pái chéng yī duì\"}]}",
           "start": 118.92319192751926,
           "end": 121.96239192752225,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "背靠背  干着 杯  舞池 里  灯光 下  晃动着  他们 都  排 成 一 队"
+          "pronunciation": "{\"full\":\"Bèikàobèi gānzhāo bēi wǔchí lǐ dēngguāng xià huàngdòngzhe tāmen dōu pái chéng yī duì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"背靠背\",\"trans\":\"Bèikàobèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"干着杯\",\"trans\":\"Gānzhāo bēi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"舞池里\",\"trans\":\"Wǔchí lǐ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"灯光下\",\"trans\":\"Dēngguāng xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"晃动着\",\"trans\":\"Huàngdòngzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"他们都\",\"trans\":\"Tāmen dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"排成一队\",\"trans\":\"Pái chéng yī duì\"}]}",
+          "translation": "Back to back Cheers, swaying on the dance floor under the lights, they are all lined up",
+          "isSplit": false
         },
         {
           "text": "最酷的妹 都玩到凌晨却不想要睡",
@@ -73361,13 +73281,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "The coolest girls are playing until early in the morning but don’t want to sleep",
-          "pronunciation": "{\"full\":\"Zuì kù de mèi dōu wán dào língchén què bùxiǎng yào shuì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"最酷的妹\",\"trans\":\"Zuì kù de mèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"都玩到凌晨却不想要睡\",\"trans\":\"Dōu wán dào língchén què bùxiǎng yào shuì\"}]}",
           "start": 122.04379192752076,
           "end": 124.8462479484986,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "最 酷 的 妹  都 玩 到 凌晨 却 不想 要 睡"
+          "pronunciation": "{\"full\":\"Zuì kù de mèi dōu wán dào língchén què bùxiǎng yào shuì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"最酷的妹\",\"trans\":\"Zuì kù de mèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"都玩到凌晨却不想要睡\",\"trans\":\"Dōu wán dào língchén què bùxiǎng yào shuì\"}]}",
+          "translation": "The coolest girls are playing until early in the morning but don’t want to sleep",
+          "isSplit": false
         },
         {
           "text": "把音乐 随便便的 放松地 播放着",
@@ -73387,13 +73305,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Play the music casually and relax",
-          "pronunciation": "{\"full\":\"Bǎ yīnyuè suí pián pián dì fàngsōng de bòfàngzhe\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"把音乐\",\"trans\":\"Bǎ yīnyuè\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"随便便的\",\"trans\":\"Suí pián pián de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"放松地\",\"trans\":\"Fàngsōng de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"播放着\",\"trans\":\"Bòfàngzhe\"}]}",
           "start": 124.9122479484986,
           "end": 126.5542479484986,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "把 音乐  随 便便的 放松 地  播放着"
+          "pronunciation": "{\"full\":\"Bǎ yīnyuè suí pián pián dì fàngsōng de bòfàngzhe\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"把音乐\",\"trans\":\"Bǎ yīnyuè\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"随便便的\",\"trans\":\"Suí pián pián de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"放松地\",\"trans\":\"Fàngsōng de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"播放着\",\"trans\":\"Bòfàngzhe\"}]}",
+          "translation": "Play the music casually and relax",
+          "isSplit": false
         },
         {
           "text": "坐你旁边找个话题想要知道你最爱的 rapper",
@@ -73413,13 +73329,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Sit next to you and find a topic to know about your favorite rapper",
-          "pronunciation": "{\"full\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de rapper\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"坐你旁边找个话题想要知道你最爱的\",\"trans\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rapper\",\"trans\":\"\"}]}",
           "start": 126.61504794850308,
           "end": 128.74183099999553,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "坐 你 旁边 找 个 话题 想 要 知道 你 最 爱 的 rapper"
+          "pronunciation": "{\"full\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de rapper\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"坐你旁边找个话题想要知道你最爱的\",\"trans\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rapper\",\"trans\":\"\"}]}",
+          "translation": "Sit next to you and find a topic to know about your favorite rapper",
+          "isSplit": false
         },
         {
           "text": "说来听听",
@@ -73439,13 +73353,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Let’s talk",
-          "pronunciation": "{\"full\":\"Shuō lái tīng tīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"说来听听\",\"trans\":\"Shuō lái tīng tīng\"}]}",
           "start": 128.810430999997,
           "end": 129.896930999997,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "说 来 听 听"
+          "pronunciation": "{\"full\":\"Shuō lái tīng tīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"说来听听\",\"trans\":\"Shuō lái tīng tīng\"}]}",
+          "translation": "Let’s talk",
+          "isSplit": false
         },
         {
           "text": "商业帝国, now I’m making",
@@ -73465,13 +73377,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Business empire, now I’m making",
-          "pronunciation": "{\"full\":\"Shāngyè dìguó , now I’m making\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"商业帝国,\",\"trans\":\"Shāngyè dìguó,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"I’m\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"making\",\"trans\":\"\"}]}",
           "start": 129.96243099999703,
           "end": 131.515930999997,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "商业 帝国 , now I’m making"
+          "pronunciation": "{\"full\":\"Shāngyè dìguó , now I’m making\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"商业帝国,\",\"trans\":\"Shāngyè dìguó,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"I’m\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"making\",\"trans\":\"\"}]}",
+          "translation": "Business empire, now I’m making",
+          "isSplit": false
         },
         {
           "text": "无论 hater 还是对手喜欢抄袭我的捆绑我的可我早就变成精英",
@@ -73491,13 +73401,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Whether haters or opponents like to copy my bindings, but I have become an elite long ago",
-          "pronunciation": "{\"full\":\"Wúlùn hater háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"无论\",\"trans\":\"Wúlùn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hater\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"还是对手喜欢抄袭我的捆绑我的可我早就变成精英\",\"trans\":\"Háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\"}]}",
           "start": 131.58133099999554,
           "end": 134.7547310000015,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "无论 hater 还是 对手 喜欢 抄袭 我 的 捆绑 我 的 可 我 早 就 变 成 精英"
+          "pronunciation": "{\"full\":\"Wúlùn hater háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"无论\",\"trans\":\"Wúlùn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hater\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"还是对手喜欢抄袭我的捆绑我的可我早就变成精英\",\"trans\":\"Háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\"}]}",
+          "translation": "Whether haters or opponents like to copy my bindings, but I have become an elite long ago",
+          "isSplit": false
         },
         {
           "text": "没有人不觉得配",
@@ -73517,13 +73425,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "There is no one who doesn’t feel worthy",
-          "pronunciation": "{\"full\":\"Méiyǒu rén bù juédé pèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没有人不觉得配\",\"trans\":\"Méiyǒu rén bù juédé pèi\"}]}",
           "start": 134.816430999997,
           "end": 136.05683099999553,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "没有 人 不 觉得 配"
+          "pronunciation": "{\"full\":\"Méiyǒu rén bù juédé pèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没有人不觉得配\",\"trans\":\"Méiyǒu rén bù juédé pèi\"}]}",
+          "translation": "There is no one who doesn’t feel worthy",
+          "isSplit": false
         },
         {
           "text": "没办法 天赋都 溢出来 你们在 跑龙套 而我有 主角的命",
@@ -73543,13 +73449,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "There is no way, all the talents are overflowing, you are playing a small role, and I have the fate of the protagonist",
-          "pronunciation": "{\"full\":\"Méi bànfǎ tiānfù dōu yìchū lái nǐmen zài pǎolóngtào ér wǒ yǒu zhǔjiǎo de mìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没办法\",\"trans\":\"Méi bànfǎ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"天赋都\",\"trans\":\"Tiānfù dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"溢出来\",\"trans\":\"Yìchū lái\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"你们在\",\"trans\":\"Nǐmen zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"跑龙套\",\"trans\":\"Pǎolóngtào\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"而我有\",\"trans\":\"Ér wǒ yǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"主角的命\",\"trans\":\"Zhǔjiǎo de mìng\"}]}",
           "start": 136.1157310000015,
           "end": 139.4232310000015,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "没 办法  天赋 都  溢出 来  你们 在  跑龙套  而 我 有  主角 的 命"
+          "pronunciation": "{\"full\":\"Méi bànfǎ tiānfù dōu yìchū lái nǐmen zài pǎolóngtào ér wǒ yǒu zhǔjiǎo de mìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没办法\",\"trans\":\"Méi bànfǎ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"天赋都\",\"trans\":\"Tiānfù dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"溢出来\",\"trans\":\"Yìchū lái\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"你们在\",\"trans\":\"Nǐmen zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"跑龙套\",\"trans\":\"Pǎolóngtào\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"而我有\",\"trans\":\"Ér wǒ yǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"主角的命\",\"trans\":\"Zhǔjiǎo de mìng\"}]}",
+          "translation": "There is no way, all the talents are overflowing, you are playing a small role, and I have the fate of the protagonist",
+          "isSplit": false
         },
         {
           "text": "永远在 向上爬 我的心 不会变 这游戏 被拿下 乾坤已定",
@@ -73569,13 +73473,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "Always climbing up, my heart will not change, this game has been taken down, the world has been decided.",
-          "pronunciation": "{\"full\":\"Yǒngyuǎn zài xiàngshàng pá wǒ de xīn bù huì biàn zhè yóuxì bèi ná xià qiánkūn yǐ dìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远在\",\"trans\":\"Yǒngyuǎn zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"向上爬\",\"trans\":\"Xiàngshàng pá\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我的心\",\"trans\":\"Wǒ de xīn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会变\",\"trans\":\"Bù huì biàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这游戏\",\"trans\":\"Zhè yóuxì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"被拿下\",\"trans\":\"Bèi ná xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乾坤已定\",\"trans\":\"Qiánkūn yǐ dìng\"}]}",
           "start": 139.49223100000148,
           "end": 142.83033099999554,
-          "isSplit": false,
-          "lang": "zh-CN",
-          "spacingText": "永远 在  向上 爬  我 的 心  不 会 变  这 游戏  被 拿 下  乾坤 已 定"
+          "pronunciation": "{\"full\":\"Yǒngyuǎn zài xiàngshàng pá wǒ de xīn bù huì biàn zhè yóuxì bèi ná xià qiánkūn yǐ dìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远在\",\"trans\":\"Yǒngyuǎn zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"向上爬\",\"trans\":\"Xiàngshàng pá\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我的心\",\"trans\":\"Wǒ de xīn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会变\",\"trans\":\"Bù huì biàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这游戏\",\"trans\":\"Zhè yóuxì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"被拿下\",\"trans\":\"Bèi ná xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乾坤已定\",\"trans\":\"Qiánkūn yǐ dìng\"}]}",
+          "translation": "Always climbing up, my heart will not change, this game has been taken down, the world has been decided.",
+          "isSplit": false
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -73595,13 +73497,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Refrain: Henry Lau]",
-          "translation": "",
-          "pronunciation": "",
           "start": 142.89133099999555,
           "end": 146.22653099999852,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -73621,13 +73521,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 146.290131,
           "end": 149.70603099999852,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says you're just a person",
@@ -73647,13 +73545,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 149.78483099999553,
           "end": 152.98743099999703,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -73673,13 +73569,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 153.04883099999554,
           "end": 156.50566492751926,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73708,10 +73602,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 156.57306492751778,
           "end": 160.11016492751926,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73737,9 +73631,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73768,10 +73660,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 160.18636492752225,
           "end": 164.38032492751643,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73797,9 +73689,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73828,10 +73718,10 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 164.47413992752072,
           "end": 167.28525492751425,
+          "pronunciation": "",
+          "translation": "",
           "isSplit": true,
           "adlibs": [
             {
@@ -73857,9 +73747,7 @@
               "lang": "en",
               "spacingText": ""
             }
-          ],
-          "lang": "en",
-          "spacingText": ""
+          ]
         },
         {
           "text": "Woo!",
@@ -73879,13 +73767,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 169.26542592532945,
           "end": 170.73832992533596,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says",
@@ -73905,13 +73791,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Outro: Henry Lau]",
-          "translation": "",
-          "pronunciation": "",
           "start": 171.6351040608466,
           "end": 172.8908040608466,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says",
@@ -73931,13 +73815,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 173.36190906084443,
           "end": 174.54800906084444,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Keep the windows tinted, yeah, that's five percent",
@@ -73957,13 +73839,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 175.22008406084444,
           "end": 177.64593406084444,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "See the world on a different lens",
@@ -73983,13 +73863,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 178.80769024060336,
           "end": 181.3317052406077,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says don't worry bout a single woman",
@@ -74009,13 +73887,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 185.52644324061202,
           "end": 188.07467324062065,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Keep my options close",
@@ -74035,13 +73911,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 188.79778824061418,
           "end": 190.06180989490505,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "I make tough decisions",
@@ -74061,13 +73935,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 190.14996989490075,
           "end": 191.97870989490508,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Steady pray for blessings",
@@ -74087,13 +73959,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 193.29066989490076,
           "end": 194.9568648949029,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Passionate for everything",
@@ -74113,13 +73983,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 195.0493748949094,
           "end": 196.44079489490073,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "The money teach you lessons",
@@ -74139,13 +74007,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 196.5341748949094,
           "end": 198.3474370000065,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Running out of time",
@@ -74165,13 +74031,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 198.44632700000003,
           "end": 203.4354870000065,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Try to find something, worth my time",
@@ -74191,13 +74055,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 204.52313200000864,
           "end": 212.76275700000866,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says don't worry about nobody",
@@ -74217,13 +74079,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 214.13213700000648,
           "end": 217.66361200000648,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "But it gets lonely",
@@ -74243,13 +74103,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 218.35178200000865,
           "end": 221.1356370000065,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "When you're alone most of the time",
@@ -74269,13 +74127,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 221.53308200000865,
           "end": 227.78287200000216,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Mind get negative",
@@ -74295,13 +74151,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 228.22889200000432,
           "end": 229.70615200000003,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "This side ridiculous",
@@ -74321,13 +74175,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 229.79924200000434,
           "end": 231.11903200000864,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Everywhere get dangerous",
@@ -74347,13 +74199,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 231.22270700000865,
           "end": 232.87019700000218,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Get pool up in the backyard",
@@ -74373,13 +74223,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 234.9555709253316,
           "end": 236.4215209253316,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "And the grass green, in the private residence",
@@ -74399,13 +74247,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 236.50837592532946,
           "end": 239.12727300000432,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Still finessin', yeah, ooh",
@@ -74425,13 +74271,11 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 239.25487300000432,
           "end": 249.12052800000214,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         },
         {
           "text": "Baba says don’t worry about nothing",
@@ -74451,16 +74295,15 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": "",
           "start": 249.61352800000216,
           "end": 254.0854730000043,
-          "isSplit": false,
-          "lang": "en",
-          "spacingText": ""
+          "pronunciation": "",
+          "translation": "",
+          "isSplit": false
         }
       ],
-      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e2/64/74/e26474d7-41c4-e6df-b410-b36b888f5b34/mzaf_9988339639281589486.plus.aac.p.m4a"
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e2/64/74/e26474d7-41c4-e6df-b410-b36b888f5b34/mzaf_9988339639281589486.plus.aac.p.m4a",
+      "playId": 1786686019628
     }
   ],
   "settings": {
@@ -74476,7 +74319,7 @@
     "liveSyncFontSize": 4.5,
     "focusedSyncFontSize": 5.9,
     "focusedAdlibFontSize": 3.3,
-    "artistNameFontSize": 4.5,
+    "artistNameFontSize": 4,
     "modalSplitRatio": 40,
     "bgPreemptionTime": 400,
     "modalPaddingY": 3,
