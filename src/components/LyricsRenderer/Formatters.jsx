@@ -85,7 +85,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
 
-  // --- NEW: Exact 1:1 Mapping Logic for Spaced Text ---
+  // --- 1. Exact 1:1 Mapping Logic for Spaced Text ---
   let canDo1to1 = false;
   let spacedWordsBlocks = [];
   let pronWords = [];
@@ -148,7 +148,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
        }
     }
   } 
-  // --- 1. Structured JSON Organic Chunks (Legacy) ---
+  // --- 2. Structured JSON Organic Chunks (Legacy) ---
   else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
     parsedChunks.forEach((chunk) => {
@@ -192,7 +192,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
     }
   } 
-  // --- 2. Organic Spaced Fallback for CJK with English (Legacy) ---
+  // --- 3. Organic Spaced Fallback for CJK with English (Legacy) ---
   else {
     const isCJKLine = chars.some(c => isCJ(c.char));
     if (isCJKLine) {

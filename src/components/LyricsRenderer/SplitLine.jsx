@@ -83,9 +83,50 @@ const SplitLine = ({
     return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
-  const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
   
+  // --- COMBINE AND CLEAN MAIN TEXT SPACES ---
+  let mainChars = [];
+  blocks.forEach(b => {
+    if (!b.isAdlib) mainChars.push(...b.chars);
+  });
+
+  let cleanedMainChars = [];
+  let lastWasSpace = true; // Set true initially to trim leading spaces
+  
+  for (let i = 0; i < mainChars.length; i++) {
+    const charObj = mainChars[i];
+    const isSpace = /\s/.test(charObj.char);
+    
+    if (isSpace) {
+      if (!lastWasSpace) {
+        // Look-ahead: If the very next non-space character is a punctuation mark, completely drop this space
+        let nextNonSpaceChar = null;
+        for (let j = i + 1; j < mainChars.length; j++) {
+          if (!/\s/.test(mainChars[j].char)) {
+            nextNonSpaceChar = mainChars[j].char;
+            break;
+          }
+        }
+        
+        if (nextNonSpaceChar && /^[.,!?;:\])}，。！？；：」）】]$/.test(nextNonSpaceChar)) {
+          // Skip adding space to avoid orphaned gaps before punctuation
+        } else {
+          cleanedMainChars.push({ ...charObj, char: ' ' }); 
+          lastWasSpace = true;
+        }
+      }
+    } else {
+      cleanedMainChars.push(charObj);
+      lastWasSpace = false;
+    }
+  }
+
+  // Remove trailing space if exists
+  if (cleanedMainChars.length > 0 && /\s/.test(cleanedMainChars[cleanedMainChars.length - 1].char)) {
+    cleanedMainChars.pop();
+  }
+
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
 
@@ -94,11 +135,13 @@ const SplitLine = ({
     effectiveParsedChunks = null;
   }
 
-  const renderedMainElements = mainBlocks.map((blk, bIdx) => {
-    const isOnlyPunct = blk.chars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
+  let renderedMainElements = null;
+
+  if (cleanedMainChars.length > 0) {
+    const isOnlyPunct = cleanedMainChars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
     const alignedMainJSX = alignChunksWithTransliteration(
-      blk.chars,
+      cleanedMainChars,
       isOnlyPunct ? null : effectiveParsedChunks,
       isOnlyPunct ? '' : effectiveFullTrans,
       renderColoredCharForSplit,
@@ -108,9 +151,8 @@ const SplitLine = ({
       hasSpacingText
     );
 
-    return (
+    renderedMainElements = (
       <span
-        key={`main-block-${bIdx}`}
         className="main-container"
         style={{
           display: 'inline-flex',
@@ -140,7 +182,7 @@ const SplitLine = ({
         </span>
       </span>
     );
-  });
+  }
 
   const renderedAdlibElements = adlibBlocks.map((blk, bIdx) => {
     const adlib = blk.adlibObj;
@@ -177,7 +219,8 @@ const SplitLine = ({
 
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      adlibTranslation = adlibTranslation.replace(/[() ]/g, '').trim();
+      // FIX: Ensure spaces are kept intact and only parenthesis are removed
+      adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
     }
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
@@ -271,7 +314,7 @@ const SplitLine = ({
   const hasMainTranslation = !!displayTranslation;
   const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
     let t = cleanTranslationText(a.translation);
-    return t && t.replace(/[() ]/g, '').trim().length > 0;
+    return t && t.replace(/[()（）]/g, '').trim().length > 0;
   });
 
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;
