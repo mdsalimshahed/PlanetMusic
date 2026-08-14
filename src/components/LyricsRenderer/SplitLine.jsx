@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
 import React from 'react';
-import { isPunctuationChar, normalizeTrans, cleanTranslationText, isCJ } from './textUtils';
+import { isPunctuationChar, normalizeTrans, cleanTranslationText, isCJ, getGraphemes } from './textUtils';
 import { alignChunksWithTransliteration, renderFormattedTranslation } from './Formatters';
 
 const SplitLine = ({
@@ -19,7 +19,6 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
-
   const blocks = [];
   let currentBlock = null;
 
@@ -37,7 +36,6 @@ const SplitLine = ({
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     }
   });
-
   if (currentBlock) blocks.push(currentBlock);
 
   const renderColoredCharForSplit = (c, globalIdx) => {
@@ -51,7 +49,6 @@ const SplitLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -69,7 +66,6 @@ const SplitLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -84,7 +80,7 @@ const SplitLine = ({
   };
 
   const adlibBlocks = blocks.filter(b => b.isAdlib);
-  
+
   // --- COMBINE AND CLEAN MAIN TEXT SPACES ---
   let mainChars = [];
   blocks.forEach(b => {
@@ -92,15 +88,13 @@ const SplitLine = ({
   });
 
   let cleanedMainChars = [];
-  let lastWasSpace = true; // Set true initially to trim leading spaces
-  
+  let lastWasSpace = true; 
   for (let i = 0; i < mainChars.length; i++) {
     const charObj = mainChars[i];
     const isSpace = /\s/.test(charObj.char);
     
     if (isSpace) {
       if (!lastWasSpace) {
-        // Look-ahead: If the very next non-space character is a punctuation mark, completely drop this space
         let nextNonSpaceChar = null;
         for (let j = i + 1; j < mainChars.length; j++) {
           if (!/\s/.test(mainChars[j].char)) {
@@ -109,7 +103,7 @@ const SplitLine = ({
           }
         }
         
-        if (nextNonSpaceChar && /^[.,!?;:\])}，。！？；：」）】]$/.test(nextNonSpaceChar)) {
+        if (nextNonSpaceChar && /^[.,!?;:\])} ]$/.test(nextNonSpaceChar)) {
           // Skip adding space to avoid orphaned gaps before punctuation
         } else {
           cleanedMainChars.push({ ...charObj, char: ' ' }); 
@@ -122,21 +116,18 @@ const SplitLine = ({
     }
   }
 
-  // Remove trailing space if exists
   if (cleanedMainChars.length > 0 && /\s/.test(cleanedMainChars[cleanedMainChars.length - 1].char)) {
     cleanedMainChars.pop();
   }
 
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
-
   if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
     effectiveFullTrans = pronString;
     effectiveParsedChunks = null;
   }
 
   let renderedMainElements = null;
-
   if (cleanedMainChars.length > 0) {
     const isOnlyPunct = cleanedMainChars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
@@ -170,8 +161,8 @@ const SplitLine = ({
             whiteSpace: 'pre-wrap',
             display: 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'flex-end',
-            verticalAlign: 'bottom',
+            alignItems: 'baseline',
+            verticalAlign: 'baseline',
             flexWrap: 'wrap',
             maxWidth: '100%',
             boxSizing: 'border-box'
@@ -192,7 +183,6 @@ const SplitLine = ({
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
     
     let initialClass = 'adlib-hidden';
-
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
       else if (currentTime > end) initialClass = 'adlib-visible';
@@ -200,7 +190,6 @@ const SplitLine = ({
 
     let aParsedChunks = null;
     let aFullTrans = null;
-
     if (adlib.pronunciation) {
       if (typeof adlib.pronunciation === 'string') {
         if (adlib.pronunciation.startsWith('{')) {
@@ -219,19 +208,54 @@ const SplitLine = ({
 
     let adlibTranslation = cleanTranslationText(adlib.translation);
     if (adlibTranslation) {
-      // FIX: Ensure spaces are kept intact and only parenthesis are removed
-      adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
+      // PRESERVE SPACES: Exclude spaces from the removal regex
+      adlibTranslation = adlibTranslation.replace(/[()\uff08\uff09]/g, '').trim();
+    }
+
+    const aActiveSpacingText = adlib.spacingText || '';
+    const aUseSpacingText = Boolean(aActiveSpacingText && aActiveSpacingText.trim());
+    const aActiveDisplayText = aUseSpacingText ? aActiveSpacingText : adlib.text || '';
+
+    let adlibChars = blk.chars;
+    let effectiveHasSpacing = hasSpacingText; 
+
+    if (aUseSpacingText) {
+      adlibChars = [];
+      effectiveHasSpacing = true;
+      const spacedGraphemes = getGraphemes(aActiveDisplayText);
+      let segmentPointer = 0;
+      let charPointerInSegment = 0;
+      const segments = adlib.segments || [{ text: adlib.text }]; 
+      
+      spacedGraphemes.forEach((char, idx) => {
+        const isSpace = /\s/.test(char);
+        const currentSeg = segments[segmentPointer] || segments[segments.length - 1];
+        
+        adlibChars.push({
+          char,
+          seg: currentSeg,
+          globalIndex: `adlib-${bIdx}-${idx}`,
+        });
+
+        if (!isSpace) {
+          charPointerInSegment += getGraphemes(char).length;
+          if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
+            segmentPointer++;
+            charPointerInSegment = 0;
+          }
+        }
+      });
     }
 
     const alignedAdlibJSX = alignChunksWithTransliteration(
-      blk.chars,
+      adlibChars,
       aParsedChunks,
       aFullTrans,
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
       false,
-      hasSpacingText
+      effectiveHasSpacing
     );
 
     return (
@@ -277,8 +301,8 @@ const SplitLine = ({
             whiteSpace: 'pre-wrap',
             display: 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'flex-end',
-            verticalAlign: 'bottom',
+            alignItems: 'baseline',
+            verticalAlign: 'baseline',
             flexWrap: 'wrap',
             maxWidth: '100%',
             boxSizing: 'border-box',
@@ -314,7 +338,7 @@ const SplitLine = ({
   const hasMainTranslation = !!displayTranslation;
   const hasAdlibTranslation = savedNode?.adlibs?.some(a => {
     let t = cleanTranslationText(a.translation);
-    return t && t.replace(/[()（）]/g, '').trim().length > 0;
+    return t && t.replace(/[()\uff08\uff09]/g, '').trim().length > 0;
   });
 
   const requiresTranslationSpace = hasMainTranslation || hasAdlibTranslation;

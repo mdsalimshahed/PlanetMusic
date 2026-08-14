@@ -22,7 +22,6 @@ const StandardLine = ({
   const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
 
   let displayChars = chars;
-
   if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
     displayChars = chars.filter(c => !savedNode.adlibs.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd));
   }
@@ -59,7 +58,6 @@ const StandardLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
-
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -77,19 +75,18 @@ const StandardLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
       style.WebkitTextFillColor = 'transparent';
       style.filter = isFocused 
-         ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
-         : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+          ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
+          : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
     } else {
       style.color = activeColor;
       style.textShadow = isFocused 
-         ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` 
-         : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+          ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` 
+          : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
@@ -130,6 +127,7 @@ const StandardLine = ({
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
+
   const blockPronStyle = {
     ...basePronStyle,
     marginTop: '8px',
@@ -149,9 +147,9 @@ const StandardLine = ({
             display: 'inline-flex',
             flexDirection: isFocused ? 'column' : 'row',
             justifyContent: isFocused ? 'center' : 'flex-start',
-            alignItems: isFocused ? 'center' : 'flex-end',
+            alignItems: isFocused ? 'center' : 'baseline',
             flexWrap: 'wrap',
-            verticalAlign: 'bottom',
+            verticalAlign: 'baseline',
             margin: '0',
             width: 'auto',
             maxWidth: '100%',
@@ -161,7 +159,7 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span
+            <span 
                className={`chunk-translation ${transClass}`}
                dir="ltr"
               style={{
@@ -178,7 +176,7 @@ const StandardLine = ({
               display: 'inline-flex',
               flexDirection: 'row',
               justifyContent: isFocused ? 'center' : 'flex-start',
-              alignItems: 'flex-end',
+              alignItems: 'baseline',
               flexWrap: 'wrap',
               width: 'auto',
               maxWidth: '100%',

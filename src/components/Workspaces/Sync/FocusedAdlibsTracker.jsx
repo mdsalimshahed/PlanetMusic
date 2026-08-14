@@ -1,8 +1,8 @@
 /* --- src/components/Workspaces/Sync/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect } from 'react';
-import { normalizeTrans, renderFormattedTranslation } from "../Lyrics/LyricsLineRenderer";
 import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
-import { getGraphemes } from '../../LyricsRenderer/textUtils';
+import { getGraphemes, normalizeTrans, isCJ } from '../../LyricsRenderer/textUtils';
+import { alignChunksWithTransliteration, renderFormattedTranslation } from "../../LyricsRenderer/Formatters";
 
 const adlibPlacementCache = new Map();
 
@@ -34,21 +34,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
           const renderAdlibPure = (adlibObj) => {
-            let aPron = adlibObj?.pronunciation;
-            let aTrans = '';
-            
-            if (typeof aPron === 'string') {
-              if (aPron.startsWith('{')) {
-                try { aTrans = JSON.parse(aPron).full || ''; } catch (e) {}
-              } else if (aPron.startsWith('[')) {
-                try { aTrans = JSON.parse(aPron).map(c => c.trans || c.text).join(''); } catch (e) {}
-              } else { aTrans = aPron; }
-            }
-
-            let adlibTranslation = adlibObj?.translation || '';
-            // FIX: Strip standard OR full-width Asian parentheses from translation render
-            if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()（）]/g, '').trim();
-
             const basePronStyle = {
               fontSize: 'var(--dyn-translit-font-size, 0.55em)',
               fontWeight: '800',
@@ -60,59 +45,110 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               whiteSpace: 'nowrap'
             };
 
+            const activeSpacingText = adlibObj.spacingText || '';
+            const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
+            const activeDisplayText = useSpacingText ? activeSpacingText : adlibObj.text || '';
+            
+            const spacedGraphemes = getGraphemes(activeDisplayText);
+            let segmentPointer = 0;
+            let charPointerInSegment = 0;
             const segs = adlibObj.segments || [{ text: adlibObj.text }];
-            const renderedSegments = [];
-            let charIdxCounter = 0;
 
-            segs.forEach((seg, segIdx) => {
-              let inlineColor = seg.color || '#ffffff';
-              let inlineIsGradient = seg.isGradient || false;
-              let inlineGradient = seg.gradient || '';
+            const adlibChars = [];
+            spacedGraphemes.forEach((char, idx) => {
+              const isSpace = /\s/.test(char);
+              const currentSeg = segs[segmentPointer] || segs[segs.length - 1] || {};
+              
+              adlibChars.push({
+                char,
+                seg: currentSeg,
+                globalIndex: idx
+              });
 
-              if (seg.artists && seg.artists.length > 0) {
-                if (seg.artists.length > 1) {
+              if (!isSpace) {
+                charPointerInSegment += getGraphemes(char).length;
+                if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
+                  segmentPointer++;
+                  charPointerInSegment = 0;
+                }
+              }
+            });
+
+            const renderColoredCharForTracker = (c, globalIdx) => {
+              let inlineColor = c.seg?.color || '#ffffff';
+              let inlineIsGradient = c.seg?.isGradient || false;
+              let inlineGradient = c.seg?.gradient || '';
+              
+              if (c.seg?.artists && c.seg.artists.length > 0) {
+                if (c.seg.artists.length > 1) {
                   inlineIsGradient = true;
-                  const c1 = masterPalette[seg.artists[0]] || '#ffffff';
-                  const c2 = masterPalette[seg.artists[1]] || '#ffffff';
+                  const c1 = masterPalette[c.seg.artists[0]] || '#ffffff';
+                  const c2 = masterPalette[c.seg.artists[1]] || '#ffffff';
                   inlineGradient = `linear-gradient(90deg, ${c1}, ${c2})`;
                 } else {
-                  inlineColor = masterPalette[seg.artists[0]] || inlineColor;
+                  inlineColor = masterPalette[c.seg.artists[0]] || inlineColor;
                 }
               }
 
-              const segChars = getGraphemes(seg.text || '');
+              const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
+              let style = {};
+              if (isPunct && c.char.trim() !== '') {
+                style.color = '#fbbf24';
+                style.WebkitTextFillColor = '#fbbf24';
+                style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
+              } else if (inlineIsGradient) {
+                style.backgroundImage = inlineGradient;
+                style.WebkitBackgroundClip = 'text';
+                style.WebkitTextFillColor = 'transparent';
+                style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))';
+              } else {
+                style.color = inlineColor;
+                style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${inlineColor}80`;
+              }
 
-              const renderedChars = segChars.map((char) => {
-                const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
-                let style = {};
+              return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+            };
 
-                if (isPunct && char.trim() !== '') {
-                  style.color = '#fbbf24';
-                  style.WebkitTextFillColor = '#fbbf24';
-                  style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
-                } else if (inlineIsGradient) {
-                  style.backgroundImage = inlineGradient;
-                  style.WebkitBackgroundClip = 'text';
-                  style.WebkitTextFillColor = 'transparent';
-                  style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))';
-                } else {
-                  style.color = inlineColor;
-                  style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${inlineColor}80`;
-                }
+            let aParsedChunks = null;
+            let aFullTrans = null;
+            let aPron = adlibObj?.pronunciation;
+            
+            if (typeof aPron === 'string') {
+              if (aPron.startsWith('{')) {
+                try {
+                  const p = JSON.parse(aPron);
+                  aParsedChunks = p.chunks;
+                  aFullTrans = p.full;
+                } catch (e) {}
+              } else if (aPron.startsWith('[')) {
+                try { aParsedChunks = JSON.parse(aPron); } catch (e) {}
+              } else {
+                aFullTrans = aPron;
+              }
+            }
 
-                return (
-                  <span key={charIdxCounter++} style={style}>
-                    {char}
-                  </span>
-                );
-              });
+            const alignedAdlibJSX = alignChunksWithTransliteration(
+              adlibChars,
+              aParsedChunks,
+              aFullTrans,
+              renderColoredCharForTracker,
+              basePronStyle,
+              false, 
+              true,  
+              useSpacingText
+            );
 
-              renderedSegments.push(
-                <React.Fragment key={segIdx}>
-                  {renderedChars}
-                </React.Fragment>
-              );
-            });
+            let displayPronString = null;
+            const isCJKLine = adlibChars.some(c => isCJ(c.char));
+            if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
+              if (!isCJKLine && !aParsedChunks) {
+                displayPronString = normalizeTrans(aPron);
+              }
+            }
+
+            let adlibTranslation = adlibObj?.translation || '';
+            // PRESERVE SPACES: Exclude spaces from the removal regex
+            if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()\uff08\uff09]/g, '').trim();
 
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
@@ -136,10 +172,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                     {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
-                <span className="primary-text" style={{ whiteSpace: 'pre', display: 'inline-block' }} dir="auto">
-                  {renderedSegments}
+                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }} dir="auto">
+                  {alignedAdlibJSX}
                 </span>
-                {aTrans ? <span className="pronunciation-text" style={basePronStyle} dir="ltr">{renderFormattedTranslation(normalizeTrans(aTrans))}</span> : null}
+                {displayPronString && (
+                  <span className="pronunciation-text" style={basePronStyle} dir="ltr">{renderFormattedTranslation(displayPronString)}</span>
+                )}
               </div>
             );
           };
@@ -263,6 +301,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           item.node.classList.add('active');
           item.isActive = true;
+
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;

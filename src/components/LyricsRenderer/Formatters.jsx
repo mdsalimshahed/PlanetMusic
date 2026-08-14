@@ -4,12 +4,13 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
+  
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
-      const shadow = isFocused
+      const shadow = isFocused 
          ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
@@ -65,6 +66,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
+
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
 
     if (shouldBreak) {
@@ -77,10 +79,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       currentWord.push(elements[i]);
     }
   }
-
   flushWord('end');
   return words;
 };
+
 
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
@@ -114,7 +116,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   if (canDo1to1) {
     let tIdx = 0;
     let currentBlock = [];
-
     chars.forEach(c => {
       if (/\s/.test(c.char)) {
         if (currentBlock.length > 0) {
@@ -135,7 +136,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         currentBlock.push(c);
       }
     });
-
     if (currentBlock.length > 0) {
        const textStr = currentBlock.map(x => x.char).join('');
        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
@@ -148,9 +148,11 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
        }
     }
   } 
+
   // --- 2. Structured JSON Organic Chunks (Legacy) ---
   else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
+
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
@@ -192,6 +194,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
     }
   } 
+
   // --- 3. Organic Spaced Fallback for CJK with English (Legacy) ---
   else {
     const isCJKLine = chars.some(c => isCJ(c.char));
@@ -289,7 +292,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
               display: 'inline-flex',
               flexDirection: 'column',
               alignItems: 'center',
-              verticalAlign: 'bottom',
+              verticalAlign: 'baseline',
               margin: hasSpacingText ? '0' : '0 2px',
               maxWidth: '100%'
             }}
@@ -304,7 +307,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         );
       } else {
         return (
-          <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'bottom', display: 'inline-block', maxWidth: '100%' }}>
+          <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'baseline', display: 'inline-block', maxWidth: '100%' }}>
             {groupedText}
           </span>
         );
