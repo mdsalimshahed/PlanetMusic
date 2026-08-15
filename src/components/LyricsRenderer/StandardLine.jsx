@@ -90,7 +90,6 @@ const StandardLine = ({
           : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
-    // FIX: Removed \u00A0 non-breaking space logic
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
@@ -141,7 +140,7 @@ const StandardLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-      <span className="primary-text" style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
+      <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
         <span
           className="core-chunks"
           style={{
@@ -175,11 +174,7 @@ const StandardLine = ({
           <span
             className="main-lyrics-layer"
             style={{
-              display: 'inline-flex',
-              flexDirection: 'row',
-              justifyContent: isFocused ? 'center' : 'flex-start',
-              alignItems: 'baseline',
-              flexWrap: 'wrap',
+              display: 'inline', // Critical CSS Fix: Allows standard inline text wrapping instead of rigid flexboxes
               width: 'auto',
               maxWidth: '100%',
               textAlign: lineTextAlign,

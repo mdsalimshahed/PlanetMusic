@@ -20,6 +20,7 @@ export const SyncWorkspace = ({
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
   const [lyricScale, setLyricScale] = useState(0.5);
+
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
 
@@ -65,6 +66,7 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
+
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -120,6 +122,7 @@ export const SyncWorkspace = ({
       });
     };
     initSyncYT();
+
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -173,12 +176,10 @@ export const SyncWorkspace = ({
   }, []);
 
   // --- DUAL-PATH HYPER-FAST RENDERER ---
-  // Skips heavy calculations 95% of the time, and only uses character mapping 
-  // when an adlib strike-through is actively needed.
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
-
     let displayPron = '';
+
     if (node.pronunciation) {
         if (typeof node.pronunciation === 'string') {
             if (node.pronunciation.startsWith('{')) {
@@ -204,12 +205,18 @@ export const SyncWorkspace = ({
              let isGradient = seg.isGradient || false;
              let gradStyle = seg.gradient || '';
              
-             if (seg.artists && seg.artists.length > 0) {
-                 if (seg.artists.length > 1) {
+             // MATCH GRADIENT LOGIC FROM LYRIC RENDERER
+             let targetArtists = seg.artists;
+             if (!targetArtists || targetArtists.length === 0) {
+                 targetArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
+             }
+
+             if (targetArtists && targetArtists.length > 0) {
+                 if (targetArtists.length > 1) {
                      isGradient = true;
-                     gradStyle = `linear-gradient(90deg, ${masterPalette[seg.artists[0]] || '#fff'}, ${masterPalette[seg.artists[1]] || '#fff'})`;
+                     gradStyle = `linear-gradient(90deg, ${masterPalette[targetArtists[0]] || '#fff'}, ${masterPalette[targetArtists[1]] || '#fff'})`;
                  } else {
-                     color = masterPalette[seg.artists[0]] || color;
+                     color = masterPalette[targetArtists[0]] || color;
                  }
              }
              
@@ -223,8 +230,8 @@ export const SyncWorkspace = ({
                  style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${color}80`;
              }
              
-             // PATH A: Slow Path - The line has been actively split into adlibs. 
-             // Maps characters individually to strike out the adlib.
+             // PATH A: Slow Path - The line has been actively split into adlibs.
+             // Maps characters individually to remove the adlib characters.
              if (isMain && node.isSplit && node.adlibs && node.adlibs.length > 0) {
                  const chars = Array.from(seg.text);
                  return (
@@ -232,9 +239,13 @@ export const SyncWorkspace = ({
                          {chars.map((char, cIdx) => {
                              const currentCp = globalCpIdx++;
                              const isAdlibChar = node.adlibs.some(a => currentCp >= a.charStart && currentCp < a.charEnd);
-                             const isPunct = /^[\p{P}\p{S}\u064B-\u065F\u0670]+$/u.test(char);
                              
+                             // PURGE ADLIB CHARACTERS ALTOGETHER
+                             if (isAdlibChar) return null;
+
+                             const isPunct = /^[\p{P}\p{S}\u064B-\u065F\u0670]+$/u.test(char);
                              let charStyle = {};
+                             
                              if (isPunct && char.trim() !== '') {
                                  charStyle = {
                                      color: '#fbbf24',
@@ -243,11 +254,6 @@ export const SyncWorkspace = ({
                                      backgroundImage: 'none',
                                      filter: 'none'
                                  };
-                             }
-                             if (isAdlibChar) {
-                                 charStyle.opacity = 0.35;
-                                 charStyle.textDecoration = 'line-through 2px white';
-                                 charStyle.textDecorationColor = '#ffffff';
                              }
                              
                              if (Object.keys(charStyle).length > 0) {
@@ -258,7 +264,7 @@ export const SyncWorkspace = ({
                      </span>
                  );
              } else {
-                 // PATH B: Hyper-Fast Regex Path (Default)
+                 // PATH B: Hyper-Fast Regex Path (Default/Undo State)
                  const textParts = seg.text.split(/([\p{P}\p{S}\u064B-\u065F\u0670]+)/u);
                  globalCpIdx += Array.from(seg.text).length;
 
@@ -289,12 +295,12 @@ export const SyncWorkspace = ({
           })}
         </div>
         {displayPron && (
-          <div style={{ 
-              fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)', 
-              color: 'rgba(255,255,255,0.7)', 
-              marginTop: '4px', 
-              textTransform: 'uppercase', 
-              letterSpacing: '1px',
+          <div style={{
+               fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)',
+               color: 'rgba(255,255,255,0.7)',
+               marginTop: '4px',
+               textTransform: 'uppercase',
+               letterSpacing: '1px',
               fontWeight: 800
           }}>
               {displayPron}
@@ -312,9 +318,9 @@ export const SyncWorkspace = ({
         '--workspace-lyric-size': `${currentFontSize}px`
       }}>
       
-      <div 
-        id="sync-yt-target-container" 
-        style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+      <div
+         id="sync-yt-target-container"
+         style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
@@ -430,7 +436,6 @@ export const SyncWorkspace = ({
             <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
           </div>
         </div>
-
         <div className="sync-offset-deck glass-panel" style={{ flex: 1 }}>
            <div className="speed-label-container">
              <span>Global Offset (Shift Timings)</span>
@@ -501,17 +506,17 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                
-                {renderSyncNode(line, isMain)}
-                
-                {isMain && hasParentheses && (
+                 
+                 {renderSyncNode(line, isMain)}
+                 
+                 {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}
                       onClick={(e) => {
                       e.stopPropagation();
                       if (line.isSplit) handleUndoSplit(item.lineIndex);
-                      else handleSplitAdlibs(item.lineIndex); 
-                    }}
+                      else handleSplitAdlibs(item.lineIndex);
+                     }}
                   >
                     {line.isSplit ? 'Undo Split' : 'Split Adlibs'}
                   </button>

@@ -60,7 +60,6 @@ const SplitLine = ({
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
       
-      // If a segment explicitly has an empty artist array (e.g. unmapped markdown), it MUST remain white.
       if (targetArtists && targetArtists.length > 1) {
         isGradient = true;
         const c1 = masterPalette[targetArtists[0]] || '#ffffff';
@@ -87,7 +86,6 @@ const SplitLine = ({
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
     }
 
-    // FIX: Removed \u00A0 non-breaking space logic to allow natural word wrapping
     return <span key={globalIdx} style={style}>{c.char}</span>;
   };
 
@@ -140,9 +138,7 @@ const SplitLine = ({
       <span
         className="main-container"
         style={{
-          display: 'inline-flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
+          display: 'inline',
           position: 'relative',
           verticalAlign: 'baseline',
           maxWidth: '100%',
@@ -153,11 +149,8 @@ const SplitLine = ({
           className="primary-text"
           style={{
             whiteSpace: 'pre-wrap',
-            display: 'inline-flex',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
+            display: 'inline',
             verticalAlign: 'bottom',
-            flexWrap: 'wrap',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
@@ -258,7 +251,6 @@ const SplitLine = ({
           }
       } else if (!isPunct && !c.seg) {
           // If there is NO segment mapping at all (e.g. adlib text mismatch)
-          // Fallback to the saved adlib.singer from DB
           let fbArtists = adlib.singer ? adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s=>s.trim()) : [];
           if (fbArtists.length > 1) {
               charIsGradient = true;
@@ -290,7 +282,6 @@ const SplitLine = ({
           charStyle.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${charColor}80`;
       }
 
-      // FIX: Removed \u00A0 non-breaking space logic
       return <span key={idx} style={charStyle}>{c.char}</span>;
     });
 
@@ -374,12 +365,7 @@ const SplitLine = ({
           whiteSpace: 'pre-wrap',
           wordBreak: 'normal',
           overflowWrap: 'normal',
-          display: 'inline-flex',
-          flexDirection: 'row',
-          alignItems: 'baseline', 
-          flexWrap: 'wrap',
-          columnGap: '12px',
-          rowGap: requiresTranslationSpace ? translationSpaceCalc : '0', 
+          display: 'inline',
           position: 'relative',
           textAlign: 'left',
           direction: 'ltr',
@@ -392,10 +378,7 @@ const SplitLine = ({
           className="main-text-group"
           style={{
             position: 'relative',
-            display: 'inline-flex',
-            flexDirection: 'row',
-            alignItems: 'baseline',
-            flexWrap: 'wrap',
+            display: 'inline',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
@@ -424,7 +407,9 @@ const SplitLine = ({
           ) : null}
           {renderedMainElements}
         </span>
-        {renderedAdlibElements}
+        <span style={{ display: 'inline' }}>
+           {renderedAdlibElements}
+        </span>
       </span>
       {displayPronString && (
         <div className="pronunciation-text" style={{ ...basePronStyle, whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', marginTop: '8px', display: 'block', textAlign: 'left', maxWidth: '100%' }} dir="ltr">

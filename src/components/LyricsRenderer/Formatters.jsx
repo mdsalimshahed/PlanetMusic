@@ -30,7 +30,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
-      // Strictly > 3 hyphens to allow wrapping, and NO arbitrary character breaks allowed
+      // Strictly > 3 hyphens to allow wrapping, NO arbitrary character breaks allowed
       const shouldWrap = hyphenCount > 3;
       words.push(
         <span
@@ -281,7 +281,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
 
     if (isRTL) {
       return (
-        <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
+        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
           {groupedText}
         </span>
       );
@@ -300,7 +300,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
               maxWidth: '100%'
             }}
           >
-            <span style={{ display: 'inline-block', whiteSpace: isFocused ? 'normal' : 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
+            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
             {cleanTrans ? (
               <span className="pronunciation-text" style={basePronStyle} dir="ltr">
                 {renderFormattedTranslation(cleanTrans, isFocused)}
@@ -310,7 +310,8 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         );
       } else {
         return (
-          <span key={chunkIdx} style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', verticalAlign: 'baseline', display: 'inline-block', maxWidth: '100%' }}>
+          // Critical fix: Using inline instead of inline-block allows spaces to flow natively
+          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'baseline', display: 'inline', maxWidth: '100%' }}>
             {groupedText}
           </span>
         );

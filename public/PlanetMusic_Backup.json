@@ -49554,7 +49554,7 @@
           "start": 64.927286,
           "end": 71.675441,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Don't disturb Tsurezure",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -50201,7 +50201,7 @@
           "start": 155.928215,
           "end": 162.928215,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Tsurezure Don't disturb me",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -50635,7 +50635,7 @@
           "start": 201.453813,
           "end": 208.453813,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Tsurezure Don't disturb",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -51284,7 +51284,7 @@
           "start": 64.927286,
           "end": 71.675441,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Don't disturb Tsurezure",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -51931,7 +51931,7 @@
           "start": 155.928215,
           "end": 162.928215,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Tsurezure Don't disturb me",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -52365,7 +52365,7 @@
           "start": 201.453813,
           "end": 208.453813,
           "wordSync": null,
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Túrán\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "translation": "Tsurezure Don't disturb",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
@@ -71426,7 +71426,7 @@
           "gradient": "",
           "sectionHeader": "[Refrain: Adawa, **Henry Lau**]",
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 31.45764092751926,
@@ -71452,7 +71452,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 34.96334092751479,
@@ -71478,7 +71478,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 38.576940927516276,
@@ -71504,7 +71504,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 41.66363392751777,
@@ -71539,7 +71539,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 45.37641792751926,
@@ -71599,7 +71599,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 48.97581792752523,
@@ -71659,7 +71659,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 52.468017927520755,
@@ -71710,7 +71710,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 57.98561792752224,
@@ -71788,7 +71788,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 64.34263100000298,
@@ -71840,7 +71840,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 68.206931,
@@ -71944,7 +71944,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 76.05128592752521,
@@ -72048,7 +72048,7 @@
           "gradient": "",
           "sectionHeader": "[Refrain: Henry Lau]",
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 87.14988592751926,
@@ -72074,7 +72074,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 90.64848592752075,
@@ -72100,7 +72100,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 94.11128592752522,
@@ -72126,7 +72126,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 97.30988592751926,
@@ -72161,7 +72161,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 101.09328592752522,
@@ -72221,7 +72221,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 104.69708592752224,
@@ -72281,7 +72281,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 108.13947216593635,
@@ -72332,7 +72332,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 113.67142694850456,
@@ -72696,7 +72696,7 @@
           "gradient": "",
           "sectionHeader": "[Refrain: Henry Lau]",
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 142.89133099999555,
@@ -72722,7 +72722,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 146.290131,
@@ -72748,7 +72748,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 149.78483099999553,
@@ -72774,7 +72774,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 153.04883099999554,
@@ -72809,7 +72809,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 156.57306492751778,
@@ -72869,7 +72869,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 160.18636492752225,
@@ -72929,7 +72929,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 164.47413992752072,
@@ -72980,7 +72980,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 169.26542592532945,
@@ -73006,7 +73006,7 @@
           "gradient": "",
           "sectionHeader": "[Outro: Henry Lau]",
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 171.6351040608466,
@@ -73032,7 +73032,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 173.36190906084443,
@@ -73058,7 +73058,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 175.22008406084444,
@@ -73084,7 +73084,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 178.80769024060336,
@@ -73110,7 +73110,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 185.52644324061202,
@@ -73136,7 +73136,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 188.79778824061418,
@@ -73162,7 +73162,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 190.14996989490075,
@@ -73188,7 +73188,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 193.29066989490076,
@@ -73214,7 +73214,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 195.0493748949094,
@@ -73240,7 +73240,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 196.5341748949094,
@@ -73266,7 +73266,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 198.44632700000003,
@@ -73292,7 +73292,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 204.52313200000864,
@@ -73318,7 +73318,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 214.13213700000648,
@@ -73344,7 +73344,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 218.35178200000865,
@@ -73370,7 +73370,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 221.53308200000865,
@@ -73396,7 +73396,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 228.22889200000432,
@@ -73422,7 +73422,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 229.79924200000434,
@@ -73448,7 +73448,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 231.22270700000865,
@@ -73474,7 +73474,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 234.9555709253316,
@@ -73500,7 +73500,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 236.50837592532946,
@@ -73526,7 +73526,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 239.25487300000432,
@@ -73552,7 +73552,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "en",
           "start": 249.61352800000216,
@@ -73602,7 +73602,7 @@
         "hasLocal": false,
         "localName": ""
       },
-      "lyrics": "[:Carolina Gaitán]\n\nWe don't talk about Bruno, no, no, no\n\nWe don't talk about Bruno, but\n\n[:Carolina Gaitán]\n\nIt was my wedding day\n\n[:Mauro Castillo]\n\nIt was our wedding day\n\n[:Carolina Gaitán]\n\nWe were getting ready and there wasn't a cloud in the sky\n\n[:Mauro Castillo]\n\nNo clouds allowed in the sky\n\n[:Carolina Gaitán]\n\nBruno walks in with a mischievous grin\n\n[:Mauro Castillo]\n\nThunder!\n\n[:Carolina Gaitán]\n\nYou telling this story or am I?\n\n[:Mauro Castillo]\n\nI'm sorry, mi vida, go on\n\n[:Carolina Gaitán]\n\nBruno says, \"It looks like rain\"\n\n[:Mauro Castillo]\n\nWhy did he tell us?\n\n[:Carolina Gaitán]\n\nIn doing so, he floods my brain\n\n[:Mauro Castillo]\n\nAbuela, get the umbrellas\n\n[:Carolina Gaitán]\n\nMarried in a hurricane\n\n[:Mauro Castillo]\n\nWhat a joyous day, but anyway\n\n[:Carolina Gaitán & Mauro Castillo]\n\nWe don't talk about Bruno, no, no, no\n\nWe don't talk about Bruno\n\n[:Adassa]\n\nHey!\n\nGrew to live in fear of Bruno stuttering or stumbling\n\nI can always hear him sort of muttering and mumbling\n\nI associate him with the sound of falling sand (Ch, ch, ch)\n\nIt's a heavy lift with a gift so humbling\n\nAlways left Abuela and the family fumbling\n\nGrappling with prophecies they couldn't understand\n\nDo you understand?\n\n[:Rhenzy Feliz]\n\nA seven-foot frame, rats along his back\n\nWhen he calls your name, it all fades to black\n\nYeah, he sees your dreams and feasts on your screams\n\n[:Ensemble - Cast]\n\nHey\n\n[:Carolina Gaitán, Mauro Castillo & Rhenzy Feliz, _Adassa_]\n\nWe don't talk about Bruno, no, no, no (_No, no_)\n\nWe don't talk about Bruno (_We don't talk about Bruno_)\n\n[:Ensemble - Cast]\nHe told me my fish would die, the next day, dead (_No, no_)\nHe told me I'd grow a gut, and just like he said\n_(No, no)_ He  said that all my hair would disappear, now look at my head (_No, no_)\nYour fate is sealed when your prophecy is read\n\n[:Diane Guerrero]\n\nHe told me that the life of my dreams\n\nWould be promised and someday be mine\n\nHe told me that my power would grow\n\nLike the grapes that thrive on the vine\n\n[:Ensemble - Cast]\n\nÓye, Mariano's on his way\n\n[:Adassa & _Diane Guerrero_]\n\nHe told me that the man of my dreams\n\nWould be just out of reach, betrothed to another\n\nIt's like I hear him now (_Hey, sis_)\n\n(_I want not a sound out of you_) It's like I can hear him now\n\nI can hear him now\n\n[:Stephanie Beatriz]\n\nUm, Bruno\n\nYeah, about that Bruno\n\nI really need to know about Bruno\n\nGimme the truth and the whole truth, Bruno\n\n[:Rhenzy Feliz]\n\nIsabela, your boyfriend's here\n\n[:Angie Cepeda & Carolina Gaitán]\nTime for dinner\n\n[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_**, Diane Guerrero]\nIt was my wedding day, we were getting ready (_it was our wedding day_)**(Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling)**  **_(A seven-foot frame, rats along his back)_** <Diane Guerrero>(He told me that the life of my dreams)</Diane Guerrero>\nAnd there wasn't a cloud in the sky _(No clouds allowed in the sky_) **(I associate him with the sound of falling sand, ch, ch, ch)** **_(When he calls your name, it all fades to black)_**  <Diane Guerrero>(Would be promised and someday be mine) </Diane Guerrero>\nBruno walks in with a mischievous grin _(Thunder!)_ (**It's a heavy lift with a gift so humbling, always left Abuela and the family fumbling**) **_(Yeah, he sees your dreams and feasts on your screams)_** <Diane Guerrero>(He told me that my power would grow)</Diane Guerrero>\nYou telling this story or am I?**(Grappling with prophecies they couldn't understand)**<Diane Guerrero>(Like the grapes that thrive on the vine)</Diane Guerrero>\n\n[:Ensemble - Cast, _Adassa_, **Diane Guerrero**]\nÓye, Mariano's on his way _(Do you understand?) _ **(I'm fine)**\n\n[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_** & Diane Guerrero]\nBruno says, \"It looks like rain\" _(Why did he tell us?)_ (**He told me that the man of my dreams**) (**_A seven-foot frame, rats along his back_**) <Diane Guerrero>(He told me that the life of my dreams)</Diane Guerrero>\nIn doing so, he floods my brain (_Abuela, get the umbrellas_) **(Would be just out of reach, betrothed to another, another)** **_(When he calls your name, it all fades to black)_** <Diane Guerrero>(Would be promised and someday be mine)</Diane Guerrero>\nMarried in a hurricane  _(What a joyous day_) **(And I'm fine, and I'm fine, and I'm fine, I'll be fine)** **_(Yeah, he sees your dreams and feasts on your screams)_** <Diane Guerrero>(And I'm fine, and I'm fine, and I'm fine, I'm fine)</Diane Guerrero>\n\n[:Ensemble - Cast]\n\nHe's here\n\nDon't talk about Bruno\n\n[:Stephanie Beatriz]\n\nWhy did I talk about Bruno?\n\n[:Ensemble - Cast]\n\nNot a word about Bruno\n\n[:Stephanie Beatriz]\n\nI never shoulda brought up Bruno",
+      "lyrics": "[:Carolina Gaitán]\n\nWe don't talk about Bruno, no, no, no\n\nWe don't talk about Bruno, but\n\n[:Carolina Gaitán]\n\nIt was my wedding day\n\n[:Mauro Castillo]\n\nIt was our wedding day\n\n[:Carolina Gaitán]\n\nWe were getting ready and there wasn't a cloud in the sky\n\n[:Mauro Castillo]\n\nNo clouds allowed in the sky\n\n[:Carolina Gaitán]\n\nBruno walks in with a mischievous grin\n\n[:Mauro Castillo]\n\nThunder!\n\n[:Carolina Gaitán]\n\nYou telling this story or am I?\n\n[:Mauro Castillo]\n\nI'm sorry, mi vida, go on\n\n[:Carolina Gaitán]\n\nBruno says, \"It looks like rain\"\n\n[:Mauro Castillo]\n\nWhy did he tell us?\n\n[:Carolina Gaitán]\n\nIn doing so, he floods my brain\n\n[:Mauro Castillo]\n\nAbuela, get the umbrellas\n\n[:Carolina Gaitán]\n\nMarried in a hurricane\n\n[:Mauro Castillo]\n\nWhat a joyous day, but anyway\n\n[:Carolina Gaitán & Mauro Castillo]\n\nWe don't talk about Bruno, no, no, no\n\nWe don't talk about Bruno\n\n[:Adassa]\n\nHey!\n\nGrew to live in fear of Bruno stuttering or stumbling\n\nI can always hear him sort of muttering and mumbling\n\nI associate him with the sound of falling sand (Ch, ch, ch)\n\nIt's a heavy lift with a gift so humbling\n\nAlways left Abuela and the family fumbling\n\nGrappling with prophecies they couldn't understand\n\nDo you understand?\n\n[:Rhenzy Feliz]\n\nA seven-foot frame, rats along his back\n\nWhen he calls your name, it all fades to black\n\nYeah, he sees your dreams and feasts on your screams\n\n[:Encanto - Cast]\n\nHey\n\n[:Carolina Gaitán, Mauro Castillo & Rhenzy Feliz, _Adassa_]\n\nWe don't talk about Bruno, no, no, no (_No, no_)\n\nWe don't talk about Bruno (_We don't talk about Bruno_)\n\n[:Encanto - Cast]\nHe told me my fish would die, the next day, dead (_No, no_)\nHe told me I'd grow a gut, and just like he said\n_(No, no)_ He  said that all my hair would disappear, now look at my head (_No, no_)\nYour fate is sealed when your prophecy is read\n\n[:Diane Guerrero]\n\nHe told me that the life of my dreams\n\nWould be promised and someday be mine\n\nHe told me that my power would grow\n\nLike the grapes that thrive on the vine\n\n[:Encanto - Cast]\n\nÓye, Mariano's on his way\n\n[:Adassa & _Diane Guerrero_]\n\nHe told me that the man of my dreams\n\nWould be just out of reach, betrothed to another\n\nIt's like I hear him now (_Hey, sis_)\n\n(_I want not a sound out of you_) It's like I can hear him now\n\nI can hear him now\n\n[:Stephanie Beatriz]\n\nUm, Bruno\n\nYeah, about that Bruno\n\nI really need to know about Bruno\n\nGimme the truth and the whole truth, Bruno\n\n[:Rhenzy Feliz]\n\nIsabela, your boyfriend's here\n\n[:Angie Cepeda & Carolina Gaitán]\nTime for dinner\n\n[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_**, Diane Guerrero]\nIt was my wedding day, we were getting ready (_It was our wedding day_)**(Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling)**  **_(A seven-foot frame, rats along his back)_** <Diane Guerrero>(He told me that the life of my dreams)</Diane Guerrero>\nAnd there wasn't a cloud in the sky _(No clouds allowed in the sky_) **(I associate him with the sound of falling sand, ch, ch, ch)** **_(When he calls your name, it all fades to black)_**  <Diane Guerrero>(Would be promised and someday be mine) </Diane Guerrero>\nBruno walks in with a mischievous grin _(Thunder!)_ (**It's a heavy lift with a gift so humbling, always left Abuela and the family fumbling**) **_(Yeah, he sees your dreams and feasts on your screams)_** <Diane Guerrero>(He told me that my power would grow)</Diane Guerrero>\nYou telling this story or am I?**(Grappling with prophecies they couldn't understand)**<Diane Guerrero>(Like the grapes that thrive on the vine)</Diane Guerrero>\n\n[:Encanto - Cast, _Adassa_, **Diane Guerrero**]\nÓye, Mariano's on his way _(Do you understand?) _ **(I'm fine)**\n\n[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_** & Diane Guerrero]\nBruno says, \"It looks like rain\" _(Why did he tell us?)_ (**He told me that the man of my dreams**) (**_A seven-foot frame, rats along his back_**) <Diane Guerrero>(He told me that the life of my dreams)</Diane Guerrero>\nIn doing so, he floods my brain (_Abuela, get the umbrellas_) **(Would be just out of reach, betrothed to another, another)** **_(When he calls your name, it all fades to black)_** <Diane Guerrero>(Would be promised and someday be mine)</Diane Guerrero>\nMarried in a hurricane  _(What a joyous day_) **(And I'm fine, and I'm fine, and I'm fine, I'll be fine)** **_(Yeah, he sees your dreams and feasts on your screams)_** <Diane Guerrero>(And I'm fine, and I'm fine, and I'm fine, I'm fine)</Diane Guerrero>\n\n[:Encanto - Cast]\n\nHe's here\n\nDon't talk about Bruno\n\n[:Stephanie Beatriz]\n\nWhy did I talk about Bruno?\n\n[:Encanto - Cast]\n\nNot a word about Bruno\n\n[:Stephanie Beatriz]\n\nI never shoulda brought up Bruno",
       "artistImages": {
         "Carolina Gaitán": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthicc-uwu.mywaifulist.moe%2Fwaifus%2Fpepa-madrigal%2FOPflFwxrS5TCrgVruNqJxeTRJCbJr7AR7SjDO8qR.jpg%3Fwidth%3D600&f=1&nofb=1&ipt=eeb92af48c50a7069ff61d11362a3e103464afa80eb570cdbcb6efc92c92b876",
         "Mauro Castillo": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthebadpod.com%2Fwp-content%2Fuploads%2F2025%2F01%2FFelix-Madrigal.jpg&f=1&nofb=1&ipt=5ce8d5044ebe186f9184f476ef18d721cc3965233b2e881ed742d4268a782419",
@@ -73616,9 +73616,9 @@
       "artistColors": {
         "Carolina Gaitán": "#fff94d",
         "Mauro Castillo": "#fd8617",
-        "Adassa": "#fc5587",
-        "Ensemble - Cast": "#74fbd2",
-        "Stephanie Beatriz": "#63fdf2",
+        "Adassa": "#fe3ea4",
+        "Ensemble - Cast": "#7f8ccc",
+        "Stephanie Beatriz": "#239a92",
         "Diane Guerrero": "#e15ff2",
         "Rhenzy Feliz": "#c7ff2e",
         "Angie Cepeda": "#e9a5b2"
@@ -74119,7 +74119,7 @@
           "segments": [
             {
               "text": "Hey!",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74128,7 +74128,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa]",
@@ -74146,7 +74146,7 @@
           "segments": [
             {
               "text": "Grew to live in fear of Bruno stuttering or stumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74155,7 +74155,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74173,7 +74173,7 @@
           "segments": [
             {
               "text": "I can always hear him sort of muttering and mumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74182,7 +74182,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74200,7 +74200,7 @@
           "segments": [
             {
               "text": "I associate him with the sound of falling sand ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74209,7 +74209,7 @@
             },
             {
               "text": "(Ch, ch, ch)",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74218,7 +74218,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74236,7 +74236,7 @@
           "segments": [
             {
               "text": "It's a heavy lift with a gift so humbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74245,7 +74245,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74263,7 +74263,7 @@
           "segments": [
             {
               "text": "Always left Abuela and the family fumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74272,7 +74272,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74290,7 +74290,7 @@
           "segments": [
             {
               "text": "Grappling with prophecies they couldn't understand",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74299,7 +74299,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74317,7 +74317,7 @@
           "segments": [
             {
               "text": "Do you understand?",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74326,7 +74326,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74425,19 +74425,19 @@
           "segments": [
             {
               "text": "Hey",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": null,
           "end": null,
           "wordSync": null,
@@ -74463,7 +74463,7 @@
             },
             {
               "text": "No, no",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74512,7 +74512,7 @@
             },
             {
               "text": "We don't talk about Bruno",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74550,11 +74550,11 @@
           "segments": [
             {
               "text": "He told me my fish would die, the next day, dead (",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -74566,19 +74566,19 @@
             },
             {
               "text": ")",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": null,
           "end": null,
           "wordSync": null,
@@ -74593,16 +74593,16 @@
           "segments": [
             {
               "text": "He told me I'd grow a gut, and just like he said",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74620,11 +74620,11 @@
           "segments": [
             {
               "text": "He  said that all my hair would disappear, now look at my head (",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -74636,11 +74636,11 @@
             },
             {
               "text": ") ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -74651,8 +74651,8 @@
               "artists": []
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74670,16 +74670,16 @@
           "segments": [
             {
               "text": "Your fate is sealed when your prophecy is read",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74805,19 +74805,19 @@
           "segments": [
             {
               "text": "Óye, Mariano's on his way",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 129.06,
           "end": 131.06,
           "wordSync": null,
@@ -74832,7 +74832,7 @@
           "segments": [
             {
               "text": "He told me that the man of my dreams",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74841,7 +74841,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa & _Diane Guerrero_]",
@@ -74859,7 +74859,7 @@
           "segments": [
             {
               "text": "Would be just out of reach, betrothed to another",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74868,7 +74868,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -74886,7 +74886,7 @@
           "segments": [
             {
               "text": "It's like I hear him now (",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74904,7 +74904,7 @@
             },
             {
               "text": ")",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74915,7 +74915,7 @@
           "singer": "Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #fc5587, #e15ff2)",
+          "gradient": "linear-gradient(90deg, #fe3ea4, #e15ff2)",
           "sectionHeader": null,
           "start": null,
           "end": null,
@@ -74931,7 +74931,7 @@
           "segments": [
             {
               "text": "(",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74949,7 +74949,7 @@
             },
             {
               "text": ") It's like I can hear him now",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74960,7 +74960,7 @@
           "singer": "Diane Guerrero, Adassa",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #e15ff2, #fc5587)",
+          "gradient": "linear-gradient(90deg, #e15ff2, #fe3ea4)",
           "sectionHeader": null,
           "start": null,
           "end": null,
@@ -74976,7 +74976,7 @@
           "segments": [
             {
               "text": "I can hear him now",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74985,7 +74985,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -75003,7 +75003,7 @@
           "segments": [
             {
               "text": "Um, Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75012,7 +75012,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -75030,7 +75030,7 @@
           "segments": [
             {
               "text": "Yeah, about that Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75039,7 +75039,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -75057,7 +75057,7 @@
           "segments": [
             {
               "text": "I really need to know about Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75066,7 +75066,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -75084,7 +75084,7 @@
           "segments": [
             {
               "text": "Gimme the truth and the whole truth, Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75093,7 +75093,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -75162,7 +75162,7 @@
           "isSplit": false
         },
         {
-          "text": "It was my wedding day, we were getting ready (it was our wedding day) (Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) (A seven-foot frame, rats along his back) (He told me that the life of my dreams)",
+          "text": "It was my wedding day, we were getting ready (It was our wedding day) (Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) (A seven-foot frame, rats along his back) (He told me that the life of my dreams)",
           "segments": [
             {
               "text": "It was my wedding day, we were getting ready (",
@@ -75174,7 +75174,7 @@
               ]
             },
             {
-              "text": "it was our wedding day",
+              "text": "It was our wedding day",
               "color": "#fd8617",
               "isGradient": false,
               "gradient": "",
@@ -75202,7 +75202,7 @@
             },
             {
               "text": "(Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75283,7 +75283,7 @@
             },
             {
               "text": "(I associate him with the sound of falling sand, ch, ch, ch) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75346,7 +75346,7 @@
             },
             {
               "text": "It's a heavy lift with a gift so humbling, always left Abuela and the family fumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75418,7 +75418,7 @@
             },
             {
               "text": "(Grappling with prophecies they couldn't understand) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75438,7 +75438,7 @@
           "singer": "Carolina Gaitán, Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #fff94d, #fc5587)",
+          "gradient": "linear-gradient(90deg, #fff94d, #fe3ea4)",
           "sectionHeader": null,
           "start": null,
           "end": null,
@@ -75454,25 +75454,25 @@
           "segments": [
             {
               "text": "Óye, Mariano's on his way ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
               "text": " ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
               "text": "(Do you understand?) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75489,11 +75489,11 @@
               ]
             }
           ],
-          "singer": "Ensemble - Cast, Adassa, Diane Guerrero",
+          "singer": "Encanto - Cast, Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #74fbd2, #fc5587)",
-          "sectionHeader": "[:Ensemble - Cast, _Adassa_, **Diane Guerrero**]",
+          "gradient": "linear-gradient(90deg, #e6e5ff, #fe3ea4)",
+          "sectionHeader": "[:Encanto - Cast, _Adassa_, **Diane Guerrero**]",
           "start": null,
           "end": null,
           "wordSync": null,
@@ -75526,7 +75526,7 @@
             },
             {
               "text": "He told me that the man of my dreams",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75634,7 +75634,7 @@
             },
             {
               "text": "(Would be just out of reach, betrothed to another, another) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75715,7 +75715,7 @@
             },
             {
               "text": "(And I'm fine, and I'm fine, and I'm fine, I'll be fine) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75760,19 +75760,19 @@
           "segments": [
             {
               "text": "He's here",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 196.22,
           "end": 197.04,
           "wordSync": null,
@@ -75787,16 +75787,16 @@
           "segments": [
             {
               "text": "Don't talk about Bruno",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -75814,7 +75814,7 @@
           "segments": [
             {
               "text": "Why did I talk about Bruno?",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75823,7 +75823,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -75841,19 +75841,19 @@
           "segments": [
             {
               "text": "Not a word about Bruno",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 201.84,
           "end": 203.11,
           "wordSync": null,
@@ -75868,7 +75868,7 @@
           "segments": [
             {
               "text": "I never shoulda brought up Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75877,7 +75877,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -76385,7 +76385,7 @@
           "segments": [
             {
               "text": "Hey!",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76394,7 +76394,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa]",
@@ -76412,7 +76412,7 @@
           "segments": [
             {
               "text": "Grew to live in fear of Bruno stuttering or stumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76421,7 +76421,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76439,7 +76439,7 @@
           "segments": [
             {
               "text": "I can always hear him sort of muttering and mumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76448,7 +76448,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76466,7 +76466,7 @@
           "segments": [
             {
               "text": "I associate him with the sound of falling sand ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76475,7 +76475,7 @@
             },
             {
               "text": "(Ch, ch, ch)",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76484,7 +76484,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76524,7 +76524,7 @@
           "segments": [
             {
               "text": "It's a heavy lift with a gift so humbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76533,7 +76533,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76551,7 +76551,7 @@
           "segments": [
             {
               "text": "Always left Abuela and the family fumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76560,7 +76560,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76578,7 +76578,7 @@
           "segments": [
             {
               "text": "Grappling with prophecies they couldn't understand",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76587,7 +76587,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76605,7 +76605,7 @@
           "segments": [
             {
               "text": "Do you understand?",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76614,7 +76614,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -76713,19 +76713,19 @@
           "segments": [
             {
               "text": "Hey",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 84.02168216594231,
           "end": 85.0888821659453,
           "wordSync": null,
@@ -76751,7 +76751,7 @@
             },
             {
               "text": "No, no",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76844,7 +76844,7 @@
             },
             {
               "text": "We don't talk about Bruno",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76926,11 +76926,11 @@
           "segments": [
             {
               "text": "He told me my fish would die, the next day, dead (",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -76942,19 +76942,19 @@
             },
             {
               "text": ")",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 94.12488216594528,
           "end": 98.78418216594231,
           "wordSync": null,
@@ -77007,16 +77007,16 @@
           "segments": [
             {
               "text": "He told me I'd grow a gut, and just like he said",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77034,11 +77034,11 @@
           "segments": [
             {
               "text": "He  said that all my hair would disappear, now look at my head (",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -77050,11 +77050,11 @@
             },
             {
               "text": ") ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
@@ -77065,8 +77065,8 @@
               "artists": []
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77140,16 +77140,16 @@
           "segments": [
             {
               "text": "Your fate is sealed when your prophecy is read",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77275,19 +77275,19 @@
           "segments": [
             {
               "text": "Óye, Mariano's on his way",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 129.2238090934601,
           "end": 131.17300909346307,
           "wordSync": null,
@@ -77302,7 +77302,7 @@
           "segments": [
             {
               "text": "He told me that the man of my dreams",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77311,7 +77311,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa & _Diane Guerrero_]",
@@ -77329,7 +77329,7 @@
           "segments": [
             {
               "text": "Would be just out of reach, betrothed to another",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77338,7 +77338,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77356,7 +77356,7 @@
           "segments": [
             {
               "text": "It's like I hear him now (",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77374,7 +77374,7 @@
             },
             {
               "text": ")",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77385,7 +77385,7 @@
           "singer": "Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #fc5587, #e15ff2)",
+          "gradient": "linear-gradient(90deg, #fe3ea4, #e15ff2)",
           "sectionHeader": null,
           "start": 140.92470909346605,
           "end": 144.07759809346007,
@@ -77441,7 +77441,7 @@
           "segments": [
             {
               "text": "(",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77459,7 +77459,7 @@
             },
             {
               "text": ") It's like I can hear him now",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77470,7 +77470,7 @@
           "singer": "Diane Guerrero, Adassa",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #e15ff2, #fc5587)",
+          "gradient": "linear-gradient(90deg, #e15ff2, #fe3ea4)",
           "sectionHeader": null,
           "start": 144.61569809346156,
           "end": 148.3102980934556,
@@ -77526,7 +77526,7 @@
           "segments": [
             {
               "text": "I can hear him now",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77535,7 +77535,7 @@
             }
           ],
           "singer": "Adassa",
-          "color": "#fc5587",
+          "color": "#fe3ea4",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77553,7 +77553,7 @@
           "segments": [
             {
               "text": "Um, Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77562,7 +77562,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -77580,7 +77580,7 @@
           "segments": [
             {
               "text": "Yeah, about that Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77589,7 +77589,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77607,7 +77607,7 @@
           "segments": [
             {
               "text": "I really need to know about Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77616,7 +77616,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77634,7 +77634,7 @@
           "segments": [
             {
               "text": "Gimme the truth and the whole truth, Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77643,7 +77643,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -77712,7 +77712,7 @@
           "isSplit": false
         },
         {
-          "text": "It was my wedding day, we were getting ready (it was our wedding day) (Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) (A seven-foot frame, rats along his back) (He told me that the life of my dreams)",
+          "text": "It was my wedding day, we were getting ready (It was our wedding day) (Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) (A seven-foot frame, rats along his back) (He told me that the life of my dreams)",
           "segments": [
             {
               "text": "It was my wedding day, we were getting ready (",
@@ -77724,7 +77724,7 @@
               ]
             },
             {
-              "text": "it was our wedding day",
+              "text": "It was our wedding day",
               "color": "#fd8617",
               "isGradient": false,
               "gradient": "",
@@ -77752,7 +77752,7 @@
             },
             {
               "text": "(Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77786,22 +77786,22 @@
           "start": 163.82504385504,
           "end": 167.83734385504448,
           "wordSync": null,
-          "pronunciation": null,
+          "pronunciation": "",
           "translation": "",
           "spacingText": "",
           "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
-              "text": "(it was our wedding day)",
+              "text": "(It was our wedding day)",
               "charStart": 45,
               "charEnd": 69,
-              "start": 165.75240809346306,
-              "end": 167.33140809346304,
+              "start": 165.8184510305131,
+              "end": 167.38685103051162,
               "segments": [
                 {
                   "text": "(",
-                  "color": "#f386f9",
+                  "color": "#fff94d",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77809,8 +77809,8 @@
                   ]
                 },
                 {
-                  "text": "it was our wedding day",
-                  "color": "#d0f986",
+                  "text": "It was our wedding day",
+                  "color": "#fd8617",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77819,7 +77819,7 @@
                 },
                 {
                   "text": ")",
-                  "color": "#f386f9",
+                  "color": "#fff94d",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77839,7 +77839,7 @@
               "segments": [
                 {
                   "text": "(Grew to live in fear of Bruno stuttering or stumbling, I can always hear him sort of muttering and mumbling)",
-                  "color": "#8cf986",
+                  "color": "#fe3ea4",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77854,12 +77854,12 @@
               "text": "(A seven-foot frame, rats along his back)",
               "charStart": 180,
               "charEnd": 221,
-              "start": 163.85244385503853,
-              "end": 167.83734385504448,
+              "start": 163.82504385504,
+              "end": 167.58720916594083,
               "segments": [
                 {
                   "text": "(A seven-foot frame, rats along his back)",
-                  "color": "#86f9c5",
+                  "color": "#c7ff2e",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77874,12 +77874,12 @@
               "text": "(He told me that the life of my dreams)",
               "charStart": 222,
               "charEnd": 261,
-              "start": 164.3198120934586,
-              "end": 167.43691209346008,
+              "start": 163.82504385504,
+              "end": 167.83734385504448,
               "segments": [
                 {
                   "text": "(He told me that the life of my dreams)",
-                  "color": "#86e7f9",
+                  "color": "#e15ff2",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -77933,7 +77933,7 @@
             },
             {
               "text": "(I associate him with the sound of falling sand, ch, ch, ch) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78087,7 +78087,7 @@
             },
             {
               "text": "It's a heavy lift with a gift so humbling, always left Abuela and the family fumbling",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78259,7 +78259,7 @@
             },
             {
               "text": "(Grappling with prophecies they couldn't understand) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78279,7 +78279,7 @@
           "singer": "Carolina Gaitán, Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #fff94d, #fc5587)",
+          "gradient": "linear-gradient(90deg, #fff94d, #fe3ea4)",
           "sectionHeader": null,
           "start": 178.19241609346307,
           "end": 180.41965392752076,
@@ -78337,25 +78337,25 @@
           "segments": [
             {
               "text": "Óye, Mariano's on his way ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
               "text": " ",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             },
             {
               "text": "(Do you understand?) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78372,11 +78372,11 @@
               ]
             }
           ],
-          "singer": "Ensemble - Cast, Adassa, Diane Guerrero",
+          "singer": "Encanto - Cast, Adassa, Diane Guerrero",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #74fbd2, #fc5587)",
-          "sectionHeader": "[:Ensemble - Cast, _Adassa_, **Diane Guerrero**]",
+          "gradient": "linear-gradient(90deg, #e6e5ff, #fe3ea4)",
+          "sectionHeader": "[:Encanto - Cast, _Adassa_, **Diane Guerrero**]",
           "start": 180.49675392752224,
           "end": 182.45637085504,
           "wordSync": null,
@@ -78451,7 +78451,7 @@
             },
             {
               "text": "He told me that the man of my dreams",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78677,7 +78677,7 @@
             },
             {
               "text": "(Would be just out of reach, betrothed to another, another) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78858,7 +78858,7 @@
             },
             {
               "text": "(And I'm fine, and I'm fine, and I'm fine, I'll be fine) ",
-              "color": "#fc5587",
+              "color": "#fe3ea4",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -78892,7 +78892,7 @@
           "start": 191.96554792752224,
           "end": 196.31358409346157,
           "wordSync": null,
-          "pronunciation": "",
+          "pronunciation": null,
           "translation": "",
           "spacingText": "",
           "lang": "auto",
@@ -78994,19 +78994,19 @@
           "segments": [
             {
               "text": "He's here",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 196.31397609346158,
           "end": 197.13657609346308,
           "wordSync": null,
@@ -79021,16 +79021,16 @@
           "segments": [
             {
               "text": "Don't talk about Bruno",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -79048,7 +79048,7 @@
           "segments": [
             {
               "text": "Why did I talk about Bruno?",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -79057,7 +79057,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -79075,19 +79075,19 @@
           "segments": [
             {
               "text": "Not a word about Bruno",
-              "color": "#74fbd2",
+              "color": "#e6e5ff",
               "isGradient": false,
               "gradient": "",
               "artists": [
-                "Ensemble - Cast"
+                "Encanto - Cast"
               ]
             }
           ],
-          "singer": "Ensemble - Cast",
-          "color": "#74fbd2",
+          "singer": "Encanto - Cast",
+          "color": "#e6e5ff",
           "isGradient": false,
           "gradient": "",
-          "sectionHeader": "[:Ensemble - Cast]",
+          "sectionHeader": "[:Encanto - Cast]",
           "start": 201.68021609346007,
           "end": 203.42441109346308,
           "wordSync": null,
@@ -79102,7 +79102,7 @@
           "segments": [
             {
               "text": "I never shoulda brought up Bruno",
-              "color": "#63fdf2",
+              "color": "#239a92",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -79111,7 +79111,7 @@
             }
           ],
           "singer": "Stephanie Beatriz",
-          "color": "#63fdf2",
+          "color": "#239a92",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
@@ -79126,7 +79126,7 @@
         }
       ],
       "forceSource": "youtube",
-      "playId": 1786801826338
+      "playId": 1786816805560
     }
   ],
   "settings": {
