@@ -53,8 +53,7 @@ export const getRelativeRect = (element, containerRect) => {
 };
 
 export const generateSafeAdlibPosition = (
-  adlibWidth,
-  adlibHeight,
+  node,
   containerRect,
   cBox,
   sBox,
@@ -180,37 +179,54 @@ export const generateSafeAdlibPosition = (
     targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom };
   }
 
-  if (targetArea.width === undefined) targetArea.width = targetArea.right - targetArea.left;
-  if (targetArea.height === undefined) targetArea.height = targetArea.bottom - targetArea.top;
+  targetArea.width = targetArea.width || (targetArea.right - targetArea.left);
+  targetArea.height = targetArea.height || (targetArea.bottom - targetArea.top);
 
-  // --- SCALING AND WRAPPING LOGIC ---
-  const tw = Math.max(10, targetArea.width);
-  const th = Math.max(10, targetArea.height);
+  // --- 6. NATIVE BROWSER SIZING & SCALING ---
+  const tw = Math.max(20, targetArea.width);
+  const th = Math.max(20, targetArea.height);
   
-  const maxWidth = Math.max(50, tw * 0.95); 
+  // We cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
+  const maxWidth = tw * 0.95; 
+
+  // Temporarily force the browser to apply the maxWidth restriction to our node
+  const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
+  node.style.setProperty('--adlib-max-width', `${maxWidth}px`);
   
-  const requiredArea = adlibWidth * adlibHeight;
-  const availableArea = tw * th;
+  // Read the exact physical dimensions required by the text *after* natural browser wrapping
+  const actualWidth = node.scrollWidth;
+  const actualHeight = node.scrollHeight;
+
+  // Reset immediately to avoid side effects before the tracker officially applies the final CSS state
+  if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
+  else node.style.removeProperty('--adlib-max-width');
+
+  // If an unbreakable word bursts the maxWidth, or the wrapped block is too tall, scale it down mathematically.
   let scale = 1;
-
-  if (requiredArea > availableArea) {
-    scale = Math.max(0.35, Math.sqrt(availableArea / requiredArea));
+  if (actualWidth > maxWidth) {
+    scale = maxWidth / actualWidth;
   }
+  if (actualHeight * scale > th * 0.95) {
+    scale = (th * 0.95) / actualHeight;
+  }
+  
+  // Clamp scale so text doesn't disappear entirely
+  scale = Math.max(0.2, scale);
 
-  // 6. GENERATE INNER SAFE ZONE
-  const assumedWidth = Math.min(adlibWidth * scale, maxWidth);
-  const wrapRatio = Math.max(1, (adlibWidth * scale) / maxWidth);
-  const assumedHeight = (adlibHeight * scale) * wrapRatio;
+  const visualWidth = actualWidth * scale;
+  const visualHeight = actualHeight * scale;
 
-  const padX = assumedWidth / 2;
-  const padY = assumedHeight / 2;
+  // 7. GENERATE INNER SAFE ZONE
+  // Adding 10% extra padding to the visual box ensures the corners don't clip out when rotated
+  const padX = (visualWidth / 2) * 1.1; 
+  const padY = (visualHeight / 2) * 1.1;
 
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
   let innerBottom = targetArea.bottom - padY;
 
-  // Fallback if the target area is smaller than the ad-lib itself
+  // Fallback if the target area is smaller than the ad-lib itself (forces center alignment)
   if (innerLeft > innerRight) {
     const mid = (targetArea.left + targetArea.right) / 2;
     innerLeft = innerRight = mid;
@@ -224,7 +240,7 @@ export const generateSafeAdlibPosition = (
   const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
   const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
 
-  // 7. ROTATION PROFILING
+  // 8. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
   const canvasMidY = containerRect.height / 2;
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);

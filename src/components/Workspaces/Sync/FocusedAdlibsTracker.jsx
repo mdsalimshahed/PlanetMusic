@@ -188,7 +188,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                       maxWidth: '100%',
                       width: 'max-content',
                       whiteSpace: 'normal',
-                      wordBreak: 'break-word'
+                      wordBreak: 'normal',
+                      overflowWrap: 'normal'
                     }}
                     dir="ltr"
                   >
@@ -199,7 +200,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   {alignedAdlibJSX}
                 </span>
                 {displayPronString && (
-                  <span className="pronunciation-text" style={{...basePronStyle, whiteSpace: 'normal', wordBreak: 'break-word', maxWidth: '100%'}} dir="ltr">
+                  <span className="pronunciation-text" style={{...basePronStyle, whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', maxWidth: '100%'}} dir="ltr">
                     {renderFormattedTranslation(displayPronString)}
                   </span>
                 )}
@@ -292,8 +293,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const sBox = getRelativeRect(singerNode, containerRect);
             
             pos = generateSafeAdlibPosition(
-              item.node.offsetWidth || 150,
-              item.node.offsetHeight || 40,
+              item.node, // Pass the DOM Node itself to allow physical measuring 
               containerRect,
               cBox,
               sBox,
