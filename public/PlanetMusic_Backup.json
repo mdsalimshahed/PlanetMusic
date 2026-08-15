@@ -49940,8 +49940,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 1: Suzuka]",
-          "translation": "What about strong women?",
-          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "I don't know what a strong woman is",
+          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い女が\",\"trans\":\"Tsuyoi on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "強い 女 が  どう とか",
           "lang": "ja",
           "start": 14.767942,
@@ -49966,8 +49966,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "For some reason, I'm saying this from above.",
-          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か\",\"trans\":\"Nazeka\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "For some reason, I'm telling you from above",
+          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "何故か 上 から  言うけど",
           "lang": "ja",
           "start": 18.221606,
@@ -49992,8 +49992,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "you don't understand anything",
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "translation": "You don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
           "spacingText": "あなた 何 に も わかっちゃ いない",
           "lang": "ja",
           "start": 21.636335,
@@ -50018,8 +50018,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "What about three fingers?",
-          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指\",\"trans\":\"Mitsuyubi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ついて\",\"trans\":\"Tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "You're pointing your fingers at me",
+          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "三つ指 ついて  どう とか",
           "lang": "ja",
           "start": 28.618175,
@@ -50044,8 +50044,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "As the old saying goes,",
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "It's the same old saying",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "start": 32.17671,
@@ -50070,7 +50070,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I cry, but I endure it, but I don't want to understand",
+          "translation": "I'm crying, but I'm enduring it, but I don't want to understand",
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
@@ -50096,8 +50096,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
-          "translation": "Takamine flower",
-          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺\",\"trans\":\"Takane\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"花\",\"trans\":\"Hana\"}]}",
+          "translation": "A flower on a high mountain",
+          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺の花\",\"trans\":\"Takane no hana\"}]}",
           "spacingText": "高嶺 の 花",
           "lang": "ja",
           "start": 41.765806,
@@ -50122,8 +50122,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "walking lily flower",
-          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く\",\"trans\":\"Aruku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"百合の花\",\"trans\":\"Yurinohana\"}]}",
+          "translation": "A walking lily",
+          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く百合の花\",\"trans\":\"Aruku yurinohana\"}]}",
           "spacingText": "歩く 百合の花",
           "lang": "ja",
           "start": 45.436563,
@@ -50148,8 +50148,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "swaying in a strong wind",
-          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風\",\"trans\":\"Kaze\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
+          "translation": "Swaying in the strong wind",
+          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風に\",\"trans\":\"Kaze ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
           "spacingText": "強い  風 に  揺れる",
           "lang": "ja",
           "start": 48.95043,
@@ -50196,9 +50196,9 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
+          "translation": "The aesthetics of an unbendable maiden",
           "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
-          "spacingText": "",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 57.779713,
           "end": 64.306504,
@@ -50224,10 +50224,10 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
@@ -50252,7 +50252,7 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -50296,8 +50296,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Don't disturb Tsurezure",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 64.927286,
@@ -50324,7 +50324,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -50396,8 +50396,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Changing Yamato Nadeshiko",
-          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "translation": "The changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わりゆく\",\"trans\":\"Kawari yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
           "spacingText": "変わり ゆく  大和撫子",
           "lang": "ja",
           "start": 71.951575,
@@ -50424,7 +50424,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -50496,8 +50496,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Dream, dream, don't forget",
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "translation": "Don't forget your dreams",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢夢忘れないで\",\"trans\":\"Yume yume wasurenaide\"}]}",
           "spacingText": "夢 夢 忘れないで",
           "lang": "ja",
           "start": 78.779698,
@@ -50524,7 +50524,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -50574,8 +50574,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 2: Suzuka]",
-          "translation": "What about weak women?",
-          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い\",\"trans\":\"Yowai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "What's wrong with weak women?",
+          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い女が\",\"trans\":\"Yowai on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "弱い 女 が  どう とか",
           "lang": "ja",
           "start": 105.739671,
@@ -50600,8 +50600,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I always say it from above.",
-          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも\",\"trans\":\"Itsumo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "They always say it from above, but",
+          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも上から\",\"trans\":\"Itsumo ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "いつも 上 から  言うけど",
           "lang": "ja",
           "start": 109.381823,
@@ -50626,8 +50626,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "you don't understand anything",
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "translation": "You don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
           "spacingText": "あなた 何 に も わかっちゃ いない",
           "lang": "ja",
           "start": 112.673409,
@@ -50652,8 +50652,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "How about taking a step back?",
-          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩\",\"trans\":\"Ippo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"下がって\",\"trans\":\"Sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "Take a step back and say something",
+          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩下がって\",\"trans\":\"Ippo sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "一歩 下がって  どう とか",
           "lang": "ja",
           "start": 119.700493,
@@ -50678,8 +50678,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "As the old saying goes,",
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "As the old saying goes",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "start": 123.345174,
@@ -50704,7 +50704,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I cry, but I endure it, but I don't want to understand",
+          "translation": "I'm crying but I'm enduring it but I don't want to understand",
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
@@ -50730,8 +50730,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
-          "translation": "Standing up, peonies",
-          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば\",\"trans\":\"Tateba\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"芍薬\",\"trans\":\"Shakuyaku\"}]}",
+          "translation": "A peony when I stand",
+          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば芍薬\",\"trans\":\"Tateba shakuyaku\"}]}",
           "spacingText": "立てば 芍薬",
           "lang": "ja",
           "start": 132.938275,
@@ -50756,8 +50756,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "sitting peony",
-          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る\",\"trans\":\"Suwaru\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"牡丹\",\"trans\":\"Botan\"}]}",
+          "translation": "A peony when I sit",
+          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る牡丹\",\"trans\":\"Suwaru botan\"}]}",
           "spacingText": "座る 牡丹",
           "lang": "ja",
           "start": 136.506403,
@@ -50782,8 +50782,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "get wet in the strong rain",
-          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨\",\"trans\":\"Ame\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
+          "translation": "Getting wet in the strong rain",
+          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨に\",\"trans\":\"Ame ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
           "spacingText": "強い  雨 に  濡れる",
           "lang": "ja",
           "start": 139.966277,
@@ -50830,8 +50830,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "translation": "The aesthetics of an unyielding maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
           "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 148.824351,
@@ -50858,7 +50858,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -50930,8 +50930,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Tsurezure Don't disturb me",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 155.928215,
@@ -50958,8 +50958,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Subi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -51010,7 +51010,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": "[Refrain: Kanon, Mizyu, Rin]",
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51038,7 +51038,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51066,7 +51066,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51094,7 +51094,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51122,7 +51122,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51150,7 +51150,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51178,7 +51178,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51206,7 +51206,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -51254,8 +51254,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "translation": "Unbendable maiden aesthetics",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
           "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 194.471392,
@@ -51282,8 +51282,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Shubhi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -51354,8 +51354,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Tsurezure Don't disturb",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 201.453813,
@@ -51382,8 +51382,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Shubhi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -51455,7 +51455,7 @@
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
           "translation": "Changing Yamato Nadeshiko",
-          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わりゆく\",\"trans\":\"Kawari yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
           "spacingText": "変わり ゆく  大和撫子",
           "lang": "ja",
           "start": 208.623445,
@@ -51482,7 +51482,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -51554,8 +51554,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Dream, dream, don't forget",
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "translation": "Don't forget your dreams",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢夢忘れないで\",\"trans\":\"Yume yume wasurenaide\"}]}",
           "spacingText": "夢 夢 忘れないで",
           "lang": "ja",
           "start": 215.397333,
@@ -51582,7 +51582,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -51634,8 +51634,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 1: Suzuka]",
-          "translation": "What about strong women?",
-          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "I don't know what a strong woman is",
+          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い女が\",\"trans\":\"Tsuyoi on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "強い 女 が  どう とか",
           "lang": "ja",
           "start": 14.767942,
@@ -51660,8 +51660,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "For some reason, I'm saying this from above.",
-          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か\",\"trans\":\"Nazeka\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "For some reason, I'm telling you from above",
+          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "何故か 上 から  言うけど",
           "lang": "ja",
           "start": 18.221606,
@@ -51686,8 +51686,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "you don't understand anything",
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "translation": "You don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
           "spacingText": "あなた 何 に も わかっちゃ いない",
           "lang": "ja",
           "start": 21.636335,
@@ -51712,8 +51712,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "What about three fingers?",
-          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指\",\"trans\":\"Mitsuyubi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ついて\",\"trans\":\"Tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "You're pointing your fingers at me",
+          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "三つ指 ついて  どう とか",
           "lang": "ja",
           "start": 28.618175,
@@ -51738,8 +51738,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "As the old saying goes,",
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "It's the same old saying",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "start": 32.17671,
@@ -51764,7 +51764,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I cry, but I endure it, but I don't want to understand",
+          "translation": "I'm crying, but I'm enduring it, but I don't want to understand",
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
@@ -51790,8 +51790,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
-          "translation": "Takamine flower",
-          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺\",\"trans\":\"Takane\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"花\",\"trans\":\"Hana\"}]}",
+          "translation": "A flower on a high mountain",
+          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺の花\",\"trans\":\"Takane no hana\"}]}",
           "spacingText": "高嶺 の 花",
           "lang": "ja",
           "start": 41.765806,
@@ -51816,8 +51816,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "walking lily flower",
-          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く\",\"trans\":\"Aruku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"百合の花\",\"trans\":\"Yurinohana\"}]}",
+          "translation": "A walking lily",
+          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く百合の花\",\"trans\":\"Aruku yurinohana\"}]}",
           "spacingText": "歩く 百合の花",
           "lang": "ja",
           "start": 45.436563,
@@ -51842,8 +51842,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "swaying in a strong wind",
-          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風\",\"trans\":\"Kaze\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
+          "translation": "Swaying in the strong wind",
+          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風に\",\"trans\":\"Kaze ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
           "spacingText": "強い  風 に  揺れる",
           "lang": "ja",
           "start": 48.95043,
@@ -51890,9 +51890,9 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
+          "translation": "The aesthetics of an unbendable maiden",
           "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
-          "spacingText": "",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 57.779713,
           "end": 64.306504,
@@ -51918,10 +51918,10 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
@@ -51946,7 +51946,7 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -51990,8 +51990,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Don't disturb Tsurezure",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 64.927286,
@@ -52018,7 +52018,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -52090,8 +52090,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Changing Yamato Nadeshiko",
-          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "translation": "The changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わりゆく\",\"trans\":\"Kawari yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
           "spacingText": "変わり ゆく  大和撫子",
           "lang": "ja",
           "start": 71.951575,
@@ -52118,7 +52118,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -52190,8 +52190,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Dream, dream, don't forget",
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "translation": "Don't forget your dreams",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢夢忘れないで\",\"trans\":\"Yume yume wasurenaide\"}]}",
           "spacingText": "夢 夢 忘れないで",
           "lang": "ja",
           "start": 78.779698,
@@ -52218,7 +52218,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -52268,8 +52268,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 2: Suzuka]",
-          "translation": "What about weak women?",
-          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い\",\"trans\":\"Yowai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "What's wrong with weak women?",
+          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い女が\",\"trans\":\"Yowai on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "弱い 女 が  どう とか",
           "lang": "ja",
           "start": 105.739671,
@@ -52294,8 +52294,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I always say it from above.",
-          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも\",\"trans\":\"Itsumo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "They always say it from above, but",
+          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも上から\",\"trans\":\"Itsumo ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "いつも 上 から  言うけど",
           "lang": "ja",
           "start": 109.381823,
@@ -52320,8 +52320,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "you don't understand anything",
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "translation": "You don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
           "spacingText": "あなた 何 に も わかっちゃ いない",
           "lang": "ja",
           "start": 112.673409,
@@ -52346,8 +52346,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "How about taking a step back?",
-          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩\",\"trans\":\"Ippo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"下がって\",\"trans\":\"Sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "translation": "Take a step back and say something",
+          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩下がって\",\"trans\":\"Ippo sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
           "spacingText": "一歩 下がって  どう とか",
           "lang": "ja",
           "start": 119.700493,
@@ -52372,8 +52372,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "As the old saying goes,",
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "translation": "As the old saying goes",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "start": 123.345174,
@@ -52398,7 +52398,7 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "I cry, but I endure it, but I don't want to understand",
+          "translation": "I'm crying but I'm enduring it but I don't want to understand",
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
@@ -52424,8 +52424,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
-          "translation": "Standing up, peonies",
-          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば\",\"trans\":\"Tateba\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"芍薬\",\"trans\":\"Shakuyaku\"}]}",
+          "translation": "A peony when I stand",
+          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば芍薬\",\"trans\":\"Tateba shakuyaku\"}]}",
           "spacingText": "立てば 芍薬",
           "lang": "ja",
           "start": 132.938275,
@@ -52450,8 +52450,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "sitting peony",
-          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る\",\"trans\":\"Suwaru\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"牡丹\",\"trans\":\"Botan\"}]}",
+          "translation": "A peony when I sit",
+          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る牡丹\",\"trans\":\"Suwaru botan\"}]}",
           "spacingText": "座る 牡丹",
           "lang": "ja",
           "start": 136.506403,
@@ -52476,8 +52476,8 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "get wet in the strong rain",
-          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨\",\"trans\":\"Ame\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
+          "translation": "Getting wet in the strong rain",
+          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨に\",\"trans\":\"Ame ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
           "spacingText": "強い  雨 に  濡れる",
           "lang": "ja",
           "start": 139.966277,
@@ -52524,8 +52524,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "translation": "The aesthetics of an unyielding maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
           "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 148.824351,
@@ -52552,7 +52552,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -52624,8 +52624,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Tsurezure Don't disturb me",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 155.928215,
@@ -52652,8 +52652,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Subi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -52704,7 +52704,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": "[Refrain: Kanon, Mizyu, Rin]",
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52732,7 +52732,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52760,7 +52760,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52788,7 +52788,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52816,7 +52816,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52844,7 +52844,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52872,7 +52872,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52900,7 +52900,7 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
-          "translation": "Shubi",
+          "translation": "Shubhi",
           "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
           "spacingText": "シュビ",
           "lang": "ja",
@@ -52948,8 +52948,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
-          "translation": "Aesthetics of an unbendable maiden",
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "translation": "Unbendable maiden aesthetics",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
           "spacingText": "曲げ られぬ 乙女 の 美学",
           "lang": "ja",
           "start": 194.471392,
@@ -52976,8 +52976,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Shubhi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -53048,8 +53048,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Don't get in the way",
-          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "translation": "Tsurezure Don't disturb",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
           "spacingText": "徒然  邪魔 しないで",
           "lang": "ja",
           "start": 201.453813,
@@ -53076,8 +53076,8 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
+              "translation": "(Shubhi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
             },
@@ -53149,7 +53149,7 @@
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
           "translation": "Changing Yamato Nadeshiko",
-          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わりゆく\",\"trans\":\"Kawari yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
           "spacingText": "変わり ゆく  大和撫子",
           "lang": "ja",
           "start": 208.623445,
@@ -53176,7 +53176,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -53248,8 +53248,8 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
-          "translation": "Dream, dream, don't forget",
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "translation": "Don't forget your dreams",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢夢忘れないで\",\"trans\":\"Yume yume wasurenaide\"}]}",
           "spacingText": "夢 夢 忘れないで",
           "lang": "ja",
           "start": 215.397333,
@@ -53276,7 +53276,7 @@
                 }
               ],
               "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "pronunciation": "{\"full\":\"( Shubi )\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"( Shubi )\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
               "spacingText": "( シュビ )"
@@ -71774,7 +71774,9 @@
           "end": 4.992800062946975,
           "pronunciation": "{\"full\":\"Tāmen dōu bù xiàng wǒ\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们都不像我\",\"trans\":\"Tāmen dōu bù xiàng wǒ\"}]}",
           "translation": "None of them are like me",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "他们 都 不 像 我"
         },
         {
           "text": "他们的眼睛都红了",
@@ -71798,7 +71800,9 @@
           "end": 6.350140927519261,
           "pronunciation": "{\"full\":\"Tāmen de yǎnjīng dōu hóngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们的眼睛都红了\",\"trans\":\"Tāmen de yǎnjīng dōu hóngle\"}]}",
           "translation": "Their eyes are red",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "他们 的 眼睛 都 红了"
         },
         {
           "text": "他们知道我的感觉没法代替",
@@ -71822,7 +71826,9 @@
           "end": 8.075740927520751,
           "pronunciation": "{\"full\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"他们知道我的感觉没法代替\",\"trans\":\"Tāmen zhīdào wǒ de gǎnjué méi fǎ dàitì\"}]}",
           "translation": "They know that my feelings cannot be replaced",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "他们 知道 我 的 感觉 没 法 代替"
         },
         {
           "text": "时间太紧 不要在意 谁的怀疑",
@@ -71846,7 +71852,9 @@
           "end": 9.776340927514791,
           "pronunciation": "{\"full\":\"Shíjiān tài jǐn bùyào zàiyì shéi de huáiyí\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"时间太紧\",\"trans\":\"Shíjiān tài jǐn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不要在意\",\"trans\":\"Bùyào zàiyì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"谁的怀疑\",\"trans\":\"Shéi de huáiyí\"}]}",
           "translation": "Time is too tight, don’t care who doubts",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "时间 太 紧  不要 在意  谁 的 怀疑"
         },
         {
           "text": "终于推开这扇门了",
@@ -71870,7 +71878,9 @@
           "end": 11.311940927516282,
           "pronunciation": "{\"full\":\"Zhōngyú tuī kāi zhè shàn ménle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"终于推开这扇门了\",\"trans\":\"Zhōngyú tuī kāi zhè shàn ménle\"}]}",
           "translation": "Finally opened the door",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "终于 推 开 这 扇 门了"
         },
         {
           "text": "摆脱困境了",
@@ -71894,7 +71904,9 @@
           "end": 12.353840927514792,
           "pronunciation": "{\"full\":\"Bǎituō kùnjìngle\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"摆脱困境了\",\"trans\":\"Bǎituō kùnjìngle\"}]}",
           "translation": "Get out of trouble",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "摆脱 困境了"
         },
         {
           "text": "太多路途 这斗争 兄弟们认得",
@@ -71918,7 +71930,9 @@
           "end": 13.817740927520752,
           "pronunciation": "{\"full\":\"Tài duō lùtú zhè dòuzhēng xiōngdìmen rèndé\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"太多路途\",\"trans\":\"Tài duō lùtú\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这斗争\",\"trans\":\"Zhè dòuzhēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"兄弟们认得\",\"trans\":\"Xiōngdìmen rèndé\"}]}",
           "translation": "Too many roads, brothers recognize this struggle",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "太 多 路途  这 斗争  兄弟们 认得"
         },
         {
           "text": "Come on, MVP 已经产生 就在这个天地 打破这平稳",
@@ -71942,7 +71956,9 @@
           "end": 17.765340927514792,
           "pronunciation": "{\"full\":\"Come on, MVP yǐjīng chǎnshēng jiù zài zhège tiāndì dǎpò zhè píngwěn\",\"chunks\":[{\"type\":\"en\",\"text\":\"Come\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"MVP\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"已经产生\",\"trans\":\"Yǐjīng chǎnshēng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"就在这个天地\",\"trans\":\"Jiù zài zhège tiāndì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"打破这平稳\",\"trans\":\"Dǎpò zhè píngwěn\"}]}",
           "translation": "Come on, MVP has been born Just in this world, breaking this stability",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "Come on, MVP 已经 产生  就 在 这个 天地  打破 这 平稳"
         },
         {
           "text": "上天的礼物和后天的经历让我像是老兵一样的战斗",
@@ -71966,7 +71982,9 @@
           "end": 21.334040927517773,
           "pronunciation": "{\"full\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"上天的礼物和后天的经历让我像是老兵一样的战斗\",\"trans\":\"Shàngtiān de lǐwù hé hòutiān de jīnglì ràng wǒ xiàng shì lǎobīng yīyàng de zhàndòu\"}]}",
           "translation": "God’s gift and acquired experience make me fight like a veteran",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "上天 的 礼物 和 后天 的 经历 让 我 像 是 老兵 一样 的 战斗"
         },
         {
           "text": "不同的时间和故事让我能驾驭所有不只是这个伴奏",
@@ -71990,7 +72008,9 @@
           "end": 24.72834092751479,
           "pronunciation": "{\"full\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不同的时间和故事让我能驾驭所有不只是这个伴奏\",\"trans\":\"Bùtóng de shíjiān hé gùshì ràng wǒ néng jiàyù suǒyǒu bù zhǐshì zhège bànzòu\"}]}",
           "translation": "Different times and stories allow me to control all the accompaniments that are not just this one",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "不同 的 时间 和 故事 让 我 能 驾驭 所有 不 只是 这个 伴奏"
         },
         {
           "text": "都看透 看够这暗斗 烂透的感受",
@@ -72014,7 +72034,9 @@
           "end": 28.03354092751777,
           "pronunciation": "{\"full\":\"Dōu kàntòu kàn gòu zhè àn dòu làn tòu de gǎnshòu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"都看透\",\"trans\":\"Dōu kàntòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"看够这暗斗\",\"trans\":\"Kàn gòu zhè àn dòu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"烂透的感受\",\"trans\":\"Làn tòu de gǎnshòu\"}]}",
           "translation": "See it all, see enough of this secret fight, the rotten feeling",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "都 看透  看 够 这 暗 斗  烂 透 的 感受"
         },
         {
           "text": "全部都赶走 做了了一些牺牲",
@@ -72038,7 +72060,9 @@
           "end": 29.678740927520753,
           "pronunciation": "{\"full\":\"Quánbù dōu gǎn zǒu zuòliǎoliǎo yīxiē xīshēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"全部都赶走\",\"trans\":\"Quánbù dōu gǎn zǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"做了了一些牺牲\",\"trans\":\"Zuòliǎoliǎo yīxiē xīshēng\"}]}",
           "translation": "Drive them all away, make some sacrifices",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "全部 都 赶 走  做了了 一些 牺牲"
         },
         {
           "text": "恐惧过后穿好 黑夜中的披风",
@@ -72062,7 +72086,9 @@
           "end": 31.387140927519262,
           "pronunciation": "{\"full\":\"Kǒngjù guòhòu chuān hǎo hēiyè zhōng de pīfēng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"恐惧过后穿好\",\"trans\":\"Kǒngjù guòhòu chuān hǎo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"黑夜中的披风\",\"trans\":\"Hēiyè zhōng de pīfēng\"}]}",
           "translation": "Put on the cloak in the night after the fear",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "恐惧 过后 穿 好  黑夜 中 的 披风"
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -72086,7 +72112,9 @@
           "end": 34.90244092751628,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -72110,7 +72138,9 @@
           "end": 38.51844092751628,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says, you're just a person",
@@ -72134,7 +72164,9 @@
           "end": 41.60323392751926,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -72158,7 +72190,9 @@
           "end": 45.305417927519265,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72216,7 +72250,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72274,7 +72310,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72332,7 +72370,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Woo!",
@@ -72356,7 +72396,9 @@
           "end": 58.642917927519264,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "举起这姿态 不在乎失败",
@@ -72380,7 +72422,9 @@
           "end": 62.37223100000447,
           "pronunciation": "{\"full\":\"Jǔ qǐ zhè zītài bùzàihū shībài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"举起这姿态\",\"trans\":\"Jǔ qǐ zhè zītài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不在乎失败\",\"trans\":\"Bùzàihū shībài\"}]}",
           "translation": "Hold up this gesture, don’t care about failure",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "举 起 这 姿态  不在乎 失败"
         },
         {
           "text": "危机在胜利之外",
@@ -72404,7 +72448,9 @@
           "end": 64.27913100000298,
           "pronunciation": "{\"full\":\"Wéijī zài shènglì zhī wài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"危机在胜利之外\",\"trans\":\"Wéijī zài shènglì zhī wài\"}]}",
           "translation": "Crisis is beyond victory",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "危机 在 胜利 之 外"
         },
         {
           "text": "I'm my hero tonight",
@@ -72428,7 +72474,9 @@
           "end": 66.32083100000595,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "浇不灭的气派",
@@ -72452,7 +72500,9 @@
           "end": 68.14583100000596,
           "pronunciation": "{\"full\":\"Jiāo bù miè de qìpài\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"浇不灭的气派\",\"trans\":\"Jiāo bù miè de qìpài\"}]}",
           "translation": "Indestructible magnificence",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "浇 不 灭 的 气派"
         },
         {
           "text": "Don't you cut my sine",
@@ -72476,7 +72526,9 @@
           "end": 69.76323100000447,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "抹去我的平庸",
@@ -72500,7 +72552,9 @@
           "end": 71.33953100000149,
           "pronunciation": "{\"full\":\"Mǒ qù wǒ de píngyōng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"抹去我的平庸\",\"trans\":\"Mǒ qù wǒ de píngyōng\"}]}",
           "translation": "Erase my mediocrity",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "抹 去 我 的 平庸"
         },
         {
           "text": "我必须学会自己来掌控",
@@ -72524,7 +72578,9 @@
           "end": 72.81328592752521,
           "pronunciation": "{\"full\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"我必须学会自己来掌控\",\"trans\":\"Wǒ bìxū xuéhuì zìjǐ lái zhǎngkòng\"}]}",
           "translation": "I must learn to control myself",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "我 必须 学会 自己 来 掌控"
         },
         {
           "text": "Life is stereo 不会简单的像 mono",
@@ -72548,7 +72604,9 @@
           "end": 75.99078592752522,
           "pronunciation": "{\"full\":\"Life is stereo bù huì jiǎndān de xiàng mono\",\"chunks\":[{\"type\":\"en\",\"text\":\"Life\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"is\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"stereo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会简单的像\",\"trans\":\"Bù huì jiǎndān de xiàng\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"mono\",\"trans\":\"\"}]}",
           "translation": "Life is stereo, it will not be as simple as mono",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "Life is stereo 不 会 简单 的 像 mono"
         },
         {
           "text": "Turn off the phone",
@@ -72572,7 +72630,9 @@
           "end": 77.26628592752522,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "定准这方位 on the road",
@@ -72596,7 +72656,9 @@
           "end": 79.41518592752374,
           "pronunciation": "{\"full\":\"Dìngzhǔn zhè fāngwèi on the road\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"定准这方位\",\"trans\":\"Dìngzhǔn zhè fāngwèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"the\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"road\",\"trans\":\"\"}]}",
           "translation": "Set this direction on the road",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "定准 这 方位 on the road"
         },
         {
           "text": "不接受命运对我的宣判 每天努力不会敷衍",
@@ -72620,7 +72682,9 @@
           "end": 83.13038592751926,
           "pronunciation": "{\"full\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn měitiān nǔlì bù huì fūyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"不接受命运对我的宣判\",\"trans\":\"Bù jiēshòu mìngyùn duì wǒ de xuānpàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"每天努力不会敷衍\",\"trans\":\"Měitiān nǔlì bù huì fūyǎn\"}]}",
           "translation": "Don’t accept the sentence of fate for me, I will work hard every day and I will not be perfunctory",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "不 接受 命运 对 我 的 宣判  每天 努力 不 会 敷衍"
         },
         {
           "text": "所有的配角都靠边站 我必须要拿下这主演",
@@ -72644,7 +72708,9 @@
           "end": 87.08738592751926,
           "pronunciation": "{\"full\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn wǒ bìxū yào ná xià zhè zhǔyǎn\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"所有的配角都靠边站\",\"trans\":\"Suǒyǒu de pèijiǎo dōu kàobiān zhàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我必须要拿下这主演\",\"trans\":\"Wǒ bìxū yào ná xià zhè zhǔyǎn\"}]}",
           "translation": "All the supporting roles have to stand aside. I must win the leading role",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "所有 的 配角 都 靠边 站  我 必须 要 拿 下 这 主演"
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -72668,7 +72734,9 @@
           "end": 90.58458592752224,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -72692,7 +72760,9 @@
           "end": 94.05088592751926,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says you're just a person",
@@ -72716,7 +72786,9 @@
           "end": 97.25018592752373,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -72740,7 +72812,9 @@
           "end": 101.02778592752523,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72798,7 +72872,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72856,7 +72932,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -72914,7 +72992,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Woo!",
@@ -72938,7 +73018,9 @@
           "end": 114.13232692752075,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "永远都不觉得累",
@@ -72962,7 +73044,9 @@
           "end": 115.29342692752223,
           "pronunciation": "{\"full\":\"Yǒngyuǎn dōu bù juédé lèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都不觉得累\",\"trans\":\"Yǒngyuǎn dōu bù juédé lèi\"}]}",
           "translation": "Never feel tired",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "永远 都 不 觉得 累"
         },
         {
           "text": "每天在 rising 修炼着 押韵和技巧",
@@ -72986,7 +73070,9 @@
           "end": 116.92532292751777,
           "pronunciation": "{\"full\":\"Měitiān zài rising xiūliànzhe yāyùn hé jìqiǎo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"每天在\",\"trans\":\"Měitiān zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rising\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"修炼着\",\"trans\":\"Xiūliànzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"押韵和技巧\",\"trans\":\"Yāyùn hé jìqiǎo\"}]}",
           "translation": "Practice rhymes and skills in rising every day",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "每天 在 rising 修炼着  押韵 和 技巧"
         },
         {
           "text": "永远都 帅你一 倍",
@@ -73010,7 +73096,9 @@
           "end": 118.85859192752523,
           "pronunciation": "{\"full\":\"Yǒngyuǎn dōu shuài nǐ yī bèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远都\",\"trans\":\"Yǒngyuǎn dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"帅你一\",\"trans\":\"Shuài nǐ yī\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"倍\",\"trans\":\"Bèi\"}]}",
           "translation": "I will always be twice as handsome as you",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "永远 都  帅 你 一  倍"
         },
         {
           "text": "背靠背 干着杯 舞池里 灯光下 晃动着 他们都 排成一队",
@@ -73034,7 +73122,9 @@
           "end": 121.96239192752225,
           "pronunciation": "{\"full\":\"Bèikàobèi gānzhāo bēi wǔchí lǐ dēngguāng xià huàngdòngzhe tāmen dōu pái chéng yī duì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"背靠背\",\"trans\":\"Bèikàobèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"干着杯\",\"trans\":\"Gānzhāo bēi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"舞池里\",\"trans\":\"Wǔchí lǐ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"灯光下\",\"trans\":\"Dēngguāng xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"晃动着\",\"trans\":\"Huàngdòngzhe\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"他们都\",\"trans\":\"Tāmen dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"排成一队\",\"trans\":\"Pái chéng yī duì\"}]}",
           "translation": "Back to back Cheers, swaying on the dance floor under the lights, they are all lined up",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "背靠背  干着 杯  舞池 里  灯光 下  晃动着  他们 都  排 成 一 队"
         },
         {
           "text": "最酷的妹 都玩到凌晨却不想要睡",
@@ -73058,7 +73148,9 @@
           "end": 124.8462479484986,
           "pronunciation": "{\"full\":\"Zuì kù de mèi dōu wán dào língchén què bùxiǎng yào shuì\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"最酷的妹\",\"trans\":\"Zuì kù de mèi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"都玩到凌晨却不想要睡\",\"trans\":\"Dōu wán dào língchén què bùxiǎng yào shuì\"}]}",
           "translation": "The coolest girls are playing until early in the morning but don’t want to sleep",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "最 酷 的 妹  都 玩 到 凌晨 却 不想 要 睡"
         },
         {
           "text": "把音乐 随便便的 放松地 播放着",
@@ -73082,7 +73174,9 @@
           "end": 126.5542479484986,
           "pronunciation": "{\"full\":\"Bǎ yīnyuè suí pián pián dì fàngsōng de bòfàngzhe\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"把音乐\",\"trans\":\"Bǎ yīnyuè\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"随便便的\",\"trans\":\"Suí pián pián de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"放松地\",\"trans\":\"Fàngsōng de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"播放着\",\"trans\":\"Bòfàngzhe\"}]}",
           "translation": "Play the music casually and relax",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "把 音乐  随 便便的 放松 地  播放着"
         },
         {
           "text": "坐你旁边找个话题想要知道你最爱的 rapper",
@@ -73106,7 +73200,9 @@
           "end": 128.74183099999553,
           "pronunciation": "{\"full\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de rapper\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"坐你旁边找个话题想要知道你最爱的\",\"trans\":\"Zuò nǐ pángbiān zhǎo gè huàtí xiǎng yào zhīdào nǐ zuì ài de\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"rapper\",\"trans\":\"\"}]}",
           "translation": "Sit next to you and find a topic to know about your favorite rapper",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "坐 你 旁边 找 个 话题 想 要 知道 你 最 爱 的 rapper"
         },
         {
           "text": "说来听听",
@@ -73130,7 +73226,9 @@
           "end": 129.896930999997,
           "pronunciation": "{\"full\":\"Shuō lái tīng tīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"说来听听\",\"trans\":\"Shuō lái tīng tīng\"}]}",
           "translation": "Let’s talk",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "说 来 听 听"
         },
         {
           "text": "商业帝国, now I’m making",
@@ -73154,7 +73252,9 @@
           "end": 131.515930999997,
           "pronunciation": "{\"full\":\"Shāngyè dìguó , now I’m making\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"商业帝国,\",\"trans\":\"Shāngyè dìguó,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"I’m\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"making\",\"trans\":\"\"}]}",
           "translation": "Business empire, now I’m making",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "商业 帝国 , now I’m making"
         },
         {
           "text": "无论 hater 还是对手喜欢抄袭我的捆绑我的可我早就变成精英",
@@ -73178,7 +73278,9 @@
           "end": 134.7547310000015,
           "pronunciation": "{\"full\":\"Wúlùn hater háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"无论\",\"trans\":\"Wúlùn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hater\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"还是对手喜欢抄袭我的捆绑我的可我早就变成精英\",\"trans\":\"Háishì duìshǒu xǐhuān chāoxí wǒ de kǔnbǎng wǒ de kě wǒ zǎo jiù biàn chéng jīngyīng\"}]}",
           "translation": "Whether haters or opponents like to copy my bindings, but I have become an elite long ago",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "无论 hater 还是 对手 喜欢 抄袭 我 的 捆绑 我 的 可 我 早 就 变 成 精英"
         },
         {
           "text": "没有人不觉得配",
@@ -73202,7 +73304,9 @@
           "end": 136.05683099999553,
           "pronunciation": "{\"full\":\"Méiyǒu rén bù juédé pèi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没有人不觉得配\",\"trans\":\"Méiyǒu rén bù juédé pèi\"}]}",
           "translation": "There is no one who doesn’t feel worthy",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "没有 人 不 觉得 配"
         },
         {
           "text": "没办法 天赋都 溢出来 你们在 跑龙套 而我有 主角的命",
@@ -73226,7 +73330,9 @@
           "end": 139.4232310000015,
           "pronunciation": "{\"full\":\"Méi bànfǎ tiānfù dōu yìchū lái nǐmen zài pǎolóngtào ér wǒ yǒu zhǔjiǎo de mìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"没办法\",\"trans\":\"Méi bànfǎ\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"天赋都\",\"trans\":\"Tiānfù dōu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"溢出来\",\"trans\":\"Yìchū lái\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"你们在\",\"trans\":\"Nǐmen zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"跑龙套\",\"trans\":\"Pǎolóngtào\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"而我有\",\"trans\":\"Ér wǒ yǒu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"主角的命\",\"trans\":\"Zhǔjiǎo de mìng\"}]}",
           "translation": "There is no way, all the talents are overflowing, you are playing a small role, and I have the fate of the protagonist",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "没 办法  天赋 都  溢出 来  你们 在  跑龙套  而 我 有  主角 的 命"
         },
         {
           "text": "永远在 向上爬 我的心 不会变 这游戏 被拿下 乾坤已定",
@@ -73250,7 +73356,9 @@
           "end": 142.83033099999554,
           "pronunciation": "{\"full\":\"Yǒngyuǎn zài xiàngshàng pá wǒ de xīn bù huì biàn zhè yóuxì bèi ná xià qiánkūn yǐ dìng\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"永远在\",\"trans\":\"Yǒngyuǎn zài\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"向上爬\",\"trans\":\"Xiàngshàng pá\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"我的心\",\"trans\":\"Wǒ de xīn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"不会变\",\"trans\":\"Bù huì biàn\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"这游戏\",\"trans\":\"Zhè yóuxì\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"被拿下\",\"trans\":\"Bèi ná xià\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乾坤已定\",\"trans\":\"Qiánkūn yǐ dìng\"}]}",
           "translation": "Always climbing up, my heart will not change, this game has been taken down, the world has been decided.",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "zh-CN",
+          "spacingText": "永远 在  向上 爬  我 的 心  不 会 变  这 游戏  被 拿 下  乾坤 已 定"
         },
         {
           "text": "Baba said that life ain't perfect",
@@ -73274,7 +73382,9 @@
           "end": 146.22653099999852,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Some days I don’t think it's worth it",
@@ -73298,7 +73408,9 @@
           "end": 149.70603099999852,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says you're just a person",
@@ -73322,7 +73434,9 @@
           "end": 152.98743099999703,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "You're limitless, your soul's still searching like",
@@ -73346,7 +73460,9 @@
           "end": 156.50566492751926,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73404,7 +73520,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73462,7 +73580,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Ooh, ooh-ooh (Baba says, baba says, baba says)",
@@ -73520,7 +73640,9 @@
               "lang": "en",
               "spacingText": ""
             }
-          ]
+          ],
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Woo!",
@@ -73544,7 +73666,9 @@
           "end": 170.73832992533596,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says",
@@ -73568,7 +73692,9 @@
           "end": 172.8908040608466,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says",
@@ -73592,7 +73718,9 @@
           "end": 174.54800906084444,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Keep the windows tinted, yeah, that's five percent",
@@ -73616,7 +73744,9 @@
           "end": 177.64593406084444,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "See the world on a different lens",
@@ -73640,7 +73770,9 @@
           "end": 181.3317052406077,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says don't worry bout a single woman",
@@ -73664,7 +73796,9 @@
           "end": 188.07467324062065,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Keep my options close",
@@ -73688,7 +73822,9 @@
           "end": 190.06180989490505,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "I make tough decisions",
@@ -73712,7 +73848,9 @@
           "end": 191.97870989490508,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Steady pray for blessings",
@@ -73736,7 +73874,9 @@
           "end": 194.9568648949029,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Passionate for everything",
@@ -73760,7 +73900,9 @@
           "end": 196.44079489490073,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "The money teach you lessons",
@@ -73784,7 +73926,9 @@
           "end": 198.3474370000065,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Running out of time",
@@ -73808,7 +73952,9 @@
           "end": 203.4354870000065,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Try to find something, worth my time",
@@ -73832,7 +73978,9 @@
           "end": 212.76275700000866,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says don't worry about nobody",
@@ -73856,7 +74004,9 @@
           "end": 217.66361200000648,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "But it gets lonely",
@@ -73880,7 +74030,9 @@
           "end": 221.1356370000065,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "When you're alone most of the time",
@@ -73904,7 +74056,9 @@
           "end": 227.78287200000216,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Mind get negative",
@@ -73928,7 +74082,9 @@
           "end": 229.70615200000003,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "This side ridiculous",
@@ -73952,7 +74108,9 @@
           "end": 231.11903200000864,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Everywhere get dangerous",
@@ -73976,7 +74134,9 @@
           "end": 232.87019700000218,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Get pool up in the backyard",
@@ -74000,7 +74160,9 @@
           "end": 236.4215209253316,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "And the grass green, in the private residence",
@@ -74024,7 +74186,9 @@
           "end": 239.12727300000432,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Still finessin', yeah, ooh",
@@ -74048,7 +74212,9 @@
           "end": 249.12052800000214,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         },
         {
           "text": "Baba says don’t worry about nothing",
@@ -74072,7 +74238,9 @@
           "end": 254.0854730000043,
           "pronunciation": "",
           "translation": "",
-          "isSplit": false
+          "isSplit": false,
+          "lang": "en",
+          "spacingText": ""
         }
       ],
       "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/e2/64/74/e26474d7-41c4-e6df-b410-b36b888f5b34/mzaf_9988339639281589486.plus.aac.p.m4a",
