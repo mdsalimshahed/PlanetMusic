@@ -56,8 +56,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const unmarkedTokens = unmarkedStr.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean);
         
         if (unmarkedTokens.length > 0) {
-            // EXPLICIT FIX: Only map unmarked artists to Plain text if they are within the first 4 artists,
-            // OR if the total artist count is 4 or less. This strictly reserves the 5th+ plain-text artists for XML tags.
             const validPlainTokens = unmarkedTokens.filter(token => {
                 const tokenName = token.trim();
                 if (tokenName.toLowerCase() === 'both' || tokenName.toLowerCase() === 'all') return true;
@@ -94,8 +92,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       return;
     }
 
-    // --- NEW TWO-PASS TOKENIZATION ALGORITHM ---
-    // Pass 1: Extract precise XML-style <ARTIST> tags
     const tagRegex = /<([^>]+)>([\s\S]*?)<\/\1>/gi;
     let lastIndex = 0;
     let match;
@@ -113,7 +109,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       initialSegments.push({ type: 'unparsed', text: trimmedLine.substring(lastIndex) });
     }
 
-    // Pass 2: Process standard Markdown exclusively on the remaining "unparsed" segments
     let lineSegments = [];
     const regex = /([_*~]+)/g;
     let currentText = '';
@@ -125,7 +120,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
         const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
 
-        // FIX: Force normalization (e.g. '_**' becomes '**_') to prevent closing tags from failing to match their opening sequence
         const normChunk = normalizeMarker(chunk);
 
         if (isOpeningBoundary && !isClosingBoundary) {
@@ -154,10 +148,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
                 currentText = '';
             }
-            // Tagged chunks bypass the markdown markers and receive explicit artist mapping directly
             lineSegments.push({ text: chunk.text, explicitArtists: chunk.artist, marker: getActiveMarkerString() });
         } else {
-            // Strip any remaining rogue HTML tags ONLY from the unparsed text chunks
             const cleanUnparsed = chunk.text.replace(/<\/?[^>]+(>|$)/g, "");
             const parts = cleanUnparsed.split(regex);
             
@@ -190,10 +182,8 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         let artists = [];
 
         if (seg.explicitArtists) {
-            // Directly resolve XML assigned artists
             artists = seg.explicitArtists.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
         } else {
-            // Fallback to standard Markdown rules
             const rule = currentRules.find(r => r.marker === seg.marker);
             if (rule) {
                 artists = rule.artists;
@@ -233,6 +223,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         }
     });
 
+    // --- ADLIB FORCED REORDERING (The Absolute Source of Truth) ---
     const mainSegments = [];
     const adlibSegments = [];
 
@@ -251,13 +242,27 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       });
     });
 
-    // Cross-segment boundary space cleanup
-    let sanitizedMainSegments = [...mainSegments];
-    for (let i = 0; i < sanitizedMainSegments.length; i++) {
-        sanitizedMainSegments[i].text = sanitizedMainSegments[i].text.replace(/\s+([.,!?;:\])} ]+)/g, '$1');
+    // Smart space collapsing across segment boundaries to prevent double spaces 
+    // when an adlib is physically ripped out of the middle of the sentence
+    let sanitizedMainSegments = [];
+    let lastEndedWithSpace = false;
+    for (let i = 0; i < mainSegments.length; i++) {
+        let t = mainSegments[i].text;
         
-        if (i > 0 && /^[.,!?;:\])} ]/.test(sanitizedMainSegments[i].text)) {
-            sanitizedMainSegments[i-1].text = sanitizedMainSegments[i-1].text.replace(/\s+$/, '');
+        if (sanitizedMainSegments.length === 0) {
+            t = t.trimStart();
+        } else if (lastEndedWithSpace && t.startsWith(' ')) {
+            t = t.trimStart();
+        }
+        
+        // Clean spaces before punctuation
+        if (sanitizedMainSegments.length > 0 && /^[.,!?;:\])}]/.test(t)) {
+            sanitizedMainSegments[sanitizedMainSegments.length - 1].text = sanitizedMainSegments[sanitizedMainSegments.length - 1].text.trimEnd();
+        }
+
+        lastEndedWithSpace = t.endsWith(' ') || t.endsWith('\u00A0');
+        if (t.length > 0) {
+            sanitizedMainSegments.push({ ...mainSegments[i], text: t });
         }
     }
 
@@ -269,9 +274,10 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       return { ...seg, text };
     });
 
+    // Ensure a single clean space connects the main text and the reordered ad-libs
     if (sanitizedMainSegments.length > 0 && sanitizedAdlibSegments.length > 0) {
       const lastMainIdx = sanitizedMainSegments.length - 1;
-      sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.replace(/\s+$/, '') + ' ';
+      sanitizedMainSegments[lastMainIdx].text = sanitizedMainSegments[lastMainIdx].text.trimEnd() + ' ';
     }
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);

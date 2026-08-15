@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
-import { LyricLineWrapper } from '../Lyrics/LyricsLineRenderer';
 import './SyncWorkspace.css';
 
 export const SyncWorkspace = ({
@@ -173,6 +172,138 @@ export const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
+  // --- DUAL-PATH HYPER-FAST RENDERER ---
+  // Skips heavy calculations 95% of the time, and only uses character mapping 
+  // when an adlib strike-through is actively needed.
+  const renderSyncNode = (node, isMain) => {
+    if (!node) return null;
+
+    let displayPron = '';
+    if (node.pronunciation) {
+        if (typeof node.pronunciation === 'string') {
+            if (node.pronunciation.startsWith('{')) {
+                try { displayPron = JSON.parse(node.pronunciation).full || ''; } catch(e){}
+            } else if (node.pronunciation.startsWith('[')) {
+                try { displayPron = JSON.parse(node.pronunciation).map(c=>c.trans||c.text).join(''); } catch(e){}
+            } else {
+                displayPron = node.pronunciation;
+            }
+        }
+    }
+    if (displayPron) displayPron = displayPron.replace(/[()\uff08\uff09]/g, '').trim();
+
+    const segments = node.segments || [{ text: node.text }];
+    let globalCpIdx = 0;
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%', lineHeight: 1.2 }}>
+        <div style={{ fontSize: 'var(--workspace-lyric-size, 16px)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontWeight: 'bold' }}>
+          {segments.map((seg, sIdx) => {
+             let style = { transition: 'none' };
+             let color = seg.color || '#ffffff';
+             let isGradient = seg.isGradient || false;
+             let gradStyle = seg.gradient || '';
+             
+             if (seg.artists && seg.artists.length > 0) {
+                 if (seg.artists.length > 1) {
+                     isGradient = true;
+                     gradStyle = `linear-gradient(90deg, ${masterPalette[seg.artists[0]] || '#fff'}, ${masterPalette[seg.artists[1]] || '#fff'})`;
+                 } else {
+                     color = masterPalette[seg.artists[0]] || color;
+                 }
+             }
+             
+             if (isGradient) {
+                 style.backgroundImage = gradStyle;
+                 style.WebkitBackgroundClip = 'text';
+                 style.WebkitTextFillColor = 'transparent';
+                 style.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+             } else {
+                 style.color = color;
+                 style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${color}80`;
+             }
+             
+             // PATH A: Slow Path - The line has been actively split into adlibs. 
+             // Maps characters individually to strike out the adlib.
+             if (isMain && node.isSplit && node.adlibs && node.adlibs.length > 0) {
+                 const chars = Array.from(seg.text);
+                 return (
+                     <span key={sIdx} style={style}>
+                         {chars.map((char, cIdx) => {
+                             const currentCp = globalCpIdx++;
+                             const isAdlibChar = node.adlibs.some(a => currentCp >= a.charStart && currentCp < a.charEnd);
+                             const isPunct = /^[\p{P}\p{S}\u064B-\u065F\u0670]+$/u.test(char);
+                             
+                             let charStyle = {};
+                             if (isPunct && char.trim() !== '') {
+                                 charStyle = {
+                                     color: '#fbbf24',
+                                     WebkitTextFillColor: '#fbbf24',
+                                     textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+                                     backgroundImage: 'none',
+                                     filter: 'none'
+                                 };
+                             }
+                             if (isAdlibChar) {
+                                 charStyle.opacity = 0.35;
+                                 charStyle.textDecoration = 'line-through 2px white';
+                                 charStyle.textDecorationColor = '#ffffff';
+                             }
+                             
+                             if (Object.keys(charStyle).length > 0) {
+                                 return <span key={cIdx} style={charStyle}>{char}</span>;
+                             }
+                             return <React.Fragment key={cIdx}>{char}</React.Fragment>;
+                         })}
+                     </span>
+                 );
+             } else {
+                 // PATH B: Hyper-Fast Regex Path (Default)
+                 const textParts = seg.text.split(/([\p{P}\p{S}\u064B-\u065F\u0670]+)/u);
+                 globalCpIdx += Array.from(seg.text).length;
+
+                 return (
+                   <span key={sIdx} style={style}>
+                     {textParts.map((part, pIdx) => {
+                        if (!part) return null;
+                        const isPunct = /^[\p{P}\p{S}\u064B-\u065F\u0670]+$/u.test(part);
+                        
+                        if (isPunct) {
+                            return (
+                              <span key={pIdx} style={{
+                                  color: '#fbbf24',
+                                  WebkitTextFillColor: '#fbbf24',
+                                  textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+                                  backgroundImage: 'none',
+                                  filter: 'none'
+                              }}>
+                                  {part}
+                              </span>
+                            );
+                        }
+                        return <React.Fragment key={pIdx}>{part}</React.Fragment>;
+                     })}
+                   </span>
+                 );
+             }
+          })}
+        </div>
+        {displayPron && (
+          <div style={{ 
+              fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)', 
+              color: 'rgba(255,255,255,0.7)', 
+              marginTop: '4px', 
+              textTransform: 'uppercase', 
+              letterSpacing: '1px',
+              fontWeight: 800
+          }}>
+              {displayPron}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="sync-mode-container" style={{
         '--workspace-accent': accentColor,
@@ -328,17 +459,6 @@ export const SyncWorkspace = ({
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
 
-          let nextStart = 'NaN';
-          const syncList = syncData || [];
-          for (let j = item.lineIndex + 1; j < syncList.length; j++) {
-              if (syncList[j]?.start != null) {
-                  nextStart = syncList[j].start;
-                  break;
-              }
-          }
-
-          const populatedLineObj = { ...line };
-
           return (
             <div 
                 key={i}
@@ -381,15 +501,8 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                <LyricLineWrapper
-                  lineObj={populatedLineObj}
-                  savedNode={populatedLineObj}
-                  nextStart={nextStart}
-                  viewMode="live"
-                  handleLineClick={() => {}}
-                  masterPalette={masterPalette}
-                  isPlayingCurrentSong={isSyncPlaying}
-                />
+                
+                {renderSyncNode(line, isMain)}
                 
                 {isMain && hasParentheses && (
                   <button 

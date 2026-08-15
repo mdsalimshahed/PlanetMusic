@@ -208,6 +208,7 @@ export const useSyncKeyboard = ({
         seekToTime(Math.max(0, getCurrentTime() - 1));
         return;
       }
+
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekToTime(getCurrentTime() + 1);
@@ -336,13 +337,19 @@ export const useSyncActions = ({
     let adlibText = '';
     
     for (let i = 0; i < lineChars.length; i++) {
-        if ((lineChars[i] === '(' || lineChars[i] === '（') && !inAdlib) {
+        const char = lineChars[i];
+        
+        // FIXED: Only strictly trigger on explicit parentheses characters
+        const isOpening = char === '(' || char === '\uff08';
+        const isClosing = char === ')' || char === '\uff09';
+
+        if (isOpening && !inAdlib) {
             inAdlib = true;
             charStart = i;
-            adlibText = lineChars[i];
+            adlibText = char;
         } else if (inAdlib) {
-            adlibText += lineChars[i];
-            if (lineChars[i] === ')' || lineChars[i] === '）') {
+            adlibText += char;
+            if (isClosing) {
                 inAdlib = false;
                 const charEnd = i + 1;
                 
@@ -354,10 +361,8 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
-
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
-
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
@@ -373,6 +378,7 @@ export const useSyncActions = ({
                 }
 
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
+
                 const pronData = await quickTransliterate(adlibText);
 
                 adlibs.push({
@@ -398,7 +404,7 @@ export const useSyncActions = ({
       line.pronunciation = '';
       line.spacingText = '';
       line.lang = 'auto'; // Revert back to auto
-
+      
       updateWorkspaceData(data);
     }
   };
@@ -422,7 +428,6 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
-
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
