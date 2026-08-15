@@ -41,6 +41,8 @@ const SplitLine = ({
   if (currentBlock) blocks.push(currentBlock);
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
+  const adlibBlocks = blocks.filter(b => b.isAdlib);
+  
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
 
@@ -57,18 +59,16 @@ const SplitLine = ({
 
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
-      if (!targetArtists && lineObj.singer) {
-        targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-      }
-      if (targetArtists && targetArtists.length > 0) {
-        if (targetArtists.length > 1) {
-          isGradient = true;
-          const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-          const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-          gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-        } else {
-          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-        }
+      
+      // FIXED: Removed the toxic fallback to lineObj.singer. 
+      // If a segment explicitly has an empty artist array (e.g. unmapped markdown), it MUST remain white.
+      if (targetArtists && targetArtists.length > 1) {
+        isGradient = true;
+        const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+        const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+        gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+      } else if (targetArtists && targetArtists.length === 1) {
+        activeColor = masterPalette[targetArtists[0]] || '#ffffff';
       } else {
         activeColor = c.seg.color || '#ffffff';
         isGradient = c.seg.isGradient || false;
@@ -168,7 +168,7 @@ const SplitLine = ({
     );
   }
 
-  // 4. DEDICATED AD-LIB RENDERER (Bypasses all chunking logic to guarantee visibility)
+  // 4. DEDICATED AD-LIB RENDERER (Extracts color directly from live Markdown segments)
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
@@ -181,9 +181,6 @@ const SplitLine = ({
       initialClass = 'adlib-visible'; 
     }
 
-    // Determine Display Text
-    const displayText = (adlib.spacingText && adlib.spacingText.trim()) ? adlib.spacingText : (adlib.text || '');
-
     // Determine Pronunciation
     let displayPron = '';
     if (adlib.pronunciation) {
@@ -194,61 +191,108 @@ const SplitLine = ({
             displayPron = adlib.pronunciation;
         }
     }
-    // Remove parentheses from pronunciation
     if (displayPron) displayPron = displayPron.replace(/[()\uff08\uff09]/g, '').trim();
 
     // Determine Translation
     let displayTrans = cleanTranslationText(adlib.translation);
     if (displayTrans) displayTrans = displayTrans.replace(/[()\uff08\uff09]/g, '').trim();
 
-    // Determine Base Color
-    let activeColor = '#ffffff';
-    let isGradient = false;
-    let gradientStyle = '';
+    const aActiveSpacingText = adlib.spacingText || '';
+    const aUseSpacingText = Boolean(aActiveSpacingText && aActiveSpacingText.trim());
     
-    let targetArtists = [];
-    if (adlib.singer) {
-         targetArtists = adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-    }
-    if (targetArtists.length > 1) {
-         isGradient = true;
-         const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-         const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-         gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-    } else if (targetArtists.length === 1) {
-         activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-    }
-
-    let baseTextStyle = { 
-        transition: 'opacity 0.3s ease, transform 0.3s ease',
-    };
-
-    if (isGradient) {
-      baseTextStyle.backgroundImage = gradientStyle;
-      baseTextStyle.WebkitBackgroundClip = 'text';
-      baseTextStyle.WebkitTextFillColor = 'transparent';
-      baseTextStyle.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
-    } else {
-      baseTextStyle.color = activeColor;
-      baseTextStyle.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
-    }
-
-    // Apply Yellow Color to Punctuation Characters Specifically
-    const renderedAdlibText = getGraphemes(displayText).map((char, idx) => {
-      const isPunct = isPunctuationChar(char);
-      let charStyle = { ...baseTextStyle };
-      
-      if (isPunct && char.trim() !== '') {
-         charStyle = {
-           color: '#fbbf24',
-           WebkitTextFillColor: '#fbbf24',
-           textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 0 20px rgba(251, 191, 36, 0.6)',
-           backgroundImage: 'none',
-           filter: 'none',
-           transition: 'opacity 0.3s ease, transform 0.3s ease'
-         };
+    // Extrapolate LIVE characters from the active Editor State instead of stale DB values
+    const blk = adlibBlocks[bIdx];
+    let adlibChars = [];
+    
+    if (blk && blk.chars) {
+      if (aUseSpacingText) {
+        const spacedGraphemes = getGraphemes(aActiveSpacingText);
+        const origCharsList = blk.chars;
+        let origPointer = 0;
+        
+        spacedGraphemes.forEach((char, idx) => {
+          let currentSeg = origCharsList[origPointer]?.seg || origCharsList[origCharsList.length - 1]?.seg;
+          let isOrigChar = false;
+          
+          if (origPointer < origCharsList.length && char === origCharsList[origPointer].char) {
+              isOrigChar = true;
+          } else if (/\s/.test(char) && origPointer < origCharsList.length && !/\s/.test(origCharsList[origPointer].char)) {
+              isOrigChar = false;
+          } else {
+              isOrigChar = !/\s/.test(char);
+          }
+          
+          adlibChars.push({ char, seg: currentSeg });
+          if (isOrigChar) origPointer++;
+        });
+      } else {
+        adlibChars = blk.chars;
       }
-      return <span key={idx} style={charStyle}>{char === ' ' ? '\u00A0' : char}</span>;
+    } else {
+      // Fallback if parsing disconnects
+      const fallbackText = aUseSpacingText ? aActiveSpacingText : (adlib.text || '');
+      adlibChars = getGraphemes(fallbackText).map(char => ({ char, seg: null }));
+    }
+
+    // Map the text with individual character coloring strictly derived from the Markdown segments
+    const renderedAdlibText = adlibChars.map((c, idx) => {
+      const isPunct = isPunctuationChar(c.char);
+      let charColor = '#ffffff';
+      let charIsGradient = false;
+      let charGradientStyle = '';
+
+      if (!isPunct && c.seg) {
+          let segArtists = c.seg.artists;
+
+          // FIXED: Removed lineObj.singer fallback here as well.
+          if (segArtists && segArtists.length > 1) {
+              charIsGradient = true;
+              const c1 = masterPalette[segArtists[0]] || '#ffffff';
+              const c2 = masterPalette[segArtists[1]] || '#ffffff';
+              charGradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+          } else if (segArtists && segArtists.length === 1) {
+              charColor = masterPalette[segArtists[0]] || '#ffffff';
+          } else {
+              charColor = c.seg.color || '#ffffff';
+              charIsGradient = c.seg.isGradient || false;
+              charGradientStyle = c.seg.gradient || '';
+          }
+      } else if (!isPunct && !c.seg) {
+          // If there is NO segment mapping at all (e.g. adlib text mismatch)
+          // Fallback to the saved adlib.singer from DB
+          let fbArtists = adlib.singer ? adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s=>s.trim()) : [];
+          if (fbArtists.length > 1) {
+              charIsGradient = true;
+              const c1 = masterPalette[fbArtists[0]] || '#ffffff';
+              const c2 = masterPalette[fbArtists[1]] || '#ffffff';
+              charGradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+          } else if (fbArtists.length === 1) {
+              charColor = masterPalette[fbArtists[0]] || '#ffffff';
+          }
+      }
+
+      let charStyle = { transition: 'opacity 0.3s ease, transform 0.3s ease', fontWeight: 'bold' };
+
+      if (isPunct && c.char.trim() !== '') {
+          charStyle = {
+              ...charStyle,
+              color: '#fbbf24',
+              WebkitTextFillColor: '#fbbf24',
+              textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 0 20px rgba(251, 191, 36, 0.6)',
+              backgroundImage: 'none',
+              filter: 'none'
+          };
+      } else if (charIsGradient) {
+          charStyle.backgroundImage = charGradientStyle;
+          charStyle.WebkitBackgroundClip = 'text';
+          charStyle.WebkitTextFillColor = 'transparent';
+          charStyle.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+      } else {
+          charStyle.color = charColor;
+          charStyle.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${charColor}80`;
+      }
+
+      return <span key={idx} style={charStyle}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
     });
 
     return (
@@ -272,7 +316,7 @@ const SplitLine = ({
             {renderFormattedTranslation(displayTrans)}
           </span>
         ) : null}
-        <span className="primary-text" style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap' }} dir="auto">
+        <span className="primary-text" style={{ whiteSpace: 'pre-wrap' }} dir="auto">
           {renderedAdlibText}
         </span>
         {displayPron ? (

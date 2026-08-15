@@ -2,6 +2,7 @@
 
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
+  
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
@@ -10,26 +11,27 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   let hasExplicitHeader = false;
   let activeTags = [];
   let pendingHeader = null;
-
+  
   const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
-    const cleanHtmlLine = line.replace(/<\/?[^>]+(>|$)/g, "").trim();
-    if (!cleanHtmlLine || cleanHtmlLine.startsWith('<!')) return;
+    const trimmedLine = line.trim();
+    if (!trimmedLine || trimmedLine.startsWith('<!')) return;
 
-    const headerMatch = cleanHtmlLine.match(/^\[(.*?)\]$/);
+    const headerMatch = trimmedLine.match(/^\[(.*?)\]$/);
     if (headerMatch) {
       activeTags = [];
       hasExplicitHeader = true;
-      pendingHeader = line;
+      pendingHeader = trimmedLine;
       const content = headerMatch[1];
       
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
+        const rawSingers = singersPart.split(/,|&|\band\b/i).map(s => s.trim()).filter(Boolean);
+
         let unmarkedStr = singersPart;
         const parsedTokens = [];
         const explicitArtists = [];
-
         const matches = [...singersPart.matchAll(/([_*~]+)([^_*~]+)([_*~]+)/g)];
         
         matches.forEach(m => {
@@ -54,7 +56,19 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const unmarkedTokens = unmarkedStr.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean);
         
         if (unmarkedTokens.length > 0) {
-            parsedTokens.push({ marker: '', name: unmarkedTokens.join(', ') });
+            // EXPLICIT FIX: Only map unmarked artists to Plain text if they are within the first 4 artists,
+            // OR if the total artist count is 4 or less. This strictly reserves the 5th+ plain-text artists for XML tags.
+            const validPlainTokens = unmarkedTokens.filter(token => {
+                const tokenName = token.trim();
+                if (tokenName.toLowerCase() === 'both' || tokenName.toLowerCase() === 'all') return true;
+                const rIdx = rawSingers.findIndex(rs => rs.replace(/[_*~<>]/g, '').trim() === tokenName);
+                return rIdx <= 3 || rawSingers.length <= 4;
+            });
+
+            if (validPlainTokens.length > 0) {
+                parsedTokens.push({ marker: '', name: validPlainTokens.join(', ') });
+            }
+
             unmarkedTokens.forEach(n => {
                 if (n.toLowerCase() !== 'both' && n.toLowerCase() !== 'all') {
                     explicitArtists.push(n.trim());
@@ -80,9 +94,28 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       return;
     }
 
+    // --- NEW TWO-PASS TOKENIZATION ALGORITHM ---
+    // Pass 1: Extract precise XML-style <ARTIST> tags
+    const tagRegex = /<([^>]+)>([\s\S]*?)<\/\1>/gi;
+    let lastIndex = 0;
+    let match;
+    const initialSegments = [];
+
+    while ((match = tagRegex.exec(trimmedLine)) !== null) {
+      if (match.index > lastIndex) {
+        initialSegments.push({ type: 'unparsed', text: trimmedLine.substring(lastIndex, match.index) });
+      }
+      initialSegments.push({ type: 'tagged', artist: match[1].trim(), text: match[2] });
+      lastIndex = tagRegex.lastIndex;
+    }
+
+    if (lastIndex < trimmedLine.length) {
+      initialSegments.push({ type: 'unparsed', text: trimmedLine.substring(lastIndex) });
+    }
+
+    // Pass 2: Process standard Markdown exclusively on the remaining "unparsed" segments
     let lineSegments = [];
     const regex = /([_*~]+)/g;
-    const parts = cleanHtmlLine.split(regex);
     let currentText = '';
 
     const applyMarkerChunk = (chunk, prevText, nextText) => {
@@ -92,17 +125,20 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
         const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
 
+        // FIX: Force normalization (e.g. '_**' becomes '**_') to prevent closing tags from failing to match their opening sequence
+        const normChunk = normalizeMarker(chunk);
+
         if (isOpeningBoundary && !isClosingBoundary) {
-            activeTags.push(chunk);
+            activeTags.push(normChunk);
         } else if (isClosingBoundary && !isOpeningBoundary) {
-            const idx = activeTags.lastIndexOf(chunk);
+            const idx = activeTags.lastIndexOf(normChunk);
             if (idx > -1) activeTags.splice(idx, 1);
         } else {
-            const idx = activeTags.lastIndexOf(chunk);
+            const idx = activeTags.lastIndexOf(normChunk);
             if (idx > -1) {
                 activeTags.splice(idx, 1);
             } else {
-                activeTags.push(chunk);
+                activeTags.push(normChunk);
             }
         }
     };
@@ -112,22 +148,38 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         return normalizeMarker(uniqueTags.join(''));
     };
 
-    parts.forEach((part, index) => {
-        if (index % 2 === 1) {
+    initialSegments.forEach(chunk => {
+        if (chunk.type === 'tagged') {
             if (currentText) {
                 lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
                 currentText = '';
             }
-            const prevText = parts[index - 1] || '';
-            const nextText = parts[index + 1] || '';
-            applyMarkerChunk(part, prevText, nextText);
-        } else if (part) {
-            currentText += part;
+            // Tagged chunks bypass the markdown markers and receive explicit artist mapping directly
+            lineSegments.push({ text: chunk.text, explicitArtists: chunk.artist, marker: getActiveMarkerString() });
+        } else {
+            // Strip any remaining rogue HTML tags ONLY from the unparsed text chunks
+            const cleanUnparsed = chunk.text.replace(/<\/?[^>]+(>|$)/g, "");
+            const parts = cleanUnparsed.split(regex);
+            
+            parts.forEach((part, index) => {
+                if (index % 2 === 1) {
+                    if (currentText) {
+                        lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
+                        currentText = '';
+                    }
+                    const prevText = parts[index - 1] || '';
+                    const nextText = parts[index + 1] || '';
+                    applyMarkerChunk(part, prevText, nextText);
+                } else if (part) {
+                    currentText += part;
+                }
+            });
         }
     });
 
     if (currentText) {
         lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
+        currentText = ''; 
     }
 
     let rawSegments = [];
@@ -136,14 +188,20 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     lineSegments.forEach(seg => {
         let artists = [];
-        const rule = currentRules.find(r => r.marker === seg.marker);
-        
-        if (rule) {
-            artists = rule.artists;
-        } else if (seg.marker === '') {
-            artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
+
+        if (seg.explicitArtists) {
+            // Directly resolve XML assigned artists
+            artists = seg.explicitArtists.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
         } else {
-            artists = [];
+            // Fallback to standard Markdown rules
+            const rule = currentRules.find(r => r.marker === seg.marker);
+            if (rule) {
+                artists = rule.artists;
+            } else if (seg.marker === '') {
+                artists = currentRules.find(r => r.marker === '')?.artists || globalDefaultArtists;
+            } else {
+                artists = [];
+            }
         }
 
         if (!isOnlyPunctuationOrSpace.test(seg.text)) {
@@ -165,12 +223,12 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
         const cleanSegText = seg.text.replace(/[_*~]+/g, '');
         if (cleanSegText.length > 0) {
-            rawSegments.push({ 
-                text: cleanSegText, 
-                color: segColor, 
-                isGradient: segIsGradient, 
-                gradient: segGradient, 
-                artists: artists 
+            rawSegments.push({
+                text: cleanSegText,
+                color: segColor,
+                isGradient: segIsGradient,
+                gradient: segGradient,
+                artists: artists
             });
         }
     });
@@ -185,7 +243,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         if (!part) return;
         const isAdlib = /^[(\uFF08][^)\uFF09]+[)\uFF09]$/.test(part);
         const subSeg = { ...seg, text: part };
-
         if (isAdlib) {
           adlibSegments.push(subSeg);
         } else {
@@ -194,7 +251,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       });
     });
 
-    // --- CORE FIX: Cross-segment boundary space cleanup ---
+    // Cross-segment boundary space cleanup
     let sanitizedMainSegments = [...mainSegments];
     for (let i = 0; i < sanitizedMainSegments.length; i++) {
         sanitizedMainSegments[i].text = sanitizedMainSegments[i].text.replace(/\s+([.,!?;:\])} ]+)/g, '$1');
@@ -243,6 +300,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         gradient: lineGradientStyle,
         sectionHeader: pendingHeader
       });
+
       pendingHeader = null;
   });
 
@@ -263,8 +321,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       .replace(/[\p{P}\p{S}\s]/gu, '');
   };
 
-  // 1. Longest Common Subsequence (LCS) Matrix Algorithm
-  // This accurately aligns old lines to new lines dynamically.
   const m = parsedLines.length;
   const n = lrcSyncData.length;
   const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
@@ -281,10 +337,9 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
     }
   }
 
-  // 2. Backtrack to find exact perfect alignments
   let i = m;
   let j = n;
-  const alignment = []; 
+  const alignment = [];
   
   while (i > 0 && j > 0) {
     const cleanNew = normalize(parsedLines[i - 1].text);
@@ -302,25 +357,20 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   }
   alignment.reverse();
 
-  // Create mapping from New Indexed Position -> Old Node Reference
   const matchMap = {};
   alignment.forEach(match => {
     matchMap[match.newIndex] = match.oldIndex;
   });
 
-  // 3. Assemble and wipe heavily altered sequences
   const mergedData = parsedLines.map((newLine, idx) => {
     const oldIdx = matchMap[idx];
     
     if (oldIdx !== undefined) {
-      // 100% Match: Copy everything over
       const matchedNode = lrcSyncData[oldIdx];
       
       let isSplit = false;
       let newAdlibs = undefined;
       
-      // Strict constraint: Only preserve adlib splits if the text punctuation strictly matches
-      // (otherwise character position indices could be misaligned and crash the render)
       if (matchedNode.isSplit && matchedNode.adlibs) {
         if (newLine.text === matchedNode.text) {
           isSplit = matchedNode.isSplit;
@@ -341,7 +391,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
         adlibs: newAdlibs
       };
     } else {
-      // Modified Line: Completely wipe timings, adlibs, and translations as requested
       return {
         ...newLine,
         start: null,
