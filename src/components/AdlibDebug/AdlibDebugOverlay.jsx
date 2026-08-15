@@ -22,10 +22,10 @@ const getClosestPoints = (r1, r2) => {
   return { x1, y1, x2, y2, dist };
 };
 
-const AdlibDebugOverlay = ({ 
-   currentSingerBg, 
-   isSingerVisible, 
-   masterPalette,
+const AdlibDebugOverlay = ({
+    currentSingerBg,
+    isSingerVisible,
+    masterPalette,
   selectedSong
 }) => {
   const overlayRef = useRef(null);
@@ -60,7 +60,7 @@ const AdlibDebugOverlay = ({
   const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
     .map(s => s.trim()) || [];
-         
+            
   const isMulti = activeNames.length > 1;
   const cols = Math.max(2, activeNames.length);
 
@@ -74,6 +74,7 @@ const AdlibDebugOverlay = ({
   const getTightTextBounds = (element, overlayRect) => {
     let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
     let hasValidBounds = false;
+
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
     let node;
     
@@ -150,7 +151,6 @@ const AdlibDebugOverlay = ({
       const safeBottom = canvasBottom - EDGE_PAD_Y;
 
       const activeLine = document.querySelector('.focused-line.active');
-
       const newBoxes = [];
 
       if (activeLine) {
@@ -223,6 +223,7 @@ const AdlibDebugOverlay = ({
           lyricsClipped = true;
         }
       }
+
       if (singerBox) {
         if (
           singerBox.left < canvasLeft ||
@@ -258,9 +259,9 @@ const AdlibDebugOverlay = ({
         }
       }
 
-      const activeSingersList = currentAdlibSingers 
-        ? currentAdlibSingers.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) 
-        : [];
+      const activeSingersList = currentAdlibSingers
+         ? currentAdlibSingers.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim())
+         : [];
 
       if (currentAdlibSingers !== prevAdlibSingersRef.current) {
         prevAdlibSingersRef.current = currentAdlibSingers;
@@ -363,6 +364,7 @@ const AdlibDebugOverlay = ({
 
         const centerX = adlibBox.left + adlibBox.width / 2;
         const centerY = adlibBox.top + adlibBox.height / 2;
+
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
         const actualRot = parseFloat(adlibBox.rotation) || 0;
@@ -447,6 +449,7 @@ const AdlibDebugOverlay = ({
           } else {
              stat.isCorrect = false;
           }
+
           stat.quadArtist = quadrantArtist;
         }
         
@@ -485,6 +488,7 @@ const AdlibDebugOverlay = ({
                 label: `Center Bounds`
             });
         }
+
       });
 
       setBoundingBoxes(newBoxes);
@@ -496,11 +500,10 @@ const AdlibDebugOverlay = ({
     };
 
     rafRef.current = requestAnimationFrame(trackActiveLyrics);
-
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [cols, isMulti]);
+  }, [cols, isMulti, currentSingerBg?.name]); // FIX: Added currentSingerBg?.name to prevent stale closure!
 
   return (
     <div className="adlib-debug-overlay" ref={overlayRef}>
@@ -509,10 +512,10 @@ const AdlibDebugOverlay = ({
         {radialLines.map(line => (
           <g key={line.id}>
             <line 
-               x1={line.x1} y1={line.y1} 
-               x2={line.x2} y2={line.y2} 
-               stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
-             />
+                x1={line.x1} y1={line.y1} 
+                x2={line.x2} y2={line.y2} 
+                stroke={line.color} strokeWidth="1.5" strokeDasharray="6 4" 
+              />
             <circle cx={line.x2} cy={line.y2} r="4" fill="#ff00ff" />
             <circle cx={line.x1} cy={line.y1} r="3" fill="#ffffff" />
           </g>
@@ -535,32 +538,32 @@ const AdlibDebugOverlay = ({
               {layoutStats.lyricsClipped ? (
                 <span style={{color: '#ef4444'}}>Lyrics Clipped</span>
               ) : (
-                <span style={{color: '#4ade80'}}>Lyrics Safe</span>
+                <span style={{color: '#4ade80'}}>✔ Lyrics Safe</span>
               )}{' | '}
               {layoutStats.singerClipped ? (
                 <span style={{color: '#ef4444'}}>Name Clipped</span>
               ) : (
-                <span style={{color: '#4ade80'}}>Name Safe</span>
+                <span style={{color: '#4ade80'}}>✔ Name Safe</span>
               )}
             </div>
 
             {distanceStats.length > 0 && distanceStats.map(stat => (
               <div key={`stat-${stat.id}`} style={{ borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 <div>
-                  <strong>Adlib {stat.id + 1} Radial:</strong>
+                  <strong>Adlib {stat.id} Radial:</strong>
                   {` Dist: ${stat.toCenter}px | Angle: ${parseFloat(stat.rotation).toFixed(1)}°`}
                   {stat.isRotationCorrect ? (
-                    <span style={{color: '#4ade80'}}> ✓ Valid</span>
+                    <span style={{color: '#4ade80'}}> ✔ Valid</span>
                   ) : (
-                    <span style={{color: '#ef4444'}}> ✗ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
+                    <span style={{color: '#ef4444'}}> ✖ Invalid (Exp: ~{stat.expectedRotation.toFixed(1)}°)</span>
                   )}
                 </div>
                 <div>
                   <strong>Placement:</strong> {isMulti ? (
                     stat.isCorrect ? (
-                      <span style={{color: '#4ade80'}}>✓ Correct Quadrant</span>
+                      <span style={{color: '#4ade80'}}>✔ Correct Quadrant</span>
                     ) : (
-                      <span style={{color: '#ef4444'}}>✗ Wrong (in {stat.quadArtist}'s quad)</span>
+                      <span style={{color: '#ef4444'}}>✖ Wrong (in {stat.quadArtist}'s quad)</span>
                     )
                   ) : 'Full Screen'}
                 </div>
@@ -601,8 +604,8 @@ const AdlibDebugOverlay = ({
             
             return (
               <div 
-                 key={cellIdx} 
-                 className={`debug-matrix-cell ${isDimmed ? 'dimmed' : ''}`}
+                  key={cellIdx} 
+                  className={`debug-matrix-cell ${isDimmed ? 'dimmed' : ''}`}
                 style={{ borderColor: artistColor }}
               >
               </div>
