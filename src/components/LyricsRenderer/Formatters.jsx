@@ -4,14 +4,14 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
-  
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
+  
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
       const shadow = isFocused 
-         ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+          ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
@@ -30,7 +30,8 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
-      const shouldWrap = isFocused && hyphenCount > 4;
+      // Strictly > 3 hyphens to allow wrapping, and NO arbitrary character breaks allowed
+      const shouldWrap = hyphenCount > 3;
       words.push(
         <span
           key={`w-${keySuffix}`}
@@ -40,12 +41,13 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
                   whiteSpace: 'normal',
                   display: 'inline-block',
                   maxWidth: '100%',
-                  wordBreak: 'break-word',
-                  overflowWrap: 'break-word'
+                  wordBreak: 'normal',
+                  overflowWrap: 'normal'
                 }
               : {
                   whiteSpace: 'nowrap',
-                  display: 'inline-block'
+                  display: 'inline-block',
+                  maxWidth: '100%'
                 }
           }
         >
@@ -63,10 +65,8 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       words.push(elements[i]);
       continue;
     }
-
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
-
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
 
     if (shouldBreak) {
@@ -82,7 +82,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   flushWord('end');
   return words;
 };
-
 
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
   let alignedChunks = [];
@@ -136,6 +135,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         currentBlock.push(c);
       }
     });
+
     if (currentBlock.length > 0) {
        const textStr = currentBlock.map(x => x.char).join('');
        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
@@ -148,7 +148,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
        }
     }
   } 
-
+  
   // --- 2. Structured JSON Organic Chunks (Legacy) ---
   else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
@@ -156,6 +156,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
+
       let charsToConsume = 0;
       let tempPointer = charIdxPointer;
 
@@ -194,10 +195,11 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
     }
   } 
-
+  
   // --- 3. Organic Spaced Fallback for CJK with English (Legacy) ---
   else {
     const isCJKLine = chars.some(c => isCJ(c.char));
+
     if (isCJKLine) {
       const origString = chars.map(c => c.char).join('');
       const transString = fullTrans || '';
@@ -226,6 +228,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       
       blocks.forEach(b => {
         const blockStr = b.chars.map(c => c.char).join('');
+
         if (b.isLatin && blockStr.trim().length > 0) {
           const latinWords = blockStr.split(/\s+/).filter(Boolean);
           latinWords.forEach(lw => {

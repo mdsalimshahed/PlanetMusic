@@ -1,25 +1,16 @@
 /* --- src/components/Workspaces/Sync/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect } from 'react';
-import { generateSafeAdlibPosition, getRelativeRect, pseudoRandom } from "../../AdlibDebug/adlibPlacementLogic";
+import { generateSafeAdlibPosition, getRelativeRect } from "../../AdlibDebug/adlibPlacementLogic";
 import { getGraphemes, normalizeTrans, isCJ } from '../../LyricsRenderer/textUtils';
 import { alignChunksWithTransliteration, renderFormattedTranslation } from "../../LyricsRenderer/Formatters";
-
-const adlibPlacementCache = new Map();
 
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
 
-  const sessionSeed = useMemo(() => {
-    if (!Array.isArray(syncData) || syncData.length === 0) return 'empty_seed';
-    const textHash = syncData.map(d => d.text).join('').substring(0, 50);
-    return `seed_${Math.floor(pseudoRandom(textHash) * 100000)}`;
-  }, [syncData]);
-
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!Array.isArray(syncData)) return items;
-    let globalAdlibCounter = 0;
 
     syncData.forEach((node) => {
       if (node?.isSplit && node.adlibs) {
@@ -29,8 +20,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
         node.adlibs.forEach((adlib, j) => {
           if (adlib.start === null) return;
+          
           const key = `adlib-${adlib.start}-${j}`;
-          const seedBase = `${sessionSeed}-${node.text}-${adlib.start}-${j}`;
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
           const renderAdlibPure = (adlibObj) => {
@@ -95,6 +86,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   seg: currentSeg,
                   globalIndex: idx
                 });
+
                 charPointerInSegment += getGraphemes(char).length;
                 if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
                   segmentPointer++;
@@ -121,6 +113,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
               const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
               let style = {};
+
               if (isPunct && c.char.trim() !== '') {
                 style.color = '#fbbf24';
                 style.WebkitTextFillColor = '#fbbf24';
@@ -169,6 +162,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
             let displayPronString = null;
             const isCJKLine = adlibChars.some(c => isCJ(c.char));
+
             if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
               if (!isCJKLine && !aParsedChunks) {
                 displayPronString = normalizeTrans(aPron);
@@ -193,18 +187,21 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                       marginBottom: '6px',
                       maxWidth: '100%',
                       width: 'max-content',
-                      whiteSpace: 'pre'
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-word'
                     }}
                     dir="ltr"
                   >
                     {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
-                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block' }} dir="auto">
+                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
                   {alignedAdlibJSX}
                 </span>
                 {displayPronString && (
-                  <span className="pronunciation-text" style={basePronStyle} dir="ltr">{renderFormattedTranslation(displayPronString)}</span>
+                  <span className="pronunciation-text" style={{...basePronStyle, whiteSpace: 'normal', wordBreak: 'break-word', maxWidth: '100%'}} dir="ltr">
+                    {renderFormattedTranslation(displayPronString)}
+                  </span>
                 )}
               </div>
             );
@@ -215,9 +212,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           items.push({
             key,
-            globalIndex: globalAdlibCounter++, 
-            sessionSeed, 
-            seedBase,
             start,
             end,
             isMulti,
@@ -232,7 +226,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     });
 
     return items;
-  }, [syncData, masterPalette, sessionSeed]);
+  }, [syncData, masterPalette]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -242,10 +236,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           node,
           start: dataItem.start,
           end: dataItem.end,
-          key: dataItem.key,
-          globalIndex: dataItem.globalIndex,
-          sessionSeed: dataItem.sessionSeed,
-          seedBase: dataItem.seedBase,
           isMulti: dataItem.isMulti,
           cols: dataItem.cols,
           activeSingersList: dataItem.activeSingersList,
@@ -282,49 +272,44 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
 
+        // ALL CALCULATION HAPPENS ON THE FLY, EXACTLY WHEN THE AD-LIB BECOMES ACTIVE
         if (shouldBeActive && !item.isActive) {
-          const cacheKey = `${item.sessionSeed}_${item.key}_${window.innerWidth}x${window.innerHeight}`;
-          let pos = adlibPlacementCache.get(cacheKey);
-
-          if (!pos) {
-            const container = containerRef.current?.parentElement;
-            if (container) {
-              const containerRect = container.getBoundingClientRect();
-              
-              const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
-              const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
-              const singerNode = container.querySelector('.singer-name-corner.visible');
-              
-              const cBox = getRelativeRect(lyricsNode, containerRect);
-              if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
-                  cBox.top -= 20;
-                  cBox.bottom -= 20;
-              }
-              const sBox = getRelativeRect(singerNode, containerRect);
-              
-              pos = generateSafeAdlibPosition(
-                item.node.offsetWidth || 150,
-                item.node.offsetHeight || 40,
-                containerRect,
-                cBox,
-                sBox,
-                item.isMulti,
-                item.cols,
-                item.activeSingersList,
-                item.activeNames,
-                item.seedBase,
-                item.globalIndex,
-                item.sessionSeed
-              );
-              
-              adlibPlacementCache.set(cacheKey, pos);
+          let pos = null;
+          
+          const container = containerRef.current?.parentElement;
+          if (container) {
+            const containerRect = container.getBoundingClientRect();
+            
+            const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
+            const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
+            const singerNode = container.querySelector('.singer-name-corner.visible');
+            
+            const cBox = getRelativeRect(lyricsNode, containerRect);
+            if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
+                cBox.top -= 20;
+                cBox.bottom -= 20;
             }
+            const sBox = getRelativeRect(singerNode, containerRect);
+            
+            pos = generateSafeAdlibPosition(
+              item.node.offsetWidth || 150,
+              item.node.offsetHeight || 40,
+              containerRect,
+              cBox,
+              sBox,
+              item.isMulti,
+              item.cols,
+              item.activeSingersList,
+              item.activeNames
+            );
           }
 
           if (pos) {
             item.node.style.setProperty('--adlib-left', pos.left);
             item.node.style.setProperty('--adlib-top', pos.top);
             item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
+            item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
+            item.node.style.setProperty('--adlib-scale', pos.scale);
           }
 
           item.node.classList.add('active');
@@ -354,19 +339,16 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
   return (
     <div className="focused-adlibs-container" ref={containerRef}>
-      {adlibsToRender.map(item => (
+      {adlibsToRender.map((item, index) => (
         <div
-          key={item.key}
+          key={`adlib-render-${index}`}
           className="focused-adlib-line"
           data-start={item.start}
           data-end={item.end}
-          data-global-index={item.globalIndex}
           style={{
             '--adlib-rot': '0deg', 
             '--adlib-top': '50%',
-            '--adlib-left': '50%',
-            maxWidth: 'none',
-            whiteSpace: 'pre'
+            '--adlib-left': '50%'
           }}
           onClick={(e) => { e.stopPropagation(); handleLineClick(item.start); }}
         >

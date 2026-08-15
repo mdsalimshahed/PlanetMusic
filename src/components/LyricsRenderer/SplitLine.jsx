@@ -19,7 +19,7 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
-  
+
   // 1. EXTRACT MAIN CHARACTERS (Filter out ad-lib characters from the main line)
   const blocks = [];
   let currentBlock = null;
@@ -42,7 +42,7 @@ const SplitLine = ({
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   const adlibBlocks = blocks.filter(b => b.isAdlib);
-  
+
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
 
@@ -60,7 +60,6 @@ const SplitLine = ({
     if (!isPunct && c.seg) {
       let targetArtists = c.seg.artists;
       
-      // FIXED: Removed the toxic fallback to lineObj.singer. 
       // If a segment explicitly has an empty artist array (e.g. unmapped markdown), it MUST remain white.
       if (targetArtists && targetArtists.length > 1) {
         isGradient = true;
@@ -77,6 +76,7 @@ const SplitLine = ({
     }
 
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
+    
     if (isGradient) {
       style.backgroundImage = gradientStyle;
       style.WebkitBackgroundClip = 'text';
@@ -87,7 +87,8 @@ const SplitLine = ({
       style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
     }
 
-    return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+    // FIX: Removed \u00A0 non-breaking space logic to allow natural word wrapping
+    return <span key={globalIdx} style={style}>{c.char}</span>;
   };
 
   // 3. RENDER MAIN TEXT (Using strict chunk alignment)
@@ -243,8 +244,6 @@ const SplitLine = ({
 
       if (!isPunct && c.seg) {
           let segArtists = c.seg.artists;
-
-          // FIXED: Removed lineObj.singer fallback here as well.
           if (segArtists && segArtists.length > 1) {
               charIsGradient = true;
               const c1 = masterPalette[segArtists[0]] || '#ffffff';
@@ -272,7 +271,6 @@ const SplitLine = ({
       }
 
       let charStyle = { transition: 'opacity 0.3s ease, transform 0.3s ease', fontWeight: 'bold' };
-
       if (isPunct && c.char.trim() !== '') {
           charStyle = {
               ...charStyle,
@@ -292,7 +290,8 @@ const SplitLine = ({
           charStyle.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${charColor}80`;
       }
 
-      return <span key={idx} style={charStyle}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+      // FIX: Removed \u00A0 non-breaking space logic
+      return <span key={idx} style={charStyle}>{c.char}</span>;
     });
 
     return (
@@ -316,7 +315,7 @@ const SplitLine = ({
             {renderFormattedTranslation(displayTrans)}
           </span>
         ) : null}
-        <span className="primary-text" style={{ whiteSpace: 'pre-wrap' }} dir="auto">
+        <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
           {renderedAdlibText}
         </span>
         {displayPron ? (
@@ -330,7 +329,6 @@ const SplitLine = ({
 
   // 5. GLOBAL FALLBACK PRONUNCIATION (For Main Line)
   let displayPronString = null;
-
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -374,8 +372,8 @@ const SplitLine = ({
         className="primary-text"
         style={{
           whiteSpace: 'pre-wrap',
-          wordBreak: 'break-word',
-          overflowWrap: 'break-word',
+          wordBreak: 'normal',
+          overflowWrap: 'normal',
           display: 'inline-flex',
           flexDirection: 'row',
           alignItems: 'baseline', 
@@ -415,8 +413,8 @@ const SplitLine = ({
                  maxWidth: '100%',
                  width: '100%',
                  whiteSpace: 'normal',
-                 wordBreak: 'break-word',
-                 overflowWrap: 'break-word',
+                 wordBreak: 'normal',
+                 overflowWrap: 'normal',
                  textAlign: 'center',
                  textWrap: 'balance'
                }}
@@ -429,7 +427,7 @@ const SplitLine = ({
         {renderedAdlibElements}
       </span>
       {displayPronString && (
-        <div className="pronunciation-text" style={{ ...basePronStyle, whiteSpace: 'normal', wordBreak: 'break-word', overflowWrap: 'break-word', marginTop: '8px', display: 'block', textAlign: 'left', maxWidth: '100%' }} dir="ltr">
+        <div className="pronunciation-text" style={{ ...basePronStyle, whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', marginTop: '8px', display: 'block', textAlign: 'left', maxWidth: '100%' }} dir="ltr">
           {renderFormattedTranslation(displayPronString)}
         </div>
       )}

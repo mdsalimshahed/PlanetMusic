@@ -58,6 +58,7 @@ const StandardLine = ({
       if (!targetArtists && lineObj.singer) {
         targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
       }
+
       if (targetArtists && targetArtists.length > 0) {
         if (targetArtists.length > 1) {
           isGradient = true;
@@ -89,7 +90,8 @@ const StandardLine = ({
           : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
     }
 
-    return <span key={globalIdx} {...adlibProps} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+    // FIX: Removed \u00A0 non-breaking space logic
+    return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
   const alignedJSX = alignChunksWithTransliteration(
@@ -139,7 +141,7 @@ const StandardLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-      <span className="primary-text" style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', wordBreak: 'normal', overflowWrap: 'break-word', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
+      <span className="primary-text" style={{ whiteSpace: isFocused ? 'normal' : 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
         <span
           className="core-chunks"
           style={{
@@ -159,8 +161,8 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span 
-               className={`chunk-translation ${transClass}`}
+            <span
+                className={`chunk-translation ${transClass}`}
                dir="ltr"
               style={{
                 textWrap: 'balance',

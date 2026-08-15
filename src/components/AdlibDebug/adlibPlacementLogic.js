@@ -1,16 +1,5 @@
 /* --- src/components/AdlibDebug/adlibPlacementLogic.js --- */
 
-// Deterministic pseudo-random generator
-export const pseudoRandom = (seedStr) => {
-  let hash = 0;
-  for (let i = 0; i < seedStr.length; i++) {
-    hash = (hash << 5) - hash + seedStr.charCodeAt(i);
-    hash |= 0;
-  }
-  const x = Math.sin(hash++) * 10000;
-  return x - Math.floor(x);
-};
-
 // Exported so the tracker can do JIT DOM reading outside of the loop
 export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
@@ -20,13 +9,13 @@ export const getRelativeRect = (element, containerRect) => {
   let hasValidBounds = false;
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
   let node;
-       
+          
   while ((node = walker.nextNode())) {
     if (node.textContent.trim() !== '') {
       const range = document.createRange();
       range.selectNodeContents(node);
       const rects = range.getClientRects();
-               
+                      
       for (let i = 0; i < rects.length; i++) {
         const rect = rects[i];
         if (rect.width > 0 && rect.height > 0) {
@@ -39,7 +28,7 @@ export const getRelativeRect = (element, containerRect) => {
       }
     }
   }
-  
+
   if (hasValidBounds) {
     return {
       top: minTop - containerRect.top,
@@ -72,17 +61,14 @@ export const generateSafeAdlibPosition = (
   isMulti,
   cols,
   activeSingersList,
-  masterNamesArray,
-  seedKey,
-  globalIndex,
-  sessionSeed
+  masterNamesArray
 ) => {
-  // 1. The Goldilocks Margins (Outer Safe Zones)
-  const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08); 
-  const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08); 
-  const LYRIC_PAD = 25; 
-  const SINGER_PAD = 20; 
-  const MAX_DIST = 160; 
+  // 1. The Goldilocks Margins (Outer Safe Zones mirroring AdlibDebugOverlay)
+  const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08);
+  const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08);
+  const LYRIC_PAD = 25;
+  const SINGER_PAD = 20;
+  const MAX_DIST = 160;
 
   const safeLeft = EDGE_PAD_X;
   const safeRight = containerRect.width - EDGE_PAD_X;
@@ -99,11 +85,11 @@ export const generateSafeAdlibPosition = (
         baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
       }
     }
-         
+    
     if (cBox.bottom < safeBottom) {
       const topEdge = cBox.bottom + LYRIC_PAD;
       let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
-             
+      
       if (sBox && sBox.top < safeBottom) {
         const sTopAdjusted = sBox.top - SINGER_PAD;
         if (sTopAdjusted > topEdge) {
@@ -139,7 +125,7 @@ export const generateSafeAdlibPosition = (
       const r = Math.floor(i / cols);
       const c = i % cols;
       const artist = getArtistForCell(i);
-             
+
       if (activeSingersList.includes(artist)) {
         validCells.push({
           left: c * colW,
@@ -159,7 +145,6 @@ export const generateSafeAdlibPosition = (
       const ixRight = Math.min(bz.right, vc.right);
       const ixTop = Math.max(bz.top, vc.top);
       const ixBottom = Math.min(bz.bottom, vc.bottom);
-
       if (ixLeft < ixRight && ixTop < ixBottom) {
         intersectedAreas.push({
           left: ixLeft,
@@ -173,72 +158,87 @@ export const generateSafeAdlibPosition = (
     });
   });
 
-  // 5. CHAOTIC ALTERNATION: Strictly alternate Top/Bottom using globalIndex
+  // 5. PURE RANDOM ALTERNATION: No memory, no seeds.
   let targetArea;
   if (intersectedAreas.length > 0) {
     const canvasMidY = containerRect.height / 2;
-         
-    const topZones = intersectedAreas.filter(a => a.top < canvasMidY).sort((a, b) => a.left - b.left);
-    const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY).sort((a, b) => a.left - b.left);
-
-    const sessionOffset = Math.floor(pseudoRandom(sessionSeed) * 10);
-    const effectiveIndex = globalIndex + sessionOffset;
+    const topZones = intersectedAreas.filter(a => a.top < canvasMidY);
+    const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY);
 
     if (topZones.length > 0 && bottomZones.length > 0) {
-      if (effectiveIndex % 2 === 0) {
-        targetArea = topZones[Math.floor(effectiveIndex / 2) % topZones.length];
+      if (Math.random() > 0.5) {
+        targetArea = topZones[Math.floor(Math.random() * topZones.length)];
       } else {
-        targetArea = bottomZones[Math.floor(effectiveIndex / 2) % bottomZones.length];
+        targetArea = bottomZones[Math.floor(Math.random() * bottomZones.length)];
       }
     } else {
-      intersectedAreas.sort((a, b) => (a.top - b.top) || (a.left - b.left));
-      targetArea = intersectedAreas[effectiveIndex % intersectedAreas.length];
+      targetArea = intersectedAreas[Math.floor(Math.random() * intersectedAreas.length)];
     }
   } else if (validCells.length > 0) {
-    const fallback = validCells[Math.floor(pseudoRandom(seedKey) * validCells.length)];
-    targetArea = fallback;
+    targetArea = validCells[Math.floor(Math.random() * validCells.length)];
   } else {
     targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom };
   }
 
-  // 6. GENERATE INNER SAFE ZONE (Prevents Center Placement from Bleeding Edges)
-  const padX = (adlibWidth / 2) * 1.2;
-  const padY = (adlibHeight / 2) * 1.2;
+  if (targetArea.width === undefined) targetArea.width = targetArea.right - targetArea.left;
+  if (targetArea.height === undefined) targetArea.height = targetArea.bottom - targetArea.top;
+
+  // --- SCALING AND WRAPPING LOGIC ---
+  const tw = Math.max(10, targetArea.width);
+  const th = Math.max(10, targetArea.height);
+  
+  const maxWidth = Math.max(50, tw * 0.95); 
+  
+  const requiredArea = adlibWidth * adlibHeight;
+  const availableArea = tw * th;
+  let scale = 1;
+
+  if (requiredArea > availableArea) {
+    scale = Math.max(0.35, Math.sqrt(availableArea / requiredArea));
+  }
+
+  // 6. GENERATE INNER SAFE ZONE
+  const assumedWidth = Math.min(adlibWidth * scale, maxWidth);
+  const wrapRatio = Math.max(1, (adlibWidth * scale) / maxWidth);
+  const assumedHeight = (adlibHeight * scale) * wrapRatio;
+
+  const padX = assumedWidth / 2;
+  const padY = assumedHeight / 2;
+
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
   let innerBottom = targetArea.bottom - padY;
 
-  // Fallback: If the target area is smaller than the ad-lib itself, force it to center within the area
+  // Fallback if the target area is smaller than the ad-lib itself
   if (innerLeft > innerRight) {
     const mid = (targetArea.left + targetArea.right) / 2;
-    innerLeft = mid;
-    innerRight = mid;
+    innerLeft = innerRight = mid;
   }
   if (innerTop > innerBottom) {
     const mid = (targetArea.top + targetArea.bottom) / 2;
-    innerTop = mid;
-    innerBottom = mid;
+    innerTop = innerBottom = mid;
   }
 
-  // Generate a random center point STRICTLY inside the Inner Safe Zone
-  const randomX = innerLeft + pseudoRandom(`${seedKey}_X_${globalIndex}`) * (innerRight - innerLeft);
-  const randomY = innerTop + pseudoRandom(`${seedKey}_Y_${globalIndex}`) * (innerBottom - innerTop);
+  // Generate a random center point STRICTLY inside the Inner Safe Zone, totally on the fly
+  const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
+  const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
 
   // 7. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
   const canvasMidY = containerRect.height / 2;
-  
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
-  const ySign = (randomY < canvasMidY) ? 1 : -1; 
-  let finalRotation = rotMultiplier * ySign * 18; 
+  const ySign = (randomY < canvasMidY) ? 1 : -1;
 
-  const noise = (pseudoRandom(`${seedKey}_Rot_${globalIndex}`) * 10) - 5;
+  let finalRotation = rotMultiplier * ySign * 18;
+  const noise = (Math.random() * 10) - 5;
   finalRotation += noise;
 
   return {
     left: `${randomX}px`,
     top: `${randomY}px`,
-    rot: finalRotation.toFixed(2)
+    rot: finalRotation.toFixed(2),
+    maxWidth: maxWidth.toFixed(1),
+    scale: scale.toFixed(3)
   };
 };
