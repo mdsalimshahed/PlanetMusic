@@ -7,24 +7,53 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
+  
   const [globalArtistData, setGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
-    return stored ? JSON.parse(stored) : { images: {}, colors: {} };
+    const parsed = stored ? JSON.parse(stored) : { images: {}, colors: {} };
+    
+    // HYDRATE FROM VAULT: Scan the entire library for manually set images/colors.
+    // This ensures that if an artist was customized in any other song, 
+    // we reuse those assets globally instead of auto-fetching new ones.
+    try {
+      const libraryStr = localStorage.getItem('songLibrary');
+      if (libraryStr) {
+        const lib = JSON.parse(libraryStr);
+        if (Array.isArray(lib)) {
+          lib.forEach(song => {
+            if (song.artistImages) {
+              Object.entries(song.artistImages).forEach(([artist, url]) => {
+                if (url && !parsed.images[artist]) parsed.images[artist] = url;
+              });
+            }
+            if (song.artistColors) {
+              Object.entries(song.artistColors).forEach(([artist, color]) => {
+                if (color && !parsed.colors[artist]) parsed.colors[artist] = color;
+              });
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Vault artist data hydration failed", e);
+    }
+    
+    return parsed;
   });
 
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
-
-  const previousTrackId = useRef(null);
   
+  const previousTrackId = useRef(null);
   // Track to prevent infinite fetch loops within the same active session
   const hasFetchedDeezerMetaRef = useRef(new Set());
 
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
   const featuredArtists = trackNameData.featuredArtists;
-
+  
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+  
   const basePalette = useMemo(() => {
       return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
   }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
@@ -72,8 +101,8 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       if (selectedSong.hasDeezerMetaBound) return;
 
       const isDeezerOnly = (selectedSong.sourceNames?.length === 1 && selectedSong.sourceNames[0] === 'Deezer') || 
-                           (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
-                           
+                            (!selectedSong.sourceNames && selectedSong.sourceName === 'Deezer');
+                            
       const customDzUrl = selectedSong.customLinks?.deezer;
       let targetId = null;
 
@@ -210,6 +239,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     
     // Close editor view first to unmount editing UI elements
     setIsEditing(false);
+
     // Commit updated song payload to vault and active player state simultaneously
     updateSongInLibrary(updatedSongPayload);
   };
@@ -254,7 +284,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const searchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`) : '';
   const ytSearchQuery = selectedSong ? encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} ${timeString}`) : '';
-
+  
   const finalLinks = {
     spotify: customData.spotify || `https://open.spotify.com/search/${searchQuery}`,
     yt: customData.yt || `https://music.youtube.com/search?q=${ytSearchQuery}`,
