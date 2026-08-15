@@ -15,7 +15,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
   const [syncDuration, setSyncDuration] = useState(0);
   const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
-
   const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
   const [syncYtVideoId, setSyncYtVideoId] = useState(null);
   const [activeSyncSource, setActiveSyncSource] = useState(null);
@@ -23,7 +22,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [debugInfo, setDebugInfo] = useState({ source: 'None', rawData: null });
-
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
 
@@ -36,6 +34,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
+
   const cachedUrlsRef = useRef({ local: null, deezer: null });
 
   useEffect(() => {
@@ -97,13 +96,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   }, [customData.hasLocal, customData.deezer, customData.yt, selectedSong]);
 
   const computedSource = manualSource && availableSources.includes(manualSource) 
-    ? manualSource 
-    : (availableSources[0] || null);
+     ? manualSource 
+     : (availableSources[0] || null);
 
   useEffect(() => {
     const loadSyncAudio = async () => {
       if (isSyncMode && selectedSong) {
         const sourceToLoad = computedSource;
+
         if (!sourceToLoad) {
           setActiveSyncSource(null);
           setSyncYtVideoId(null);
@@ -164,8 +164,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             formData.append('arl_token', settings?.deezerArl || '');
             formData.append('quality', '1');
             formData.append('action', 'stream');
-            formData.append('obfuscate', 'true'); 
-            
+            formData.append('obfuscate', 'true');
+              
             const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
               method: 'POST',
               body: formData
@@ -232,6 +232,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setIsSyncPlaying(false);
       workspaceClock.pause();
     };
+
     window.addEventListener('globalPlayerDidPlay', handleGlobalPlay);
     return () => window.removeEventListener('globalPlayerDidPlay', handleGlobalPlay);
   }, []);
@@ -282,8 +283,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     loopRangeRef, isShowingAutoSync
   });
 
-  const {
-      handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, handleShiftTimings
+  const { 
+      handleSplitAdlibs, handleUndoSplit, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, handleShiftTimings 
     } = useSyncActions({
     selectedSong, isSaved, customData, setCustomData, masterPalette,
     updateSongInLibrary, isShowingAutoSync, setIsShowingAutoSync,
@@ -300,10 +301,11 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
 
     window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-    setIsSyncLoading(true);
 
+    setIsSyncLoading(true);
     const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
     const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
+
     let initialData = [];
     const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
     
@@ -314,6 +316,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
           ...line,
           translation: existingNode.translation || '',
           pronunciation: existingNode.pronunciation || null,
+          spacingText: existingNode.spacingText || '', // PRESERVES GLOBAL AUTO-SPACING
+          lang: existingNode.lang || 'auto',           // PRESERVES GLOBAL LANGUAGE TAG
           start: existingNode.start !== undefined ? existingNode.start : null,
           end: existingNode.end !== undefined ? existingNode.end : null,
           isSplit: existingNode.isSplit || false,
@@ -335,6 +339,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const confirmRefreshLyrics = () => {
+    // Strictly wipes timings and splits ONLY, preserving translations/spacing
     const resetData = syncDataRef.current.map(line => ({
       ...line,
       start: null,
@@ -342,6 +347,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       isSplit: false,
       adlibs: undefined
     }));
+
     setSyncData(resetData);
     syncDataRef.current = resetData;
     
@@ -384,6 +390,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       } catch (e) {}
       return;
     }
+
     if (!syncAudioRef.current) return;
     if (syncAudioRef.current.paused) {
       window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));

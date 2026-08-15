@@ -49940,10 +49940,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 1: Suzuka]",
+          "translation": "What about strong women?",
+          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "強い 女 が  どう とか",
+          "lang": "ja",
           "start": 14.767942,
           "end": 17.677373,
-          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い女が\",\"trans\":\"Tsuyoi on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What about strong women?",
           "isSplit": false
         },
         {
@@ -49964,10 +49966,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "For some reason, I'm saying this from above.",
+          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か\",\"trans\":\"Nazeka\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "何故か 上 から  言うけど",
+          "lang": "ja",
           "start": 18.221606,
           "end": 20.968617,
-          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "For some reason, I say this from above.",
           "isSplit": false
         },
         {
@@ -49988,10 +49992,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "you don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "spacingText": "あなた 何 に も わかっちゃ いない",
+          "lang": "ja",
           "start": 21.636335,
           "end": 25.309608,
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
-          "translation": "you don't understand anything",
           "isSplit": false
         },
         {
@@ -50012,10 +50018,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "What about three fingers?",
+          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指\",\"trans\":\"Mitsuyubi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ついて\",\"trans\":\"Tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "三つ指 ついて  どう とか",
+          "lang": "ja",
           "start": 28.618175,
           "end": 31.480851,
-          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What's up with three fingers?",
           "isSplit": false
         },
         {
@@ -50036,10 +50044,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "As the old saying goes,",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "昔ながら に  言うけど",
+          "lang": "ja",
           "start": 32.17671,
           "end": 34.927486,
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I say it in the old way",
           "isSplit": false
         },
         {
@@ -50060,10 +50070,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I cry, but I endure it, but I don't want to understand",
+          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
+          "spacingText": "泣けど  耐えど  わかりたくない",
+          "lang": "ja",
           "start": 35.705166,
           "end": 39.189599,
-          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I cry, but I endure it, but I don't want to understand",
           "isSplit": false
         },
         {
@@ -50084,10 +50096,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
+          "translation": "Takamine flower",
+          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺\",\"trans\":\"Takane\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"花\",\"trans\":\"Hana\"}]}",
+          "spacingText": "高嶺 の 花",
+          "lang": "ja",
           "start": 41.765806,
           "end": 44.981676,
-          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺の花\",\"trans\":\"Takane no hana\"}]}",
-          "translation": "Takamine flower",
           "isSplit": false
         },
         {
@@ -50108,10 +50122,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "walking lily flower",
+          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く\",\"trans\":\"Aruku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"百合の花\",\"trans\":\"Yurinohana\"}]}",
+          "spacingText": "歩く 百合の花",
+          "lang": "ja",
           "start": 45.436563,
           "end": 48.8364,
-          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く百合の花\",\"trans\":\"Aruku yurinohana\"}]}",
-          "translation": "walking lily flower",
           "isSplit": false
         },
         {
@@ -50132,35 +50148,19 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "swaying in a strong wind",
+          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風\",\"trans\":\"Kaze\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
+          "spacingText": "強い  風 に  揺れる",
+          "lang": "ja",
           "start": 48.95043,
           "end": 54.90195,
-          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風に\",\"trans\":\"Kaze ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
-          "translation": "swaying in a strong wind",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -50196,18 +50196,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
+          "spacingText": "",
+          "lang": "ja",
           "start": 57.779713,
           "end": 64.306504,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ乙女の美学\",\"trans\":\"Rarenu otome no bigaku\"}]}",
-          "translation": "Aesthetics of an unbendable maiden",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 58.73604385503704,
-              "end": 59.403543855037036,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 58.951813000000556,
+              "end": 59.40991300000018,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -50229,10 +50231,10 @@
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 60.303809855044484,
-              "end": 61.36830985504448,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 60.42841300000019,
+              "end": 60.830613000000376,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -50255,28 +50257,10 @@
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -50312,250 +50296,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 64.927286,
           "end": 71.675441,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 65.7181300209853,
-              "end": 66.46193002098232,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 67.31216709346009,
-              "end": 68.4285670934586,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "変わ  りゆく 大和撫子 (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "変わ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " りゆく",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 大和撫子 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 71.951575,
-          "end": 78.647197,
-          "pronunciation": "{\"full\":\"Hen wari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わ\",\"trans\":\"Hen wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"りゆく\",\"trans\":\"Ri yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
-          "translation": "Changing Yamato Nadeshiko",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 72.71158494849563,
-              "end": 73.50128494849861,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 74.36242094850158,
-              "end": 75.14912094850456,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "夢  夢忘れないで (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "夢 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 夢",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "忘れないで ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 78.779698,
-          "end": 85.779698,
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢忘れないで\",\"trans\":\"Yume wasurenaide\"}]}",
-          "translation": "Dream, don't forget your dream",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
               "charStart": 10,
               "charEnd": 15,
-              "start": 79.5823660209853,
-              "end": 80.43136602098531,
+              "start": 65.78988600000055,
+              "end": 66.28938600000055,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -50573,14 +50327,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
               "charStart": 16,
               "charEnd": 21,
-              "start": 81.43571399046772,
-              "end": 82.20201399046475,
+              "start": 67.52498600000018,
+              "end": 67.94678599999999,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -50598,7 +50352,207 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "変わりゆく 大和撫子 (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "変わりゆく 大和撫子 ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "spacingText": "変わり ゆく  大和撫子",
+          "lang": "ja",
+          "start": 71.951575,
+          "end": 78.647197,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 72.846075,
+              "end": 73.42067500000056,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 74.51997500000037,
+              "end": 74.97217500000056,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "夢夢忘れないで (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "夢夢忘れないで ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Dream, dream, don't forget",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "spacingText": "夢 夢 忘れないで",
+          "lang": "ja",
+          "start": 78.779698,
+          "end": 85.779698,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 8,
+              "charEnd": 13,
+              "start": 79.685698,
+              "end": 80.20279800000056,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 14,
+              "charEnd": 19,
+              "start": 81.490698,
+              "end": 81.94509800000037,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -50620,10 +50574,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 2: Suzuka]",
+          "translation": "What about weak women?",
+          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い\",\"trans\":\"Yowai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "弱い 女 が  どう とか",
+          "lang": "ja",
           "start": 105.739671,
           "end": 108.3538,
-          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い女が\",\"trans\":\"Yowai on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What about weak women?",
           "isSplit": false
         },
         {
@@ -50644,10 +50600,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I always say it from above.",
+          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも\",\"trans\":\"Itsumo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "いつも 上 から  言うけど",
+          "lang": "ja",
           "start": 109.381823,
           "end": 112.190414,
-          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも上から\",\"trans\":\"Itsumo ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I always say it from above",
           "isSplit": false
         },
         {
@@ -50668,10 +50626,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "you don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "spacingText": "あなた 何 に も わかっちゃ いない",
+          "lang": "ja",
           "start": 112.673409,
           "end": 116.704014,
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
-          "translation": "you don't understand anything",
           "isSplit": false
         },
         {
@@ -50692,10 +50652,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "How about taking a step back?",
+          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩\",\"trans\":\"Ippo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"下がって\",\"trans\":\"Sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "一歩 下がって  どう とか",
+          "lang": "ja",
           "start": 119.700493,
           "end": 122.291871,
-          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩下がって\",\"trans\":\"Ippo sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "Take a step back and see what happens",
           "isSplit": false
         },
         {
@@ -50716,10 +50678,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "As the old saying goes,",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "昔ながら に  言うけど",
+          "lang": "ja",
           "start": 123.345174,
           "end": 125.805338,
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I say it in the old way",
           "isSplit": false
         },
         {
@@ -50740,10 +50704,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I cry, but I endure it, but I don't want to understand",
+          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
+          "spacingText": "泣けど  耐えど  わかりたくない",
+          "lang": "ja",
           "start": 126.831985,
           "end": 130.616918,
-          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I cry, but I endure it, but I don't want to understand",
           "isSplit": false
         },
         {
@@ -50764,10 +50730,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
+          "translation": "Standing up, peonies",
+          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば\",\"trans\":\"Tateba\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"芍薬\",\"trans\":\"Shakuyaku\"}]}",
+          "spacingText": "立てば 芍薬",
+          "lang": "ja",
           "start": 132.938275,
           "end": 136.308869,
-          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば芍薬\",\"trans\":\"Tateba shakuyaku\"}]}",
-          "translation": "Standing up, peonies",
           "isSplit": false
         },
         {
@@ -50788,10 +50756,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "sitting peony",
+          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る\",\"trans\":\"Suwaru\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"牡丹\",\"trans\":\"Botan\"}]}",
+          "spacingText": "座る 牡丹",
+          "lang": "ja",
           "start": 136.506403,
           "end": 139.763329,
-          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る牡丹\",\"trans\":\"Suwaru botan\"}]}",
-          "translation": "sitting peony",
           "isSplit": false
         },
         {
@@ -50812,35 +50782,19 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "get wet in the strong rain",
+          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨\",\"trans\":\"Ame\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
+          "spacingText": "強い  雨 に  濡れる",
+          "lang": "ja",
           "start": 139.966277,
           "end": 145.974096,
-          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨に\",\"trans\":\"Ame ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
-          "translation": "get wet in the strong rain",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ 乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -50876,18 +50830,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
+          "lang": "ja",
           "start": 148.824351,
           "end": 155.450119,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女の美学\",\"trans\":\"Otome no bigaku\"}]}",
-          "translation": "Unbendable maiden aesthetics",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 14,
-              "charEnd": 19,
-              "start": 149.6318648550415,
-              "end": 150.4333648550415,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 149.92305100000019,
+              "end": 150.448351,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -50905,14 +50861,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 20,
-              "charEnd": 25,
-              "start": 151.3664809484986,
-              "end": 152.5958809484971,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 151.4625510000002,
+              "end": 151.86565099999981,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -50930,33 +50886,15 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -50992,18 +50930,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 155.928215,
           "end": 162.928215,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 156.82759409346156,
-              "end": 157.58619409345562,
+              "charStart": 10,
+              "charEnd": 15,
+              "start": 156.81261500000036,
+              "end": 157.30131500000056,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -51021,14 +50961,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 158.4240061659423,
-              "end": 159.53460616593634,
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 158.46781499999963,
+              "end": 158.93881499999964,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -51046,7 +50986,7 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -51070,10 +51010,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": "[Refrain: Kanon, Mizyu, Rin]",
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 163.58868778256377,
           "end": 164.51828778256524,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51096,10 +51038,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 167.28028778256524,
           "end": 168.12858778256228,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51122,10 +51066,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 170.71698778256078,
           "end": 171.52928778256523,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51148,10 +51094,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 174.28648778256078,
           "end": 175.05818778256375,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51174,10 +51122,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 177.74558778256227,
           "end": 178.5498877825593,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51200,10 +51150,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 181.26828778256524,
           "end": 181.93888778255928,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51226,10 +51178,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 184.74828778256526,
           "end": 185.5573877825593,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -51252,35 +51206,19 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 188.22508778256227,
           "end": 189.19918778256377,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -51316,18 +51254,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
+          "lang": "ja",
           "start": 194.471392,
           "end": 201.060117,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ乙女の美学\",\"trans\":\"Rarenu otome no bigaku\"}]}",
-          "translation": "Aesthetics of an unbendable maiden",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 195.16840585504448,
-              "end": 195.800805855043,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 195.41029200000037,
+              "end": 195.85849200000058,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -51345,14 +51285,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 196.82758392751478,
-              "end": 197.97605909345413,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 197.0187920000004,
+              "end": 197.49169199999983,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -51370,33 +51310,15 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -51432,250 +51354,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 201.453813,
           "end": 208.453813,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 202.22654492752224,
-              "end": 203.05954492752224,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 204.0419998550385,
-              "end": 204.94359985504002,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "変わ  りゆく 大和撫子 (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "変わ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " りゆく",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 大和撫子 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 208.623445,
-          "end": 215.260055,
-          "pronunciation": "{\"full\":\"Hen wari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わ\",\"trans\":\"Hen wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"りゆく\",\"trans\":\"Ri yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
-          "translation": "Changing Yamato Nadeshiko",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 209.36320309346604,
-              "end": 210.05530309346008,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 211.05708394850456,
-              "end": 211.83678394850008,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "夢  夢忘れないで (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "夢 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 夢",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "忘れないで ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 215.397333,
-          "end": 222.397333,
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢忘れないで\",\"trans\":\"Yume wasurenaide\"}]}",
-          "translation": "Dream, don't forget your dream",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
               "charStart": 10,
               "charEnd": 15,
-              "start": 216.3594891144424,
-              "end": 217.12328911443942,
+              "start": 202.38921299999944,
+              "end": 202.82751300000018,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -51693,14 +51385,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
               "charStart": 16,
               "charEnd": 21,
-              "start": 218.016470855043,
-              "end": 218.8903708550415,
+              "start": 204.14051300000017,
+              "end": 204.5625130000002,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -51718,7 +51410,207 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "変わりゆく 大和撫子 (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "変わりゆく 大和撫子 ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "spacingText": "変わり ゆく  大和撫子",
+          "lang": "ja",
+          "start": 208.623445,
+          "end": 215.260055,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 209.46974499999982,
+              "end": 210.16464500000018,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 211.1036450000002,
+              "end": 211.40964500000018,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "夢夢忘れないで (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "夢夢忘れないで ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Dream, dream, don't forget",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "spacingText": "夢 夢 忘れないで",
+          "lang": "ja",
+          "start": 215.397333,
+          "end": 222.397333,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 8,
+              "charEnd": 13,
+              "start": 216.34063300000074,
+              "end": 216.89023300000036,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 14,
+              "charEnd": 19,
+              "start": 217.9440330000002,
+              "end": 218.3910330000002,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
             }
           ]
         }
@@ -51742,10 +51634,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 1: Suzuka]",
+          "translation": "What about strong women?",
+          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "強い 女 が  どう とか",
+          "lang": "ja",
           "start": 14.767942,
           "end": 17.677373,
-          "pronunciation": "{\"full\":\"Tsuyoi on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い女が\",\"trans\":\"Tsuyoi on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What about strong women?",
           "isSplit": false
         },
         {
@@ -51766,10 +51660,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "For some reason, I'm saying this from above.",
+          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か\",\"trans\":\"Nazeka\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "何故か 上 から  言うけど",
+          "lang": "ja",
           "start": 18.221606,
           "end": 20.968617,
-          "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "For some reason, I say this from above.",
           "isSplit": false
         },
         {
@@ -51790,10 +51686,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "you don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "spacingText": "あなた 何 に も わかっちゃ いない",
+          "lang": "ja",
           "start": 21.636335,
           "end": 25.309608,
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
-          "translation": "you don't understand anything",
           "isSplit": false
         },
         {
@@ -51814,10 +51712,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "What about three fingers?",
+          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指\",\"trans\":\"Mitsuyubi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ついて\",\"trans\":\"Tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "三つ指 ついて  どう とか",
+          "lang": "ja",
           "start": 28.618175,
           "end": 31.480851,
-          "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What's up with three fingers?",
           "isSplit": false
         },
         {
@@ -51838,10 +51738,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "As the old saying goes,",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "昔ながら に  言うけど",
+          "lang": "ja",
           "start": 32.17671,
           "end": 34.927486,
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I say it in the old way",
           "isSplit": false
         },
         {
@@ -51862,10 +51764,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I cry, but I endure it, but I don't want to understand",
+          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
+          "spacingText": "泣けど  耐えど  わかりたくない",
+          "lang": "ja",
           "start": 35.705166,
           "end": 39.189599,
-          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I cry, but I endure it, but I don't want to understand",
           "isSplit": false
         },
         {
@@ -51886,10 +51790,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
+          "translation": "Takamine flower",
+          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺\",\"trans\":\"Takane\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"花\",\"trans\":\"Hana\"}]}",
+          "spacingText": "高嶺 の 花",
+          "lang": "ja",
           "start": 41.765806,
           "end": 44.981676,
-          "pronunciation": "{\"full\":\"Takane no hana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"高嶺の花\",\"trans\":\"Takane no hana\"}]}",
-          "translation": "Takamine flower",
           "isSplit": false
         },
         {
@@ -51910,10 +51816,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "walking lily flower",
+          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く\",\"trans\":\"Aruku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"百合の花\",\"trans\":\"Yurinohana\"}]}",
+          "spacingText": "歩く 百合の花",
+          "lang": "ja",
           "start": 45.436563,
           "end": 48.8364,
-          "pronunciation": "{\"full\":\"Aruku yurinohana\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"歩く百合の花\",\"trans\":\"Aruku yurinohana\"}]}",
-          "translation": "walking lily flower",
           "isSplit": false
         },
         {
@@ -51934,35 +51842,19 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "swaying in a strong wind",
+          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風\",\"trans\":\"Kaze\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
+          "spacingText": "強い  風 に  揺れる",
+          "lang": "ja",
           "start": 48.95043,
           "end": 54.90195,
-          "pronunciation": "{\"full\":\"Tsuyoi kaze ni yureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"風に\",\"trans\":\"Kaze ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"揺れる\",\"trans\":\"Yureru\"}]}",
-          "translation": "swaying in a strong wind",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -51998,18 +51890,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げられぬ乙女の美学\",\"trans\":\"Mage rarenu otome no bigaku\"}]}",
+          "spacingText": "",
+          "lang": "ja",
           "start": 57.779713,
           "end": 64.306504,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ乙女の美学\",\"trans\":\"Rarenu otome no bigaku\"}]}",
-          "translation": "Aesthetics of an unbendable maiden",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 58.73604385503704,
-              "end": 59.403543855037036,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 58.951813000000556,
+              "end": 59.40991300000018,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -52031,10 +51925,10 @@
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 60.303809855044484,
-              "end": 61.36830985504448,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 60.42841300000019,
+              "end": 60.830613000000376,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -52057,28 +51951,10 @@
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -52114,250 +51990,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 64.927286,
           "end": 71.675441,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 65.7181300209853,
-              "end": 66.46193002098232,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 67.31216709346009,
-              "end": 68.4285670934586,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "変わ  りゆく 大和撫子 (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "変わ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " りゆく",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 大和撫子 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 71.951575,
-          "end": 78.647197,
-          "pronunciation": "{\"full\":\"Hen wari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わ\",\"trans\":\"Hen wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"りゆく\",\"trans\":\"Ri yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
-          "translation": "Changing Yamato Nadeshiko",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 72.71158494849563,
-              "end": 73.50128494849861,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 74.36242094850158,
-              "end": 75.14912094850456,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "夢  夢忘れないで (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "夢 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 夢",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "忘れないで ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 78.779698,
-          "end": 85.779698,
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢忘れないで\",\"trans\":\"Yume wasurenaide\"}]}",
-          "translation": "Dream, don't forget your dream",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
               "charStart": 10,
               "charEnd": 15,
-              "start": 79.5823660209853,
-              "end": 80.43136602098531,
+              "start": 65.78988600000055,
+              "end": 66.28938600000055,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -52375,14 +52021,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
               "charStart": 16,
               "charEnd": 21,
-              "start": 81.43571399046772,
-              "end": 82.20201399046475,
+              "start": 67.52498600000018,
+              "end": 67.94678599999999,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -52400,7 +52046,207 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "変わりゆく 大和撫子 (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "変わりゆく 大和撫子 ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "spacingText": "変わり ゆく  大和撫子",
+          "lang": "ja",
+          "start": 71.951575,
+          "end": 78.647197,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 72.846075,
+              "end": 73.42067500000056,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 74.51997500000037,
+              "end": 74.97217500000056,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "夢夢忘れないで (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "夢夢忘れないで ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Dream, dream, don't forget",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "spacingText": "夢 夢 忘れないで",
+          "lang": "ja",
+          "start": 78.779698,
+          "end": 85.779698,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 8,
+              "charEnd": 13,
+              "start": 79.685698,
+              "end": 80.20279800000056,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 14,
+              "charEnd": 19,
+              "start": 81.490698,
+              "end": 81.94509800000037,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -52422,10 +52268,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Verse 2: Suzuka]",
+          "translation": "What about weak women?",
+          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い\",\"trans\":\"Yowai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"女\",\"trans\":\"On'na\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"が\",\"trans\":\"Ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "弱い 女 が  どう とか",
+          "lang": "ja",
           "start": 105.739671,
           "end": 108.3538,
-          "pronunciation": "{\"full\":\"Yowai on'na ga dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"弱い女が\",\"trans\":\"Yowai on'na ga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "What about weak women?",
           "isSplit": false
         },
         {
@@ -52446,10 +52294,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I always say it from above.",
+          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも\",\"trans\":\"Itsumo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"上\",\"trans\":\"Jō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"から\",\"trans\":\"Kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "いつも 上 から  言うけど",
+          "lang": "ja",
           "start": 109.381823,
           "end": 112.190414,
-          "pronunciation": "{\"full\":\"Itsumo ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"いつも上から\",\"trans\":\"Itsumo ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I always say it from above",
           "isSplit": false
         },
         {
@@ -52470,10 +52320,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "you don't understand anything",
+          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた\",\"trans\":\"Anata\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"何\",\"trans\":\"Nani\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"も\",\"trans\":\"Mo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかっちゃ\",\"trans\":\"Wakatcha\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"いない\",\"trans\":\"Inai\"}]}",
+          "spacingText": "あなた 何 に も わかっちゃ いない",
+          "lang": "ja",
           "start": 112.673409,
           "end": 116.704014,
-          "pronunciation": "{\"full\":\"Anata nan ni mo wakatcha inai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"あなた何にもわかっちゃいない\",\"trans\":\"Anata nan ni mo wakatcha inai\"}]}",
-          "translation": "you don't understand anything",
           "isSplit": false
         },
         {
@@ -52494,10 +52346,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "How about taking a step back?",
+          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩\",\"trans\":\"Ippo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"下がって\",\"trans\":\"Sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どう\",\"trans\":\"Dō\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"とか\",\"trans\":\"Toka\"}]}",
+          "spacingText": "一歩 下がって  どう とか",
+          "lang": "ja",
           "start": 119.700493,
           "end": 122.291871,
-          "pronunciation": "{\"full\":\"Ippo sagatte dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"一歩下がって\",\"trans\":\"Ippo sagatte\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "Take a step back and see what happens",
           "isSplit": false
         },
         {
@@ -52518,10 +52372,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "As the old saying goes,",
+          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながら\",\"trans\":\"Mukashinagara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
+          "spacingText": "昔ながら に  言うけど",
+          "lang": "ja",
           "start": 123.345174,
           "end": 125.805338,
-          "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "I say it in the old way",
           "isSplit": false
         },
         {
@@ -52542,10 +52398,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "I cry, but I endure it, but I don't want to understand",
+          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
+          "spacingText": "泣けど  耐えど  わかりたくない",
+          "lang": "ja",
           "start": 126.831985,
           "end": 130.616918,
-          "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I cry, but I endure it, but I don't want to understand",
           "isSplit": false
         },
         {
@@ -52566,10 +52424,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[Pre-Chorus: Suzuka]",
+          "translation": "Standing up, peonies",
+          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば\",\"trans\":\"Tateba\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"芍薬\",\"trans\":\"Shakuyaku\"}]}",
+          "spacingText": "立てば 芍薬",
+          "lang": "ja",
           "start": 132.938275,
           "end": 136.308869,
-          "pronunciation": "{\"full\":\"Tateba shakuyaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"立てば芍薬\",\"trans\":\"Tateba shakuyaku\"}]}",
-          "translation": "Standing up, peonies",
           "isSplit": false
         },
         {
@@ -52590,10 +52450,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "sitting peony",
+          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る\",\"trans\":\"Suwaru\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"牡丹\",\"trans\":\"Botan\"}]}",
+          "spacingText": "座る 牡丹",
+          "lang": "ja",
           "start": 136.506403,
           "end": 139.763329,
-          "pronunciation": "{\"full\":\"Suwaru botan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"座る牡丹\",\"trans\":\"Suwaru botan\"}]}",
-          "translation": "sitting peony",
           "isSplit": false
         },
         {
@@ -52614,35 +52476,19 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
+          "translation": "get wet in the strong rain",
+          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨\",\"trans\":\"Ame\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"に\",\"trans\":\"Ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
+          "spacingText": "強い  雨 に  濡れる",
+          "lang": "ja",
           "start": 139.966277,
           "end": 145.974096,
-          "pronunciation": "{\"full\":\"Tsuyoi ame ni nureru\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"強い\",\"trans\":\"Tsuyoi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"雨に\",\"trans\":\"Ame ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"濡れる\",\"trans\":\"Nureru\"}]}",
-          "translation": "get wet in the strong rain",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ 乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -52678,18 +52524,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
+          "lang": "ja",
           "start": 148.824351,
           "end": 155.450119,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女の美学\",\"trans\":\"Otome no bigaku\"}]}",
-          "translation": "Unbendable maiden aesthetics",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 14,
-              "charEnd": 19,
-              "start": 149.6318648550415,
-              "end": 150.4333648550415,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 149.92305100000019,
+              "end": 150.448351,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -52707,14 +52555,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 20,
-              "charEnd": 25,
-              "start": 151.3664809484986,
-              "end": 152.5958809484971,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 151.4625510000002,
+              "end": 151.86565099999981,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -52732,33 +52580,15 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -52794,18 +52624,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 155.928215,
           "end": 162.928215,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 156.82759409346156,
-              "end": 157.58619409345562,
+              "charStart": 10,
+              "charEnd": 15,
+              "start": 156.81261500000036,
+              "end": 157.30131500000056,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -52823,14 +52655,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 158.4240061659423,
-              "end": 159.53460616593634,
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 158.46781499999963,
+              "end": 158.93881499999964,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -52848,7 +52680,7 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
@@ -52872,10 +52704,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": "[Refrain: Kanon, Mizyu, Rin]",
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 163.58868778256377,
           "end": 164.51828778256524,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -52898,10 +52732,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 167.28028778256524,
           "end": 168.12858778256228,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -52924,10 +52760,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 170.71698778256078,
           "end": 171.52928778256523,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -52950,10 +52788,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 174.28648778256078,
           "end": 175.05818778256375,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -52976,10 +52816,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 177.74558778256227,
           "end": 178.5498877825593,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -53002,10 +52844,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 181.26828778256524,
           "end": 181.93888778255928,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -53028,10 +52872,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 184.74828778256526,
           "end": 185.5573877825593,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
@@ -53054,35 +52900,19 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
           "sectionHeader": null,
+          "translation": "Shubi",
+          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
+          "spacingText": "シュビ",
+          "lang": "ja",
           "start": 188.22508778256227,
           "end": 189.19918778256377,
-          "pronunciation": "{\"full\":\"Shubi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"シュビ\",\"trans\":\"Shubi\"}]}",
-          "translation": "Shubi",
           "isSplit": false
         },
         {
-          "text": "曲げ  られぬ乙女の美学 (シュビ) （ドゥバ）",
+          "text": "曲げられぬ乙女の美学 (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "曲げ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " られぬ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "乙女の美学 ",
+              "text": "曲げられぬ乙女の美学 ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -53118,18 +52948,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": "[Chorus: Suzuka, **Kanon, Mizyu, Rin**]",
+          "translation": "Aesthetics of an unbendable maiden",
+          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ\",\"trans\":\"Rarenu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"乙女\",\"trans\":\"Otome\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"の\",\"trans\":\"No\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"美学\",\"trans\":\"Bigaku\"}]}",
+          "spacingText": "曲げ られぬ 乙女 の 美学",
+          "lang": "ja",
           "start": 194.471392,
           "end": 201.060117,
-          "pronunciation": "{\"full\":\"Mage rarenu otome no bigaku\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"曲げ\",\"trans\":\"Mage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"られぬ乙女の美学\",\"trans\":\"Rarenu otome no bigaku\"}]}",
-          "translation": "Aesthetics of an unbendable maiden",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 195.16840585504448,
-              "end": 195.800805855043,
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 195.41029200000037,
+              "end": 195.85849200000058,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -53147,14 +52979,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 196.82758392751478,
-              "end": 197.97605909345413,
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 197.0187920000004,
+              "end": 197.49169199999983,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -53172,33 +53004,15 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
             }
           ]
         },
         {
-          "text": "徒  然 邪魔しないで (シュビ) （ドゥバ）",
+          "text": "徒然 邪魔しないで (シュビ) （ドゥバ）",
           "segments": [
             {
-              "text": "徒 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 然",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 邪魔しないで ",
+              "text": "徒然 邪魔しないで ",
               "color": "#cb9d72",
               "isGradient": false,
               "gradient": "",
@@ -53234,250 +53048,20 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
           "sectionHeader": null,
+          "translation": "Don't get in the way",
+          "pronunciation": "{\"full\":\"Tsuredzure jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒然\",\"trans\":\"Tsuredzure\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔\",\"trans\":\"Jama\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"しないで\",\"trans\":\"Shinaide\"}]}",
+          "spacingText": "徒然  邪魔 しないで",
+          "lang": "ja",
           "start": 201.453813,
           "end": 208.453813,
-          "pronunciation": "{\"full\":\"To shika jama shinaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"徒\",\"trans\":\"To\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"然\",\"trans\":\"Shika\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"邪魔しないで\",\"trans\":\"Jama shinaide\"}]}",
-          "translation": "Don't get in my way",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 12,
-              "charEnd": 17,
-              "start": 202.22654492752224,
-              "end": 203.05954492752224,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 18,
-              "charEnd": 23,
-              "start": 204.0419998550385,
-              "end": 204.94359985504002,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "変わ  りゆく 大和撫子 (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "変わ ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " りゆく",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 大和撫子 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 208.623445,
-          "end": 215.260055,
-          "pronunciation": "{\"full\":\"Hen wari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わ\",\"trans\":\"Hen wa\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"りゆく\",\"trans\":\"Ri yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
-          "translation": "Changing Yamato Nadeshiko",
-          "isSplit": true,
-          "adlibs": [
-            {
-              "text": "(シュビ)",
-              "charStart": 13,
-              "charEnd": 18,
-              "start": 209.36320309346604,
-              "end": 210.05530309346008,
-              "segments": [
-                {
-                  "text": "(シュビ)",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
-              "translation": "(Shubi)",
-              "lang": "ja",
-              "spacingText": ""
-            },
-            {
-              "text": "（ドゥバ）",
-              "charStart": 19,
-              "charEnd": 24,
-              "start": 211.05708394850456,
-              "end": 211.83678394850008,
-              "segments": [
-                {
-                  "text": "（ドゥバ）",
-                  "color": "#ffffff",
-                  "isGradient": true,
-                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-                  "artists": [
-                    "Kanon",
-                    "Mizyu",
-                    "Rin"
-                  ]
-                }
-              ],
-              "singer": "Kanon, Mizyu, Rin",
-              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
-              "translation": "(Duba)",
-              "lang": "ja",
-              "spacingText": ""
-            }
-          ]
-        },
-        {
-          "text": "夢  夢忘れないで (シュビ) （ドゥバ）",
-          "segments": [
-            {
-              "text": "夢 ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": " 夢",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "忘れないで ",
-              "color": "#cb9d72",
-              "isGradient": false,
-              "gradient": "",
-              "artists": [
-                "Suzuka"
-              ]
-            },
-            {
-              "text": "(シュビ) ",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            },
-            {
-              "text": "（ドゥバ）",
-              "color": "#ffffff",
-              "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
-              "artists": [
-                "Kanon",
-                "Mizyu",
-                "Rin"
-              ]
-            }
-          ],
-          "singer": "Suzuka, Kanon, Mizyu, Rin",
-          "color": "#ffffff",
-          "isGradient": true,
-          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
-          "sectionHeader": null,
-          "start": 215.397333,
-          "end": 222.397333,
-          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢忘れないで\",\"trans\":\"Yume wasurenaide\"}]}",
-          "translation": "Dream, don't forget your dream",
           "isSplit": true,
           "adlibs": [
             {
               "text": "(シュビ)",
               "charStart": 10,
               "charEnd": 15,
-              "start": 216.3594891144424,
-              "end": 217.12328911443942,
+              "start": 202.38921299999944,
+              "end": 202.82751300000018,
               "segments": [
                 {
                   "text": "(シュビ)",
@@ -53495,14 +53079,14 @@
               "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
               "translation": "(Shubi)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "( シュビ )"
             },
             {
               "text": "（ドゥバ）",
               "charStart": 16,
               "charEnd": 21,
-              "start": 218.016470855043,
-              "end": 218.8903708550415,
+              "start": 204.14051300000017,
+              "end": 204.5625130000002,
               "segments": [
                 {
                   "text": "（ドゥバ）",
@@ -53520,29 +53104,218 @@
               "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
               "translation": "(Duba)",
               "lang": "ja",
-              "spacingText": ""
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "変わりゆく 大和撫子 (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "変わりゆく 大和撫子 ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Changing Yamato Nadeshiko",
+          "pronunciation": "{\"full\":\"Kawari yuku yamatonadeshiko\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"変わり\",\"trans\":\"Kawari\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"ゆく\",\"trans\":\"Yuku\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"大和撫子\",\"trans\":\"Yamatonadeshiko\"}]}",
+          "spacingText": "変わり ゆく  大和撫子",
+          "lang": "ja",
+          "start": 208.623445,
+          "end": 215.260055,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 11,
+              "charEnd": 16,
+              "start": 209.46974499999982,
+              "end": 210.16464500000018,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 17,
+              "charEnd": 22,
+              "start": 211.1036450000002,
+              "end": 211.40964500000018,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
+            }
+          ]
+        },
+        {
+          "text": "夢夢忘れないで (シュビ) （ドゥバ）",
+          "segments": [
+            {
+              "text": "夢夢忘れないで ",
+              "color": "#cb9d72",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Suzuka"
+              ]
+            },
+            {
+              "text": "(シュビ) ",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            },
+            {
+              "text": "（ドゥバ）",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+              "artists": [
+                "Kanon",
+                "Mizyu",
+                "Rin"
+              ]
+            }
+          ],
+          "singer": "Suzuka, Kanon, Mizyu, Rin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #cb9d72, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "Dream, dream, don't forget",
+          "pronunciation": "{\"full\":\"Yume yume wasurenaide\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"夢\",\"trans\":\"Yume\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"忘れないで\",\"trans\":\"Wasurenaide\"}]}",
+          "spacingText": "夢 夢 忘れないで",
+          "lang": "ja",
+          "start": 215.397333,
+          "end": 222.397333,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(シュビ)",
+              "charStart": 8,
+              "charEnd": 13,
+              "start": 216.34063300000074,
+              "end": 216.89023300000036,
+              "segments": [
+                {
+                  "text": "(シュビ)",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Shubi)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(シュビ)\",\"trans\":\"(Shubi)\"}]}",
+              "translation": "(Shubi)",
+              "lang": "ja",
+              "spacingText": "( シュビ )"
+            },
+            {
+              "text": "（ドゥバ）",
+              "charStart": 14,
+              "charEnd": 19,
+              "start": 217.9440330000002,
+              "end": 218.3910330000002,
+              "segments": [
+                {
+                  "text": "（ドゥバ）",
+                  "color": "#ffffff",
+                  "isGradient": true,
+                  "gradient": "linear-gradient(90deg, #86e7f9, #ae86f9)",
+                  "artists": [
+                    "Kanon",
+                    "Mizyu",
+                    "Rin"
+                  ]
+                }
+              ],
+              "singer": "Kanon, Mizyu, Rin",
+              "pronunciation": "{\"full\":\"(Do~uba)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"（ドゥバ）\",\"trans\":\"(Do~uba)\"}]}",
+              "translation": "(Duba)",
+              "lang": "ja",
+              "spacingText": "（ドゥバ）"
             }
           ]
         }
       ],
-      "lyrics": "[新しい学校のリーダーズ「乙女の美学」歌詞]\n\n[Verse 1: Suzuka]\n強い女が どうとか\n何故か上から 言うけど\nあなた何にもわかっちゃいない\n三つ指ついて どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n高嶺の花\n歩く百合の花\n強い 風に 揺れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ**（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n変わ **(シュビ)** りゆく**（ドゥバ）** 大和撫子\n夢 **(シュビ)** 夢**（ドゥバ）**忘れないで\n\n[Verse 2: Suzuka]\n弱い女が どうとか\nいつも上から 言うけど\nあなた何にもわかっちゃいない\n一歩下がって どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n立てば芍薬\n座る牡丹\n強い 雨に 濡れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ **（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n\n[Refrain: Kanon, Mizyu, Rin]\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ**（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n変わ **(シュビ)** りゆく**（ドゥバ）** 大和撫子\n夢 **(シュビ)** 夢**（ドゥバ）**忘れないで\n",
+      "lyrics": "[新しい学校のリーダーズ「乙女の美学」歌詞]\n\n[Verse 1: Suzuka]\n強い女が どうとか\n何故か上から 言うけど\nあなた何にもわかっちゃいない\n三つ指ついて どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n高嶺の花\n歩く百合の花\n強い 風に 揺れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げられぬ乙女の美学 **(シュビ)（ドゥバ）**\n徒然 邪魔しないで **(シュビ)（ドゥバ）**\n変わりゆく 大和撫子 **(シュビ)（ドゥバ）** \n夢夢忘れないで **(シュビ)（ドゥバ）**\n\n[Verse 2: Suzuka]\n弱い女が どうとか\nいつも上から 言うけど\nあなた何にもわかっちゃいない\n一歩下がって どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n立てば芍薬\n座る牡丹\n強い 雨に 濡れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げられぬ乙女の美学 **(シュビ)（ドゥバ）**\n徒然 邪魔しないで **(シュビ)（ドゥバ）**\n\n[Refrain: Kanon, Mizyu, Rin]\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げられぬ乙女の美学 **(シュビ)（ドゥバ）**\n徒然 邪魔しないで **(シュビ)（ドゥバ）**\n変わりゆく 大和撫子 **(シュビ)（ドゥバ）** \n夢夢忘れないで **(シュビ)（ドゥバ）**\n",
       "customLinks": {
         "spotify": "",
         "yt": "https://music.youtube.com/watch?v=im5FxLs6NOc",
         "deezer": "https://www.deezer.com/en/track/2215520937",
         "hasLocal": false,
-        "localName": "",
-        "lyrics": "[新しい学校のリーダーズ「乙女の美学」歌詞]\n\n[Verse 1: Suzuka]\n強い女が どうとか\n何故か上から 言うけど\nあなた何にもわかっちゃいない\n三つ指ついて どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n高嶺の花\n歩く百合の花\n強い 風に 揺れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ**（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n変わ **(シュビ)** りゆく**（ドゥバ）** 大和撫子\n夢 **(シュビ)** 夢**（ドゥバ）**忘れないで\n\n[Verse 2: Suzuka]\n弱い女が どうとか\nいつも上から 言うけど\nあなた何にもわかっちゃいない\n一歩下がって どうとか\n昔ながらに 言うけど\n泣けど 耐えど わかりたくない\n\n[Pre-Chorus: Suzuka]\n立てば芍薬\n座る牡丹\n強い 雨に 濡れる\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ **（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n\n[Refrain: Kanon, Mizyu, Rin]\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\nシュビ\n\n[Chorus: Suzuka, **Kanon, Mizyu, Rin**]\n曲げ **(シュビ)** られぬ**（ドゥバ）**乙女の美学\n徒 **(シュビ)** 然**（ドゥバ）** 邪魔しないで\n変わ **(シュビ)** りゆく**（ドゥバ）** 大和撫子\n夢 **(シュビ)** 夢**（ドゥバ）**忘れないで\n",
-        "artistImages": {
-          "Suzuka": "https://i.pinimg.com/originals/1a/4a/6c/1a4a6cad8410fa6d9ecbb17da7db1267.jpg",
-          "ATARASHII GAKKO!": "https://www.eventworld.co/blob/images/pg/atarashii-gakko_9ec69_1000.jpg",
-          "Kanon": "https://media.karousell.com/media/photos/products/2024/1/15/atarashii_gakko__kanon_1705293201_a55b93fb_progressive.jpg",
-          "Mizyu": "https://media.karousell.com/media/photos/products/2023/12/7/atarashii_gakko__mizyu_1701925803_09701db5_progressive.jpg",
-          "Rin": "https://zenmarket.blob.core.windows.net/images/blog/rvlqsysg.s1d"
-        },
-        "artistColors": {
-          "Suzuka": "#cb9d72"
-        }
+        "localName": ""
       },
       "artistImages": {
         "Suzuka": "https://i.pinimg.com/originals/1a/4a/6c/1a4a6cad8410fa6d9ecbb17da7db1267.jpg",

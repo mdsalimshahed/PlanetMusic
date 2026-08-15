@@ -1,7 +1,6 @@
 /* --- src/components/Workspaces/Sync/SyncWorkspace.jsx --- */
 import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
-import { quickTransliterate } from '../../../services/transliterator';
 import { workspaceClock } from '../../../utils/clockEngine';
 import { LyricLineWrapper } from '../Lyrics/LyricsLineRenderer';
 import './SyncWorkspace.css';
@@ -17,13 +16,13 @@ export const SyncWorkspace = ({
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
   const containerRef = useRef(null);
-  const cachedAdlibNodesRef = useRef([]); 
+  const cachedAdlibNodesRef = useRef([]);
+
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
-  
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
-  const currentFontSize = Math.max(12, 34 * lyricScale); 
+  const currentFontSize = Math.max(12, 34 * lyricScale);
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
@@ -174,76 +173,6 @@ export const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
-  const localHandleSplitAdlibs = async (lineIndex) => {
-    const data = [...syncData];
-    const line = data[lineIndex];
-    const lineChars = Array.from(line.text); 
-    const adlibs = [];
-    
-    let inAdlib = false;
-    let charStart = 0;
-    let adlibText = '';
-    
-    for (let i = 0; i < lineChars.length; i++) {
-        // FIX: Check for standard OR full-width left parenthesis
-        if ((lineChars[i] === '(' || lineChars[i] === '（') && !inAdlib) {
-            inAdlib = true;
-            charStart = i;
-            adlibText = lineChars[i];
-        } else if (inAdlib) {
-            adlibText += lineChars[i];
-            // FIX: Check for standard OR full-width right parenthesis
-            if (lineChars[i] === ')' || lineChars[i] === '）') {
-                inAdlib = false;
-                const charEnd = i + 1;
-                
-                const adlibSegments = [];
-                const adlibArtistsSet = new Set();
-                let currentPos = 0;
-                
-                for (const seg of line.segments) {
-                    const segChars = Array.from(seg.text);
-                    const segStart = currentPos;
-                    const segEnd = currentPos + segChars.length;
-                    const overlapStart = Math.max(charStart, segStart);
-                    const overlapEnd = Math.min(charEnd, segEnd);
-                    if (overlapStart < overlapEnd) {
-                        const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
-                        adlibSegments.push({
-                            ...seg,
-                            text: overlapText
-                        });
-                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}（）\- ]*$/;
-                        if (!isOnlyPunctuationOrSpace.test(overlapText)) {
-                            if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
-                        }
-                    }
-                    currentPos = segEnd;
-                }
-                const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
-                const pronData = await quickTransliterate(adlibText);
-
-                adlibs.push({
-                  text: adlibText,
-                  charStart,
-                  charEnd,
-                  start: null,
-                  end: null,
-                  segments: adlibSegments,
-                  singer: derivedSinger,
-                  pronunciation: pronData.transliteration ? JSON.stringify({ full: pronData.transliteration, chunks: [{ type: 'foreign', text: adlibText, trans: pronData.transliteration }] }) : null
-                });
-            }
-        }
-    }
-    
-    if (adlibs.length > 0) {
-      line.isSplit = true;
-      line.adlibs = adlibs;
-      handleSplitAdlibs(lineIndex, data);
-    }
-  };
-
   return (
     <div className="sync-mode-container" style={{
         '--workspace-accent': accentColor,
@@ -253,15 +182,15 @@ export const SyncWorkspace = ({
       }}>
       
       <div 
-           id="sync-yt-target-container" 
-           style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+        id="sync-yt-target-container" 
+        style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button 
-                 onClick={toggleWorkspaceMode} 
-                 className="edit-links-btn"
+                onClick={toggleWorkspaceMode} 
+                className="edit-links-btn"
                 style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
             >
               {isShowingAutoSync ? 'Auto Sync Mode' : 'Manual Sync Mode'}
@@ -271,8 +200,8 @@ export const SyncWorkspace = ({
             </button>
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
-                   onClick={handleMapAutoSync} 
-                   className="edit-links-btn"
+                  onClick={handleMapAutoSync} 
+                  className="edit-links-btn"
                   style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
                   title="Map Timings from Auto to Manual Lyrics"
               >
@@ -310,9 +239,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                         onClick={cycleSource} 
-                         style={{...cursorStyle, display: 'inline-block'}} 
-                         title={title}
+                        onClick={cycleSource} 
+                        style={{...cursorStyle, display: 'inline-block'}} 
+                        title={title}
                         onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -392,8 +321,8 @@ export const SyncWorkspace = ({
           const isRecording = line.start !== null && line.end === null;
           const isSynced = line.start !== null && line.end !== null;
           
-          // FIX: Detect standard OR full-width parentheses to render split button
           const hasParentheses = isMain && /[(\uFF08][^)\uFF09]+[)\uFF09]/.test(line.text);
+
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
@@ -408,10 +337,7 @@ export const SyncWorkspace = ({
               }
           }
 
-          const populatedLineObj = {
-            ...line,
-            spacingText: line.spacingText || selectedSong?.syncData?.[item.lineIndex]?.spacingText || ''
-          };
+          const populatedLineObj = { ...line };
 
           return (
             <div 
@@ -471,7 +397,7 @@ export const SyncWorkspace = ({
                       onClick={(e) => {
                       e.stopPropagation();
                       if (line.isSplit) handleUndoSplit(item.lineIndex);
-                      else localHandleSplitAdlibs(item.lineIndex);
+                      else handleSplitAdlibs(item.lineIndex); 
                     }}
                   >
                     {line.isSplit ? 'Undo Split' : 'Split Adlibs'}

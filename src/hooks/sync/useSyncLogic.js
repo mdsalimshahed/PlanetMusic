@@ -19,6 +19,7 @@ export const useSyncEngine = ({
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
+
     const currentItem = wLines[activeIdxRef.current];
     
     if (currentItem && (currentItem.ref.start === null || (currentItem.ref.start !== null && currentItem.ref.end === null))) {
@@ -27,7 +28,6 @@ export const useSyncEngine = ({
     
     let newIdx = -1;
     
-    // CRITICAL CPU FIX: O(1) Backwards traversal. 
     for (let i = wLines.length - 1; i >= 0; i--) {
         const item = wLines[i];
         if (item.type !== 'main' || item.ref.start === null) continue;
@@ -129,6 +129,7 @@ export const useSyncEngine = ({
         } else {
           autoTrackSyncPlayback(time);
         }
+
         animationFrameId = requestAnimationFrame(syncTick);
       }
     };
@@ -139,6 +140,7 @@ export const useSyncEngine = ({
     } else {
       workspaceClock.pause();
     }
+
     return () => cancelAnimationFrame(animationFrameId);
   }, [isSyncPlaying, syncYtVideoId]);
 };
@@ -206,7 +208,6 @@ export const useSyncKeyboard = ({
         seekToTime(Math.max(0, getCurrentTime() - 1));
         return;
       }
-
       if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekToTime(getCurrentTime() + 1);
@@ -228,6 +229,7 @@ export const useSyncKeyboard = ({
       
       if (e.key === 'ArrowDown') {
         e.preventDefault();
+
         if (isShowingAutoSync && currentItem.type === 'main') {
             let nextIdx = currentIdx + 1;
             while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
@@ -268,6 +270,7 @@ export const useSyncKeyboard = ({
 
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+
         if (isShowingAutoSync && currentItem.type === 'main') {
             let prevIdx = currentIdx - 1;
             while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
@@ -333,14 +336,12 @@ export const useSyncActions = ({
     let adlibText = '';
     
     for (let i = 0; i < lineChars.length; i++) {
-        // FIX: Detect standard OR full-width left parenthesis
         if ((lineChars[i] === '(' || lineChars[i] === '（') && !inAdlib) {
             inAdlib = true;
             charStart = i;
             adlibText = lineChars[i];
         } else if (inAdlib) {
             adlibText += lineChars[i];
-            // FIX: Detect standard OR full-width right parenthesis
             if (lineChars[i] === ')' || lineChars[i] === '）') {
                 inAdlib = false;
                 const charEnd = i + 1;
@@ -353,22 +354,24 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
+
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
+
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
                             text: overlapText
                         });
-                        // FIX: Ensure full-width Asian parentheses are treated as punctuation too
-                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}（）\- ]*$/;
+                        const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\uff08\uff09\-]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
                         }
                     }
                     currentPos = segEnd;
                 }
+
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
                 const pronData = await quickTransliterate(adlibText);
 
@@ -389,6 +392,13 @@ export const useSyncActions = ({
     if (adlibs.length > 0) {
       line.isSplit = true;
       line.adlibs = adlibs;
+      
+      // Wipe translation data completely for this SPECIFIC line ONLY
+      line.translation = '';
+      line.pronunciation = '';
+      line.spacingText = '';
+      line.lang = 'auto'; // Revert back to auto
+
       updateWorkspaceData(data);
     }
   };
@@ -397,6 +407,13 @@ export const useSyncActions = ({
     const data = [...syncDataRef.current];
     data[lineIndex].isSplit = false;
     delete data[lineIndex].adlibs;
+    
+    // Wipe translation data completely for this SPECIFIC line ONLY
+    data[lineIndex].translation = '';
+    data[lineIndex].pronunciation = '';
+    data[lineIndex].spacingText = '';
+    data[lineIndex].lang = 'auto'; // Revert back to auto
+
     updateWorkspaceData(data);
     setLoopRange(null);
   };
@@ -405,6 +422,7 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
+
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
@@ -423,6 +441,8 @@ export const useSyncActions = ({
         ...line,
         translation: existing.translation || '',
         pronunciation: existing.pronunciation || null,
+        spacingText: existing.spacingText || '',
+        lang: existing.lang || 'auto',
         start: null,
         end: null,
         isSplit: existing.isSplit || false,
@@ -473,7 +493,6 @@ export const useSyncActions = ({
             nextManual++;
             continue;
           }
-
           const cleanAutoText = normalize(targetAutoLine.text);
           
           if (cleanAutoText.includes(cleanNextManual) && !cleanAutoText.startsWith(cleanManual)) {
@@ -609,6 +628,7 @@ export const useSyncActions = ({
         finalSyncData = youParsed.syncData; finalPlainText = youParsed.plainTextLyrics; hasWordSync = true; finalSource = 'YouLyrics API'; finalRawData = youData;
       } else {
         const lrcData = await fetchLRCLIB(selectedSong.trackName, selectedSong.artistName, selectedSong.trackTimeMillis);
+        
         if (lrcData?.syncedLyrics) {
           const lrcParsed = parseLRC(lrcData.syncedLyrics, selectedSong.artistName, masterPalette);
           const lrcHasWordSync = lrcParsed.syncData.some(line => line.wordSync?.length > 0);
@@ -659,9 +679,9 @@ export const useSyncActions = ({
     } catch (error) {
       console.error(error); alert("Error fetching lyrics.");
       setNotification({ show: false });
-    } finally { 
-      setIsLrcFetching(false); 
-      setTimeout(() => setNotification({ show: false }), 3000);
+    } finally {
+       setIsLrcFetching(false);
+       setTimeout(() => setNotification({ show: false }), 3000);
     }
   };
 

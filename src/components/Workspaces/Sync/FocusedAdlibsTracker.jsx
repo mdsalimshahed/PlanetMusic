@@ -49,30 +49,59 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
             const activeDisplayText = useSpacingText ? activeSpacingText : adlibObj.text || '';
             
-            const spacedGraphemes = getGraphemes(activeDisplayText);
+            let adlibChars = [];
             let segmentPointer = 0;
             let charPointerInSegment = 0;
             const segs = adlibObj.segments || [{ text: adlibObj.text }];
 
-            const adlibChars = [];
-            spacedGraphemes.forEach((char, idx) => {
-              const isSpace = /\s/.test(char);
-              const currentSeg = segs[segmentPointer] || segs[segs.length - 1] || {};
+            if (useSpacingText) {
+              const spacedGraphemes = getGraphemes(activeDisplayText);
+              const origGraphemes = getGraphemes(adlibObj.text || '');
+              let origPointer = 0;
               
-              adlibChars.push({
-                char,
-                seg: currentSeg,
-                globalIndex: idx
-              });
+              spacedGraphemes.forEach((char, idx) => {
+                let currentSeg = segs[segmentPointer] || segs[segs.length - 1] || {};
+                let isOrigChar = false;
+                
+                if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
+                    isOrigChar = true;
+                } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
+                    isOrigChar = false;
+                } else {
+                    isOrigChar = !/\s/.test(char);
+                }
 
-              if (!isSpace) {
+                adlibChars.push({
+                  char,
+                  seg: currentSeg,
+                  globalIndex: idx
+                });
+
+                if (isOrigChar) {
+                  origPointer++;
+                  charPointerInSegment += getGraphemes(char).length;
+                  if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
+                    segmentPointer++;
+                    charPointerInSegment = 0;
+                  }
+                }
+              });
+            } else {
+              const graphemes = getGraphemes(activeDisplayText);
+              graphemes.forEach((char, idx) => {
+                let currentSeg = segs[segmentPointer] || segs[segs.length - 1] || {};
+                adlibChars.push({
+                  char,
+                  seg: currentSeg,
+                  globalIndex: idx
+                });
                 charPointerInSegment += getGraphemes(char).length;
                 if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
                   segmentPointer++;
                   charPointerInSegment = 0;
                 }
-              }
-            });
+              });
+            }
 
             const renderColoredCharForTracker = (c, globalIdx) => {
               let inlineColor = c.seg?.color || '#ffffff';
@@ -147,7 +176,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             }
 
             let adlibTranslation = adlibObj?.translation || '';
-            // PRESERVE SPACES: Exclude spaces from the removal regex
             if (adlibTranslation) adlibTranslation = adlibTranslation.replace(/[()\uff08\uff09]/g, '').trim();
 
             return (

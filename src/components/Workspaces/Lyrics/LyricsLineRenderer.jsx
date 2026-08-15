@@ -4,13 +4,13 @@ import { getGraphemes, cleanTranslationText, isRTLLanguage, parsePronunciation }
 import SplitLine from '../../LyricsRenderer/SplitLine';
 import StandardLine from '../../LyricsRenderer/StandardLine';
 
-// Re-export specific utilities that other parts of the app rely on
 export { normalizeTrans } from '../../LyricsRenderer/textUtils';
 export { renderFormattedTranslation } from '../../LyricsRenderer/Formatters';
 
 const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
   const pronString = savedNode?.pronunciation || lineObj?.pronunciation;
   const isRTL = isRTLLanguage(lineObj.text || '');
+
   let rawTranslation = cleanTranslationText(savedNode?.translation || lineObj?.translation);
 
   const normalizeForMatch = (str) =>
@@ -36,37 +36,55 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
   };
 
   const { parsedChunks, fullTrans } = parsePronunciation(pronString);
+
   const chars = [];
   let gIdx = 0;
-  let originalCpIdx = 0; // Track exact Code Point Index to bridge getGraphemes and Array.from
+  let originalCpIdx = 0; 
 
-  // 1. Core Fix: Check the saved database node for the custom spacing string
   const activeSpacingText = savedNode?.spacingText || lineObj?.spacingText || '';
   const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
   const activeDisplayText = useSpacingText ? activeSpacingText : (lineObj.text || '');
 
-  // 2. Safely map segments to the new Spaced Text
+  // EXACT DUAL-POINTER MATCHING ALGORITHM
   if (useSpacingText) {
     const spacedGraphemes = getGraphemes(activeDisplayText);
+    const origGraphemes = getGraphemes(lineObj.text || '');
+    
+    let origPointer = 0;
     let segmentPointer = 0;
     let charPointerInSegment = 0;
+    let currentCpStart = 0;
     const segments = lineObj.segments || [];
 
     spacedGraphemes.forEach(char => {
-      const isSpace = /\s/.test(char);
-      const cpLen = Array.from(char).length;
       let currentSeg = segments[segmentPointer];
+      let isOrigChar = false;
+
+      if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
+        isOrigChar = true;
+      } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
+        // Space injected by auto-spacing
+        isOrigChar = false;
+      } else {
+        // Failsafe fallback
+        isOrigChar = !/\s/.test(char);
+      }
+
+      const cpLen = Array.from(char).length;
 
       chars.push({ 
-        char, 
-        seg: currentSeg, 
-        globalIndex: gIdx++, 
-        cpStart: originalCpIdx, 
-        cpEnd: originalCpIdx + cpLen 
+         char, 
+         seg: currentSeg, 
+         globalIndex: gIdx++, 
+         cpStart: currentCpStart, 
+         cpEnd: currentCpStart + cpLen 
       });
 
-      if (!isSpace) {
-        originalCpIdx += cpLen;
+      if (isOrigChar) {
+        const origLen = Array.from(origGraphemes[origPointer] || char).length;
+        currentCpStart += origLen;
+        origPointer++;
+        
         charPointerInSegment += getGraphemes(char).length;
         if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text).length) {
           segmentPointer++;
@@ -82,12 +100,12 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
       segChars.forEach(char => {
         const cpLen = Array.from(char).length;
         chars.push({ 
-          char, 
-          seg, 
-          globalIndex: gIdx++, 
-          cpStart: originalCpIdx, 
-          cpEnd: originalCpIdx + cpLen 
-        });
+           char, 
+           seg, 
+           globalIndex: gIdx++, 
+           cpStart: originalCpIdx, 
+           cpEnd: originalCpIdx + cpLen 
+         });
         originalCpIdx += cpLen;
       });
     });
@@ -106,7 +124,7 @@ const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurre
     basePronStyle,
     displayTranslation,
     pronString,
-    hasSpacingText: useSpacingText // Injecting new flag
+    hasSpacingText: useSpacingText 
   };
 
   if (!isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {

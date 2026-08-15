@@ -19,11 +19,13 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
+  
+  // 1. EXTRACT MAIN CHARACTERS (Filter out ad-lib characters from the main line)
   const blocks = [];
   let currentBlock = null;
 
   chars.forEach((c) => {
-    const adlibIndex = savedNode.adlibs.findIndex(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
+    const adlibIndex = savedNode.adlibs?.findIndex(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
     const isAdlibChar = adlibIndex !== -1;
     const adlibObj = isAdlibChar ? savedNode.adlibs[adlibIndex] : null;
 
@@ -38,6 +40,15 @@ const SplitLine = ({
   });
   if (currentBlock) blocks.push(currentBlock);
 
+  const mainBlocks = blocks.filter(b => !b.isAdlib);
+  let mainChars = [];
+  mainBlocks.forEach(b => mainChars.push(...b.chars));
+
+  // Gently trim orphaned leading/trailing spaces from the main line
+  while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
+  while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
+
+  // 2. MAIN LINE CHARACTER RENDERER
   const renderColoredCharForSplit = (c, globalIdx) => {
     const isPunct = isPunctuationChar(c.char);
     let activeColor = isPunct ? '#fbbf24' : '#ffffff';
@@ -79,67 +90,49 @@ const SplitLine = ({
     return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
   };
 
-  const adlibBlocks = blocks.filter(b => b.isAdlib);
-
-  // --- COMBINE AND CLEAN MAIN TEXT SPACES ---
-  let mainChars = [];
-  blocks.forEach(b => {
-    if (!b.isAdlib) mainChars.push(...b.chars);
-  });
-
-  let cleanedMainChars = [];
-  let lastWasSpace = true; 
-  for (let i = 0; i < mainChars.length; i++) {
-    const charObj = mainChars[i];
-    const isSpace = /\s/.test(charObj.char);
-    
-    if (isSpace) {
-      if (!lastWasSpace) {
-        let nextNonSpaceChar = null;
-        for (let j = i + 1; j < mainChars.length; j++) {
-          if (!/\s/.test(mainChars[j].char)) {
-            nextNonSpaceChar = mainChars[j].char;
-            break;
-          }
-        }
-        
-        if (nextNonSpaceChar && /^[.,!?;:\])} ]$/.test(nextNonSpaceChar)) {
-          // Skip adding space to avoid orphaned gaps before punctuation
-        } else {
-          cleanedMainChars.push({ ...charObj, char: ' ' }); 
-          lastWasSpace = true;
-        }
-      }
-    } else {
-      cleanedMainChars.push(charObj);
-      lastWasSpace = false;
-    }
-  }
-
-  if (cleanedMainChars.length > 0 && /\s/.test(cleanedMainChars[cleanedMainChars.length - 1].char)) {
-    cleanedMainChars.pop();
-  }
-
+  // 3. RENDER MAIN TEXT (Using strict chunk alignment)
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
+  let finalMainHasSpacing = hasSpacingText;
+
   if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
     effectiveFullTrans = pronString;
     effectiveParsedChunks = null;
   }
 
+  if (hasSpacingText && effectiveFullTrans) {
+      const safeTextStr = mainChars.map(c => c.char).join('').replace(/([()\uff08\uff09])/g, ' $1 ');
+      const textWords = safeTextStr.split(/\s+/).filter(Boolean);
+      
+      const safePronStr = effectiveFullTrans.replace(/([()\uff08\uff09])/g, ' $1 ');
+      const pronWords = safePronStr.split(/\s+/).filter(Boolean);
+      
+      if (textWords.length > 0 && textWords.length === pronWords.length) {
+          effectiveParsedChunks = textWords.map((tw, i) => ({
+              type: 'foreign',
+              text: tw,
+              trans: pronWords[i] || ''
+          }));
+          finalMainHasSpacing = false; 
+      } else {
+          effectiveParsedChunks = null;
+          finalMainHasSpacing = false;
+      }
+  }
+
   let renderedMainElements = null;
-  if (cleanedMainChars.length > 0) {
-    const isOnlyPunct = cleanedMainChars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
+  if (mainChars.length > 0) {
+    const isOnlyPunct = mainChars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
     const alignedMainJSX = alignChunksWithTransliteration(
-      cleanedMainChars,
+      mainChars,
       isOnlyPunct ? null : effectiveParsedChunks,
       isOnlyPunct ? '' : effectiveFullTrans,
       renderColoredCharForSplit,
       basePronStyle,
       isRTL,
       false,
-      hasSpacingText
+      finalMainHasSpacing
     );
 
     renderedMainElements = (
@@ -161,8 +154,8 @@ const SplitLine = ({
             whiteSpace: 'pre-wrap',
             display: 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'baseline',
-            verticalAlign: 'baseline',
+            alignItems: 'flex-end',
+            verticalAlign: 'bottom',
             flexWrap: 'wrap',
             maxWidth: '100%',
             boxSizing: 'border-box'
@@ -175,10 +168,8 @@ const SplitLine = ({
     );
   }
 
-  const renderedAdlibElements = adlibBlocks.map((blk, bIdx) => {
-    const adlib = blk.adlibObj;
-    if (!adlib) return null;
-
+  // 4. DEDICATED AD-LIB RENDERER (Bypasses all chunking logic to guarantee visibility)
+  const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
     
@@ -186,81 +177,83 @@ const SplitLine = ({
     if (isPlayingCurrentSong && start !== null) {
       if (currentTime >= start && currentTime <= end) initialClass = 'adlib-active';
       else if (currentTime > end) initialClass = 'adlib-visible';
+    } else if (!isPlayingCurrentSong) {
+      initialClass = 'adlib-visible'; 
     }
 
-    let aParsedChunks = null;
-    let aFullTrans = null;
+    // Determine Display Text
+    const displayText = (adlib.spacingText && adlib.spacingText.trim()) ? adlib.spacingText : (adlib.text || '');
+
+    // Determine Pronunciation
+    let displayPron = '';
     if (adlib.pronunciation) {
-      if (typeof adlib.pronunciation === 'string') {
-        if (adlib.pronunciation.startsWith('{')) {
-          try {
+        try {
             const p = JSON.parse(adlib.pronunciation);
-            aParsedChunks = p.chunks;
-            aFullTrans = p.full;
-          } catch (e) {}
-        } else if (adlib.pronunciation.startsWith('[')) {
-          try { aParsedChunks = JSON.parse(adlib.pronunciation); } catch (e) {}
-        } else {
-          aFullTrans = adlib.pronunciation;
+            displayPron = p.full || '';
+        } catch(e) {
+            displayPron = adlib.pronunciation;
         }
-      }
+    }
+    // Remove parentheses from pronunciation
+    if (displayPron) displayPron = displayPron.replace(/[()\uff08\uff09]/g, '').trim();
+
+    // Determine Translation
+    let displayTrans = cleanTranslationText(adlib.translation);
+    if (displayTrans) displayTrans = displayTrans.replace(/[()\uff08\uff09]/g, '').trim();
+
+    // Determine Base Color
+    let activeColor = '#ffffff';
+    let isGradient = false;
+    let gradientStyle = '';
+    
+    let targetArtists = [];
+    if (adlib.singer) {
+         targetArtists = adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
+    }
+    if (targetArtists.length > 1) {
+         isGradient = true;
+         const c1 = masterPalette[targetArtists[0]] || '#ffffff';
+         const c2 = masterPalette[targetArtists[1]] || '#ffffff';
+         gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+    } else if (targetArtists.length === 1) {
+         activeColor = masterPalette[targetArtists[0]] || '#ffffff';
     }
 
-    let adlibTranslation = cleanTranslationText(adlib.translation);
-    if (adlibTranslation) {
-      // PRESERVE SPACES: Exclude spaces from the removal regex
-      adlibTranslation = adlibTranslation.replace(/[()\uff08\uff09]/g, '').trim();
+    let baseTextStyle = { 
+        transition: 'opacity 0.3s ease, transform 0.3s ease',
+    };
+
+    if (isGradient) {
+      baseTextStyle.backgroundImage = gradientStyle;
+      baseTextStyle.WebkitBackgroundClip = 'text';
+      baseTextStyle.WebkitTextFillColor = 'transparent';
+      baseTextStyle.filter = `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+    } else {
+      baseTextStyle.color = activeColor;
+      baseTextStyle.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
     }
 
-    const aActiveSpacingText = adlib.spacingText || '';
-    const aUseSpacingText = Boolean(aActiveSpacingText && aActiveSpacingText.trim());
-    const aActiveDisplayText = aUseSpacingText ? aActiveSpacingText : adlib.text || '';
-
-    let adlibChars = blk.chars;
-    let effectiveHasSpacing = hasSpacingText; 
-
-    if (aUseSpacingText) {
-      adlibChars = [];
-      effectiveHasSpacing = true;
-      const spacedGraphemes = getGraphemes(aActiveDisplayText);
-      let segmentPointer = 0;
-      let charPointerInSegment = 0;
-      const segments = adlib.segments || [{ text: adlib.text }]; 
+    // Apply Yellow Color to Punctuation Characters Specifically
+    const renderedAdlibText = getGraphemes(displayText).map((char, idx) => {
+      const isPunct = isPunctuationChar(char);
+      let charStyle = { ...baseTextStyle };
       
-      spacedGraphemes.forEach((char, idx) => {
-        const isSpace = /\s/.test(char);
-        const currentSeg = segments[segmentPointer] || segments[segments.length - 1];
-        
-        adlibChars.push({
-          char,
-          seg: currentSeg,
-          globalIndex: `adlib-${bIdx}-${idx}`,
-        });
-
-        if (!isSpace) {
-          charPointerInSegment += getGraphemes(char).length;
-          if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
-            segmentPointer++;
-            charPointerInSegment = 0;
-          }
-        }
-      });
-    }
-
-    const alignedAdlibJSX = alignChunksWithTransliteration(
-      adlibChars,
-      aParsedChunks,
-      aFullTrans,
-      renderColoredCharForSplit,
-      basePronStyle,
-      isRTL,
-      false,
-      effectiveHasSpacing
-    );
+      if (isPunct && char.trim() !== '') {
+         charStyle = {
+           color: '#fbbf24',
+           WebkitTextFillColor: '#fbbf24',
+           textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 0 20px rgba(251, 191, 36, 0.6)',
+           backgroundImage: 'none',
+           filter: 'none',
+           transition: 'opacity 0.3s ease, transform 0.3s ease'
+         };
+      }
+      return <span key={idx} style={charStyle}>{char === ' ' ? '\u00A0' : char}</span>;
+    });
 
     return (
       <span
-        key={`adlib-block-${bIdx}`}
+        key={`simple-adlib-${bIdx}`}
         className={`adlib-container adlib-node ${initialClass}`}
         data-start={start !== null ? start : 'NaN'}
         data-end={end !== null ? end : 'NaN'}
@@ -274,50 +267,25 @@ const SplitLine = ({
           boxSizing: 'border-box'
         }}
       >
-        {adlibTranslation ? (
-          <span
-              className={`chunk-translation ${transClass}`}
-              dir="ltr"
-             style={{
-               position: 'absolute',
-               top: 0,
-               left: '50%',
-               transform: 'translate(-50%, -100%)',
-               maxWidth: '90vw',
-               width: 'max-content',
-               whiteSpace: 'normal',
-               wordBreak: 'break-word',
-               overflowWrap: 'break-word',
-               textAlign: 'center',
-               textWrap: 'balance'
-             }}
-          >
-            {renderFormattedTranslation(adlibTranslation)}
+        {displayTrans ? (
+          <span className={`chunk-translation ${transClass}`} dir="ltr" style={{ position: 'absolute', top: 0, left: '50%', transform: 'translate(-50%, -100%)', maxWidth: '90vw', width: 'max-content', textAlign: 'center', textWrap: 'balance' }}>
+            {renderFormattedTranslation(displayTrans)}
           </span>
         ) : null}
-        <span
-          className="primary-text"
-          style={{
-            whiteSpace: 'pre-wrap',
-            display: 'inline-flex',
-            flexDirection: 'row',
-            alignItems: 'baseline',
-            verticalAlign: 'baseline',
-            flexWrap: 'wrap',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
-            justifyContent: 'center'
-          }}
-          dir="auto"
-        >
-          {alignedAdlibJSX}
+        <span className="primary-text" style={{ fontWeight: 'bold', whiteSpace: 'pre-wrap' }} dir="auto">
+          {renderedAdlibText}
         </span>
+        {displayPron ? (
+          <span className="pronunciation-text" style={basePronStyle} dir="ltr">
+            {renderFormattedTranslation(displayPron)}
+          </span>
+        ) : null}
       </span>
     );
   });
 
+  // 5. GLOBAL FALLBACK PRONUNCIATION (For Main Line)
   let displayPronString = null;
-  const isCJKLine = chars.some(c => isCJ(c.char));
 
   if (isRTL) {
     if (fullTrans) {
@@ -325,12 +293,12 @@ const SplitLine = ({
     } else if (parsedChunks) {
       displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
     }
-  } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-    if (!isCJKLine && !parsedChunks) {
-       const cleanOrig = lineObj.text.toLowerCase().replace(/[\W_]+/g, '');
-       const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
+  } else if (effectiveFullTrans) {
+    if (!effectiveParsedChunks) {
+       const cleanOrig = (lineObj.text || '').toLowerCase().replace(/[\W_]+/g, '');
+       const cleanPron = effectiveFullTrans.toLowerCase().replace(/[\W_]+/g, '');
        if (cleanOrig !== cleanPron) {
-           displayPronString = normalizeTrans(pronString);
+           displayPronString = normalizeTrans(effectiveFullTrans);
        }
     }
   }
