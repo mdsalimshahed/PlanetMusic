@@ -26,6 +26,41 @@ const StandardLine = ({
     displayChars = chars.filter(c => !savedNode.adlibs.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd));
   }
 
+  const protectedPronStyle = {
+    ...basePronStyle,
+    WebkitTextFillColor: 'currentcolor',
+    backgroundImage: 'none'
+  };
+
+  const getSegmentStyle = (seg) => {
+    let targetArtists = seg?.artists;
+    let isGrad = false;
+    let gradStyle = '';
+
+    if (targetArtists && targetArtists.length > 1) {
+      isGrad = true;
+      const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+      gradStyle = `linear-gradient(90deg, ${gradientColors})`;
+    } else if (seg?.isGradient && seg?.gradient) {
+      isGrad = true;
+      gradStyle = seg.gradient;
+    }
+
+    if (isGrad) {
+      return {
+        backgroundImage: gradStyle,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        WebkitBoxDecorationBreak: 'clone',
+        display: 'inline',
+        filter: isFocused 
+          ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
+          : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+      };
+    }
+    return {};
+  };
+
   const renderColoredChar = (c, globalIdx) => {
     let adlibProps = {};
     if (savedNode?.isSplit && !isFocused) {
@@ -49,45 +84,33 @@ const StandardLine = ({
     }
 
     const isPunct = isPunctuationChar(c.char);
-    let activeColor = isPunct ? '#fbbf24' : '#ffffff';
-    let isGradient = false;
-    let gradientStyle = '';
-
-    if (!isPunct && c.seg) {
-      let targetArtists = c.seg.artists;
-      if (!targetArtists && lineObj.singer) {
-        targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-      }
-
-      if (targetArtists && targetArtists.length > 0) {
-        if (targetArtists.length > 1) {
-          isGradient = true;
-          const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-          const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-          gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-        } else {
-          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-        }
-      } else {
-        activeColor = c.seg.color || '#ffffff';
-        isGradient = c.seg.isGradient || false;
-        gradientStyle = c.seg.gradient || '';
-      }
-    }
-
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-    if (isGradient) {
-      style.backgroundImage = gradientStyle;
-      style.WebkitBackgroundClip = 'text';
-      style.WebkitTextFillColor = 'transparent';
-      style.filter = isFocused 
-          ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
-          : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+    
+    if (isPunct && c.char.trim() !== '') {
+      style = {
+        ...style,
+        color: '#fbbf24',
+        WebkitTextFillColor: '#fbbf24',
+        textShadow: isFocused ? '0 0 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)' : '0 4px 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)',
+        backgroundImage: 'none',
+        filter: 'none'
+      };
     } else {
-      style.color = activeColor;
-      style.textShadow = isFocused 
-          ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` 
-          : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
+      let targetArtists = c.seg?.artists;
+      let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
+      
+      if (!isGrad) {
+        let activeColor = '#ffffff';
+        if (targetArtists && targetArtists.length === 1) {
+          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+        } else if (c.seg?.color) {
+          activeColor = c.seg.color;
+        }
+        style.color = activeColor;
+        style.WebkitTextFillColor = activeColor;
+        style.textShadow = isFocused ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      }
     }
 
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
@@ -98,16 +121,17 @@ const StandardLine = ({
     parsedChunks,
     fullTrans,
     renderColoredChar,
-    basePronStyle,
+    protectedPronStyle,
     isRTL,
     isFocused,
-    hasSpacingText
+    hasSpacingText,
+    getSegmentStyle
   );
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
-  const isCJKLine = chars.some(c => isCJ(c.char));
 
+  const isCJKLine = chars.some(c => isCJ(c.char));
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -128,9 +152,8 @@ const StandardLine = ({
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
-
   const blockPronStyle = {
-    ...basePronStyle,
+    ...protectedPronStyle,
     marginTop: '8px',
     display: 'block',
     textAlign: lineTextAlign,
@@ -141,6 +164,7 @@ const StandardLine = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
+        
         <span
           className="core-chunks"
           style={{
@@ -161,20 +185,20 @@ const StandardLine = ({
         >
           {displayTranslation ? (
             <span
-                className={`chunk-translation ${transClass}`}
+               className={`chunk-translation ${transClass}`}
                dir="ltr"
-              style={{
-                textWrap: 'balance',
-                textAlign: 'center'
-              }}
+               style={{
+                 maxWidth: '100%'
+               }}
             >
               {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
+          
           <span
             className="main-lyrics-layer"
             style={{
-              display: 'inline', // Critical CSS Fix: Allows standard inline text wrapping instead of rigid flexboxes
+              display: 'inline', 
               width: 'auto',
               maxWidth: '100%',
               textAlign: lineTextAlign,
@@ -187,6 +211,7 @@ const StandardLine = ({
           </span>
         </span>
       </span>
+      
       {shouldRenderBlockPron && displayPronString && (
         <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
           {renderFormattedTranslation(displayPronString, isFocused)}

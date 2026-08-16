@@ -20,7 +20,7 @@ const SplitLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
 
-  // 1. EXTRACT MAIN CHARACTERS (Filter out ad-lib characters from the main line)
+  // 1. EXTRACT MAIN CHARACTERS
   const blocks = [];
   let currentBlock = null;
 
@@ -46,52 +46,75 @@ const SplitLine = ({
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
 
-  // Gently trim orphaned leading/trailing spaces from the main line
   while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
-  // 2. MAIN LINE CHARACTER RENDERER
-  const renderColoredCharForSplit = (c, globalIdx) => {
-    const isPunct = isPunctuationChar(c.char);
-    let activeColor = isPunct ? '#fbbf24' : '#ffffff';
-    let isGradient = false;
-    let gradientStyle = '';
+  const protectedPronStyle = {
+    ...basePronStyle,
+    WebkitTextFillColor: 'currentcolor',
+    backgroundImage: 'none'
+  };
 
-    if (!isPunct && c.seg) {
-      let targetArtists = c.seg.artists;
-      if (!targetArtists && lineObj.singer) {
-        targetArtists = lineObj.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim());
-      }
-      if (targetArtists && targetArtists.length > 0) {
-        if (targetArtists.length > 1) {
-          isGradient = true;
-          const c1 = masterPalette[targetArtists[0]] || '#ffffff';
-          const c2 = masterPalette[targetArtists[1]] || '#ffffff';
-          gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-        } else {
-          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-        }
-      } else {
-        activeColor = c.seg.color || '#ffffff';
-        isGradient = c.seg.isGradient || false;
-        gradientStyle = c.seg.gradient || '';
-      }
+  const getSegmentStyle = (seg) => {
+    let targetArtists = seg?.artists;
+    
+    let isGrad = false;
+    let gradStyle = '';
+
+    if (targetArtists && targetArtists.length > 1) {
+      isGrad = true;
+      const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+      gradStyle = `linear-gradient(90deg, ${gradientColors})`;
+    } else if (seg?.isGradient && seg?.gradient) {
+      isGrad = true;
+      gradStyle = seg.gradient;
     }
 
+    if (isGrad) {
+      return {
+        backgroundImage: gradStyle,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        WebkitBoxDecorationBreak: 'clone',
+        display: 'inline',
+        filter: `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+      };
+    }
+    return {};
+  };
+
+  const renderColoredCharForSplit = (c, globalIdx) => {
+    const isPunct = isPunctuationChar(c.char);
     let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-    if (isGradient) {
-      style.backgroundImage = gradientStyle;
-      style.WebkitBackgroundClip = 'text';
-      style.WebkitTextFillColor = 'transparent';
-      style.filter = `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
+    
+    if (isPunct && c.char.trim() !== '') {
+      style = {
+        ...style,
+        color: '#fbbf24',
+        WebkitTextFillColor: '#fbbf24',
+        textShadow: '0 4px 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)',
+        backgroundImage: 'none',
+        filter: 'none'
+      };
     } else {
-      style.color = activeColor;
-      style.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      let targetArtists = c.seg?.artists;
+      let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
+      
+      if (!isGrad) {
+        let activeColor = '#ffffff';
+        if (targetArtists && targetArtists.length === 1) {
+          activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+        } else if (c.seg?.color) {
+          activeColor = c.seg.color;
+        }
+        style.color = activeColor;
+        style.WebkitTextFillColor = activeColor;
+        style.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+      }
     }
     return <span key={globalIdx} style={style}>{c.char}</span>;
   };
 
-  // 3. PRE-COMPUTE PRONUNCIATIONS & ALIGNMENT
   let effectiveFullTrans = fullTrans;
   let effectiveParsedChunks = parsedChunks;
   let finalMainHasSpacing = hasSpacingText;
@@ -130,10 +153,11 @@ const SplitLine = ({
       isOnlyPunct ? null : effectiveParsedChunks,
       isOnlyPunct ? '' : effectiveFullTrans,
       renderColoredCharForSplit,
-      basePronStyle,
+      protectedPronStyle,
       isRTL,
       false,
-      finalMainHasSpacing
+      finalMainHasSpacing,
+      getSegmentStyle
     );
   }
 
@@ -150,19 +174,11 @@ const SplitLine = ({
       initialClass = 'adlib-visible';
     }
 
-    let displayPron = '';
-    if (adlib.pronunciation) {
-        try { displayPron = JSON.parse(adlib.pronunciation).full || ''; }
-        catch(e) { displayPron = adlib.pronunciation; }
-    }
-    if (displayPron) displayPron = displayPron.replace(/[()\uff08\uff09]/g, '').trim();
-
     let displayTrans = cleanTranslationText(adlib.translation);
     if (displayTrans) displayTrans = displayTrans.replace(/[()\uff08\uff09]/g, '').trim();
 
     const aActiveSpacingText = adlib.spacingText || '';
     const aUseSpacingText = Boolean(aActiveSpacingText && aActiveSpacingText.trim());
-
     const blk = adlibBlocks[bIdx];
     let adlibChars = [];
     
@@ -195,64 +211,118 @@ const SplitLine = ({
       adlibChars = getGraphemes(fallbackText).map(char => ({ char, seg: null }));
     }
 
-    const renderedAdlibText = adlibChars.map((c, idx) => {
-      const isPunct = isPunctuationChar(c.char);
-      let charColor = '#ffffff';
-      let charIsGradient = false;
-      let charGradientStyle = '';
-
-      if (!isPunct && c.seg) {
-          let segArtists = c.seg.artists;
-          if (segArtists && segArtists.length > 1) {
-              charIsGradient = true;
-              const c1 = masterPalette[segArtists[0]] || '#ffffff';
-              const c2 = masterPalette[segArtists[1]] || '#ffffff';
-              charGradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-          } else if (segArtists && segArtists.length === 1) {
-              charColor = masterPalette[segArtists[0]] || '#ffffff';
-          } else {
-              charColor = c.seg.color || '#ffffff';
-              charIsGradient = c.seg.isGradient || false;
-              charGradientStyle = c.seg.gradient || '';
-          }
-      } else if (!isPunct && !c.seg) {
-          let fbArtists = adlib.singer ? adlib.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s=>s.trim()) : [];
-          if (fbArtists.length > 1) {
-              charIsGradient = true;
-              const c1 = masterPalette[fbArtists[0]] || '#ffffff';
-              const c2 = masterPalette[fbArtists[1]] || '#ffffff';
-              charGradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
-          } else if (fbArtists.length === 1) {
-              charColor = masterPalette[fbArtists[0]] || '#ffffff';
-          }
-      }
-
-      let charStyle = { transition: 'opacity 0.3s ease, transform 0.3s ease', fontWeight: 'bold' };
-      if (isPunct && c.char.trim() !== '') {
-          charStyle = {
-              ...charStyle,
-              color: '#fbbf24',
-              WebkitTextFillColor: '#fbbf24',
-              textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 0 20px rgba(251, 191, 36, 0.6)',
-              backgroundImage: 'none',
-              filter: 'none'
-          };
-      } else if (charIsGradient) {
-          charStyle.backgroundImage = charGradientStyle;
-          charStyle.WebkitBackgroundClip = 'text';
-          charStyle.WebkitTextFillColor = 'transparent';
-          charStyle.filter = `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`;
-      } else {
-          charStyle.color = charColor;
-          charStyle.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${charColor}80`;
-      }
-      return <span key={idx} style={charStyle}>{c.char}</span>;
+    const adlibSegments = [];
+    let curSegGroup = null;
+    adlibChars.forEach((c) => {
+        if (!curSegGroup || curSegGroup.seg !== c.seg) {
+            if (curSegGroup) adlibSegments.push(curSegGroup);
+            curSegGroup = { seg: c.seg, chars: [c] };
+        } else {
+            curSegGroup.chars.push(c);
+        }
     });
+    if (curSegGroup) adlibSegments.push(curSegGroup);
+
+    const renderedAdlibText = adlibSegments.map((group, gIdx) => {
+        let targetArtists = group.seg?.artists;
+
+        let isGrad = false;
+        let gradStyle = '';
+
+        if (targetArtists && targetArtists.length > 1) {
+           isGrad = true;
+           const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+           gradStyle = `linear-gradient(90deg, ${gradientColors})`;
+        } else if (group.seg?.isGradient && group.seg?.gradient) {
+           isGrad = true;
+           gradStyle = group.seg.gradient;
+        }
+
+        let parentStyle = {};
+        if (isGrad) {
+           parentStyle = {
+               backgroundImage: gradStyle,
+               WebkitBackgroundClip: 'text',
+               WebkitTextFillColor: 'transparent',
+               WebkitBoxDecorationBreak: 'clone',
+               display: 'inline',
+               filter: `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+           };
+        }
+
+        const charsJSX = group.chars.map((c, idx) => {
+            const isPunct = isPunctuationChar(c.char);
+            let charStyle = { fontWeight: 'bold' };
+            
+            if (isPunct && c.char.trim() !== '') {
+                charStyle = {
+                    ...charStyle,
+                    color: '#fbbf24',
+                    WebkitTextFillColor: '#fbbf24',
+                    textShadow: '0 4px 8px rgba(0,0,0,0.9), 0 0 20px rgba(251, 191, 36, 0.6)',
+                    backgroundImage: 'none',
+                    filter: 'none'
+                };
+            } else if (!isGrad) {
+                let activeColor = '#ffffff';
+                if (targetArtists && targetArtists.length === 1) {
+                    activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+                } else if (c.seg?.color) {
+                    activeColor = c.seg.color;
+                }
+                charStyle.color = activeColor;
+                charStyle.WebkitTextFillColor = activeColor;
+                charStyle.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+            }
+            return <span key={idx} style={charStyle}>{c.char}</span>;
+        });
+
+        return <span key={`adlib-seg-${gIdx}`} style={parentStyle}>{charsJSX}</span>;
+    });
+
+    let aParsedChunks = null;
+    let aFullTrans = null;
+    let aPron = adlib.pronunciation;
+    
+    if (typeof aPron === 'string') {
+      if (aPron.startsWith('{')) {
+        try {
+          const p = JSON.parse(aPron);
+          aParsedChunks = p.chunks;
+          aFullTrans = p.full;
+        } catch (e) {}
+      } else if (aPron.startsWith('[')) {
+        try { aParsedChunks = JSON.parse(aPron); } catch (e) {}
+      } else {
+        aFullTrans = aPron;
+      }
+    }
+
+    const alignedAdlibJSX = alignChunksWithTransliteration(
+      adlibChars,
+      aParsedChunks,
+      aFullTrans,
+      renderColoredCharForSplit,
+      protectedPronStyle,
+      false, 
+      false, // Fixed from true -> false for Live View
+      aUseSpacingText,
+      getSegmentStyle
+    );
+
+    let displayPronString = null;
+    const isCJKLine = adlibChars.some(c => isCJ(c.char));
+    if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
+      if (!isCJKLine && !aParsedChunks) {
+        displayPronString = normalizeTrans(aPron);
+      }
+    }
 
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
         {/* EXPLICIT SPACER BETWEEN MAIN LYRICS AND ADLIB */}
         <span className="adlib-spacer" style={{ whiteSpace: 'pre' }}> </span>
+        
         <span
           className={`adlib-container adlib-node ${initialClass}`}
           data-start={start !== null ? start : 'NaN'}
@@ -268,16 +338,22 @@ const SplitLine = ({
           }}
         >
           {displayTrans ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr">
+            <span 
+               className={`chunk-translation ${transClass}`} 
+               dir="ltr"
+               style={{
+                 maxWidth: '100%'
+               }}
+            >
               {renderFormattedTranslation(displayTrans, false)}
             </span>
           ) : null}
           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
-            {renderedAdlibText}
+            {alignedAdlibJSX}
           </span>
-          {displayPron ? (
-            <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-              {renderFormattedTranslation(displayPron, false)}
+          {displayPronString ? (
+            <span className="pronunciation-text" style={protectedPronStyle} dir="ltr">
+              {renderFormattedTranslation(displayPronString, false)}
             </span>
           ) : null}
         </span>
@@ -288,6 +364,7 @@ const SplitLine = ({
   // 5. GLOBAL FALLBACK PRONUNCIATION
   let displayPronString = null;
   let shouldRenderBlockPron = false;
+
   const isCJKLine = chars.some(c => isCJ(c.char));
 
   if (isRTL) {
@@ -311,82 +388,78 @@ const SplitLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-      <span 
-         className="primary-text" 
-         style={{ 
-           whiteSpace: 'pre-wrap', 
-           wordBreak: 'normal', 
-           overflowWrap: 'normal', 
-           display: 'inline-block', 
-           position: 'relative', 
-           textAlign: 'left', 
-           direction: isRTL ? 'rtl' : 'ltr', 
-           width: '100%', 
-           maxWidth: '100%', 
-           boxSizing: 'border-box' 
-         }}
+      <span
+          className="primary-text"
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'normal',
+            overflowWrap: 'normal',
+            display: 'inline-block',
+            position: 'relative',
+            textAlign: 'left',
+            direction: isRTL ? 'rtl' : 'ltr',
+            width: '100%',
+            maxWidth: '100%',
+            boxSizing: 'border-box'
+          }}
       >
         <span 
-          className="core-chunks" 
-          style={{ 
-            position: 'relative', 
-            display: 'inline-flex', 
-            flexDirection: 'column', 
-            justifyContent: 'flex-start', 
-            alignItems: 'center', 
-            verticalAlign: 'baseline', 
-            margin: '0', 
-            width: 'auto', 
-            maxWidth: '100%', 
-            textAlign: 'left', 
-            boxSizing: 'border-box' 
-          }}
+           className="core-chunks"
+           style={{
+             position: 'relative',
+             display: 'inline-flex',
+             flexDirection: 'column',
+             justifyContent: 'flex-start',
+             alignItems: 'center',
+             verticalAlign: 'baseline',
+             margin: '0',
+             width: 'auto',
+             maxWidth: '100%',
+             textAlign: 'left',
+             boxSizing: 'border-box'
+           }}
         >
           {displayTranslation ? (
             <span 
-              className={`chunk-translation ${transClass}`} 
-              dir="ltr"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '50%',
-                transform: 'translate(-50%, -100%)',
-                width: 'max-content',
-                maxWidth: '100vw',
-                textAlign: 'center'
-              }}
+               className={`chunk-translation ${transClass}`} 
+               dir="ltr"
+               style={{
+                 maxWidth: '100%'
+               }}
             >
               {renderFormattedTranslation(displayTranslation, false)}
             </span>
           ) : null}
           <span 
-            className="main-lyrics-layer" 
-            style={{ 
-              display: 'inline-block', 
-              width: 'auto', 
-              maxWidth: '100%', 
-              textAlign: 'left', 
-              boxSizing: 'border-box' 
-            }} 
-            dir="auto"
+             className="main-lyrics-layer"
+             style={{
+               display: 'inline',
+               width: 'auto',
+               maxWidth: '100%',
+               textAlign: 'left',
+               boxSizing: 'border-box'
+             }}
+             dir="auto"
           >
             {alignedMainJSX}
           </span>
         </span>
+        
         {renderedAdlibElements}
       </span>
+      
       {shouldRenderBlockPron && displayPronString && (
         <span 
-           className="pronunciation-text" 
-           style={{ 
-            ...basePronStyle, 
-            marginTop: '8px', 
-            display: 'block', 
-            textAlign: 'left', 
-            wordSpacing: '4px', 
-            lineHeight: '1.4' 
-          }} 
-           dir="ltr"
+            className="pronunciation-text" 
+            style={{
+             ...protectedPronStyle,
+             marginTop: '8px',
+             display: 'block',
+             textAlign: 'left',
+             wordSpacing: '4px',
+             lineHeight: '1.4'
+           }} 
+            dir="ltr"
         >
           {renderFormattedTranslation(displayPronString, false)}
         </span>

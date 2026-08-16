@@ -5,16 +5,15 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
-  
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
       const shadow = isFocused 
-          ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
-        : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
+           ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
+         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24', backgroundImage: 'none' }}>
           {part}
         </span>
       );
@@ -30,7 +29,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
-      // Strictly > 3 hyphens to allow wrapping, NO arbitrary character breaks allowed
       const shouldWrap = hyphenCount > 3;
       words.push(
         <span
@@ -83,10 +81,9 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   return words;
 };
 
-export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false) => {
+export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false, getSegmentStyle = null) => {
   let alignedChunks = [];
 
-  // --- 1. Exact 1:1 Mapping Logic for Spaced Text ---
   let canDo1to1 = false;
   let spacedWordsBlocks = [];
   let pronWords = [];
@@ -106,7 +103,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     if (currentBlock.length > 0) spacedWordsBlocks.push(currentBlock);
 
     pronWords = fullTrans.split(/\s+/).filter(Boolean);
-
     if (spacedWordsBlocks.length === pronWords.length && spacedWordsBlocks.length > 0) {
       canDo1to1 = true;
     }
@@ -135,7 +131,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         currentBlock.push(c);
       }
     });
-
     if (currentBlock.length > 0) {
        const textStr = currentBlock.map(x => x.char).join('');
        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
@@ -148,15 +143,11 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
        }
     }
   } 
-  
-  // --- 2. Structured JSON Organic Chunks (Legacy) ---
   else if (parsedChunks && Array.isArray(parsedChunks)) {
     let charIdxPointer = 0;
-
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
-
       let charsToConsume = 0;
       let tempPointer = charIdxPointer;
 
@@ -195,15 +186,10 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
     }
   } 
-  
-  // --- 3. Organic Spaced Fallback for CJK with English (Legacy) ---
   else {
     const isCJKLine = chars.some(c => isCJ(c.char));
-
     if (isCJKLine) {
-      const origString = chars.map(c => c.char).join('');
       const transString = fullTrans || '';
-      
       let blocks = [];
       let currentBlock = [];
       let isLatinMode = null;
@@ -228,7 +214,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       
       blocks.forEach(b => {
         const blockStr = b.chars.map(c => c.char).join('');
-
         if (b.isLatin && blockStr.trim().length > 0) {
           const latinWords = blockStr.split(/\s+/).filter(Boolean);
           latinWords.forEach(lw => {
@@ -269,18 +254,35 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         }
       });
     } else {
-      alignedChunks = [{ type: 'main', trans: fullTrans || '', chars: chars }];
+      // FIX: Isolate the English fallback chunks precisely by their segment boundaries!
+      let currentSeg = null;
+      let currentChars = [];
+      chars.forEach(c => {
+          if (currentSeg === null) currentSeg = c.seg;
+          
+          if (currentSeg === c.seg) {
+              currentChars.push(c);
+          } else {
+              alignedChunks.push({ type: 'main', trans: '', chars: currentChars });
+              currentChars = [c];
+              currentSeg = c.seg;
+          }
+      });
+      if (currentChars.length > 0) {
+          alignedChunks.push({ type: 'main', trans: fullTrans || '', chars: currentChars });
+      }
     }
   }
 
-  return alignedChunks.map((chunk, chunkIdx) => {
+  const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
     
     const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+    let chunkJSX;
 
     if (isRTL) {
-      return (
+      chunkJSX = (
         <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
           {groupedText}
         </span>
@@ -288,7 +290,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     } else {
       if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
         const cleanTrans = normalizeTrans(chunk.trans);
-        return (
+        chunkJSX = (
           <span
             key={chunkIdx}
             style={{
@@ -309,13 +311,36 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
           </span>
         );
       } else {
-        return (
-          // Critical fix: Using inline instead of inline-block allows spaces to flow natively
+        chunkJSX = (
           <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'baseline', display: 'inline', maxWidth: '100%' }}>
             {groupedText}
           </span>
         );
       }
     }
-  }).filter(Boolean);
+    
+    return { seg: chunk.chars[0]?.seg, jsx: chunkJSX };
+  }).filter(item => item !== null);
+
+  if (!getSegmentStyle) {
+    return chunkElements.map(item => item.jsx);
+  }
+
+  const segmentGroups = [];
+  let currentGroup = null;
+
+  chunkElements.forEach(item => {
+    if (!currentGroup || currentGroup.seg !== item.seg) {
+      if (currentGroup) segmentGroups.push(currentGroup);
+      currentGroup = { seg: item.seg, elements: [item.jsx] };
+    } else {
+      currentGroup.elements.push(item.jsx);
+    }
+  });
+  if (currentGroup) segmentGroups.push(currentGroup);
+
+  return segmentGroups.map((group, idx) => {
+    const parentStyle = getSegmentStyle(group.seg);
+    return <span key={`seg-${idx}`} style={parentStyle}>{group.elements}</span>;
+  });
 };

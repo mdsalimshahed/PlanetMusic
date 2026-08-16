@@ -33,7 +33,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               textAlign: 'center',
               marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
               display: 'inline-block',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              WebkitTextFillColor: 'currentcolor',
+              backgroundImage: 'none'
             };
 
             const activeSpacingText = adlibObj.spacingText || '';
@@ -95,39 +97,63 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               });
             }
 
-            const renderColoredCharForTracker = (c, globalIdx) => {
-              let inlineColor = c.seg?.color || '#ffffff';
-              let inlineIsGradient = c.seg?.isGradient || false;
-              let inlineGradient = c.seg?.gradient || '';
-              
-              if (c.seg?.artists && c.seg.artists.length > 0) {
-                if (c.seg.artists.length > 1) {
-                  inlineIsGradient = true;
-                  const c1 = masterPalette[c.seg.artists[0]] || '#ffffff';
-                  const c2 = masterPalette[c.seg.artists[1]] || '#ffffff';
-                  inlineGradient = `linear-gradient(90deg, ${c1}, ${c2})`;
-                } else {
-                  inlineColor = masterPalette[c.seg.artists[0]] || inlineColor;
-                }
-              }
+            const getSegmentStyle = (seg) => {
+               // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
+               let targetArtists = seg?.artists;
+               let isGrad = false;
+               let gradStyle = '';
 
+               if (targetArtists && targetArtists.length > 1) {
+                 isGrad = true;
+                 const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+                 gradStyle = `linear-gradient(90deg, ${gradientColors})`;
+               } else if (seg?.isGradient && seg?.gradient) {
+                 isGrad = true;
+                 gradStyle = seg.gradient;
+               }
+
+               if (isGrad) {
+                 return {
+                     backgroundImage: gradStyle,
+                     WebkitBackgroundClip: 'text',
+                     WebkitTextFillColor: 'transparent',
+                     WebkitBoxDecorationBreak: 'clone',
+                     display: 'inline',
+                     filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))'
+                 };
+               }
+               return {};
+            };
+
+            const renderColoredCharForTracker = (c, globalIdx) => {
               const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
               let style = {};
 
               if (isPunct && c.char.trim() !== '') {
-                style.color = '#fbbf24';
-                style.WebkitTextFillColor = '#fbbf24';
-                style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
-              } else if (inlineIsGradient) {
-                style.backgroundImage = inlineGradient;
-                style.WebkitBackgroundClip = 'text';
-                style.WebkitTextFillColor = 'transparent';
-                style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))';
+                 style = {
+                     color: '#fbbf24',
+                     WebkitTextFillColor: '#fbbf24',
+                     textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+                     backgroundImage: 'none',
+                     filter: 'none'
+                 };
               } else {
-                style.color = inlineColor;
-                style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${inlineColor}80`;
+                 // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
+                 let targetArtists = c.seg?.artists;
+                 let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
+                 
+                 if (!isGrad) {
+                     let activeColor = '#ffffff';
+                     if (targetArtists && targetArtists.length === 1) {
+                        activeColor = masterPalette[targetArtists[0]] || '#ffffff';
+                     } else if (c.seg?.color) {
+                        activeColor = c.seg.color;
+                     }
+                     style.color = activeColor;
+                     style.WebkitTextFillColor = activeColor;
+                     style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
+                 }
               }
-
               return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
             };
 
@@ -157,12 +183,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               basePronStyle,
               false, 
               true, 
-              useSpacingText
+              useSpacingText,
+              getSegmentStyle
             );
 
             let displayPronString = null;
             const isCJKLine = adlibChars.some(c => isCJ(c.char));
-
             if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
               if (!isCJKLine && !aParsedChunks) {
                 displayPronString = normalizeTrans(aPron);
@@ -196,9 +222,11 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                     {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
+
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
                   {alignedAdlibJSX}
                 </span>
+
                 {displayPronString && (
                   <span className="pronunciation-text" style={{...basePronStyle, whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', maxWidth: '100%'}} dir="ltr">
                     {renderFormattedTranslation(displayPronString)}
@@ -273,7 +301,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
 
-        // ALL CALCULATION HAPPENS ON THE FLY, EXACTLY WHEN THE AD-LIB BECOMES ACTIVE
         if (shouldBeActive && !item.isActive) {
           let pos = null;
           
@@ -284,8 +311,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
             const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
             
-            // CRITICAL FIX: Query the global document because the Singer Names live outside the container!
-            // Fallback to querying any `.singer-name-corner` if the visibility transition hasn't kicked in yet
             const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
             
             const cBox = getRelativeRect(lyricsNode, containerRect);
@@ -296,7 +321,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             const sBox = getRelativeRect(singerNode, containerRect);
             
             pos = generateSafeAdlibPosition(
-              item.node, // Pass the DOM Node itself to allow physical measuring 
+              item.node, 
               containerRect,
               cBox,
               sBox,
