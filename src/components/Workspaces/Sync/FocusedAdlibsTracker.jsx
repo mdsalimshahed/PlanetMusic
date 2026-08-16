@@ -162,7 +162,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
             let displayPronString = null;
             const isCJKLine = adlibChars.some(c => isCJ(c.char));
-
             if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
               if (!isCJKLine && !aParsedChunks) {
                 displayPronString = normalizeTrans(aPron);
@@ -345,10 +344,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           className="focused-adlib-line"
           data-start={item.start}
           data-end={item.end}
+          data-singer={item.activeSingersList.join(', ')}
+          data-parent-singers={item.activeNames.join(', ')}
           style={{
             '--adlib-rot': '0deg', 
             '--adlib-top': '50%',
-            '--adlib-left': '50%'
+            '--adlib-left': '50%',
+            width: 'max-content'
           }}
           onClick={(e) => { e.stopPropagation(); handleLineClick(item.start); }}
         >

@@ -3,19 +3,19 @@
 // Exported so the tracker can do JIT DOM reading outside of the loop
 export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
-
+  
   // Extract tight text bounds to ignore 100% width block containers
   let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
   let hasValidBounds = false;
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
   let node;
-          
+             
   while ((node = walker.nextNode())) {
     if (node.textContent.trim() !== '') {
       const range = document.createRange();
       range.selectNodeContents(node);
       const rects = range.getClientRects();
-                      
+                             
       for (let i = 0; i < rects.length; i++) {
         const rect = rects[i];
         if (rect.width > 0 && rect.height > 0) {
@@ -28,7 +28,7 @@ export const getRelativeRect = (element, containerRect) => {
       }
     }
   }
-
+  
   if (hasValidBounds) {
     return {
       top: minTop - containerRect.top,
@@ -63,12 +63,12 @@ export const generateSafeAdlibPosition = (
   masterNamesArray
 ) => {
   // 1. The Goldilocks Margins (Outer Safe Zones mirroring AdlibDebugOverlay)
-  const EDGE_PAD_X = Math.max(30, containerRect.width * 0.08);
-  const EDGE_PAD_Y = Math.max(30, containerRect.height * 0.08);
+  const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? 0 : Math.max(30, containerRect.width * 0.08);
+  const EDGE_PAD_Y = (masterNamesArray && masterNamesArray.length > 2) ? 0 : Math.max(30, containerRect.height * 0.08);
   const LYRIC_PAD = 25;
   const SINGER_PAD = 20;
   const MAX_DIST = 160;
-
+  
   const safeLeft = EDGE_PAD_X;
   const safeRight = containerRect.width - EDGE_PAD_X;
   const safeTop = EDGE_PAD_Y;
@@ -76,6 +76,7 @@ export const generateSafeAdlibPosition = (
 
   // 2. Define Base Safe Zones
   const baseZones = [];
+  
   if (cBox) {
     if (cBox.top > safeTop) {
       const bottomEdge = cBox.top - LYRIC_PAD;
@@ -109,7 +110,7 @@ export const generateSafeAdlibPosition = (
   const validCells = [];
   const colW = containerRect.width / cols;
   const rowH = containerRect.height / 2;
-
+  
   const getArtistForCell = (idx) => {
     if (!masterNamesArray || masterNamesArray.length === 0) return null;
     const r = Math.floor(idx / cols);
@@ -124,7 +125,7 @@ export const generateSafeAdlibPosition = (
       const r = Math.floor(i / cols);
       const c = i % cols;
       const artist = getArtistForCell(i);
-
+      
       if (activeSingersList.includes(artist)) {
         validCells.push({
           left: c * colW,
@@ -144,6 +145,7 @@ export const generateSafeAdlibPosition = (
       const ixRight = Math.min(bz.right, vc.right);
       const ixTop = Math.max(bz.top, vc.top);
       const ixBottom = Math.min(bz.bottom, vc.bottom);
+      
       if (ixLeft < ixRight && ixTop < ixBottom) {
         intersectedAreas.push({
           left: ixLeft,
@@ -163,7 +165,7 @@ export const generateSafeAdlibPosition = (
     const canvasMidY = containerRect.height / 2;
     const topZones = intersectedAreas.filter(a => a.top < canvasMidY);
     const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY);
-
+    
     if (topZones.length > 0 && bottomZones.length > 0) {
       if (Math.random() > 0.5) {
         targetArea = topZones[Math.floor(Math.random() * topZones.length)];
@@ -178,28 +180,35 @@ export const generateSafeAdlibPosition = (
   } else {
     targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom };
   }
-
+  
   targetArea.width = targetArea.width || (targetArea.right - targetArea.left);
   targetArea.height = targetArea.height || (targetArea.bottom - targetArea.top);
 
   // --- 6. NATIVE BROWSER SIZING & SCALING ---
   const tw = Math.max(20, targetArea.width);
   const th = Math.max(20, targetArea.height);
-  
-  // We cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
+
+  // Cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
   const maxWidth = tw * 0.95; 
 
   // Temporarily force the browser to apply the maxWidth restriction to our node
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
+  const originalWidth = node.style.getPropertyValue('width');
+  
   node.style.setProperty('--adlib-max-width', `${maxWidth}px`);
+  // Force max-content to prevent the browser from artificially wrapping text based on the left:50% positioning
+  node.style.setProperty('width', 'max-content', 'important');
   
   // Read the exact physical dimensions required by the text *after* natural browser wrapping
   const actualWidth = node.scrollWidth;
   const actualHeight = node.scrollHeight;
-
+  
   // Reset immediately to avoid side effects before the tracker officially applies the final CSS state
   if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
   else node.style.removeProperty('--adlib-max-width');
+  
+  if (originalWidth) node.style.setProperty('width', originalWidth);
+  else node.style.removeProperty('width');
 
   // If an unbreakable word bursts the maxWidth, or the wrapped block is too tall, scale it down mathematically.
   let scale = 1;
@@ -212,20 +221,20 @@ export const generateSafeAdlibPosition = (
   
   // Clamp scale so text doesn't disappear entirely
   scale = Math.max(0.2, scale);
-
+  
   const visualWidth = actualWidth * scale;
   const visualHeight = actualHeight * scale;
 
   // 7. GENERATE INNER SAFE ZONE
-  // Adding 10% extra padding to the visual box ensures the corners don't clip out when rotated
-  const padX = (visualWidth / 2) * 1.1; 
-  const padY = (visualHeight / 2) * 1.1;
-
+  // Adding 20% extra padding to the visual box ensures the corners don't clip out when rotated
+  const padX = (visualWidth / 2) * 1.2; 
+  const padY = (visualHeight / 2) * 1.2;
+  
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
   let innerBottom = targetArea.bottom - padY;
-
+  
   // Fallback if the target area is smaller than the ad-lib itself (forces center alignment)
   if (innerLeft > innerRight) {
     const mid = (targetArea.left + targetArea.right) / 2;
@@ -235,7 +244,7 @@ export const generateSafeAdlibPosition = (
     const mid = (targetArea.top + targetArea.bottom) / 2;
     innerTop = innerBottom = mid;
   }
-
+  
   // Generate a random center point STRICTLY inside the Inner Safe Zone, totally on the fly
   const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
   const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
@@ -243,9 +252,10 @@ export const generateSafeAdlibPosition = (
   // 8. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
   const canvasMidY = containerRect.height / 2;
+  
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
   const ySign = (randomY < canvasMidY) ? 1 : -1;
-
+  
   let finalRotation = rotMultiplier * ySign * 18;
   const noise = (Math.random() * 10) - 5;
   finalRotation += noise;
@@ -255,6 +265,12 @@ export const generateSafeAdlibPosition = (
     top: `${randomY}px`,
     rot: finalRotation.toFixed(2),
     maxWidth: maxWidth.toFixed(1),
-    scale: scale.toFixed(3)
+    scale: scale.toFixed(3),
+    debugZone: {
+      left: innerLeft,
+      top: innerTop,
+      width: Math.max(1, innerRight - innerLeft),
+      height: Math.max(1, innerBottom - innerTop)
+    }
   };
 };
