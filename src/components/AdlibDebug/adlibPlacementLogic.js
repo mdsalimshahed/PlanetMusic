@@ -159,73 +159,95 @@ export const generateSafeAdlibPosition = (
     });
   });
 
-  // 5. PURE RANDOM ALTERNATION: No memory, no seeds.
-  let targetArea;
+  // 5. COMPILE ALL CANDIDATE AREAS
+  let candidateAreas = [];
   if (intersectedAreas.length > 0) {
-    const canvasMidY = containerRect.height / 2;
-    const topZones = intersectedAreas.filter(a => a.top < canvasMidY);
-    const bottomZones = intersectedAreas.filter(a => a.top >= canvasMidY);
-    
-    if (topZones.length > 0 && bottomZones.length > 0) {
-      if (Math.random() > 0.5) {
-        targetArea = topZones[Math.floor(Math.random() * topZones.length)];
-      } else {
-        targetArea = bottomZones[Math.floor(Math.random() * bottomZones.length)];
-      }
-    } else {
-      targetArea = intersectedAreas[Math.floor(Math.random() * intersectedAreas.length)];
-    }
+    candidateAreas = intersectedAreas;
   } else if (validCells.length > 0) {
-    targetArea = validCells[Math.floor(Math.random() * validCells.length)];
+    candidateAreas = validCells;
   } else {
-    targetArea = { left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom };
+    candidateAreas = [{ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom }];
   }
-  
-  targetArea.width = targetArea.width || (targetArea.right - targetArea.left);
-  targetArea.height = targetArea.height || (targetArea.bottom - targetArea.top);
 
-  // --- 6. NATIVE BROWSER SIZING & SCALING ---
-  const tw = Math.max(20, targetArea.width);
-  const th = Math.max(20, targetArea.height);
-
-  // Cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
-  const maxWidth = tw * 0.95; 
-
-  // Temporarily force the browser to apply the maxWidth restriction to our node
+  // Temporarily force max-content for pure physical dimension checks
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
   const originalWidth = node.style.getPropertyValue('width');
-  
-  node.style.setProperty('--adlib-max-width', `${maxWidth}px`);
-  // Force max-content to prevent the browser from artificially wrapping text based on the left:50% positioning
   node.style.setProperty('width', 'max-content', 'important');
-  
-  // Read the exact physical dimensions required by the text *after* natural browser wrapping
-  const actualWidth = node.scrollWidth;
-  const actualHeight = node.scrollHeight;
-  
-  // Reset immediately to avoid side effects before the tracker officially applies the final CSS state
+
+  let bestScale = -1;
+  let bestCandidates = [];
+
+  // 6. EVALUATE ALL QUADRANTS FOR LEAST SCALING PENALTY
+  candidateAreas.forEach(area => {
+    area.width = area.width || (area.right - area.left);
+    area.height = area.height || (area.bottom - area.top);
+
+    const tw = Math.max(20, area.width);
+    const th = Math.max(20, area.height);
+    
+    // Cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
+    const currentMaxWidth = tw * 0.95; 
+
+    // Apply the specific quadrant's width restriction to see how the browser natively wraps it
+    node.style.setProperty('--adlib-max-width', `${currentMaxWidth}px`);
+    
+    // Read the exact physical dimensions required by the text *after* natural browser wrapping
+    const actualWidth = node.scrollWidth;
+    const actualHeight = node.scrollHeight;
+    
+    let scale = 1;
+    if (actualWidth > currentMaxWidth) {
+      scale = currentMaxWidth / actualWidth;
+    }
+    if (actualHeight * scale > th * 0.95) {
+      scale = (th * 0.95) / actualHeight;
+    }
+    
+    // Clamp scale so text doesn't disappear entirely
+    scale = Math.max(0.2, scale);
+
+    const result = { area, scale, actualWidth, actualHeight, maxWidth: currentMaxWidth };
+
+    // Group the quadrants that require the least amount of scaling down
+    if (scale > bestScale) {
+      bestScale = scale;
+      bestCandidates = [result];
+    } else if (Math.abs(scale - bestScale) < 0.001) {
+      bestCandidates.push(result);
+    }
+  });
+
+  // Reset node to original state
   if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
   else node.style.removeProperty('--adlib-max-width');
   
   if (originalWidth) node.style.setProperty('width', originalWidth);
   else node.style.removeProperty('width');
 
-  // If an unbreakable word bursts the maxWidth, or the wrapped block is too tall, scale it down mathematically.
-  let scale = 1;
-  if (actualWidth > maxWidth) {
-    scale = maxWidth / actualWidth;
-  }
-  if (actualHeight * scale > th * 0.95) {
-    scale = (th * 0.95) / actualHeight;
-  }
+  // 7. SELECT THE OPTIMAL QUADRANT
+  let chosen;
+  const canvasMidY = containerRect.height / 2;
+  const topZones = bestCandidates.filter(c => c.area.top < canvasMidY);
+  const bottomZones = bestCandidates.filter(c => c.area.top >= canvasMidY);
   
-  // Clamp scale so text doesn't disappear entirely
-  scale = Math.max(0.2, scale);
-  
-  const visualWidth = actualWidth * scale;
-  const visualHeight = actualHeight * scale;
+  // If multiple valid quadrants offer the identical best scale, alternate randomly to keep it dynamic
+  if (topZones.length > 0 && bottomZones.length > 0) {
+    if (Math.random() > 0.5) {
+      chosen = topZones[Math.floor(Math.random() * topZones.length)];
+    } else {
+      chosen = bottomZones[Math.floor(Math.random() * bottomZones.length)];
+    }
+  } else {
+    chosen = bestCandidates[Math.floor(Math.random() * bestCandidates.length)];
+  }
 
-  // 7. GENERATE INNER SAFE ZONE
+  const targetArea = chosen.area;
+  const scale = chosen.scale;
+  const maxWidth = chosen.maxWidth;
+  const visualWidth = chosen.actualWidth * scale;
+  const visualHeight = chosen.actualHeight * scale;
+
+  // 8. GENERATE INNER SAFE ZONE
   // Adding 20% extra padding to the visual box ensures the corners don't clip out when rotated
   const padX = (visualWidth / 2) * 1.2; 
   const padY = (visualHeight / 2) * 1.2;
@@ -249,10 +271,8 @@ export const generateSafeAdlibPosition = (
   const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
   const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
 
-  // 8. ROTATION PROFILING
+  // 9. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
-  const canvasMidY = containerRect.height / 2;
-  
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
   const ySign = (randomY < canvasMidY) ? 1 : -1;
   

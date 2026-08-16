@@ -42,7 +42,12 @@ const AdlibDebugOverlay = ({
   const [innerSafeZones, setInnerSafeZones] = useState([]);
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
   
+  const syncDataRef = useRef(selectedSong?.syncData || []);
   const prevAdlibSingersRef = useRef(null);
+
+  useEffect(() => {
+    syncDataRef.current = selectedSong?.syncData || [];
+  }, [selectedSong?.syncData]);
 
   // --- DOM CACHE FOR DEBUG OVERLAY ---
   useEffect(() => {
@@ -454,7 +459,7 @@ const AdlibDebugOverlay = ({
         
         newStats.push(stat);
 
-        // --- CALCULATE INNER SAFE ZONES FOR ALL VIABLE QUADRANTS ---
+        // --- CALCULATE INNER SAFE ZONES WITH UNROTATED PADDING ---
         activeViableZones.forEach((zone, zIdx) => {
             const padX = (adlibBox.unrotatedWidth / 2) * 1.2;
             const padY = (adlibBox.unrotatedHeight / 2) * 1.2;
