@@ -169,7 +169,6 @@ export const SyncWorkspace = ({
         }
       }
     };
-
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
@@ -209,10 +208,12 @@ export const SyncWorkspace = ({
              if (!targetArtists || targetArtists.length === 0) {
                  targetArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
              }
+
              if (targetArtists && targetArtists.length > 0) {
                  if (targetArtists.length > 1) {
                      isGradient = true;
-                     gradStyle = `linear-gradient(90deg, ${masterPalette[targetArtists[0]] || '#fff'}, ${masterPalette[targetArtists[1]] || '#fff'})`;
+                     const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+                     gradStyle = `linear-gradient(90deg, ${gradientColors})`;
                  } else {
                      color = masterPalette[targetArtists[0]] || color;
                  }
@@ -292,7 +293,6 @@ export const SyncWorkspace = ({
              }
           })}
         </div>
-
         {displayPron && (
           <div style={{ 
               fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)', 
@@ -317,9 +317,9 @@ export const SyncWorkspace = ({
         '--workspace-lyric-size': `${currentFontSize}px`
       }}>
       
-      <div 
-         id="sync-yt-target-container" 
-         style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+      <div
+          id="sync-yt-target-container"
+          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
@@ -512,9 +512,9 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                   
+                
                 {renderSyncNode(line, isMain)}
-                   
+                
                 {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}

@@ -28,6 +28,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
 
     editParsedLyrics.forEach((line, i) => {
       const effectiveSinger = line.singer || 'Uncredited';
+
       if (!currentGroup || line.sectionHeader || effectiveSinger !== currentGroup.singer) {
         if (currentGroup) groups.push(currentGroup);
         currentGroup = {
@@ -40,6 +41,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
       }
       currentGroup.lines.push(line);
     });
+
     if (currentGroup) groups.push(currentGroup);
     return groups;
   }, [editParsedLyrics, selectedSong?.artistName, masterPalette, customData.lyrics]);
@@ -49,15 +51,15 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
     if (artists.length === 0 && item.singer) {
       artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     }
+
     let isGradient = false;
     let gradientStyle = '';
     let activeColor = '#ffffff';
 
     if (artists.length > 1) {
       isGradient = true;
-      const c1 = masterPalette[artists[0]] || '#ffffff';
-      const c2 = masterPalette[artists[1]] || '#ffffff';
-      gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+      const gradientColors = artists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+      gradientStyle = `linear-gradient(90deg, ${gradientColors})`;
     } else if (artists.length === 1) {
       activeColor = masterPalette[artists[0]] || item.color || '#ffffff';
     } else if (item.isGradient && item.gradient) {
@@ -67,19 +69,45 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
       activeColor = item.color || '#ffffff';
     }
 
+    // Apply the gradient or solid color to the SEGMENT parent wrapper
+    let parentStyle = {};
+    if (isGradient) {
+      parentStyle = { 
+        backgroundImage: gradientStyle, 
+        WebkitBackgroundClip: 'text', 
+        WebkitTextFillColor: 'transparent',
+        display: 'inline' // Preserves natural text wrapping
+      };
+    } else {
+      parentStyle = { color: activeColor };
+    }
+
     const chars = getGraphemes(item.text || '');
-    return chars.map((char, cIdx) => {
+
+    const renderedChars = chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
-      let style = {};
+      let childStyle = {};
+
       if (isPunct && char.trim() !== '') {
-        style = { color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' };
-      } else if (isGradient) {
-        style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' };
-      } else {
-        style = { color: activeColor };
+        // Punches through the parent gradient with a solid opaque color
+        childStyle = { 
+          color: '#fbbf24', 
+          WebkitTextFillColor: '#fbbf24', 
+          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+          backgroundImage: 'none'
+        };
       }
-      return <span key={cIdx} style={style}>{char}</span>;
+
+      // If it has a special style (punctuation), wrap it. Otherwise, return raw text to inherit the gradient mask.
+      return Object.keys(childStyle).length > 0 ? (
+        <span key={cIdx} style={childStyle}>{char}</span>
+      ) : (
+        <React.Fragment key={cIdx}>{char}</React.Fragment>
+      );
     });
+
+    // Wrap the entire segment
+    return <span style={parentStyle}>{renderedChars}</span>;
   };
 
   const renderColoredSingerHeader = (singerString) => {
@@ -88,6 +116,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
       return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
     }
     const artists = singerString.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
+    
     return artists.map((artist, aIdx) => {
       const artistColor = masterPalette[artist] || '#ffffff';
       return (
@@ -103,37 +132,43 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
     const html = e.clipboardData.getData('text/html');
     if (html) {
       e.preventDefault();
+      
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html.replace(/<o:p>&nbsp;<\/o:p>/g, '');
-
+      
       const processNode = (node) => {
         if (node.nodeType === Node.TEXT_NODE) return node.textContent.replace(/\u00A0/g, ' ');
         if (node.nodeType === Node.ELEMENT_NODE) {
           let innerText = '';
           for (let child of node.childNodes) innerText += processNode(child);
+          
           const tag = node.tagName.toLowerCase();
           const style = node.style || {};
           const fw = style.fontWeight || '';
+          
           const isBold = tag === 'b' || tag === 'strong' || fw === 'bold' || fw === '700' || parseInt(fw) >= 600;
           const isItalic = tag === 'i' || tag === 'em' || style.fontStyle === 'italic';
-
+          
           if (innerText.trim()) {
             const leadSpace = innerText.match(/^\s*/)[0];
             const trailSpace = innerText.match(/\s*$/)[0];
             let wrapped = innerText.trim();
+            
             if (isItalic) wrapped = `_${wrapped}_`;
             if (isBold) wrapped = `**${wrapped}**`;
+            
             innerText = `${leadSpace}${wrapped}${trailSpace}`;
           }
-
+          
           if (['p', 'div', 'br', 'li', 'h1', 'h2', 'h3'].includes(tag) && !innerText.endsWith('\n')) innerText += '\n';
+          
           return innerText;
         }
         return '';
       };
-
+      
       let markdownText = processNode(tempDiv).replace(/\n{3,}/g, '\n\n').trim();
-
+      
       if (document.queryCommandSupported('insertText')) {
         document.execCommand('insertText', false, markdownText);
       } else {
@@ -156,6 +191,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
           placeholder="Paste your lyrics here! Format lines using [Artist Name:] tags or *italics* / **bold** formatting."
         />
       </div>
+      
       <div className="artist-preview-pane">
         <div className="artist-preview-header">
           <span className="artist-preview-title">
@@ -167,6 +203,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
           </span>
           <span className="artist-preview-badge">{editParsedLyrics.length} lines</span>
         </div>
+        
         <div className="artist-preview-scroll">
           {editGroupedLyrics.length > 0 ? (
             editGroupedLyrics.map((group, idx) => {

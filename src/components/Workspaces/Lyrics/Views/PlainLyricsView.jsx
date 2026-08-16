@@ -10,6 +10,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
 
     liveParsedLyrics.forEach((line, i) => {
       const effectiveSinger = line.singer || 'Uncredited';
+
       if (!currentGroup || line.sectionHeader || effectiveSinger !== currentGroup.singer) {
         if (currentGroup) groups.push(currentGroup);
         
@@ -44,15 +45,15 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
     if (artists.length === 0 && item.singer) {
       artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     }
+
     let isGradient = false;
     let gradientStyle = '';
     let activeColor = '#ffffff';
 
     if (artists.length > 1) {
       isGradient = true;
-      const c1 = masterPalette[artists[0]] || '#ffffff';
-      const c2 = masterPalette[artists[1]] || '#ffffff';
-      gradientStyle = `linear-gradient(90deg, ${c1}, ${c2})`;
+      const gradientColors = artists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+      gradientStyle = `linear-gradient(90deg, ${gradientColors})`;
     } else if (artists.length === 1) {
       activeColor = masterPalette[artists[0]] || item.color || '#ffffff';
     } else if (item.isGradient && item.gradient) {
@@ -62,19 +63,43 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
       activeColor = item.color || '#ffffff';
     }
 
+    // Apply the gradient or solid color to the SEGMENT parent wrapper
+    let parentStyle = {};
+    if (isGradient) {
+      parentStyle = { 
+        backgroundImage: gradientStyle, 
+        WebkitBackgroundClip: 'text', 
+        WebkitTextFillColor: 'transparent',
+        display: 'inline'
+      };
+    } else {
+      parentStyle = { color: activeColor };
+    }
+
     const chars = getGraphemes(item.text || '');
-    return chars.map((char, cIdx) => {
+
+    const renderedChars = chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
-      let style = {};
+      let childStyle = {};
+
       if (isPunct && char.trim() !== '') {
-        style = { color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 0 10px rgba(251, 191, 36, 0.6)' };
-      } else if (isGradient) {
-        style = { backgroundImage: gradientStyle, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' };
-      } else {
-        style = { color: activeColor };
+        // Punches through the parent gradient with a solid opaque color
+        childStyle = { 
+          color: '#fbbf24', 
+          WebkitTextFillColor: '#fbbf24', 
+          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+          backgroundImage: 'none' 
+        };
       }
-      return <span key={cIdx} style={style}>{char}</span>;
+
+      return Object.keys(childStyle).length > 0 ? (
+        <span key={cIdx} style={childStyle}>{char}</span>
+      ) : (
+        <React.Fragment key={cIdx}>{char}</React.Fragment>
+      );
     });
+
+    return <span style={parentStyle}>{renderedChars}</span>;
   };
 
   const renderColoredSingerHeader = (singerString) => {
@@ -83,6 +108,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
       return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
     }
     const artists = singerString.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
+    
     return artists.map((artist, aIdx) => {
       const artistColor = masterPalette[artist] || '#ffffff';
       return (

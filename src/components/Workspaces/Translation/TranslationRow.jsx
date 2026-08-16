@@ -18,43 +18,44 @@ const TranslationRow = ({
   // Detect if the line is explicitly tagged as Japanese or Chinese
   const isCJK = line.lang === 'ja' || line.lang?.startsWith('zh');
 
-  const renderTextWithYellowPunctuation = (text, baseStyle = {}, isAdlibChar = false) => {
-    if (!text) return null;
-    const chars = getGraphemes(text);
-    return chars.map((char, pIdx) => {
-      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
-      let style = { ...baseStyle };
-      if (isPunct && char.trim() !== '' && !isAdlibChar) {
-        style.color = '#fbbf24';
-        style.WebkitTextFillColor = '#fbbf24';
-        style.textShadow = '0 0 10px rgba(251, 191, 36, 0.6)';
-      }
-      return <span key={pIdx} style={style}>{char}</span>;
-    });
-  };
-
   const renderColoredOriginalText = () => {
     const isMainAndSplit = !line._meta.isAdlib && line.isSplit && line.adlibs;
+
     if (line.segments && line.segments.length > 0) {
       let globalCharIndex = 0;
       let cpIdx = 0;
+
       return line.segments.map((seg, idxSeg) => {
         let inlineColor = seg.color || '#ffffff';
         let inlineIsGradient = seg.isGradient || false;
         let inlineGradient = seg.gradient || '';
 
+        // DYNAMIC GRADIENT MAPPING
         if (seg.artists && seg.artists.length > 0) {
           if (seg.artists.length > 1) {
             inlineIsGradient = true;
-            const c1 = masterPalette[seg.artists[0]] || '#ffffff';
-            const c2 = masterPalette[seg.artists[1]] || '#ffffff';
-            inlineGradient = `linear-gradient(90deg, ${c1}, ${c2})`;
+            const gradientColors = seg.artists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
+            inlineGradient = `linear-gradient(90deg, ${gradientColors})`;
           } else {
             inlineColor = masterPalette[seg.artists[0]] || inlineColor;
           }
         }
 
+        // Apply gradient or color to the segment parent wrapper
+        let parentStyle = {};
+        if (inlineIsGradient) {
+          parentStyle = {
+            backgroundImage: inlineGradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            display: 'inline'
+          };
+        } else {
+          parentStyle = { color: inlineColor };
+        }
+
         const segChars = getGraphemes(seg.text);
+
         const charElements = segChars.map((char) => {
           const cIdx = globalCharIndex++;
           const cpLen = Array.from(char).length;
@@ -63,62 +64,67 @@ const TranslationRow = ({
 
           const isAdlibChar = isMainAndSplit && line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
 
-          let segStyle = inlineIsGradient ? {
-            backgroundImage: inlineGradient,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          } : {
-            color: inlineColor
-          };
+          // PURGE STRUCK-OUT AD-LIBS FROM PARENT ROW
+          if (isAdlibChar) return null;
 
-          if (isAdlibChar) {
-            segStyle = {
-              ...segStyle,
-              opacity: 0.35,
-              textDecoration: 'line-through 2px white',
-              textDecorationColor: '#ffffff'
+          const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
+          let childStyle = {};
+
+          if (isPunct && char.trim() !== '') {
+            childStyle = {
+              color: '#fbbf24',
+              WebkitTextFillColor: '#fbbf24',
+              textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+              backgroundImage: 'none'
             };
           }
 
-          return (
-            <React.Fragment key={cIdx}>
-              {renderTextWithYellowPunctuation(char, segStyle, isAdlibChar)}
-            </React.Fragment>
+          return Object.keys(childStyle).length > 0 ? (
+            <span key={cIdx} style={childStyle}>{char}</span>
+          ) : (
+            <React.Fragment key={cIdx}>{char}</React.Fragment>
           );
         });
 
-        return <React.Fragment key={idxSeg}>{charElements}</React.Fragment>;
+        return <span key={idxSeg} style={parentStyle}>{charElements}</span>;
       });
     }
 
+    // FALLBACK: For lines without parsed segments
     const defaultColor = line.singer ? masterPalette[line.singer.split(/\s*(?:&|,|\band\b)\s*/i)[0]?.trim()] || '#ffffff' : '#ffffff';
-    if (isMainAndSplit) {
-      const chars = getGraphemes(line.displayText);
-      let cpIdx = 0;
-      return chars.map((char, cIdx) => {
-        const cpLen = Array.from(char).length;
-        const currentCpStart = cpIdx;
-        cpIdx += cpLen;
-        const isAdlibChar = line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
-        let baseStyle = { color: defaultColor };
-        
-        if (isAdlibChar) {
-          baseStyle = {
-            ...baseStyle,
-            opacity: 0.35,
-            textDecoration: 'line-through 2px white',
-            textDecorationColor: '#ffffff'
-          };
-        }
-        return (
-          <React.Fragment key={cIdx}>
-            {renderTextWithYellowPunctuation(char, baseStyle, isAdlibChar)}
-          </React.Fragment>
-        );
-      });
-    }
 
-    return renderTextWithYellowPunctuation(line.displayText, { color: defaultColor }, false);
+    const chars = getGraphemes(line.displayText);
+    let cpIdx = 0;
+
+    const renderedChars = chars.map((char, cIdx) => {
+      const cpLen = Array.from(char).length;
+      const currentCpStart = cpIdx;
+      cpIdx += cpLen;
+
+      const isAdlibChar = isMainAndSplit && line.adlibs.some(a => currentCpStart >= a.charStart && currentCpStart < a.charEnd);
+
+      // PURGE STRUCK-OUT AD-LIBS FROM PARENT ROW
+      if (isAdlibChar) return null;
+
+      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
+      let childStyle = {};
+      
+      if (isPunct && char.trim() !== '') {
+        childStyle = {
+          color: '#fbbf24',
+          WebkitTextFillColor: '#fbbf24',
+          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)'
+        };
+      }
+
+      return Object.keys(childStyle).length > 0 ? (
+        <span key={cIdx} style={childStyle}>{char}</span>
+      ) : (
+        <React.Fragment key={cIdx}>{char}</React.Fragment>
+      );
+    });
+
+    return <span style={{ color: defaultColor }}>{renderedChars}</span>;
   };
 
   return (
@@ -140,7 +146,6 @@ const TranslationRow = ({
           </div>
         </div>
 
-        {/* NEW SPACING FIELD FOR CJK */}
         {isCJK && (
           <input
             className="tw-input tw-spacing-input"
@@ -152,7 +157,6 @@ const TranslationRow = ({
             title="Define custom spacing. Leave empty to use the Legacy Format of Japanese and Chinese."
           />
         )}
-
         <input
           className="tw-input tw-translit-input"
           value={line.displayPron || ''}
