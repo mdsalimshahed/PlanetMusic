@@ -136,13 +136,11 @@ const AdlibDebugOverlay = ({
       const canvasBottom = containerRect.bottom - overlayRect.top;
 
       const isMoreThanThree = activeNames.length > 3;
-      const EDGE_PAD_X = activeNames.length > 2 ? 0 : Math.max(30, containerRect.width * 0.08);
-      const EDGE_PAD_Y = isMoreThanThree ? 0 : Math.max(30, containerRect.height * 0.08);
+      const EDGE_PAD_X = activeNames.length > 2 ? -16 : Math.max(30, containerRect.width * 0.08);
+      const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
       
       const LYRIC_PAD = 25;
       const SINGER_PAD = 20;
-      
-      // REMOVE 160px CAP: Let it stretch to the canvas edges if > 3 artists
       const MAX_DIST = isMoreThanThree ? Infinity : 160;
 
       const safeTop = canvasTop + EDGE_PAD_Y;
@@ -160,7 +158,6 @@ const AdlibDebugOverlay = ({
         }
       }
 
-      // CRITICAL FIX: Add a fallback to grab any .singer-name-corner in case the .visible transition is delayed
       const singerNameCorner = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
       if (singerNameCorner) {
         const tightBounds = getTightTextBounds(singerNameCorner, overlayRect);
@@ -271,13 +268,18 @@ const AdlibDebugOverlay = ({
           const artist = getArtistForCell(i);
 
           if (activeSingersList.includes(artist)) {
+            const cellLeft = col === 0 ? safeLeft : col * colWidth;
+            const cellRight = col === cols - 1 ? safeRight : (col + 1) * colWidth;
+            const cellTop = row === 0 ? safeTop : row * rowHeight;
+            const cellBottom = row === 1 ? safeBottom : (row + 1) * rowHeight;
+
             validCells.push({
-              left: col * colWidth,
-              right: (col + 1) * colWidth,
-              top: row * rowHeight,
-              bottom: (row + 1) * rowHeight,
-              width: colWidth,
-              height: rowHeight
+              left: cellLeft,
+              right: cellRight,
+              top: cellTop,
+              bottom: cellBottom,
+              width: cellRight - cellLeft,
+              height: cellBottom - cellTop
             });
           }
         }
@@ -456,8 +458,10 @@ const AdlibDebugOverlay = ({
         newStats.push(stat);
 
         activeViableZones.forEach((zone, zIdx) => {
-          const padX = (adlibBox.unrotatedWidth / 2) * 1.2;
-          const padY = (adlibBox.unrotatedHeight / 2) * 1.2;
+          // Sync with the safe logic radius
+          const safeRadius = Math.sqrt(Math.pow(adlibBox.unrotatedWidth, 2) + Math.pow(adlibBox.unrotatedHeight, 2)) / 2;
+          const padX = safeRadius + 5; 
+          const padY = safeRadius + 5;
 
           let iLeft = zone.left + padX;
           let iRight = zone.left + zone.width - padX;

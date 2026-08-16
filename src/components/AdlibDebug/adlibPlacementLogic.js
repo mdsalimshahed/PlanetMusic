@@ -63,13 +63,12 @@ export const generateSafeAdlibPosition = (
   // 1. The Goldilocks Margins
   const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
   
-  const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? 0 : Math.max(30, containerRect.width * 0.08);
-  const EDGE_PAD_Y = isMoreThanThree ? 0 : Math.max(30, containerRect.height * 0.08);
+  // Apply a negative pad to pierce through the parent container's padding to touch the absolute edge!
+  const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? -16 : Math.max(30, containerRect.width * 0.08);
+  const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
 
   const LYRIC_PAD = 25;
   const SINGER_PAD = 20;
-  
-  // REMOVE 160px CAP: Let it stretch to the canvas edges if > 3 artists
   const MAX_DIST = isMoreThanThree ? Infinity : 160;
 
   const safeLeft = EDGE_PAD_X;
@@ -128,11 +127,17 @@ export const generateSafeAdlibPosition = (
       const artist = getArtistForCell(i);
       
       if (activeSingersList.includes(artist)) {
+        // Expand the outer cells to span across the negative padding space!
+        const cellLeft = c === 0 ? safeLeft : c * colW;
+        const cellRight = c === cols - 1 ? safeRight : (c + 1) * colW;
+        const cellTop = r === 0 ? safeTop : r * rowH;
+        const cellBottom = r === 1 ? safeBottom : (r + 1) * rowH;
+
         validCells.push({
-          left: c * colW,
-          right: (c + 1) * colW,
-          top: r * rowH,
-          bottom: (r + 1) * rowH
+          left: cellLeft,
+          right: cellRight,
+          top: cellTop,
+          bottom: cellBottom
         });
       }
     }
@@ -184,11 +189,11 @@ export const generateSafeAdlibPosition = (
     const tw = Math.max(20, area.width);
     const th = Math.max(20, area.height);
     
-    // Cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
+    // Normal wrapping limits for standard display
     const currentMaxWidth = tw * 0.95; 
     
-    // Apply the specific quadrant's width restriction to see how the browser natively wraps it
     node.style.setProperty('--adlib-max-width', `${currentMaxWidth}px`);
+    node.style.setProperty('max-width', `${currentMaxWidth}px`, 'important'); 
     
     // Read the exact physical dimensions required by the text *after* natural browser wrapping
     const actualWidth = node.scrollWidth;
@@ -202,8 +207,25 @@ export const generateSafeAdlibPosition = (
       scale = (th * 0.95) / actualHeight;
     }
     
+    // Edge-specific check: Only apply extra scaling to the leftmost and rightmost quadrants
+    const isLeftEdge = Math.abs(area.left - safeLeft) <= 1;
+    const isRightEdge = Math.abs(area.right - safeRight) <= 1;
+    
+    if (isLeftEdge || isRightEdge) {
+      const currentVisualWidth = actualWidth * scale;
+      const currentVisualHeight = actualHeight * scale;
+      const diagonal = Math.sqrt(Math.pow(currentVisualWidth, 2) + Math.pow(currentVisualHeight, 2));
+      
+      // If the text block is long enough that spinning it would clip outside the quadrant width
+      if (diagonal > tw * 0.95) {
+        const edgeFixScale = (tw * 0.95) / Math.sqrt(Math.pow(actualWidth, 2) + Math.pow(actualHeight, 2));
+        // Apply a minuscule constraint just enough to keep it contained
+        scale = Math.min(scale, edgeFixScale);
+      }
+    }
+    
     // Clamp scale so text doesn't disappear entirely
-    scale = Math.max(0.2, scale);
+    scale = Math.max(0.15, scale);
     const result = { area, scale, actualWidth, actualHeight, maxWidth: currentMaxWidth };
 
     // Group the quadrants that require the least amount of scaling down
@@ -218,8 +240,11 @@ export const generateSafeAdlibPosition = (
   // Reset node to original state
   if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
   else node.style.removeProperty('--adlib-max-width');
+  
   if (originalWidth) node.style.setProperty('width', originalWidth);
   else node.style.removeProperty('width');
+
+  node.style.removeProperty('max-width');
 
   // 7. SELECT THE OPTIMAL QUADRANT
   let chosen;
@@ -245,9 +270,12 @@ export const generateSafeAdlibPosition = (
   const visualHeight = chosen.actualHeight * scale;
 
   // 8. GENERATE INNER SAFE ZONE
-  // Adding 20% extra padding to the visual box ensures the corners don't clip out when rotated
-  const padX = (visualWidth / 2) * 1.2; 
-  const padY = (visualHeight / 2) * 1.2;
+  // Calculate the absolute maximum radius (diagonal) so it NEVER clips when rotated
+  const safeRadius = Math.sqrt(Math.pow(visualWidth, 2) + Math.pow(visualHeight, 2)) / 2;
+  // Add a tiny extra margin (e.g. 5px) just to be perfectly safe from edge anti-aliasing pixels
+  const padX = safeRadius + 5; 
+  const padY = safeRadius + 5;
+  
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;

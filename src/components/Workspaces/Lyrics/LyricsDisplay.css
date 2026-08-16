@@ -1,8 +1,11 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.css --- */
 /* General Lyrics Layout */
-.live-lyrics-preview, .focused-lyrics-preview, .debug-lyrics-preview, .lyrics-display {
+.live-lyrics-preview,
+.focused-lyrics-preview,
+.debug-lyrics-preview,
+.lyrics-display {
   position: relative;
-  z-index: 1;
+  z-index: 10; /* Elevated from 1 to 10 to ensure it is the topmost object in the canvas */
 }
 
 .lyrics-display {
@@ -16,6 +19,7 @@
   text-shadow: 0 2px 6px rgba(0,0,0,0.8);
   -webkit-overflow-scrolling: touch;
 }
+
 .lyrics-display::-webkit-scrollbar { width: 6px; }
 .lyrics-display::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
@@ -168,6 +172,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .live-lyrics-preview::-webkit-scrollbar { display: none; }
 
 .preview-line {
@@ -193,14 +198,13 @@
 .preview-line:hover { opacity: 0.8; transform: translate3d(0,0,0) scale(0.98); }
 .preview-line.active { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 
-
 /* Focused View Layout */
 .focused-lyrics-preview {
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible; /* REMOVED 'hidden' to prevent the invisible box clipping */
   padding: 20px;
   position: relative;
   width: 100%;
@@ -236,6 +240,7 @@
   transform-style: preserve-3d;
   scrollbar-width: none;
 }
+
 .focused-line::-webkit-scrollbar {
   display: none;
 }
@@ -286,7 +291,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 100; /* Boosted significantly to ensure it sits above all other UI elements */
   pointer-events: none;
 }
 
@@ -310,6 +315,7 @@
   will-change: opacity, transform;
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  z-index: 101; /* Extra layer priority for individual adlibs */
 }
 
 .focused-adlib-line.active {
@@ -352,6 +358,7 @@
   display: flex;
   flex-direction: column;
 }
+
 .debug-lyrics-preview::-webkit-scrollbar { width: 6px; }
 .debug-lyrics-preview::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
@@ -442,23 +449,6 @@ rt.pronunciation-text, .pronunciation-text {
   font-size: clamp(14px, 1.6vw, 16px);
   font-weight: 500;
   margin: 0;
-}
-
-@media (max-width: 900px) {
-  .edit-lyrics-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-  .preview-line {
-    font-size: clamp(16px, 4.5vw, min(var(--dyn-live-sync-font-size, 34px), 26px));
-  }
-  .focused-line {
-    font-size: clamp(16px, 5vw, min(var(--dyn-focused-sync-font-size, 42px), 28px));
-  }
-  .focused-adlib-line {
-    font-size: clamp(11px, 3.5vw, min(var(--dyn-focused-adlib-font-size, 28px), 18px));
-    max-width: 85vw;
-  }
 }
 
 /* --- Lyrics Equalizer --- */
@@ -622,6 +612,7 @@ rt.pronunciation-text, .pronunciation-text {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
 .lyrics-display > ReactFragment:first-child .plain-section-header,
 .lyrics-display > div:first-child .plain-section-header {
   margin-top: 0 !important;
@@ -679,5 +670,22 @@ rt.pronunciation-text, .pronunciation-text {
   .plain-artist-tag {
     text-align: left;
     min-width: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .edit-lyrics-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .preview-line {
+    font-size: clamp(16px, 4.5vw, min(var(--dyn-live-sync-font-size, 34px), 26px));
+  }
+  .focused-line {
+    font-size: clamp(16px, 5vw, min(var(--dyn-focused-sync-font-size, 42px), 28px));
+  }
+  .focused-adlib-line {
+    font-size: clamp(11px, 3.5vw, min(var(--dyn-focused-adlib-font-size, 28px), 18px));
+    max-width: var(--adlib-max-width, 85vw); 
   }
 }
