@@ -98,8 +98,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             }
 
             const getSegmentStyle = (seg) => {
-               // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
                let targetArtists = seg?.artists;
+
                let isGrad = false;
                let gradStyle = '';
 
@@ -138,7 +138,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                      filter: 'none'
                  };
               } else {
-                 // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
                  let targetArtists = c.seg?.artists;
                  let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
                  
@@ -154,7 +153,8 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
                  }
               }
-              return <span key={globalIdx} style={style}>{c.char === ' ' ? '\u00A0' : c.char}</span>;
+              // Fixed the \u00A0 bug allowing proper wrapping
+              return <span key={globalIdx} style={style}>{c.char}</span>;
             };
 
             let aParsedChunks = null;

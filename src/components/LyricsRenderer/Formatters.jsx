@@ -25,35 +25,24 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
 export const groupWords = (elements, charData, isFocused, hasSpacingText = false) => {
   const words = [];
   let currentWord = [];
-  let hyphenCount = 0;
 
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
-      const shouldWrap = hyphenCount > 3;
       words.push(
         <span
           key={`w-${keySuffix}`}
-          style={
-            shouldWrap
-              ? {
-                  whiteSpace: 'normal',
-                  display: 'inline-block',
-                  maxWidth: '100%',
-                  wordBreak: 'normal',
-                  overflowWrap: 'normal'
-                }
-              : {
-                  whiteSpace: 'nowrap',
-                  display: 'inline-block',
-                  maxWidth: '100%'
-                }
-          }
+          style={{
+            // Restored standard inline text flow so the browser natively 
+            // binds punctuation to words and wraps them together.
+            whiteSpace: 'pre-wrap', 
+            wordBreak: 'normal', 
+            overflowWrap: 'normal'
+          }}
         >
           {currentWord}
         </span>
       );
       currentWord = [];
-      hyphenCount = 0;
     }
   };
 
@@ -71,9 +60,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       flushWord(i);
       words.push(elements[i]); 
     } else {
-      if (char === '-') {
-        hyphenCount++;
-      }
       currentWord.push(elements[i]);
     }
   }
@@ -254,7 +240,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         }
       });
     } else {
-      // FIX: Isolate the English fallback chunks precisely by their segment boundaries!
       let currentSeg = null;
       let currentChars = [];
       chars.forEach(c => {
