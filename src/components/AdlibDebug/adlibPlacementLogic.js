@@ -1,21 +1,19 @@
 /* --- src/components/AdlibDebug/adlibPlacementLogic.js --- */
-
 // Exported so the tracker can do JIT DOM reading outside of the loop
 export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
-  
   // Extract tight text bounds to ignore 100% width block containers
   let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
   let hasValidBounds = false;
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
   let node;
-             
+
   while ((node = walker.nextNode())) {
     if (node.textContent.trim() !== '') {
       const range = document.createRange();
       range.selectNodeContents(node);
       const rects = range.getClientRects();
-                             
+
       for (let i = 0; i < rects.length; i++) {
         const rect = rects[i];
         if (rect.width > 0 && rect.height > 0) {
@@ -28,7 +26,7 @@ export const getRelativeRect = (element, containerRect) => {
       }
     }
   }
-  
+
   if (hasValidBounds) {
     return {
       top: minTop - containerRect.top,
@@ -62,13 +60,18 @@ export const generateSafeAdlibPosition = (
   activeSingersList,
   masterNamesArray
 ) => {
-  // 1. The Goldilocks Margins (Outer Safe Zones mirroring AdlibDebugOverlay)
+  // 1. The Goldilocks Margins
+  const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
+  
   const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? 0 : Math.max(30, containerRect.width * 0.08);
-  const EDGE_PAD_Y = (masterNamesArray && masterNamesArray.length > 2) ? 0 : Math.max(30, containerRect.height * 0.08);
+  const EDGE_PAD_Y = isMoreThanThree ? 0 : Math.max(30, containerRect.height * 0.08);
+
   const LYRIC_PAD = 25;
   const SINGER_PAD = 20;
-  const MAX_DIST = 160;
   
+  // REMOVE 160px CAP: Let it stretch to the canvas edges if > 3 artists
+  const MAX_DIST = isMoreThanThree ? Infinity : 160;
+
   const safeLeft = EDGE_PAD_X;
   const safeRight = containerRect.width - EDGE_PAD_X;
   const safeTop = EDGE_PAD_Y;
@@ -76,7 +79,6 @@ export const generateSafeAdlibPosition = (
 
   // 2. Define Base Safe Zones
   const baseZones = [];
-  
   if (cBox) {
     if (cBox.top > safeTop) {
       const bottomEdge = cBox.top - LYRIC_PAD;
@@ -110,7 +112,6 @@ export const generateSafeAdlibPosition = (
   const validCells = [];
   const colW = containerRect.width / cols;
   const rowH = containerRect.height / 2;
-  
   const getArtistForCell = (idx) => {
     if (!masterNamesArray || masterNamesArray.length === 0) return null;
     const r = Math.floor(idx / cols);
@@ -173,7 +174,6 @@ export const generateSafeAdlibPosition = (
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
   const originalWidth = node.style.getPropertyValue('width');
   node.style.setProperty('width', 'max-content', 'important');
-
   let bestScale = -1;
   let bestCandidates = [];
 
@@ -181,13 +181,12 @@ export const generateSafeAdlibPosition = (
   candidateAreas.forEach(area => {
     area.width = area.width || (area.right - area.left);
     area.height = area.height || (area.bottom - area.top);
-
     const tw = Math.max(20, area.width);
     const th = Math.max(20, area.height);
     
     // Cap the CSS maximum width slightly below the quadrant width to ensure natural wrapping
     const currentMaxWidth = tw * 0.95; 
-
+    
     // Apply the specific quadrant's width restriction to see how the browser natively wraps it
     node.style.setProperty('--adlib-max-width', `${currentMaxWidth}px`);
     
@@ -205,7 +204,6 @@ export const generateSafeAdlibPosition = (
     
     // Clamp scale so text doesn't disappear entirely
     scale = Math.max(0.2, scale);
-
     const result = { area, scale, actualWidth, actualHeight, maxWidth: currentMaxWidth };
 
     // Group the quadrants that require the least amount of scaling down
@@ -220,7 +218,6 @@ export const generateSafeAdlibPosition = (
   // Reset node to original state
   if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
   else node.style.removeProperty('--adlib-max-width');
-  
   if (originalWidth) node.style.setProperty('width', originalWidth);
   else node.style.removeProperty('width');
 
@@ -229,7 +226,7 @@ export const generateSafeAdlibPosition = (
   const canvasMidY = containerRect.height / 2;
   const topZones = bestCandidates.filter(c => c.area.top < canvasMidY);
   const bottomZones = bestCandidates.filter(c => c.area.top >= canvasMidY);
-  
+
   // If multiple valid quadrants offer the identical best scale, alternate randomly to keep it dynamic
   if (topZones.length > 0 && bottomZones.length > 0) {
     if (Math.random() > 0.5) {
@@ -251,12 +248,11 @@ export const generateSafeAdlibPosition = (
   // Adding 20% extra padding to the visual box ensures the corners don't clip out when rotated
   const padX = (visualWidth / 2) * 1.2; 
   const padY = (visualHeight / 2) * 1.2;
-  
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
   let innerBottom = targetArea.bottom - padY;
-  
+
   // Fallback if the target area is smaller than the ad-lib itself (forces center alignment)
   if (innerLeft > innerRight) {
     const mid = (targetArea.left + targetArea.right) / 2;
@@ -266,7 +262,7 @@ export const generateSafeAdlibPosition = (
     const mid = (targetArea.top + targetArea.bottom) / 2;
     innerTop = innerBottom = mid;
   }
-  
+
   // Generate a random center point STRICTLY inside the Inner Safe Zone, totally on the fly
   const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
   const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
@@ -275,7 +271,6 @@ export const generateSafeAdlibPosition = (
   const canvasMidX = containerRect.width / 2;
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
   const ySign = (randomY < canvasMidY) ? 1 : -1;
-  
   let finalRotation = rotMultiplier * ySign * 18;
   const noise = (Math.random() * 10) - 5;
   finalRotation += noise;

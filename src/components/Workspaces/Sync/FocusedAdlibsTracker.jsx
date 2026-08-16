@@ -86,7 +86,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   seg: currentSeg,
                   globalIndex: idx
                 });
-
+                
                 charPointerInSegment += getGraphemes(char).length;
                 if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
                   segmentPointer++;
@@ -156,12 +156,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               renderColoredCharForTracker,
               basePronStyle,
               false, 
-              true,  
+              true, 
               useSpacingText
             );
 
             let displayPronString = null;
             const isCJKLine = adlibChars.some(c => isCJ(c.char));
+
             if (aPron && !aPron.startsWith('{') && !aPron.startsWith('[')) {
               if (!isCJKLine && !aParsedChunks) {
                 displayPronString = normalizeTrans(aPron);
@@ -282,7 +283,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             
             const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
             const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
-            const singerNode = container.querySelector('.singer-name-corner.visible');
+            
+            // CRITICAL FIX: Query the global document because the Singer Names live outside the container!
+            // Fallback to querying any `.singer-name-corner` if the visibility transition hasn't kicked in yet
+            const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
             
             const cBox = getRelativeRect(lyricsNode, containerRect);
             if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
@@ -313,7 +317,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
           item.node.classList.add('active');
           item.isActive = true;
-
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           item.isActive = false;
