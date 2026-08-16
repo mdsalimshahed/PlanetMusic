@@ -25,24 +25,37 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
 export const groupWords = (elements, charData, isFocused, hasSpacingText = false) => {
   const words = [];
   let currentWord = [];
+  let hyphenCount = 0;
 
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
+      const shouldWrap = hyphenCount > 3;
       words.push(
         <span
           key={`w-${keySuffix}`}
-          style={{
-            // Restored standard inline text flow so the browser natively 
-            // binds punctuation to words and wraps them together.
-            whiteSpace: 'pre-wrap', 
-            wordBreak: 'normal', 
-            overflowWrap: 'normal'
-          }}
+          style={
+            shouldWrap
+              ? {
+                  whiteSpace: 'normal',
+                  display: 'inline-block',
+                  maxWidth: '100%',
+                  wordBreak: 'normal',
+                  overflowWrap: 'normal'
+                }
+              : {
+                  // Restored standard inline text flow so the browser natively 
+                  // binds punctuation to words and wraps them together.
+                  whiteSpace: 'pre-wrap', 
+                  wordBreak: 'normal', 
+                  overflowWrap: 'normal'
+                }
+          }
         >
           {currentWord}
         </span>
       );
       currentWord = [];
+      hyphenCount = 0;
     }
   };
 
@@ -60,6 +73,9 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       flushWord(i);
       words.push(elements[i]); 
     } else {
+      if (char === '-') {
+        hyphenCount++;
+      }
       currentWord.push(elements[i]);
     }
   }
@@ -259,6 +275,14 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     }
   }
 
+  // --- DYNAMIC HYBRID VERTICAL CENTERING LOGIC ---
+  const hasInlinePronunciation = alignedChunks.some(chunk => chunk.type !== 'en' && chunk.trans && chunk.trans.trim());
+  const hasVisibleNonPronunciation = alignedChunks.some(chunk => 
+    (chunk.type === 'en' || !chunk.trans || !chunk.trans.trim()) && 
+    chunk.chars.some(c => c.char.trim() !== '')
+  );
+  const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
+
   const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
@@ -268,7 +292,13 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
 
     if (isRTL) {
       chunkJSX = (
-        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%' }}>
+        <span key={chunkIdx} style={{ 
+          whiteSpace: 'pre-wrap', 
+          verticalAlign: 'middle', 
+          maxWidth: '100%',
+          position: 'relative',
+          top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+        }}>
           {groupedText}
         </span>
       );
@@ -297,7 +327,15 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
         );
       } else {
         chunkJSX = (
-          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'baseline', display: 'inline', maxWidth: '100%' }}>
+          <span key={chunkIdx} style={{ 
+            whiteSpace: 'pre-wrap', 
+            verticalAlign: 'baseline', 
+            display: 'inline', 
+            maxWidth: '100%',
+            position: 'relative',
+            // Precisely push raw text down by half the exact height of the pronunciation block below it
+            top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+          }}>
             {groupedText}
           </span>
         );
