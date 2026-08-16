@@ -66,7 +66,6 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
-
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -122,7 +121,6 @@ export const SyncWorkspace = ({
       });
     };
     initSyncYT();
-
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -171,6 +169,7 @@ export const SyncWorkspace = ({
         }
       }
     };
+
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
@@ -178,8 +177,8 @@ export const SyncWorkspace = ({
   // --- DUAL-PATH HYPER-FAST RENDERER ---
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
-    let displayPron = '';
 
+    let displayPron = '';
     if (node.pronunciation) {
         if (typeof node.pronunciation === 'string') {
             if (node.pronunciation.startsWith('{')) {
@@ -210,7 +209,6 @@ export const SyncWorkspace = ({
              if (!targetArtists || targetArtists.length === 0) {
                  targetArtists = node.singer ? node.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) : [];
              }
-
              if (targetArtists && targetArtists.length > 0) {
                  if (targetArtists.length > 1) {
                      isGradient = true;
@@ -294,13 +292,14 @@ export const SyncWorkspace = ({
              }
           })}
         </div>
+
         {displayPron && (
-          <div style={{
-               fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)',
-               color: 'rgba(255,255,255,0.7)',
-               marginTop: '4px',
-               textTransform: 'uppercase',
-               letterSpacing: '1px',
+          <div style={{ 
+              fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)', 
+              color: 'rgba(255,255,255,0.7)', 
+              marginTop: '4px', 
+              textTransform: 'uppercase', 
+              letterSpacing: '1px',
               fontWeight: 800
           }}>
               {displayPron}
@@ -318,8 +317,8 @@ export const SyncWorkspace = ({
         '--workspace-lyric-size': `${currentFontSize}px`
       }}>
       
-      <div
-         id="sync-yt-target-container"
+      <div 
+         id="sync-yt-target-container" 
          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
@@ -335,6 +334,7 @@ export const SyncWorkspace = ({
             <button className="edit-links-btn" onClick={cycleScale} style={{ background: 'rgba(255, 255, 255, 0.1)', borderColor: 'rgba(255, 255, 255, 0.2)', color: 'white', margin: 0 }}>
               Text Size: {lyricScale * 100}%
             </button>
+
             {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
               <button 
                   onClick={handleMapAutoSync} 
@@ -436,6 +436,7 @@ export const SyncWorkspace = ({
             <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
           </div>
         </div>
+
         <div className="sync-offset-deck glass-panel" style={{ flex: 1 }}>
            <div className="speed-label-container">
              <span>Global Offset (Shift Timings)</span>
@@ -489,7 +490,12 @@ export const SyncWorkspace = ({
                     } else if (syncAudioRef.current) {
                       syncAudioRef.current.currentTime = pStart;
                     }
-                    if (!isSyncPlaying) toggleSyncPlay();
+                    
+                    if (line.start === null) {
+                      if (isSyncPlaying) toggleSyncPlay();
+                    } else {
+                      if (!isSyncPlaying) toggleSyncPlay();
+                    }
                   }
                 } else if (line.start !== null) {
                   setLoopRange(null);
@@ -506,10 +512,10 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                 
-                 {renderSyncNode(line, isMain)}
-                 
-                 {isMain && hasParentheses && (
+                   
+                {renderSyncNode(line, isMain)}
+                   
+                {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}
                       onClick={(e) => {
