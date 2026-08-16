@@ -11840,7 +11840,8 @@
               "pronunciation": "{\"full\":\"(beolyeossjyo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(버렸죠)\",\"trans\":\"(beolyeossjyo)\"}]}",
               "translation": "(I threw it away)",
               "lang": "ko",
-              "rawUnspacedText": "(버렸죠)"
+              "rawUnspacedText": "(버렸죠)",
+              "spacingText": ""
             }
           ]
         },
@@ -11955,7 +11956,8 @@
               "pronunciation": "{\"full\":\"(-nayo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(-나요)\",\"trans\":\"(-nayo)\"}]}",
               "translation": "(-I am)",
               "lang": "ko",
-              "rawUnspacedText": "(-나요)"
+              "rawUnspacedText": "(-나요)",
+              "spacingText": ""
             }
           ]
         },
@@ -12052,7 +12054,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh-oh)"
+              "rawUnspacedText": "(Uh-oh)",
+              "spacingText": ""
             }
           ]
         },
@@ -12149,7 +12152,8 @@
               "pronunciation": "{\"full\":\"(malhago danyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(말하고 다녀)\",\"trans\":\"(malhago danyeo)\"}]}",
               "translation": "(Talk and go)",
               "lang": "ko",
-              "rawUnspacedText": "(말하고 다녀)"
+              "rawUnspacedText": "(말하고 다녀)",
+              "spacingText": ""
             }
           ]
         },
@@ -12385,7 +12389,7 @@
           "singer": "Yuqi, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #ecf005, #f0740f)",
+          "gradient": "linear-gradient(90deg, #ecf005 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 54.83021078981234,
           "end": 57.7129557898091,
@@ -12435,7 +12439,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh)"
+              "rawUnspacedText": "(Uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -12473,7 +12478,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": "[Chorus: Minnie, _Soyeon_, **Soojin**]",
           "start": 57.81344078981018,
           "end": 60.7485307898091,
@@ -12523,7 +12528,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -12561,7 +12567,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 60.861340789810185,
           "end": 62.82580078981126,
@@ -12611,7 +12617,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -12708,7 +12715,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -12773,7 +12781,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 68.28389078981019,
           "end": 71.12995078981126,
@@ -12823,7 +12831,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -12861,7 +12870,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 71.2436307898091,
           "end": 73.42530078981126,
@@ -12911,7 +12920,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -13008,7 +13018,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -13231,7 +13242,8 @@
               "pronunciation": "{\"full\":\"(boseog-eun)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(보석은)\",\"trans\":\"(boseog-eun)\"}]}",
               "translation": "(the jewel)",
               "lang": "ko",
-              "rawUnspacedText": "(보석은)"
+              "rawUnspacedText": "(보석은)",
+              "spacingText": ""
             }
           ]
         },
@@ -13292,7 +13304,8 @@
               "pronunciation": "{\"full\":\"(eoseo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(어서)\",\"trans\":\"(eoseo)\"}]}",
               "translation": "(hurry up)",
               "lang": "ko",
-              "rawUnspacedText": "(어서)"
+              "rawUnspacedText": "(어서)",
+              "spacingText": ""
             }
           ]
         },
@@ -13353,7 +13366,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, yo)"
+              "rawUnspacedText": "(Uh, yo)",
+              "spacingText": ""
             }
           ]
         },
@@ -13414,7 +13428,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yo, yeah, stop it)"
+              "rawUnspacedText": "(Yo, yeah, stop it)",
+              "spacingText": ""
             }
           ]
         },
@@ -13479,7 +13494,7 @@
               "text": "너 별로, 더 별로야",
               "color": "#ffffff",
               "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+              "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
               "artists": [
                 "Soojin",
                 "Soyeon"
@@ -13489,7 +13504,7 @@
           "singer": "Soojin, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+          "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 115.26083913552037,
           "end": 117.86474913551605,
@@ -13507,7 +13522,7 @@
               "text": "됐으니 꺼져, uh",
               "color": "#ffffff",
               "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+              "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
               "artists": [
                 "Soojin",
                 "Soyeon"
@@ -13517,7 +13532,7 @@
           "singer": "Soojin, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+          "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 118.00568913552037,
           "end": 120.28479913551605,
@@ -13760,7 +13775,7 @@
           "singer": "Miyeon, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #9a86f9, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #9a86f9 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 138.38790413551928,
           "end": 141.4169541355193,
@@ -13810,7 +13825,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah)"
+              "rawUnspacedText": "(Yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -13848,7 +13864,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": "[Chorus: Minnie, _Soojin_, **Soyeon**]",
           "start": 141.54803413551713,
           "end": 144.23314413551822,
@@ -13898,7 +13914,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -13936,7 +13953,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 144.3368191355182,
           "end": 146.63013913552038,
@@ -13986,7 +14003,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -14083,7 +14101,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -14148,7 +14167,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 151.70731413552036,
           "end": 154.52915913551712,
@@ -14198,7 +14217,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -14236,7 +14256,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 154.63819913551606,
           "end": 156.92165913551713,
@@ -14286,7 +14306,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -14383,7 +14404,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -14579,7 +14601,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(You got it?)"
+              "rawUnspacedText": "(You got it?)",
+              "spacingText": ""
             }
           ]
         },
@@ -14771,7 +14794,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Woo)"
+              "rawUnspacedText": "(Woo)",
+              "spacingText": ""
             }
           ]
         },
@@ -15123,7 +15147,8 @@
               "pronunciation": "{\"full\":\"(beolyeossjyo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(버렸죠)\",\"trans\":\"(beolyeossjyo)\"}]}",
               "translation": "(I threw it away)",
               "lang": "ko",
-              "rawUnspacedText": "(버렸죠)"
+              "rawUnspacedText": "(버렸죠)",
+              "spacingText": ""
             }
           ]
         },
@@ -15238,7 +15263,8 @@
               "pronunciation": "{\"full\":\"(-nayo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(-나요)\",\"trans\":\"(-nayo)\"}]}",
               "translation": "(-I am)",
               "lang": "ko",
-              "rawUnspacedText": "(-나요)"
+              "rawUnspacedText": "(-나요)",
+              "spacingText": ""
             }
           ]
         },
@@ -15335,7 +15361,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh-oh)"
+              "rawUnspacedText": "(Uh-oh)",
+              "spacingText": ""
             }
           ]
         },
@@ -15432,7 +15459,8 @@
               "pronunciation": "{\"full\":\"(malhago danyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(말하고 다녀)\",\"trans\":\"(malhago danyeo)\"}]}",
               "translation": "(Talk and go)",
               "lang": "ko",
-              "rawUnspacedText": "(말하고 다녀)"
+              "rawUnspacedText": "(말하고 다녀)",
+              "spacingText": ""
             }
           ]
         },
@@ -15668,7 +15696,7 @@
           "singer": "Yuqi, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #ecf005, #f0740f)",
+          "gradient": "linear-gradient(90deg, #ecf005 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 54.83021078981234,
           "end": 57.7129557898091,
@@ -15718,7 +15746,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh)"
+              "rawUnspacedText": "(Uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -15756,7 +15785,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": "[Chorus: Minnie, _Soyeon_, **Soojin**]",
           "start": 57.81344078981018,
           "end": 60.7485307898091,
@@ -15806,7 +15835,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -15844,7 +15874,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 60.861340789810185,
           "end": 62.82580078981126,
@@ -15894,7 +15924,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -15991,7 +16022,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -16056,7 +16088,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 68.28389078981019,
           "end": 71.12995078981126,
@@ -16106,7 +16138,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -16144,7 +16177,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 71.2436307898091,
           "end": 73.42530078981126,
@@ -16194,7 +16227,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, uh)"
+              "rawUnspacedText": "(Uh, uh)",
+              "spacingText": ""
             }
           ]
         },
@@ -16291,7 +16325,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -16514,7 +16549,8 @@
               "pronunciation": "{\"full\":\"(boseog-eun)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(보석은)\",\"trans\":\"(boseog-eun)\"}]}",
               "translation": "(the jewel)",
               "lang": "ko",
-              "rawUnspacedText": "(보석은)"
+              "rawUnspacedText": "(보석은)",
+              "spacingText": ""
             }
           ]
         },
@@ -16575,7 +16611,8 @@
               "pronunciation": "{\"full\":\"(eoseo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(어서)\",\"trans\":\"(eoseo)\"}]}",
               "translation": "(hurry up)",
               "lang": "ko",
-              "rawUnspacedText": "(어서)"
+              "rawUnspacedText": "(어서)",
+              "spacingText": ""
             }
           ]
         },
@@ -16636,7 +16673,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Uh, yo)"
+              "rawUnspacedText": "(Uh, yo)",
+              "spacingText": ""
             }
           ]
         },
@@ -16697,7 +16735,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yo, yeah, stop it)"
+              "rawUnspacedText": "(Yo, yeah, stop it)",
+              "spacingText": ""
             }
           ]
         },
@@ -16762,7 +16801,7 @@
               "text": "너 별로, 더 별로야",
               "color": "#ffffff",
               "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+              "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
               "artists": [
                 "Soojin",
                 "Soyeon"
@@ -16772,7 +16811,7 @@
           "singer": "Soojin, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+          "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 115.26083913552037,
           "end": 117.86474913551605,
@@ -16790,7 +16829,7 @@
               "text": "됐으니 꺼져, uh",
               "color": "#ffffff",
               "isGradient": true,
-              "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+              "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
               "artists": [
                 "Soojin",
                 "Soyeon"
@@ -16800,7 +16839,7 @@
           "singer": "Soojin, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #86d4f9, #f0740f)",
+          "gradient": "linear-gradient(90deg, #86d4f9 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 118.00568913552037,
           "end": 120.28479913551605,
@@ -17043,7 +17082,7 @@
           "singer": "Miyeon, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #9a86f9, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #9a86f9 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 138.38790413551928,
           "end": 141.4169541355193,
@@ -17093,7 +17132,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah)"
+              "rawUnspacedText": "(Yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -17131,7 +17171,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": "[Chorus: Minnie, _Soojin_, **Soyeon**]",
           "start": 141.54803413551713,
           "end": 144.23314413551822,
@@ -17181,7 +17221,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -17219,7 +17260,7 @@
           "singer": "Minnie, Soojin",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #86d4f9)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #86d4f9 100%)",
           "sectionHeader": null,
           "start": 144.3368191355182,
           "end": 146.63013913552038,
@@ -17269,7 +17310,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -17366,7 +17408,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -17431,7 +17474,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 151.70731413552036,
           "end": 154.52915913551712,
@@ -17481,7 +17524,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -17519,7 +17563,7 @@
           "singer": "Minnie, Soyeon",
           "color": "#ffffff",
           "isGradient": true,
-          "gradient": "linear-gradient(90deg, #b3f986, #f0740f)",
+          "gradient": "linear-gradient(90deg, #b3f986 0%, #f0740f 100%)",
           "sectionHeader": null,
           "start": 154.63819913551606,
           "end": 156.92165913551713,
@@ -17569,7 +17613,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Yeah, yeah)"
+              "rawUnspacedText": "(Yeah, yeah)",
+              "spacingText": ""
             }
           ]
         },
@@ -17666,7 +17711,8 @@
               "pronunciation": "{\"full\":\"(kkeojyeo)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(꺼져)\",\"trans\":\"(kkeojyeo)\"}]}",
               "translation": "(get out)",
               "lang": "ko",
-              "rawUnspacedText": "(꺼져)"
+              "rawUnspacedText": "(꺼져)",
+              "spacingText": ""
             }
           ]
         },
@@ -17862,7 +17908,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(You got it?)"
+              "rawUnspacedText": "(You got it?)",
+              "spacingText": ""
             }
           ]
         },
@@ -18054,7 +18101,8 @@
               "pronunciation": "",
               "translation": "",
               "lang": "en",
-              "rawUnspacedText": "(Woo)"
+              "rawUnspacedText": "(Woo)",
+              "spacingText": ""
             }
           ]
         },
@@ -49216,7 +49264,7 @@
           "end": 20.968617,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "For some reason, I'm telling you from above",
+          "translation": "For some reason, I say this from above",
           "spacingText": "何故か 上 から  言うけど",
           "lang": "ja",
           "isSplit": false
@@ -49270,7 +49318,7 @@
           "end": 31.480851,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "You're pointing your fingers at me",
+          "translation": "Point your fingers at me and say",
           "spacingText": "三つ指 ついて  どう とか",
           "lang": "ja",
           "isSplit": false
@@ -49297,7 +49345,7 @@
           "end": 34.927486,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "It's the same old saying",
+          "translation": "I say it the same way as ever",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "isSplit": false
@@ -49324,7 +49372,7 @@
           "end": 39.189599,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I'm crying, but I'm enduring it, but I don't want to understand",
+          "translation": "I cry, but I don't want to understand",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
           "isSplit": false
@@ -50946,7 +50994,7 @@
           "end": 20.968617,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Nazeka ue kara iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"何故か上から\",\"trans\":\"Nazeka ue kara\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "For some reason, I'm telling you from above",
+          "translation": "For some reason, I say this from above",
           "spacingText": "何故か 上 から  言うけど",
           "lang": "ja",
           "isSplit": false
@@ -51000,7 +51048,7 @@
           "end": 31.480851,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Mitsuyubi tsuite dō toka\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"三つ指ついて\",\"trans\":\"Mitsuyubi tsuite\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"どうとか\",\"trans\":\"Dō toka\"}]}",
-          "translation": "You're pointing your fingers at me",
+          "translation": "Point your fingers at me and say",
           "spacingText": "三つ指 ついて  どう とか",
           "lang": "ja",
           "isSplit": false
@@ -51027,7 +51075,7 @@
           "end": 34.927486,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Mukashinagara ni iukedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"昔ながらに\",\"trans\":\"Mukashinagara ni\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"言うけど\",\"trans\":\"Iukedo\"}]}",
-          "translation": "It's the same old saying",
+          "translation": "I say it the same way as ever",
           "spacingText": "昔ながら に  言うけど",
           "lang": "ja",
           "isSplit": false
@@ -51054,7 +51102,7 @@
           "end": 39.189599,
           "wordSync": null,
           "pronunciation": "{\"full\":\"Nakedo taedo wakaritakunai\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"泣けど\",\"trans\":\"Nakedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"耐えど\",\"trans\":\"Taedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"わかりたくない\",\"trans\":\"Wakaritakunai\"}]}",
-          "translation": "I'm crying, but I'm enduring it, but I don't want to understand",
+          "translation": "I cry, but I don't want to understand",
           "spacingText": "泣けど  耐えど  わかりたくない",
           "lang": "ja",
           "isSplit": false
@@ -71802,7 +71850,7 @@
         "Ensemble - Cast": "#7f8ccc",
         "Stephanie Beatriz": "#239a92",
         "Diane Guerrero": "#e15ff2",
-        "Rhenzy Feliz": "#c7ff2e",
+        "Rhenzy Feliz": "#26f734",
         "Angie Cepeda": "#e9a5b2"
       },
       "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/55/0a/76/550a76f2-cf9c-3e07-8b9c-5c210e73af44/mzaf_13858819433882654714.plus.aac.p.m4a",
@@ -72526,7 +72574,7 @@
           "segments": [
             {
               "text": "A seven-foot frame, rats along his back",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -72535,7 +72583,7 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
@@ -72553,7 +72601,7 @@
           "segments": [
             {
               "text": "When he calls your name, it all fades to black",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -72562,7 +72610,7 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -72580,7 +72628,7 @@
           "segments": [
             {
               "text": "Yeah, he sees your dreams and feasts on your screams",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -72589,7 +72637,7 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
@@ -73293,7 +73341,7 @@
           "segments": [
             {
               "text": "Isabela, your boyfriend's here",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73302,7 +73350,7 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
@@ -73393,7 +73441,7 @@
             },
             {
               "text": "(A seven-foot frame, rats along his back) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73474,7 +73522,7 @@
             },
             {
               "text": "(When he calls your name, it all fades to black) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73555,7 +73603,7 @@
             },
             {
               "text": "(Yeah, he sees your dreams and feasts on your screams) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73726,7 +73774,7 @@
             },
             {
               "text": "A seven-foot frame, rats along his back",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73825,7 +73873,7 @@
             },
             {
               "text": "(When he calls your name, it all fades to black) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -73906,7 +73954,7 @@
             },
             {
               "text": "(Yeah, he sees your dreams and feasts on your screams) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74092,12 +74140,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 1.3321530209823251,
           "end": 5.921953020979346,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74118,12 +74167,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 6.001853020985306,
           "end": 10.534253020983815,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74144,12 +74194,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 10.635953020979345,
           "end": 11.816853020985306,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74170,12 +74221,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 11.885053020980836,
           "end": 12.962253020983816,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74196,12 +74248,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 13.026653020982325,
           "end": 16.967153020982323,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74222,12 +74275,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 17.041453020979343,
           "end": 19.443153020982322,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74248,12 +74302,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 19.503153020982325,
           "end": 23.024853020985304,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74274,12 +74329,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 23.088153020982325,
           "end": 24.228253020983814,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74300,12 +74356,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 24.287853020985303,
           "end": 26.452853020985305,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74326,12 +74383,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 26.523553020980835,
           "end": 28.600153020982322,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74352,12 +74410,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 28.669353020985305,
           "end": 31.369053020980832,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74378,12 +74437,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 31.465021855044483,
           "end": 33.10912185504597,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74404,12 +74464,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 33.167221855047465,
           "end": 35.807680093464555,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74430,12 +74491,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 35.86618009346456,
           "end": 37.97338009346009,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74456,12 +74518,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 38.032880093460086,
           "end": 40.54498216593933,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74482,12 +74545,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 40.60488216594529,
           "end": 43.12868216594231,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74509,12 +74573,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán & Mauro Castillo]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 43.1952821659438,
           "end": 47.75048216593933,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74536,12 +74601,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 47.8082821659438,
           "end": 51.3532821659438,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74562,12 +74628,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 51.42418216594231,
           "end": 51.92658216594082,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74588,12 +74655,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 51.98698216593933,
           "end": 54.22538216594529,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74614,12 +74682,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 54.28618216594231,
           "end": 56.48898216593933,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74649,12 +74718,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 56.55768216594231,
           "end": 61.1957821659438,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -74697,12 +74767,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 61.25738216594529,
           "end": 63.5147821659438,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74723,12 +74794,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 63.57668216594231,
           "end": 65.86388216594528,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74749,12 +74821,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 65.92418216594231,
           "end": 69.0063821659453,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74775,12 +74848,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 69.0692821659438,
           "end": 70.43338216594529,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74788,7 +74862,7 @@
           "segments": [
             {
               "text": "A seven-foot frame, rats along his back",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74797,16 +74871,17 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 70.49308216594082,
           "end": 74.47758216594082,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74814,7 +74889,7 @@
           "segments": [
             {
               "text": "When he calls your name, it all fades to black",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74823,16 +74898,17 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 74.5413821659453,
           "end": 79.21458216594081,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74840,7 +74916,7 @@
           "segments": [
             {
               "text": "Yeah, he sees your dreams and feasts on your screams",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -74849,16 +74925,17 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 79.27348216593933,
           "end": 83.9637821659438,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74879,12 +74956,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 84.02168216594231,
           "end": 85.0888821659453,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -74927,12 +75005,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, Mauro Castillo & Rhenzy Feliz, _Adassa_]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 85.15908216594082,
           "end": 89.82898216593932,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75019,12 +75098,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 89.90948216593932,
           "end": 94.06448216593932,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75105,12 +75185,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 94.12488216594528,
           "end": 98.78418216594231,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75169,12 +75250,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 99.00690109346455,
           "end": 102.29510109346008,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75218,12 +75300,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 102.35410109346007,
           "end": 108.18894909345859,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75300,12 +75383,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 108.24854909346008,
           "end": 112.27639209345561,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75326,12 +75410,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Diane Guerrero]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 112.54450909346306,
           "end": 116.27090909346157,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75352,12 +75437,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 116.36940909346157,
           "end": 120.53120909346605,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75378,12 +75464,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 121.92050909346307,
           "end": 125.56290909346157,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75404,12 +75491,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 125.62680909346008,
           "end": 129.16210909346455,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75430,12 +75518,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 129.2238090934601,
           "end": 131.17300909346307,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75456,12 +75545,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa & _Diane Guerrero_]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 131.2383090934601,
           "end": 135.06670909346605,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75482,12 +75572,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 135.12690909346156,
           "end": 140.84360909346455,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75526,12 +75617,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fe3ea4, #e15ff2)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 140.92470909346605,
           "end": 144.07759809346007,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75610,12 +75702,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e15ff2, #fe3ea4)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 144.61569809346156,
           "end": 148.3102980934556,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -75676,12 +75769,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 148.37069809346156,
           "end": 149.84074385504297,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75702,12 +75796,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 149.9021438550415,
           "end": 151.5581438550415,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75728,12 +75823,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 152.30014385504148,
           "end": 153.87944385503852,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75754,12 +75850,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 153.95054385504,
           "end": 156.16754385504,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75780,12 +75877,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 156.235243855043,
           "end": 158.4931438550415,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75793,7 +75891,7 @@
           "segments": [
             {
               "text": "Isabela, your boyfriend's here",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75802,16 +75900,17 @@
             }
           ],
           "singer": "Rhenzy Feliz",
-          "color": "#c7ff2e",
+          "color": "#26f734",
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 158.71803692752522,
           "end": 161.74093692752373,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75833,12 +75932,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e9a5b2, #fff94d)",
           "sectionHeader": "[:Angie Cepeda & Carolina Gaitán]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 161.83984385504448,
           "end": 163.75814385504148,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -75891,7 +75991,7 @@
             },
             {
               "text": "(A seven-foot frame, rats along his back) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -75913,12 +76013,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_**, Diane Guerrero]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 163.82504385504,
           "end": 167.83734385504448,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76071,7 +76172,7 @@
             },
             {
               "text": "(When he calls your name, it all fades to black) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76093,12 +76194,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 167.9171438550415,
           "end": 173.14704385504,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76242,7 +76344,7 @@
             },
             {
               "text": "(Yeah, he sees your dreams and feasts on your screams) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76264,12 +76366,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 173.1434899485001,
           "end": 178.0590899485016,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76408,12 +76511,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fe3ea4)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 178.19241609346307,
           "end": 180.41965392752076,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76503,12 +76607,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e6e5ff, #fe3ea4)",
           "sectionHeader": "[:Encanto - Cast, _Adassa_, **Diane Guerrero**]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 180.49675392752224,
           "end": 182.45637085504,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76594,7 +76699,7 @@
             },
             {
               "text": "A seven-foot frame, rats along his back",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76634,12 +76739,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_** & Diane Guerrero]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 182.56246985503702,
           "end": 186.77428292752222,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76810,7 +76916,7 @@
             },
             {
               "text": "(When he calls your name, it all fades to black) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -76832,12 +76938,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 186.83868292752075,
           "end": 191.8898760934601,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -76990,7 +77097,7 @@
             },
             {
               "text": "(Yeah, he sees your dreams and feasts on your screams) ",
-              "color": "#c7ff2e",
+              "color": "#26f734",
               "isGradient": false,
               "gradient": "",
               "artists": [
@@ -77012,12 +77119,13 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 191.96554792752224,
           "end": 196.31358409346157,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": true,
           "adlibs": [
             {
@@ -77129,12 +77237,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 196.31397609346158,
           "end": 197.13657609346308,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -77155,12 +77264,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 197.19557609346307,
           "end": 199.18521609346007,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -77181,12 +77291,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 199.24451609346454,
           "end": 201.6232160934601,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -77207,12 +77318,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 201.68021609346007,
           "end": 203.42441109346308,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         },
         {
@@ -77233,12 +77345,13 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "translation": "",
-          "pronunciation": null,
-          "spacingText": "",
-          "lang": "auto",
           "start": 203.4841110934586,
           "end": 206.97651109346455,
+          "wordSync": null,
+          "pronunciation": null,
+          "translation": "",
+          "spacingText": "",
+          "lang": "auto",
           "isSplit": false
         }
       ],
@@ -77275,7 +77388,7 @@
       "clientSecret": "5e21379985a244ad9b046e06958d6dd6"
     },
     "liveSyncLineGap": 50,
-    "translationTopPadding": 5,
+    "translationTopPadding": 4,
     "transliterationBottomPadding": 5,
     "translationFontSize": 0.55,
     "transliterationFontSize": 0.45
