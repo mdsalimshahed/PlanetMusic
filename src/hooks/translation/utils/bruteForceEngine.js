@@ -7,8 +7,7 @@ export const isSpacelessScript = (char) => {
 
 export const cleanPunctuationPythonStyle = (str) => {
   if (!str) return '';
-  // EXACT PORT: Restored the true Python punctuation map. No rogue spaces!
-  return str.replace(/['!"(),*+.:%;<!¬~=>?\[\\\]^_`।{|}~،؟¿¡”（）‘’？！\-]/g, '').trim();
+  return str.replace(/['!"(),*+.:%;<!¬~=>?\[\\\]^_`।{|}~،؟¿¡”（）‘’？！\-♫\u266B]/g, '').trim();
 };
 
 export const extractPunctuationMap = (block) => {
@@ -44,6 +43,7 @@ export const extractPunctuationMap = (block) => {
 
 /**
  * PRECISE PORT OF PYTHON chinese_and_japanese(line) BRUTE FORCE ALGORITHM
+ * Uses \u266B as the context query delimiter.
  */
 export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
   let k = fullPron;
@@ -60,26 +60,27 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
   let add_to = [];
   let word_gotten = 0;
   let p = '';
-  
+
   const lineChars = Array.from(line).reverse();
 
   for (let char of lineChars) {
     if (cancelRef && cancelRef.current) break;
+
     character = char;
     w = character + w;
 
-    // EXACT PORT: Using the em dash (—) delimiter
-    let contextStr = `(${line}) — ${w}`;
+    // CONTEXT QUERY USING MUSIC NOTE SYMBOL (\u266B)
+    let contextStr = `(${line}) \u266B ${w}`;
     let fetchRes = await fetchGoogleWithLang(contextStr, sl);
     let rawP = fetchRes.transliteration || fetchRes.translation || '';
-    
-    // Safety check for Google converting the em dash to a hyphen
-    let parts = rawP.toLowerCase().split(/—|-/);
-    let lastSegment = parts[parts.length - 1].replace(/^[-.,]+/, '').trim();
+
+    let parts = rawP.toLowerCase().split(/\s*[\u266B♫]\s*/);
+    let lastSegment = parts[parts.length - 1].replace(/^[-.,_]+/, '').trim();
     p = cleanPunctuationPythonStyle(lastSegment);
 
     let liner = liner_main.slice(word_gotten, word_gotten + 1);
 
+    // --- TYPE 1: Natural match ---
     if (liner.length > 0 && p === liner[0]) {
       add_to.unshift({ text: w, pron: liner[0] });
       w = '';
@@ -87,6 +88,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       continue;
     }
 
+    // --- TYPE 2: Separately match ---
     if (liner.length > 0 && p.replace(/\s+/g, '') === liner[0]) {
       add_to.unshift({ text: w, pron: liner[0] });
       w = '';
@@ -94,6 +96,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       continue;
     }
 
+    // --- TYPE Y: Residual trailing match ---
     if (liner.length === 0) {
       if (add_to.length > 0) {
         add_to[0].text = w + add_to[0].text;
@@ -104,6 +107,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       continue;
     }
 
+    // --- TYPE 4 & TYPE 5: Multiple words returned in p ---
     let pSplit = p.split(/\s+/).filter(x => x.length > 0);
     if (pSplit.length > 1) {
       if (pSplit.length === 2 && w.length === 2 && liner.length > 0 && pSplit[pSplit.length - 1] === liner[0]) {
@@ -111,6 +115,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
         w = w[0];
         word_gotten++;
       }
+
       let linerCurrent = liner_main.slice(word_gotten, word_gotten + 1);
       if (linerCurrent.length > 0 && pSplit[0] === linerCurrent[0]) {
         add_to.unshift({ text: w, pron: linerCurrent[0] });
@@ -123,10 +128,11 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
     }
   }
 
+  // --- POST-LOOP RESIDUAL HANDLING ---
   if (w !== '') {
     w = w.trim();
     let wSplit = w.split(/\s+/).filter(x => x.length > 0);
-    
+
     if (wSplit.length === p.length) {
       for (let item of wSplit.slice().reverse()) {
         add_to.unshift({ text: w, pron: liner_main[word_gotten] || '' });
@@ -135,6 +141,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
     } else {
       let line1 = w;
       let liner_main1 = liner_main.slice(word_gotten).reverse();
+
       let w1 = '';
       let character1 = '';
       let add_to1 = [];
@@ -145,14 +152,14 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
         character1 = char1;
         w1 = w1 + character1;
 
-        let fetchRes11 = await fetchGoogleWithLang(`(${line1}) — ${w1}`, sl);
+        let fetchRes11 = await fetchGoogleWithLang(`(${line1}) \u266B ${w1}`, sl);
         let rawP11 = fetchRes11.transliteration || fetchRes11.translation || '';
-        
-        let parts11 = rawP11.toLowerCase().split(/—|-/);
-        let lastSegment11 = parts11[parts11.length - 1].replace(/^[-.,]+/, '').trim();
+        let parts11 = rawP11.toLowerCase().split(/\s*[\u266B♫]\s*/);
+        let lastSegment11 = parts11[parts11.length - 1].replace(/^[-.,_]+/, '').trim();
         let p11 = cleanPunctuationPythonStyle(lastSegment11);
 
         let liner1 = liner_main1.slice(word_gotten1, word_gotten1 + 1);
+
         if (liner1.length > 0 && p11 === liner1[0]) {
           add_to1.push({ text: w1, pron: liner1[0] });
           w1 = '';
@@ -164,6 +171,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
       if (w1 !== '') {
         add_to1.push({ text: w1, pron: liner_main1[word_gotten1] || '' });
       }
+
       add_to = add_to1.concat(add_to);
     }
   }
