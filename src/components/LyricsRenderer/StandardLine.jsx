@@ -20,6 +20,7 @@ const StandardLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
+  const transMarginTop = 'calc((var(--dyn-trans-font-size, 0.55em) * 1.5) + var(--dyn-trans-top-padding, 8px))';
 
   let displayChars = chars;
   if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
@@ -53,9 +54,9 @@ const StandardLine = ({
         WebkitTextFillColor: 'transparent',
         WebkitBoxDecorationBreak: 'clone',
         display: 'inline',
-        filter: isFocused 
-          ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
-          : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+        filter: isFocused
+           ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+           : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
       };
     }
     return {};
@@ -63,6 +64,7 @@ const StandardLine = ({
 
   const renderColoredChar = (c, globalIdx) => {
     let adlibProps = {};
+
     if (savedNode?.isSplit && !isFocused) {
       const adlib = savedNode.adlibs?.find(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
       if (adlib && adlib.start !== null) {
@@ -130,8 +132,8 @@ const StandardLine = ({
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
-
   const isCJKLine = chars.some(c => isCJ(c.char));
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -152,6 +154,7 @@ const StandardLine = ({
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
+  
   const blockPronStyle = {
     ...protectedPronStyle,
     marginTop: '8px',
@@ -176,6 +179,7 @@ const StandardLine = ({
             flexWrap: 'wrap',
             verticalAlign: 'baseline',
             margin: '0',
+            marginTop: (displayTranslation && !isFocused) ? transMarginTop : '0',
             width: 'auto',
             maxWidth: '100%',
             textAlign: lineTextAlign,

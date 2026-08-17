@@ -10,13 +10,12 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
-  
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings
   );
-
+  
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -45,14 +44,12 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   );
   displayProps.isSyncMode = syncProps.isSyncMode;
 
-
   // ------------------------------------------------------------------
   // 1. URL -> STATE: The URL is the absolute single source of truth
   // ------------------------------------------------------------------
   const pathParts = location.pathname.split('/').filter(Boolean);
   const urlViewMode = ['live', 'focused', 'plain'].includes(pathParts[2]) ? pathParts[2] : 'live';
   const urlDebug = pathParts.includes('debug');
-  
   const validWorkspaces = ['edit', 'translate', 'sync-workspace', 'manage-artists'];
   const urlWorkspace = pathParts.find(part => validWorkspaces.includes(part)) || null;
 
@@ -63,40 +60,35 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   useEffect(() => {
     if (!selectedSong) return;
-
+    
     // Handle deep-linking explicitly into Sync Workspace
     if (isSync && !syncProps.isSyncMode) {
         syncProps.startSyncMode(); 
     } else if (!isSync && syncProps.isSyncMode) {
         syncProps.setIsSyncMode(false);
     }
-
+    
     if (songDataProps.isTranslationManagerOpen !== isTranslate) songDataProps.setIsTranslationManagerOpen(isTranslate);
     if (songDataProps.isEditing !== isEdit) songDataProps.setIsEditing(isEdit);
     if (songDataProps.isImageManagerOpen !== isManage) songDataProps.setIsImageManagerOpen(isManage);
     
     if (displayProps.lyricsViewMode !== urlViewMode) displayProps.setLyricsViewMode(urlViewMode);
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlWorkspace, urlViewMode, urlDebug, selectedSong]); 
-
 
   // ------------------------------------------------------------------
   // 2. STATE -> URL: Intercept actions to drive the URL instead of state
   // ------------------------------------------------------------------
-  
   const buildUrl = (updates = {}) => {
     const trackId = selectedSong.trackId;
     const vMode = updates.viewMode !== undefined ? updates.viewMode : urlViewMode;
     const dbg = updates.debug !== undefined ? updates.debug : urlDebug;
     const ws = updates.workspace !== undefined ? updates.workspace : urlWorkspace;
-
     let parts = [`/song/${trackId}`];
     
     if (vMode) parts.push(vMode);
-    if (dbg && vMode === 'focused') parts.push('debug');
+    if (dbg && (vMode === 'focused' || vMode === 'live')) parts.push('debug');
     if (ws) parts.push(ws);
-
     return parts.join('/');
   };
 
@@ -146,9 +138,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
         navigate(buildUrl({ viewMode: val }));
     },
     
-    // Debug toggle
+    // Debug toggles
     showAdlibDebug: urlDebug,
     setShowAdlibDebug: (val) => navigate(buildUrl({ debug: val })),
+    showLiveDebug: urlDebug,
+    setShowLiveDebug: (val) => navigate(buildUrl({ debug: val })),
     
     // Hijack Save functions so the URL closes cleanly after saving
     saveData: () => {
@@ -198,6 +192,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
               )}
             </div>
           )}
+
         </div>
       </div>
 

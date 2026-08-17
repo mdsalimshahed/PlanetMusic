@@ -19,6 +19,9 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
+  
+  // Calculate dynamic clearance needed for absolute translations
+  const transMarginTop = 'calc((var(--dyn-trans-font-size, 0.55em) * 1.5) + var(--dyn-trans-top-padding, 8px))';
 
   // 1. EXTRACT MAIN CHARACTERS
   const blocks = [];
@@ -179,6 +182,7 @@ const SplitLine = ({
 
     const aActiveSpacingText = adlib.spacingText || '';
     const aUseSpacingText = Boolean(aActiveSpacingText && aActiveSpacingText.trim());
+
     const blk = adlibBlocks[bIdx];
     let adlibChars = [];
     
@@ -225,7 +229,6 @@ const SplitLine = ({
 
     const renderedAdlibText = adlibSegments.map((group, gIdx) => {
         let targetArtists = group.seg?.artists;
-
         let isGrad = false;
         let gradStyle = '';
 
@@ -274,6 +277,7 @@ const SplitLine = ({
                 charStyle.WebkitTextFillColor = activeColor;
                 charStyle.textShadow = `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
             }
+
             return <span key={idx} style={charStyle}>{c.char}</span>;
         });
 
@@ -334,13 +338,14 @@ const SplitLine = ({
             position: 'relative',
             verticalAlign: 'baseline',
             maxWidth: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            marginTop: displayTrans ? transMarginTop : '0' // Pushes vertical wrapping layout down to clear absolute translations
           }}
         >
           {displayTrans ? (
-            <span 
-               className={`chunk-translation ${transClass}`} 
-               dir="ltr"
+            <span
+                className={`chunk-translation ${transClass}`}
+                dir="ltr"
                style={{
                  maxWidth: '100%'
                }}
@@ -348,9 +353,11 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTrans, false)}
             </span>
           ) : null}
+
           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
             {alignedAdlibJSX}
           </span>
+
           {displayPronString ? (
             <span className="pronunciation-text" style={protectedPronStyle} dir="ltr">
               {renderFormattedTranslation(displayPronString, false)}
@@ -403,8 +410,8 @@ const SplitLine = ({
             boxSizing: 'border-box'
           }}
       >
-        <span 
-           className="core-chunks"
+        <span
+            className="core-chunks"
            style={{
              position: 'relative',
              display: 'inline-flex',
@@ -413,6 +420,7 @@ const SplitLine = ({
              alignItems: 'center',
              verticalAlign: 'baseline',
              margin: '0',
+             marginTop: displayTranslation ? transMarginTop : '0', // Adjusts line-height to clear absolute translations from hitting previous rows
              width: 'auto',
              maxWidth: '100%',
              textAlign: 'left',
@@ -420,9 +428,9 @@ const SplitLine = ({
            }}
         >
           {displayTranslation ? (
-            <span 
-               className={`chunk-translation ${transClass}`} 
-               dir="ltr"
+            <span
+                className={`chunk-translation ${transClass}`}
+                dir="ltr"
                style={{
                  maxWidth: '100%'
                }}
@@ -430,10 +438,10 @@ const SplitLine = ({
               {renderFormattedTranslation(displayTranslation, false)}
             </span>
           ) : null}
-          <span 
-             className="main-lyrics-layer"
+          <span
+              className="main-lyrics-layer"
              style={{
-               display: 'inline',
+               display: 'inline', 
                width: 'auto',
                maxWidth: '100%',
                textAlign: 'left',
@@ -449,17 +457,17 @@ const SplitLine = ({
       </span>
       
       {shouldRenderBlockPron && displayPronString && (
-        <span 
-            className="pronunciation-text" 
-            style={{
+        <span
+             className="pronunciation-text"
+             style={{
              ...protectedPronStyle,
              marginTop: '8px',
              display: 'block',
              textAlign: 'left',
              wordSpacing: '4px',
              lineHeight: '1.4'
-           }} 
-            dir="ltr"
+           }}
+             dir="ltr"
         >
           {renderFormattedTranslation(displayPronString, false)}
         </span>
