@@ -2,20 +2,18 @@
 
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
-  
   const lines = raw.split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
-  
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];
   let hasExplicitHeader = false;
   let activeTags = [];
   let pendingHeader = null;
-  
+
   const normalizeMarker = (m) => m.split('').sort().join('');
 
   lines.forEach(line => {
-    const trimmedLine = line.trim();
+    let trimmedLine = line.trim();
     if (!trimmedLine || trimmedLine.startsWith('<!')) return;
 
     const headerMatch = trimmedLine.match(/^\[(.*?)\]$/);
@@ -28,7 +26,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
       if (content.includes(':')) {
         const singersPart = content.split(':').slice(1).join(':').trim();
         const rawSingers = singersPart.split(/,|&|\band\b/i).map(s => s.trim()).filter(Boolean);
-
         let unmarkedStr = singersPart;
         const parsedTokens = [];
         const explicitArtists = [];
@@ -62,11 +59,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
                 const rIdx = rawSingers.findIndex(rs => rs.replace(/[_*~<>]/g, '').trim() === tokenName);
                 return rIdx <= 3 || rawSingers.length <= 4;
             });
-
             if (validPlainTokens.length > 0) {
                 parsedTokens.push({ marker: '', name: validPlainTokens.join(', ') });
             }
-
             unmarkedTokens.forEach(n => {
                 if (n.toLowerCase() !== 'both' && n.toLowerCase() !== 'all') {
                     explicitArtists.push(n.trim());
@@ -85,12 +80,38 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
             return { marker: pt.marker, artists: ruleArtists };
         });
         currentRules.sort((a, b) => b.marker.length - a.marker.length);
-
       } else {
         currentRules = [{ marker: '', artists: globalDefaultArtists }];
       }
       return;
     }
+
+    // --- LOGIC: Bubble formatting tags OUTSIDE of parentheses ---
+    // This ensures that when formatting tags are placed inside parentheses (e.g. (**Oh**)),
+    // the parentheses themselves inherit the formatting and are treated as a unified segment for adlib extraction.
+    let previousLine = "";
+    while (previousLine !== trimmedLine) {
+        previousLine = trimmedLine;
+        
+        // 1. Bubble HTML tags outside: (<Artist>Oh</Artist>) -> <Artist>(Oh)</Artist>
+        trimmedLine = trimmedLine.replace(/([(\uFF08])\s*(<[^>]+>)([\s\S]*?)(<\/[^>]+>)\s*([)\uFF09])/gi, (match, openParen, openTag, content, closeTag, closeParen) => {
+            const tag1 = openTag.replace(/[<>]/g, '').trim();
+            const tag2 = closeTag.replace(/[<\/>]/g, '').trim();
+            if (tag1.toLowerCase() === tag2.toLowerCase()) {
+                return `${openTag}${openParen}${content}${closeParen}${closeTag}`;
+            }
+            return match;
+        });
+
+        // 2. Bubble Markdown markers outside: (**Oh**) -> **(Oh)**
+        trimmedLine = trimmedLine.replace(/([(\uFF08])\s*([_*~]+)(.*?)([_*~]+)\s*([)\uFF09])/g, (match, openParen, startMarker, content, endMarker, closeParen) => {
+            if (normalizeMarker(startMarker) === normalizeMarker(endMarker)) {
+                return `${startMarker}${openParen}${content}${closeParen}${endMarker}`;
+            }
+            return match;
+        });
+    }
+    // ---------------------------------------------------------------
 
     const tagRegex = /<([^>]+)>([\s\S]*?)<\/\1>/gi;
     let lastIndex = 0;
@@ -119,7 +140,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
         
         const isOpeningBoundary = !prevChar || /[\s(\[{"']/.test(prevChar);
         const isClosingBoundary = !nextChar || /[\s)\]}"']/.test(nextChar);
-
         const normChunk = normalizeMarker(chunk);
 
         if (isOpeningBoundary && !isClosingBoundary) {
@@ -171,7 +191,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     if (currentText) {
         lineSegments.push({ text: currentText, marker: getActiveMarkerString() });
-        currentText = ''; 
+        currentText = '';
     }
 
     let rawSegments = [];
@@ -180,7 +200,6 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     lineSegments.forEach(seg => {
         let artists = [];
-
         if (seg.explicitArtists) {
             artists = seg.explicitArtists.split(/\s*(?:&|\band\b|\+|,)\s*/i).filter(Boolean).map(n => n.trim());
         } else {
@@ -229,7 +248,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
 
     rawSegments.forEach(seg => {
       const parts = seg.text.split(/([(\uFF08][^)\uFF09]+[)\uFF09])/g);
-      
+
       parts.forEach(part => {
         if (!part) return;
         const isAdlib = /^[(\uFF08][^)\uFF09]+[)\uFF09]$/.test(part);
@@ -243,9 +262,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     });
 
     // Smart space collapsing across segment boundaries to prevent double spaces 
-    // when an adlib is physically ripped out of the middle of the sentence
     let sanitizedMainSegments = [];
     let lastEndedWithSpace = false;
+
     for (let i = 0; i < mainSegments.length; i++) {
         let t = mainSegments[i].text;
         
@@ -281,6 +300,7 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
     }
 
     const finalSegments = [...sanitizedMainSegments, ...sanitizedAdlibSegments].filter(s => s.text.length > 0);
+
     const finalArtistsArray = Array.from(lineArtistsSet);
     const lineSinger = finalArtistsArray.length > 0 ? finalArtistsArray.join(', ') : '';
     
@@ -313,9 +333,9 @@ export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   return result;
 };
 
-
 export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, colorPalette) => {
   if (!rawLyrics) return lrcSyncData;
+
   const parsedLines = parseLyrics(rawLyrics, defaultArtist, colorPalette);
   if (parsedLines.length === 0) return lrcSyncData;
 
@@ -346,7 +366,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   let i = m;
   let j = n;
   const alignment = [];
-  
+
   while (i > 0 && j > 0) {
     const cleanNew = normalize(parsedLines[i - 1].text);
     const cleanOld = normalize(lrcSyncData[j - 1].text);
@@ -361,6 +381,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       j--;
     }
   }
+
   alignment.reverse();
 
   const matchMap = {};
@@ -415,7 +436,6 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
   return mergedData;
 };
 
-
 export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
   const lines = lrcString.split('\n');
   const syncData = [];
@@ -424,6 +444,7 @@ export const parseLRC = (lrcString, defaultArtist, colorPalette) => {
 
   lines.forEach(line => {
     const timeMatch = line.match(/\[(\d{2}):(\d{2}\.\d{2,3})\](.*)/);
+
     if (timeMatch) {
       const minutes = parseInt(timeMatch[1], 10);
       const seconds = parseFloat(timeMatch[2]);
