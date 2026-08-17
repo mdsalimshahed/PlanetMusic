@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
-import { getGraphemes, normalizeTrans, isCJ } from '../../LyricsRenderer/textUtils';
+import { getGraphemes, normalizeTrans, isCJ, isRTLLanguage } from '../../LyricsRenderer/textUtils';
 import { alignChunksWithTransliteration, renderFormattedTranslation } from '../../LyricsRenderer/Formatters';
 import './SyncWorkspace.css';
 
@@ -178,6 +178,8 @@ export const SyncWorkspace = ({
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
 
+    const isRTL = isRTLLanguage(node.text || '');
+
     const activeSpacingText = node.spacingText || '';
     const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
     const activeDisplayText = useSpacingText ? activeSpacingText : (node.text || '');
@@ -332,17 +334,25 @@ export const SyncWorkspace = ({
     };
 
     const alignedJSX_Gradient = alignChunksWithTransliteration(
-         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, false
+         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, false, useSpacingText, getSegmentStyle, false
     );
     const alignedJSX_Solid = alignChunksWithTransliteration(
-         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, true
+         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, false, useSpacingText, getSegmentStyle, true
     );
 
     let shouldRenderBlockPron = false;
     let displayPronString = null;
     const isCJKLine = displayChars.some(c => isCJ(c.char));
     
-    if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
+    if (isRTL) {
+         if (fullTrans) {
+              displayPronString = normalizeTrans(fullTrans);
+              shouldRenderBlockPron = true;
+         } else if (parsedChunks) {
+              displayPronString = parsedChunks.map(c => normalizeTrans(c.trans || c.text)).filter(Boolean).join(' ');
+              shouldRenderBlockPron = true;
+         }
+    } else if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
          if (!isCJKLine && !parsedChunks) {
              const cleanOrig = node.text.toLowerCase().replace(/[\W_]+/g, '');
              const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
@@ -364,7 +374,7 @@ export const SyncWorkspace = ({
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', lineHeight: 1.2, fontSize: 'var(--workspace-lyric-size, 16px)' }}>
-           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box' }}>
+           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box' }}>
                <span className="core-chunks" style={{ position: 'relative', display: 'inline-block', margin: '0', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
                    
                    <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
