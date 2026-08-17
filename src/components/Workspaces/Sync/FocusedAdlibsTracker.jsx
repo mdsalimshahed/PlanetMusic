@@ -99,7 +99,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
             const getSegmentStyle = (seg) => {
                let targetArtists = seg?.artists;
-
                let isGrad = false;
                let gradStyle = '';
 
@@ -119,16 +118,22 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                      WebkitTextFillColor: 'transparent',
                      WebkitBoxDecorationBreak: 'clone',
                      display: 'inline',
+                     paddingBottom: '1.2em',
+                     paddingTop: '0.2em',
                      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))'
                  };
                }
-               return {};
+               return {
+                 display: 'inline',
+                 paddingBottom: '1.2em',
+                 paddingTop: '0.2em'
+               };
             };
 
             const renderColoredCharForTracker = (c, globalIdx) => {
               const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
               let style = {};
-
+              
               if (isPunct && c.char.trim() !== '') {
                  style = {
                      color: '#fbbf24',
@@ -153,7 +158,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                      style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
                  }
               }
-              // Fixed the \u00A0 bug allowing proper wrapping
               return <span key={globalIdx} style={style}>{c.char}</span>;
             };
 
@@ -175,16 +179,12 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               }
             }
 
-            const alignedAdlibJSX = alignChunksWithTransliteration(
-              adlibChars,
-              aParsedChunks,
-              aFullTrans,
-              renderColoredCharForTracker,
-              basePronStyle,
-              false, 
-              true, 
-              useSpacingText,
-              getSegmentStyle
+            const alignedAdlibJSX_Gradient = alignChunksWithTransliteration(
+              adlibChars, aParsedChunks, aFullTrans, renderColoredCharForTracker, basePronStyle, false, true, useSpacingText, getSegmentStyle, false
+            );
+
+            const alignedAdlibJSX_Solid = alignChunksWithTransliteration(
+              adlibChars, aParsedChunks, aFullTrans, renderColoredCharForTracker, basePronStyle, false, true, useSpacingText, getSegmentStyle, true
             );
 
             let displayPronString = null;
@@ -201,32 +201,37 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
                 {adlibTranslation && (
-                  <span
-                    className="chunk-translation"
-                    style={{
-                      opacity: 1,
-                      visibility: 'visible',
-                      position: 'relative',
-                      top: 'auto',
-                      left: 'auto',
-                      transform: 'none',
-                      marginBottom: '6px',
-                      maxWidth: '100%',
+                  <span 
+                    className="chunk-translation" 
+                    style={{ 
+                      opacity: 1, 
+                      visibility: 'visible', 
+                      position: 'relative', 
+                      top: 'auto', 
+                      left: 'auto', 
+                      transform: 'none', 
+                      marginBottom: '6px', 
+                      maxWidth: '100%', 
                       width: 'max-content',
                       whiteSpace: 'normal',
                       wordBreak: 'normal',
                       overflowWrap: 'normal'
-                    }}
+                    }} 
                     dir="ltr"
                   >
                     {renderFormattedTranslation(adlibTranslation)}
                   </span>
                 )}
-
-                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
-                  {alignedAdlibJSX}
+                
+                <span className="primary-text dual-layer-container" style={{ position: 'relative', display: 'inline-block', whiteSpace: 'pre-wrap', maxWidth: '100%' }} dir="auto">
+                  <span className="layer-gradient" aria-hidden="true" style={{ display: 'inline' }}>
+                    {alignedAdlibJSX_Gradient}
+                  </span>
+                  <span className="layer-solid" style={{ position: 'absolute', inset: 0, display: 'inline', pointerEvents: 'none' }}>
+                    {alignedAdlibJSX_Solid}
+                  </span>
                 </span>
-
+                
                 {displayPronString && (
                   <span className="pronunciation-text" style={{...basePronStyle, whiteSpace: 'normal', wordBreak: 'normal', overflowWrap: 'normal', maxWidth: '100%'}} dir="ltr">
                     {renderFormattedTranslation(displayPronString)}
@@ -339,7 +344,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
             item.node.style.setProperty('--adlib-scale', pos.scale);
           }
-
           item.node.classList.add('active');
           item.isActive = true;
         } else if (!shouldBeActive && item.isActive) {

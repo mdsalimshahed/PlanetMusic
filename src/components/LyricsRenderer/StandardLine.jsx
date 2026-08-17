@@ -34,9 +34,9 @@ const StandardLine = ({
 
   const getSegmentStyle = (seg) => {
     let targetArtists = seg?.artists;
-    
     let isGrad = false;
     let gradStyle = '';
+
     if (targetArtists && targetArtists.length > 1) {
       isGrad = true;
       const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
@@ -52,13 +52,19 @@ const StandardLine = ({
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         WebkitBoxDecorationBreak: 'clone',
-        display: 'inline',
-        filter: isFocused 
-           ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+        display: 'inline', // Pure inline prevents CSS layout clipping
+        paddingBottom: '1.2em', // Safe margin prevents descenders from clipping
+        paddingTop: '0.2em',
+        filter: isFocused
+            ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
            : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
       };
     }
-    return {};
+    return {
+        display: 'inline',
+        paddingBottom: '1.2em',
+        paddingTop: '0.2em'
+    };
   };
 
   const renderColoredChar = (c, globalIdx) => {
@@ -111,20 +117,17 @@ const StandardLine = ({
         style.textShadow = isFocused ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
       }
     }
-
     return <span key={globalIdx} {...adlibProps} style={style}>{c.char}</span>;
   };
 
-  const alignedJSX = alignChunksWithTransliteration(
-    displayChars,
-    parsedChunks,
-    fullTrans,
-    renderColoredChar,
-    protectedPronStyle,
-    isRTL,
-    isFocused,
-    hasSpacingText,
-    getSegmentStyle
+  const alignedJSX_Gradient = alignChunksWithTransliteration(
+    displayChars, parsedChunks, fullTrans, renderColoredChar, protectedPronStyle,
+    isRTL, isFocused, hasSpacingText, getSegmentStyle, false 
+  );
+
+  const alignedJSX_Solid = alignChunksWithTransliteration(
+    displayChars, parsedChunks, fullTrans, renderColoredChar, protectedPronStyle,
+    isRTL, isFocused, hasSpacingText, getSegmentStyle, true 
   );
 
   let shouldRenderBlockPron = false;
@@ -151,12 +154,12 @@ const StandardLine = ({
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
-
   const blockPronStyle = {
     ...protectedPronStyle,
-    marginTop: '8px',
+    marginTop: 'var(--dyn-translit-bottom-padding, 4px)', // Inherits your setting exactly
     display: 'block',
-    textAlign: lineTextAlign,
+    width: '100%',
+    textAlign: 'center',
     wordSpacing: '4px',
     lineHeight: '1.4'
   };
@@ -164,53 +167,49 @@ const StandardLine = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
-         
+        
         <span 
-          className="core-chunks"
-          style={{
-            position: 'relative',
-            display: 'inline-flex',
-            flexDirection: isFocused ? 'column' : 'row',
-            justifyContent: isFocused ? 'center' : 'flex-start',
-            alignItems: isFocused ? 'center' : 'baseline',
-            flexWrap: 'wrap',
-            verticalAlign: 'baseline',
-            margin: '0',
-            width: 'auto',
-            maxWidth: '100%',
-            textAlign: lineTextAlign,
-            textWrap: isFocused ? 'balance' : 'normal',
-            boxSizing: 'border-box'
+          className="core-chunks" 
+          style={{ 
+            position: 'relative', 
+            display: 'inline-block', 
+            margin: '0', 
+            width: 'auto', 
+            maxWidth: '100%', 
+            textAlign: lineTextAlign, 
+            textWrap: isFocused ? 'balance' : 'normal', 
+            boxSizing: 'border-box' 
           }}
         >
           {displayTranslation ? (
             <span 
-               className={`chunk-translation ${transClass}`}
-               dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
+                className={`chunk-translation ${transClass}`} 
+                dir="ltr" 
+                style={{ maxWidth: '100%' }}
             >
               {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
           
-          <span 
-            className="main-lyrics-layer"
-            style={{
-              display: 'inline', 
-              width: 'auto',
-              maxWidth: '100%',
-              textAlign: lineTextAlign,
-              textWrap: isFocused ? 'balance' : 'normal',
-              boxSizing: 'border-box'
-            }}
-            dir="auto"
-          >
-            {alignedJSX}
+          <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%', textAlign: lineTextAlign }}>
+             <span 
+               className="main-lyrics-layer layer-gradient" 
+               style={{ display: 'inline', width: '100%', textAlign: lineTextAlign, boxSizing: 'border-box' }} 
+               dir="auto" 
+               aria-hidden="true"
+             >
+               {alignedJSX_Gradient}
+             </span>
+
+             <span 
+               className="main-lyrics-layer layer-solid" 
+               style={{ position: 'absolute', inset: 0, display: 'inline', width: '100%', textAlign: lineTextAlign, boxSizing: 'border-box', pointerEvents: 'none' }} 
+               dir="auto"
+             >
+               {alignedJSX_Solid}
+             </span>
           </span>
         </span>
-
       </span>
       
       {shouldRenderBlockPron && displayPronString && (

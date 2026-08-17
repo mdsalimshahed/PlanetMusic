@@ -21,7 +21,7 @@ export const SyncWorkspace = ({
 
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
-  
+
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
@@ -68,7 +68,6 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
-
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -123,9 +122,7 @@ export const SyncWorkspace = ({
         }
       });
     };
-
     initSyncYT();
-
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -174,7 +171,6 @@ export const SyncWorkspace = ({
         }
       }
     };
-
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
@@ -185,11 +181,10 @@ export const SyncWorkspace = ({
     const activeSpacingText = node.spacingText || '';
     const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
     const activeDisplayText = useSpacingText ? activeSpacingText : (node.text || '');
-
+    
     let chars = [];
     let globalCpIdx = 0;
     let gIdx = 0;
-
     const segments = node.segments || [{ text: node.text }];
 
     if (useSpacingText) {
@@ -199,10 +194,11 @@ export const SyncWorkspace = ({
          let segmentPointer = 0;
          let charPointerInSegment = 0;
          let currentCpStart = 0;
-
+         
          spacedGraphemes.forEach(char => {
              let currentSeg = segments[segmentPointer] || segments[segments.length - 1] || {};
              let isOrigChar = false;
+             
              if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
                  isOrigChar = true;
              } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
@@ -210,8 +206,10 @@ export const SyncWorkspace = ({
              } else {
                  isOrigChar = !/\s/.test(char);
              }
+
              const cpLen = Array.from(char).length;
              chars.push({ char, seg: currentSeg, globalIndex: gIdx++, cpStart: currentCpStart, cpEnd: currentCpStart + cpLen });
+
              if (isOrigChar) {
                  const origLen = Array.from(origGraphemes[origPointer] || char).length;
                  currentCpStart += origLen;
@@ -242,6 +240,7 @@ export const SyncWorkspace = ({
     let parsedChunks = null;
     let fullTrans = null;
     let pronString = node.pronunciation || '';
+    
     if (typeof pronString === 'string') {
          if (pronString.startsWith('{')) {
               try { const p = JSON.parse(pronString); parsedChunks = p.chunks; fullTrans = p.full; } catch(e){}
@@ -253,12 +252,12 @@ export const SyncWorkspace = ({
     }
 
     const basePronStyle = {
-         fontSize: 'calc(var(--workspace-lyric-size, 16px) * 0.55)',
+         fontSize: 'var(--dyn-translit-font-size, 0.55em)',
          fontWeight: '800',
          textTransform: 'uppercase',
          letterSpacing: '0.5px',
          textAlign: 'center',
-         marginTop: '4px',
+         marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
          display: 'inline-block',
          whiteSpace: 'nowrap',
          WebkitTextFillColor: 'currentcolor',
@@ -269,9 +268,9 @@ export const SyncWorkspace = ({
 
     const getSegmentStyle = (seg) => {
          let targetArtists = seg?.artists;
-         // BUG FIX: Removed the fallback to node.singer here to stop gradient bleed on uncredited segments
          let isGrad = false;
          let gradStyle = '';
+
          if (targetArtists && targetArtists.length > 1) {
              isGrad = true;
              const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
@@ -280,6 +279,7 @@ export const SyncWorkspace = ({
              isGrad = true;
              gradStyle = seg.gradient;
          }
+
          if (isGrad) {
              return {
                  backgroundImage: gradStyle,
@@ -287,16 +287,22 @@ export const SyncWorkspace = ({
                  WebkitTextFillColor: 'transparent',
                  WebkitBoxDecorationBreak: 'clone',
                  display: 'inline',
+                 paddingBottom: '1.2em',
+                 paddingTop: '0.2em',
                  filter: `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
              };
          }
-         return {};
+         return {
+             display: 'inline',
+             paddingBottom: '1.2em',
+             paddingTop: '0.2em'
+         };
     };
 
     const renderColoredChar = (c, globalIdx) => {
          const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
          let style = { transition: 'none', fontWeight: 'bold' };
-
+         
          if (isPunct && c.char.trim() !== '') {
              style = {
                  ...style,
@@ -307,10 +313,9 @@ export const SyncWorkspace = ({
                  filter: 'none'
              };
          } else {
-             // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
              let targetArtists = c.seg?.artists;
              let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
-
+             
              if (!isGrad) {
                  let activeColor = '#ffffff';
                  if (targetArtists && targetArtists.length === 1) {
@@ -326,21 +331,17 @@ export const SyncWorkspace = ({
          return <span key={globalIdx} style={style}>{c.char}</span>;
     };
 
-    const alignedJSX = alignChunksWithTransliteration(
-         displayChars,
-         parsedChunks,
-         fullTrans,
-         renderColoredChar,
-         basePronStyle, 
-         false, 
-         false, 
-         useSpacingText,
-         getSegmentStyle
+    const alignedJSX_Gradient = alignChunksWithTransliteration(
+         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, false
+    );
+    const alignedJSX_Solid = alignChunksWithTransliteration(
+         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, true
     );
 
     let shouldRenderBlockPron = false;
     let displayPronString = null;
     const isCJKLine = displayChars.some(c => isCJ(c.char));
+    
     if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
          if (!isCJKLine && !parsedChunks) {
              const cleanOrig = node.text.toLowerCase().replace(/[\W_]+/g, '');
@@ -354,7 +355,7 @@ export const SyncWorkspace = ({
 
     const blockPronStyle = {
          ...basePronStyle,
-         marginTop: '8px',
+         marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
          display: 'block',
          textAlign: 'left',
          wordSpacing: '4px',
@@ -362,14 +363,22 @@ export const SyncWorkspace = ({
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', lineHeight: 1.2 }}>
-           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box', fontSize: 'var(--workspace-lyric-size, 16px)' }}>
-               <span className="core-chunks" style={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', verticalAlign: 'baseline', margin: '0', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }}>                   
-                   <span className="main-lyrics-layer" style={{ display: 'inline', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir="auto">
-                       {alignedJSX}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', lineHeight: 1.2, fontSize: 'var(--workspace-lyric-size, 16px)' }}>
+           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box' }}>
+               <span className="core-chunks" style={{ position: 'relative', display: 'inline-block', margin: '0', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
+                   
+                   <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                     <span className="main-lyrics-layer layer-gradient" style={{ display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir="auto" aria-hidden="true">
+                         {alignedJSX_Gradient}
+                     </span>
+                     <span className="main-lyrics-layer layer-solid" style={{ position: 'absolute', inset: 0, display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box', pointerEvents: 'none' }} dir="auto">
+                         {alignedJSX_Solid}
+                     </span>
                    </span>
+
                </span>
            </span>
+           
            {shouldRenderBlockPron && displayPronString && (
                <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
                    {renderFormattedTranslation(displayPronString, false)}
@@ -445,9 +454,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                        onClick={cycleSource} 
-                        style={{...cursorStyle, display: 'inline-block'}} 
-                        title={title}
+                         onClick={cycleSource} 
+                         style={{...cursorStyle, display: 'inline-block'}} 
+                         title={title}
                         onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -505,7 +514,7 @@ export const SyncWorkspace = ({
             <span>0.5x</span><span>1.0x</span><span>1.5x</span><span>2.0x</span>
           </div>
         </div>
-
+        
         <div className="sync-offset-deck glass-panel" style={{ flex: 1 }}>
            <div className="speed-label-container">
              <span>Global Offset (Shift Timings)</span>
@@ -581,10 +590,10 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                 
-                 {renderSyncNode(line, isMain)}
-                 
-                 {isMain && hasParentheses && (
+                   
+                {renderSyncNode(line, isMain)}
+                   
+                {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}
                       onClick={(e) => {

@@ -20,7 +20,6 @@ const SplitLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
 
-  // 1. EXTRACT MAIN CHARACTERS
   const blocks = [];
   let currentBlock = null;
 
@@ -41,10 +40,8 @@ const SplitLine = ({
   if (currentBlock) blocks.push(currentBlock);
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
-  
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
-  
   while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
@@ -56,9 +53,9 @@ const SplitLine = ({
 
   const getSegmentStyle = (seg) => {
     let targetArtists = seg?.artists;
-    
     let isGrad = false;
     let gradStyle = '';
+
     if (targetArtists && targetArtists.length > 1) {
       isGrad = true;
       const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
@@ -75,10 +72,16 @@ const SplitLine = ({
         WebkitTextFillColor: 'transparent',
         WebkitBoxDecorationBreak: 'clone',
         display: 'inline',
+        paddingBottom: '1.2em',
+        paddingTop: '0.2em',
         filter: `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
       };
     }
-    return {};
+    return {
+        display: 'inline',
+        paddingBottom: '1.2em',
+        paddingTop: '0.2em'
+    };
   };
 
   const renderColoredCharForSplit = (c, globalIdx) => {
@@ -125,7 +128,6 @@ const SplitLine = ({
   if (hasSpacingText && effectiveFullTrans) {
       const safeTextStr = mainChars.map(c => c.char).join('').replace(/([()\uff08\uff09])/g, ' $1 ');
       const textWords = safeTextStr.split(/\s+/).filter(Boolean);
-      
       const safePronStr = effectiveFullTrans.replace(/([()\uff08\uff09])/g, ' $1 ');
       const pronWords = safePronStr.split(/\s+/).filter(Boolean);
       
@@ -142,20 +144,19 @@ const SplitLine = ({
       }
   }
 
-  let alignedMainJSX = null;
+  let alignedMainJSX_Gradient = null;
+  let alignedMainJSX_Solid = null;
+
   if (mainChars.length > 0) {
     const isOnlyPunct = mainChars.every(c => isPunctuationChar(c.char) || /\s/.test(c.char));
     
-    alignedMainJSX = alignChunksWithTransliteration(
-      mainChars,
-      isOnlyPunct ? null : effectiveParsedChunks,
-      isOnlyPunct ? '' : effectiveFullTrans,
-      renderColoredCharForSplit,
-      protectedPronStyle,
-      isRTL,
-      false,
-      finalMainHasSpacing,
-      getSegmentStyle
+    alignedMainJSX_Gradient = alignChunksWithTransliteration(
+      mainChars, isOnlyPunct ? null : effectiveParsedChunks, isOnlyPunct ? '' : effectiveFullTrans,
+      renderColoredCharForSplit, protectedPronStyle, isRTL, false, finalMainHasSpacing, getSegmentStyle, false
+    );
+    alignedMainJSX_Solid = alignChunksWithTransliteration(
+      mainChars, isOnlyPunct ? null : effectiveParsedChunks, isOnlyPunct ? '' : effectiveFullTrans,
+      renderColoredCharForSplit, protectedPronStyle, isRTL, false, finalMainHasSpacing, getSegmentStyle, true
     );
   }
 
@@ -187,11 +188,9 @@ const SplitLine = ({
       const spacedGraphemes = getGraphemes(activeDisplayText);
       const origGraphemes = getGraphemes(adlib.text || '');
       let origPointer = 0;
-
       spacedGraphemes.forEach((char, idx) => {
         let currentSeg = segs[segmentPointer] || segs[segs.length - 1] || {};
         let isOrigChar = false;
-
         if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
             isOrigChar = true;
         } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
@@ -199,7 +198,6 @@ const SplitLine = ({
         } else {
             isOrigChar = !/\s/.test(char);
         }
-
         adlibChars.push({ char, seg: currentSeg, globalIndex: idx });
         if (isOrigChar) {
           origPointer++;
@@ -241,16 +239,11 @@ const SplitLine = ({
       }
     }
 
-    const alignedAdlibJSX = alignChunksWithTransliteration(
-      adlibChars,
-      aParsedChunks,
-      aFullTrans,
-      renderColoredCharForSplit,
-      protectedPronStyle,
-      false, 
-      false, 
-      aUseSpacingText,
-      getSegmentStyle
+    const alignedAdlibJSX_Gradient = alignChunksWithTransliteration(
+      adlibChars, aParsedChunks, aFullTrans, renderColoredCharForSplit, protectedPronStyle, false, false, aUseSpacingText, getSegmentStyle, false
+    );
+    const alignedAdlibJSX_Solid = alignChunksWithTransliteration(
+      adlibChars, aParsedChunks, aFullTrans, renderColoredCharForSplit, protectedPronStyle, false, false, aUseSpacingText, getSegmentStyle, true
     );
 
     let displayPronString = null;
@@ -282,20 +275,25 @@ const SplitLine = ({
         >
           {displayTrans ? (
             <span 
-                className={`chunk-translation ${transClass}`}
-                dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
+                className={`chunk-translation ${transClass}`} 
+                dir="ltr" 
+                style={{ maxWidth: '100%' }}
             >
               {renderFormattedTranslation(displayTrans, false)}
             </span>
           ) : null}
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
-            {alignedAdlibJSX}
+
+          <span className="primary-text dual-layer-container" style={{ position: 'relative', display: 'inline-block', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', width: '100%' }} dir="auto">
+            <span className="layer-gradient" aria-hidden="true" style={{ display: 'inline' }}>
+              {alignedAdlibJSX_Gradient}
+            </span>
+            <span className="layer-solid" style={{ position: 'absolute', inset: 0, display: 'inline', pointerEvents: 'none' }}>
+              {alignedAdlibJSX_Solid}
+            </span>
           </span>
+
           {displayPronString ? (
-            <span className="pronunciation-text" style={protectedPronStyle} dir="ltr">
+            <span className="pronunciation-text" style={{...protectedPronStyle, display: 'block', marginTop: 'var(--dyn-translit-bottom-padding, 4px)'}} dir="ltr">
               {renderFormattedTranslation(displayPronString, false)}
             </span>
           ) : null}
@@ -304,7 +302,6 @@ const SplitLine = ({
     );
   });
 
-  // 5. GLOBAL FALLBACK PRONUNCIATION
   let displayPronString = null;
   let shouldRenderBlockPron = false;
   const isCJKLine = chars.some(c => isCJ(c.char));
@@ -346,44 +343,43 @@ const SplitLine = ({
           }}
       >
         <span 
-            className="core-chunks"
-           style={{
-             position: 'relative',
-             display: 'inline-flex',
-             flexDirection: 'column',
-             justifyContent: 'flex-start',
-             alignItems: 'center',
-             verticalAlign: 'baseline',
-             margin: '0',
-             width: 'auto',
-             maxWidth: '100%',
-             textAlign: 'left',
-             boxSizing: 'border-box'
-           }}
+            className="core-chunks" 
+          style={{ 
+            position: 'relative', 
+            display: 'inline-block', 
+            margin: '0', 
+            width: 'auto', 
+            maxWidth: '100%', 
+            textAlign: 'left', 
+            boxSizing: 'border-box' 
+          }}
         >
           {displayTranslation ? (
             <span 
-                className={`chunk-translation ${transClass}`}
-                dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
+                className={`chunk-translation ${transClass}`} 
+                dir="ltr" 
+                style={{ maxWidth: '100%' }}
             >
               {renderFormattedTranslation(displayTranslation, false)}
             </span>
           ) : null}
-          <span 
-              className="main-lyrics-layer"
-             style={{
-               display: 'inline', 
-               width: 'auto',
-               maxWidth: '100%',
-               textAlign: 'left',
-               boxSizing: 'border-box'
-             }}
-             dir="auto"
-          >
-            {alignedMainJSX}
+
+          <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+            <span 
+                className="main-lyrics-layer layer-gradient" 
+              style={{ display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box' }} 
+              dir="auto"
+              aria-hidden="true"
+            >
+              {alignedMainJSX_Gradient}
+            </span>
+            <span 
+                className="main-lyrics-layer layer-solid" 
+              style={{ position: 'absolute', inset: 0, display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box', pointerEvents: 'none' }} 
+              dir="auto"
+            >
+              {alignedMainJSX_Solid}
+            </span>
           </span>
         </span>
         
@@ -393,14 +389,14 @@ const SplitLine = ({
       {shouldRenderBlockPron && displayPronString && (
         <span 
              className="pronunciation-text" 
-             style={{
-             ...protectedPronStyle,
-             marginTop: '8px',
-             display: 'block',
-             textAlign: 'left',
-             wordSpacing: '4px',
-             lineHeight: '1.4'
-           }} 
+             style={{ 
+            ...protectedPronStyle, 
+            marginTop: 'var(--dyn-translit-bottom-padding, 4px)', 
+            display: 'block', 
+            textAlign: 'left', 
+            wordSpacing: '4px', 
+            lineHeight: '1.4' 
+          }} 
              dir="ltr"
         >
           {renderFormattedTranslation(displayPronString, false)}

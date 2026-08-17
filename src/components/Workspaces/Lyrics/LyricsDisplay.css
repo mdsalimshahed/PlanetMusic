@@ -249,39 +249,6 @@
   cursor: pointer;
 }
 
-.focused-line .primary-text {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-.focused-line .core-chunks {
-  position: relative;
-  display: inline-flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  max-width: 100% !important;
-  width: auto !important;
-}
-
-.focused-line .main-lyrics-layer {
-  display: inline-flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
-  max-width: 100% !important;
-  width: auto !important;
-  box-sizing: border-box !important;
-  white-space: normal !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-}
-
 .focused-adlibs-container {
   position: absolute;
   top: 0;
@@ -373,6 +340,7 @@
   margin: 0;
 }
 
+/* Base structural fixes to allow Native Ruby logic to breathe */
 rt.sync-pronunciation {
   font-size: clamp(9px, 1vw, 11px);
   color: inherit;
@@ -386,7 +354,6 @@ rt.sync-pronunciation {
   box-sizing: border-box;
 }
 
-/* Explicit text clip overrides added to guarantee pronunciations escape the parent gradient */
 rt.pronunciation-text, .pronunciation-text {
   font-size: var(--dyn-translit-font-size, 0.55em);
   color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 0.8) * 100%), transparent);

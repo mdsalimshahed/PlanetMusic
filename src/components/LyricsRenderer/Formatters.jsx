@@ -4,16 +4,14 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
-
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
-
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
-      const shadow = isFocused 
-            ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
-          : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
+      const shadow = isFocused
+             ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)'
+           : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24', backgroundImage: 'none' }}>
           {part}
@@ -37,17 +35,17 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
           key={`w-${keySuffix}`} 
           style={
             shouldWrap 
-              ? {
-                  whiteSpace: 'normal',
-                  display: 'inline-block',
-                  maxWidth: '100%',
-                  wordBreak: 'normal',
-                  overflowWrap: 'normal'
-                }
-              : {
+              ? { 
+                  whiteSpace: 'normal', 
+                  display: 'inline-block', 
+                  maxWidth: '100%', 
+                  wordBreak: 'normal', 
+                  overflowWrap: 'normal' 
+                } 
+              : { 
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'normal', 
-                  overflowWrap: 'normal'
+                  overflowWrap: 'normal' 
                 }
           }
         >
@@ -81,11 +79,14 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     }
   }
   flushWord('end');
-
   return words;
 };
 
-export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false, getSegmentStyle = null) => {
+export const alignChunksWithTransliteration = (
+  chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, 
+  isRTL, isFocused, hasSpacingText = false, getSegmentStyle = null, 
+  isSolidLayer = false 
+) => {
   let alignedChunks = [];
   let canDo1to1 = false;
   let spacedWordsBlocks = [];
@@ -104,7 +105,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       }
     });
     if (currentBlock.length > 0) spacedWordsBlocks.push(currentBlock);
-
+    
     pronWords = fullTrans.split(/\s+/).filter(Boolean);
     if (spacedWordsBlocks.length === pronWords.length && spacedWordsBlocks.length > 0) {
       canDo1to1 = true;
@@ -151,10 +152,10 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
-
+      
       let charsToConsume = 0;
       let tempPointer = charIdxPointer;
-
+      
       if (nonSpaceGraphemes.length > 0) {
         let matched = 0;
         while (matched < nonSpaceGraphemes.length && tempPointer < chars.length) {
@@ -274,49 +275,99 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
     
     let chunkJSX;
+
     if (isRTL) {
       chunkJSX = (
-        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%', position: 'relative' }}>
-          <span style={{ display: 'inline-block' }}>{groupedText}</span>
+        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', visibility: isSolidLayer ? 'hidden' : 'visible' }}>
+          {groupedText}
         </span>
       );
     } else {
       if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
         const cleanTrans = normalizeTrans(chunk.trans);
         chunkJSX = (
-          <span
-            key={chunkIdx}
-            style={{
-              display: 'inline-flex',
+          <span 
+            key={chunkIdx} 
+            style={{ 
+              display: 'inline-flex', 
               flexDirection: 'column',
               alignItems: 'center',
-              verticalAlign: 'baseline',
+              verticalAlign: 'baseline', // Perfectly aligns the English baselines to CJK baselines
               margin: hasSpacingText ? '0' : '0 2px',
-              maxWidth: '100%',
-              position: 'relative'
+              maxWidth: '100%'
             }}
           >
-            <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
-            
-            {/* INVISIBLE SPACER: Forces inline-flex to report exact layout height so Flex gap pushes the next line down */}
-            <span className="pronunciation-text" style={{ ...basePronStyle, visibility: 'hidden', userSelect: 'none' }} dir="ltr" aria-hidden="true">
-              {renderFormattedTranslation(cleanTrans, isFocused)}
+            {/* Base Text */}
+            <span style={{ visibility: isSolidLayer ? 'hidden' : 'visible' }}>
+              {groupedText}
             </span>
             
-            {/* ABSOLUTE OVERLAY: Prevents the background gradient from clipping to this text */}
-            <span style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center', pointerEvents: 'none' }}>
-                <span className="pronunciation-text" style={{ ...basePronStyle, margin: 0, WebkitTextFillColor: 'currentcolor', WebkitBackgroundClip: 'border-box' }} dir="ltr">
-                  {renderFormattedTranslation(cleanTrans, isFocused)}
-                </span>
+            {/* Pronunciation */}
+            <span 
+              className="pronunciation-text" 
+              style={{ 
+                ...basePronStyle, 
+                display: 'block', 
+                marginTop: 'var(--dyn-translit-bottom-padding, 4px)', // Inherits settings strictly
+                visibility: isSolidLayer ? 'visible' : 'hidden', 
+                userSelect: isSolidLayer ? 'auto' : 'none'
+              }} 
+              dir="ltr"
+            >
+              {renderFormattedTranslation(cleanTrans, isFocused)}
             </span>
           </span>
         );
       } else {
-        chunkJSX = (
-          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'baseline', display: 'inline', maxWidth: '100%', position: 'relative' }}>
-            {groupedText}
-          </span>
-        );
+        const textStr = chunk.chars.map(c => c.char).join('');
+        const isOnlyPunct = /^[\p{P}\p{S}\s]+$/u.test(textStr);
+
+        if (isOnlyPunct) {
+          // PUNCTUATION: Renders a dummy column so parentheses don't fall into the gap
+          chunkJSX = (
+            <span 
+              key={chunkIdx} 
+              style={{ 
+                display: 'inline-flex', 
+                flexDirection: 'column',
+                alignItems: 'center',
+                verticalAlign: 'baseline',
+                margin: hasSpacingText ? '0' : '0 2px',
+                maxWidth: '100%'
+              }}
+            >
+              <span style={{ visibility: isSolidLayer ? 'hidden' : 'visible' }}>
+                {groupedText}
+              </span>
+              <span 
+                className="pronunciation-text" 
+                style={{ 
+                  ...basePronStyle, 
+                  display: 'block', 
+                  marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
+                  visibility: 'hidden', 
+                  userSelect: 'none'
+                }} 
+                dir="ltr"
+              >
+                &nbsp;
+              </span>
+            </span>
+          );
+        } else {
+          // LATIN WORDS: Pure inline span naturally sits exactly on the bottom baseline
+          chunkJSX = (
+            <span 
+              key={chunkIdx} 
+              style={{ 
+                whiteSpace: 'pre-wrap', 
+                visibility: isSolidLayer ? 'hidden' : 'visible' 
+              }}
+            >
+              {groupedText}
+            </span>
+          );
+        }
       }
     }
     
@@ -327,7 +378,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     return chunkElements.map(item => item.jsx);
   }
 
-  // RESTORED GROUPING LOGIC: Ensures the gradient spans seamlessly across the entire phrase!
+  // Group continuous segments to stretch gradients smoothly
   const segmentGroups = [];
   let currentGroup = null;
   chunkElements.forEach(item => {
@@ -341,7 +392,8 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
   if (currentGroup) segmentGroups.push(currentGroup);
 
   return segmentGroups.map((group, idx) => {
-    const parentStyle = getSegmentStyle(group.seg);
+    // CRITICAL: The solid layer gets no gradient background. It's completely clear.
+    const parentStyle = isSolidLayer ? {} : getSegmentStyle(group.seg);
     return <span key={`seg-${idx}`} style={parentStyle}>{group.elements}</span>;
   });
 };
