@@ -179,7 +179,6 @@ export const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
-  // --- EXACT SAME RENDER PIPELINE AS LIVE LYRICS VIEW ---
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
 
@@ -191,6 +190,8 @@ export const SyncWorkspace = ({
     let globalCpIdx = 0;
     let gIdx = 0;
 
+    const segments = node.segments || [{ text: node.text }];
+
     if (useSpacingText) {
          const spacedGraphemes = getGraphemes(activeDisplayText);
          const origGraphemes = getGraphemes(node.text || '');
@@ -198,10 +199,9 @@ export const SyncWorkspace = ({
          let segmentPointer = 0;
          let charPointerInSegment = 0;
          let currentCpStart = 0;
-         const segments = node.segments || [];
 
          spacedGraphemes.forEach(char => {
-             let currentSeg = segments[segmentPointer];
+             let currentSeg = segments[segmentPointer] || segments[segments.length - 1] || {};
              let isOrigChar = false;
              if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
                  isOrigChar = true;
@@ -224,7 +224,6 @@ export const SyncWorkspace = ({
              }
          });
     } else {
-         const segments = node.segments || [];
          segments.forEach(seg => {
              const segChars = getGraphemes(seg.text);
              segChars.forEach(char => {
@@ -270,6 +269,7 @@ export const SyncWorkspace = ({
 
     const getSegmentStyle = (seg) => {
          let targetArtists = seg?.artists;
+         // BUG FIX: Removed the fallback to node.singer here to stop gradient bleed on uncredited segments
          let isGrad = false;
          let gradStyle = '';
          if (targetArtists && targetArtists.length > 1) {

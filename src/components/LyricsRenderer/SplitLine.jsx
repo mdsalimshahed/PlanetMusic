@@ -159,7 +159,6 @@ const SplitLine = ({
     );
   }
 
-  // 4. RENDER AD-LIBS AS SIBLING INLINE BLOCKS
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
@@ -249,7 +248,7 @@ const SplitLine = ({
       renderColoredCharForSplit,
       protectedPronStyle,
       false, 
-      false, // Fixed from true -> false for Live View
+      false, 
       aUseSpacingText,
       getSegmentStyle
     );
@@ -265,7 +264,6 @@ const SplitLine = ({
 
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
-        {/* EXPLICIT SPACER BETWEEN MAIN LYRICS AND ADLIB */}
         <span className="adlib-spacer" style={{ whiteSpace: 'pre' }}> </span>
         
         <span 

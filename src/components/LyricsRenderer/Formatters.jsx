@@ -4,14 +4,16 @@ import { isCJ, getGraphemes, normalizeTrans } from './textUtils';
 
 export const renderFormattedTranslation = (text, isFocused = false) => {
   if (!text) return null;
+
   const parts = text.split(/([\p{P}\p{S}\s]+)/u);
+
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     if (isPunct && part.trim() !== '') {
       const shadow = isFocused 
-           ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
-         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
+            ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
+          : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24', backgroundImage: 'none' }}>
           {part}
@@ -31,10 +33,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
       words.push(
-        <span
-          key={`w-${keySuffix}`}
+        <span 
+          key={`w-${keySuffix}`} 
           style={
-            shouldWrap
+            shouldWrap 
               ? {
                   whiteSpace: 'normal',
                   display: 'inline-block',
@@ -43,8 +45,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
                   overflowWrap: 'normal'
                 }
               : {
-                  // Restored standard inline text flow so the browser natively 
-                  // binds punctuation to words and wraps them together.
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'normal', 
                   overflowWrap: 'normal'
@@ -65,6 +65,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       words.push(elements[i]);
       continue;
     }
+
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
@@ -80,12 +81,12 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     }
   }
   flushWord('end');
+
   return words;
 };
 
 export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, isRTL, isFocused, hasSpacingText = false, getSegmentStyle = null) => {
   let alignedChunks = [];
-
   let canDo1to1 = false;
   let spacedWordsBlocks = [];
   let pronWords = [];
@@ -150,6 +151,7 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     parsedChunks.forEach((chunk) => {
       const chunkText = chunk.text || '';
       const nonSpaceGraphemes = getGraphemes(chunkText.replace(/\s+/g, ''));
+
       let charsToConsume = 0;
       let tempPointer = charIdxPointer;
 
@@ -217,16 +219,6 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
       blocks.forEach(b => {
         const blockStr = b.chars.map(c => c.char).join('');
         if (b.isLatin && blockStr.trim().length > 0) {
-          const latinWords = blockStr.split(/\s+/).filter(Boolean);
-          latinWords.forEach(lw => {
-            const lwClean = lw.toLowerCase().replace(/[\W_]+/g, '');
-            if (tIdx < transWords.length) {
-               const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
-               if (twClean === lwClean || twClean.includes(lwClean) || lwClean.includes(twClean)) {
-                   tIdx++;
-               }
-            }
-          });
           alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
         } else if (!b.isLatin) {
           let cjkTrans = [];
@@ -275,31 +267,17 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     }
   }
 
-  // --- DYNAMIC HYBRID VERTICAL CENTERING LOGIC ---
-  const hasInlinePronunciation = alignedChunks.some(chunk => chunk.type !== 'en' && chunk.trans && chunk.trans.trim());
-  const hasVisibleNonPronunciation = alignedChunks.some(chunk => 
-    (chunk.type === 'en' || !chunk.trans || !chunk.trans.trim()) && 
-    chunk.chars.some(c => c.char.trim() !== '')
-  );
-  const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
-
   const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
     const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex));
     if (renderedText.every(c => c === null)) return null;
     
     const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+    
     let chunkJSX;
-
     if (isRTL) {
       chunkJSX = (
-        <span key={chunkIdx} style={{ 
-          whiteSpace: 'pre-wrap', 
-          verticalAlign: 'middle', 
-          maxWidth: '100%',
-          position: 'relative',
-          top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
-        }}>
-          {groupedText}
+        <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'middle', maxWidth: '100%', position: 'relative' }}>
+          <span style={{ display: 'inline-block' }}>{groupedText}</span>
         </span>
       );
     } else {
@@ -314,28 +292,28 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
               alignItems: 'center',
               verticalAlign: 'baseline',
               margin: hasSpacingText ? '0' : '0 2px',
-              maxWidth: '100%'
+              maxWidth: '100%',
+              position: 'relative'
             }}
           >
             <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
-            {cleanTrans ? (
-              <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-                {renderFormattedTranslation(cleanTrans, isFocused)}
-              </span>
-            ) : null}
+            
+            {/* INVISIBLE SPACER: Forces inline-flex to report exact layout height so Flex gap pushes the next line down */}
+            <span className="pronunciation-text" style={{ ...basePronStyle, visibility: 'hidden', userSelect: 'none' }} dir="ltr" aria-hidden="true">
+              {renderFormattedTranslation(cleanTrans, isFocused)}
+            </span>
+            
+            {/* ABSOLUTE OVERLAY: Prevents the background gradient from clipping to this text */}
+            <span style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center', pointerEvents: 'none' }}>
+                <span className="pronunciation-text" style={{ ...basePronStyle, margin: 0, WebkitTextFillColor: 'currentcolor', WebkitBackgroundClip: 'border-box' }} dir="ltr">
+                  {renderFormattedTranslation(cleanTrans, isFocused)}
+                </span>
+            </span>
           </span>
         );
       } else {
         chunkJSX = (
-          <span key={chunkIdx} style={{ 
-            whiteSpace: 'pre-wrap', 
-            verticalAlign: 'baseline', 
-            display: 'inline', 
-            maxWidth: '100%',
-            position: 'relative',
-            // Precisely push raw text down by half the exact height of the pronunciation block below it
-            top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
-          }}>
+          <span key={chunkIdx} style={{ whiteSpace: 'pre-wrap', verticalAlign: 'baseline', display: 'inline', maxWidth: '100%', position: 'relative' }}>
             {groupedText}
           </span>
         );
@@ -349,9 +327,9 @@ export const alignChunksWithTransliteration = (chars, parsedChunks, fullTrans, r
     return chunkElements.map(item => item.jsx);
   }
 
+  // RESTORED GROUPING LOGIC: Ensures the gradient spans seamlessly across the entire phrase!
   const segmentGroups = [];
   let currentGroup = null;
-
   chunkElements.forEach(item => {
     if (!currentGroup || currentGroup.seg !== item.seg) {
       if (currentGroup) segmentGroups.push(currentGroup);

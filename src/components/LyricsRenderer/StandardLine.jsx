@@ -34,9 +34,9 @@ const StandardLine = ({
 
   const getSegmentStyle = (seg) => {
     let targetArtists = seg?.artists;
+    
     let isGrad = false;
     let gradStyle = '';
-
     if (targetArtists && targetArtists.length > 1) {
       isGrad = true;
       const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
@@ -54,8 +54,8 @@ const StandardLine = ({
         WebkitBoxDecorationBreak: 'clone',
         display: 'inline',
         filter: isFocused 
-          ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))` 
-          : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+           ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
+           : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
       };
     }
     return {};
@@ -96,7 +96,6 @@ const StandardLine = ({
         filter: 'none'
       };
     } else {
-      // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
       let targetArtists = c.seg?.artists;
       let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
       
@@ -130,8 +129,8 @@ const StandardLine = ({
 
   let shouldRenderBlockPron = false;
   let displayPronString = null;
-
   const isCJKLine = chars.some(c => isCJ(c.char));
+
   if (isRTL) {
     if (fullTrans) {
       displayPronString = normalizeTrans(fullTrans);
@@ -152,6 +151,7 @@ const StandardLine = ({
   }
 
   const lineTextAlign = isFocused ? 'center' : 'left';
+
   const blockPronStyle = {
     ...protectedPronStyle,
     marginTop: '8px',
@@ -164,8 +164,8 @@ const StandardLine = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
-        
-        <span
+         
+        <span 
           className="core-chunks"
           style={{
             position: 'relative',
@@ -184,7 +184,7 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span
+            <span 
                className={`chunk-translation ${transClass}`}
                dir="ltr"
                style={{
@@ -195,7 +195,7 @@ const StandardLine = ({
             </span>
           ) : null}
           
-          <span
+          <span 
             className="main-lyrics-layer"
             style={{
               display: 'inline', 
@@ -210,6 +210,7 @@ const StandardLine = ({
             {alignedJSX}
           </span>
         </span>
+
       </span>
       
       {shouldRenderBlockPron && displayPronString && (
