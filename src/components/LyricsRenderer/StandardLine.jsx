@@ -20,7 +20,22 @@ const StandardLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const hasSpacingText = Boolean(savedNode?.spacingText?.trim() || lineObj?.spacingText?.trim());
-  const transMarginTop = 'calc((var(--dyn-trans-font-size, 0.55em) * 1.5) + var(--dyn-trans-top-padding, 8px))';
+
+  // Shared relative positioning style to guarantee native flex layout sizing
+  const relativeTransStyle = {
+    position: 'relative',
+    top: 'auto',
+    left: 'auto',
+    transform: 'none',
+    marginTop: 0,
+    marginBottom: 'var(--dyn-trans-top-padding, 8px)',
+    width: 0,
+    minWidth: '100%',
+    textAlign: 'center',
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    whiteSpace: 'normal'
+  };
 
   let displayChars = chars;
   if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
@@ -98,7 +113,6 @@ const StandardLine = ({
         filter: 'none'
       };
     } else {
-      // STRICT ADHERENCE: Only use the colors inherited directly from the segment tags
       let targetArtists = c.seg?.artists;
       let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
       
@@ -166,20 +180,32 @@ const StandardLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-      <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: lineTextAlign, direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: isFocused ? 'balance' : 'normal', boxSizing: 'border-box' }}>
+      <span className="primary-text" style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: isFocused ? 'center' : 'flex-start',
+        whiteSpace: 'pre-wrap', 
+        wordBreak: 'normal', 
+        overflowWrap: 'normal', 
+        position: 'relative', 
+        textAlign: lineTextAlign, 
+        direction: isRTL ? 'rtl' : 'ltr', 
+        width: '100%', 
+        maxWidth: '100%', 
+        textWrap: isFocused ? 'balance' : 'normal', 
+        boxSizing: 'border-box' 
+      }}>
         
         <span
           className="core-chunks"
           style={{
             position: 'relative',
             display: 'inline-flex',
-            flexDirection: isFocused ? 'column' : 'row',
-            justifyContent: isFocused ? 'center' : 'flex-start',
-            alignItems: isFocused ? 'center' : 'baseline',
-            flexWrap: 'wrap',
+            flexDirection: 'column', // Constrains horizontal width to ONLY the width of the main lyrics layer
+            justifyContent: isFocused ? 'center' : 'flex-end',
+            alignItems: 'center', // Always centers the translation directly over the lyrics box
             verticalAlign: 'baseline',
             margin: '0',
-            marginTop: (displayTranslation && !isFocused) ? transMarginTop : '0',
             width: 'auto',
             maxWidth: '100%',
             textAlign: lineTextAlign,
@@ -188,17 +214,11 @@ const StandardLine = ({
           }}
         >
           {displayTranslation ? (
-            <span
-               className={`chunk-translation ${transClass}`}
-               dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
-            >
+            <span className={`chunk-translation ${transClass}`} dir="ltr" style={relativeTransStyle}>
               {renderFormattedTranslation(displayTranslation, isFocused)}
             </span>
           ) : null}
-          
+
           <span
             className="main-lyrics-layer"
             style={{

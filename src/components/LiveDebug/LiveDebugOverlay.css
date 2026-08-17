@@ -7,30 +7,12 @@
     overflow: hidden;
 }
 
-.live-debug-hud {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 0;
-    font-family: monospace;
-    font-size: clamp(9px, 2.8vw, 12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 10004;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
-}
-
 .live-debug-box {
     position: absolute;
-    border: 1px solid;
+    border: 1px dotted; /* Set all bounding boxes to dotted */
     border-radius: 0;
     box-sizing: border-box;
     pointer-events: none;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
     z-index: 10003;
     background: rgba(255, 255, 255, 0.02);
 }

@@ -19,9 +19,22 @@ const SplitLine = ({
   hasSpacingText
 }) => {
   const currentTime = window.currentAudioTime || 0;
-  
-  // Calculate dynamic clearance needed for absolute translations
-  const transMarginTop = 'calc((var(--dyn-trans-font-size, 0.55em) * 1.5) + var(--dyn-trans-top-padding, 8px))';
+
+  // Shared relative positioning style to guarantee native flex layout sizing
+  const relativeTransStyle = {
+    position: 'relative',
+    top: 'auto',
+    left: 'auto',
+    transform: 'none',
+    marginTop: 0,
+    marginBottom: 'var(--dyn-trans-top-padding, 8px)',
+    width: 0,
+    minWidth: '100%',
+    textAlign: 'center',
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    whiteSpace: 'normal'
+  };
 
   // 1. EXTRACT MAIN CHARACTERS
   const blocks = [];
@@ -309,7 +322,7 @@ const SplitLine = ({
       renderColoredCharForSplit,
       protectedPronStyle,
       false, 
-      false, // Fixed from true -> false for Live View
+      false, 
       aUseSpacingText,
       getSegmentStyle
     );
@@ -334,22 +347,16 @@ const SplitLine = ({
           style={{
             display: 'inline-flex',
             flexDirection: 'column',
+            justifyContent: 'flex-end',
             alignItems: 'center',
             position: 'relative',
             verticalAlign: 'baseline',
             maxWidth: '100%',
-            boxSizing: 'border-box',
-            marginTop: displayTrans ? transMarginTop : '0' // Pushes vertical wrapping layout down to clear absolute translations
+            boxSizing: 'border-box'
           }}
         >
           {displayTrans ? (
-            <span
-                className={`chunk-translation ${transClass}`}
-                dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
-            >
+            <span className={`chunk-translation ${transClass}`} dir="ltr" style={relativeTransStyle}>
               {renderFormattedTranslation(displayTrans, false)}
             </span>
           ) : null}
@@ -398,10 +405,13 @@ const SplitLine = ({
       <span
           className="primary-text"
           style={{
+            display: 'inline-flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
             whiteSpace: 'pre-wrap',
             wordBreak: 'normal',
             overflowWrap: 'normal',
-            display: 'inline-block',
             position: 'relative',
             textAlign: 'left',
             direction: isRTL ? 'rtl' : 'ltr',
@@ -416,11 +426,10 @@ const SplitLine = ({
              position: 'relative',
              display: 'inline-flex',
              flexDirection: 'column',
-             justifyContent: 'flex-start',
+             justifyContent: 'flex-end',
              alignItems: 'center',
              verticalAlign: 'baseline',
              margin: '0',
-             marginTop: displayTranslation ? transMarginTop : '0', // Adjusts line-height to clear absolute translations from hitting previous rows
              width: 'auto',
              maxWidth: '100%',
              textAlign: 'left',
@@ -428,16 +437,11 @@ const SplitLine = ({
            }}
         >
           {displayTranslation ? (
-            <span
-                className={`chunk-translation ${transClass}`}
-                dir="ltr"
-               style={{
-                 maxWidth: '100%'
-               }}
-            >
+            <span className={`chunk-translation ${transClass}`} dir="ltr" style={relativeTransStyle}>
               {renderFormattedTranslation(displayTranslation, false)}
             </span>
           ) : null}
+          
           <span
               className="main-lyrics-layer"
              style={{
