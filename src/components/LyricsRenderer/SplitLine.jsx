@@ -18,6 +18,7 @@ const SplitLine = ({
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
 
+  // Uniform translation block styling (Used for both main parent and adlib blocks)
   const relativeTransStyle = {
     position: 'relative',
     top: 'auto',
@@ -33,14 +34,30 @@ const SplitLine = ({
     whiteSpace: 'normal'
   };
 
+  // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
+  const blockPronStyle = {
+    fontSize: 'var(--dyn-translit-font-size, 0.55em)',
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    textAlign: 'center',
+    marginTop: 'var(--dyn-translit-bottom-padding, 8px)',
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    WebkitTextFillColor: 'currentcolor',
+    backgroundImage: 'none',
+    color: 'rgba(255,255,255,0.7)',
+    textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
+    wordSpacing: '4px',
+    lineHeight: '1.4'
+  };
+
   const blocks = [];
   let currentBlock = null;
-
   chars.forEach((c) => {
     const adlibIndex = savedNode.adlibs?.findIndex(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
     const isAdlibChar = adlibIndex !== -1;
     const adlibObj = isAdlibChar ? savedNode.adlibs[adlibIndex] : null;
-
     if (!currentBlock) {
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     } else if (currentBlock.isAdlib === isAdlibChar && currentBlock.adlibObj === adlibObj) {
@@ -55,12 +72,10 @@ const SplitLine = ({
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
-
   while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
   const isOnlyPunct = mainChars.length > 0 && mainChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
-
   const { mainJSX: alignedMainJSX, translationJSX: mainTranslationJSX, pronunciationJSX: mainPronunciationJSX } = EngineRouter({
     chars: mainChars,
     lang,
@@ -116,10 +131,11 @@ const SplitLine = ({
           style={{
             display: 'inline-flex',
             flexDirection: 'column',
-            justifyContent: 'flex-end',
+            justifyContent: 'center',
             alignItems: 'center',
+            alignSelf: 'center',
             position: 'relative',
-            verticalAlign: 'baseline',
+            verticalAlign: 'middle',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
@@ -129,26 +145,11 @@ const SplitLine = ({
               {adlibTransJSX}
             </span>
           ) : null}
-
           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
             {adlibMainJSX}
           </span>
-
           {adlibPronJSX ? (
-            <span className="pronunciation-text" style={{
-                fontSize: 'var(--dyn-translit-font-size, 0.55em)',
-                fontWeight: '800',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                textAlign: 'center',
-                marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
-                display: 'inline-block',
-                whiteSpace: 'nowrap',
-                WebkitTextFillColor: 'currentcolor',
-                backgroundImage: 'none',
-                color: 'rgba(255,255,255,0.7)',
-                textShadow: 'none'
-            }} dir="ltr">
+            <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
               {adlibPronJSX}
             </span>
           ) : null}
@@ -165,7 +166,7 @@ const SplitLine = ({
             display: 'inline-flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            alignItems: 'flex-end',
+            alignItems: 'center',
             whiteSpace: 'pre-wrap',
             wordBreak: 'normal',
             overflowWrap: 'normal',
@@ -178,19 +179,19 @@ const SplitLine = ({
       >
         <span
             className="core-chunks"
-           style={{
-             position: 'relative',
-             display: 'inline-flex',
-             flexDirection: 'column',
-             justifyContent: 'flex-end',
-             alignItems: 'center', 
-             verticalAlign: 'baseline',
-             margin: '0',
-             width: 'auto',
-             maxWidth: '100%',
-             textAlign: 'left',
-             boxSizing: 'border-box'
-           }}
+            style={{
+              position: 'relative',
+              display: 'inline-flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              verticalAlign: 'middle',
+              margin: '0',
+              width: 'auto',
+              maxWidth: '100%',
+              textAlign: 'left',
+              boxSizing: 'border-box'
+            }}
         >
           {mainTranslationJSX ? (
             <span className="chunk-translation live-translation" dir="ltr" style={relativeTransStyle}>
@@ -200,36 +201,21 @@ const SplitLine = ({
           
           <span
               className="main-lyrics-layer"
-             style={{
-               display: 'inline', 
-               width: 'auto',
-               maxWidth: '100%',
-               textAlign: 'left',
-               boxSizing: 'border-box'
-             }}
-             dir={isRTL ? 'rtl' : 'ltr'}
+              style={{
+                display: 'inline',
+                width: 'auto',
+                maxWidth: '100%',
+                textAlign: 'left',
+                boxSizing: 'border-box'
+              }}
+              dir={isRTL ? 'rtl' : 'ltr'}
           >
             {alignedMainJSX}
           </span>
-
           {mainPronunciationJSX && (
             <span
                  className="pronunciation-text"
-                 style={{
-                 fontSize: 'var(--dyn-translit-font-size, 0.55em)',
-                 fontWeight: '800',
-                 textTransform: 'uppercase',
-                 letterSpacing: '0.5px',
-                 WebkitTextFillColor: 'currentcolor',
-                 backgroundImage: 'none',
-                 color: 'rgba(255,255,255,0.7)',
-                 textShadow: 'none',
-                 marginTop: '8px',
-                 display: 'block',
-                 textAlign: 'center',
-                 wordSpacing: '4px',
-                 lineHeight: '1.4'
-               }}
+                 style={blockPronStyle}
                  dir="ltr"
             >
               {mainPronunciationJSX}

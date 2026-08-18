@@ -1,6 +1,5 @@
 /* --- src/components/LyricsRenderer/textUtils.js --- */
 export const isCJ = (char) => /[\u4e00-\u9fa5\u3040-\u30ff]/.test(char);
-
 export const isPunctuationChar = (char) => /^[\p{P}\p{S}\s]+$/u.test(char);
 
 export const getGraphemes = (str) => {
@@ -16,12 +15,10 @@ export const normalizeTrans = (str, keepParens = false) => {
   if (!str) return '';
   let res = str;
   if (!keepParens) {
-    res = res.replace(/[()\[\]{}（）]/g, '');
+    res = res.replace(/[()\[\]{}]/g, ''); // PRESERVES SPACES
   }
-  
   const leadingPunctRegex = keepParens ? /^[^\p{L}\p{N}\p{M}\s()]+/gu : /^[\p{P}\p{S}]+/gu;
   const trailingPunctRegex = keepParens ? /[^\p{L}\p{N}\p{M}\s()]+$/gu : /[\p{P}\p{S}]+$/gu;
-
   return res
     .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'")
     .replace(leadingPunctRegex, '')
@@ -40,7 +37,6 @@ export const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC
 export const parsePronunciation = (pronString) => {
   let parsedChunks = null;
   let fullTrans = null;
-
   if (typeof pronString === 'string') {
     const cleanPron = pronString.trim();
     if (cleanPron.startsWith('{')) {
@@ -55,6 +51,5 @@ export const parsePronunciation = (pronString) => {
       } catch (e) {}
     }
   }
-  
   return { parsedChunks, fullTrans };
 };

@@ -63,15 +63,15 @@
   transform: translate3d(0, 0, 0) scale(1);
 }
 
-/* Inject translation-style drop-shadow behind main text to boost visibility */
+/* Soft dark drop-shadow behind main text */
 .preview-line .main-lyrics-layer,
 .preview-line .adlib-node .primary-text {
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
 .preview-line.active .main-lyrics-layer,
 .preview-line.active .adlib-node .primary-text {
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
 @media (max-width: 900px) {

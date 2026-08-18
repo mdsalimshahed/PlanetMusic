@@ -10,6 +10,7 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     // 1. Group characters by segment colors without 1:1 mapping for RTL
     let currentSeg = null;
     let currentChars = [];
+
     chars.forEach(c => {
         if (currentSeg === null) currentSeg = c.seg;
         if (currentSeg === c.seg) {
@@ -20,6 +21,7 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
             currentSeg = c.seg;
         }
     });
+
     if (currentChars.length > 0) {
         alignedChunks.push({ type: 'main', trans: '', chars: currentChars });
     }
@@ -30,8 +32,8 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     // For RTL: If the line is an adlib OR contains adlibs, omit parentheses from the pronunciation block.
     // Parentheses are kept only if it's a main line without adlib parts.
     const shouldKeepParens = !isAdlib;
-
     let displayPronString = null;
+
     if (fullTrans) {
         displayPronString = normalizeTrans(fullTrans, shouldKeepParens);
     } else if (parsedChunks) {
@@ -45,14 +47,15 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
 
     // Always ensure parens are completely stripped if rendering an adlib unit
     if (isAdlib && displayPronString) {
-        displayPronString = displayPronString.replace(/[()\[\]{}（）]/g, '').trim();
+        displayPronString = displayPronString.replace(/[()\[\]{}]/g, '').trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);
     const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused) : null;
     
+    // Explicitly set fontFamily to var(--font-family) for the Latin pronunciation block
     const pronJSX = displayPronString ? (
-        <span style={{ display: 'block', textAlign: 'center', width: '100%' }}>
+        <span style={{ display: 'block', textAlign: 'center', width: '100%', fontFamily: 'var(--font-family)' }}>
             {renderFormattedTranslation(displayPronString, isFocused)}
         </span>
     ) : null;

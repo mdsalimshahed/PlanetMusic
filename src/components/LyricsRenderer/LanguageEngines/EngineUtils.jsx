@@ -21,22 +21,17 @@ export const rgbToHex = (r, g, b) => {
 export const interpolateColor = (colors, ratio) => {
   if (!colors || colors.length === 0) return '#ffffff';
   if (colors.length === 1) return colors[0];
-  
   const maxIdx = colors.length - 1;
   const scaledRatio = ratio * maxIdx;
   const leftIdx = Math.floor(scaledRatio);
   const rightIdx = Math.min(Math.ceil(scaledRatio), maxIdx);
-  
   if (leftIdx === rightIdx) return colors[leftIdx];
-  
   const fraction = scaledRatio - leftIdx;
   const c1 = hexToRgb(colors[leftIdx]);
   const c2 = hexToRgb(colors[rightIdx]);
-  
   const r = c1[0] + (c2[0] - c1[0]) * fraction;
   const g = c1[1] + (c2[1] - c1[1]) * fraction;
   const b = c1[2] + (c2[2] - c1[2]) * fraction;
-  
   return rgbToHex(r, g, b);
 };
 
@@ -52,7 +47,7 @@ export const basePronStyle = {
   WebkitTextFillColor: 'var(--dyn-translit-color, #ffffff)',
   color: 'var(--dyn-translit-color, #ffffff)',
   opacity: 'var(--dyn-translit-opacity, 0.8)',
-  textShadow: 'none',
+  textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
   fontFamily: 'var(--font-family)'
 };
 
@@ -63,25 +58,27 @@ export const getDisplayTranslation = (originalText, translation) => {
   return (cleanMainText && cleanMainText === cleanTransText) ? '' : (translation || '');
 };
 
-// Character rendering now strictly uses solid computed colors (Bypasses CSS clipping bugs entirely)
+// Character rendering strictly checks for Arabic script
 export const renderColoredChar = (c, globalIdx, isFocused) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
-  let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
-  
+  const isArabicChar = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(c.char);
+  let style = { 
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
+    fontFamily: isArabicChar ? 'var(--arabic-font-family)' : 'var(--font-family)'
+  };
   if (isPunct && c.char.trim() !== '') {
     style = {
       ...style,
       color: '#fbbf24',
       WebkitTextFillColor: '#fbbf24',
-      textShadow: isFocused ? '0 0 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)' : '0 4px 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)',
+      textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
     };
   } else {
     const activeColor = c.computedColor || '#ffffff';
     style.color = activeColor;
     style.WebkitTextFillColor = activeColor;
-    style.textShadow = isFocused ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
+    style.textShadow = '0 2px 8px rgba(0, 0, 0, 0.45)';
   }
-
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
@@ -91,17 +88,16 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
   return parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
+    const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);
+    const font = isArabicPart ? 'var(--arabic-font-family)' : 'var(--font-family)';
     if (isPunct && part.trim() !== '') {
-      const shadow = isFocused 
-           ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
-         : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24' }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font }}>
           {part}
         </span>
       );
     }
-    return <span key={pIdx}>{part}</span>;
+    return <span key={pIdx} style={{ fontFamily: font }}>{part}</span>;
   });
 };
 
@@ -109,7 +105,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   const words = [];
   let currentWord = [];
   let hyphenCount = 0;
-
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
@@ -149,7 +144,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
-
     if (shouldBreak) {
       flushWord(i);
       words.push(elements[i]); 
@@ -197,14 +191,13 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
       }
 
       const cpLen = Array.from(char).length;
-
-      chars.push({ 
-         char, 
-         seg: currentSeg, 
-         globalIndex: gIdx++, 
-         cpStart: currentCpStart, 
-         cpEnd: currentCpStart + cpLen 
-      });
+      chars.push({
+          char,
+          seg: currentSeg,
+          globalIndex: gIdx++,
+          cpStart: currentCpStart,
+          cpEnd: currentCpStart + cpLen 
+       });
 
       if (isOrigChar) {
         const origLen = Array.from(origGraphemes[origPointer] || char).length;
@@ -223,18 +216,17 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
       const segChars = getGraphemes(seg.text || '');
       segChars.forEach(char => {
         const cpLen = Array.from(char).length;
-        chars.push({ 
-           char, 
-           seg, 
-           globalIndex: gIdx++, 
-           cpStart: originalCpIdx, 
-           cpEnd: originalCpIdx + cpLen 
-         });
+        chars.push({
+            char,
+            seg,
+            globalIndex: gIdx++,
+            cpStart: originalCpIdx,
+            cpEnd: originalCpIdx + cpLen
+          });
         originalCpIdx += cpLen;
       });
     });
   }
-
   return { chars, hasSpacingText: useSpacingText };
 };
 
@@ -309,10 +301,10 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
         if (isRTL) {
             return (
                 <span key={chunkIdx} className="lyric-text-span" style={{ 
-                  whiteSpace: 'pre-line', 
-                  display: 'inline', 
-                  position: 'relative',
-                  top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                   whiteSpace: 'pre-line',
+                   display: 'inline',
+                   position: 'relative',
+                   top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
                 }}>
                   {groupedText}
                 </span>
@@ -321,9 +313,8 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
                 let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
                 if (isAdlib) {
-                    cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
+                    cleanTrans = cleanTrans.replace(/[()\[\]{}]/g, '').trim();
                 }
-
                 return (
                   <span
                     key={`chunk-${chunkIdx}`}
@@ -337,19 +328,19 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                     }}
                   >
                     <span 
-                      className="lyric-text-span" 
-                      style={{ 
-                        display: 'inline', 
-                        whiteSpace: 'pre-line'
-                      }}
+                       className="lyric-text-span"
+                       style={{
+                         display: 'inline',
+                         whiteSpace: 'pre-line'
+                       }}
                     >
                       {groupedText}
                     </span>
                     {cleanTrans ? (
                       <span 
-                        className="pronunciation-text" 
-                        style={basePronStyle} 
-                        dir="ltr"
+                         className="pronunciation-text"
+                         style={basePronStyle}
+                         dir="ltr"
                       >
                         {renderFormattedTranslation(cleanTrans, isFocused)}
                       </span>
@@ -359,13 +350,13 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             } else {
                 return (
                   <span 
-                    key={`chunk-${chunkIdx}`} 
-                    className="lyric-text-span" 
-                    style={{ 
-                      whiteSpace: 'pre-line', 
-                      display: 'inline', 
-                      position: 'relative',
-                      top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                     key={`chunk-${chunkIdx}`}
+                     className="lyric-text-span"
+                     style={{
+                       whiteSpace: 'pre-line',
+                       display: 'inline',
+                       position: 'relative',
+                       top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
                   }}>
                       {groupedText}
                   </span>

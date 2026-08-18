@@ -33,6 +33,7 @@ rt.pronunciation-text,
   overflow-wrap: normal !important;
   max-width: 100%;
   font-family: var(--font-family);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
 }
 
 .preview-line.active rt.pronunciation-text,
@@ -41,9 +42,7 @@ rt.pronunciation-text,
   color: var(--dyn-translit-color, #ffffff) !important;
   -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
   opacity: 1 !important;
-  text-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.95),
-    0 0 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
 }
 
 .focused-line.active rt.pronunciation-text,
@@ -52,9 +51,7 @@ rt.pronunciation-text,
   color: var(--dyn-translit-color, #ffffff) !important;
   -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
   opacity: 1 !important;
-  text-shadow:
-    0 0 12px rgba(0, 0, 0, 0.95),
-    0 0 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
 }
 
 .focused-line .pronunciation-text {
@@ -92,7 +89,7 @@ rt.pronunciation-text,
       calc(var(--dyn-trans-opacity, 0.9) * 100%),
     transparent
   );
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   text-align: center;
   line-height: 1.2;
   width: max-content;
@@ -192,9 +189,7 @@ rt.pronunciation-text,
       calc(var(--dyn-trans-opacity, 0.9) * 100%),
     transparent
   );
-  text-shadow:
-    0 0 12px rgba(0, 0, 0, 0.95),
-    0 0 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;
