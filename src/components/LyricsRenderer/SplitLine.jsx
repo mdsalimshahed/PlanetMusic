@@ -1,5 +1,5 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
-import React from 'react';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils';
 import { isRTLLanguage } from './textUtils';
@@ -17,6 +17,11 @@ const SplitLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
+
+  const [dynamicRowGaps, setDynamicRowGaps] = useState({});
+  const parentPronRef = useRef(null);
+  const parentCoreRef = useRef(null);
+  const adlibRefs = useRef([]);
 
   // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
   const blockPronStyle = {
@@ -73,6 +78,48 @@ const SplitLine = ({
     isAdlib: false
   });
 
+  // Calculate dynamic clearance based on the bottom edge of the parent line's pronunciation block
+  useLayoutEffect(() => {
+    const coreNode = parentCoreRef.current;
+    if (!coreNode) return;
+
+    const coreRect = coreNode.getBoundingClientRect();
+    const pronNode = parentPronRef.current;
+    const pronRect = pronNode ? pronNode.getBoundingClientRect() : null;
+
+    const newGaps = {};
+    adlibRefs.current.forEach((ref, bIdx) => {
+      if (!ref) return;
+      
+      const adlibRect = ref.getBoundingClientRect();
+      const isWrapped = adlibRect.top > (coreRect.top + coreRect.height / 2);
+
+      if (isWrapped) {
+        const transNode = ref.querySelector('.chunk-translation');
+        if (transNode) {
+          // Compute clearance needed to move the ad-lib text below the parent line's pronunciation block
+          const transHeight = transNode.getBoundingClientRect().height || 16;
+          const pronHeight = pronRect ? pronRect.height : 0;
+          
+          newGaps[bIdx] = `calc(${transHeight + pronHeight}px + var(--dyn-trans-top-padding, 8px))`;
+        } else if (pronRect) {
+          newGaps[bIdx] = `calc(${pronRect.height}px + 4px)`;
+        } else {
+          newGaps[bIdx] = '0px';
+        }
+      } else {
+        newGaps[bIdx] = '0px';
+      }
+    });
+
+    // INFINITE LOOP GUARD: Compare with current state before triggering a re-render
+    setDynamicRowGaps(prevGaps => {
+      const isDifferent = Object.keys(newGaps).some(key => prevGaps[key] !== newGaps[key]) ||
+                          Object.keys(prevGaps).length !== Object.keys(newGaps).length;
+      return isDifferent ? newGaps : prevGaps;
+    });
+  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX]);
+
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
@@ -105,10 +152,13 @@ const SplitLine = ({
        isAdlib: true // Flags isolated ad-lib so parens are omitted in engine processing
     });
 
+    const adlibMarginTop = dynamicRowGaps[bIdx] || '0px';
+
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
         <span className="adlib-spacer" style={{ whiteSpace: 'pre' }}> </span>
         <span
+          ref={el => adlibRefs.current[bIdx] = el}
           className={`adlib-container adlib-node ${initialClass}`}
           data-start={start !== null ? start : 'NaN'}
           data-end={end !== null ? end : 'NaN'}
@@ -122,7 +172,8 @@ const SplitLine = ({
             maxWidth: '100%',
             boxSizing: 'border-box',
             margin: 0,
-            padding: 0
+            padding: 0,
+            marginTop: adlibMarginTop
           }}
         >
           {adlibTransJSX ? (
@@ -143,25 +194,22 @@ const SplitLine = ({
     );
   });
 
-  // Calculate a dynamic gap to protect absolute translations from overlapping previous lines or blocks
+  // Calculate top padding for the overall container if the main parent line has a hovering translation
   const hasMainTrans = Boolean(mainTranslationJSX);
-  const hasAdlibTrans = savedNode?.adlibs?.some(a => a.translation && a.translation.trim() !== '');
-  const hasAnyTrans = hasMainTrans || hasAdlibTrans;
-  
-  const clearanceGap = hasAnyTrans 
+  const lineTopPadding = hasMainTrans 
     ? 'calc((var(--dyn-trans-font-size, 0.55em) * 2.5) + var(--dyn-trans-top-padding, 8px))' 
     : '0px';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', paddingTop: clearanceGap }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', paddingTop: lineTopPadding }}>
       <span
           className="primary-text"
           style={{
             display: 'inline-flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            alignItems: 'center', // Natively mimics the vertical-align middle side-by-side mapping
-            rowGap: clearanceGap, // This physically splits the lines dynamically ONLY when they wrap!
+            alignItems: 'center',
+            rowGap: 0,
             whiteSpace: 'pre-wrap',
             wordBreak: 'normal',
             overflowWrap: 'normal',
@@ -173,6 +221,7 @@ const SplitLine = ({
           }}
       >
         <span
+            ref={parentCoreRef}
             className="core-chunks"
             style={{
               position: 'relative',
@@ -209,6 +258,7 @@ const SplitLine = ({
           </span>
           {mainPronunciationJSX && (
             <span
+                  ref={parentPronRef}
                   className="pronunciation-text"
                   style={blockPronStyle}
                   dir="ltr"
