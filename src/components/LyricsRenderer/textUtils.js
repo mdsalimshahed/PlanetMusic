@@ -19,8 +19,8 @@ export const normalizeTrans = (str, keepParens = false) => {
     res = res.replace(/[()\[\]{}（）]/g, '');
   }
   
-  const leadingPunctRegex = keepParens ? /^[^\w\s()]+|/gu : /^[\p{P}\p{S}]+/gu;
-  const trailingPunctRegex = keepParens ? /[^\w\s()]+$/gu : /[\p{P}\p{S}]+$/gu;
+  const leadingPunctRegex = keepParens ? /^[^\p{L}\p{N}\p{M}\s()]+/gu : /^[\p{P}\p{S}]+/gu;
+  const trailingPunctRegex = keepParens ? /[^\p{L}\p{N}\p{M}\s()]+$/gu : /[\p{P}\p{S}]+$/gu;
 
   return res
     .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'")

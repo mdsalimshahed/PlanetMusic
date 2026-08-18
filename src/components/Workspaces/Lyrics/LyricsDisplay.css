@@ -401,6 +401,7 @@ rt.pronunciation-text, .pronunciation-text {
   word-break: normal !important;
   overflow-wrap: normal !important;
   max-width: 100%;
+  font-family: var(--font-family);
 }
 
 .preview-line.active rt.pronunciation-text, 

@@ -14,7 +14,8 @@ export const basePronStyle = {
   WebkitTextFillColor: 'currentcolor',
   backgroundImage: 'none',
   color: 'rgba(255,255,255,0.7)',
-  textShadow: 'none'
+  textShadow: 'none',
+  fontFamily: 'var(--font-family)'
 };
 
 export const getDisplayTranslation = (originalText, translation) => {

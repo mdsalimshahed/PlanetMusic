@@ -89,8 +89,8 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                 charIdxPointer += charsToConsume;
 
                 if (chunkChars.length > 0) {
-                    const cClean = chunkText.toLowerCase().replace(/[\W_]+/g, '');
-                    const tClean = (chunk.trans || '').toLowerCase().replace(/[\W_]+/g, '');
+                    const cClean = chunkText.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+                    const tClean = (chunk.trans || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
                     
                     if (chunk.type === 'en' || (cClean && cClean === tClean)) {
                         alignedChunks.push({ type: 'en', trans: '', chars: chunkChars });
@@ -132,9 +132,9 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                 if (b.isLatin && blockStr.trim().length > 0) {
                     const latinWords = blockStr.split(/\s+/).filter(Boolean);
                     latinWords.forEach(lw => {
-                        const lwClean = lw.toLowerCase().replace(/[\W_]+/g, '');
+                        const lwClean = lw.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
                         if (tIdx < transWords.length) {
-                           const twClean = transWords[tIdx].toLowerCase().replace(/[\W_]+/g, '');
+                           const twClean = transWords[tIdx].toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
                            if (twClean === lwClean || twClean.includes(lwClean) || lwClean.includes(twClean)) {
                                tIdx++;
                            }
@@ -145,14 +145,14 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                     let cjkTrans = [];
                     const nextLatinBlock = blocks.find(nb => nb.isLatin && nb !== b && blocks.indexOf(nb) > blocks.indexOf(b) && Boolean(nb.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0]));
                     const nextLatinFirstWord = nextLatinBlock ? nextLatinBlock.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0] : null;
-                    const nlwClean = nextLatinFirstWord ? nextLatinFirstWord.toLowerCase().replace(/[\W_]+/g, '') : '';
+                    const nlwClean = nextLatinFirstWord ? nextLatinFirstWord.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '') : '';
 
                     while (tIdx < transWords.length) {
                         if (nlwClean) {
                             let matchFound = false;
                             let lookAhead = '';
                             for (let i = tIdx; i < Math.min(tIdx + 4, transWords.length); i++) {
-                                lookAhead += transWords[i].toLowerCase().replace(/[\W_]+/g, '');
+                                lookAhead += transWords[i].toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
                                 if (lookAhead === nlwClean) {
                                     matchFound = true;
                                     break;

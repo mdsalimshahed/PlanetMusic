@@ -9,7 +9,7 @@
 
 .live-debug-box {
     position: absolute;
-    border: 1px dotted; /* Set all bounding boxes to dotted */
+    border: 1px dashed; /* Set all bounding boxes to dashed */
     border-radius: 0;
     box-sizing: border-box;
     pointer-events: none;

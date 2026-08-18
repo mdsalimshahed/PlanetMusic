@@ -36,8 +36,8 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
                 charIdxPointer += charsToConsume;
 
                 if (chunkChars.length > 0) {
-                    const cClean = chunkText.toLowerCase().replace(/[\W_]+/g, '');
-                    const tClean = (chunk.trans || '').toLowerCase().replace(/[\W_]+/g, '');
+                    const cClean = chunkText.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+                    const tClean = (chunk.trans || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
                     if (chunk.type === 'en' || (cClean && cClean === tClean)) {
                         alignedChunks.push({ type: 'en', trans: '', chars: chunkChars });
                     } else {
@@ -78,8 +78,8 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
     if (pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
         const isCJKLine = chars.some(c => isCJ(c.char));
         if (!isCJKLine && !parsedChunks) {
-            const cleanOrig = originalText.toLowerCase().replace(/[\W_]+/g, '');
-            const cleanPron = pronunciation.toLowerCase().replace(/[\W_]+/g, '');
+            const cleanOrig = originalText.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+            const cleanPron = pronunciation.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
             if (cleanOrig !== cleanPron) {
                 displayPronString = normalizeTrans(pronunciation, !isAdlib);
             }
