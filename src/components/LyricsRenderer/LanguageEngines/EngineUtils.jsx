@@ -125,7 +125,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
                   overflowWrap: 'normal'
                 }
               : {
-                  whiteSpace: 'pre-wrap', 
+                  whiteSpace: 'pre-line', 
                   wordBreak: 'normal', 
                   overflowWrap: 'normal',
                   display: 'inline'
@@ -309,7 +309,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
         if (isRTL) {
             return (
                 <span key={chunkIdx} className="lyric-text-span" style={{ 
-                  whiteSpace: 'pre-wrap', 
+                  whiteSpace: 'pre-line', 
                   display: 'inline', 
                   position: 'relative',
                   top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
@@ -340,7 +340,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                       className="lyric-text-span" 
                       style={{ 
                         display: 'inline', 
-                        whiteSpace: 'pre-wrap'
+                        whiteSpace: 'pre-line'
                       }}
                     >
                       {groupedText}
@@ -362,7 +362,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                     key={`chunk-${chunkIdx}`} 
                     className="lyric-text-span" 
                     style={{ 
-                      whiteSpace: 'pre-wrap', 
+                      whiteSpace: 'pre-line', 
                       display: 'inline', 
                       position: 'relative',
                       top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
@@ -375,7 +375,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
     }).filter(item => item !== null);
 
     return (
-      <span className="main-lyrics-flow-wrapper" style={{ display: 'inline', whiteSpace: 'pre-wrap' }}>
+      <span className="main-lyrics-flow-wrapper" style={{ display: 'inline', whiteSpace: 'pre-line' }}>
         {chunkElements}
       </span>
     );
