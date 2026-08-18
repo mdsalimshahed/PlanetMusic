@@ -1,79 +1,173 @@
 /* --- src/components/Core/Background.jsx --- */
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import './Background.css';
 
-const VIBRANT_PALETTE = [
-  '#ff0a54', // Vivid Pink
-  '#ff7000', // Bright Orange
-  '#ffc300', // Bright Yellow
-  '#00f5d4', // Aqua/Cyan
-  '#00bbf9', // Bright Blue
-  '#f15bb5', // Magenta
-  '#38b000', // Lime Green
-];
+// Accept an `isModalOpen` prop from your parent App/Dashboard
+const Background = ({ isModalOpen = false }) => {
+  // 1. Hyper-targeted Vault JSON Scanner
+  const lyricPool = useMemo(() => {
+    const profiles = new Map();
+    const pool = [];
+    const seenLines = new Set();
 
-const Background = () => {
-  const [isTabVisible, setIsTabVisible] = useState(true);
+    const getHighRes = (url) => url ? url.replace('100x100', '300x300') : null;
 
+    // Scan localStorage for the Vault JSON
+    for (let i = 0; i < localStorage.length; i++) {
+      try {
+        const item = localStorage.getItem(localStorage.key(i));
+        if (!item || (!item.startsWith('{') && !item.startsWith('['))) continue;
+
+        const data = JSON.parse(item);
+        
+        let tracks = [];
+        if (data.library && Array.isArray(data.library)) tracks = data.library;
+        else if (Array.isArray(data)) tracks = data;
+        else if (data.wrapperType === 'track') tracks = [data];
+
+        tracks.forEach(track => {
+          if (track.wrapperType !== 'track') return;
+
+          const trackArtist = track.artistName || 'Unknown Artist';
+          
+          const trackArt = getHighRes(track.artworkUrl100 || track.artworkUrl || track.coverUrl);
+          if (trackArt) profiles.set(trackArtist.toLowerCase().trim(), trackArt);
+
+          if (track.artistImages && typeof track.artistImages === 'object') {
+            Object.entries(track.artistImages).forEach(([aName, aPic]) => {
+              if (aPic) profiles.set(aName.toLowerCase().trim(), aPic);
+            });
+          }
+
+          const sourceData = track.syncData || track.autoSyncData;
+
+          if (sourceData && Array.isArray(sourceData) && sourceData.length > 0) {
+            sourceData.forEach(lineObj => {
+              const text = lineObj.text?.trim();
+              if (text && text.length > 3 && text.length < 120 && !text.startsWith('http')) {
+                const lineArtist = (lineObj.singer || trackArtist).split(',')[0].trim();
+                const photo = profiles.get(lineArtist.toLowerCase()) || profiles.get(trackArtist.toLowerCase().trim());
+                
+                if (photo && !seenLines.has(text)) {
+                  seenLines.add(text);
+                  pool.push({ line: text, artist: lineArtist, photo });
+                }
+              }
+
+              if (Array.isArray(lineObj.adlibs)) {
+                lineObj.adlibs.forEach(adlib => {
+                  const adText = adlib.text?.replace(/[()]/g, '').trim();
+                  if (adText && adText.length > 2) {
+                    const adArtist = (adlib.singer || lineObj.singer || trackArtist).split(',')[0].trim();
+                    const adPhoto = profiles.get(adArtist.toLowerCase()) || profiles.get(trackArtist.toLowerCase().trim());
+                    
+                    if (adPhoto && !seenLines.has(adText)) {
+                      seenLines.add(adText);
+                      pool.push({ line: adText, artist: adArtist, photo: adPhoto });
+                    }
+                  }
+                });
+              }
+            });
+          } else if (typeof track.lyrics === 'string') {
+            const rawLines = track.lyrics.split('\n').map(l => l.replace(/\[.*?\]/g, '').trim()).filter(l => l.length > 3);
+            rawLines.forEach(text => {
+              const photo = profiles.get(trackArtist.toLowerCase().trim());
+              if (photo && !seenLines.has(text)) {
+                seenLines.add(text);
+                pool.push({ line: text, artist: trackArtist, photo });
+              }
+            });
+          }
+        });
+      } catch (e) {}
+    }
+
+    return pool;
+  }, []);
+
+  const [bubbles, setBubbles] = useState([]);
+  const poolRef = useRef(lyricPool);
+  poolRef.current = lyricPool;
+
+  // 2. Vertical Waterfall Spawn Engine (Listens to isModalOpen)
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      setIsTabVisible(document.visibilityState === 'visible');
+    // If the modal opens, instantly destroy bubbles and stop the timer
+    if (isModalOpen) {
+      setBubbles([]); 
+      return; 
+    }
+
+    let timerId = null;
+
+    const scheduleNextSpawn = () => {
+      // Rapid spawn pacing: every 0.6s to 1.4s
+      const delay = Math.floor(Math.random() * 800) + 600;
+      
+      timerId = setTimeout(() => {
+        const currentPool = poolRef.current;
+        if (currentPool.length > 0) {
+          const randomItem = currentPool[Math.floor(Math.random() * currentPool.length)];
+
+          const newBubble = {
+            id: Date.now() + Math.random(),
+            line: randomItem.line,
+            artist: randomItem.artist,
+            photo: randomItem.photo,
+            x: Math.floor(Math.random() * 100), 
+            duration: Math.floor(Math.random() * 10) + 12
+          };
+
+          setBubbles((prev) => {
+            // Keep up to 24 bubbles on screen since they take a long time to travel up
+            if (prev.length >= 24) {
+              return [...prev.slice(1), newBubble];
+            }
+            return [...prev, newBubble];
+          });
+        }
+        scheduleNextSpawn();
+      }, delay);
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, []);
 
-  // Reduced from 45 down to 14 circles to reduce GPU fill-rate strain by 70%
-  const circles = useMemo(() => {
-    return Array.from({ length: 14 }).map((_, i) => {
-      const size = Math.random() * 12 + 6;
-      const startX = Math.random() * 100;
-      const startY = Math.random() * 100;
-      const moveX = (Math.random() - 0.5) * 30;
-      const moveY = (Math.random() - 0.5) * 30;
-      const duration = Math.random() * 10 + 10;
-      const delay = Math.random() * -20;
+    scheduleNextSpawn();
 
-      return {
-        id: i,
-        color: VIBRANT_PALETTE[i % VIBRANT_PALETTE.length],
-        size: size,
-        startX: startX,
-        startY: startY,
-        moveX: moveX,
-        moveY: moveY,
-        duration: duration,
-        delay: delay
-      };
-    });
-  }, []);
+    // Clean up timer when unmounting OR when isModalOpen changes
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [isModalOpen]); // The effect re-runs anytime the modal opens or closes!
 
-  if (!isTabVisible) return <div className="dynamic-circle-bg" />;
+  const handleAnimationEnd = (id) => {
+    setBubbles((prev) => prev.filter((b) => b.id !== id));
+  };
 
   return (
     <div className="dynamic-circle-bg">
-      <div className="circles-container">
-        {circles.map(circle => (
+      <div className="ambient-vignette" />
+
+      {/* Floating Lyric Chat Bubbles Canvas */}
+      <div className="lyric-bubbles-container">
+        {bubbles.map((b) => (
           <div
-            key={circle.id}
-            className="floating-circle"
+            key={b.id}
+            className="lyric-chat-bubble"
             style={{
-              background: `radial-gradient(circle, ${circle.color} 0%, transparent 70%)`,
-              width: `${circle.size * 2}vw`,
-              height: `${circle.size * 2}vw`,
-              left: `${circle.startX}vw`,
-              top: `${circle.startY}vh`,
-              animationDuration: `${circle.duration}s`,
-              animationDelay: `${circle.delay}s`,
-              '--move-x': `${circle.moveX}vw`,
-              '--move-y': `${circle.moveY}vh`
+              left: `clamp(20px, ${b.x}%, calc(100% - 360px))`,
+              animationDuration: `${b.duration}s`
             }}
-          />
+            onAnimationEnd={() => handleAnimationEnd(b.id)}
+          >
+            <img src={b.photo} alt={b.artist} className="bubble-artist-photo" />
+            <div className="bubble-content">
+              <span className="bubble-artist">{b.artist}</span>
+              <span className="bubble-lyric">"{b.line}"</span>
+            </div>
+          </div>
         ))}
       </div>
-      <div className="fluid-glass-overlay"></div>
     </div>
   );
 };
 
-export default Background;
+export default React.memo(Background);

@@ -1,0 +1,85 @@
+/* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.css --- */
+.live-lyrics-preview {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dyn-live-sync-gap, 16px);
+  padding: 120px 20px clamp(40px, 8vw, 80px) 20px;
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 8%,
+    black 92%,
+    transparent 100%
+  );
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.live-lyrics-preview::-webkit-scrollbar {
+  display: none;
+}
+
+.preview-line {
+  font-family: var(--font-family);
+  font-size: clamp(16px, 5vw, var(--dyn-live-sync-font-size, 34px));
+  font-weight: 700; 
+  line-height: 1.35;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  cursor: pointer;
+  margin: 0;
+  opacity: 0.4;
+  transform: translate3d(0, 0, 0) scale(0.95);
+  transform-origin: left center;
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-sizing: border-box;
+}
+
+.preview-line:hover {
+  opacity: 0.8;
+  transform: translate3d(0, 0, 0) scale(0.98);
+}
+
+.preview-line.active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Soft dark drop-shadow behind main text */
+.preview-line .main-lyrics-layer,
+.preview-line .adlib-node .primary-text {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+}
+
+.preview-line.active .main-lyrics-layer,
+.preview-line.active .adlib-node .primary-text {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+}
+
+@media (max-width: 900px) {
+  .preview-line {
+    font-size: clamp(
+      16px,
+      4.5vw,
+      min(var(--dyn-live-sync-font-size, 34px), 26px)
+    );
+  }
+}

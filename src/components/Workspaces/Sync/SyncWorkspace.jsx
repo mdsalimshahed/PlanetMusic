@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
-import { getGraphemes, normalizeTrans, isCJ } from '../../LyricsRenderer/textUtils';
-import { alignChunksWithTransliteration, renderFormattedTranslation } from '../../LyricsRenderer/Formatters';
+import { isRTLLanguage } from '../../LyricsRenderer/textUtils';
+import EngineRouter from '../../LyricsRenderer/LanguageEngines/EngineRouter';
+import { extractCharsAndSegments } from '../../LyricsRenderer/LanguageEngines/EngineUtils';
 import './SyncWorkspace.css';
 
 export const SyncWorkspace = ({
@@ -21,13 +22,13 @@ export const SyncWorkspace = ({
 
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
-
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
+
     let img = new Image();
     img.crossOrigin = "Anonymous"; 
     img.onload = () => {
@@ -68,11 +69,13 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
+
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
         return;
       }
+
       const target = document.getElementById('sync-yt-target-container');
       if (!target) return;
       
@@ -122,7 +125,9 @@ export const SyncWorkspace = ({
         }
       });
     };
+
     initSyncYT();
+
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -150,6 +155,7 @@ export const SyncWorkspace = ({
   useEffect(() => {
     const handleWorkspaceTime = (e) => {
       const time = e.detail;
+
       if (progressSliderRef.current) {
          progressSliderRef.current.value = time;
          const max = parseFloat(progressSliderRef.current.max) || 1;
@@ -171,219 +177,94 @@ export const SyncWorkspace = ({
         }
       }
     };
+
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
-
-    const activeSpacingText = node.spacingText || '';
-    const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
-    const activeDisplayText = useSpacingText ? activeSpacingText : (node.text || '');
-    
-    let chars = [];
-    let globalCpIdx = 0;
-    let gIdx = 0;
-    const segments = node.segments || [{ text: node.text }];
-
-    if (useSpacingText) {
-         const spacedGraphemes = getGraphemes(activeDisplayText);
-         const origGraphemes = getGraphemes(node.text || '');
-         let origPointer = 0;
-         let segmentPointer = 0;
-         let charPointerInSegment = 0;
-         let currentCpStart = 0;
-         
-         spacedGraphemes.forEach(char => {
-             let currentSeg = segments[segmentPointer] || segments[segments.length - 1] || {};
-             let isOrigChar = false;
-             
-             if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
-                 isOrigChar = true;
-             } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
-                 isOrigChar = false;
-             } else {
-                 isOrigChar = !/\s/.test(char);
-             }
-
-             const cpLen = Array.from(char).length;
-             chars.push({ char, seg: currentSeg, globalIndex: gIdx++, cpStart: currentCpStart, cpEnd: currentCpStart + cpLen });
-
-             if (isOrigChar) {
-                 const origLen = Array.from(origGraphemes[origPointer] || char).length;
-                 currentCpStart += origLen;
-                 origPointer++;
-                 charPointerInSegment += getGraphemes(char).length;
-                 if (currentSeg && charPointerInSegment >= getGraphemes(currentSeg.text || '').length) {
-                     segmentPointer++;
-                     charPointerInSegment = 0;
-                 }
-             }
-         });
-    } else {
-         segments.forEach(seg => {
-             const segChars = getGraphemes(seg.text);
-             segChars.forEach(char => {
-                 const cpLen = Array.from(char).length;
-                 chars.push({ char, seg, globalIndex: gIdx++, cpStart: globalCpIdx, cpEnd: globalCpIdx + cpLen });
-                 globalCpIdx += cpLen;
-             });
-         });
-    }
+    const isRTL = isRTLLanguage(node.text || '');
+    const { chars, hasSpacingText } = extractCharsAndSegments(
+      { text: node.text, segments: node.segments },
+      node
+    );
 
     let displayChars = chars;
     if (isMain && node.isSplit && node.adlibs && node.adlibs.length > 0) {
          displayChars = chars.filter(c => !node.adlibs.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd));
     }
 
-    let parsedChunks = null;
-    let fullTrans = null;
-    let pronString = node.pronunciation || '';
-    
-    if (typeof pronString === 'string') {
-         if (pronString.startsWith('{')) {
-              try { const p = JSON.parse(pronString); parsedChunks = p.chunks; fullTrans = p.full; } catch(e){}
-         } else if (pronString.startsWith('[')) {
-              try { parsedChunks = JSON.parse(pronString); } catch(e){}
-         } else {
-              fullTrans = pronString;
-         }
-    }
+    const isOnlyPunct = displayChars.length > 0 && displayChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
 
-    const basePronStyle = {
+    const { mainJSX, pronunciationJSX } = EngineRouter({
+        chars: displayChars,
+        lang: node.lang || 'auto',
+        translation: null, // Strictly disables translation from injecting into the sync workspace
+        pronunciation: node.pronunciation,
+        hasSpacingText,
+        isFocused: false, // The sync workspace nodes mirror the "Live" styling
+        masterPalette,
+        originalText: node.text,
+        isOnlyPunct
+    });
+
+    const blockPronStyle = {
          fontSize: 'var(--dyn-translit-font-size, 0.55em)',
          fontWeight: '800',
          textTransform: 'uppercase',
          letterSpacing: '0.5px',
-         textAlign: 'center',
+         textAlign: 'left',
          marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
-         display: 'inline-block',
+         display: 'block',
          whiteSpace: 'nowrap',
          WebkitTextFillColor: 'currentcolor',
          backgroundImage: 'none',
          color: 'rgba(255,255,255,0.7)',
-         textShadow: 'none'
-    };
-
-    const getSegmentStyle = (seg) => {
-         let targetArtists = seg?.artists;
-         let isGrad = false;
-         let gradStyle = '';
-
-         if (targetArtists && targetArtists.length > 1) {
-             isGrad = true;
-             const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
-             gradStyle = `linear-gradient(90deg, ${gradientColors})`;
-         } else if (seg?.isGradient && seg?.gradient) {
-             isGrad = true;
-             gradStyle = seg.gradient;
-         }
-
-         if (isGrad) {
-             return {
-                 backgroundImage: gradStyle,
-                 WebkitBackgroundClip: 'text',
-                 WebkitTextFillColor: 'transparent',
-                 WebkitBoxDecorationBreak: 'clone',
-                 display: 'inline',
-                 paddingBottom: '1.2em',
-                 paddingTop: '0.2em',
-                 filter: `drop-shadow(0 4px 8px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
-             };
-         }
-         return {
-             display: 'inline',
-             paddingBottom: '1.2em',
-             paddingTop: '0.2em'
-         };
-    };
-
-    const renderColoredChar = (c, globalIdx) => {
-         const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
-         let style = { transition: 'none', fontWeight: 'bold' };
-         
-         if (isPunct && c.char.trim() !== '') {
-             style = {
-                 ...style,
-                 color: '#fbbf24',
-                 WebkitTextFillColor: '#fbbf24',
-                 textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
-                 backgroundImage: 'none',
-                 filter: 'none'
-             };
-         } else {
-             let targetArtists = c.seg?.artists;
-             let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
-             
-             if (!isGrad) {
-                 let activeColor = '#ffffff';
-                 if (targetArtists && targetArtists.length === 1) {
-                     activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-                 } else if (c.seg?.color) {
-                     activeColor = c.seg.color;
-                 }
-                 style.color = activeColor;
-                 style.WebkitTextFillColor = activeColor;
-                 style.textShadow = `0 4px 8px rgba(0,0,0,0.9), 0 0 20px ${activeColor}80`;
-             }
-         }
-         return <span key={globalIdx} style={style}>{c.char}</span>;
-    };
-
-    const alignedJSX_Gradient = alignChunksWithTransliteration(
-         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, false
-    );
-    const alignedJSX_Solid = alignChunksWithTransliteration(
-         displayChars, parsedChunks, fullTrans, renderColoredChar, basePronStyle, false, false, useSpacingText, getSegmentStyle, true
-    );
-
-    let shouldRenderBlockPron = false;
-    let displayPronString = null;
-    const isCJKLine = displayChars.some(c => isCJ(c.char));
-    
-    if (pronString && !pronString.startsWith('{') && !pronString.startsWith('[')) {
-         if (!isCJKLine && !parsedChunks) {
-             const cleanOrig = node.text.toLowerCase().replace(/[\W_]+/g, '');
-             const cleanPron = pronString.toLowerCase().replace(/[\W_]+/g, '');
-             if (cleanOrig !== cleanPron) {
-                 displayPronString = normalizeTrans(pronString);
-                 shouldRenderBlockPron = true;
-             }
-         }
-    }
-
-    const blockPronStyle = {
-         ...basePronStyle,
-         marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
-         display: 'block',
-         textAlign: 'left',
+         textShadow: 'none',
          wordSpacing: '4px',
          lineHeight: '1.4'
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', lineHeight: 1.2, fontSize: 'var(--workspace-lyric-size, 16px)' }}>
-           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box' }}>
-               <span className="core-chunks" style={{ position: 'relative', display: 'inline-block', margin: '0', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
-                   
-                   <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                     <span className="main-lyrics-layer layer-gradient" style={{ display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir="auto" aria-hidden="true">
-                         {alignedJSX_Gradient}
-                     </span>
-                     <span className="main-lyrics-layer layer-solid" style={{ position: 'absolute', inset: 0, display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box', pointerEvents: 'none' }} dir="auto">
-                         {alignedJSX_Solid}
-                     </span>
+        <div className="preview-line" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+           <span className="primary-text" style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'normal',
+              overflowWrap: 'normal',
+              position: 'relative',
+              textAlign: 'left',
+              width: '100%',
+              maxWidth: '100%',
+              textWrap: 'normal',
+              boxSizing: 'border-box'
+            }}>
+               <span className="core-chunks" style={{
+                  position: 'relative',
+                  display: 'inline-flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-start',
+                  verticalAlign: 'baseline',
+                  margin: '0',
+                  width: 'auto',
+                  maxWidth: '100%',
+                  textAlign: 'left',
+                  boxSizing: 'border-box'
+                }}>
+                   <span className="main-lyrics-layer layer-gradient" style={{ display: 'inline', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir={isRTL ? 'rtl' : 'ltr'}>
+                       {mainJSX}
                    </span>
-
+                   {pronunciationJSX && (
+                       <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
+                           {pronunciationJSX}
+                       </span>
+                   )}
                </span>
            </span>
-           
-           {shouldRenderBlockPron && displayPronString && (
-               <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
-                   {renderFormattedTranslation(displayPronString, false)}
-               </span>
-           )}
         </div>
     );
   };
@@ -454,9 +335,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                         onClick={cycleSource} 
-                         style={{...cursorStyle, display: 'inline-block'}} 
-                         title={title}
+                        onClick={cycleSource} 
+                        style={{...cursorStyle, display: 'inline-block'}} 
+                        title={title}
                         onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -537,7 +418,6 @@ export const SyncWorkspace = ({
           const isSynced = line.start !== null && line.end !== null;
           
           const hasParentheses = isMain && /[(\uFF08][^)\uFF09]+[)\uFF09]/.test(line.text);
-
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
@@ -590,9 +470,9 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                   
+                
                 {renderSyncNode(line, isMain)}
-                   
+                
                 {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}

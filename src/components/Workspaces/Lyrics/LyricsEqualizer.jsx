@@ -1,5 +1,6 @@
 /* --- src/components/Workspaces/Lyrics/LyricsEqualizer.jsx --- */
 import React, { useEffect, useRef } from 'react';
+import './LyricsEqualizer.css';
 
 const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, isEditing }) => {
   const canvasRef = useRef(null);
@@ -56,7 +57,6 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
         const bufferLength = freqData.length;
         
         let maxScale = 0;
-
         for (let i = 0; i < numBars; i++) {
           const percent = i / numBars;
           

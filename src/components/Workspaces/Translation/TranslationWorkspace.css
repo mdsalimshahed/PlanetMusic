@@ -189,8 +189,9 @@
 }
 
 .tw-original-text {
+    font-family: var(--font-family);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 900; 
     line-height: 1.4;
     padding-bottom: 4px;
     text-align: left !important;
@@ -205,7 +206,8 @@
     color: rgba(255,255,255,0.9);
     border-radius: 6px;
     padding: 8px 10px;
-    font-family: inherit;
+    font-family: var(--font-family);
+    font-weight: 900; /* Forced to 900 to match the other panes */
     font-size: 12px;
     transition: border-color 0.2s;
     resize: none;

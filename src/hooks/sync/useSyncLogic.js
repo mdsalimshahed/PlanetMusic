@@ -1,6 +1,5 @@
 /* --- src/hooks/sync/useSyncLogic.js --- */
 import { useEffect, useRef } from 'react';
-import { quickTransliterate } from '../../services/transliterator';
 import { workspaceClock } from '../../utils/clockEngine';
 import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
 
@@ -316,7 +315,7 @@ export const useSyncKeyboard = ({
 };
 
 // ------------------------------------------------------------------
-// 3. ACTIONS: DB Fetching, Bulk Translating, Ad-lib Splitting, & Auto Mapping
+// 3. ACTIONS: DB Fetching, Ad-lib Splitting, & Auto Mapping
 // ------------------------------------------------------------------
 export const useSyncActions = ({
   selectedSong, isSaved, customData, setCustomData, masterPalette,
@@ -379,8 +378,7 @@ export const useSyncActions = ({
 
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
 
-                const pronData = await quickTransliterate(adlibText);
-
+                // Stripped quickTransliterate to respect central Translation Workspace authority
                 adlibs.push({
                   text: adlibText,
                   charStart,
@@ -389,7 +387,7 @@ export const useSyncActions = ({
                   end: null,
                   segments: adlibSegments,
                   singer: derivedSinger,
-                  pronunciation: pronData.transliteration ? JSON.stringify({ full: pronData.transliteration, chunks: [{ type: 'foreign', text: adlibText, trans: pronData.transliteration }] }) : null
+                  pronunciation: null 
                 });
             }
         }

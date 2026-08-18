@@ -1,5 +1,5 @@
 /* --- src/App.css --- */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* --- UNIVERSAL BOX SIZING SAFEGUARD --- */
 *, *::before, *::after {
@@ -18,7 +18,9 @@
   --glass-bg-heavy: rgba(10, 10, 25, 0.4);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.15);
-  --font-family: 'Outfit', sans-serif;
+  --font-family: 'Outfit', 'Noto Naskh Arabic', 'Noto Serif Bengali', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --arabic-font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+  --bengali-font-family: 'Noto Serif Bengali', 'Vrinda', 'SolaimanLipi', Arial, sans-serif;
 }
 
 html, body {
@@ -279,6 +281,7 @@ body {
 .column-scroll-area::-webkit-scrollbar {
   width: 6px;
 }
+
 .column-scroll-area::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
@@ -394,7 +397,7 @@ body {
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: center; /* Ensures buttons center within this container */
+  justify-content: center;
 }
 
 .keep-sample-btn {
@@ -673,8 +676,6 @@ body .dynamic-radius-override {
 .disable-animations *,
 .disable-animations *::before,
 .disable-animations *::after {
-  /* CRITICAL FIX: Force animations to instantly finish (0.001ms) instead of 'none'.
-     This ensures elements that rely on animations to become visible (like translations) still appear! */
   animation-duration: 0.001ms !important;
   animation-delay: 0s !important;
   transition: none !important;

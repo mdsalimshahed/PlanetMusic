@@ -1,4 +1,4 @@
-/* --- src/components/ModalRight.jsx --- */
+/* --- src/components/Modals/ModalRight.jsx --- */
 import React from 'react';
 import DynamicBackground from '../Core/DynamicBackground';
 import ImageManager from '../Workspaces/Lyrics/ImageManager';
@@ -6,6 +6,7 @@ import { SyncWorkspace } from '../Workspaces/Sync/SyncWorkspace';
 import LyricsDisplay from '../Workspaces/Lyrics/LyricsDisplay';
 import TranslationWorkspace from '../Workspaces/Translation/TranslationWorkspace';
 import AdlibDebugOverlay from '../AdlibDebug/AdlibDebugOverlay';
+import LiveDebugOverlay from '../LiveDebug/LiveDebugOverlay';
 import './ModalRight.css';
 
 const ModalRight = (props) => {
@@ -37,6 +38,11 @@ const ModalRight = (props) => {
       {props.showAdlibDebug && props.lyricsViewMode === 'focused' && !props.isSyncMode && !props.isEditing && (
         <AdlibDebugOverlay {...props} />
       )}
+      
+      {props.showLiveDebug && props.lyricsViewMode === 'live' && !props.isSyncMode && !props.isEditing && (
+        <LiveDebugOverlay {...props} />
+      )}
+
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer';
 import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker';
+import './FocusedLyricsView.css';
 
 const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack }) => {
   const containerRef = useRef(null);
@@ -39,6 +40,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     
     const lines = cachedLinesRef.current;
     let newActiveIndex = -1;
+
     for (let i = 0; i < lines.length; i++) {
         const { start, end, nextStart } = lines[i];
         if (!isNaN(start) && time >= start) {
@@ -68,6 +70,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     for (let i = 0; i < adlibs.length; i++) {
         const item = adlibs[i];
         if (isNaN(item.start)) continue;
+
         let targetState = 'hidden';
         if (time >= item.start && time <= item.end) targetState = 'active';
         else if (time >= item.start) targetState = 'visible';
@@ -138,6 +141,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
                 break;
             }
         }
+
         return (
             <LyricLineWrapper
                 key={i}

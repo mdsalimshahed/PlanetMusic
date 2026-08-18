@@ -1,6 +1,7 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
 import React, { useEffect, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer';
+import './LiveLyricsView.css';
 
 const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack }) => {
   const containerRef = useRef(null);
@@ -38,6 +39,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     
     const lines = cachedLinesRef.current;
     let newActiveIndex = -1;
+
     for (let i = 0; i < lines.length; i++) {
         const { start, end, nextStart } = lines[i];
         if (!isNaN(start) && time >= start) {
@@ -78,6 +80,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     for (let i = 0; i < adlibs.length; i++) {
         const item = adlibs[i];
         if (isNaN(item.start)) continue;
+
         let targetState = 'hidden';
         if (time >= item.start && time <= item.end) targetState = 'active';
         else if (time >= item.start) targetState = 'visible';
@@ -154,6 +157,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
                 break;
             }
         }
+
         return (
             <LyricLineWrapper
               key={i}

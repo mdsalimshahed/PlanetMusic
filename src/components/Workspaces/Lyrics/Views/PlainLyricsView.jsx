@@ -1,9 +1,9 @@
 /* --- src/components/Workspaces/Lyrics/Views/PlainLyricsView.jsx --- */
 import React, { useMemo } from 'react';
 import { getGraphemes } from '../../../LyricsRenderer/textUtils';
+import './PlainLyricsView.css';
 
 const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
-
   const groupedPlainLyrics = useMemo(() => {
     const groups = [];
     let currentGroup = null;
@@ -66,10 +66,10 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
     // Apply the gradient or solid color to the SEGMENT parent wrapper
     let parentStyle = {};
     if (isGradient) {
-      parentStyle = { 
-        backgroundImage: gradientStyle, 
-        WebkitBackgroundClip: 'text', 
-        WebkitTextFillColor: 'transparent',
+      parentStyle = {
+         backgroundImage: gradientStyle,
+         WebkitBackgroundClip: 'text',
+         WebkitTextFillColor: 'transparent',
         display: 'inline'
       };
     } else {
@@ -77,19 +77,18 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
     }
 
     const chars = getGraphemes(item.text || '');
-
     const renderedChars = chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let childStyle = {};
 
       if (isPunct && char.trim() !== '') {
         // Punches through the parent gradient with a solid opaque color
-        childStyle = { 
-          color: '#fbbf24', 
-          WebkitTextFillColor: '#fbbf24', 
-          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+        childStyle = {
+           color: '#fbbf24',
+           WebkitTextFillColor: '#fbbf24',
+           textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
           backgroundImage: 'none' 
-        };
+         };
       }
 
       return Object.keys(childStyle).length > 0 ? (
@@ -131,6 +130,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
               displayHeader = displayHeader.split(':')[0].trim();
             }
           }
+
           return (
           <React.Fragment key={group.id}>
             {group.sectionHeader && (

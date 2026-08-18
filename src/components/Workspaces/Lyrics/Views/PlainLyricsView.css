@@ -1,0 +1,74 @@
+/* --- src/components/Workspaces/Lyrics/Views/PlainLyricsView.css --- */
+.plain-section-header {
+  font-size: clamp(12px, 1.4vw, 14px);
+  font-weight: 800;
+  color: #fbbf24;
+  margin: 32px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lyrics-display > ReactFragment:first-child .plain-section-header,
+.lyrics-display > div:first-child .plain-section-header {
+  margin-top: 0 !important;
+}
+
+.plain-artist-block {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-left: 3px solid #ffffff; 
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+.plain-artist-block:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.plain-artist-name {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.plain-block-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plain-lyric-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.5;
+  font-family: var(--font-family);
+  font-weight: 900; /* Forced to 900 */
+}
+
+.plain-lyric-translation {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: normal; /* Optional reset so translation isn't too heavy */
+  font-style: italic;
+  text-shadow: none !important;
+}
+
+@media (max-width: 600px) {
+  .plain-lyric-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .plain-artist-tag {
+    text-align: left;
+    min-width: auto;
+  }
+}

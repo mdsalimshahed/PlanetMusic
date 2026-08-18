@@ -1,0 +1,18 @@
+/* --- src/components/LiveDebug/LiveDebugOverlay.css --- */
+.live-debug-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10000;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.live-debug-box {
+    position: absolute;
+    border: 1px dashed; /* Set all bounding boxes to dashed */
+    border-radius: 0;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 10003;
+    transition: background-color 0.2s ease;
+}

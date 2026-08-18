@@ -7,48 +7,109 @@
   height: 100vh;
   overflow: hidden;
   z-index: -1;
-  background-color: #030308; /* Deep dark background to make colors pop */
+  background-color: #030308;
   pointer-events: none;
 }
 
-.circles-container {
-  position: absolute;
-  inset: -20%; /* Bleed outside bounds so circles don't clip at edges */
-  opacity: 0.8; 
-}
-
-.floating-circle {
-  position: absolute;
-  border-radius: 50%;
-  will-change: transform, opacity; /* Hardware acceleration isolated to moving elements */
-  animation-name: floatAndPop;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  opacity: 0; /* Base state to ensure they are hidden before animation starts */
-  transform: translate3d(0, 0, 0) scale(0);
-}
-
-@keyframes floatAndPop {
-  0% {
-    transform: translate3d(0, 0, 0) scale(0);
-    opacity: 0;
-  }
-  25% {
-    opacity: 0.6;
-    transform: translate3d(calc(var(--move-x) * 0.25), calc(var(--move-y) * 0.25), 0) scale(1);
-  }
-  75% {
-    opacity: 0.6;
-    transform: translate3d(calc(var(--move-x) * 0.75), calc(var(--move-y) * 0.75), 0) scale(1.1);
-  }
-  100% {
-    transform: translate3d(var(--move-x), var(--move-y), 0) scale(0);
-    opacity: 0;
-  }
-}
-
-.fluid-glass-overlay {
+.ambient-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(5, 5, 16, 0.3) 0%, rgba(5, 5, 16, 0.85) 100%);
+  z-index: 1;
+  background: radial-gradient(circle at center, rgba(3, 3, 10, 0.25) 0%, rgba(3, 3, 10, 0.85) 100%);
+}
+
+.lyric-bubbles-container {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* CHAT BUBBLE STYLING */
+.lyric-chat-bubble {
+  position: absolute;
+  /* Lock starting position to the very bottom off-screen */
+  top: 100%; 
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 16px 10px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  
+  /* Fallback shrink for ultra-small mobile screens */
+  max-width: min(340px, calc(100vw - 40px)); 
+  width: max-content;
+  box-sizing: border-box;
+  will-change: transform, opacity;
+  
+  /* Apply the smooth linear upward animation */
+  animation-name: floatUpFade;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.bubble-artist-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  overflow: visible;
+}
+
+.bubble-artist {
+  font-size: 0.72em;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 2px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.bubble-lyric {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+/* FULL SCREEN BOTTOM-TO-TOP WATERFALL KEYFRAMES */
+@keyframes floatUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.85);
+  }
+  5% {
+    opacity: 0.85;
+    transform: translateY(0px) scale(1);
+  }
+  95% {
+    opacity: 0.85;
+    /* Travel all the way up past the top of the viewport */
+    transform: translateY(-110vh) scale(1);
+  }
+  100% {
+    opacity: 0;
+    /* Final gentle shrink as it vanishes off-screen */
+    transform: translateY(-115vh) scale(0.9);
+  }
 }
