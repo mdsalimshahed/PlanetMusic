@@ -389,9 +389,15 @@ rt.sync-pronunciation {
   box-sizing: border-box;
 }
 
-rt.pronunciation-text, .pronunciation-text {
+rt.pronunciation-text, 
+.pronunciation-text, 
+.segment-mask-span .pronunciation-text {
   font-size: var(--dyn-translit-font-size, 0.55em);
-  color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 0.8) * 100%), transparent);
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  opacity: var(--dyn-translit-opacity, 0.8) !important;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -405,14 +411,20 @@ rt.pronunciation-text, .pronunciation-text {
 }
 
 .preview-line.active rt.pronunciation-text, 
-.preview-line.active .pronunciation-text {
-  color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
+.preview-line.active .pronunciation-text,
+.preview-line.active .segment-mask-span .pronunciation-text {
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  opacity: 1 !important;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Live mode keeps the bottom angle */
 }
 
 .focused-line.active rt.pronunciation-text, 
-.focused-line.active .pronunciation-text {
-  color: color-mix(in srgb, var(--dyn-translit-color, #ffffff) calc(var(--dyn-translit-opacity, 1) * 100%), transparent);
+.focused-line.active .pronunciation-text,
+.focused-line.active .segment-mask-span .pronunciation-text {
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  opacity: 1 !important;
   text-shadow: 0 0 12px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 0, 0, 0.5); /* Focused mode centered shadow */
 }
 

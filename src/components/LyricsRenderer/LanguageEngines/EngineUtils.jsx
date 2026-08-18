@@ -11,9 +11,11 @@ export const basePronStyle = {
   marginTop: 'var(--dyn-translit-bottom-padding, 4px)',
   display: 'inline-block',
   whiteSpace: 'nowrap',
-  WebkitTextFillColor: 'currentcolor',
+  WebkitTextFillColor: 'var(--dyn-translit-color, #ffffff)',
+  color: 'var(--dyn-translit-color, #ffffff)',
+  opacity: 'var(--dyn-translit-opacity, 0.8)',
   backgroundImage: 'none',
-  color: 'rgba(255,255,255,0.7)',
+  WebkitBackgroundClip: 'border-box',
   textShadow: 'none',
   fontFamily: 'var(--font-family)'
 };
@@ -54,7 +56,7 @@ export const getSegmentStyle = (seg, masterPalette, isFocused) => {
   return {};
 };
 
-export const renderColoredChar = (c, globalIdx, masterPalette, isFocused) => {
+export const renderColoredChar = (c, globalIdx, masterPalette, isFocused, isMaskLayer = false) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
   let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
   
@@ -71,7 +73,10 @@ export const renderColoredChar = (c, globalIdx, masterPalette, isFocused) => {
     let targetArtists = c.seg?.artists;
     let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
     
-    if (!isGrad) {
+    if (isGrad || isMaskLayer) {
+      style.WebkitTextFillColor = 'transparent';
+      style.color = 'transparent';
+    } else {
       let activeColor = '#ffffff';
       if (targetArtists && targetArtists.length === 1) {
         activeColor = masterPalette[targetArtists[0]] || '#ffffff';
@@ -241,7 +246,6 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
 };
 
 export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {
-    // 1. Detect if any segment in the line uses a gradient mask
     let lineGradientStyle = null;
     alignedChunks.forEach(chunk => {
       const seg = chunk.chars[0]?.seg;
@@ -253,97 +257,136 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
       }
     });
 
-    const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
-        const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, masterPalette, isFocused));
-        if (renderedText.every(c => c === null)) return null;
-        
-        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
-        const seg = chunk.chars[0]?.seg;
-        const segStyle = lineGradientStyle ? {} : getSegmentStyle(seg, masterPalette, isFocused);
-        let chunkJSX;
+    // --- HELPER TO RENDER A SPECIFIC LAYER (Mask vs Pronunciation Overlay) ---
+    const renderLayerTree = (hidePronunciation = false, hideMainText = false) => {
+      return alignedChunks.map((chunk, chunkIdx) => {
+          const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, masterPalette, isFocused, Boolean(lineGradientStyle)));
+          if (renderedText.every(c => c === null)) return null;
+          
+          const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+          const seg = chunk.chars[0]?.seg;
+          const segStyle = lineGradientStyle ? {} : getSegmentStyle(seg, masterPalette, isFocused);
 
-        if (isRTL) {
-            chunkJSX = (
-                <span key={chunkIdx} className="lyric-text-span" style={{ 
-                  ...segStyle,
-                  whiteSpace: 'pre-wrap', 
-                  verticalAlign: 'middle', 
-                  maxWidth: '100%',
-                  position: 'relative',
-                  top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
-                }}>
-                  {groupedText}
-                </span>
-            );
-        } else {
-            if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
-                let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
-                if (isAdlib) {
-                  cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
-                }
+          if (isRTL) {
+              return (
+                  <span key={chunkIdx} className="lyric-text-span" style={{ 
+                    ...segStyle,
+                    whiteSpace: 'pre-wrap', 
+                    verticalAlign: 'middle', 
+                    maxWidth: '100%',
+                    position: 'relative',
+                    top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto',
+                    visibility: hideMainText ? 'hidden' : 'visible'
+                  }}>
+                    {groupedText}
+                  </span>
+              );
+          } else {
+              if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
+                  let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
+                  if (isAdlib) {
+                    cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
+                  }
 
-                chunkJSX = (
-                <span
-                    key={chunkIdx}
-                    className="inline-cjk-chunk"
-                    style={{
-                    display: 'inline-flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    verticalAlign: 'baseline',
-                    margin: hasSpacingText ? '0' : '0 2px',
-                    maxWidth: '100%'
-                    }}
-                >
+                  return (
+                    <span
+                      key={`chunk-${chunkIdx}`}
+                      className="inline-cjk-chunk"
+                      style={{
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        verticalAlign: 'top',
+                        margin: hasSpacingText ? '0' : '0 2px',
+                        maxWidth: '100%'
+                      }}
+                    >
+                      <span 
+                        className="lyric-text-span" 
+                        style={{ 
+                          ...segStyle,
+                          display: 'inline-block', 
+                          whiteSpace: 'pre-wrap', 
+                          maxWidth: '100%',
+                          visibility: hideMainText ? 'hidden' : 'visible'
+                        }}
+                      >
+                        {groupedText}
+                      </span>
+                      {cleanTrans ? (
+                        <span 
+                          className="pronunciation-text" 
+                          style={{
+                            ...basePronStyle,
+                            visibility: hidePronunciation ? 'hidden' : 'visible'
+                          }} 
+                          dir="ltr"
+                        >
+                          {renderFormattedTranslation(cleanTrans, isFocused)}
+                        </span>
+                      ) : null}
+                    </span>
+                  );
+              } else {
+                  return (
                     <span 
+                      key={`chunk-${chunkIdx}`} 
                       className="lyric-text-span" 
                       style={{ 
                         ...segStyle,
-                        display: 'inline-block', 
                         whiteSpace: 'pre-wrap', 
-                        maxWidth: '100%' 
-                      }}
-                    >
-                      {groupedText}
+                        verticalAlign: 'baseline', 
+                        display: 'inline-block', 
+                        maxWidth: '100%',
+                        position: 'relative',
+                        top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto',
+                        visibility: hideMainText ? 'hidden' : 'visible'
+                    }}>
+                        {groupedText}
                     </span>
-                    {cleanTrans ? (
-                    <span className="pronunciation-text" style={basePronStyle} dir="ltr">
-                        {renderFormattedTranslation(cleanTrans, isFocused)}
-                    </span>
-                    ) : null}
-                </span>
-                );
-            } else {
-                chunkJSX = (
-                <span 
-                  key={chunkIdx} 
-                  className="lyric-text-span" 
-                  style={{ 
-                    ...segStyle,
-                    whiteSpace: 'pre-wrap', 
-                    verticalAlign: 'baseline', 
-                    display: 'inline', 
-                    maxWidth: '100%',
-                    position: 'relative',
-                    top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
-                }}>
-                    {groupedText}
-                </span>
-                );
-            }
-        }
-        
-        return chunkJSX;
-    }).filter(item => item !== null);
+                  );
+              }
+          }
+      }).filter(item => item !== null);
+    };
 
-    // 2. If the entire line uses a gradient, wrap all lyric chunk elements inside a single line-wide gradient parent
-    if (lineGradientStyle) {
+    // --- NON-GRADIENT SINGLE LAYER RENDER ---
+    if (!lineGradientStyle) {
       return (
-        <span className="segment-mask-span" style={lineGradientStyle}>
-          {chunkElements}
+        <span className="main-lyrics-flow-wrapper" style={{ display: 'inline-flex', flexWrap: 'wrap', alignItems: 'flex-start', width: '100%' }}>
+          {renderLayerTree(false, false)}
         </span>
       );
     }
 
-    return chunkElements;
+    // --- DUAL-LAYER ARCHITECTURE FOR GRADIENT MASKED LINES ---
+    // Layer 1: Gets the continuous gradient mask across the whole span, but hides pronunciation.
+    // Layer 2: Stacked identically on top, hides the main text and renders ONLY the un-clipped pronunciation text.
+    return (
+      <span className="dual-layer-gradient-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+        {/* LAYER 1: Gradient Mask Layer */}
+        <span className="segment-mask-span" style={{ ...lineGradientStyle, display: 'inline-flex', flexWrap: 'wrap', alignItems: 'flex-start', width: '100%' }}>
+          {renderLayerTree(true, false)}
+        </span>
+
+        {/* LAYER 2: Clean Pronunciation Overlay */}
+        <span 
+          className="full-pronunciation-row" 
+          style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            width: '100%', 
+            height: '100%', 
+            display: 'inline-flex', 
+            flexWrap: 'wrap', 
+            alignItems: 'flex-start', 
+            pointerEvents: 'none',
+            zIndex: 2
+          }}
+        >
+          {renderLayerTree(false, true)}
+        </span>
+      </span>
+    );
 };
