@@ -1,0 +1,253 @@
+/* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.css --- */
+rt.sync-pronunciation {
+  font-size: clamp(9px, 1vw, 11px);
+  color: inherit;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.primary-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+rt.pronunciation-text,
+.pronunciation-text,
+.segment-mask-span .pronunciation-text {
+  font-size: var(--dyn-translit-font-size, 0.55em);
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  opacity: var(--dyn-translit-opacity, 0.8) !important;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  max-width: 100%;
+  font-family: var(--font-family);
+}
+
+.preview-line.active rt.pronunciation-text,
+.preview-line.active .pronunciation-text,
+.preview-line.active .segment-mask-span .pronunciation-text {
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  opacity: 1 !important;
+  text-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.focused-line.active rt.pronunciation-text,
+.focused-line.active .pronunciation-text,
+.focused-line.active .segment-mask-span .pronunciation-text {
+  color: var(--dyn-translit-color, #ffffff) !important;
+  -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
+  opacity: 1 !important;
+  text-shadow:
+    0 0 12px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.focused-line .pronunciation-text {
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+}
+
+.focused-line.active .pronunciation-text {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 0.5s ease 0.1s,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.sync-text,
+.primary-text {
+  display: inline-block;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.chunk-translation {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: var(--dyn-trans-font-size, 0.55em);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: color-mix(
+    in srgb,
+    var(--dyn-trans-color, #ffffff)
+      calc(var(--dyn-trans-opacity, 0.9) * 100%),
+    transparent
+  );
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  line-height: 1.2;
+  width: max-content;
+  max-width: 90%;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  pointer-events: none;
+  z-index: 10;
+  margin-top: calc(-1 * var(--dyn-trans-top-padding, 8px));
+  box-sizing: border-box;
+}
+
+.chunk-translation.adlib-node {
+  transform: translate(-50%, -100%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-hidden {
+  opacity: 0 !important;
+  transform: translate(-50%, calc(-100% + 8px)) !important;
+  filter: grayscale(100%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-visible {
+  opacity: 0.6 !important;
+  transform: translate(-50%, -100%) !important;
+  filter: grayscale(0%) !important;
+}
+
+.chunk-translation.adlib-node.adlib-active {
+  opacity: 1 !important;
+  transform: translate(-50%, -100%) !important;
+  filter: grayscale(0%) !important;
+}
+
+.block-translation {
+  font-size: var(--dyn-trans-font-size, 0.55em);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: color-mix(
+    in srgb,
+    var(--dyn-trans-color, #ffffff)
+      calc(var(--dyn-trans-opacity, 0.7) * 100%),
+    transparent
+  );
+  text-align: inherit;
+  line-height: 1.4;
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.live-translation {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease,
+    visibility 0s linear 0.4s;
+}
+
+.preview-line.active .live-translation {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.4s ease,
+    visibility 0s linear 0s;
+}
+
+.chunk-translation.focused-translation {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 8px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  margin-top: 0;
+  margin-bottom: var(--dyn-trans-top-padding, 8px);
+  font-size: var(--dyn-trans-font-size, 0.55em) !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+  text-wrap: pretty;
+  color: color-mix(
+    in srgb,
+    var(--dyn-trans-color, #ffffff)
+      calc(var(--dyn-trans-opacity, 0.9) * 100%),
+    transparent
+  );
+  text-shadow:
+    0 0 12px rgba(0, 0, 0, 0.95),
+    0 0 20px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform, opacity;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.5s linear;
+}
+
+.focused-line.active .chunk-translation.focused-translation {
+  animation: fadeUpTranslation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeUpTranslation {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.adlib-node {
+  display: inline-block;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    filter 0.3s ease !important;
+  will-change: opacity, transform, filter;
+  backface-visibility: hidden;
+}
+
+.adlib-node.adlib-hidden,
+.adlib-node.adlib-hidden .pronunciation-text {
+  opacity: 0 !important;
+  transform: translate3d(0, 8px, 0) !important;
+  filter: grayscale(100%) !important;
+}
+
+.adlib-node.adlib-visible,
+.adlib-node.adlib-visible .pronunciation-text {
+  opacity: 0.6 !important;
+  transform: translate3d(0, 0, 0) !important;
+  filter: grayscale(0%) !important;
+}
+
+.adlib-node.adlib-active,
+.adlib-node.adlib-active .pronunciation-text {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+  filter: grayscale(0%) !important;
+}

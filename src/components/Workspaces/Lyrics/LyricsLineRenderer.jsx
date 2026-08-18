@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import SplitLine from '../../LyricsRenderer/SplitLine';
 import StandardLine from '../../LyricsRenderer/StandardLine';
 import { extractCharsAndSegments } from '../../LyricsRenderer/LanguageEngines/EngineUtils';
+import './LyricsLineRenderer.css';
 
 // Re-export formatter utilities from their new centralized locations so the Views don't break
 export { normalizeTrans } from '../../LyricsRenderer/textUtils';

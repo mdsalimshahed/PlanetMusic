@@ -22,13 +22,13 @@ export const SyncWorkspace = ({
 
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
-
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
+
     let img = new Image();
     img.crossOrigin = "Anonymous"; 
     img.onload = () => {
@@ -69,11 +69,13 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
+
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
         return;
       }
+
       const target = document.getElementById('sync-yt-target-container');
       if (!target) return;
       
@@ -123,7 +125,9 @@ export const SyncWorkspace = ({
         }
       });
     };
+
     initSyncYT();
+
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -151,6 +155,7 @@ export const SyncWorkspace = ({
   useEffect(() => {
     const handleWorkspaceTime = (e) => {
       const time = e.detail;
+
       if (progressSliderRef.current) {
          progressSliderRef.current.value = time;
          const max = parseFloat(progressSliderRef.current.max) || 1;
@@ -172,15 +177,14 @@ export const SyncWorkspace = ({
         }
       }
     };
+
     window.addEventListener('workspaceTimeUpdate', handleWorkspaceTime);
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
-
     const isRTL = isRTLLanguage(node.text || '');
-
     const { chars, hasSpacingText } = extractCharsAndSegments(
       { text: node.text, segments: node.segments },
       node
@@ -193,10 +197,10 @@ export const SyncWorkspace = ({
 
     const isOnlyPunct = displayChars.length > 0 && displayChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
 
-    const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
+    const { mainJSX, pronunciationJSX } = EngineRouter({
         chars: displayChars,
         lang: node.lang || 'auto',
-        translation: node.translation,
+        translation: null, // Strictly disables translation from injecting into the sync workspace
         pronunciation: node.pronunciation,
         hasSpacingText,
         isFocused: false, // The sync workspace nodes mirror the "Live" styling
@@ -223,29 +227,44 @@ export const SyncWorkspace = ({
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', lineHeight: 1.2, fontSize: 'var(--workspace-lyric-size, 16px)' }}>
-           <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', position: 'relative', textAlign: 'left', direction: isRTL ? 'rtl' : 'ltr', width: '100%', maxWidth: '100%', textWrap: 'normal', boxSizing: 'border-box' }}>
-               <span className="core-chunks" style={{ position: 'relative', display: 'inline-block', margin: '0', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
-                   
-                   <span className="dual-layer-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                     {translationJSX && (
-                         <span className="chunk-translation live-translation" dir="ltr" style={{ position: 'relative', top: 'auto', left: 'auto', transform: 'none', marginTop: 0, marginBottom: 'var(--dyn-trans-top-padding, 8px)', width: 0, minWidth: '100%', textAlign: 'center', wordBreak: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal' }}>
-                             {translationJSX}
-                         </span>
-                     )}
-                     <span className="main-lyrics-layer layer-gradient" style={{ display: 'inline', width: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir="auto" aria-hidden="true">
-                         {mainJSX}
-                     </span>
+        <div className="preview-line" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+           <span className="primary-text" style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'normal',
+              overflowWrap: 'normal',
+              position: 'relative',
+              textAlign: 'left',
+              width: '100%',
+              maxWidth: '100%',
+              textWrap: 'normal',
+              boxSizing: 'border-box'
+            }}>
+               <span className="core-chunks" style={{
+                  position: 'relative',
+                  display: 'inline-flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-start',
+                  verticalAlign: 'baseline',
+                  margin: '0',
+                  width: 'auto',
+                  maxWidth: '100%',
+                  textAlign: 'left',
+                  boxSizing: 'border-box'
+                }}>
+                   <span className="main-lyrics-layer layer-gradient" style={{ display: 'inline', width: 'auto', maxWidth: '100%', textAlign: 'left', boxSizing: 'border-box' }} dir={isRTL ? 'rtl' : 'ltr'}>
+                       {mainJSX}
                    </span>
-
+                   {pronunciationJSX && (
+                       <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
+                           {pronunciationJSX}
+                       </span>
+                   )}
                </span>
            </span>
-           
-           {pronunciationJSX && (
-               <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
-                   {pronunciationJSX}
-               </span>
-           )}
         </div>
     );
   };
@@ -316,9 +335,9 @@ export const SyncWorkspace = ({
                   
                   const Wrapper = ({ children }) => (
                     <span 
-                         onClick={cycleSource} 
-                         style={{...cursorStyle, display: 'inline-block'}} 
-                         title={title}
+                        onClick={cycleSource} 
+                        style={{...cursorStyle, display: 'inline-block'}} 
+                        title={title}
                         onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
                         onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
                     >
@@ -399,7 +418,6 @@ export const SyncWorkspace = ({
           const isSynced = line.start !== null && line.end !== null;
           
           const hasParentheses = isMain && /[(\uFF08][^)\uFF09]+[)\uFF09]/.test(line.text);
-
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
@@ -452,9 +470,9 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                   
+                
                 {renderSyncNode(line, isMain)}
-                   
+                
                 {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}

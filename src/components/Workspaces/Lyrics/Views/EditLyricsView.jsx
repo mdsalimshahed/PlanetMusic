@@ -2,9 +2,9 @@
 import React, { useMemo } from 'react';
 import { parseLyrics } from '../../../../utils/songHelpers';
 import { getGraphemes } from '../../../LyricsRenderer/textUtils';
+import './EditLyricsView.css';
 
 const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPalette }) => {
-
   const editParsedLyrics = useMemo(() => {
     if (!customData.lyrics) return [];
     return parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette);
@@ -23,6 +23,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
 
   const editGroupedLyrics = useMemo(() => {
     if (!customData.lyrics) return [];
+
     const groups = [];
     let currentGroup = null;
 
@@ -72,10 +73,10 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
     // Apply the gradient or solid color to the SEGMENT parent wrapper
     let parentStyle = {};
     if (isGradient) {
-      parentStyle = { 
-        backgroundImage: gradientStyle, 
-        WebkitBackgroundClip: 'text', 
-        WebkitTextFillColor: 'transparent',
+      parentStyle = {
+         backgroundImage: gradientStyle,
+         WebkitBackgroundClip: 'text',
+         WebkitTextFillColor: 'transparent',
         display: 'inline' // Preserves natural text wrapping
       };
     } else {
@@ -83,17 +84,16 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
     }
 
     const chars = getGraphemes(item.text || '');
-
     const renderedChars = chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let childStyle = {};
 
       if (isPunct && char.trim() !== '') {
         // Punches through the parent gradient with a solid opaque color
-        childStyle = { 
-          color: '#fbbf24', 
-          WebkitTextFillColor: '#fbbf24', 
-          textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
+        childStyle = {
+           color: '#fbbf24',
+           WebkitTextFillColor: '#fbbf24',
+           textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
           backgroundImage: 'none'
         };
       }
@@ -214,6 +214,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
                   displayHeader = displayHeader.split(':')[0].trim();
                 }
               }
+
               return (
                 <React.Fragment key={group.id}>
                   {group.sectionHeader && (
