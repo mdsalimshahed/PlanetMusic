@@ -18,22 +18,6 @@ const SplitLine = ({
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
 
-  // Uniform translation block styling (Used for both main parent and adlib blocks)
-  const relativeTransStyle = {
-    position: 'relative',
-    top: 'auto',
-    left: 'auto',
-    transform: 'none',
-    marginTop: 0,
-    marginBottom: 'var(--dyn-trans-top-padding, 8px)',
-    width: 0,
-    minWidth: '100%',
-    textAlign: 'center',
-    wordBreak: 'break-word',
-    overflowWrap: 'break-word',
-    whiteSpace: 'normal'
-  };
-
   // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
   const blockPronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
@@ -42,7 +26,7 @@ const SplitLine = ({
     letterSpacing: '0.5px',
     textAlign: 'center',
     marginTop: 'var(--dyn-translit-bottom-padding, 8px)',
-    display: 'inline-block',
+    display: 'block',
     whiteSpace: 'nowrap',
     WebkitTextFillColor: 'currentcolor',
     backgroundImage: 'none',
@@ -131,11 +115,10 @@ const SplitLine = ({
           style={{
             display: 'inline-flex',
             flexDirection: 'column',
-            justifyContent: 'flex-end',
+            justifyContent: 'center',
             alignItems: 'center',
-            alignSelf: 'flex-end',
+            verticalAlign: 'middle',
             position: 'relative',
-            verticalAlign: 'baseline',
             maxWidth: '100%',
             boxSizing: 'border-box',
             margin: 0,
@@ -143,11 +126,11 @@ const SplitLine = ({
           }}
         >
           {adlibTransJSX ? (
-            <span className="chunk-translation live-translation" dir="ltr" style={relativeTransStyle}>
+            <span className="chunk-translation live-translation" dir="ltr">
               {adlibTransJSX}
             </span>
           ) : null}
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto">
+          <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto">
             {adlibMainJSX}
           </span>
           {adlibPronJSX ? (
@@ -160,15 +143,25 @@ const SplitLine = ({
     );
   });
 
+  // Calculate a dynamic gap to protect absolute translations from overlapping previous lines or blocks
+  const hasMainTrans = Boolean(mainTranslationJSX);
+  const hasAdlibTrans = savedNode?.adlibs?.some(a => a.translation && a.translation.trim() !== '');
+  const hasAnyTrans = hasMainTrans || hasAdlibTrans;
+  
+  const clearanceGap = hasAnyTrans 
+    ? 'calc((var(--dyn-trans-font-size, 0.55em) * 2.5) + var(--dyn-trans-top-padding, 8px))' 
+    : '0px';
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', paddingTop: clearanceGap }}>
       <span
           className="primary-text"
           style={{
             display: 'inline-flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            alignItems: 'flex-end',
+            alignItems: 'center', // Natively mimics the vertical-align middle side-by-side mapping
+            rowGap: clearanceGap, // This physically splits the lines dynamically ONLY when they wrap!
             whiteSpace: 'pre-wrap',
             wordBreak: 'normal',
             overflowWrap: 'normal',
@@ -185,9 +178,9 @@ const SplitLine = ({
               position: 'relative',
               display: 'inline-flex',
               flexDirection: 'column',
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
               alignItems: 'center',
-              verticalAlign: 'baseline',
+              verticalAlign: 'middle',
               margin: '0',
               width: 'auto',
               maxWidth: '100%',
@@ -196,7 +189,7 @@ const SplitLine = ({
             }}
         >
           {mainTranslationJSX ? (
-            <span className="chunk-translation live-translation" dir="ltr" style={relativeTransStyle}>
+            <span className="chunk-translation live-translation" dir="ltr">
               {mainTranslationJSX}
             </span>
           ) : null}
