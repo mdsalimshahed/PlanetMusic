@@ -7,7 +7,7 @@ export const hexToRgb = (hex) => {
   let h = String(hex).replace(/^#/, '');
   if (h.length === 3) h = h.split('').map(x => x + x).join('');
   const int = parseInt(h, 16);
-  if (isNaN(int)) return [255, 255, 255];
+  if (isNaN(int)) return [(255), (255), (255)];
   return [(int >> 16) & 255, (int >> 8) & 255, int & 255];
 };
 
@@ -63,13 +63,13 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
   const isArabicChar = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(c.char);
   const isBengaliChar = /[\u0980-\u09FF]/.test(c.char);
-
   const selectedFont = isArabicChar ? 'var(--arabic-font-family)' : (isBengaliChar ? 'var(--bengali-font-family)' : 'var(--font-family)');
 
   let style = { 
     transition: 'opacity 0.3s ease, transform 0.3s ease',
     fontFamily: selectedFont
   };
+
   if (isPunct && c.char.trim() !== '') {
     style = {
       ...style,
@@ -83,6 +83,7 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
     style.WebkitTextFillColor = activeColor;
     style.textShadow = '0 2px 8px rgba(0, 0, 0, 0.45)';
   }
+
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
@@ -95,6 +96,7 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);
     const isBengaliPart = /[\u0980-\u09FF]/.test(part);
     const font = isArabicPart ? 'var(--arabic-font-family)' : (isBengaliPart ? 'var(--bengali-font-family)' : 'var(--font-family)');
+
     if (isPunct && part.trim() !== '') {
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font }}>
@@ -110,6 +112,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   const words = [];
   let currentWord = [];
   let hyphenCount = 0;
+
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
@@ -149,6 +152,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
+
     if (shouldBreak) {
       flushWord(i);
       words.push(elements[i]); 
@@ -159,6 +163,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       currentWord.push(elements[i]);
     }
   }
+
   flushWord('end');
   return words;
 };
@@ -170,7 +175,7 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
 
   let chars = [];
   let gIdx = 0;
-  let originalCpIdx = 0; 
+  let originalCpIdx = 0;
 
   const segments = lineObj.segments || [{ text: lineObj.text }];
 
@@ -201,8 +206,8 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
           seg: currentSeg,
           globalIndex: gIdx++,
           cpStart: currentCpStart,
-          cpEnd: currentCpStart + cpLen 
-       });
+          cpEnd: currentCpStart + cpLen
+        });
 
       if (isOrigChar) {
         const origLen = Array.from(origGraphemes[origPointer] || char).length;
@@ -232,7 +237,11 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
       });
     });
   }
-  return { chars, hasSpacingText: useSpacingText };
+
+  // Force hasSpacingText = true if spaces exist in chars
+  const hasSpacesInText = chars.some(c => /\s/.test(c.char));
+
+  return { chars, hasSpacingText: useSpacingText || hasSpacesInText };
 };
 
 export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {
@@ -251,6 +260,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
 
     const contigGroups = [];
     let currentGroupId = null;
+
     flatChars.forEach((c) => {
         const id = getSegId(c);
         if (id !== currentGroupId) {
@@ -305,11 +315,11 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
 
         if (isRTL) {
             return (
-                <span key={chunkIdx} className="lyric-text-span" style={{ 
-                   whiteSpace: 'pre-line',
-                   display: 'inline',
-                   position: 'relative',
-                   top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                <span key={chunkIdx} className="lyric-text-span" style={{
+                    whiteSpace: 'pre-line',
+                    display: 'inline',
+                    position: 'relative',
+                    top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
                 }}>
                   {groupedText}
                 </span>
@@ -332,8 +342,8 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                       margin: hasSpacingText ? '0' : '0 2px'
                     }}
                   >
-                    <span 
-                       className="lyric-text-span"
+                    <span
+                        className="lyric-text-span"
                        style={{
                          display: 'inline',
                          whiteSpace: 'pre-line'
@@ -342,8 +352,8 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                       {groupedText}
                     </span>
                     {cleanTrans ? (
-                      <span 
-                         className="pronunciation-text"
+                      <span
+                          className="pronunciation-text"
                          style={basePronStyle}
                          dir="ltr"
                       >
@@ -354,8 +364,8 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                 );
             } else {
                 return (
-                  <span 
-                     key={`chunk-${chunkIdx}`}
+                  <span
+                      key={`chunk-${chunkIdx}`}
                      className="lyric-text-span"
                      style={{
                        whiteSpace: 'pre-line',

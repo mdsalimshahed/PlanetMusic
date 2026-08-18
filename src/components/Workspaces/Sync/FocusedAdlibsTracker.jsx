@@ -32,25 +32,17 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
             const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
 
-            // Clean pronunciation string to ensure no raw parens passed
-            let cleanedPron = adlibObj.pronunciation;
-            if (cleanedPron && typeof cleanedPron === 'string') {
-              if (!cleanedPron.startsWith('{') && !cleanedPron.startsWith('[')) {
-                cleanedPron = cleanedPron.replace(/[()\uff08\uff09]/g, '').trim();
-              }
-            }
-
             const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
                 chars,
                 lang: adlibObj.lang || 'auto',
                 translation: cleanedAdlibTrans,
-                pronunciation: cleanedPron,
+                pronunciation: adlibObj.pronunciation,
                 hasSpacingText,
-                isFocused: true, 
+                isFocused: true,
                 masterPalette,
                 originalText: adlibObj.text,
                 isOnlyPunct: chars.length > 0 && chars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
-                isAdlib: true // Flags isolated ad-lib to omit parentheses
+                isAdlib: true // Flags isolated ad-lib to omit parenthetical wrap
             });
 
             return (
@@ -77,11 +69,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                     {translationJSX}
                   </span>
                 )}
-
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
                   {mainJSX}
                 </span>
-
                 {pronunciationJSX && (
                   <span className="pronunciation-text" style={{
                       fontSize: 'var(--dyn-translit-font-size, 0.55em)',

@@ -54,10 +54,12 @@ const SplitLine = ({
 
   const blocks = [];
   let currentBlock = null;
+
   chars.forEach((c) => {
     const adlibIndex = savedNode.adlibs?.findIndex(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
     const isAdlibChar = adlibIndex !== -1;
     const adlibObj = isAdlibChar ? savedNode.adlibs[adlibIndex] : null;
+
     if (!currentBlock) {
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     } else if (currentBlock.isAdlib === isAdlibChar && currentBlock.adlibObj === adlibObj) {
@@ -67,15 +69,18 @@ const SplitLine = ({
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     }
   });
+
   if (currentBlock) blocks.push(currentBlock);
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
+
   while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
   const isOnlyPunct = mainChars.length > 0 && mainChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
+
   const { mainJSX: alignedMainJSX, translationJSX: mainTranslationJSX, pronunciationJSX: mainPronunciationJSX } = EngineRouter({
     chars: mainChars,
     lang,
@@ -118,7 +123,7 @@ const SplitLine = ({
        masterPalette,
        originalText: adlib.text,
        isOnlyPunct: extractedAdlibChars.length > 0 && extractedAdlibChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
-       isAdlib: true // Flags isolated ad-lib so parens are omitted in RTL pronunciation
+       isAdlib: true // Flags isolated ad-lib so parens are omitted in engine processing
     });
 
     return (
@@ -212,10 +217,11 @@ const SplitLine = ({
           >
             {alignedMainJSX}
           </span>
+
           {mainPronunciationJSX && (
-            <span
-                 className="pronunciation-text"
-                 style={blockPronStyle}
+            <span 
+                 className="pronunciation-text" 
+                 style={blockPronStyle} 
                  dir="ltr"
             >
               {mainPronunciationJSX}

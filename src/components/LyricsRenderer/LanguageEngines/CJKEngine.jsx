@@ -14,54 +14,56 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
         let spacedWordsBlocks = [];
         let pronWords = [];
 
-        if (hasSpacingText && fullTrans) {
-            let currentBlock = [];
-            chars.forEach(c => {
-                if (/\s/.test(c.char)) {
-                    if (currentBlock.length > 0) {
-                        spacedWordsBlocks.push(currentBlock);
-                        currentBlock = [];
-                    }
-                } else {
-                    currentBlock.push(c);
+        // Determine words in character array by spaces
+        let currentBlock = [];
+        chars.forEach(c => {
+            if (/\s/.test(c.char)) {
+                if (currentBlock.length > 0) {
+                    spacedWordsBlocks.push(currentBlock);
+                    currentBlock = [];
                 }
-            });
-            if (currentBlock.length > 0) spacedWordsBlocks.push(currentBlock);
-
-            pronWords = fullTrans.split(/\s+/).filter(Boolean);
-            if (spacedWordsBlocks.length === pronWords.length && spacedWordsBlocks.length > 0) {
-                canDo1to1 = true;
+            } else {
+                currentBlock.push(c);
             }
+        });
+        if (currentBlock.length > 0) spacedWordsBlocks.push(currentBlock);
+
+        const rawPronString = fullTrans || (typeof pronunciation === 'string' && !pronunciation.startsWith('{') && !pronunciation.startsWith('[') ? pronunciation : '');
+        const cleanPronForWords = rawPronString ? rawPronString.replace(/[()\uff08\uff09]/g, '').trim() : '';
+        pronWords = cleanPronForWords.split(/\s+/).filter(Boolean);
+
+        if (spacedWordsBlocks.length > 0 && spacedWordsBlocks.length === pronWords.length) {
+            canDo1to1 = true;
         }
 
         if (canDo1to1) {
             let tIdx = 0;
-            let currentBlock = [];
+            let currentBlockChars = [];
             chars.forEach(c => {
                 if (/\s/.test(c.char)) {
-                    if (currentBlock.length > 0) {
-                        const textStr = currentBlock.map(x => x.char).join('');
+                    if (currentBlockChars.length > 0) {
+                        const textStr = currentBlockChars.map(x => x.char).join('');
                         const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
                         const isOnlyP = /^[\p{P}\p{S}]+$/u.test(textStr);
                         
-                        if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlock });
-                        else alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlock });
+                        if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
+                        else alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlockChars });
                         
                         tIdx++;
-                        currentBlock = [];
+                        currentBlockChars = [];
                     }
                     alignedChunks.push({ type: 'space', trans: '', chars: [c] });
                 } else {
-                    currentBlock.push(c);
+                    currentBlockChars.push(c);
                 }
             });
-            if (currentBlock.length > 0) {
-                const textStr = currentBlock.map(x => x.char).join('');
+            if (currentBlockChars.length > 0) {
+                const textStr = currentBlockChars.map(x => x.char).join('');
                 const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
                 const isOnlyP = /^[\p{P}\p{S}]+$/u.test(textStr);
                 
-                if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlock });
-                else alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlock });
+                if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
+                else alignedChunks.push({ type: 'main', trans: pronWords[tIdx] || '', chars: currentBlockChars });
             }
         } else if (parsedChunks && Array.isArray(parsedChunks)) {
             let charIdxPointer = 0;
@@ -104,25 +106,25 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                 alignedChunks.push({ type: 'main', trans: '', chars: chars.slice(charIdxPointer) });
             }
         } else {
-            const transString = fullTrans || '';
+            const transString = cleanPronForWords || '';
             let blocks = [];
-            let currentBlock = [];
+            let currentBlockChars = [];
             let isLatinMode = null;
             
             chars.forEach(c => {
                 const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(c.char);
                 if (isLatinMode === null) {
                     isLatinMode = isLatin;
-                    currentBlock.push(c);
+                    currentBlockChars.push(c);
                 } else if (isLatinMode === isLatin) {
-                    currentBlock.push(c);
+                    currentBlockChars.push(c);
                 } else {
-                    blocks.push({ isLatin: isLatinMode, chars: currentBlock });
+                    blocks.push({ isLatin: isLatinMode, chars: currentBlockChars });
                     isLatinMode = isLatin;
-                    currentBlock = [c];
+                    currentBlockChars = [c];
                 }
             });
-            if (currentBlock.length > 0) blocks.push({ isLatin: isLatinMode, chars: currentBlock });
+            if (currentBlockChars.length > 0) blocks.push({ isLatin: isLatinMode, chars: currentBlockChars });
 
             const transWords = transString.split(/\s+/).filter(Boolean);
             let tIdx = 0;
@@ -175,15 +177,14 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     const hasVisibleNonPronunciation = alignedChunks.some(chunk => (chunk.type === 'en' || !chunk.trans || !chunk.trans.trim()) && chunk.chars.some(c => c.char.trim() !== ''));
     const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
 
-    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, hasSpacingText, false, isHybridLine, isAdlib);
+    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, true, false, isHybridLine, isAdlib);
 
     let displayPronString = null;
-    if (pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
+    if (!hasInlinePronunciation && pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
         displayPronString = normalizeTrans(pronunciation, !isAdlib);
     }
-
     if (isAdlib && displayPronString) {
-        displayPronString = displayPronString.replace(/[()\[\]{}（）]/g, '').trim();
+        displayPronString = displayPronString.replace(/[()\[\]{} ]/g, '').trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);
