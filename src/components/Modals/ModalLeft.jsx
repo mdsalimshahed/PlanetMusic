@@ -3,20 +3,19 @@ import React, { useState, useEffect } from 'react';
 import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../utils/songHelpers';
 import './ModalLeft.css';
 
-// SVG Icon Helper (Extended with Arrow Icons for Sync Controls)
+// SVG Icon Helper
 const Icon = ({ name }) => {
   const baseProps = {
-      width: 14,
-      height: 14,
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      strokeWidth: 2,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      style: { flexShrink: 0 }
-    };
-
+    width: 14,
+    height: 14,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 2,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    style: { flexShrink: 0 }
+  };
   switch (name) {
     case 'arrow-up':
       return <svg {...baseProps}><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>;
@@ -71,7 +70,6 @@ const ModalLeft = ({
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
-
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
   const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
@@ -197,7 +195,6 @@ const ModalLeft = ({
           )}
         </div>
       </div>
-
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
           <div className="links-header"><label>Play Music From:</label></div>
@@ -206,56 +203,56 @@ const ModalLeft = ({
             <div className="platform-inputs-grid">
               <div className="platform-input-row">
                 <a 
-                  href={finalLinks.spotify} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="platform-label spotify-color"
+                   href={finalLinks.spotify} 
+                   target="_blank" 
+                   rel="noreferrer" 
+                   className="platform-label spotify-color"
                   title="Click to search Spotify for this song link"
                 >
                   Spotify
                 </a>
                 <input 
-                  type="text" 
-                  name="spotify" 
-                  value={customData.spotify} 
-                  onChange={handleDataChange} 
-                  placeholder="Paste Spotify URL..." 
+                   type="text" 
+                   name="spotify" 
+                   value={customData.spotify} 
+                   onChange={handleDataChange} 
+                   placeholder="Paste Spotify URL..." 
                 />
               </div>
               <div className="platform-input-row">
                 <a 
-                  href={finalLinks.deezer} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="platform-label deezer-color"
+                   href={finalLinks.deezer} 
+                   target="_blank" 
+                   rel="noreferrer" 
+                   className="platform-label deezer-color"
                   title="Click to search Deezer for this song link"
                 >
                   Deezer
                 </a>
                 <input 
-                  type="text" 
-                  name="deezer" 
-                  value={customData.deezer} 
-                  onChange={handleDataChange} 
-                  placeholder="Paste Deezer Track URL..." 
+                   type="text" 
+                   name="deezer" 
+                   value={customData.deezer} 
+                   onChange={handleDataChange} 
+                   placeholder="Paste Deezer Track URL..." 
                 />
               </div>
               <div className="platform-input-row">
                 <a 
-                  href={finalLinks.yt} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="platform-label yt-color"
+                   href={finalLinks.yt} 
+                   target="_blank" 
+                   rel="noreferrer" 
+                   className="platform-label yt-color"
                   title="Click to search YouTube Music for this song link"
                 >
                   YT Music
                 </a>
                 <input 
-                  type="text" 
-                  name="yt" 
-                  value={customData.yt} 
-                  onChange={handleDataChange} 
-                  placeholder="Paste YouTube Video URL..." 
+                   type="text" 
+                   name="yt" 
+                   value={customData.yt} 
+                   onChange={handleDataChange} 
+                   placeholder="Paste YouTube Video URL..." 
                 />
               </div>
               
@@ -271,16 +268,16 @@ const ModalLeft = ({
           ) : (
             <div className="platform-links">
               <button 
-                className="platform-btn spotify" 
-                onClick={handleSpotifyPlay}
+                 className="platform-btn spotify" 
+                 onClick={handleSpotifyPlay}
               >
                 Spotify
               </button>
               
               {hasDeezerLink && (
                 <button 
-                  className="platform-btn deezer" 
-                  onClick={handleDeezerPlay}
+                   className="platform-btn deezer" 
+                   onClick={handleDeezerPlay}
                 >
                   Deezer
                 </button>
@@ -288,8 +285,8 @@ const ModalLeft = ({
               
               {hasYtLink && (
                 <button 
-                  className="platform-btn yt" 
-                  onClick={handleYtPlay}
+                   className="platform-btn yt" 
+                   onClick={handleYtPlay}
                 >
                   YT Music
                 </button>
@@ -297,15 +294,14 @@ const ModalLeft = ({
               
               {customData.hasLocal && (
                 <button 
-                  className="platform-btn local" 
-                  onClick={handleLocalPlay}
+                   className="platform-btn local" 
+                   onClick={handleLocalPlay}
                 >
                   Local Audio File
                 </button>
               )}
             </div>
           )}
-
           {(!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl)) && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
               <strong>Notice:</strong> Currently playing a 30-second preview snippet. To listen to the full song, please click <strong>Edit Info</strong> and add a YouTube/Deezer link or upload a local file (or set a Deezer ARL in Settings).
@@ -322,7 +318,6 @@ const ModalLeft = ({
             </div>
           )}
         </div>
-
         {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
           <div className="workspace-controls glass-panel-light">
             <div className="links-header"><label>Lyrics View Modes</label></div>
@@ -332,20 +327,20 @@ const ModalLeft = ({
                   <div className="view-mode-segmented-slider">
                     <div className={`slider-pill ${lyricsViewMode}`}></div>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`} 
-                      onClick={() => setLyricsViewMode('live')}
+                       className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`} 
+                       onClick={() => setLyricsViewMode('live')}
                     >
                       Live
                     </button>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`} 
-                      onClick={() => setLyricsViewMode('focused')}
+                       className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`} 
+                       onClick={() => setLyricsViewMode('focused')}
                     >
                       Focused
                     </button>
                     <button 
-                      className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`} 
-                      onClick={() => setLyricsViewMode('plain')}
+                       className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`} 
+                       onClick={() => setLyricsViewMode('plain')}
                     >
                       Plain Text
                     </button>
@@ -353,18 +348,17 @@ const ModalLeft = ({
                   
                   {lyricsViewMode === 'focused' && (
                     <button 
-                      className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`} 
-                      onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                       className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`} 
+                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
                     >
                       <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
                       {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
                     </button>
                   )}
-
                   {lyricsViewMode === 'live' && (
                     <button 
-                      className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`} 
-                      onClick={() => setShowLiveDebug(!showLiveDebug)}
+                       className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`} 
+                       onClick={() => setShowLiveDebug(!showLiveDebug)}
                     >
                       <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
                       {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
@@ -383,11 +377,9 @@ const ModalLeft = ({
             </div>
           </div>
         )}
-
         <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
           
-          {/* FIXED: SVG ARROW BADGES RESTORED IN SYNC INSTRUCTIONS */}
           {isSyncMode && !isTranslationManagerOpen && (
             <div className="sync-instructions-left">
               <div className="instruction-row">
@@ -404,7 +396,6 @@ const ModalLeft = ({
               </div>
             </div>
           )}
-
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
               <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>
@@ -416,8 +407,8 @@ const ModalLeft = ({
                   <Icon name="x" /> Cancel Sync
                 </button>
                 <button 
-                  className="edit-links-btn" 
-                  onClick={handleRefreshLyrics}
+                   className="edit-links-btn" 
+                   onClick={handleRefreshLyrics}
                   style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
                   title="Wipe all timings and ad-lib splits from these lyrics"
                 >
@@ -450,25 +441,24 @@ const ModalLeft = ({
                 </button>
                 
                 <button 
-                  className="edit-links-btn" 
-                  onClick={() => handleAutoSyncDatabases()}
+                   className="edit-links-btn" 
+                   onClick={() => handleAutoSyncDatabases()}
                   disabled={isLrcFetching || isSyncLoading}
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? <Icon name="clock" /> : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? <Icon name="refresh" /> : <Icon name="refresh" />) : <Icon name="zap" />)}
                   {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Show Manual Sync' : 'Show Auto-Sync') : 'Auto-Sync Lyrics')}
                 </button>
-
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
                       {isSyncLoading ? <Icon name="clock" /> : (hasManualSync ? <Icon name="edit" /> : <Icon name="clock" />)}
-                      {isSyncLoading ? 'Parsing Engine...' : hasManualSync ? 'Edit Timings' : 'Manual Sync'}
+                      {isSyncLoading ? 'Loading...' : hasManualSync ? 'Edit Timings' : 'Manual Sync'}
                     </button>
                     
                     <button 
-                      className="edit-links-btn" 
-                      onClick={() => setIsTranslationManagerOpen(true)}
+                       className="edit-links-btn" 
+                       onClick={() => setIsTranslationManagerOpen(true)}
                     >
                       <Icon name="translate" /> Edit Translation
                     </button>
@@ -490,9 +480,7 @@ const ModalLeft = ({
             )}
           </div>
         </div>
-
         <div id="mobile-player-slot"></div>
-
         <div className="bottom-actions">
           {isSaved ? (
             <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
