@@ -30,16 +30,27 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 adlibObj
             );
 
+            const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
+
+            // Clean pronunciation string to ensure no raw parens passed
+            let cleanedPron = adlibObj.pronunciation;
+            if (cleanedPron && typeof cleanedPron === 'string') {
+              if (!cleanedPron.startsWith('{') && !cleanedPron.startsWith('[')) {
+                cleanedPron = cleanedPron.replace(/[()\uff08\uff09]/g, '').trim();
+              }
+            }
+
             const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
                 chars,
                 lang: adlibObj.lang || 'auto',
-                translation: adlibObj.translation,
-                pronunciation: adlibObj.pronunciation,
+                translation: cleanedAdlibTrans,
+                pronunciation: cleanedPron,
                 hasSpacingText,
-                isFocused: true, // Adlibs in tracker use focused visuals
+                isFocused: true, 
                 masterPalette,
                 originalText: adlibObj.text,
-                isOnlyPunct: chars.length > 0 && chars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char))
+                isOnlyPunct: chars.length > 0 && chars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
+                isAdlib: true // Flags isolated ad-lib to omit parentheses
             });
 
             return (

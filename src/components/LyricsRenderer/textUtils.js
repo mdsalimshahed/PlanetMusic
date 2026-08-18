@@ -12,13 +12,20 @@ export const getGraphemes = (str) => {
   return str.match(/[\u0900-\u097F][\u0900-\u0903\u093A-\u094F\u0951-\u0957\u0962-\u0963]*|./gu) || Array.from(str);
 };
 
-export const normalizeTrans = (str) => {
+export const normalizeTrans = (str, keepParens = false) => {
   if (!str) return '';
-  return str
-    // FIX: Include full-width Asian parentheses in the cleaner
-    .replace(/[()\[\]{}（）]/g, '')
+  let res = str;
+  if (!keepParens) {
+    res = res.replace(/[()\[\]{}（）]/g, '');
+  }
+  
+  const leadingPunctRegex = keepParens ? /^[^\w\s()]+|/gu : /^[\p{P}\p{S}]+/gu;
+  const trailingPunctRegex = keepParens ? /[^\w\s()]+$/gu : /[\p{P}\p{S}]+$/gu;
+
+  return res
     .replace(/[\u02BE\u02BF\u02C0\u02C1]/g, "'")
-    .replace(/^[\p{P}\p{S}]+|[\p{P}\p{S}]+$/gu, '')
+    .replace(leadingPunctRegex, '')
+    .replace(trailingPunctRegex, '')
     .replace(/\s+/g, ' ')
     .trim();
 };

@@ -3,7 +3,7 @@ import React from 'react';
 import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils';
 
-const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct }) => {
+const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
     let alignedChunks = [];
 
@@ -72,7 +72,7 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
     const hasVisibleNonPronunciation = alignedChunks.some(chunk => (chunk.type === 'en' || !chunk.trans || !chunk.trans.trim()) && chunk.chars.some(c => c.char.trim() !== ''));
     const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
 
-    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, hasSpacingText, false, isHybridLine);
+    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, hasSpacingText, false, isHybridLine, isAdlib);
 
     let displayPronString = null;
     if (pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
@@ -81,9 +81,13 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
             const cleanOrig = originalText.toLowerCase().replace(/[\W_]+/g, '');
             const cleanPron = pronunciation.toLowerCase().replace(/[\W_]+/g, '');
             if (cleanOrig !== cleanPron) {
-                displayPronString = normalizeTrans(pronunciation);
+                displayPronString = normalizeTrans(pronunciation, !isAdlib);
             }
         }
+    }
+
+    if (isAdlib && displayPronString) {
+        displayPronString = displayPronString.replace(/[()\[\]{}（）]/g, '').trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);

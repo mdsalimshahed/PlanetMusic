@@ -53,8 +53,6 @@ const SplitLine = ({
   if (currentBlock) blocks.push(currentBlock);
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
-  const adlibBlocks = blocks.filter(b => b.isAdlib);
-
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
 
@@ -72,7 +70,8 @@ const SplitLine = ({
     isFocused: false,
     masterPalette,
     originalText: lineObj.text,
-    isOnlyPunct
+    isOnlyPunct,
+    isAdlib: false
   });
 
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
@@ -92,16 +91,19 @@ const SplitLine = ({
         adlib
     );
 
+    const cleanedAdlibTrans = adlib.translation ? adlib.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
+
     const { mainJSX: adlibMainJSX, translationJSX: adlibTransJSX, pronunciationJSX: adlibPronJSX } = EngineRouter({
        chars: extractedAdlibChars,
        lang: adlib.lang || lang,
-       translation: adlib.translation,
+       translation: cleanedAdlibTrans,
        pronunciation: adlib.pronunciation,
        hasSpacingText: extractedHasSpacing,
        isFocused: false,
        masterPalette,
        originalText: adlib.text,
-       isOnlyPunct: extractedAdlibChars.length > 0 && extractedAdlibChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char))
+       isOnlyPunct: extractedAdlibChars.length > 0 && extractedAdlibChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
+       isAdlib: true // Flags isolated ad-lib so parens are omitted in RTL pronunciation
     });
 
     return (
@@ -169,7 +171,6 @@ const SplitLine = ({
             overflowWrap: 'normal',
             position: 'relative',
             textAlign: 'left',
-            direction: isRTL ? 'rtl' : 'ltr',
             width: '100%',
             maxWidth: '100%',
             boxSizing: 'border-box'
@@ -182,7 +183,7 @@ const SplitLine = ({
              display: 'inline-flex',
              flexDirection: 'column',
              justifyContent: 'flex-end',
-             alignItems: 'center',
+             alignItems: 'center', 
              verticalAlign: 'baseline',
              margin: '0',
              width: 'auto',
@@ -206,38 +207,38 @@ const SplitLine = ({
                textAlign: 'left',
                boxSizing: 'border-box'
              }}
-             dir="auto"
+             dir={isRTL ? 'rtl' : 'ltr'}
           >
             {alignedMainJSX}
           </span>
+
+          {mainPronunciationJSX && (
+            <span
+                 className="pronunciation-text"
+                 style={{
+                 fontSize: 'var(--dyn-translit-font-size, 0.55em)',
+                 fontWeight: '800',
+                 textTransform: 'uppercase',
+                 letterSpacing: '0.5px',
+                 WebkitTextFillColor: 'currentcolor',
+                 backgroundImage: 'none',
+                 color: 'rgba(255,255,255,0.7)',
+                 textShadow: 'none',
+                 marginTop: '8px',
+                 display: 'block',
+                 textAlign: 'center',
+                 wordSpacing: '4px',
+                 lineHeight: '1.4'
+               }}
+                 dir="ltr"
+            >
+              {mainPronunciationJSX}
+            </span>
+          )}
         </span>
         
         {renderedAdlibElements}
       </span>
-      
-      {mainPronunciationJSX && (
-        <span
-             className="pronunciation-text"
-             style={{
-             fontSize: 'var(--dyn-translit-font-size, 0.55em)',
-             fontWeight: '800',
-             textTransform: 'uppercase',
-             letterSpacing: '0.5px',
-             WebkitTextFillColor: 'currentcolor',
-             backgroundImage: 'none',
-             color: 'rgba(255,255,255,0.7)',
-             textShadow: 'none',
-             marginTop: '8px',
-             display: 'block',
-             textAlign: 'left',
-             wordSpacing: '4px',
-             lineHeight: '1.4'
-           }}
-             dir="ltr"
-        >
-          {mainPronunciationJSX}
-        </span>
-      )}
     </div>
   );
 };

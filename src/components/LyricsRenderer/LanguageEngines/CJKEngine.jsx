@@ -1,9 +1,9 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/CJKEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils';
+import { normalizeTrans, parsePronunciation, getGraphemes } from '../textUtils';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils';
 
-const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct }) => {
+const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
     let alignedChunks = [];
 
@@ -143,7 +143,7 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                     alignedChunks.push({ type: 'en', trans: '', chars: b.chars });
                 } else if (!b.isLatin) {
                     let cjkTrans = [];
-                    const nextLatinBlock = blocks.find(nb => nb.isLatin && nb !== b && blocks.indexOf(nb) > blocks.indexOf(b) && nb.chars.map(c=>c.char).join('').trim().length > 0);
+                    const nextLatinBlock = blocks.find(nb => nb.isLatin && nb !== b && blocks.indexOf(nb) > blocks.indexOf(b) && Boolean(nb.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0]));
                     const nextLatinFirstWord = nextLatinBlock ? nextLatinBlock.chars.map(c=>c.char).join('').split(/\s+/).filter(Boolean)[0] : null;
                     const nlwClean = nextLatinFirstWord ? nextLatinFirstWord.toLowerCase().replace(/[\W_]+/g, '') : '';
 
@@ -175,11 +175,15 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     const hasVisibleNonPronunciation = alignedChunks.some(chunk => (chunk.type === 'en' || !chunk.trans || !chunk.trans.trim()) && chunk.chars.some(c => c.char.trim() !== ''));
     const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
 
-    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, hasSpacingText, false, isHybridLine);
+    const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, hasSpacingText, false, isHybridLine, isAdlib);
 
     let displayPronString = null;
     if (pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
-        displayPronString = normalizeTrans(pronunciation);
+        displayPronString = normalizeTrans(pronunciation, !isAdlib);
+    }
+
+    if (isAdlib && displayPronString) {
+        displayPronString = displayPronString.replace(/[()\[\]{}（）]/g, '').trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);

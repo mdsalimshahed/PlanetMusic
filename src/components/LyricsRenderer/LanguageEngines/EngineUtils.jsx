@@ -239,7 +239,7 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
   return { chars, hasSpacingText: useSpacingText };
 };
 
-export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine) => {
+export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {
     const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
         const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, masterPalette, isFocused));
         if (renderedText.every(c => c === null)) return null;
@@ -261,7 +261,11 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             );
         } else {
             if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
-                const cleanTrans = normalizeTrans(chunk.trans);
+                let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
+                if (isAdlib) {
+                  cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
+                }
+
                 chunkJSX = (
                 <span
                     key={chunkIdx}

@@ -32,7 +32,8 @@ const StandardLine = ({
     isFocused,
     masterPalette,
     originalText: lineObj.text,
-    isOnlyPunct
+    isOnlyPunct,
+    isAdlib: false // Flags this as a main line, instructing RTL to keep parens
   });
 
   const lineTextAlign = isFocused ? 'center' : 'left';
@@ -64,7 +65,7 @@ const StandardLine = ({
     textShadow: 'none',
     marginTop: '8px',
     display: 'block',
-    textAlign: lineTextAlign,
+    textAlign: 'center',
     wordSpacing: '4px',
     lineHeight: '1.4'
   };
@@ -74,13 +75,12 @@ const StandardLine = ({
       <span className="primary-text" style={{ 
         display: 'flex',
         flexDirection: 'column',
-        alignItems: isFocused ? 'center' : 'flex-start',
+        alignItems: isFocused ? 'center' : 'flex-start', 
         whiteSpace: 'pre-wrap', 
         wordBreak: 'normal', 
         overflowWrap: 'normal', 
         position: 'relative', 
         textAlign: lineTextAlign, 
-        direction: isRTL ? 'rtl' : 'ltr', 
         width: '100%', 
         maxWidth: '100%', 
         textWrap: isFocused ? 'balance' : 'normal', 
@@ -119,18 +119,18 @@ const StandardLine = ({
               textWrap: isFocused ? 'balance' : 'normal',
               boxSizing: 'border-box'
             }}
-            dir="auto"
+            dir={isRTL ? 'rtl' : 'ltr'} 
           >
             {mainJSX}
           </span>
+
+          {pronunciationJSX && (
+            <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
+              {pronunciationJSX}
+            </span>
+          )}
         </span>
       </span>
-      
-      {pronunciationJSX && (
-        <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
-          {pronunciationJSX}
-        </span>
-      )}
     </div>
   );
 };
