@@ -2,6 +2,44 @@
 import React from 'react';
 import { getGraphemes, normalizeTrans } from '../textUtils';
 
+// --- COLOR INTERPOLATION HELPERS ---
+export const hexToRgb = (hex) => {
+  let h = String(hex).replace(/^#/, '');
+  if (h.length === 3) h = h.split('').map(x => x + x).join('');
+  const int = parseInt(h, 16);
+  if (isNaN(int)) return [255, 255, 255];
+  return [(int >> 16) & 255, (int >> 8) & 255, int & 255];
+};
+
+export const rgbToHex = (r, g, b) => {
+  return '#' + [r, g, b].map(x => {
+    const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }).join('');
+};
+
+export const interpolateColor = (colors, ratio) => {
+  if (!colors || colors.length === 0) return '#ffffff';
+  if (colors.length === 1) return colors[0];
+  
+  const maxIdx = colors.length - 1;
+  const scaledRatio = ratio * maxIdx;
+  const leftIdx = Math.floor(scaledRatio);
+  const rightIdx = Math.min(Math.ceil(scaledRatio), maxIdx);
+  
+  if (leftIdx === rightIdx) return colors[leftIdx];
+  
+  const fraction = scaledRatio - leftIdx;
+  const c1 = hexToRgb(colors[leftIdx]);
+  const c2 = hexToRgb(colors[rightIdx]);
+  
+  const r = c1[0] + (c2[0] - c1[0]) * fraction;
+  const g = c1[1] + (c2[1] - c1[1]) * fraction;
+  const b = c1[2] + (c2[2] - c1[2]) * fraction;
+  
+  return rgbToHex(r, g, b);
+};
+
 export const basePronStyle = {
   fontSize: 'var(--dyn-translit-font-size, 0.55em)',
   fontWeight: '800',
@@ -14,8 +52,6 @@ export const basePronStyle = {
   WebkitTextFillColor: 'var(--dyn-translit-color, #ffffff)',
   color: 'var(--dyn-translit-color, #ffffff)',
   opacity: 'var(--dyn-translit-opacity, 0.8)',
-  backgroundImage: 'none',
-  WebkitBackgroundClip: 'border-box',
   textShadow: 'none',
   fontFamily: 'var(--font-family)'
 };
@@ -27,36 +63,8 @@ export const getDisplayTranslation = (originalText, translation) => {
   return (cleanMainText && cleanMainText === cleanTransText) ? '' : (translation || '');
 };
 
-export const getSegmentStyle = (seg, masterPalette, isFocused) => {
-  let targetArtists = seg?.artists;
-  let isGrad = false;
-  let gradStyle = '';
-
-  if (targetArtists && targetArtists.length > 1) {
-    isGrad = true;
-    const gradientColors = targetArtists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
-    gradStyle = `linear-gradient(90deg, ${gradientColors})`;
-  } else if (seg?.isGradient && seg?.gradient) {
-    isGrad = true;
-    gradStyle = seg.gradient;
-  }
-
-  if (isGrad) {
-    return {
-      backgroundImage: gradStyle,
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      WebkitBoxDecorationBreak: 'clone',
-      display: 'inline',
-      filter: isFocused
-         ? `drop-shadow(0 0 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
-         : `drop-shadow(0 4px 12px rgba(0,0,0,0.95)) drop-shadow(0 0 20px rgba(255,255,255,0.4))`
-    };
-  }
-  return {};
-};
-
-export const renderColoredChar = (c, globalIdx, masterPalette, isFocused, isMaskLayer = false) => {
+// Character rendering now strictly uses solid computed colors (Bypasses CSS clipping bugs entirely)
+export const renderColoredChar = (c, globalIdx, isFocused) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
   let style = { transition: 'opacity 0.3s ease, transform 0.3s ease' };
   
@@ -66,27 +74,12 @@ export const renderColoredChar = (c, globalIdx, masterPalette, isFocused, isMask
       color: '#fbbf24',
       WebkitTextFillColor: '#fbbf24',
       textShadow: isFocused ? '0 0 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)' : '0 4px 12px rgba(0,0,0,0.95), 0 0 15px rgba(251, 191, 36, 0.6)',
-      backgroundImage: 'none',
-      filter: 'none'
     };
   } else {
-    let targetArtists = c.seg?.artists;
-    let isGrad = (targetArtists && targetArtists.length > 1) || c.seg?.isGradient;
-    
-    if (isGrad || isMaskLayer) {
-      style.WebkitTextFillColor = 'transparent';
-      style.color = 'transparent';
-    } else {
-      let activeColor = '#ffffff';
-      if (targetArtists && targetArtists.length === 1) {
-        activeColor = masterPalette[targetArtists[0]] || '#ffffff';
-      } else if (c.seg?.color) {
-        activeColor = c.seg.color;
-      }
-      style.color = activeColor;
-      style.WebkitTextFillColor = activeColor;
-      style.textShadow = isFocused ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
-    }
+    const activeColor = c.computedColor || '#ffffff';
+    style.color = activeColor;
+    style.WebkitTextFillColor = activeColor;
+    style.textShadow = isFocused ? `0 0 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80` : `0 4px 12px rgba(0,0,0,0.95), 0 0 20px ${activeColor}80`;
   }
 
   return <span key={globalIdx} style={style}>{c.char}</span>;
@@ -103,7 +96,7 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
            ? '0 0 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)' 
          : '0 4px 12px rgba(0, 0, 0, 0.95), 0 0 15px rgba(251, 191, 36, 0.6)';
       return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24', backgroundImage: 'none' }}>
+        <span key={pIdx} style={{ color: '#fbbf24', textShadow: shadow, WebkitTextFillColor: '#fbbf24' }}>
           {part}
         </span>
       );
@@ -127,15 +120,15 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
             shouldWrap
               ? {
                   whiteSpace: 'normal',
-                  display: 'inline-block',
-                  maxWidth: '100%',
+                  display: 'inline',
                   wordBreak: 'normal',
                   overflowWrap: 'normal'
                 }
               : {
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'normal', 
-                  overflowWrap: 'normal'
+                  overflowWrap: 'normal',
+                  display: 'inline'
                 }
           }
         >
@@ -246,147 +239,144 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
 };
 
 export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {
-    let lineGradientStyle = null;
+    // 1. Flatten characters to compute contiguous groups for accurate math color interpolation
+    const flatChars = [];
     alignedChunks.forEach(chunk => {
-      const seg = chunk.chars[0]?.seg;
-      if (seg) {
-        const style = getSegmentStyle(seg, masterPalette, isFocused);
-        if (style.backgroundImage) {
-          lineGradientStyle = style;
-        }
-      }
+        chunk.chars.forEach(c => flatChars.push(c));
     });
 
-    // --- HELPER TO RENDER A SPECIFIC LAYER (Mask vs Pronunciation Overlay) ---
-    const renderLayerTree = (hidePronunciation = false, hideMainText = false) => {
-      return alignedChunks.map((chunk, chunkIdx) => {
-          const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, masterPalette, isFocused, Boolean(lineGradientStyle)));
-          if (renderedText.every(c => c === null)) return null;
-          
-          const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
-          const seg = chunk.chars[0]?.seg;
-          const segStyle = lineGradientStyle ? {} : getSegmentStyle(seg, masterPalette, isFocused);
-
-          if (isRTL) {
-              return (
-                  <span key={chunkIdx} className="lyric-text-span" style={{ 
-                    ...segStyle,
-                    whiteSpace: 'pre-wrap', 
-                    verticalAlign: 'middle', 
-                    maxWidth: '100%',
-                    position: 'relative',
-                    top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto',
-                    visibility: hideMainText ? 'hidden' : 'visible'
-                  }}>
-                    {groupedText}
-                  </span>
-              );
-          } else {
-              if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
-                  let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
-                  if (isAdlib) {
-                    cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
-                  }
-
-                  return (
-                    <span
-                      key={`chunk-${chunkIdx}`}
-                      className="inline-cjk-chunk"
-                      style={{
-                        display: 'inline-flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        verticalAlign: 'top',
-                        margin: hasSpacingText ? '0' : '0 2px',
-                        maxWidth: '100%'
-                      }}
-                    >
-                      <span 
-                        className="lyric-text-span" 
-                        style={{ 
-                          ...segStyle,
-                          display: 'inline-block', 
-                          whiteSpace: 'pre-wrap', 
-                          maxWidth: '100%',
-                          visibility: hideMainText ? 'hidden' : 'visible'
-                        }}
-                      >
-                        {groupedText}
-                      </span>
-                      {cleanTrans ? (
-                        <span 
-                          className="pronunciation-text" 
-                          style={{
-                            ...basePronStyle,
-                            visibility: hidePronunciation ? 'hidden' : 'visible'
-                          }} 
-                          dir="ltr"
-                        >
-                          {renderFormattedTranslation(cleanTrans, isFocused)}
-                        </span>
-                      ) : null}
-                    </span>
-                  );
-              } else {
-                  return (
-                    <span 
-                      key={`chunk-${chunkIdx}`} 
-                      className="lyric-text-span" 
-                      style={{ 
-                        ...segStyle,
-                        whiteSpace: 'pre-wrap', 
-                        verticalAlign: 'baseline', 
-                        display: 'inline-block', 
-                        maxWidth: '100%',
-                        position: 'relative',
-                        top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto',
-                        visibility: hideMainText ? 'hidden' : 'visible'
-                    }}>
-                        {groupedText}
-                    </span>
-                  );
-              }
-          }
-      }).filter(item => item !== null);
+    const getSegId = (c) => {
+        if (c.seg?.artists) return c.seg.artists.join('-');
+        if (c.seg?.gradient) return c.seg.gradient;
+        if (c.seg?.color) return c.seg.color;
+        return 'default';
     };
 
-    // --- NON-GRADIENT SINGLE LAYER RENDER ---
-    if (!lineGradientStyle) {
-      return (
-        <span className="main-lyrics-flow-wrapper" style={{ display: 'inline-flex', flexWrap: 'wrap', alignItems: 'flex-start', width: '100%' }}>
-          {renderLayerTree(false, false)}
-        </span>
-      );
-    }
+    const contigGroups = [];
+    let currentGroupId = null;
+    flatChars.forEach((c) => {
+        const id = getSegId(c);
+        if (id !== currentGroupId) {
+            contigGroups.push({ id, chars: [] });
+            currentGroupId = id;
+        }
+        contigGroups[contigGroups.length - 1].chars.push(c);
+    });
 
-    // --- DUAL-LAYER ARCHITECTURE FOR GRADIENT MASKED LINES ---
-    // Layer 1: Gets the continuous gradient mask across the whole span, but hides pronunciation.
-    // Layer 2: Stacked identically on top, hides the main text and renders ONLY the un-clipped pronunciation text.
+    // 2. Pre-compute and assign the exact hex color for every character based on position
+    contigGroups.forEach(group => {
+        const firstChar = group.chars[0];
+        const seg = firstChar.seg;
+        const targetArtists = seg?.artists;
+        
+        let isGrad = false;
+        let colors = ['#ffffff'];
+
+        if (targetArtists && targetArtists.length > 1) {
+            isGrad = true;
+            colors = targetArtists.map(a => masterPalette[a] || '#ffffff');
+        } else if (seg?.isGradient && seg?.gradient) {
+            isGrad = true;
+            // Parse CSS gradient hex colors if provided
+            const hexRegex = /#([a-f\d]{3,6})/gi;
+            const matches = [...seg.gradient.matchAll(hexRegex)];
+            if (matches.length > 0) {
+                colors = matches.map(m => m[0]);
+            }
+        } else if (targetArtists && targetArtists.length === 1) {
+            colors = [masterPalette[targetArtists[0]] || '#ffffff'];
+        } else if (seg?.color) {
+            colors = [seg.color];
+        }
+
+        group.chars.forEach((c, i) => {
+            if (isGrad) {
+                const ratio = group.chars.length > 1 ? i / (group.chars.length - 1) : 0.5;
+                c.computedColor = interpolateColor(colors, ratio);
+            } else {
+                c.computedColor = colors[0];
+            }
+        });
+    });
+
+    // 3. Render chunks completely free of CSS background masks
+    const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
+        const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, isFocused));
+        if (renderedText.every(c => c === null)) return null;
+
+        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+
+        if (isRTL) {
+            return (
+                <span key={chunkIdx} className="lyric-text-span" style={{ 
+                  whiteSpace: 'pre-wrap', 
+                  display: 'inline', 
+                  position: 'relative',
+                  top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                }}>
+                  {groupedText}
+                </span>
+            );
+        } else {
+            if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
+                let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
+                if (isAdlib) {
+                    cleanTrans = cleanTrans.replace(/[()\[\]{}（）]/g, '').trim();
+                }
+
+                return (
+                  <span
+                    key={`chunk-${chunkIdx}`}
+                    className="inline-cjk-chunk"
+                    style={{
+                      display: 'inline-flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      verticalAlign: 'top',
+                      margin: hasSpacingText ? '0' : '0 2px'
+                    }}
+                  >
+                    <span 
+                      className="lyric-text-span" 
+                      style={{ 
+                        display: 'inline', 
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {groupedText}
+                    </span>
+                    {cleanTrans ? (
+                      <span 
+                        className="pronunciation-text" 
+                        style={basePronStyle} 
+                        dir="ltr"
+                      >
+                        {renderFormattedTranslation(cleanTrans, isFocused)}
+                      </span>
+                    ) : null}
+                  </span>
+                );
+            } else {
+                return (
+                  <span 
+                    key={`chunk-${chunkIdx}`} 
+                    className="lyric-text-span" 
+                    style={{ 
+                      whiteSpace: 'pre-wrap', 
+                      display: 'inline', 
+                      position: 'relative',
+                      top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                  }}>
+                      {groupedText}
+                  </span>
+                );
+            }
+        }
+    }).filter(item => item !== null);
+
     return (
-      <span className="dual-layer-gradient-container" style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-        {/* LAYER 1: Gradient Mask Layer */}
-        <span className="segment-mask-span" style={{ ...lineGradientStyle, display: 'inline-flex', flexWrap: 'wrap', alignItems: 'flex-start', width: '100%' }}>
-          {renderLayerTree(true, false)}
-        </span>
-
-        {/* LAYER 2: Clean Pronunciation Overlay */}
-        <span 
-          className="full-pronunciation-row" 
-          style={{ 
-            position: 'absolute', 
-            top: 0, 
-            left: 0, 
-            width: '100%', 
-            height: '100%', 
-            display: 'inline-flex', 
-            flexWrap: 'wrap', 
-            alignItems: 'flex-start', 
-            pointerEvents: 'none',
-            zIndex: 2
-          }}
-        >
-          {renderLayerTree(false, true)}
-        </span>
+      <span className="main-lyrics-flow-wrapper" style={{ display: 'inline', whiteSpace: 'pre-wrap' }}>
+        {chunkElements}
       </span>
     );
 };
