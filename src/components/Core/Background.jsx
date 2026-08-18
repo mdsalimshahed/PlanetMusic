@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import './Background.css';
 
-const Background = () => {
+// Accept an `isModalOpen` prop from your parent App/Dashboard
+const Background = ({ isModalOpen = false }) => {
   // 1. Hyper-targeted Vault JSON Scanner
   const lyricPool = useMemo(() => {
     const profiles = new Map();
@@ -89,8 +90,14 @@ const Background = () => {
   const poolRef = useRef(lyricPool);
   poolRef.current = lyricPool;
 
-  // 2. Vertical Waterfall Spawn Engine
+  // 2. Vertical Waterfall Spawn Engine (Listens to isModalOpen)
   useEffect(() => {
+    // If the modal opens, instantly destroy bubbles and stop the timer
+    if (isModalOpen) {
+      setBubbles([]); 
+      return; 
+    }
+
     let timerId = null;
 
     const scheduleNextSpawn = () => {
@@ -107,9 +114,8 @@ const Background = () => {
             line: randomItem.line,
             artist: randomItem.artist,
             photo: randomItem.photo,
-            // Randomize X from 0 to 100 (The CSS clamp will enforce the safe boundaries)
             x: Math.floor(Math.random() * 100), 
-            duration: Math.floor(Math.random() * 10) + 12 // Random travel speed (12s to 22s)
+            duration: Math.floor(Math.random() * 10) + 12
           };
 
           setBubbles((prev) => {
@@ -126,10 +132,11 @@ const Background = () => {
 
     scheduleNextSpawn();
 
+    // Clean up timer when unmounting OR when isModalOpen changes
     return () => {
       if (timerId) clearTimeout(timerId);
     };
-  }, []);
+  }, [isModalOpen]); // The effect re-runs anytime the modal opens or closes!
 
   const handleAnimationEnd = (id) => {
     setBubbles((prev) => prev.filter((b) => b.id !== id));
@@ -146,7 +153,6 @@ const Background = () => {
             key={b.id}
             className="lyric-chat-bubble"
             style={{
-              // CSS Clamp: Keeps it >= 20px from the left, and leaves exactly 360px of breathing room on the right
               left: `clamp(20px, ${b.x}%, calc(100% - 360px))`,
               animationDuration: `${b.duration}s`
             }}

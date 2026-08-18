@@ -137,7 +137,8 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      <Background songs={library} />
+      {/* UPDATE THIS LINE: Pass !!selectedSong to track the modal state */}
+      <Background songs={library} isModalOpen={!!selectedSong} />
       
       <Topbar 
         activeTab={activeTab} 
