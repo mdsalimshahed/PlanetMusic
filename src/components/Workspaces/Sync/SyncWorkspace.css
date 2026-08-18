@@ -93,12 +93,23 @@
 .sync-text-wrapper .preview-line {
    font-family: var(--font-family) !important;
    font-size: var(--workspace-lyric-size, clamp(16px, 5vw, 34px)) !important;
-   font-weight: 900 !important; /* Forced to 900 */
+   font-weight: 900 !important; 
    margin: 0 !important;
    padding: 0 !important;
    opacity: 1 !important; 
    transform: none !important;
    pointer-events: none;
+}
+
+/* Inject translation-style drop-shadow behind main text to boost visibility */
+.sync-text-wrapper .preview-line .main-lyrics-layer,
+.sync-text-wrapper .preview-line .adlib-node .primary-text {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+}
+
+.sync-line.active .sync-text-wrapper .preview-line .main-lyrics-layer,
+.sync-line.active .sync-text-wrapper .preview-line .adlib-node .primary-text {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
 }
 
 .sync-time {
