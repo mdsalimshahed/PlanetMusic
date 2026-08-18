@@ -18,7 +18,7 @@ const SplitLine = ({
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
 
-  // Uniform translation block styling (Used for both main parent and adlib blocks)
+  // Uniform translation block styling
   const relativeTransStyle = {
     position: 'relative',
     top: 'auto',
@@ -26,16 +26,18 @@ const SplitLine = ({
     transform: 'none',
     marginTop: 0,
     marginBottom: 'var(--dyn-trans-top-padding, 8px)',
-    width: 0,
+    width: 'auto',
     minWidth: '100%',
     textAlign: 'center',
     wordBreak: 'break-word',
     overflowWrap: 'break-word',
-    whiteSpace: 'normal'
+    whiteSpace: 'normal',
+    display: 'block'
   };
 
-  // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
+  // Uniform pronunciation block styling
   const blockPronStyle = {
+    position: 'relative',
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -123,7 +125,7 @@ const SplitLine = ({
        masterPalette,
        originalText: adlib.text,
        isOnlyPunct: extractedAdlibChars.length > 0 && extractedAdlibChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
-       isAdlib: true // Flags isolated ad-lib so parens are omitted in engine processing
+       isAdlib: true
     });
 
     return (
@@ -138,9 +140,7 @@ const SplitLine = ({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            alignSelf: 'center',
             position: 'relative',
-            verticalAlign: 'middle',
             maxWidth: '100%',
             boxSizing: 'border-box'
           }}
@@ -150,7 +150,7 @@ const SplitLine = ({
               {adlibTransJSX}
             </span>
           ) : null}
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
+          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', display: 'inline-block', marginTop: 'auto', marginBottom: 'auto' }} dir="auto">
             {adlibMainJSX}
           </span>
           {adlibPronJSX ? (
@@ -166,37 +166,37 @@ const SplitLine = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       <span
-          className="primary-text"
-          style={{
-            display: 'inline-flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'normal',
-            overflowWrap: 'normal',
-            position: 'relative',
-            textAlign: 'left',
-            width: '100%',
-            maxWidth: '100%',
-            boxSizing: 'border-box'
-          }}
+        className="primary-text"
+        style={{
+          display: 'inline-flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'normal',
+          overflowWrap: 'normal',
+          position: 'relative',
+          textAlign: 'left',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box'
+        }}
       >
         <span
-            className="core-chunks"
-            style={{
-              position: 'relative',
-              display: 'inline-flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              verticalAlign: 'middle',
-              margin: '0',
-              width: 'auto',
-              maxWidth: '100%',
-              textAlign: 'left',
-              boxSizing: 'border-box'
-            }}
+          className="core-chunks"
+          style={{
+            position: 'relative',
+            display: 'inline-flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '0',
+            width: 'auto',
+            maxWidth: '100%',
+            textAlign: 'left',
+            boxSizing: 'border-box'
+          }}
         >
           {mainTranslationJSX ? (
             <span className="chunk-translation live-translation" dir="ltr" style={relativeTransStyle}>
@@ -205,24 +205,26 @@ const SplitLine = ({
           ) : null}
           
           <span
-              className="main-lyrics-layer"
-              style={{
-                display: 'inline',
-                width: 'auto',
-                maxWidth: '100%',
-                textAlign: 'left',
-                boxSizing: 'border-box'
-              }}
-              dir={isRTL ? 'rtl' : 'ltr'}
+            className="main-lyrics-layer"
+            style={{
+              display: 'inline-block',
+              width: 'auto',
+              maxWidth: '100%',
+              textAlign: 'left',
+              boxSizing: 'border-box',
+              marginTop: 'auto',
+              marginBottom: 'auto'
+            }}
+            dir={isRTL ? 'rtl' : 'ltr'}
           >
             {alignedMainJSX}
           </span>
 
           {mainPronunciationJSX && (
-            <span 
-                 className="pronunciation-text" 
-                 style={blockPronStyle} 
-                 dir="ltr"
+            <span
+              className="pronunciation-text"
+              style={blockPronStyle}
+              dir="ltr"
             >
               {mainPronunciationJSX}
             </span>
