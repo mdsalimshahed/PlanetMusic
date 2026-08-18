@@ -58,13 +58,17 @@ export const getDisplayTranslation = (originalText, translation) => {
   return (cleanMainText && cleanMainText === cleanTransText) ? '' : (translation || '');
 };
 
-// Character rendering strictly checks for Arabic script
+// Character rendering strictly checks for script types
 export const renderColoredChar = (c, globalIdx, isFocused) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
   const isArabicChar = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(c.char);
+  const isBengaliChar = /[\u0980-\u09FF]/.test(c.char);
+
+  const selectedFont = isArabicChar ? 'var(--arabic-font-family)' : (isBengaliChar ? 'var(--bengali-font-family)' : 'var(--font-family)');
+
   let style = { 
     transition: 'opacity 0.3s ease, transform 0.3s ease',
-    fontFamily: isArabicChar ? 'var(--arabic-font-family)' : 'var(--font-family)'
+    fontFamily: selectedFont
   };
   if (isPunct && c.char.trim() !== '') {
     style = {
@@ -89,7 +93,8 @@ export const renderFormattedTranslation = (text, isFocused = false) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);
-    const font = isArabicPart ? 'var(--arabic-font-family)' : 'var(--font-family)';
+    const isBengaliPart = /[\u0980-\u09FF]/.test(part);
+    const font = isArabicPart ? 'var(--arabic-font-family)' : (isBengaliPart ? 'var(--bengali-font-family)' : 'var(--font-family)');
     if (isPunct && part.trim() !== '') {
       return (
         <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font }}>

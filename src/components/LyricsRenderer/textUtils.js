@@ -15,7 +15,7 @@ export const normalizeTrans = (str, keepParens = false) => {
   if (!str) return '';
   let res = str;
   if (!keepParens) {
-    res = res.replace(/[()\[\]{}]/g, ''); // PRESERVES SPACES
+    res = res.replace(/[()\[\]{}]/g, '');
   }
   const leadingPunctRegex = keepParens ? /^[^\p{L}\p{N}\p{M}\s()]+/gu : /^[\p{P}\p{S}]+/gu;
   const trailingPunctRegex = keepParens ? /[^\p{L}\p{N}\p{M}\s()]+$/gu : /[\p{P}\p{S}]+$/gu;
@@ -33,6 +33,8 @@ export const cleanTranslationText = (text) => {
 };
 
 export const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text);
+
+export const isBengaliLanguage = (text) => /[\u0980-\u09FF]/.test(text);
 
 export const parsePronunciation = (pronString) => {
   let parsedChunks = null;
