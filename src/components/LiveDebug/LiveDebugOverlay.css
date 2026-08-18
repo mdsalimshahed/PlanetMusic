@@ -14,5 +14,5 @@
     box-sizing: border-box;
     pointer-events: none;
     z-index: 10003;
-    background: rgba(255, 255, 255, 0.02);
+    transition: background-color 0.2s ease;
 }

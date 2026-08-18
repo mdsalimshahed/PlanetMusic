@@ -241,23 +241,38 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
 };
 
 export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {
+    // 1. Detect if any segment in the line uses a gradient mask
+    let lineGradientStyle = null;
+    alignedChunks.forEach(chunk => {
+      const seg = chunk.chars[0]?.seg;
+      if (seg) {
+        const style = getSegmentStyle(seg, masterPalette, isFocused);
+        if (style.backgroundImage) {
+          lineGradientStyle = style;
+        }
+      }
+    });
+
     const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
         const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, masterPalette, isFocused));
         if (renderedText.every(c => c === null)) return null;
         
         const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+        const seg = chunk.chars[0]?.seg;
+        const segStyle = lineGradientStyle ? {} : getSegmentStyle(seg, masterPalette, isFocused);
         let chunkJSX;
 
         if (isRTL) {
             chunkJSX = (
-                <span key={chunkIdx} style={{ 
-                whiteSpace: 'pre-wrap', 
-                verticalAlign: 'middle', 
-                maxWidth: '100%',
-                position: 'relative',
-                top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
+                <span key={chunkIdx} className="lyric-text-span" style={{ 
+                  ...segStyle,
+                  whiteSpace: 'pre-wrap', 
+                  verticalAlign: 'middle', 
+                  maxWidth: '100%',
+                  position: 'relative',
+                  top: isHybridLine ? 'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)' : 'auto'
                 }}>
-                {groupedText}
+                  {groupedText}
                 </span>
             );
         } else {
@@ -270,6 +285,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                 chunkJSX = (
                 <span
                     key={chunkIdx}
+                    className="inline-cjk-chunk"
                     style={{
                     display: 'inline-flex',
                     flexDirection: 'column',
@@ -279,7 +295,17 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                     maxWidth: '100%'
                     }}
                 >
-                    <span style={{ display: 'inline-block', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{groupedText}</span>
+                    <span 
+                      className="lyric-text-span" 
+                      style={{ 
+                        ...segStyle,
+                        display: 'inline-block', 
+                        whiteSpace: 'pre-wrap', 
+                        maxWidth: '100%' 
+                      }}
+                    >
+                      {groupedText}
+                    </span>
                     {cleanTrans ? (
                     <span className="pronunciation-text" style={basePronStyle} dir="ltr">
                         {renderFormattedTranslation(cleanTrans, isFocused)}
@@ -289,7 +315,11 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                 );
             } else {
                 chunkJSX = (
-                <span key={chunkIdx} style={{ 
+                <span 
+                  key={chunkIdx} 
+                  className="lyric-text-span" 
+                  style={{ 
+                    ...segStyle,
                     whiteSpace: 'pre-wrap', 
                     verticalAlign: 'baseline', 
                     display: 'inline', 
@@ -303,24 +333,17 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             }
         }
         
-        return { seg: chunk.chars[0]?.seg, jsx: chunkJSX };
+        return chunkJSX;
     }).filter(item => item !== null);
 
-    const segmentGroups = [];
-    let currentGroup = null;
+    // 2. If the entire line uses a gradient, wrap all lyric chunk elements inside a single line-wide gradient parent
+    if (lineGradientStyle) {
+      return (
+        <span className="segment-mask-span" style={lineGradientStyle}>
+          {chunkElements}
+        </span>
+      );
+    }
 
-    chunkElements.forEach(item => {
-        if (!currentGroup || currentGroup.seg !== item.seg) {
-            if (currentGroup) segmentGroups.push(currentGroup);
-            currentGroup = { seg: item.seg, elements: [item.jsx] };
-        } else {
-            currentGroup.elements.push(item.jsx);
-        }
-    });
-    if (currentGroup) segmentGroups.push(currentGroup);
-
-    return segmentGroups.map((group, idx) => {
-        const parentStyle = getSegmentStyle(group.seg, masterPalette, isFocused);
-        return <span key={`seg-${idx}`} style={parentStyle}>{group.elements}</span>;
-    });
+    return chunkElements;
 };
