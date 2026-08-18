@@ -54,12 +54,10 @@ const SplitLine = ({
 
   const blocks = [];
   let currentBlock = null;
-
   chars.forEach((c) => {
     const adlibIndex = savedNode.adlibs?.findIndex(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd);
     const isAdlibChar = adlibIndex !== -1;
     const adlibObj = isAdlibChar ? savedNode.adlibs[adlibIndex] : null;
-
     if (!currentBlock) {
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     } else if (currentBlock.isAdlib === isAdlibChar && currentBlock.adlibObj === adlibObj) {
@@ -69,18 +67,15 @@ const SplitLine = ({
       currentBlock = { isAdlib: isAdlibChar, adlibObj, chars: [c] };
     }
   });
-
   if (currentBlock) blocks.push(currentBlock);
 
   const mainBlocks = blocks.filter(b => !b.isAdlib);
   let mainChars = [];
   mainBlocks.forEach(b => mainChars.push(...b.chars));
-
   while(mainChars.length > 0 && /\s/.test(mainChars[0].char)) mainChars.shift();
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
   const isOnlyPunct = mainChars.length > 0 && mainChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
-
   const { mainJSX: alignedMainJSX, translationJSX: mainTranslationJSX, pronunciationJSX: mainPronunciationJSX } = EngineRouter({
     chars: mainChars,
     lang,
@@ -136,13 +131,15 @@ const SplitLine = ({
           style={{
             display: 'inline-flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             alignItems: 'center',
-            alignSelf: 'center',
+            alignSelf: 'flex-end',
             position: 'relative',
-            verticalAlign: 'middle',
+            verticalAlign: 'baseline',
             maxWidth: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            margin: 0,
+            padding: 0
           }}
         >
           {adlibTransJSX ? (
@@ -150,7 +147,7 @@ const SplitLine = ({
               {adlibTransJSX}
             </span>
           ) : null}
-          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal' }} dir="auto">
+          <span className="primary-text" style={{ whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto">
             {adlibMainJSX}
           </span>
           {adlibPronJSX ? (
@@ -171,7 +168,7 @@ const SplitLine = ({
             display: 'inline-flex',
             flexDirection: 'row',
             flexWrap: 'wrap',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             whiteSpace: 'pre-wrap',
             wordBreak: 'normal',
             overflowWrap: 'normal',
@@ -188,9 +185,9 @@ const SplitLine = ({
               position: 'relative',
               display: 'inline-flex',
               flexDirection: 'column',
-              justifyContent: 'center',
+              justifyContent: 'flex-end',
               alignItems: 'center',
-              verticalAlign: 'middle',
+              verticalAlign: 'baseline',
               margin: '0',
               width: 'auto',
               maxWidth: '100%',
@@ -217,12 +214,11 @@ const SplitLine = ({
           >
             {alignedMainJSX}
           </span>
-
           {mainPronunciationJSX && (
-            <span 
-                 className="pronunciation-text" 
-                 style={blockPronStyle} 
-                 dir="ltr"
+            <span
+                  className="pronunciation-text"
+                  style={blockPronStyle}
+                  dir="ltr"
             >
               {mainPronunciationJSX}
             </span>
