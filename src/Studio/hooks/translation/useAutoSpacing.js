@@ -1,12 +1,12 @@
-/* --- src/Studio/hooks/translation/useAutoSpacing.js --- */
+/* --- src/hooks/translation/useAutoSpacing.js --- */
 import { useState } from 'react';
-import { fetchGoogleWithLang } from './utils/translationApi';
+import { fetchGoogleWithLang } from './utils/translationApi.js';
 import { 
   isSpacelessScript, 
   extractPunctuationMap, 
   cleanPunctuationPythonStyle, 
   runBruteForceAlignment 
-} from './utils/bruteForceEngine';
+} from './utils/bruteForceEngine.js';
 
 export const useAutoSpacing = ({
   workspaceData,
@@ -24,15 +24,13 @@ export const useAutoSpacing = ({
     
     const targetIndices = [];
     workspaceData.forEach((line, index) => {
-      // FIX: Strictly target Japanese ('ja') and Chinese ('zh' variants) only.
-      // Removed Korean ('ko') as it natively uses spaces.
-      if (line.lang === 'ja' || line.lang?.startsWith('zh')) {
+      if (line.lang === 'ja' || line.lang?.startsWith('zh') || line.lang === 'ko') {
         targetIndices.push(index);
       }
     });
 
     if (targetIndices.length === 0) {
-      setNotification({ show: true, message: 'No Japanese or Chinese lines found to auto-space.', progress: 100 });
+      setNotification({ show: true, message: 'No CJK lines found to auto-space.', progress: 100 });
       setTimeout(() => setNotification({ show: false }), 2000);
       return;
     }
@@ -72,8 +70,8 @@ export const useAutoSpacing = ({
         const delimitedText = blocks.map(b => b.text).join(' \u266B ');
         const gData = await fetchGoogleWithLang(delimitedText, line.lang);
         const delimitedPron = gData.transliteration || gData.translation || '';
+        const pronChunks = delimitedPron.split(/\s*[\u266B♫]\s*/).map(s => s.trim());
 
-        const pronChunks = delimitedPron.split(/\s*[\u266B ]\s*/).map(s => s.trim());
         for (let i = 0; i < blocks.length; i++) {
           if (blocks[i].mode === 'latin') {
             // LATIN CHUNK: Strictly force exact raw text (no Romaji)
@@ -93,7 +91,6 @@ export const useAutoSpacing = ({
       const resultBlocks = [];
       for (let bIdx = 0; bIdx < blocks.length; bIdx++) {
         if (cancelTranslationRef.current) break;
-
         const block = blocks[bIdx];
         
         if (block.mode === 'latin') {
@@ -110,8 +107,8 @@ export const useAutoSpacing = ({
         }
 
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
-        let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
 
+        let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
         let resultArr = [];
         let charOffset = 0;
         
