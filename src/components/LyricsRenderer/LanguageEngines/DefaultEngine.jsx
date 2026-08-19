@@ -1,7 +1,7 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/DefaultEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils';
-import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils';
+import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils.js';
+import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);

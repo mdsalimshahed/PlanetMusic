@@ -1,24 +1,27 @@
 /* --- src/App.jsx --- */
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
-import './App.css';
-import Background from './components/Core/Background';
-import Topbar from './components/Core/Topbar';
-import SongModal from './components/Modals/SongModal';
-import Player from './components/Core/Player';
-import SettingsTab from './pages/SettingsTab';
-import BlogTab from './pages/BlogTab';
-import PrivacyTab from './pages/PrivacyTab';
-import ContactTab from './pages/ContactTab';
-import SponsorUnit from './components/Promos/SponsorUnit';
-import ConsentNotice from './components/Core/ConsentNotice';
-import TrackGrid from './components/Core/TrackGrid';
+import './App.css'; // Core root styles
+import './Application/components/Core/AppLayout.css';
+import './Application/components/Core/SearchArea.css';
+import './Application/components/Core/SampleVault.css';
+import Background from './Application/components/Core/Background.jsx';
+import Topbar from './Application/components/Core/Topbar.jsx';
+import SongModal from './Application/components/Modals/SongModal.jsx';
+import Player from './Studio/components/Player/Player.jsx';
+import SettingsTab from './Application/pages/SettingsTab.jsx';
+import BlogTab from './Application/pages/BlogTab.jsx';
+import PrivacyTab from './Application/pages/PrivacyTab.jsx';
+import ContactTab from './Application/pages/ContactTab.jsx';
+import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
+import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
+import TrackGrid from './Application/components/Core/TrackGrid.jsx';
 
 // Custom Hooks for Modular Logic
-import { useAppStorage } from './hooks/data/useAppStorage';
-import { useVaultOperations } from './hooks/data/useVaultOperations';
-import { useCosmosSearch } from './hooks/core/useCosmosSearch';
-import { useDeepLink } from './hooks/core/useDeepLink';
+import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
+import { useVaultOperations } from './Application/hooks/data/useVaultOperations.js';
+import { useCosmosSearch } from './Application/hooks/core/useCosmosSearch.js';
+import { useDeepLink } from './Application/hooks/core/useDeepLink.js';
 
 const App = () => {
   const location = useLocation();

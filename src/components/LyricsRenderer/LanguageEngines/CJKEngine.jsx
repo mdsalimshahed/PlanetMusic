@@ -1,7 +1,7 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/CJKEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation, getGraphemes } from '../textUtils';
-import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils';
+import { normalizeTrans, parsePronunciation, getGraphemes } from '../textUtils.js';
+import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);

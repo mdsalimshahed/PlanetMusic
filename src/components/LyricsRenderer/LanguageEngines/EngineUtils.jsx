@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/EngineUtils.jsx --- */
 import React from 'react';
-import { getGraphemes, normalizeTrans } from '../textUtils';
+import { getGraphemes, normalizeTrans } from '../textUtils.js';
 
 // --- COLOR INTERPOLATION HELPERS ---
 export const hexToRgb = (hex) => {

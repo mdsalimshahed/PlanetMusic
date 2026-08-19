@@ -1,8 +1,8 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
 import React, { useRef, useState, useLayoutEffect } from 'react';
-import EngineRouter from './LanguageEngines/EngineRouter';
-import { extractCharsAndSegments } from './LanguageEngines/EngineUtils';
-import { isRTLLanguage } from './textUtils';
+import EngineRouter from './LanguageEngines/EngineRouter.jsx';
+import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
+import { isRTLLanguage } from './textUtils.js';
 
 const SplitLine = ({
   lineObj,

@@ -1,7 +1,7 @@
 /* --- src/components/LyricsRenderer/StandardLine.jsx --- */
 import React from 'react';
-import EngineRouter from './LanguageEngines/EngineRouter';
-import { isRTLLanguage } from './textUtils';
+import EngineRouter from './LanguageEngines/EngineRouter.jsx';
+import { isRTLLanguage } from './textUtils.js';
 
 const StandardLine = ({
   lineObj,

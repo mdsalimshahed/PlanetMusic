@@ -1,0 +1,51 @@
+/* --- src/Application/components/Core/TrackGrid.css --- */
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, clamp(130px, var(--dyn-card-width, 12vw), 320px));
+  justify-content: center; 
+  gap: var(--dyn-card-gap, 28px);
+  width: 100%;
+  margin: 0;
+}
+
+.track-grid-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.empty-message {
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: var(--dyn-border-radius);
+  padding: 40px;
+  width: 100%;
+}
+
+.empty-message h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.empty-message p {
+  color: var(--text-subdued);
+  font-size: 18px;
+}
+
+/* COMPACT SINGLE-COLUMN CARD LAYOUT FOR MOBILE */
+@media (max-width: 550px) {
+  .track-grid {
+    grid-template-columns: min(100%, 210px); 
+    justify-content: center;
+  }
+  .track-grid-item {
+    margin: 0 auto;
+  }
+}

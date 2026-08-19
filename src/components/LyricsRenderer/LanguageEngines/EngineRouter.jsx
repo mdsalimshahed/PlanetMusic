@@ -1,9 +1,9 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/EngineRouter.jsx --- */
 import React from 'react';
-import CJKEngine from './CJKEngine';
-import RTLEngine from './RTLEngine';
-import DefaultEngine from './DefaultEngine';
-import { isRTLLanguage, isCJ, isBengaliLanguage } from '../textUtils';
+import CJKEngine from './CJKEngine.jsx';
+import RTLEngine from './RTLEngine.jsx';
+import DefaultEngine from './DefaultEngine.jsx';
+import { isRTLLanguage, isCJ, isBengaliLanguage } from '../textUtils.js';
 
 const EngineRouter = ({ chars, lang, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const cleanLang = (lang || 'auto').toLowerCase().trim();

@@ -1,7 +1,7 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/RTLEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation } from '../textUtils';
-import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils';
+import { normalizeTrans, parsePronunciation } from '../textUtils.js';
+import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
