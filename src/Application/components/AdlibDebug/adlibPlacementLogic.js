@@ -1,4 +1,5 @@
-/* --- src/components/AdlibDebug/adlibPlacementLogic.js --- */
+/* --- src/Application/components/AdlibDebug/adlibPlacementLogic.js --- */
+
 // Exported so the tracker can do JIT DOM reading outside of the loop
 export const getRelativeRect = (element, containerRect) => {
   if (!element) return null;
@@ -7,13 +8,11 @@ export const getRelativeRect = (element, containerRect) => {
   let hasValidBounds = false;
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
   let node;
-
   while ((node = walker.nextNode())) {
     if (node.textContent.trim() !== '') {
       const range = document.createRange();
       range.selectNodeContents(node);
       const rects = range.getClientRects();
-
       for (let i = 0; i < rects.length; i++) {
         const rect = rects[i];
         if (rect.width > 0 && rect.height > 0) {
@@ -26,7 +25,6 @@ export const getRelativeRect = (element, containerRect) => {
       }
     }
   }
-
   if (hasValidBounds) {
     return {
       top: minTop - containerRect.top,
@@ -37,7 +35,6 @@ export const getRelativeRect = (element, containerRect) => {
       height: maxBottom - minTop
     };
   }
-
   // Fallback to basic bounding box if no text nodes found
   const rect = element.getBoundingClientRect();
   return {
@@ -58,15 +55,14 @@ export const generateSafeAdlibPosition = (
   isMulti,
   cols,
   activeSingersList,
-  masterNamesArray
+  masterNamesArray,
+  lastZoneId = null
 ) => {
   // 1. The Goldilocks Margins
   const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
-  
   // Apply a negative pad to pierce through the parent container's padding to touch the absolute edge!
   const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? -16 : Math.max(30, containerRect.width * 0.08);
   const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
-
   const LYRIC_PAD = 25;
   const SINGER_PAD = 20;
   const MAX_DIST = isMoreThanThree ? Infinity : 160;
@@ -111,6 +107,7 @@ export const generateSafeAdlibPosition = (
   const validCells = [];
   const colW = containerRect.width / cols;
   const rowH = containerRect.height / 2;
+
   const getArtistForCell = (idx) => {
     if (!masterNamesArray || masterNamesArray.length === 0) return null;
     const r = Math.floor(idx / cols);
@@ -119,7 +116,7 @@ export const generateSafeAdlibPosition = (
   };
 
   if (!isMulti || activeSingersList.length === 0) {
-    validCells.push({ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
+    validCells.push({ quadIdx: 0, left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
   } else {
     for (let i = 0; i < cols * 2; i++) {
       const r = Math.floor(i / cols);
@@ -132,8 +129,8 @@ export const generateSafeAdlibPosition = (
         const cellRight = c === cols - 1 ? safeRight : (c + 1) * colW;
         const cellTop = r === 0 ? safeTop : r * rowH;
         const cellBottom = r === 1 ? safeBottom : (r + 1) * rowH;
-
         validCells.push({
+          quadIdx: i,
           left: cellLeft,
           right: cellRight,
           top: cellTop,
@@ -154,6 +151,8 @@ export const generateSafeAdlibPosition = (
       
       if (ixLeft < ixRight && ixTop < ixBottom) {
         intersectedAreas.push({
+          zoneId: `${bz.type}-${vc.quadIdx}`,
+          quadIdx: vc.quadIdx,
           left: ixLeft,
           right: ixRight,
           top: ixTop,
@@ -170,15 +169,16 @@ export const generateSafeAdlibPosition = (
   if (intersectedAreas.length > 0) {
     candidateAreas = intersectedAreas;
   } else if (validCells.length > 0) {
-    candidateAreas = validCells;
+    candidateAreas = validCells.map(vc => ({ ...vc, zoneId: `Cell-${vc.quadIdx}` }));
   } else {
-    candidateAreas = [{ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom }];
+    candidateAreas = [{ zoneId: 'Full-0', quadIdx: 0, left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom }];
   }
 
   // Temporarily force max-content for pure physical dimension checks
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
   const originalWidth = node.style.getPropertyValue('width');
   node.style.setProperty('width', 'max-content', 'important');
+
   let bestScale = -1;
   let bestCandidates = [];
 
@@ -191,9 +191,8 @@ export const generateSafeAdlibPosition = (
     
     // Normal wrapping limits for standard display
     const currentMaxWidth = tw * 0.95; 
-    
     node.style.setProperty('--adlib-max-width', `${currentMaxWidth}px`);
-    node.style.setProperty('max-width', `${currentMaxWidth}px`, 'important'); 
+    node.style.setProperty('max-width', `${currentMaxWidth}px`, 'important');
     
     // Read the exact physical dimensions required by the text *after* natural browser wrapping
     const actualWidth = node.scrollWidth;
@@ -226,6 +225,7 @@ export const generateSafeAdlibPosition = (
     
     // Clamp scale so text doesn't disappear entirely
     scale = Math.max(0.15, scale);
+
     const result = { area, scale, actualWidth, actualHeight, maxWidth: currentMaxWidth };
 
     // Group the quadrants that require the least amount of scaling down
@@ -240,17 +240,26 @@ export const generateSafeAdlibPosition = (
   // Reset node to original state
   if (originalMaxWidth) node.style.setProperty('--adlib-max-width', originalMaxWidth);
   else node.style.removeProperty('--adlib-max-width');
-  
   if (originalWidth) node.style.setProperty('width', originalWidth);
   else node.style.removeProperty('width');
-
   node.style.removeProperty('max-width');
 
-  // 7. SELECT THE OPTIMAL QUADRANT
+  // 7. SELECT THE OPTIMAL QUADRANT (STRICT NO-CONSECUTIVE REPEAT RULE)
   let chosen;
+  let validCandidates = bestCandidates;
+  const artistCount = masterNamesArray ? masterNamesArray.length : 1;
+
+  // STRICT RULE: Divert consecutive ad-libs away from the exact same physical space if 4 or fewer artists
+  if (lastZoneId !== null && bestCandidates.length > 1 && artistCount <= 4) {
+    const filtered = bestCandidates.filter(c => c.area.zoneId !== lastZoneId);
+    if (filtered.length > 0) {
+      validCandidates = filtered;
+    }
+  }
+
   const canvasMidY = containerRect.height / 2;
-  const topZones = bestCandidates.filter(c => c.area.top < canvasMidY);
-  const bottomZones = bestCandidates.filter(c => c.area.top >= canvasMidY);
+  const topZones = validCandidates.filter(c => c.area.top < canvasMidY);
+  const bottomZones = validCandidates.filter(c => c.area.top >= canvasMidY);
 
   // If multiple valid quadrants offer the identical best scale, alternate randomly to keep it dynamic
   if (topZones.length > 0 && bottomZones.length > 0) {
@@ -260,7 +269,7 @@ export const generateSafeAdlibPosition = (
       chosen = bottomZones[Math.floor(Math.random() * bottomZones.length)];
     }
   } else {
-    chosen = bestCandidates[Math.floor(Math.random() * bestCandidates.length)];
+    chosen = validCandidates[Math.floor(Math.random() * validCandidates.length)];
   }
 
   const targetArea = chosen.area;
@@ -272,10 +281,11 @@ export const generateSafeAdlibPosition = (
   // 8. GENERATE INNER SAFE ZONE
   // Calculate the absolute maximum radius (diagonal) so it NEVER clips when rotated
   const safeRadius = Math.sqrt(Math.pow(visualWidth, 2) + Math.pow(visualHeight, 2)) / 2;
+  
   // Add a tiny extra margin (e.g. 5px) just to be perfectly safe from edge anti-aliasing pixels
   const padX = safeRadius + 5; 
   const padY = safeRadius + 5;
-  
+
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
   let innerTop = targetArea.top + padY;
@@ -309,6 +319,8 @@ export const generateSafeAdlibPosition = (
     rot: finalRotation.toFixed(2),
     maxWidth: maxWidth.toFixed(1),
     scale: scale.toFixed(3),
+    quadIdx: targetArea.quadIdx,
+    zoneId: targetArea.zoneId,
     debugZone: {
       left: innerLeft,
       top: innerTop,

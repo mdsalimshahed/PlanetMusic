@@ -131,9 +131,11 @@
   cursor: pointer;
 }
 
-/* Soft dark drop-shadow behind main text */
+/* Soft dark drop-shadow behind main text and ad-libs elements */
 .focused-line .main-lyrics-layer,
-.focused-adlib-line .primary-text {
+.focused-adlib-line .primary-text,
+.focused-adlib-line .chunk-translation,
+.focused-adlib-line .pronunciation-text {
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
@@ -145,6 +147,7 @@
       min(var(--dyn-focused-sync-font-size, 42px), 28px)
     );
   }
+  
   .focused-adlib-line {
     font-size: clamp(
       11px,

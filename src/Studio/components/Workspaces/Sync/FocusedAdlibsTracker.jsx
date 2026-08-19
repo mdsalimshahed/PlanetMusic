@@ -1,4 +1,4 @@
-/* --- src/components/Workspaces/Sync/FocusedAdlibsTracker.jsx --- */
+/* --- src/Studio/components/Workspaces/Sync/FocusedAdlibsTracker.jsx --- */
 import React, { useMemo, useRef, useEffect } from 'react';
 import { generateSafeAdlibPosition, getRelativeRect } from "../../../../Application/components/AdlibDebug/adlibPlacementLogic.js";
 import EngineRouter from '../../../../components/LyricsRenderer/LanguageEngines/EngineRouter.jsx';
@@ -7,6 +7,7 @@ import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/L
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
+  const lastZoneIdRef = useRef(null);
 
   const adlibsToRender = useMemo(() => {
     const items = [];
@@ -29,9 +30,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 { text: adlibObj.text, segments: adlibObj.segments }, 
                 adlibObj
             );
-
             const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
-
             const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
                 chars,
                 lang: adlibObj.lang || 'auto',
@@ -145,6 +144,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           }
         });
       }
+      lastZoneIdRef.current = null;
     };
 
     if (!isPlayingCurrentSong) {
@@ -159,7 +159,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
-
         if (shouldBeActive && !item.isActive) {
           let pos = null;
           
@@ -187,18 +186,20 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
               item.isMulti,
               item.cols,
               item.activeSingersList,
-              item.activeNames
+              item.activeNames,
+              lastZoneIdRef.current
             );
           }
-
           if (pos) {
             item.node.style.setProperty('--adlib-left', pos.left);
             item.node.style.setProperty('--adlib-top', pos.top);
             item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
             item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
             item.node.style.setProperty('--adlib-scale', pos.scale);
+            if (pos.zoneId !== undefined) {
+              lastZoneIdRef.current = pos.zoneId;
+            }
           }
-
           item.node.classList.add('active');
           item.isActive = true;
         } else if (!shouldBeActive && item.isActive) {
@@ -214,7 +215,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
 
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
-
     return () => {
       window.removeEventListener('globalTimeUpdate', handleTime);
       window.removeEventListener('globalPlayState', handlePlayState);
