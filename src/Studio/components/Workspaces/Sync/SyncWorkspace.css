@@ -1,14 +1,19 @@
-/* --- src/components/Workspaces/Sync/SyncWorkspace.css --- */
+/* --- src/Studio/components/Workspaces/Sync/SyncWorkspace.css --- */
 .sync-mode-container {
    display: flex; flex-direction: column; height: 100%; gap: 16px;
    animation: fadeIn 0.3s ease;
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .sync-player {
    display: flex; align-items: center; gap: 12px; padding: 12px 20px;
    border-radius: 500px; background: rgba(0, 0, 0, 0.4);
 }
+
 .sync-play-btn {
    background: rgba(255, 255, 255, 0.1);
    color: white;
@@ -20,6 +25,7 @@
    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
    transition: all 0.2s ease;
 }
+
 .sync-play-btn:hover {
    transform: scale(1.1);
    background: var(--workspace-accent, var(--accent));
@@ -41,6 +47,7 @@
    display: flex; flex-direction: column; gap: 8px; padding: 12px;
    -webkit-overflow-scrolling: touch;
 }
+
 .sync-lines-container::-webkit-scrollbar { width: 6px; }
 .sync-lines-container::-webkit-scrollbar-thumb {
    background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.3));
@@ -54,6 +61,7 @@
    background: rgba(0, 0, 0, 0.2); cursor: pointer; transition: all 0.2s;
    border: 1px solid transparent;
 }
+
 .sync-line:hover { background: rgba(255, 255, 255, 0.05); }
 
 .sync-line.active {
@@ -70,23 +78,28 @@
    border-left: 2px solid var(--workspace-accent, var(--accent));
    background: rgba(0, 0, 0, 0.3);
 }
+
 .sync-line.nested-adlib.adlib-playing {
    background: var(--workspace-accent-glow, rgba(179, 136, 235, 0.15));
    border-left: 3px solid var(--workspace-accent, var(--accent));
    box-shadow: inset 4px 0 15px var(--workspace-accent-glow, rgba(179, 136, 235, 0.25));
 }
+
 .sync-line.nested-adlib.adlib-playing .sync-text { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); color: white; }
 
 .action-split-btn {
    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
    color: white; padding: 4px 10px; border-radius: 50px; font-size: clamp(9px, 1.2vw, 11px);
    cursor: pointer; margin-left: 12px; transition: all 0.2s; flex-shrink: 0;
+   font-family: inherit; /* FIXES THE BUTTON FONT */
 }
+
 .action-split-btn:hover {
    background: var(--workspace-accent, var(--accent));
    border-color: var(--workspace-accent, var(--accent));
    color: black;
 }
+
 .action-split-btn.undo { background: rgba(250, 36, 60, 0.1); border-color: rgba(250, 36, 60, 0.3); color: #FA243C; }
 .action-split-btn.undo:hover { background: #FA243C; border-color: #FA243C; color: white; }
 
@@ -140,8 +153,8 @@
    background: rgba(255, 255, 255, 0.1); border: none; color: white;
    padding: 2px 8px; border-radius: 4px; font-size: clamp(9px, 1.2vw, 11px); cursor: pointer; transition: background 0.2s;
 }
-.speed-reset-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
+.speed-reset-btn:hover { background: rgba(255, 255, 255, 0.2); }
 .speed-slider { width: 100%; margin: 4px 0; }
 .speed-ticks { display: flex; justify-content: space-between; font-size: clamp(8px, 1vw, 10px); color: rgba(255, 255, 255, 0.3); padding: 0 2px; font-family: monospace; }
 
@@ -172,7 +185,7 @@
 
 /* Custom Gradient Tracking for Workspace Sliders */
 .custom-slider.sync-slider, .custom-slider.speed-slider {
-  background-image:
+  background-image: 
     linear-gradient(var(--workspace-accent, #fbbf24), var(--workspace-accent, #fbbf24)),
     linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)) !important;
   background-size: var(--progress, 0%) 4px, 100% 4px !important;
@@ -183,6 +196,7 @@
 .custom-slider.sync-slider::-webkit-slider-thumb, .custom-slider.speed-slider::-webkit-slider-thumb {
   background: var(--workspace-accent, #fbbf24) !important;
 }
+
 .custom-slider.sync-slider:hover::-webkit-slider-thumb, .custom-slider.speed-slider:hover::-webkit-slider-thumb {
   transform: scale(1.3);
 }

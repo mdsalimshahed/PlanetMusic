@@ -193,9 +193,26 @@ export const SyncWorkspace = ({
     if (!node) return null;
     const isRTL = isRTLLanguage(node.text || '');
     const hasSpacingText = Boolean(node.spacingText && node.spacingText.trim());
-    const displayText = hasSpacingText ? node.spacingText : node.text;
 
-    // Extract the saved pronunciation correctly
+    // 1. Process Segment Extraction
+    let segmentsToRender = node.segments && node.segments.length > 0 
+      ? node.segments.map(s => ({...s})) 
+      : [{ ...node }];
+
+    // Strip out adlibs from segments if the line is actively split
+    if (isMain && node.isSplit && node.adlibs) {
+      segmentsToRender = segmentsToRender.map(seg => {
+        let segText = seg.text;
+        node.adlibs.forEach(a => {
+          segText = segText.replace(a.text, '');
+        });
+        // Clean up any double spaces left behind after removal
+        segText = segText.replace(/\s{2,}/g, ' ');
+        return { ...seg, text: segText };
+      }).filter(seg => seg.text.trim().length > 0);
+    }
+
+    // 2. Extract Pronunciation
     let pronText = '';
     if (node.pronunciation) {
       if (typeof node.pronunciation === 'string' && (node.pronunciation.startsWith('{') || node.pronunciation.startsWith('['))) {
@@ -216,11 +233,12 @@ export const SyncWorkspace = ({
       }
     }
     
-    // Clean up adlib pronunciation (strip parentheses if it's an adlib)
+    // Clean up adlib pronunciation (strip parentheses)
     if (!isMain && pronText) {
        pronText = pronText.replace(/[()[\]{}]/g, '').trim();
     }
 
+    // 3. Colored Text Renderer
     const renderColoredText = (item, overrideText = null) => {
       let artists = item.artists || [];
       if (artists.length === 0 && item.singer) {
@@ -284,9 +302,30 @@ export const SyncWorkspace = ({
       return <span style={parentStyle}>{renderedChars}</span>;
     };
 
+    // 4. Assemble Final JSX
+    let finalJSX;
+    if (hasSpacingText) {
+      let displayText = node.spacingText;
+      if (isMain && node.isSplit && node.adlibs) {
+        node.adlibs.forEach(a => {
+          displayText = displayText.replace(a.text, '');
+        });
+        displayText = displayText.replace(/\s{2,}/g, ' ').trim();
+      }
+      
+      // Use the first remaining valid segment to dictate the color of the spacing text
+      const validColorSource = segmentsToRender.find(s => s.text.trim().length > 0) || node;
+      finalJSX = renderColoredText(validColorSource, displayText);
+    } else {
+      finalJSX = segmentsToRender.map((seg, sIdx) => (
+        <React.Fragment key={sIdx}>
+          {renderColoredText(seg)}
+        </React.Fragment>
+      ));
+    }
+
     return (
         <div className="preview-line" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-            
             <span className="primary-text" style={{
                 display: 'block',
                 whiteSpace: 'pre-wrap',
@@ -296,25 +335,12 @@ export const SyncWorkspace = ({
                 width: '100%',
                 maxWidth: '100%'
             }} dir={isRTL ? 'rtl' : 'ltr'}>
-                {hasSpacingText ? (
-                  renderColoredText(node, node.spacingText)
-                ) : (
-                  node.segments && node.segments.length > 0 ? (
-                    node.segments.map((seg, sIdx) => (
-                      <React.Fragment key={sIdx}>
-                        {renderColoredText(seg)}
-                      </React.Fragment>
-                    ))
-                  ) : (
-                    renderColoredText(node)
-                  )
-                )}
+                {finalJSX}
             </span>
 
             {pronText && (
                 <span className="pronunciation-text" style={{
-                    fontSize: 'var(--dyn-translit-font-size, 0.55em)',
-                    fontWeight: '800',
+                    fontSize: 'calc(var(--dyn-translit-font-size, 0.55em) * 1.6)',                    fontWeight: '800',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
                     textAlign: 'left',
