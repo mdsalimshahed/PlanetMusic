@@ -1,7 +1,7 @@
-/* --- src/hooks/sync/useSyncLogic.js --- */
+/* --- src/Studio/hooks/sync/useSyncLogic.js --- */
 import { useEffect, useRef } from 'react';
-import { workspaceClock } from '../../utils/clockEngine.js';
-import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers.js';
+import { workspaceClock } from '../../utils/clockEngine';
+import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
 
 // ------------------------------------------------------------------
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking
@@ -128,7 +128,6 @@ export const useSyncEngine = ({
         } else {
           autoTrackSyncPlayback(time);
         }
-
         animationFrameId = requestAnimationFrame(syncTick);
       }
     };
@@ -139,7 +138,6 @@ export const useSyncEngine = ({
     } else {
       workspaceClock.pause();
     }
-
     return () => cancelAnimationFrame(animationFrameId);
   }, [isSyncPlaying, syncYtVideoId]);
 };
@@ -221,15 +219,23 @@ export const useSyncKeyboard = ({
       const currentItem = wLines[currentIdx];
       const data = [...syncDataRef.current];
       
+      // DEEP CLONE THE SPECIFIC NODE WE ARE MUTATING to prevent React state stalling
+      data[currentItem.lineIndex] = { ...data[currentItem.lineIndex] };
+      
       let itemToMutate;
-      if (currentItem.type === 'main') itemToMutate = data[currentItem.lineIndex];
-      else itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
+      if (currentItem.type === 'main') {
+          itemToMutate = data[currentItem.lineIndex];
+      } else {
+          data[currentItem.lineIndex].adlibs = [...data[currentItem.lineIndex].adlibs];
+          data[currentItem.lineIndex].adlibs[currentItem.adlibIndex] = { ...data[currentItem.lineIndex].adlibs[currentItem.adlibIndex] };
+          itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
+      }
       
       const time = getCurrentTime();
       
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-
+        
         if (isShowingAutoSync && currentItem.type === 'main') {
             let nextIdx = currentIdx + 1;
             while (nextIdx < wLines.length && wLines[nextIdx].type !== 'main') nextIdx++;
@@ -308,7 +314,7 @@ export const useSyncKeyboard = ({
         updateWorkspaceData(data);
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSyncMode, isShowingAutoSync, syncYtVideoId]);
@@ -324,7 +330,6 @@ export const useSyncActions = ({
   setIsLrcFetching, setIsTranslating, updateWorkspaceData,
   setLoopRange, setDebugInfo
 }) => {
-
   const handleSplitAdlibs = async (lineIndex) => {
     const data = [...syncDataRef.current];
     const line = data[lineIndex];
@@ -360,14 +365,17 @@ export const useSyncActions = ({
                     const segChars = Array.from(seg.text);
                     const segStart = currentPos;
                     const segEnd = currentPos + segChars.length;
+
                     const overlapStart = Math.max(charStart, segStart);
                     const overlapEnd = Math.min(charEnd, segEnd);
+
                     if (overlapStart < overlapEnd) {
                         const overlapText = segChars.slice(overlapStart - segStart, overlapEnd - segStart).join('');
                         adlibSegments.push({
                             ...seg,
                             text: overlapText
                         });
+
                         const isOnlyPunctuationOrSpace = /^[\s.,!?;:"'()\[\]{}\uff08\uff09\-]*$/;
                         if (!isOnlyPunctuationOrSpace.test(overlapText)) {
                             if (seg.artists) seg.artists.forEach(a => adlibArtistsSet.add(a));
@@ -379,13 +387,13 @@ export const useSyncActions = ({
                 const derivedSinger = Array.from(adlibArtistsSet).join(', ') || line.singer;
 
                 // Stripped quickTransliterate to respect central Translation Workspace authority
-                adlibs.push({
-                  text: adlibText,
-                  charStart,
-                  charEnd,
-                  start: null,
-                  end: null,
-                  segments: adlibSegments,
+                adlibs.push({ 
+                  text: adlibText, 
+                  charStart, 
+                  charEnd, 
+                  start: null, 
+                  end: null, 
+                  segments: adlibSegments, 
                   singer: derivedSinger,
                   pronunciation: null 
                 });
@@ -426,6 +434,7 @@ export const useSyncActions = ({
     if (!selectedSong?.autoSyncData || selectedSong.autoSyncData.length === 0) {
       return alert("No Auto-Sync data available to map from!");
     }
+
     const autoData = selectedSong.autoSyncData.filter(line => line.start !== null);
     if (autoData.length === 0) {
       return alert("Auto-Sync data contains no timing points.");
@@ -554,6 +563,7 @@ export const useSyncActions = ({
 
   const handleShiftTimings = (offset) => {
     if (!offset || isNaN(offset)) return;
+
     const data = [...syncDataRef.current];
     let shifted = false;
     
