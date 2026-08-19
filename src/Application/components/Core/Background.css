@@ -34,8 +34,8 @@
   align-items: flex-start;
   gap: 12px;
   padding: 10px 16px 10px 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(215, 240, 158, 0.08);
+  border: 1px solid rgba(205, 250, 44, 0.14);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 18px;
