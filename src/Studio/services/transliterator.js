@@ -15,10 +15,11 @@ const stripHtmlAndBrackets = (text) => {
     .trim();
 };
 
-const getGoogleData = async (text, sl = 'auto') => {
+const getGoogleData = async (text, sl = 'auto', tl = 'en') => {
   if (!text || text === '') return { translation: '', transliteration: null, srcLang: 'auto' };
+
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sl)}&tl=${encodeURIComponent(tl)}&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     const data = await response.json();
     
@@ -32,6 +33,7 @@ const getGoogleData = async (text, sl = 'auto') => {
           translation += data[0][i][0];
         }
       }
+
       const last = data[0][data[0].length - 1];
       if (last && (last[2] || last[3]) && !last[1]) {
         transliteration = last[2] || last[3] || '';
@@ -40,6 +42,7 @@ const getGoogleData = async (text, sl = 'auto') => {
         if (possibleRom) transliteration = possibleRom[2] || possibleRom[3];
       }
     }
+
     return {
       translation: translation.trim(),
       transliteration: transliteration ? transliteration.trim() : null,
@@ -51,10 +54,10 @@ const getGoogleData = async (text, sl = 'auto') => {
   }
 };
 
-export const quickTransliterate = async (text, sl = 'auto') => {
+export const quickTransliterate = async (text, sl = 'auto', tl = 'en') => {
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return { translation: '', transliteration: null, srcLang: 'auto' };
-  return await getGoogleData(clean, sl);
+  return await getGoogleData(clean, sl, tl);
 };
 
 const isRomanChar = (char) => {
@@ -62,8 +65,22 @@ const isRomanChar = (char) => {
   return /^[\p{Script=Latin}\p{M}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 };
 
+// Helper: Converts digits to English words, then translates to the target language of the line
+const translateNumberToTargetLang = async (numStr, targetLang) => {
+    const enWords = numberToEnglishWords(numStr);
+    if (!targetLang || targetLang === 'auto' || targetLang === 'en') return enWords;
+    
+    const res = await getGoogleData(enWords, 'en', targetLang);
+    
+    // For phonetic fields, prioritize the transliteration (e.g. Romaji/Pinyin) if the language provides one
+    if (res.transliteration) return res.transliteration.toLowerCase();
+    
+    return res.translation ? res.translation.toLowerCase() : enWords;
+};
+
 export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
   let completed = 0;
+
   const promises = linesArray.map(async (item) => {
     const updateProgress = () => {
       completed++;
@@ -83,9 +100,19 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
     }
     
     const fullData = await quickTransliterate(cleanLine, targetLang);
-    const fullTrans = fullData.transliteration || '';
+    const finalLang = fullData.srcLang !== 'auto' ? fullData.srcLang : targetLang;
+    let fullTrans = fullData.transliteration || '';
     
-    // Split by organic space boundaries (matching `const blocks = textInput.split(/\s+/)`)
+    // Process full sentence transliteration payload (if it exists)
+    if (fullTrans) {
+        const matches = fullTrans.match(/\d+/g) || [];
+        for (const match of new Set(matches)) {
+            const translatedNum = await translateNumberToTargetLang(match, finalLang);
+            fullTrans = fullTrans.replace(new RegExp(`\\b${match}\\b`, 'g'), translatedNum);
+        }
+    }
+    
+    // Split by organic space boundaries
     const tokens = cleanLine.split(/(\s+)/);
     const chunks = [];
 
@@ -102,13 +129,29 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
           continue;
         }
 
+        // HACK: Intercept tokens that are purely numbers (ignoring punctuation like commas/parentheses)
+        const nakedToken = token.replace(/[\p{P}\p{S}]/gu, '').trim();
+        if (/^\d+$/.test(nakedToken)) {
+            const translatedNum = await translateNumberToTargetLang(nakedToken, finalLang);
+            const translatedToken = token.replace(nakedToken, translatedNum);
+            chunks.push({ type: 'foreign', text: token, trans: translatedToken });
+            continue;
+        }
+
         if (isEnToken) {
-          // English token: Strictly mute pronunciation!
           chunks.push({ type: 'en', text: token, trans: '' });
         } else {
-          // CJK token: Fetch pronunciation specifically for this block
           const chunkData = await quickTransliterate(token, targetLang);
-          const chunkTrans = chunkData.transliteration || '';
+          let chunkTrans = chunkData.transliteration || '';
+          
+          if (chunkTrans) {
+              const matches = chunkTrans.match(/\d+/g) || [];
+              for (const match of new Set(matches)) {
+                  const translatedNum = await translateNumberToTargetLang(match, finalLang);
+                  chunkTrans = chunkTrans.replace(new RegExp(`\\b${match}\\b`, 'g'), translatedNum);
+              }
+          }
+          
           chunks.push({ type: 'foreign', text: token, trans: chunkTrans });
         }
       }
@@ -131,5 +174,6 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       };
     }
   });
+
   return await Promise.all(promises);
 };

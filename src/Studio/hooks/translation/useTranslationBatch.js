@@ -1,4 +1,4 @@
-/* --- src/hooks/translation/useTranslationBatch.js --- */
+/* --- src/Studio/hooks/translation/useTranslationBatch.js --- */
 import { useState } from 'react';
 import { getBulkPronunciations } from '../../services/transliterator.js';
 import { 
@@ -74,7 +74,8 @@ export const useTranslationBatch = ({
       const normOriginal = normalizeForComparison(baselineText);
       const normTranslated = normalizeForComparison(rawTransText);
       
-      const isEnglishMatch = normOriginal.length > 0 && normOriginal === normTranslated;
+      // FIX: Only flag as an English match if the text contains actual Latin letters. Prevents wiping pure numbers/CJK.
+      const isEnglishMatch = normOriginal.length > 0 && normOriginal === normTranslated && /[a-z]/i.test(normOriginal);
       const finalLang = isEnglishMatch ? 'en' : (res.srcLang || line.lang || 'auto');
       
       let displayPron = line.displayPron;
@@ -88,7 +89,9 @@ export const useTranslationBatch = ({
         if (res.pronunciation) {
           try {
             const p = JSON.parse(res.pronunciation);
-            displayPron = p.full || p.chunks.map(c => c.trans || c.text).join(' ');
+            // CRITICAL FIX: Only use p.full if spacingText is NOT active, otherwise preserve the carefully aligned chunks. Join seamlessly without doubled spaces.
+            const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
+            displayPron = (p.full && !hasSpacing) ? p.full : p.chunks.map(ch => ch.trans || ch.text).join('');
           } catch (e) {}
         } else if (rawTransText && !/[^\x00-\x7F]/.test(baselineText)) {
           displayPron = '';
@@ -187,6 +190,7 @@ export const useTranslationBatch = ({
       const items = groups[lang];
       
       setNotification({ show: true, message: `Translating [${lang}] group (${items.length} lines)...`, progress: 20 });
+
       if (items.length > 0) {
         setActiveTranslatingId(workspaceData[items[0].index].rowId);
       }
@@ -252,7 +256,8 @@ export const useTranslationBatch = ({
             const normOrig = normalizeForComparison(cleanTexts[i].text);
             const normTrans = normalizeForComparison(rawTransText);
             
-            const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+            // FIX: Prevent pure numbers/CJK from triggering false English match auto-wipe
+            const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans && /[a-z]/i.test(normOrig);
             const finalLang = isEnglishMatch ? 'en' : (detectedLang || line.lang || 'auto');
             
             let displayPron = line.displayPron;
@@ -266,7 +271,8 @@ export const useTranslationBatch = ({
               if (batchPronunciations[i]?.pronunciation) {
                 try {
                   const p = JSON.parse(batchPronunciations[i].pronunciation);
-                  displayPron = p.full || p.chunks.map(ch => ch.trans || ch.text).join(' ');
+                  const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
+                  displayPron = (p.full && !hasSpacing) ? p.full : p.chunks.map(ch => ch.trans || ch.text).join('');
                 } catch (e) {}
               } else if (rawTransText && !/[^\x00-\x7F]/.test(cleanTexts[i].text)) {
                 displayPron = '';
@@ -311,7 +317,6 @@ export const useTranslationBatch = ({
 
   const handleRefetch = async (index) => {
     const line = workspaceData[index];
-
     setActiveTranslatingId(line.rowId);
     setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
     
@@ -332,14 +337,16 @@ export const useTranslationBatch = ({
           const normOrig = normalizeForComparison(baselineText);
           const normTrans = normalizeForComparison(rawTransText);
           
-          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans;
+          // FIX: Prevent pure numbers/CJK from triggering false English match auto-wipe
+          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans && /[a-z]/i.test(normOrig);
           const finalLang = isEnglishMatch ? 'en' : (res.srcLang || next[index].lang || 'auto');
           
           let displayPron = '';
           if (!isEnglishMatch && res.pronunciation) {
             try {
               const p = JSON.parse(res.pronunciation);
-              displayPron = p.full || p.chunks.map(c => c.trans || c.text).join(' ');
+              const hasSpacing = Boolean(next[index].spacingText && next[index].spacingText.trim());
+              displayPron = (p.full && !hasSpacing) ? p.full : p.chunks.map(c => c.trans || c.text).join('');
             } catch (e) {}
           }
           

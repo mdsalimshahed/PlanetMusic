@@ -24,13 +24,13 @@ export const useAutoSpacing = ({
     
     const targetIndices = [];
     workspaceData.forEach((line, index) => {
-      if (line.lang === 'ja' || line.lang?.startsWith('zh') || line.lang === 'ko') {
+      if (line.lang === 'ja' || line.lang?.startsWith('zh')) {
         targetIndices.push(index);
       }
     });
 
     if (targetIndices.length === 0) {
-      setNotification({ show: true, message: 'No CJK lines found to auto-space.', progress: 100 });
+      setNotification({ show: true, message: 'No valid lines found to auto-space.', progress: 100 });
       setTimeout(() => setNotification({ show: false }), 2000);
       return;
     }
