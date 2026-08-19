@@ -1,4 +1,4 @@
-/* --- src/Application/components/Core/Background.css --- */
+/* --- src/components/Core/Background.css --- */
 .dynamic-circle-bg {
   position: fixed;
   top: 0;
@@ -28,8 +28,8 @@
 /* CHAT BUBBLE STYLING */
 .lyric-chat-bubble {
   position: absolute;
-  /* Origin point: strictly resting exactly on top of the player pill */
-  top: calc(100% - 115px); 
+  /* Lock starting position to the very bottom off-screen */
+  top: 100%; 
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -40,32 +40,17 @@
   -webkit-backdrop-filter: blur(12px);
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  
   /* Fallback shrink for ultra-small mobile screens */
   max-width: min(340px, calc(100vw - 40px)); 
   width: max-content;
   box-sizing: border-box;
   will-change: transform, opacity;
+  
   /* Apply the smooth linear upward animation */
   animation-name: floatUpFade;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  /* Set transform origin to bottom center so it blooms upward */
-  transform-origin: bottom center;
-}
-
-/* SYNCED CHAT BUBBLE ACCENT OVERRIDES */
-.lyric-chat-bubble.synced {
-  border: 1px solid var(--accent);
-  box-shadow: 0 8px 32px rgba(251, 191, 36, 0.25);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.lyric-chat-bubble.synced .bubble-artist {
-  color: var(--accent);
-}
-
-.lyric-chat-bubble.synced .bubble-lyric {
-  color: #ffffff;
 }
 
 .bubble-artist-photo {
@@ -111,22 +96,20 @@
 @keyframes floatUpFade {
   0% {
     opacity: 0;
-    /* Start exactly at the top of the player, scaled down to look like it's emerging */
-    transform: translateY(0px) scale(0.6);
+    transform: translateY(50px) scale(0.85);
   }
   5% {
     opacity: 0.85;
-    /* Bloom to full size while beginning the ascent */
-    transform: translateY(-20px) scale(1);
+    transform: translateY(0px) scale(1);
   }
   95% {
     opacity: 0.85;
     /* Travel all the way up past the top of the viewport */
-    transform: translateY(-110vh) scale(1);
+    transform: translateY(-80vh) scale(1);
   }
   100% {
     opacity: 0;
     /* Final gentle shrink as it vanishes off-screen */
-    transform: translateY(-115vh) scale(0.9);
+    transform: translateY(-85vh) scale(0.85);
   }
 }
