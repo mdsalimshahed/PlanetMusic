@@ -1,18 +1,23 @@
 /* --- src/App.jsx --- */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
-import './App.css'; // Core root styles
+import './App.css';
+
+// Core root styles
 import './Application/components/Core/AppLayout.css';
 import './Application/components/Core/SearchArea.css';
 import './Application/components/Core/SampleVault.css';
+
 import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
 import SongModal from './Application/components/Modals/SongModal.jsx';
 import Player from './Studio/components/Player/Player.jsx';
+
 import SettingsTab from './Application/pages/SettingsTab.jsx';
 import BlogTab from './Application/pages/BlogTab.jsx';
 import PrivacyTab from './Application/pages/PrivacyTab.jsx';
 import ContactTab from './Application/pages/ContactTab.jsx';
+
 import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
@@ -32,7 +37,8 @@ const App = () => {
   const activeTab = pathParts[0] === 'blog' ? 'blog' : 
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
-                    pathParts[0] === 'contact' ? 'contact' : 'main';
+                    pathParts[0] === 'contact' ? 'contact' : 
+                    pathParts[0] === 'ambient' ? 'ambient' : 'main';
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
@@ -52,6 +58,27 @@ const App = () => {
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
+  
+  // Ambient View State synced with URL route
+  const isAmbientMode = activeTab === 'ambient';
+
+  // Toggle handler for Ambient View button
+  const toggleAmbientMode = () => {
+    if (isAmbientMode) {
+      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
+      navigate(`/${qParam}`);
+    } else {
+      navigate('/ambient');
+    }
+  };
+
+  // Auto-exit Ambient Mode if the user starts searching
+  useEffect(() => {
+    if (searchQuery.trim() !== '' && isAmbientMode) {
+      const qParam = `?q=${encodeURIComponent(searchQuery.trim())}`;
+      navigate(`/${qParam}`);
+    }
+  }, [searchQuery, isAmbientMode, navigate]);
 
   // Routing Handlers
   const handleSetSelectedSong = (song) => {
@@ -138,10 +165,153 @@ const App = () => {
     '--dyn-translit-font-size': `${settings.transliterationFontSize ?? 0.55}em`,
   };
 
+  const renderDashboardView = () => (
+    <section className="view-section">
+      {/* --- PERSISTENT SAMPLE VAULT BANNER --- */}
+      {!isAmbientMode && isSampleVaultActive && library.length > 0 && !searchQuery.trim() && (
+        <div className="sample-vault-banner glass-panel">
+          <div className="sample-banner-text">
+            <strong>Sample Vault Mode:</strong> You are currently viewing pre-loaded demo tracks. You can keep them or clear them to start fresh.
+          </div>
+          <div className="sample-banner-actions">
+            <button 
+              className="keep-sample-btn"
+              onClick={handleKeepSampleVault}
+            >
+              Keep Vault
+            </button>
+            <button 
+              className="clear-sample-btn"
+              onClick={handleClearSampleVault}
+            >
+              Clear Sample Vault
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isAmbientMode ? (
+        <div style={{ minHeight: '60vh' }} /> // Empty spacer for ambient mode
+      ) : isLoadingSample ? (
+        <div className="empty-message glass-panel">
+          <h2>Loading PlanetMusic Vault...</h2>
+          <p>Populating your initial library experience.</p>
+        </div>
+      ) : !searchQuery.trim() ? (
+        library.length > 0 ? (
+          <TrackGrid 
+            items={library} 
+            library={library} 
+            toggleLibrary={toggleLibrary} 
+            setSelectedSong={handleSetSelectedSong} 
+            setCurrentTrack={setCurrentTrack}
+            adsEnabled={settings.adsEnabled !== false}
+          />
+        ) : (
+          <div className="empty-message glass-panel">
+            <h2>Your Vault is Empty</h2>
+            <p>Type in the search bar above to start your journey.</p>
+            <button 
+              className="sample-vault-btn" 
+              onClick={handleLoadSample}
+              disabled={isLoadingSample}
+            >
+              {isLoadingSample ? 'Loading Sample Vault...' : 'Load Sample Vault'}
+            </button>
+          </div>
+        )
+      ) : isExplicitSearch ? (
+        <div className="dual-search-container">
+          <div className="search-column vault-column">
+            <div className="column-header">
+              <span>VAULT ({filteredLibrary.length})</span>
+            </div>
+            <div className="column-scroll-area">
+              {filteredLibrary.length > 0 ? (
+                <TrackGrid 
+                  items={filteredLibrary} 
+                  library={library} 
+                  toggleLibrary={toggleLibrary} 
+                  setSelectedSong={handleSetSelectedSong} 
+                  setCurrentTrack={setCurrentTrack}
+                  adsEnabled={settings.adsEnabled !== false}
+                />
+              ) : (
+                <div className="column-empty-box">No matches in your Vault</div>
+              )}
+            </div>
+          </div>
+
+          <div className="search-column cosmos-column">
+            <div className="column-header">
+              <span>COSMOS ({uniqueOnlineResults.length})</span>
+            </div>
+            <div className="column-scroll-area">
+              {isSearching && uniqueOnlineResults.length === 0 ? (
+                <div className="column-empty-box">Searching the Cosmos...</div>
+              ) : uniqueOnlineResults.length > 0 ? (
+                <TrackGrid 
+                  items={uniqueOnlineResults} 
+                  library={library} 
+                  toggleLibrary={toggleLibrary} 
+                  setSelectedSong={handleSetSelectedSong} 
+                  setCurrentTrack={setCurrentTrack}
+                  adsEnabled={settings.adsEnabled !== false}
+                />
+              ) : (
+                <div className="column-empty-box">No online matches found</div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        filteredLibrary.length > 0 ? (
+          <TrackGrid 
+            items={filteredLibrary} 
+            library={library} 
+            toggleLibrary={toggleLibrary} 
+            setSelectedSong={handleSetSelectedSong} 
+            setCurrentTrack={setCurrentTrack}
+            adsEnabled={settings.adsEnabled !== false}
+          />
+        ) : searchResults.length > 0 ? (
+          <TrackGrid 
+            items={searchResults} 
+            library={library} 
+            toggleLibrary={toggleLibrary} 
+            setSelectedSong={handleSetSelectedSong} 
+            setCurrentTrack={setCurrentTrack}
+            adsEnabled={settings.adsEnabled !== false}
+          />
+        ) : isSearching ? (
+          <div className="empty-message glass-panel">
+            <h2>Searching the Cosmos...</h2>
+            <p>Looking for "{searchQuery}"</p>
+          </div>
+        ) : (
+          <div className="empty-message glass-panel">
+            <h2>No matches found</h2>
+            <p>No songs match "{searchQuery}" in your Vault or Cosmos.</p>
+          </div>
+        )
+      )}
+
+      {/* BOTTOM SPONSOR AD (Main Dashboard) */}
+      {!isAmbientMode && settings.adsEnabled !== false && (
+        <SponsorUnit 
+          testMode={true} 
+          className="glass-panel settings-promo-box dynamic-radius-override" 
+          style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
+          adTitle="Discover More"
+          adSub="Thank you for supporting PlanetMusic"
+        />
+      )}
+    </section>
+  );
+
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      {/* UPDATE THIS LINE: Pass !!selectedSong to track the modal state */}
-      <Background songs={library} isModalOpen={!!selectedSong} />
+      <Background isModalOpen={!!selectedSong} currentTrack={currentTrack} />
       
       <Topbar 
         activeTab={activeTab} 
@@ -152,7 +322,7 @@ const App = () => {
       />
 
       <main className="main-content">
-        {activeTab === 'main' && (
+        {(activeTab === 'main' || activeTab === 'ambient') && (
           <div className="search-container">
             <form onSubmit={handleSearchSubmit} className="search-box">
               <input
@@ -175,156 +345,17 @@ const App = () => {
           </div>
         )}
 
-        <div className={`content-scroll-area ${isExplicitSearch && activeTab === 'main' && searchQuery.trim() ? 'no-scroll' : ''}`}>
+        <div className={`content-scroll-area ${isExplicitSearch && (activeTab === 'main' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
           <Routes>
-            <Route path="/" element={
-              <section className="view-section">
-                {/* --- PERSISTENT SAMPLE VAULT BANNER --- */}
-                {isSampleVaultActive && library.length > 0 && !searchQuery.trim() && (
-                  <div className="sample-vault-banner glass-panel">
-                    <div className="sample-banner-text">
-                      <strong>Sample Vault Mode:</strong> You are currently viewing pre-loaded demo tracks. You can keep them or clear them to start fresh.
-                    </div>
-                    <div className="sample-banner-actions">
-                      <button 
-                        className="keep-sample-btn"
-                        onClick={handleKeepSampleVault}
-                      >
-                        Keep Vault
-                      </button>
-                      <button 
-                        className="clear-sample-btn"
-                        onClick={handleClearSampleVault}
-                      >
-                        Clear Sample Vault
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {isLoadingSample ? (
-                  <div className="empty-message glass-panel">
-                    <h2>Loading PlanetMusic Vault...</h2>
-                    <p>Populating your initial library experience.</p>
-                  </div>
-                ) : !searchQuery.trim() ? (
-                  library.length > 0 ? (
-                    <TrackGrid 
-                      items={library} 
-                      library={library} 
-                      toggleLibrary={toggleLibrary} 
-                      setSelectedSong={handleSetSelectedSong} 
-                      setCurrentTrack={setCurrentTrack}
-                      adsEnabled={settings.adsEnabled !== false}
-                    />
-                  ) : (
-                    <div className="empty-message glass-panel">
-                      <h2>Your Vault is Empty</h2>
-                      <p>Type in the search bar above to start your journey.</p>
-                      <button 
-                        className="sample-vault-btn" 
-                        onClick={handleLoadSample}
-                        disabled={isLoadingSample}
-                      >
-                        {isLoadingSample ? 'Loading Sample Vault...' : 'Load Sample Vault'}
-                      </button>
-                    </div>
-                  )
-                ) : isExplicitSearch ? (
-                  <div className="dual-search-container">
-                    <div className="search-column vault-column">
-                      <div className="column-header">
-                        <span>VAULT ({filteredLibrary.length})</span>
-                      </div>
-                      <div className="column-scroll-area">
-                        {filteredLibrary.length > 0 ? (
-                          <TrackGrid 
-                            items={filteredLibrary} 
-                            library={library} 
-                            toggleLibrary={toggleLibrary} 
-                            setSelectedSong={handleSetSelectedSong} 
-                            setCurrentTrack={setCurrentTrack}
-                            adsEnabled={settings.adsEnabled !== false}
-                          />
-                        ) : (
-                          <div className="column-empty-box">No matches in your Vault</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="search-column cosmos-column">
-                      <div className="column-header">
-                        <span>COSMOS ({uniqueOnlineResults.length})</span>
-                      </div>
-                      <div className="column-scroll-area">
-                        {isSearching && uniqueOnlineResults.length === 0 ? (
-                          <div className="column-empty-box">Searching the Cosmos...</div>
-                        ) : uniqueOnlineResults.length > 0 ? (
-                          <TrackGrid 
-                            items={uniqueOnlineResults} 
-                            library={library} 
-                            toggleLibrary={toggleLibrary} 
-                            setSelectedSong={handleSetSelectedSong} 
-                            setCurrentTrack={setCurrentTrack}
-                            adsEnabled={settings.adsEnabled !== false}
-                          />
-                        ) : (
-                          <div className="column-empty-box">No online matches found</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  filteredLibrary.length > 0 ? (
-                    <TrackGrid 
-                      items={filteredLibrary} 
-                      library={library} 
-                      toggleLibrary={toggleLibrary} 
-                      setSelectedSong={handleSetSelectedSong} 
-                      setCurrentTrack={setCurrentTrack}
-                      adsEnabled={settings.adsEnabled !== false}
-                    />
-                  ) : searchResults.length > 0 ? (
-                    <TrackGrid 
-                      items={searchResults} 
-                      library={library} 
-                      toggleLibrary={toggleLibrary} 
-                      setSelectedSong={handleSetSelectedSong} 
-                      setCurrentTrack={setCurrentTrack}
-                      adsEnabled={settings.adsEnabled !== false}
-                    />
-                  ) : isSearching ? (
-                    <div className="empty-message glass-panel">
-                      <h2>Searching the Cosmos...</h2>
-                      <p>Looking for "{searchQuery}"</p>
-                    </div>
-                  ) : (
-                    <div className="empty-message glass-panel">
-                      <h2>No matches found</h2>
-                      <p>No songs match "{searchQuery}" in your Vault or Cosmos.</p>
-                    </div>
-                  )
-                )}
-
-                {/* BOTTOM SPONSOR AD (Main Dashboard) */}
-                {settings.adsEnabled !== false && (
-                  <SponsorUnit 
-                    testMode={true} 
-                    className="glass-panel settings-promo-box dynamic-radius-override" 
-                    style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-                    adTitle="Discover More"
-                    adSub="Thank you for supporting PlanetMusic"
-                  />
-                )}
-              </section>
-            } />
-
+            <Route path="/" element={renderDashboardView()} />
+            <Route path="/ambient" element={renderDashboardView()} />
+            
             <Route path="/song/*" element={null} />
-
+            
             {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES (/blog/dev, /blog/custom, /blog/post/:id, /blog/write, etc.) */}
             <Route path="/blog/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
-
+            
             <Route path="/settings" element={
               <SettingsTab 
                 settings={settings} 
@@ -333,7 +364,7 @@ const App = () => {
                 adsEnabled={settings.adsEnabled !== false}
               />
             } />
-
+            
             <Route path="/privacy" element={
               <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
             } />
@@ -343,18 +374,27 @@ const App = () => {
             } />
           </Routes>
 
-          {/* GLOBAL FOOTER: Copyright & Ad Toggle */}
+          {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}
           <div className="global-footer">
             <p>&copy; {new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
-            <button 
-              className="ad-toggle-btn"
-              onClick={() => handleSetSettings({ ...settings, adsEnabled: settings.adsEnabled === false ? true : false })}
-              title="Toggle to hide or show non-obtrusive sponsor placements"
-            >
-              {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
-            </button>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <button 
+                className={`ad-toggle-btn ${isAmbientMode ? 'active' : ''}`}
+                onClick={toggleAmbientMode}
+                title="Toggle ambient view to hide cards and watch lyrics"
+                style={isAmbientMode ? { background: 'var(--accent)', color: '#000000', borderColor: 'var(--accent)', fontWeight: 700 } : {}}
+              >
+                {isAmbientMode ? 'Exit Ambient View' : 'Ambient View'}
+              </button>
+              <button 
+                className="ad-toggle-btn"
+                onClick={() => handleSetSettings({ ...settings, adsEnabled: settings.adsEnabled === false ? true : false })}
+                title="Toggle to hide or show non-obtrusive sponsor placements"
+              >
+                {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
+              </button>
+            </div>
           </div>
-
         </div>
       </main>
 
@@ -371,7 +411,7 @@ const App = () => {
         currentTrack={currentTrack}
         settings={settings}
       />
-
+      
       <Player 
         currentTrack={currentTrack} 
         setCurrentTrack={setCurrentTrack} 

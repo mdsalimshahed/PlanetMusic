@@ -15,7 +15,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings
   );
-  
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -42,6 +42,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
     syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
+
   displayProps.isSyncMode = syncProps.isSyncMode;
 
   // ------------------------------------------------------------------
@@ -50,6 +51,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const pathParts = location.pathname.split('/').filter(Boolean);
   const urlViewMode = ['live', 'focused', 'plain'].includes(pathParts[2]) ? pathParts[2] : 'live';
   const urlDebug = pathParts.includes('debug');
+
   const validWorkspaces = ['edit', 'translate', 'sync-workspace', 'manage-artists'];
   const urlWorkspace = pathParts.find(part => validWorkspaces.includes(part)) || null;
 
@@ -84,11 +86,12 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     const vMode = updates.viewMode !== undefined ? updates.viewMode : urlViewMode;
     const dbg = updates.debug !== undefined ? updates.debug : urlDebug;
     const ws = updates.workspace !== undefined ? updates.workspace : urlWorkspace;
+
     let parts = [`/song/${trackId}`];
-    
     if (vMode) parts.push(vMode);
     if (dbg && (vMode === 'focused' || vMode === 'live')) parts.push('debug');
     if (ws) parts.push(ws);
+
     return parts.join('/');
   };
 
@@ -172,7 +175,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
             <ModalRight 
-              {...sharedProps}
+              {...sharedProps} 
               syncAudioRef={syncProps.syncAudioRef}
               activeLineRef={syncProps.activeLineRef}
               activePreviewRef={displayProps.activePreviewRef}
@@ -192,7 +195,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
               )}
             </div>
           )}
-
         </div>
       </div>
 
