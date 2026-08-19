@@ -24255,7 +24255,7 @@
           "start": 142.091502,
           "end": 143.94492,
           "pronunciation": "{\"full\":\"Yo valgo por dos de veintidós\",\"chunks\":[{\"type\":\"en\",\"text\":\"Yo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"valgo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"por\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dos\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"de\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"22\",\"trans\":\"veintidós\"}]}",
-          "translation": "I'm worth two out of 22",
+          "translation": "I'm worth two 22's",
           "isSplit": false,
           "lang": "es",
           "spacingText": ""
@@ -26216,7 +26216,7 @@
           "start": 142.091502,
           "end": 143.94492,
           "pronunciation": "{\"full\":\"Yo valgo por dos de veintidós\",\"chunks\":[{\"type\":\"en\",\"text\":\"Yo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"valgo\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"por\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dos\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"de\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"22\",\"trans\":\"veintidós\"}]}",
-          "translation": "I'm worth two out of 22",
+          "translation": "I'm worth two 22's",
           "isSplit": false,
           "lang": "es",
           "spacingText": ""
