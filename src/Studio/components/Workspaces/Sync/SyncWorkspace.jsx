@@ -4,9 +4,7 @@ import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
 import './SyncWorkspace.css';
 
-// INLINED UTILITIES: Completely bypasses import path issues!
 const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(text || '');
-
 const getGraphemes = (str) => {
   if (!str) return [];
   if (typeof Intl !== 'undefined' && Intl.Segmenter) {
@@ -30,7 +28,6 @@ export const SyncWorkspace = ({
   const cachedAdlibNodesRef = useRef([]);
   const [accentColor, setAccentColor] = useState('var(--accent)');
   const [ytReady, setYtReady] = useState(false);
-  
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
@@ -77,7 +74,6 @@ export const SyncWorkspace = ({
   useEffect(() => {
     if (!syncYtVideoId) return;
     let playerInstance = null;
-
     const initSyncYT = () => {
       if (!window.YT || !window.YT.Player) {
         setTimeout(initSyncYT, 100);
@@ -132,9 +128,7 @@ export const SyncWorkspace = ({
         }
       });
     };
-
     initSyncYT();
-
     return () => {
       if (syncYtPlayerRef.current && typeof syncYtPlayerRef.current.destroy === 'function') {
         try { syncYtPlayerRef.current.destroy(); } catch (e) {}
@@ -174,7 +168,6 @@ export const SyncWorkspace = ({
         const node = adlibNodes[i];
         const start = parseFloat(node.dataset.start);
         const end = parseFloat(node.dataset.end);
-
         if (!isNaN(start)) {
           if (time >= start && time <= end) {
             if (!node.classList.contains('adlib-playing')) node.classList.add('adlib-playing');
@@ -188,31 +181,71 @@ export const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
-  // --- OPTIMIZED HTML/JSX RENDERER (Bypasses EngineRouter) ---
+  const cycleSource = () => {
+    if (availableSources && availableSources.length > 1) {
+      const currentIndex = availableSources.indexOf(activeSyncSource);
+      const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
+      const nextIndex = (effectiveIndex + 1) % availableSources.length;
+      
+      const upcomingSource = availableSources[nextIndex];
+      if (upcomingSource === 'deezer' && !Boolean(localStorage.getItem('appSettings') ? JSON.parse(localStorage.getItem('appSettings')).deezerArl : false)) {
+        if (setNotification) {
+          setNotification({ show: true, message: 'Deezer ARL required. Falling back to next source.', progress: 100 });
+          setTimeout(() => setNotification({ show: false }), 3500);
+        }
+        const fallbackIndex = (nextIndex + 1) % availableSources.length;
+        setManualSource(availableSources[fallbackIndex]);
+      } else {
+        setManualSource(upcomingSource);
+      }
+    }
+  };
+
+  const renderSourceBadge = () => {
+    const isMultiple = availableSources && availableSources.length > 1;
+    const cursorStyle = isMultiple ? { cursor: 'pointer', userSelect: 'none', transition: 'transform 0.2s' } : {};
+    const title = isMultiple ? "Click to switch audio source" : "";
+
+    let badgeElement = null;
+    if (activeSyncSource === 'youtube') badgeElement = <span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>YT Music</span>;
+    else if (activeSyncSource === 'local') badgeElement = <span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>LOCAL</span>;
+    else if (activeSyncSource === 'deezer') badgeElement = <span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>DEEZER</span>;
+
+    if (!badgeElement) return null;
+
+    return (
+      <span 
+        onClick={cycleSource} 
+        style={{...cursorStyle, display: 'inline-block'}} 
+        title={title}
+        onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
+        onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
+      >
+        {badgeElement}
+      </span>
+    );
+  };
+
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
     const isRTL = isRTLLanguage(node.text || '');
     const hasSpacingText = Boolean(node.spacingText && node.spacingText.trim());
-
-    // 1. Process Segment Extraction
+    
     let segmentsToRender = node.segments && node.segments.length > 0 
-      ? node.segments.map(s => ({...s})) 
-      : [{ ...node }];
+       ? node.segments.map(s => ({...s})) 
+       : [{ ...node }];
 
-    // Strip out adlibs from segments if the line is actively split
     if (isMain && node.isSplit && node.adlibs) {
       segmentsToRender = segmentsToRender.map(seg => {
         let segText = seg.text;
         node.adlibs.forEach(a => {
           segText = segText.replace(a.text, '');
         });
-        // Clean up any double spaces left behind after removal
         segText = segText.replace(/\s{2,}/g, ' ');
         return { ...seg, text: segText };
       }).filter(seg => seg.text.trim().length > 0);
     }
 
-    // 2. Extract Pronunciation
     let pronText = '';
     if (node.pronunciation) {
       if (typeof node.pronunciation === 'string' && (node.pronunciation.startsWith('{') || node.pronunciation.startsWith('['))) {
@@ -233,22 +266,18 @@ export const SyncWorkspace = ({
       }
     }
     
-    // Clean up adlib pronunciation (strip parentheses)
-    if (!isMain && pronText) {
+    if (!isMain && pronText) { 
        pronText = pronText.replace(/[()[\]{}]/g, '').trim();
     }
 
-    // 3. Colored Text Renderer
     const renderColoredText = (item, overrideText = null) => {
       let artists = item.artists || [];
       if (artists.length === 0 && item.singer) {
         artists = item.singer.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(a => a.trim());
       }
-
       let isGradient = false;
       let gradientStyle = '';
       let activeColor = '#ffffff';
-
       if (artists.length > 1) {
         isGradient = true;
         const gradientColors = artists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
@@ -261,12 +290,10 @@ export const SyncWorkspace = ({
       } else {
         activeColor = item.color || '#ffffff';
       }
-
-      let parentStyle = {
-         display: 'inline',
-         textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+      let parentStyle = { 
+         display: 'inline', 
+         textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)' 
       };
-
       if (isGradient) {
         parentStyle.backgroundImage = gradientStyle;
         parentStyle.WebkitBackgroundClip = 'text';
@@ -274,16 +301,12 @@ export const SyncWorkspace = ({
       } else {
         parentStyle.color = activeColor;
       }
-
       const textToRender = overrideText !== null ? overrideText : item.text;
       const chars = getGraphemes(textToRender);
-
       const renderedChars = chars.map((char, cIdx) => {
         const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
         let childStyle = {};
-
         if (isPunct && char.trim() !== '') {
-          // Punches through the parent gradient with a solid opaque color for punctuation
           childStyle = {
             color: '#fbbf24',
             WebkitTextFillColor: '#fbbf24',
@@ -291,18 +314,15 @@ export const SyncWorkspace = ({
             backgroundImage: 'none'
           };
         }
-
         return Object.keys(childStyle).length > 0 ? (
           <span key={cIdx} style={childStyle}>{char}</span>
         ) : (
           <React.Fragment key={cIdx}>{char}</React.Fragment>
         );
       });
-
       return <span style={parentStyle}>{renderedChars}</span>;
     };
 
-    // 4. Assemble Final JSX
     let finalJSX;
     if (hasSpacingText) {
       let displayText = node.spacingText;
@@ -313,7 +333,6 @@ export const SyncWorkspace = ({
         displayText = displayText.replace(/\s{2,}/g, ' ').trim();
       }
       
-      // Use the first remaining valid segment to dictate the color of the spacing text
       const validColorSource = segmentsToRender.find(s => s.text.trim().length > 0) || node;
       finalJSX = renderColoredText(validColorSource, displayText);
     } else {
@@ -337,10 +356,10 @@ export const SyncWorkspace = ({
             }} dir={isRTL ? 'rtl' : 'ltr'}>
                 {finalJSX}
             </span>
-
             {pronText && (
                 <span className="pronunciation-text" style={{
-                    fontSize: 'calc(var(--dyn-translit-font-size, 0.55em) * 1.6)',                    fontWeight: '800',
+                    fontSize: 'calc(var(--dyn-translit-font-size, 0.55em) * 1.6)',
+                    fontWeight: '800',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
                     textAlign: 'left',
@@ -368,8 +387,8 @@ export const SyncWorkspace = ({
       }}>
       
       <div 
-          id="sync-yt-target-container" 
-          style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+           id="sync-yt-target-container" 
+           style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
 
       <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
@@ -398,49 +417,7 @@ export const SyncWorkspace = ({
 
          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {(() => {
-                  const isMultiple = availableSources && availableSources.length > 1;
-                  const cycleSource = () => {
-                      if (isMultiple) {
-                          const currentIndex = availableSources.indexOf(activeSyncSource);
-                          const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
-                          const nextIndex = (effectiveIndex + 1) % availableSources.length;
-                          
-                          const upcomingSource = availableSources[nextIndex];
-                          if (upcomingSource === 'deezer' && !Boolean(localStorage.getItem('appSettings') ? JSON.parse(localStorage.getItem('appSettings')).deezerArl : false)) {
-                             if (setNotification) {
-                               setNotification({ show: true, message: 'Deezer ARL required. Falling back to next source.', progress: 100 });
-                               setTimeout(() => setNotification({ show: false }), 3500);
-                             }
-                             const fallbackIndex = (nextIndex + 1) % availableSources.length;
-                             setManualSource(availableSources[fallbackIndex]);
-                          } else {
-                             setManualSource(upcomingSource);
-                          }
-                      }
-                  };
-                  
-                  const cursorStyle = isMultiple ? { cursor: 'pointer', userSelect: 'none', transition: 'transform 0.2s' } : {};
-                  const title = isMultiple ? "Click to switch audio source" : "";
-                  
-                  const Wrapper = ({ children }) => (
-                    <span 
-                        onClick={cycleSource} 
-                        style={{...cursorStyle, display: 'inline-block'}} 
-                        title={title}
-                        onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
-                        onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
-                    >
-                      {children}
-                    </span>
-                  );
-
-                  if (activeSyncSource === 'youtube') return <Wrapper><span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>YT Music</span></Wrapper>;
-                  if (activeSyncSource === 'local') return <Wrapper><span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>LOCAL</span></Wrapper>;
-                  if (activeSyncSource === 'deezer') return <Wrapper><span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>DEEZER</span></Wrapper>;
-                  
-                  return null;
-              })()}
+              {renderSourceBadge()}
             </div>
             <span>{isShowingAutoSync ? 'Only Ad-libs Editable' : 'Full Edit Enabled'}</span>
          </div>
@@ -508,12 +485,10 @@ export const SyncWorkspace = ({
           const isSynced = line.start !== null && line.end !== null;
           
           const hasParentheses = isMain && /[(\uFF08][^)\uFF09]+[)\uFF09]/.test(line.text);
-
           let boundedEnd = Number.MAX_VALUE;
           if (!isMain) {
             boundedEnd = line.end !== null ? line.end : (item.parentRef?.end !== null ? item.parentRef.end : Number.MAX_VALUE);
           }
-
           return (
             <div 
                 key={i}
@@ -561,9 +536,7 @@ export const SyncWorkspace = ({
               }}
             >
               <div className="sync-text-wrapper" style={{ flex: 1, minWidth: 0, paddingRight: '16px', display: 'flex', alignItems: 'center' }}>
-                
                 {renderSyncNode(line, isMain)}
-                
                 {isMain && hasParentheses && (
                   <button 
                       className={`action-split-btn ${line.isSplit ? 'undo' : ''}`}
