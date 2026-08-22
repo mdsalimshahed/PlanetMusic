@@ -6,6 +6,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent; /* FIX: Removes the gray/blue rectangular tap highlight on mobile devices */
 }
 
 :root {
@@ -91,33 +92,33 @@ body {
 /* ==========================================================================
    GLOBAL BORDER RADIUS ENFORCEMENT
    Guarantees all containers, cards, and ads instantly become sharp when 
-   the rounded corners setting is toggled off. Uses high specificity to override 
+   the rounded corners setting is toggled off. Uses high specificity to override
    external stylesheets.
    ========================================================================== */
-body .glass-panel,
-body .glass-panel-heavy,
-body .glass-panel-light,
-body .blog-hero,
-body .blog-card,
-body .blog-reader-view,
-body .blog-empty-box,
-body .privacy-hero,
-body .privacy-card-body,
-body .contact-hero,
-body .contact-card-body,
-body .info-block,
-body .settings-card,
-body .sample-vault-banner,
+body .glass-panel, 
+body .glass-panel-heavy, 
+body .glass-panel-light, 
+body .blog-hero, 
+body .blog-card, 
+body .blog-reader-view, 
+body .blog-empty-box, 
+body .privacy-hero, 
+body .privacy-card-body, 
+body .contact-hero, 
+body .contact-card-body, 
+body .info-block, 
+body .settings-card, 
+body .sample-vault-banner, 
 body .confirm-dialog {
     border-radius: var(--dyn-border-radius, 16px) !important;
 }
 
 /* Aggressively clip AdSense iframes and sponsor wrappers so they don't bleed out */
-body .settings-promo-box,
-body .sponsor-unit-wrapper,
-body .promo-box-container,
-body ins.adsbygoogle, 
-body iframe,
+body .settings-promo-box, 
+body .sponsor-unit-wrapper, 
+body .promo-box-container, 
+body ins.adsbygoogle,  
+body iframe, 
 body .dynamic-radius-override {
     border-radius: var(--dyn-border-radius, 16px) !important;
 }
@@ -126,8 +127,8 @@ body .dynamic-radius-override {
    PERFORMANCE DIAGNOSTICS (KILL-SWITCH)
    Globally kills all CSS animations, transitions, and removes background fluid drops
    ========================================================================== */
-.disable-animations *,
-.disable-animations *::before,
+.disable-animations *, 
+.disable-animations *::before, 
 .disable-animations *::after {
   animation-duration: 0.001ms !important;
   animation-delay: 0s !important;

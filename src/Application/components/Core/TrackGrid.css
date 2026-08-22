@@ -11,6 +11,19 @@
 .track-grid-item {
   width: 100%;
   min-width: 0;
+  opacity: 0; /* Start hidden for the animation */
+  animation: gridPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes gridPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .empty-message {
@@ -23,6 +36,8 @@
   border-radius: var(--dyn-border-radius);
   padding: 40px;
   width: 100%;
+  opacity: 0;
+  animation: gridPopIn 0.4s ease-out forwards;
 }
 
 .empty-message h2 {
