@@ -24827,8 +24827,8 @@
               ],
               "singer": "Shakira",
               "pronunciation": null,
-              "translation": "(Pa' typos, pa'-pa'-pa' typos como—)",
-              "lang": "tl",
+              "translation": "(Pa' types, pa'-pa'-pa' types like—)",
+              "lang": "es",
               "spacingText": ""
             }
           ],
@@ -24877,8 +24877,8 @@
               ],
               "singer": "Shakira",
               "pronunciation": null,
-              "translation": "(Pa' typos, pa'-pa'-pa' typos como—)",
-              "lang": "tl",
+              "translation": "(Pa' types, pa'-pa'-pa' types like—)",
+              "lang": "es",
               "spacingText": ""
             }
           ],
@@ -26788,8 +26788,8 @@
               ],
               "singer": "Shakira",
               "pronunciation": null,
-              "translation": "(Pa' typos, pa'-pa'-pa' typos como—)",
-              "lang": "tl",
+              "translation": "(Pa' types, pa'-pa'-pa' types like—)",
+              "lang": "es",
               "spacingText": ""
             }
           ],
@@ -26838,8 +26838,8 @@
               ],
               "singer": "Shakira",
               "pronunciation": null,
-              "translation": "(Pa' typos, pa'-pa'-pa' typos como—)",
-              "lang": "tl",
+              "translation": "(Pa' types, pa'-pa'-pa' types like—)",
+              "lang": "es",
               "spacingText": ""
             }
           ],
@@ -78953,13 +78953,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 1.3321530209823251,
-          "end": 5.921953020979346,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 1.3321530209823251,
+          "end": 5.921953020979346,
           "isSplit": false
         },
         {
@@ -78980,13 +78979,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 6.001853020985306,
-          "end": 10.534253020983815,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 6.001853020985306,
+          "end": 10.534253020983815,
           "isSplit": false
         },
         {
@@ -79007,13 +79005,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 10.635953020979345,
-          "end": 11.816853020985306,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 10.635953020979345,
+          "end": 11.816853020985306,
           "isSplit": false
         },
         {
@@ -79034,13 +79031,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 11.885053020980836,
-          "end": 12.962253020983816,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 11.885053020980836,
+          "end": 12.962253020983816,
           "isSplit": false
         },
         {
@@ -79061,13 +79057,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 13.026653020982325,
-          "end": 16.967153020982323,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 13.026653020982325,
+          "end": 16.967153020982323,
           "isSplit": false
         },
         {
@@ -79088,13 +79083,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 17.041453020979343,
-          "end": 19.443153020982322,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 17.041453020979343,
+          "end": 19.443153020982322,
           "isSplit": false
         },
         {
@@ -79115,13 +79109,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 19.503153020982325,
-          "end": 23.024853020985304,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 19.503153020982325,
+          "end": 23.024853020985304,
           "isSplit": false
         },
         {
@@ -79142,13 +79135,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 23.088153020982325,
-          "end": 24.228253020983814,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 23.088153020982325,
+          "end": 24.228253020983814,
           "isSplit": false
         },
         {
@@ -79169,13 +79161,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 24.287853020985303,
-          "end": 26.452853020985305,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 24.287853020985303,
+          "end": 26.452853020985305,
           "isSplit": false
         },
         {
@@ -79196,13 +79187,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 26.523553020980835,
-          "end": 28.600153020982322,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 26.523553020980835,
+          "end": 28.600153020982322,
           "isSplit": false
         },
         {
@@ -79223,13 +79213,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 28.669353020985305,
-          "end": 31.369053020980832,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 28.669353020985305,
+          "end": 31.369053020980832,
           "isSplit": false
         },
         {
@@ -79250,13 +79239,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 31.465021855044483,
-          "end": 33.10912185504597,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 31.465021855044483,
+          "end": 33.10912185504597,
           "isSplit": false
         },
         {
@@ -79277,13 +79265,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 33.167221855047465,
-          "end": 35.807680093464555,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 33.167221855047465,
+          "end": 35.807680093464555,
           "isSplit": false
         },
         {
@@ -79304,13 +79291,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 35.86618009346456,
-          "end": 37.97338009346009,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 35.86618009346456,
+          "end": 37.97338009346009,
           "isSplit": false
         },
         {
@@ -79331,13 +79317,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Carolina Gaitán]",
-          "start": 38.032880093460086,
-          "end": 40.54498216593933,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 38.032880093460086,
+          "end": 40.54498216593933,
           "isSplit": false
         },
         {
@@ -79358,13 +79343,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Mauro Castillo]",
-          "start": 40.60488216594529,
-          "end": 43.12868216594231,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 40.60488216594529,
+          "end": 43.12868216594231,
           "isSplit": false
         },
         {
@@ -79386,13 +79370,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán & Mauro Castillo]",
-          "start": 43.1952821659438,
-          "end": 47.75048216593933,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 43.1952821659438,
+          "end": 47.75048216593933,
           "isSplit": false
         },
         {
@@ -79414,13 +79397,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 47.8082821659438,
-          "end": 51.3532821659438,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 47.8082821659438,
+          "end": 51.3532821659438,
           "isSplit": false
         },
         {
@@ -79441,13 +79423,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa]",
-          "start": 51.42418216594231,
-          "end": 51.92658216594082,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 51.42418216594231,
+          "end": 51.92658216594082,
           "isSplit": false
         },
         {
@@ -79468,13 +79449,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 51.98698216593933,
-          "end": 54.22538216594529,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 51.98698216593933,
+          "end": 54.22538216594529,
           "isSplit": false
         },
         {
@@ -79495,13 +79475,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 54.28618216594231,
-          "end": 56.48898216593933,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 54.28618216594231,
+          "end": 56.48898216593933,
           "isSplit": false
         },
         {
@@ -79531,13 +79510,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 56.55768216594231,
-          "end": 61.1957821659438,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 56.55768216594231,
+          "end": 61.1957821659438,
           "isSplit": true,
           "adlibs": [
             {
@@ -79580,13 +79558,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 61.25738216594529,
-          "end": 63.5147821659438,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 61.25738216594529,
+          "end": 63.5147821659438,
           "isSplit": false
         },
         {
@@ -79607,13 +79584,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 63.57668216594231,
-          "end": 65.86388216594528,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 63.57668216594231,
+          "end": 65.86388216594528,
           "isSplit": false
         },
         {
@@ -79634,13 +79610,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 65.92418216594231,
-          "end": 69.0063821659453,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 65.92418216594231,
+          "end": 69.0063821659453,
           "isSplit": false
         },
         {
@@ -79661,13 +79636,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 69.0692821659438,
-          "end": 70.43338216594529,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 69.0692821659438,
+          "end": 70.43338216594529,
           "isSplit": false
         },
         {
@@ -79688,13 +79662,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
-          "start": 70.49308216594082,
-          "end": 74.47758216594082,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 70.49308216594082,
+          "end": 74.47758216594082,
           "isSplit": false
         },
         {
@@ -79715,13 +79688,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 74.5413821659453,
-          "end": 79.21458216594081,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 74.5413821659453,
+          "end": 79.21458216594081,
           "isSplit": false
         },
         {
@@ -79742,13 +79714,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 79.27348216593933,
-          "end": 83.9637821659438,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 79.27348216593933,
+          "end": 83.9637821659438,
           "isSplit": false
         },
         {
@@ -79769,13 +79740,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "start": 84.02168216594231,
-          "end": 85.0888821659453,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 84.02168216594231,
+          "end": 85.0888821659453,
           "isSplit": false
         },
         {
@@ -79807,13 +79777,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, Mauro Castillo & Rhenzy Feliz, _Adassa_]",
-          "start": 85.15908216594082,
-          "end": 89.82898216593932,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 85.15908216594082,
+          "end": 89.82898216593932,
           "isSplit": true,
           "adlibs": [
             {
@@ -79889,13 +79858,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 89.90948216593932,
-          "end": 94.06448216593932,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 89.90948216593932,
+          "end": 94.06448216593932,
           "isSplit": true,
           "adlibs": [
             {
@@ -79967,13 +79935,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "start": 94.12488216594528,
-          "end": 98.78418216594231,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 94.12488216594528,
+          "end": 98.78418216594231,
           "isSplit": true,
           "adlibs": [
             {
@@ -80032,13 +79999,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 99.00690109346455,
-          "end": 102.29510109346008,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 99.00690109346455,
+          "end": 102.29510109346008,
           "isSplit": false
         },
         {
@@ -80073,13 +80039,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 102.35410109346007,
-          "end": 108.18894909345859,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 102.35410109346007,
+          "end": 108.18894909345859,
           "isSplit": true,
           "adlibs": [
             {
@@ -80156,13 +80121,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 108.24854909346008,
-          "end": 112.27639209345561,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 108.24854909346008,
+          "end": 112.27639209345561,
           "isSplit": false
         },
         {
@@ -80183,13 +80147,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Diane Guerrero]",
-          "start": 112.54450909346306,
-          "end": 116.27090909346157,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 112.54450909346306,
+          "end": 116.27090909346157,
           "isSplit": false
         },
         {
@@ -80210,13 +80173,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 116.36940909346157,
-          "end": 120.53120909346605,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 116.36940909346157,
+          "end": 120.53120909346605,
           "isSplit": false
         },
         {
@@ -80237,13 +80199,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 121.92050909346307,
-          "end": 125.56290909346157,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 121.92050909346307,
+          "end": 125.56290909346157,
           "isSplit": false
         },
         {
@@ -80264,13 +80225,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 125.62680909346008,
-          "end": 129.16210909346455,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 125.62680909346008,
+          "end": 129.16210909346455,
           "isSplit": false
         },
         {
@@ -80291,13 +80251,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "start": 129.2238090934601,
-          "end": 131.17300909346307,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 129.2238090934601,
+          "end": 131.17300909346307,
           "isSplit": false
         },
         {
@@ -80318,13 +80277,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Adassa & _Diane Guerrero_]",
-          "start": 131.2383090934601,
-          "end": 135.06670909346605,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 131.2383090934601,
+          "end": 135.06670909346605,
           "isSplit": false
         },
         {
@@ -80345,13 +80303,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 135.12690909346156,
-          "end": 140.84360909346455,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 135.12690909346156,
+          "end": 140.84360909346455,
           "isSplit": false
         },
         {
@@ -80381,13 +80338,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fe3ea4, #e15ff2)",
           "sectionHeader": null,
-          "start": 140.92470909346605,
-          "end": 144.07759809346007,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 140.92470909346605,
+          "end": 144.07759809346007,
           "isSplit": true,
           "adlibs": [
             {
@@ -80457,13 +80413,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e15ff2, #fe3ea4)",
           "sectionHeader": null,
-          "start": 144.77906592752,
-          "end": 148.27776592751928,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 144.77906592752,
+          "end": 148.27776592751928,
           "isSplit": true,
           "adlibs": [
             {
@@ -80506,13 +80461,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 148.37069809346156,
-          "end": 149.84074385504297,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 148.37069809346156,
+          "end": 149.84074385504297,
           "isSplit": false
         },
         {
@@ -80533,13 +80487,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "start": 149.9021438550415,
-          "end": 151.5581438550415,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 149.9021438550415,
+          "end": 151.5581438550415,
           "isSplit": false
         },
         {
@@ -80560,13 +80513,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 152.30014385504148,
-          "end": 153.87944385503852,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 152.30014385504148,
+          "end": 153.87944385503852,
           "isSplit": false
         },
         {
@@ -80587,13 +80539,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 153.95054385504,
-          "end": 156.16754385504,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 153.95054385504,
+          "end": 156.16754385504,
           "isSplit": false
         },
         {
@@ -80614,13 +80565,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 156.235243855043,
-          "end": 158.4931438550415,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 156.235243855043,
+          "end": 158.4931438550415,
           "isSplit": false
         },
         {
@@ -80641,13 +80591,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Rhenzy Feliz]",
-          "start": 158.71803692752522,
-          "end": 161.74093692752373,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 158.71803692752522,
+          "end": 161.74093692752373,
           "isSplit": false
         },
         {
@@ -80669,13 +80618,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e9a5b2, #fff94d)",
           "sectionHeader": "[:Angie Cepeda & Carolina Gaitán]",
-          "start": 161.83984385504448,
-          "end": 163.75814385504148,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 161.83984385504448,
+          "end": 163.75814385504148,
           "isSplit": false
         },
         {
@@ -80759,13 +80707,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_**, Diane Guerrero]",
-          "start": 163.82504385504,
-          "end": 167.83734385504448,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 163.82504385504,
+          "end": 167.83734385504448,
           "isSplit": true,
           "adlibs": [
             {
@@ -80960,13 +80907,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 167.9171438550415,
-          "end": 173.14704385504,
-          "wordSync": null,
-          "pronunciation": "",
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 167.9171438550415,
+          "end": 173.14704385504,
           "isSplit": true,
           "adlibs": [
             {
@@ -81161,13 +81107,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 173.0776890934601,
-          "end": 178.11073092751965,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 173.0776890934601,
+          "end": 178.11073092751965,
           "isSplit": true,
           "adlibs": [
             {
@@ -81308,13 +81253,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fe3ea4)",
           "sectionHeader": null,
-          "start": 178.26759192752056,
-          "end": 180.4708919275213,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 178.26759192752056,
+          "end": 180.4708919275213,
           "isSplit": true,
           "adlibs": [
             {
@@ -81413,13 +81357,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #e6e5ff, #fe3ea4)",
           "sectionHeader": "[:Encanto - Cast, _Mauro Castillo_, **Adassa**, **_Diane Guerrero_**]",
-          "start": 180.58409192752055,
-          "end": 182.55683700000037,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 180.58409192752055,
+          "end": 182.55683700000037,
           "isSplit": true,
           "adlibs": [
             {
@@ -81547,13 +81490,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": "[:Carolina Gaitán, _Mauro Castillo_, **Adassa**, **_Rhenzy Feliz_** & Diane Guerrero]",
-          "start": 182.5508141659397,
-          "end": 186.22760785504187,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 182.5508141659397,
+          "end": 186.22760785504187,
           "isSplit": true,
           "adlibs": [
             {
@@ -81701,13 +81643,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 186.30590785504262,
-          "end": 191.82490785504262,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 186.30590785504262,
+          "end": 191.82490785504262,
           "isSplit": true,
           "adlibs": [
             {
@@ -81864,13 +81805,12 @@
           "isGradient": true,
           "gradient": "linear-gradient(90deg, #fff94d, #fd8617)",
           "sectionHeader": null,
-          "start": 191.96554792752224,
-          "end": 196.31358409346157,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 191.96554792752224,
+          "end": 196.31358409346157,
           "isSplit": true,
           "adlibs": [
             {
@@ -81982,13 +81922,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "start": 196.31397609346158,
-          "end": 197.13657609346308,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 196.31397609346158,
+          "end": 197.13657609346308,
           "isSplit": false
         },
         {
@@ -82009,13 +81948,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": null,
-          "start": 197.19557609346307,
-          "end": 199.18521609346007,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 197.19557609346307,
+          "end": 199.18521609346007,
           "isSplit": false
         },
         {
@@ -82036,13 +81974,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "start": 199.24451609346454,
-          "end": 201.6232160934601,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 199.24451609346454,
+          "end": 201.6232160934601,
           "isSplit": false
         },
         {
@@ -82063,13 +82000,12 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Encanto - Cast]",
-          "start": 201.68021609346007,
-          "end": 203.42441109346308,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 201.68021609346007,
+          "end": 203.42441109346308,
           "isSplit": false
         },
         {
@@ -82090,18 +82026,4089 @@
           "isGradient": false,
           "gradient": "",
           "sectionHeader": "[:Stephanie Beatriz]",
-          "start": 203.4841110934586,
-          "end": 206.97651109346455,
-          "wordSync": null,
-          "pronunciation": null,
           "translation": "",
+          "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
+          "start": 203.4841110934586,
+          "end": 206.97651109346455,
           "isSplit": false
         }
       ],
       "forceSource": "youtube",
       "playId": 1786849663189
+    },
+    {
+      "wrapperType": "track",
+      "kind": "song",
+      "artistId": 1141774019,
+      "collectionId": 1533894050,
+      "trackId": 1533894675,
+      "artistName": "BLACKPINK",
+      "collectionName": "THE ALBUM",
+      "trackName": "Pretty Savage",
+      "collectionViewUrl": "https://music.apple.com/us/album/pretty-savage/1533894050?i=1533894675&uo=4",
+      "previewUrl": "",
+      "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/c3/64/46/c364465f-6271-8aae-93a8-b9979d2befe5/20UMGIM82075.rgb.jpg/100x100bb.jpg",
+      "collectionPrice": 7.99,
+      "trackPrice": 1.29,
+      "releaseDate": "2020-10-02T12:00:00Z",
+      "collectionExplicitness": "notExplicit",
+      "trackExplicitness": "notExplicit",
+      "discCount": 1,
+      "discNumber": 1,
+      "trackCount": 8,
+      "trackNumber": 3,
+      "trackTimeMillis": 199122,
+      "country": "USA",
+      "currency": "USD",
+      "primaryGenreName": "K-Pop",
+      "isStreamable": true,
+      "sourceNames": [
+        "iTunes"
+      ],
+      "customLinks": {
+        "spotify": "",
+        "yt": "https://music.youtube.com/watch?v=F8c8f2nK82w",
+        "deezer": "https://www.deezer.com/en/track/1097366412",
+        "hasLocal": false,
+        "localName": ""
+      },
+      "lyrics": "[블랙핑크 \"Pretty Savage\" 가사]\n\n[Intro: Jisoo, _Jennie_]\nUh-huh, uh-huh\nUh-huh, uh-huh (_Prrr_)\nBLACKPINK in your area\nUh-huh, uh-huh\nBLACKPINK in your area\nUh-huh, uh-huh\n\n[Verse 1: Lisa, _Jennie_]\n비슷한 것 같지, 우린 뼛속까지 다름\n아이 창피하다가도 멍석 깔면 바름\nBorn skinny, bitch, 암만 살쪄도 난 마름\n계산은 느려도 눈치는 빠름\n_인기를 논하자면 안 해 입만 아픔\nF boys, not my boys, 싹둑싹둑 자름\n우리 이름 틀린다면 뚜두뚜두 맞음_\n_Drip, drip, ice it out, bust it down, top to the bottom_\n\n[Pre-Chorus: Rosé, _Rosé & Jisoo_]\n(_Oh-oh-oh-oh_)\n검은색 분홍빛이\nAll up in it, make it lit, like\n(_Oh-oh-oh-oh_)\nYeah, we some bitches you can't manage\n또 이 어려운 걸 해내지\n우린 예쁘장한 savage\nWe some 예쁘장한 savage\n\n[Chorus: Jisoo, _Lisa_]\n(Ooh) _Bah-dah-bah-bah_\nYou better run, run, run\n(Ooh) _Bah-dah-bah-bah_\nYou better run, run, run\n\n[Post-Chorus: Lisa]\nAll my diamonds, they yellow or bright white (Bing)\nGot 'em blind, can't find me, I'm outta sight (Sight)\nIf you mad, stay mad, we not alike (Uh-uh)\nS-A-V-A-G-E, keep it pretty, pretty savage\n\n[Verse 2: Jisoo]\n비슷한 걸 걸쳤지만 자태부터 다름\n짠 하고 나타나면 카펫부터 깔음\nBLACK 했다, PINK 했다, 내 맘대로 바꿈\n네 질투가 문제야, maybe I'm the problem\n\n[Pre-Chorus: Jennie, _Rosé & Jisoo_]\n(_Oh-oh-oh-oh_)\n검은색 분홍빛이\nAll up in it, make it rain, like\n(_Oh-oh-oh-oh_)\nYeah, we some bitches you can't manage\n또 이 어려운 걸 해내지\n우린 예쁘장한 savage\nWe some 예쁘장한 savage\n\n[Chorus: Jisoo, _Lisa_]\n(Ooh) _Bah-dah-bah-bah_\nYou better run, run, run\n(Ooh) _Bah-dah-bah-bah_\nYou better run, run, run\n\n[Post-Chorus: Lisa]\nAll my diamonds, they yellow or bright white (Bing)\nGot 'em blind, can't find me, I'm outta sight (Sight)\nIf you mad, stay mad, we not alike (Uh-uh)\nS-A-V-A-G-E, keep it pretty, pretty savage\n\n[Bridge: Rosé]\nPretty girl (Pretty girl)\n웃어주지만 마냥 약하진 않아\nAnd I wish you would (Wish you would)\n비바람이 불수록 더 높이 날아\nI got nothin' left to say to you\n원하면 보여줄게 attitude\n굳이 말 안 해도 다 알잖아\nYou know\n\n[Outro: Jennie, _Jisoo_, **Lisa**]\nSavage\n_봐도 봐도 예쁘장한_\nSavage\n**So pretty, pretty, pretty, pretty**\nSavage\n_봐도 봐도 예쁘장한_\nSavage\n**So pretty, pretty, pretty, pretty**",
+      "artistImages": {},
+      "artistColors": {},
+      "syncData": [
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Intro: Jisoo, _Jennie_]",
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 6.06,
+          "end": 9.2,
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh (Prrr)",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            },
+            {
+              "text": "(Prrr)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Jennie",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #86e7f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 9.2,
+          "end": 14.17,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Prrr)",
+              "charStart": 15,
+              "charEnd": 21,
+              "start": 12.325999999999999,
+              "end": 13.909700000002978,
+              "segments": [
+                {
+                  "text": "(Prrr)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jennie"
+                  ]
+                }
+              ],
+              "singer": "Jennie",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "BLACKPINK in your area",
+          "segments": [
+            {
+              "text": "BLACKPINK in your area",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 14.17,
+          "end": 15.45,
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 15.45,
+          "end": 20.18,
+          "isSplit": false
+        },
+        {
+          "text": "BLACKPINK in your area",
+          "segments": [
+            {
+              "text": "BLACKPINK in your area",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 20.18,
+          "end": 21.74,
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 21.74,
+          "end": 25.12,
+          "isSplit": false
+        },
+        {
+          "text": "비슷한 것 같지, 우린 뼛속까지 다름",
+          "segments": [
+            {
+              "text": "비슷한 것 같지, 우린 뼛속까지 다름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Lisa, _Jennie_]",
+          "translation": "We may seem similar, but we are different to the core",
+          "pronunciation": "{\"full\":\"biseushan geos gatji, ulin ppyeos-sogkkaji daleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비슷한\",\"trans\":\"biseushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같지,\",\"trans\":\"gatji,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뼛속까지\",\"trans\":\"ppyeos-sogkkaji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다름\",\"trans\":\"daleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 25.12,
+          "end": 28.42,
+          "isSplit": false
+        },
+        {
+          "text": "아이 창피하다가도 멍석 깔면 바름",
+          "segments": [
+            {
+              "text": "아이 창피하다가도 멍석 깔면 바름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Even though the child is embarrassed, if you put a mat on it, you change it",
+          "pronunciation": "{\"full\":\"ai changpihadagado meongseog kkalmyeon baleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아이\",\"trans\":\"ai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"창피하다가도\",\"trans\":\"changpihadagado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"멍석\",\"trans\":\"meongseog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"깔면\",\"trans\":\"kkalmyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"바름\",\"trans\":\"baleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 28.42,
+          "end": 31.58,
+          "isSplit": false
+        },
+        {
+          "text": "Born skinny, bitch, 암만 살쪄도 난 마름",
+          "segments": [
+            {
+              "text": "Born skinny, bitch, 암만 살쪄도 난 마름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Born skinny, bitch, even if you gain weight, you are thin",
+          "pronunciation": "{\"full\":\"Born skinny, bitch, amman saljjyeodo nan maleum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Born\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"skinny,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"bitch,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"암만\",\"trans\":\"amman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"살쪄도\",\"trans\":\"saljjyeodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마름\",\"trans\":\"maleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 31.58,
+          "end": 34.67,
+          "isSplit": false
+        },
+        {
+          "text": "계산은 느려도 눈치는 빠름",
+          "segments": [
+            {
+              "text": "계산은 느려도 눈치는 빠름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Although you are slow at calculating, you are quick at guessing",
+          "pronunciation": "{\"full\":\"gyesan-eun neulyeodo nunchineun ppaleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"계산은\",\"trans\":\"gyesan-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느려도\",\"trans\":\"neulyeodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"눈치는\",\"trans\":\"nunchineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빠름\",\"trans\":\"ppaleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 34.67,
+          "end": 37.94,
+          "isSplit": false
+        },
+        {
+          "text": "인기를 논하자면 안 해 입만 아픔",
+          "segments": [
+            {
+              "text": "인기를 논하자면 안 해 입만 아픔",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you talk about popularity, don't do it, only your mouth hurts",
+          "pronunciation": "{\"full\":\"ingileul nonhajamyeon an hae ibman apeum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"인기를\",\"trans\":\"ingileul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"논하자면\",\"trans\":\"nonhajamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안\",\"trans\":\"an\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해\",\"trans\":\"hae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"입만\",\"trans\":\"ibman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아픔\",\"trans\":\"apeum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 37.94,
+          "end": 41.16,
+          "isSplit": false
+        },
+        {
+          "text": "F boys, not my boys, 싹둑싹둑 자름",
+          "segments": [
+            {
+              "text": "F boys, not my boys, 싹둑싹둑 자름",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "F boys, not my boys, cut it in small pieces",
+          "pronunciation": "{\"full\":\"F boys, not my boys, ssagdugssagdug jaleum\",\"chunks\":[{\"type\":\"en\",\"text\":\"F\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boys,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"not\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boys,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"싹둑싹둑\",\"trans\":\"ssagdugssagdug\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자름\",\"trans\":\"jaleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 41.16,
+          "end": 44.35,
+          "isSplit": false
+        },
+        {
+          "text": "우리 이름 틀린다면 뚜두뚜두 맞음",
+          "segments": [
+            {
+              "text": "우리 이름 틀린다면 뚜두뚜두 맞음",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you get our name wrong, it's right, Ddu-du Ddu-du",
+          "pronunciation": "{\"full\":\"uli ileum teullindamyeon ttuduttudu maj-eum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우리\",\"trans\":\"uli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이름\",\"trans\":\"ileum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"틀린다면\",\"trans\":\"teullindamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뚜두뚜두\",\"trans\":\"ttuduttudu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"맞음\",\"trans\":\"maj-eum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 44.35,
+          "end": 47.44,
+          "isSplit": false
+        },
+        {
+          "text": "Drip, drip, ice it out, bust it down, top to the bottom",
+          "segments": [
+            {
+              "text": "Drip, drip, ice it out, bust it down, top to the bottom",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 47.44,
+          "end": 50.3,
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": "[Pre-Chorus: Rosé, _Rosé & Jisoo_]",
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 50.601200000002976,
+          "end": 53.209899999998505,
+          "isSplit": false
+        },
+        {
+          "text": "검은색 분홍빛이",
+          "segments": [
+            {
+              "text": "검은색 분홍빛이",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Black Pink",
+          "pronunciation": "{\"full\":\"geom-eunsaeg bunhongbich-i\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"검은색\",\"trans\":\"geom-eunsaeg\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"분홍빛이\",\"trans\":\"bunhongbich-i\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 53.36,
+          "end": 55.11,
+          "isSplit": false
+        },
+        {
+          "text": "All up in it, make it lit, like",
+          "segments": [
+            {
+              "text": "All up in it, make it lit, like",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 55.11,
+          "end": 56.97,
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 56.97,
+          "end": 59.43,
+          "isSplit": false
+        },
+        {
+          "text": "Yeah, we some bitches you can't manage",
+          "segments": [
+            {
+              "text": "Yeah, we some bitches you can't manage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 59.43,
+          "end": 61.28,
+          "isSplit": false
+        },
+        {
+          "text": "또 이 어려운 걸 해내지",
+          "segments": [
+            {
+              "text": "또 이 어려운 걸 해내지",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We'll do this difficult thing again",
+          "pronunciation": "{\"full\":\"tto i eolyeoun geol haenaeji\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"또\",\"trans\":\"tto\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어려운\",\"trans\":\"eolyeoun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해내지\",\"trans\":\"haenaeji\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 61.28,
+          "end": 63.11,
+          "isSplit": false
+        },
+        {
+          "text": "우린 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "우린 예쁘장한 savage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We're pretty savage",
+          "pronunciation": "{\"full\":\"ulin yeppeujanghan savage\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 63.11,
+          "end": 64.45,
+          "isSplit": false
+        },
+        {
+          "text": "We some 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "We some 예쁘장한 savage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We some pretty savage",
+          "pronunciation": "{\"full\":\"We some yeppeujanghan savage\",\"chunks\":[{\"type\":\"en\",\"text\":\"We\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"some\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 64.45,
+          "end": 67.02,
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": "[Chorus: Jisoo, _Lisa_]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 69.46819999999552,
+          "end": 70.6288999999985,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Ooh)",
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 70.52649899999702,
+              "end": 70.6288999999985,
+              "segments": [
+                {
+                  "text": "(Ooh)",
+                  "color": "#8cf986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jisoo"
+                  ]
+                }
+              ],
+              "singer": "Jisoo",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 70.71099999999998,
+          "end": 72.87919999999552,
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 75.72679999999701,
+          "end": 77.12679999999702,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Ooh)",
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 76.83169899999851,
+              "end": 77.12679999999702,
+              "segments": [
+                {
+                  "text": "(Ooh)",
+                  "color": "#8cf986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jisoo"
+                  ]
+                }
+              ],
+              "singer": "Jisoo",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 77.18669999999553,
+          "end": 79.01239999999851,
+          "isSplit": false
+        },
+        {
+          "text": "All my diamonds, they yellow or bright white (Bing)",
+          "segments": [
+            {
+              "text": "All my diamonds, they yellow or bright white ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Bing)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Lisa]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 79.65179999999701,
+          "end": 82.7728999999985,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Bing)",
+              "charStart": 45,
+              "charEnd": 51,
+              "start": 82.40509899999701,
+              "end": 82.7728999999985,
+              "segments": [
+                {
+                  "text": "(Bing)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "Got 'em blind, can't find me, I'm outta sight (Sight)",
+          "segments": [
+            {
+              "text": "Got 'em blind, can't find me, I'm outta sight ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Sight)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 82.8673999999985,
+          "end": 85.83979999999701,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Sight)",
+              "charStart": 46,
+              "charEnd": 53,
+              "start": 85.61509899999554,
+              "end": 85.83979999999701,
+              "segments": [
+                {
+                  "text": "(Sight)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "If you mad, stay mad, we not alike (Uh-uh)",
+          "segments": [
+            {
+              "text": "If you mad, stay mad, we not alike ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Uh-uh)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 85.90210000000148,
+          "end": 88.63110000000148,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Uh-uh)",
+              "charStart": 35,
+              "charEnd": 42,
+              "start": 88.36639999999703,
+              "end": 88.63110000000148,
+              "segments": [
+                {
+                  "text": "(Uh-uh)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+          "segments": [
+            {
+              "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 88.71749999999999,
+          "end": 91.88129999999701,
+          "isSplit": false
+        },
+        {
+          "text": "비슷한 걸 걸쳤지만 자태부터 다름",
+          "segments": [
+            {
+              "text": "비슷한 걸 걸쳤지만 자태부터 다름",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Jisoo]",
+          "translation": "Wearing something similar, but the way we look is different",
+          "pronunciation": "{\"full\":\"biseushan geol geolchyeossjiman jataebuteo daleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비슷한\",\"trans\":\"biseushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸쳤지만\",\"trans\":\"geolchyeossjiman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자태부터\",\"trans\":\"jataebuteo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다름\",\"trans\":\"daleum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 91.9573999999985,
+          "end": 94.66629999999701,
+          "isSplit": false
+        },
+        {
+          "text": "짠 하고 나타나면 카펫부터 깔음",
+          "segments": [
+            {
+              "text": "짠 하고 나타나면 카펫부터 깔음",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you show up, we'll start with the carpet",
+          "pronunciation": "{\"full\":\"jjan hago natanamyeon kapesbuteo kkal-eum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"짠\",\"trans\":\"jjan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"하고\",\"trans\":\"hago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나타나면\",\"trans\":\"natanamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"카펫부터\",\"trans\":\"kapesbuteo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"깔음\",\"trans\":\"kkal-eum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 94.72999999999999,
+          "end": 97.82,
+          "isSplit": false
+        },
+        {
+          "text": "BLACK 했다, PINK 했다, 내 맘대로 바꿈",
+          "segments": [
+            {
+              "text": "BLACK 했다, PINK 했다, 내 맘대로 바꿈",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I did BLACK, I did PINK, I changed it as I want",
+          "pronunciation": "{\"full\":\"BLACK haessda, PINK haessda, nae mamdaelo bakkum\",\"chunks\":[{\"type\":\"en\",\"text\":\"BLACK\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했다,\",\"trans\":\"haessda,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"PINK\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했다,\",\"trans\":\"haessda,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"맘대로\",\"trans\":\"mamdaelo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"바꿈\",\"trans\":\"bakkum\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 97.82,
+          "end": 100.87,
+          "isSplit": false
+        },
+        {
+          "text": "네 질투가 문제야, maybe I'm the problem",
+          "segments": [
+            {
+              "text": "네 질투가 문제야, maybe I'm the problem",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Your jealousy is the problem, maybe I'm the problem",
+          "pronunciation": "{\"full\":\"ne jiltuga munjeya, maybe I'm the problem\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"네\",\"trans\":\"ne\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"질투가\",\"trans\":\"jiltuga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"문제야,\",\"trans\":\"munjeya,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"maybe\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"I'm\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"the\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"problem\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 100.87,
+          "end": 104.28380000000448,
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": "[Pre-Chorus: Jennie, _Rosé & Jisoo_]",
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 104.35020000000299,
+          "end": 106.8666000000015,
+          "isSplit": false
+        },
+        {
+          "text": "검은색 분홍빛이",
+          "segments": [
+            {
+              "text": "검은색 분홍빛이",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Black and pink",
+          "pronunciation": "{\"full\":\"geom-eunsaeg bunhongbich-i\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"검은색\",\"trans\":\"geom-eunsaeg\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"분홍빛이\",\"trans\":\"bunhongbich-i\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 106.9,
+          "end": 108.81,
+          "isSplit": false
+        },
+        {
+          "text": "All up in it, make it rain, like",
+          "segments": [
+            {
+              "text": "All up in it, make it rain, like",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 108.81,
+          "end": 110.82,
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 110.82,
+          "end": 113.12,
+          "isSplit": false
+        },
+        {
+          "text": "Yeah, we some bitches you can't manage",
+          "segments": [
+            {
+              "text": "Yeah, we some bitches you can't manage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 113.12,
+          "end": 114.8,
+          "isSplit": false
+        },
+        {
+          "text": "또 이 어려운 걸 해내지",
+          "segments": [
+            {
+              "text": "또 이 어려운 걸 해내지",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Again Let's do this difficult thing",
+          "pronunciation": "{\"full\":\"tto i eolyeoun geol haenaeji\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"또\",\"trans\":\"tto\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어려운\",\"trans\":\"eolyeoun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해내지\",\"trans\":\"haenaeji\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 114.8,
+          "end": 116.78999999999999,
+          "isSplit": false
+        },
+        {
+          "text": "우린 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "우린 예쁘장한 savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We're pretty savage",
+          "pronunciation": "{\"full\":\"ulin yeppeujanghan savage\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 116.78999999999999,
+          "end": 118.46000000000001,
+          "isSplit": false
+        },
+        {
+          "text": "We some 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "We some 예쁘장한 savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We're some pretty savage",
+          "pronunciation": "{\"full\":\"We some yeppeujanghan savage\",\"chunks\":[{\"type\":\"en\",\"text\":\"We\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"some\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 118.46000000000001,
+          "end": 121.46,
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": "[Chorus: Jisoo, _Lisa_]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 123.25380000000447,
+          "end": 124.39660000000148,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Ooh)",
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 124.1351999999985,
+              "end": 124.39660000000148,
+              "segments": [
+                {
+                  "text": "(Ooh)",
+                  "color": "#8cf986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jisoo"
+                  ]
+                }
+              ],
+              "singer": "Jisoo",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 124.44,
+          "end": 127.91,
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 129.3908999999985,
+          "end": 130.73620000000298,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Ooh)",
+              "charStart": 16,
+              "charEnd": 21,
+              "start": 130.234898,
+              "end": 130.73620000000298,
+              "segments": [
+                {
+                  "text": "(Ooh)",
+                  "color": "#8cf986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Jisoo"
+                  ]
+                }
+              ],
+              "singer": "Jisoo",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 130.87,
+          "end": 132.9921000000015,
+          "isSplit": false
+        },
+        {
+          "text": "All my diamonds, they yellow or bright white (Bing)",
+          "segments": [
+            {
+              "text": "All my diamonds, they yellow or bright white ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Bing)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Lisa]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 133.23080000000448,
+          "end": 136.2141000000015,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Bing)",
+              "charStart": 45,
+              "charEnd": 51,
+              "start": 136.054299,
+              "end": 136.2141000000015,
+              "segments": [
+                {
+                  "text": "(Bing)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "Got 'em blind, can't find me, I'm outta sight (Sight)",
+          "segments": [
+            {
+              "text": "Got 'em blind, can't find me, I'm outta sight ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Sight)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 136.32,
+          "end": 139.64,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Sight)",
+              "charStart": 46,
+              "charEnd": 53,
+              "start": 139.04710000000148,
+              "end": 139.64,
+              "segments": [
+                {
+                  "text": "(Sight)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "If you mad, stay mad, we not alike (Uh-uh)",
+          "segments": [
+            {
+              "text": "If you mad, stay mad, we not alike ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Uh-uh)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 139.64,
+          "end": 142.34,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Uh-uh)",
+              "charStart": 35,
+              "charEnd": 42,
+              "start": 142.13990000000595,
+              "end": 142.34,
+              "segments": [
+                {
+                  "text": "(Uh-uh)",
+                  "color": "#ae86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Lisa"
+                  ]
+                }
+              ],
+              "singer": "Lisa",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+          "segments": [
+            {
+              "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 142.34,
+          "end": 145.42000000000002,
+          "isSplit": false
+        },
+        {
+          "text": "Pretty girl (Pretty girl)",
+          "segments": [
+            {
+              "text": "Pretty girl ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            },
+            {
+              "text": "(Pretty girl)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Rosé]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 145.42000000000002,
+          "end": 147.96,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Pretty girl)",
+              "charStart": 12,
+              "charEnd": 25,
+              "start": 147.26029999999702,
+              "end": 147.96,
+              "segments": [
+                {
+                  "text": "(Pretty girl)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Rosé"
+                  ]
+                }
+              ],
+              "singer": "Rosé",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "웃어주지만 마냥 약하진 않아",
+          "segments": [
+            {
+              "text": "웃어주지만 마냥 약하진 않아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "We smile, but we're not weak",
+          "pronunciation": "{\"full\":\"us-eojujiman manyang yaghajin anh-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"웃어주지만\",\"trans\":\"us-eojujiman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마냥\",\"trans\":\"manyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"약하진\",\"trans\":\"yaghajin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않아\",\"trans\":\"anh-a\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 147.96,
+          "end": 151.48,
+          "isSplit": false
+        },
+        {
+          "text": "And I wish you would (Wish you would)",
+          "segments": [
+            {
+              "text": "And I wish you would ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            },
+            {
+              "text": "(Wish you would)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "auto",
+          "start": 151.48,
+          "end": 154.32999999999998,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Wish you would)",
+              "charStart": 21,
+              "charEnd": 37,
+              "start": 153.482299999997,
+              "end": 154.32999999999998,
+              "segments": [
+                {
+                  "text": "(Wish you would)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Rosé"
+                  ]
+                }
+              ],
+              "singer": "Rosé",
+              "pronunciation": null
+            }
+          ]
+        },
+        {
+          "text": "비바람이 불수록 더 높이 날아",
+          "segments": [
+            {
+              "text": "비바람이 불수록 더 높이 날아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "The more the wind and rain blows, the higher we fly",
+          "pronunciation": "{\"full\":\"bibalam-i bulsulog deo nop-i nal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비바람이\",\"trans\":\"bibalam-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"불수록\",\"trans\":\"bulsulog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"높이\",\"trans\":\"nop-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"날아\",\"trans\":\"nal-a\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 154.32999999999998,
+          "end": 157.77,
+          "isSplit": false
+        },
+        {
+          "text": "I got nothin' left to say to you",
+          "segments": [
+            {
+              "text": "I got nothin' left to say to you",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 157.77,
+          "end": 160.35,
+          "isSplit": false
+        },
+        {
+          "text": "원하면 보여줄게 attitude",
+          "segments": [
+            {
+              "text": "원하면 보여줄게 attitude",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you want, I'll show you attitude",
+          "pronunciation": "{\"full\":\"wonhamyeon boyeojulge attitude\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"원하면\",\"trans\":\"wonhamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보여줄게\",\"trans\":\"boyeojulge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"attitude\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 160.35,
+          "end": 163.69,
+          "isSplit": false
+        },
+        {
+          "text": "굳이 말 안 해도 다 알잖아",
+          "segments": [
+            {
+              "text": "굳이 말 안 해도 다 알잖아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "You know it all without even having to say it",
+          "pronunciation": "{\"full\":\"gud-i mal an haedo da aljanh-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"굳이\",\"trans\":\"gud-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안\",\"trans\":\"an\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알잖아\",\"trans\":\"aljanh-a\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 163.69,
+          "end": 168.72,
+          "isSplit": false
+        },
+        {
+          "text": "You know",
+          "segments": [
+            {
+              "text": "You know",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 168.72,
+          "end": 170.56,
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Outro: Jennie, _Jisoo_, **Lisa**]",
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 170.788299999997,
+          "end": 174.44729999999703,
+          "isSplit": false
+        },
+        {
+          "text": "봐도 봐도 예쁘장한",
+          "segments": [
+            {
+              "text": "봐도 봐도 예쁘장한",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "You're pretty no matter how you look at it",
+          "pronunciation": "{\"full\":\"bwado bwado yeppeujanghan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 175.47519999999554,
+          "end": 177.163,
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 177.23609999999405,
+          "end": 180.82929999999703,
+          "isSplit": false
+        },
+        {
+          "text": "So pretty, pretty, pretty, pretty",
+          "segments": [
+            {
+              "text": "So pretty, pretty, pretty, pretty",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 181.53429999999707,
+          "end": 183.35979999999705,
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 183.45129999999708,
+          "end": 186.95460000000153,
+          "isSplit": false
+        },
+        {
+          "text": "봐도 봐도 예쁘장한",
+          "segments": [
+            {
+              "text": "봐도 봐도 예쁘장한",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "You're pretty no matter how you look at it",
+          "pronunciation": "{\"full\":\"bwado bwado yeppeujanghan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 188.26000000000005,
+          "end": 189.79689999999854,
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 189.86679999999706,
+          "end": 193.29319999999558,
+          "isSplit": false
+        },
+        {
+          "text": "So pretty, pretty, pretty, pretty",
+          "segments": [
+            {
+              "text": "So pretty, pretty, pretty, pretty",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": null,
+          "spacingText": "",
+          "lang": "en",
+          "start": 194.25150000000005,
+          "end": 196.10239999999857,
+          "isSplit": false
+        }
+      ],
+      "autoSyncData": [
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Intro: Jisoo, _Jennie_]",
+          "start": 6.06,
+          "end": 9.2,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh (Prrr)",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            },
+            {
+              "text": "(Prrr)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Jennie",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #86e7f9)",
+          "sectionHeader": null,
+          "start": 9.2,
+          "end": 14.17,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "BLACKPINK in your area",
+          "segments": [
+            {
+              "text": "BLACKPINK in your area",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 14.17,
+          "end": 15.45,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 15.45,
+          "end": 20.18,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "BLACKPINK in your area",
+          "segments": [
+            {
+              "text": "BLACKPINK in your area",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 20.18,
+          "end": 21.74,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Uh-huh, uh-huh",
+          "segments": [
+            {
+              "text": "Uh-huh, uh-huh",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 21.74,
+          "end": 25.12,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "비슷한 것 같지, 우린 뼛속까지 다름",
+          "segments": [
+            {
+              "text": "비슷한 것 같지, 우린 뼛속까지 다름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Lisa, _Jennie_]",
+          "start": 25.12,
+          "end": 28.42,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"biseushan geos gatji, ulin ppyeos-sogkkaji daleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비슷한\",\"trans\":\"biseushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"것\",\"trans\":\"geos\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"같지,\",\"trans\":\"gatji,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뼛속까지\",\"trans\":\"ppyeos-sogkkaji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다름\",\"trans\":\"daleum\"}]}",
+          "translation": "We may seem similar, but we are different to the core",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "아이 창피하다가도 멍석 깔면 바름",
+          "segments": [
+            {
+              "text": "아이 창피하다가도 멍석 깔면 바름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 28.42,
+          "end": 31.58,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ai changpihadagado meongseog kkalmyeon baleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아이\",\"trans\":\"ai\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"창피하다가도\",\"trans\":\"changpihadagado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"멍석\",\"trans\":\"meongseog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"깔면\",\"trans\":\"kkalmyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"바름\",\"trans\":\"baleum\"}]}",
+          "translation": "Even though the child is embarrassed, if you put a mat on it, you change it",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Born skinny, bitch, 암만 살쪄도 난 마름",
+          "segments": [
+            {
+              "text": "Born skinny, bitch, 암만 살쪄도 난 마름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 31.58,
+          "end": 34.67,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"Born skinny, bitch, amman saljjyeodo nan maleum\",\"chunks\":[{\"type\":\"en\",\"text\":\"Born\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"skinny,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"bitch,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"암만\",\"trans\":\"amman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"살쪄도\",\"trans\":\"saljjyeodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마름\",\"trans\":\"maleum\"}]}",
+          "translation": "Born skinny, bitch, even if you gain weight, you are thin",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "계산은 느려도 눈치는 빠름",
+          "segments": [
+            {
+              "text": "계산은 느려도 눈치는 빠름",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 34.67,
+          "end": 37.94,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"gyesan-eun neulyeodo nunchineun ppaleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"계산은\",\"trans\":\"gyesan-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느려도\",\"trans\":\"neulyeodo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"눈치는\",\"trans\":\"nunchineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"빠름\",\"trans\":\"ppaleum\"}]}",
+          "translation": "Although you are slow at calculating, you are quick at guessing",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "인기를 논하자면 안 해 입만 아픔",
+          "segments": [
+            {
+              "text": "인기를 논하자면 안 해 입만 아픔",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 37.94,
+          "end": 41.16,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ingileul nonhajamyeon an hae ibman apeum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"인기를\",\"trans\":\"ingileul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"논하자면\",\"trans\":\"nonhajamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안\",\"trans\":\"an\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해\",\"trans\":\"hae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"입만\",\"trans\":\"ibman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아픔\",\"trans\":\"apeum\"}]}",
+          "translation": "If you talk about popularity, don't do it, only your mouth hurts",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "F boys, not my boys, 싹둑싹둑 자름",
+          "segments": [
+            {
+              "text": "F boys, not my boys, 싹둑싹둑 자름",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 41.16,
+          "end": 44.35,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"F boys, not my boys, ssagdugssagdug jaleum\",\"chunks\":[{\"type\":\"en\",\"text\":\"F\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boys,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"not\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boys,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"싹둑싹둑\",\"trans\":\"ssagdugssagdug\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자름\",\"trans\":\"jaleum\"}]}",
+          "translation": "F boys, not my boys, cut it in small pieces",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "우리 이름 틀린다면 뚜두뚜두 맞음",
+          "segments": [
+            {
+              "text": "우리 이름 틀린다면 뚜두뚜두 맞음",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 44.35,
+          "end": 47.44,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"uli ileum teullindamyeon ttuduttudu maj-eum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우리\",\"trans\":\"uli\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이름\",\"trans\":\"ileum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"틀린다면\",\"trans\":\"teullindamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뚜두뚜두\",\"trans\":\"ttuduttudu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"맞음\",\"trans\":\"maj-eum\"}]}",
+          "translation": "If you get our name wrong, it's right, Ddu-du Ddu-du",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Drip, drip, ice it out, bust it down, top to the bottom",
+          "segments": [
+            {
+              "text": "Drip, drip, ice it out, bust it down, top to the bottom",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 47.44,
+          "end": 50.3,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": "[Pre-Chorus: Rosé, _Rosé & Jisoo_]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "검은색 분홍빛이",
+          "segments": [
+            {
+              "text": "검은색 분홍빛이",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 53.36,
+          "end": 55.11,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geom-eunsaeg bunhongbich-i\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"검은색\",\"trans\":\"geom-eunsaeg\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"분홍빛이\",\"trans\":\"bunhongbich-i\"}]}",
+          "translation": "Black Pink",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "All up in it, make it lit, like",
+          "segments": [
+            {
+              "text": "All up in it, make it lit, like",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 55.11,
+          "end": 56.97,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": null,
+          "start": 56.97,
+          "end": 59.43,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Yeah, we some bitches you can't manage",
+          "segments": [
+            {
+              "text": "Yeah, we some bitches you can't manage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 59.43,
+          "end": 61.28,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "또 이 어려운 걸 해내지",
+          "segments": [
+            {
+              "text": "또 이 어려운 걸 해내지",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 61.28,
+          "end": 63.11,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"tto i eolyeoun geol haenaeji\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"또\",\"trans\":\"tto\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어려운\",\"trans\":\"eolyeoun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해내지\",\"trans\":\"haenaeji\"}]}",
+          "translation": "We'll do this difficult thing again",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "우린 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "우린 예쁘장한 savage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 63.11,
+          "end": 64.45,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ulin yeppeujanghan savage\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "translation": "We're pretty savage",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "We some 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "We some 예쁘장한 savage",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 64.45,
+          "end": 67.02,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"We some yeppeujanghan savage\",\"chunks\":[{\"type\":\"en\",\"text\":\"We\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"some\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "translation": "We some pretty savage",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": "[Chorus: Jisoo, _Lisa_]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 70.61,
+          "end": 73.86,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 76.87,
+          "end": 79.25,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "All my diamonds, they yellow or bright white (Bing)",
+          "segments": [
+            {
+              "text": "All my diamonds, they yellow or bright white ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Bing)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Lisa]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Got 'em blind, can't find me, I'm outta sight (Sight)",
+          "segments": [
+            {
+              "text": "Got 'em blind, can't find me, I'm outta sight ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Sight)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 82.41,
+          "end": 85.47,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "If you mad, stay mad, we not alike (Uh-uh)",
+          "segments": [
+            {
+              "text": "If you mad, stay mad, we not alike ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Uh-uh)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 85.47,
+          "end": 88.32,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+          "segments": [
+            {
+              "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 88.32,
+          "end": 91.59,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "비슷한 걸 걸쳤지만 자태부터 다름",
+          "segments": [
+            {
+              "text": "비슷한 걸 걸쳤지만 자태부터 다름",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Jisoo]",
+          "start": 91.59,
+          "end": 94.72999999999999,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"biseushan geol geolchyeossjiman jataebuteo daleum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비슷한\",\"trans\":\"biseushan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸쳤지만\",\"trans\":\"geolchyeossjiman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자태부터\",\"trans\":\"jataebuteo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다름\",\"trans\":\"daleum\"}]}",
+          "translation": "Wearing something similar, but the way we look is different",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "짠 하고 나타나면 카펫부터 깔음",
+          "segments": [
+            {
+              "text": "짠 하고 나타나면 카펫부터 깔음",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 94.72999999999999,
+          "end": 97.82,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"jjan hago natanamyeon kapesbuteo kkal-eum\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"짠\",\"trans\":\"jjan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"하고\",\"trans\":\"hago\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나타나면\",\"trans\":\"natanamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"카펫부터\",\"trans\":\"kapesbuteo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"깔음\",\"trans\":\"kkal-eum\"}]}",
+          "translation": "If you show up, we'll start with the carpet",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "BLACK 했다, PINK 했다, 내 맘대로 바꿈",
+          "segments": [
+            {
+              "text": "BLACK 했다, PINK 했다, 내 맘대로 바꿈",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 97.82,
+          "end": 100.87,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"BLACK haessda, PINK haessda, nae mamdaelo bakkum\",\"chunks\":[{\"type\":\"en\",\"text\":\"BLACK\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했다,\",\"trans\":\"haessda,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"PINK\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했다,\",\"trans\":\"haessda,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"맘대로\",\"trans\":\"mamdaelo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"바꿈\",\"trans\":\"bakkum\"}]}",
+          "translation": "I did BLACK, I did PINK, I changed it as I want",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "네 질투가 문제야, maybe I'm the problem",
+          "segments": [
+            {
+              "text": "네 질투가 문제야, maybe I'm the problem",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 100.87,
+          "end": 104.19,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ne jiltuga munjeya, maybe I'm the problem\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"네\",\"trans\":\"ne\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"질투가\",\"trans\":\"jiltuga\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"문제야,\",\"trans\":\"munjeya,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"maybe\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"I'm\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"the\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"problem\",\"trans\":\"\"}]}",
+          "translation": "Your jealousy is the problem, maybe I'm the problem",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": "[Pre-Chorus: Jennie, _Rosé & Jisoo_]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "검은색 분홍빛이",
+          "segments": [
+            {
+              "text": "검은색 분홍빛이",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 106.9,
+          "end": 108.81,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geom-eunsaeg bunhongbich-i\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"검은색\",\"trans\":\"geom-eunsaeg\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"분홍빛이\",\"trans\":\"bunhongbich-i\"}]}",
+          "translation": "Black and pink",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "All up in it, make it rain, like",
+          "segments": [
+            {
+              "text": "All up in it, make it rain, like",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 108.81,
+          "end": 110.82,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "(Oh-oh-oh-oh)",
+          "segments": [
+            {
+              "text": "(Oh-oh-oh-oh)",
+              "color": "#ffffff",
+              "isGradient": true,
+              "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+              "artists": [
+                "Rosé",
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Rosé, Jisoo",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f986ba, #8cf986)",
+          "sectionHeader": null,
+          "start": 110.82,
+          "end": 113.12,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Yeah, we some bitches you can't manage",
+          "segments": [
+            {
+              "text": "Yeah, we some bitches you can't manage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 113.12,
+          "end": 114.8,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "또 이 어려운 걸 해내지",
+          "segments": [
+            {
+              "text": "또 이 어려운 걸 해내지",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 114.8,
+          "end": 116.78999999999999,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"tto i eolyeoun geol haenaeji\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"또\",\"trans\":\"tto\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"어려운\",\"trans\":\"eolyeoun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해내지\",\"trans\":\"haenaeji\"}]}",
+          "translation": "Again Let's do this difficult thing",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "우린 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "우린 예쁘장한 savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 116.78999999999999,
+          "end": 118.46000000000001,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ulin yeppeujanghan savage\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"우린\",\"trans\":\"ulin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "translation": "We're pretty savage",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "We some 예쁘장한 savage",
+          "segments": [
+            {
+              "text": "We some 예쁘장한 savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 118.46000000000001,
+          "end": 121.46,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"We some yeppeujanghan savage\",\"chunks\":[{\"type\":\"en\",\"text\":\"We\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"some\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"savage\",\"trans\":\"\"}]}",
+          "translation": "We're some pretty savage",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": "[Chorus: Jisoo, _Lisa_]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 124.44,
+          "end": 127.91,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Bah-dah-bah-bah (Ooh)",
+          "segments": [
+            {
+              "text": "Bah-dah-bah-bah ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Ooh)",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo, Lisa",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #ae86f9)",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "You better run, run, run",
+          "segments": [
+            {
+              "text": "You better run, run, run",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 130.87,
+          "end": 132.91,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "All my diamonds, they yellow or bright white (Bing)",
+          "segments": [
+            {
+              "text": "All my diamonds, they yellow or bright white ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Bing)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Lisa]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Got 'em blind, can't find me, I'm outta sight (Sight)",
+          "segments": [
+            {
+              "text": "Got 'em blind, can't find me, I'm outta sight ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Sight)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 136.32,
+          "end": 139.64,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "If you mad, stay mad, we not alike (Uh-uh)",
+          "segments": [
+            {
+              "text": "If you mad, stay mad, we not alike ",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            },
+            {
+              "text": "(Uh-uh)",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 139.64,
+          "end": 142.34,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+          "segments": [
+            {
+              "text": "S-A-V-A-G-E, keep it pretty, pretty savage",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 142.34,
+          "end": 145.42000000000002,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Pretty girl (Pretty girl)",
+          "segments": [
+            {
+              "text": "Pretty girl ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            },
+            {
+              "text": "(Pretty girl)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Rosé]",
+          "start": 145.42000000000002,
+          "end": 147.96,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "웃어주지만 마냥 약하진 않아",
+          "segments": [
+            {
+              "text": "웃어주지만 마냥 약하진 않아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 147.96,
+          "end": 151.48,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"us-eojujiman manyang yaghajin anh-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"웃어주지만\",\"trans\":\"us-eojujiman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마냥\",\"trans\":\"manyang\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"약하진\",\"trans\":\"yaghajin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않아\",\"trans\":\"anh-a\"}]}",
+          "translation": "We smile, but we're not weak",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "And I wish you would (Wish you would)",
+          "segments": [
+            {
+              "text": "And I wish you would ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            },
+            {
+              "text": "(Wish you would)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 151.48,
+          "end": 154.32999999999998,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "비바람이 불수록 더 높이 날아",
+          "segments": [
+            {
+              "text": "비바람이 불수록 더 높이 날아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 154.32999999999998,
+          "end": 157.77,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bibalam-i bulsulog deo nop-i nal-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비바람이\",\"trans\":\"bibalam-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"불수록\",\"trans\":\"bulsulog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"높이\",\"trans\":\"nop-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"날아\",\"trans\":\"nal-a\"}]}",
+          "translation": "The more the wind and rain blows, the higher we fly",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "I got nothin' left to say to you",
+          "segments": [
+            {
+              "text": "I got nothin' left to say to you",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 157.77,
+          "end": 160.35,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "원하면 보여줄게 attitude",
+          "segments": [
+            {
+              "text": "원하면 보여줄게 attitude",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 160.35,
+          "end": 163.69,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wonhamyeon boyeojulge attitude\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"원하면\",\"trans\":\"wonhamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보여줄게\",\"trans\":\"boyeojulge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"attitude\",\"trans\":\"\"}]}",
+          "translation": "If you want, I'll show you attitude",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "굳이 말 안 해도 다 알잖아",
+          "segments": [
+            {
+              "text": "굳이 말 안 해도 다 알잖아",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 163.69,
+          "end": 168.72,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"gud-i mal an haedo da aljanh-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"굳이\",\"trans\":\"gud-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안\",\"trans\":\"an\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알잖아\",\"trans\":\"aljanh-a\"}]}",
+          "translation": "You know it all without even having to say it",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "You know",
+          "segments": [
+            {
+              "text": "You know",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Rosé"
+              ]
+            }
+          ],
+          "singer": "Rosé",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 168.72,
+          "end": 170.56,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Outro: Jennie, _Jisoo_, **Lisa**]",
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "봐도 봐도 예쁘장한",
+          "segments": [
+            {
+              "text": "봐도 봐도 예쁘장한",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bwado bwado yeppeujanghan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"}]}",
+          "translation": "You're pretty no matter how you look at it",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "So pretty, pretty, pretty, pretty",
+          "segments": [
+            {
+              "text": "So pretty, pretty, pretty, pretty",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "봐도 봐도 예쁘장한",
+          "segments": [
+            {
+              "text": "봐도 봐도 예쁘장한",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jisoo"
+              ]
+            }
+          ],
+          "singer": "Jisoo",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bwado bwado yeppeujanghan\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봐도\",\"trans\":\"bwado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"예쁘장한\",\"trans\":\"yeppeujanghan\"}]}",
+          "translation": "You're pretty no matter how you look at it",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Savage",
+          "segments": [
+            {
+              "text": "Savage",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Jennie"
+              ]
+            }
+          ],
+          "singer": "Jennie",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "So pretty, pretty, pretty, pretty",
+          "segments": [
+            {
+              "text": "So pretty, pretty, pretty, pretty",
+              "color": "#ae86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Lisa"
+              ]
+            }
+          ],
+          "singer": "Lisa",
+          "color": "#ae86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": null,
+          "end": null,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        }
+      ],
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/bf/19/b2/bf19b215-652f-10f3-7c46-015c8e33fb20/mzaf_18317960859887760637.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true
     }
   ],
   "settings": {
