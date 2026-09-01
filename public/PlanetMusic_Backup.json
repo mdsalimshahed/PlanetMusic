@@ -86109,6 +86109,3674 @@
       ],
       "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/bf/19/b2/bf19b215-652f-10f3-7c46-015c8e33fb20/mzaf_18317960859887760637.plus.aac.p.m4a",
       "hasDeezerMetaBound": true
+    },
+    {
+      "wrapperType": "track",
+      "kind": "song",
+      "artistId": 1666456740,
+      "collectionId": 1666457134,
+      "trackId": 1666457141,
+      "artistName": "MAVE:",
+      "collectionName": "PANDORA'S BOX - Single",
+      "trackName": "WONDERLAND (IDYPIA)",
+      "collectionViewUrl": "https://music.apple.com/us/album/wonderland-idypia/1666457134?i=1666457141&uo=4",
+      "previewUrl": "",
+      "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/ca/76/e3/ca76e398-5fbb-f7de-9648-16df58258731/cover_KM0016771_1.jpg/100x100bb.jpg",
+      "collectionPrice": 1.99,
+      "trackPrice": 1.29,
+      "releaseDate": "2023-01-25T12:00:00Z",
+      "collectionExplicitness": "notExplicit",
+      "trackExplicitness": "notExplicit",
+      "discCount": 1,
+      "discNumber": 1,
+      "trackCount": 2,
+      "trackNumber": 2,
+      "trackTimeMillis": 197707,
+      "country": "USA",
+      "currency": "USD",
+      "primaryGenreName": "K-Pop",
+      "isStreamable": true,
+      "sourceNames": [
+        "iTunes"
+      ],
+      "autoSyncData": [
+        {
+          "text": "Ah-ah, ah-ah, ah, ah",
+          "segments": [
+            {
+              "text": "Ah-ah, ah-ah, ah, ah",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Intro]",
+          "start": 0.832,
+          "end": 4.5687000000029805,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Ah-ah, ah-ah, ah, ah",
+          "segments": [
+            {
+              "text": "Ah-ah, ah-ah, ah, ah",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 4.90420000000298,
+          "end": 7.75220000000298,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "똑같은 시간에 뜨는 해 반복되는 이런 morning",
+          "segments": [
+            {
+              "text": "똑같은 시간에 뜨는 해 반복되는 이런 morning",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Siu, _Zena_, **Tyra**]",
+          "start": 7.80810000000149,
+          "end": 13.09689999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ttoggat-eun sigan-e tteuneun hae banbogdoeneun ileon morning\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"똑같은\",\"trans\":\"ttoggat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"시간에\",\"trans\":\"sigan-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뜨는\",\"trans\":\"tteuneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해\",\"trans\":\"hae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이런\",\"trans\":\"ileon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"morning\",\"trans\":\"\"}]}",
+          "translation": "The sun rises at the same time, a repeating morning like this",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "그 안에 갇힌 채 길을 잃어버린 느낌",
+          "segments": [
+            {
+              "text": "그 안에 갇힌 채 길을 잃어버린 느낌",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 13.16780000000447,
+          "end": 17.35380000000447,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geu an-e gadhin chae gil-eul ilh-eobeolin neukkim\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그\",\"trans\":\"geu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"채\",\"trans\":\"chae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"길을\",\"trans\":\"gil-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잃어버린\",\"trans\":\"ilh-eobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느낌\",\"trans\":\"neukkim\"}]}",
+          "translation": "Feeling trapped and lost inside",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "불행도 슬픔도 지운 채로",
+          "segments": [
+            {
+              "text": "불행도 슬픔도 지운 채로",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 17.43220000000298,
+          "end": 21.52220000000298,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bulhaengdo seulpeumdo jiun chaelo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"불행도\",\"trans\":\"bulhaengdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"슬픔도\",\"trans\":\"seulpeumdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지운\",\"trans\":\"jiun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"채로\",\"trans\":\"chaelo\"}]}",
+          "translation": "With unhappiness and sadness erased",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "더 없이 완벽히 짜여 진 plot (Yeah)",
+          "segments": [
+            {
+              "text": "더 없이 완벽히 짜여 진 plot",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": "(Yeah)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Zena, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86e7f9, #f67904)",
+          "sectionHeader": null,
+          "start": 21.584,
+          "end": 25.57669999999553,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"deo eobs-i wanbyeoghi jjayeo jin plot\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없이\",\"trans\":\"eobs-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"짜여\",\"trans\":\"jjayeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"진\",\"trans\":\"jin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"plot\",\"trans\":\"\"}]}",
+          "translation": "A plot so perfectly",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Yeah)",
+              "charStart": 19,
+              "charEnd": 25,
+              "start": 25.16669999999553,
+              "end": 25.57669999999553,
+              "segments": [
+                {
+                  "text": "(Yeah)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "There is no exit, this is how we do",
+          "segments": [
+            {
+              "text": "There is no exit, this is how we do",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Tyra]",
+          "start": 26.0485,
+          "end": 27.95239999999851,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "We got everything that you never knew",
+          "segments": [
+            {
+              "text": "We got everything that you never knew",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 28.01569999999553,
+          "end": 30.07279999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "They put in the world \"Automatical\"",
+          "segments": [
+            {
+              "text": "They put in the world \"Automatical\"",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 30.14529999999702,
+          "end": 32.21609999999404,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Every single day stay in heaven though",
+          "segments": [
+            {
+              "text": "Every single day stay in heaven though",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 32.29609999999404,
+          "end": 34.31279999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "모든 게 다 fake and fools",
+          "segments": [
+            {
+              "text": "모든 게 다 fake and fools",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 34.36879999999702,
+          "end": 36.30439999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"modeun ge da fake and fools\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"모든\",\"trans\":\"modeun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"게\",\"trans\":\"ge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fake\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"and\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fools\",\"trans\":\"\"}]}",
+          "translation": "Everything is fake and fools",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Like rum-pum-pum-pum-pum",
+          "segments": [
+            {
+              "text": "Like rum-pum-pum-pum-pum",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 36.36069999999553,
+          "end": 38.271799999997015,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "여긴 꿈 속의 꿈 IDYPIA",
+          "segments": [
+            {
+              "text": "여긴 꿈 속의 꿈 IDYPIA",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 38.34359999999404,
+          "end": 40.21679999999702,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"yeogin kkum sog-ui kkum IDYPIA\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여긴\",\"trans\":\"yeogin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속의\",\"trans\":\"sog-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"IDYPIA\",\"trans\":\"\"}]}",
+          "translation": "This is a dream within a dream IDYPIA",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Like rum-pum-pum-pum-pum",
+          "segments": [
+            {
+              "text": "Like rum-pum-pum-pum-pum",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 40.288,
+          "end": 42.55979999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "아득히 번지는 melody",
+          "segments": [
+            {
+              "text": "아득히 번지는 melody",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Pre-Chorus: Marty]",
+          "start": 42.864199999995535,
+          "end": 46.76929999999702,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"adeughi beonjineun melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아득히\",\"trans\":\"adeughi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번지는\",\"trans\":\"beonjineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
+          "translation": "A melody that spreads far away",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "하루 종일 들려 in my head (Oh)",
+          "segments": [
+            {
+              "text": "하루 종일 들려 in my head ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 46.83259999999404,
+          "end": 53.5925,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"halu jong-il deullyeo in my head\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"하루\",\"trans\":\"halu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"종일\",\"trans\":\"jong-il\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들려\",\"trans\":\"deullyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"head\",\"trans\":\"\"}]}",
+          "translation": "I hear it all day long in my head",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 20,
+              "charEnd": 24,
+              "start": 50.24669900000149,
+              "end": 53.5925,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Marty"
+                  ]
+                }
+              ],
+              "singer": "Marty",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:]",
+          "start": 53.64729999999702,
+          "end": 57.193,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 56.29569899999851,
+              "end": 57.193,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 58.28329999999702,
+          "end": 62.35337999999225,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything completely covered",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 62.42105999998748,
+          "end": 66.15593999999463,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "In a secret The story I kept",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 66.32105999998748,
+          "end": 70.53353999999463,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "The irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Marty, _Siu_]",
+          "start": 70.71129999999702,
+          "end": 72.92553999999464,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 74.97433999999464,
+          "end": 77.36889999999701,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "꿈 속에서 봤던 déjà vu",
+          "segments": [
+            {
+              "text": "꿈 속에서 봤던 déjà vu",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 79.26313999999462,
+          "end": 83.39897999999225,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"kkum sog-eseo bwassdeon déjà vu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속에서\",\"trans\":\"sog-eseo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봤던\",\"trans\":\"bwassdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"déjà\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"vu\",\"trans\":\"\"}]}",
+          "translation": "The déjà vu I saw in my dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "선명하게 느껴진 온기",
+          "segments": [
+            {
+              "text": "선명하게 느껴진 온기",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 83.499299999997,
+          "end": 87.42681999998986,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"seonmyeonghage neukkyeojin ongi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"선명하게\",\"trans\":\"seonmyeonghage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느껴진\",\"trans\":\"neukkyeojin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"온기\",\"trans\":\"ongi\"}]}",
+          "translation": "The warmth I clearly felt",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "What's going on? 다시 마주한 눈빛이",
+          "segments": [
+            {
+              "text": "What's going on? 다시 마주한 눈빛이",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 3: Zena, _Siu_, **Tyra**]",
+          "start": 87.543299999997,
+          "end": 91.53561999998985,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"What's going on? dasi majuhan nunbich-i\",\"chunks\":[{\"type\":\"en\",\"text\":\"What's\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"going\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on?\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다시\",\"trans\":\"dasi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마주한\",\"trans\":\"majuhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"눈빛이\",\"trans\":\"nunbich-i\"}]}",
+          "translation": "What’s going on? Our eyes meet again",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "파도 치듯이 밀려 오는걸 how you feel?",
+          "segments": [
+            {
+              "text": "파도 치듯이 밀려 오는걸 how you feel?",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 91.63785999998747,
+          "end": 96.3423399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"pado chideus-i millyeo oneungeol how you feel?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"파도\",\"trans\":\"pado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"치듯이\",\"trans\":\"chideus-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"밀려\",\"trans\":\"millyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오는걸\",\"trans\":\"oneungeol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"how\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"you\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"feel?\",\"trans\":\"\"}]}",
+          "translation": "How do you feel it coming like a wave?",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "그건 아마도 (I can hear your voice)",
+          "segments": [
+            {
+              "text": "그건 아마도",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(I can hear your voice)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Siu, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #f67904)",
+          "sectionHeader": null,
+          "start": 96.43129999998509,
+          "end": 99.44201999998985,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geugeon amado\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그건\",\"trans\":\"geugeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아마도\",\"trans\":\"amado\"}]}",
+          "translation": "That's probably",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(I can hear your voice)",
+              "charStart": 7,
+              "charEnd": 30,
+              "start": 98.223799,
+              "end": 99.44201999998985,
+              "segments": [
+                {
+                  "text": "(I can hear your voice)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "내 귀에 속삭이는 voice (Whisper) (Welcome to my world)",
+          "segments": [
+            {
+              "text": "내 귀에 속삭이는 voice",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(Whisper) ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(Welcome to my world)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Siu, Zena, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #86e7f9)",
+          "sectionHeader": null,
+          "start": 99.50185999998747,
+          "end": 104.34217999998032,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nae gwie sogsag-ineun voice\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"귀에\",\"trans\":\"gwie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속삭이는\",\"trans\":\"sogsag-ineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"voice\",\"trans\":\"\"}]}",
+          "translation": "A voice whispering in my ear",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Whisper)",
+              "charStart": 16,
+              "charEnd": 25,
+              "start": 101.270359,
+              "end": 102.32575899999851,
+              "segments": [
+                {
+                  "text": "(Whisper)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            },
+            {
+              "text": "(Welcome to my world)",
+              "charStart": 26,
+              "charEnd": 47,
+              "start": 102.40605900000298,
+              "end": 104.34217999998032,
+              "segments": [
+                {
+                  "text": "(Welcome to my world)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "끝없이 들리는 melody",
+          "segments": [
+            {
+              "text": "끝없이 들리는 melody",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Pre-Chorus: Marty]",
+          "start": 104.45577999998032,
+          "end": 108.4887399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"kkeut-eobs-i deullineun melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"끝없이\",\"trans\":\"kkeut-eobs-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들리는\",\"trans\":\"deullineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
+          "translation": "A melody that sounds endlessly",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "어지럽게 엉켜 in my head (Oh)",
+          "segments": [
+            {
+              "text": "어지럽게 엉켜 in my head ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 108.60265999998747,
+          "end": 115.22185999998747,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"eojileobge eongkyeo in my head\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어지럽게\",\"trans\":\"eojileobge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"엉켜\",\"trans\":\"eongkyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"head\",\"trans\":\"\"}]}",
+          "translation": "Dizzily tangled in my head",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 19,
+              "charEnd": 23,
+              "start": 111.62745899999703,
+              "end": 115.22185999998747,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Marty"
+                  ]
+                }
+              ],
+              "singer": "Marty",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:]",
+          "start": 115.32249999998508,
+          "end": 118.6967999999821,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 117.6198989999985,
+              "end": 118.6967999999821,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 119.34449999998509,
+          "end": 123.39379999998211,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything completely hidden",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 123.58509999997912,
+          "end": 127.25649999997763,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "A story kept in secret",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 127.72585999998748,
+          "end": 131.8232999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "Irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Marty]",
+          "start": 131.96345999998746,
+          "end": 134.52329999998508,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 136.32921999998985,
+          "end": 138.65817999998032,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Say my name",
+          "segments": [
+            {
+              "text": "Say my name",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Siu, _Zena_]",
+          "start": 140.43657999998032,
+          "end": 143.40793999998272,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "MAVE:, we will change the whole world",
+          "segments": [
+            {
+              "text": "MAVE:, we will change the whole world",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 143.4975399999827,
+          "end": 147.77385999998748,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "차원의 문 너머",
+          "segments": [
+            {
+              "text": "차원의 문 너머",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 147.88617999998033,
+          "end": 152.1896999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"chawon-ui mun neomeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"차원의\",\"trans\":\"chawon-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"문\",\"trans\":\"mun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너머\",\"trans\":\"neomeo\"}]}",
+          "translation": "Beyond the dimensional gate",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "날 이끄는 작은 떨림 (Oh)",
+          "segments": [
+            {
+              "text": "날 이끄는 작은 떨림",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 152.76457999998033,
+          "end": 159.80457999998032,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nal ikkeuneun jag-eun tteollim\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"날\",\"trans\":\"nal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이끄는\",\"trans\":\"ikkeuneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"작은\",\"trans\":\"jag-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨림\",\"trans\":\"tteollim\"}]}",
+          "translation": "A small tremor that leads me",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 12,
+              "charEnd": 16,
+              "start": 156.13327899999553,
+              "end": 159.80457999998032,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:, _Zena_]",
+          "start": 159.89241999997796,
+          "end": 163.8607399999827,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 162.0358189999985,
+              "end": 163.8607399999827,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything (Everything)",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Everything)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 163.99081999997793,
+          "end": 168.0471399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything is completely hidden",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Everything)",
+              "charStart": 21,
+              "charEnd": 33,
+              "start": 165.67901900000297,
+              "end": 168.0471399999827,
+              "segments": [
+                {
+                  "text": "(Everything)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 168.1864999999851,
+          "end": 171.8607399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "A story kept in secret",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony (Irony)",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Irony)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 172.01417999998034,
+          "end": 176.5719399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "Irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Irony)",
+              "charStart": 22,
+              "charEnd": 29,
+              "start": 174.232392000003,
+              "end": 176.5719399999827,
+              "segments": [
+                {
+                  "text": "(Irony)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after, 이 꿈에 (Oh)",
+          "segments": [
+            {
+              "text": "Happily ever after, 이 꿈에 ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 176.67353999998272,
+          "end": 180.78233999998272,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"Happily ever after, i kkum-e\",\"chunks\":[{\"type\":\"en\",\"text\":\"Happily\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"ever\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"after,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈에\",\"trans\":\"kkum-e\"}]}",
+          "translation": "Happily ever after, in this dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 25,
+              "charEnd": 29,
+              "start": 179.53783900000445,
+              "end": 180.78233999998272,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "모든 게 사라져버린 fantasy",
+          "segments": [
+            {
+              "text": "모든 게 사라져버린 fantasy",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 180.92377999998033,
+          "end": 184.98137999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"modeun ge salajyeobeolin fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"모든\",\"trans\":\"modeun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"게\",\"trans\":\"ge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사라져버린\",\"trans\":\"salajyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fantasy\",\"trans\":\"\"}]}",
+          "translation": "A fantasy where everything has disappeared",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "누구도 알 수 없는 mystery",
+          "segments": [
+            {
+              "text": "누구도 알 수 없는 mystery",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 185.12345999997555,
+          "end": 188.87497999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nugudo al su eobsneun mystery\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"누구도\",\"trans\":\"nugudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알\",\"trans\":\"al\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없는\",\"trans\":\"eobsneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"mystery\",\"trans\":\"\"}]}",
+          "translation": "A mystery no one can know",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 iro-irony (Iro-irony)",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 iro-irony ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Iro-irony)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 189.00137999998032,
+          "end": 194.26297999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin iro-irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"iro-irony\",\"trans\":\"\"}]}",
+          "translation": "Iro-irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Iro-irony)",
+              "charStart": 26,
+              "charEnd": 37,
+              "start": 191.10607900000295,
+              "end": 194.26297999998033,
+              "segments": [
+                {
+                  "text": "(Iro-irony)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        }
+      ],
+      "syncData": [
+        {
+          "text": "Ah-ah, ah-ah, ah, ah",
+          "segments": [
+            {
+              "text": "Ah-ah, ah-ah, ah, ah",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Intro]",
+          "start": 0.832,
+          "end": 4.5687000000029805,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Ah-ah, ah-ah, ah, ah",
+          "segments": [
+            {
+              "text": "Ah-ah, ah-ah, ah, ah",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 4.90420000000298,
+          "end": 7.75220000000298,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "똑같은 시간에 뜨는 해 반복되는 이런 morning",
+          "segments": [
+            {
+              "text": "똑같은 시간에 뜨는 해 반복되는 이런 morning",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Siu, _Zena_, **Tyra**]",
+          "start": 7.80810000000149,
+          "end": 13.09689999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"ttoggat-eun sigan-e tteuneun hae banbogdoeneun ileon morning\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"똑같은\",\"trans\":\"ttoggat-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"시간에\",\"trans\":\"sigan-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뜨는\",\"trans\":\"tteuneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해\",\"trans\":\"hae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"반복되는\",\"trans\":\"banbogdoeneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이런\",\"trans\":\"ileon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"morning\",\"trans\":\"\"}]}",
+          "translation": "The sun rises at the same time, a repeating morning like this",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "그 안에 갇힌 채 길을 잃어버린 느낌",
+          "segments": [
+            {
+              "text": "그 안에 갇힌 채 길을 잃어버린 느낌",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 13.16780000000447,
+          "end": 17.35380000000447,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geu an-e gadhin chae gil-eul ilh-eobeolin neukkim\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그\",\"trans\":\"geu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"채\",\"trans\":\"chae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"길을\",\"trans\":\"gil-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잃어버린\",\"trans\":\"ilh-eobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느낌\",\"trans\":\"neukkim\"}]}",
+          "translation": "Feeling trapped and lost inside",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "불행도 슬픔도 지운 채로",
+          "segments": [
+            {
+              "text": "불행도 슬픔도 지운 채로",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 17.43220000000298,
+          "end": 21.52220000000298,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bulhaengdo seulpeumdo jiun chaelo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"불행도\",\"trans\":\"bulhaengdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"슬픔도\",\"trans\":\"seulpeumdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"지운\",\"trans\":\"jiun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"채로\",\"trans\":\"chaelo\"}]}",
+          "translation": "With unhappiness and sadness erased",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "더 없이 완벽히 짜여 진 plot (Yeah)",
+          "segments": [
+            {
+              "text": "더 없이 완벽히 짜여 진 plot",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": "(Yeah)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Zena, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86e7f9, #f67904)",
+          "sectionHeader": null,
+          "start": 21.584,
+          "end": 25.57669999999553,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"deo eobs-i wanbyeoghi jjayeo jin plot\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없이\",\"trans\":\"eobs-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"짜여\",\"trans\":\"jjayeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"진\",\"trans\":\"jin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"plot\",\"trans\":\"\"}]}",
+          "translation": "A plot so perfectly",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Yeah)",
+              "charStart": 19,
+              "charEnd": 25,
+              "start": 25.16669999999553,
+              "end": 25.57669999999553,
+              "segments": [
+                {
+                  "text": "(Yeah)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "There is no exit, this is how we do",
+          "segments": [
+            {
+              "text": "There is no exit, this is how we do",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Tyra]",
+          "start": 26.0485,
+          "end": 27.95239999999851,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "We got everything that you never knew",
+          "segments": [
+            {
+              "text": "We got everything that you never knew",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 28.01569999999553,
+          "end": 30.07279999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "They put in the world \"Automatical\"",
+          "segments": [
+            {
+              "text": "They put in the world \"Automatical\"",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 30.14529999999702,
+          "end": 32.21609999999404,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Every single day stay in heaven though",
+          "segments": [
+            {
+              "text": "Every single day stay in heaven though",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 32.29609999999404,
+          "end": 34.31279999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "모든 게 다 fake and fools",
+          "segments": [
+            {
+              "text": "모든 게 다 fake and fools",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 34.36879999999702,
+          "end": 36.30439999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"modeun ge da fake and fools\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"모든\",\"trans\":\"modeun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"게\",\"trans\":\"ge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fake\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"and\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fools\",\"trans\":\"\"}]}",
+          "translation": "Everything is fake and fools",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Like rum-pum-pum-pum-pum",
+          "segments": [
+            {
+              "text": "Like rum-pum-pum-pum-pum",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 36.36069999999553,
+          "end": 38.271799999997015,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "여긴 꿈 속의 꿈 IDYPIA",
+          "segments": [
+            {
+              "text": "여긴 꿈 속의 꿈 IDYPIA",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 38.34359999999404,
+          "end": 40.21679999999702,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"yeogin kkum sog-ui kkum IDYPIA\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"여긴\",\"trans\":\"yeogin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속의\",\"trans\":\"sog-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"IDYPIA\",\"trans\":\"\"}]}",
+          "translation": "This is a dream within a dream IDYPIA",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Like rum-pum-pum-pum-pum",
+          "segments": [
+            {
+              "text": "Like rum-pum-pum-pum-pum",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Tyra",
+          "color": "#f67904",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 40.288,
+          "end": 42.55979999999702,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "아득히 번지는 melody",
+          "segments": [
+            {
+              "text": "아득히 번지는 melody",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Pre-Chorus: Marty]",
+          "start": 42.864199999995535,
+          "end": 46.76929999999702,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"adeughi beonjineun melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"아득히\",\"trans\":\"adeughi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"번지는\",\"trans\":\"beonjineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
+          "translation": "A melody that spreads far away",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "하루 종일 들려 in my head (Oh)",
+          "segments": [
+            {
+              "text": "하루 종일 들려 in my head ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 46.83259999999404,
+          "end": 53.5925,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"halu jong-il deullyeo in my head\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"하루\",\"trans\":\"halu\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"종일\",\"trans\":\"jong-il\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들려\",\"trans\":\"deullyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"head\",\"trans\":\"\"}]}",
+          "translation": "I hear it all day long in my head",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 20,
+              "charEnd": 24,
+              "start": 50.24669900000149,
+              "end": 53.5925,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Marty"
+                  ]
+                }
+              ],
+              "singer": "Marty",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:]",
+          "start": 53.64729999999702,
+          "end": 57.193,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 56.29569899999851,
+              "end": 57.193,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 58.28329999999702,
+          "end": 62.35337999999225,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything completely covered",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 62.42105999998748,
+          "end": 66.15593999999463,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "In a secret The story I kept",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 66.32105999998748,
+          "end": 70.53353999999463,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "The irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Marty, _Siu_]",
+          "start": 70.71129999999702,
+          "end": 72.92553999999464,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 74.97433999999464,
+          "end": 77.36889999999701,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "꿈 속에서 봤던 déjà vu",
+          "segments": [
+            {
+              "text": "꿈 속에서 봤던 déjà vu",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 79.26313999999462,
+          "end": 83.39897999999225,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"kkum sog-eseo bwassdeon déjà vu\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"꿈\",\"trans\":\"kkum\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속에서\",\"trans\":\"sog-eseo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"봤던\",\"trans\":\"bwassdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"déjà\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"vu\",\"trans\":\"\"}]}",
+          "translation": "The déjà vu I saw in my dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "선명하게 느껴진 온기",
+          "segments": [
+            {
+              "text": "선명하게 느껴진 온기",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 83.499299999997,
+          "end": 87.42681999998986,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"seonmyeonghage neukkyeojin ongi\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"선명하게\",\"trans\":\"seonmyeonghage\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"느껴진\",\"trans\":\"neukkyeojin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"온기\",\"trans\":\"ongi\"}]}",
+          "translation": "The warmth I clearly felt",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "What's going on? 다시 마주한 눈빛이",
+          "segments": [
+            {
+              "text": "What's going on? 다시 마주한 눈빛이",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 3: Zena, _Siu_, **Tyra**]",
+          "start": 87.543299999997,
+          "end": 91.53561999998985,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"What's going on? dasi majuhan nunbich-i\",\"chunks\":[{\"type\":\"en\",\"text\":\"What's\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"going\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"on?\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다시\",\"trans\":\"dasi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"마주한\",\"trans\":\"majuhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"눈빛이\",\"trans\":\"nunbich-i\"}]}",
+          "translation": "What’s going on? Our eyes meet again",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "파도 치듯이 밀려 오는걸 how you feel?",
+          "segments": [
+            {
+              "text": "파도 치듯이 밀려 오는걸 how you feel?",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 91.63785999998747,
+          "end": 96.3423399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"pado chideus-i millyeo oneungeol how you feel?\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"파도\",\"trans\":\"pado\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"치듯이\",\"trans\":\"chideus-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"밀려\",\"trans\":\"millyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"오는걸\",\"trans\":\"oneungeol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"how\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"you\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"feel?\",\"trans\":\"\"}]}",
+          "translation": "How do you feel it coming like a wave?",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "그건 아마도 (I can hear your voice)",
+          "segments": [
+            {
+              "text": "그건 아마도",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(I can hear your voice)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Siu, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #f67904)",
+          "sectionHeader": null,
+          "start": 96.43129999998509,
+          "end": 99.44201999998985,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"geugeon amado\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그건\",\"trans\":\"geugeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아마도\",\"trans\":\"amado\"}]}",
+          "translation": "That's probably",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(I can hear your voice)",
+              "charStart": 7,
+              "charEnd": 30,
+              "start": 98.223799,
+              "end": 99.44201999998985,
+              "segments": [
+                {
+                  "text": "(I can hear your voice)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "내 귀에 속삭이는 voice (Whisper) (Welcome to my world)",
+          "segments": [
+            {
+              "text": "내 귀에 속삭이는 voice",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(Whisper) ",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": "(Welcome to my world)",
+              "color": "#f67904",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Tyra"
+              ]
+            }
+          ],
+          "singer": "Siu, Zena, Tyra",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #8cf986, #86e7f9)",
+          "sectionHeader": null,
+          "start": 99.50185999998747,
+          "end": 104.34217999998032,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nae gwie sogsag-ineun voice\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"귀에\",\"trans\":\"gwie\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속삭이는\",\"trans\":\"sogsag-ineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"voice\",\"trans\":\"\"}]}",
+          "translation": "A voice whispering in my ear",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Whisper)",
+              "charStart": 16,
+              "charEnd": 25,
+              "start": 101.270359,
+              "end": 102.32575899999851,
+              "segments": [
+                {
+                  "text": "(Whisper)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            },
+            {
+              "text": "(Welcome to my world)",
+              "charStart": 26,
+              "charEnd": 47,
+              "start": 102.40605900000298,
+              "end": 104.34217999998032,
+              "segments": [
+                {
+                  "text": "(Welcome to my world)",
+                  "color": "#fc8e27",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Tyra"
+                  ]
+                }
+              ],
+              "singer": "Tyra",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "끝없이 들리는 melody",
+          "segments": [
+            {
+              "text": "끝없이 들리는 melody",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Pre-Chorus: Marty]",
+          "start": 104.45577999998032,
+          "end": 108.4887399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"kkeut-eobs-i deullineun melody\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"끝없이\",\"trans\":\"kkeut-eobs-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들리는\",\"trans\":\"deullineun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"melody\",\"trans\":\"\"}]}",
+          "translation": "A melody that sounds endlessly",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "어지럽게 엉켜 in my head (Oh)",
+          "segments": [
+            {
+              "text": "어지럽게 엉켜 in my head ",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 108.60265999998747,
+          "end": 115.22185999998747,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"eojileobge eongkyeo in my head\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"어지럽게\",\"trans\":\"eojileobge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"엉켜\",\"trans\":\"eongkyeo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"in\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"my\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"head\",\"trans\":\"\"}]}",
+          "translation": "Dizzily tangled in my head",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 19,
+              "charEnd": 23,
+              "start": 111.62745899999703,
+              "end": 115.22185999998747,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#f986ba",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Marty"
+                  ]
+                }
+              ],
+              "singer": "Marty",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:]",
+          "start": 115.32249999998508,
+          "end": 118.6967999999821,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 117.6198989999985,
+              "end": 118.6967999999821,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 119.34449999998509,
+          "end": 123.39379999998211,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything completely hidden",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 123.58509999997912,
+          "end": 127.25649999997763,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "A story kept in secret",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 127.72585999998748,
+          "end": 131.8232999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "Irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Marty]",
+          "start": 131.96345999998746,
+          "end": 134.52329999998508,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Wonderland, wonder-wonderland",
+          "segments": [
+            {
+              "text": "Wonderland, wonder-wonderland",
+              "color": "#f986ba",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Marty"
+              ]
+            }
+          ],
+          "singer": "Marty",
+          "color": "#f986ba",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 136.32921999998985,
+          "end": 138.65817999998032,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "Say my name",
+          "segments": [
+            {
+              "text": "Say my name",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Siu, _Zena_]",
+          "start": 140.43657999998032,
+          "end": 143.40793999998272,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "MAVE:, we will change the whole world",
+          "segments": [
+            {
+              "text": "MAVE:, we will change the whole world",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            }
+          ],
+          "singer": "Siu",
+          "color": "#8cf986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 143.4975399999827,
+          "end": 147.77385999998748,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": false
+        },
+        {
+          "text": "차원의 문 너머",
+          "segments": [
+            {
+              "text": "차원의 문 너머",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 147.88617999998033,
+          "end": 152.1896999999851,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"chawon-ui mun neomeo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"차원의\",\"trans\":\"chawon-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"문\",\"trans\":\"mun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"너머\",\"trans\":\"neomeo\"}]}",
+          "translation": "Beyond the dimensional gate",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "날 이끄는 작은 떨림 (Oh)",
+          "segments": [
+            {
+              "text": "날 이끄는 작은 떨림",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#8cf986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Siu"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "Zena",
+          "color": "#86e7f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 152.76457999998033,
+          "end": 159.80457999998032,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nal ikkeuneun jag-eun tteollim\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"날\",\"trans\":\"nal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이끄는\",\"trans\":\"ikkeuneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"작은\",\"trans\":\"jag-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"떨림\",\"trans\":\"tteollim\"}]}",
+          "translation": "A small tremor that leads me",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 12,
+              "charEnd": 16,
+              "start": 156.13327899999553,
+              "end": 159.80457999998032,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after the end (쉿)",
+          "segments": [
+            {
+              "text": "Happily ever after the end ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(쉿)",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: MAVE:, _Zena_]",
+          "start": 159.89241999997796,
+          "end": 163.8607399999827,
+          "wordSync": null,
+          "pronunciation": "",
+          "translation": "",
+          "spacingText": "",
+          "lang": "en",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(쉿)",
+              "charStart": 27,
+              "charEnd": 30,
+              "start": 162.0358189999985,
+              "end": 163.8607399999827,
+              "segments": [
+                {
+                  "text": "(쉿)",
+                  "color": "#f9dc86",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "MAVE:"
+                  ]
+                }
+              ],
+              "singer": "MAVE:",
+              "pronunciation": "{\"full\":\"(swis)\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"(쉿)\",\"trans\":\"(swis)\"}]}",
+              "translation": "(shh)",
+              "lang": "ko",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "완벽히 가려져버린 everything (Everything)",
+          "segments": [
+            {
+              "text": "완벽히 가려져버린 everything ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Everything)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 163.99081999997793,
+          "end": 168.0471399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"wanbyeoghi galyeojyeobeolin everything\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"완벽히\",\"trans\":\"wanbyeoghi\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"가려져버린\",\"trans\":\"galyeojyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"everything\",\"trans\":\"\"}]}",
+          "translation": "Everything is completely hidden",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Everything)",
+              "charStart": 21,
+              "charEnd": 33,
+              "start": 165.67901900000297,
+              "end": 168.0471399999827,
+              "segments": [
+                {
+                  "text": "(Everything)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "비밀 속 간직 했었던 story",
+          "segments": [
+            {
+              "text": "비밀 속 간직 했었던 story",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 168.1864999999851,
+          "end": 171.8607399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"bimil sog ganjig haess-eossdeon story\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"비밀\",\"trans\":\"bimil\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"속\",\"trans\":\"sog\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"간직\",\"trans\":\"ganjig\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"했었던\",\"trans\":\"haess-eossdeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"story\",\"trans\":\"\"}]}",
+          "translation": "A story kept in secret",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 irony (Irony)",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 irony ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Irony)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 172.01417999998034,
+          "end": 176.5719399999827,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"irony\",\"trans\":\"\"}]}",
+          "translation": "Irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Irony)",
+              "charStart": 22,
+              "charEnd": 29,
+              "start": 174.232392000003,
+              "end": 176.5719399999827,
+              "segments": [
+                {
+                  "text": "(Irony)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Happily ever after, 이 꿈에 (Oh)",
+          "segments": [
+            {
+              "text": "Happily ever after, 이 꿈에 ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Oh)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 176.67353999998272,
+          "end": 180.78233999998272,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"Happily ever after, i kkum-e\",\"chunks\":[{\"type\":\"en\",\"text\":\"Happily\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"ever\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"after,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"꿈에\",\"trans\":\"kkum-e\"}]}",
+          "translation": "Happily ever after, in this dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh)",
+              "charStart": 25,
+              "charEnd": 29,
+              "start": 179.53783900000445,
+              "end": 180.78233999998272,
+              "segments": [
+                {
+                  "text": "(Oh)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "모든 게 사라져버린 fantasy",
+          "segments": [
+            {
+              "text": "모든 게 사라져버린 fantasy",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 180.92377999998033,
+          "end": 184.98137999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"modeun ge salajyeobeolin fantasy\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"모든\",\"trans\":\"modeun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"게\",\"trans\":\"ge\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"사라져버린\",\"trans\":\"salajyeobeolin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fantasy\",\"trans\":\"\"}]}",
+          "translation": "A fantasy where everything has disappeared",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "누구도 알 수 없는 mystery",
+          "segments": [
+            {
+              "text": "누구도 알 수 없는 mystery",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            }
+          ],
+          "singer": "MAVE:",
+          "color": "#f9dc86",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "start": 185.12345999997555,
+          "end": 188.87497999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"nugudo al su eobsneun mystery\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"누구도\",\"trans\":\"nugudo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알\",\"trans\":\"al\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"수\",\"trans\":\"su\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"없는\",\"trans\":\"eobsneun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"mystery\",\"trans\":\"\"}]}",
+          "translation": "A mystery no one can know",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": false
+        },
+        {
+          "text": "황홀한 dream 안에 갇힌 iro-irony (Iro-irony)",
+          "segments": [
+            {
+              "text": "황홀한 dream 안에 갇힌 iro-irony ",
+              "color": "#f9dc86",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "MAVE:"
+              ]
+            },
+            {
+              "text": "(Iro-irony)",
+              "color": "#86e7f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Zena"
+              ]
+            }
+          ],
+          "singer": "MAVE:, Zena",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #f9dc86, #86e7f9)",
+          "sectionHeader": null,
+          "start": 189.00137999998032,
+          "end": 194.26297999998033,
+          "wordSync": null,
+          "pronunciation": "{\"full\":\"hwangholhan dream an-e gadhin iro-irony\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"황홀한\",\"trans\":\"hwangholhan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"dream\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"안에\",\"trans\":\"an-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"갇힌\",\"trans\":\"gadhin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"iro-irony\",\"trans\":\"\"}]}",
+          "translation": "Iro-irony trapped in an ecstatic dream",
+          "spacingText": "",
+          "lang": "ko",
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Iro-irony)",
+              "charStart": 26,
+              "charEnd": 37,
+              "start": 191.10607900000295,
+              "end": 194.26297999998033,
+              "segments": [
+                {
+                  "text": "(Iro-irony)",
+                  "color": "#86e7f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Zena"
+                  ]
+                }
+              ],
+              "singer": "Zena",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        }
+      ],
+      "lyrics": "[메이브 \"WONDERLAND (IDYPIA)\" 가사]\n\n[Intro]\nAh-ah, ah-ah, ah, ah\nAh-ah, ah-ah, ah, ah\n\n[Verse 1: Siu, _Zena_, **Tyra**]\n똑같은 시간에 뜨는 해 반복되는 이런 morning\n그 안에 갇힌 채 길을 잃어버린 느낌\n_불행도 슬픔도 지운 채로\n더 없이 완벽히 짜여 진 plot_ (**Yeah**)\n\n[Verse 2: Tyra]\nThere is no exit, this is how we do\nWe got everything that you never knew\nThey put in the world \"Automatical\"\nEvery single day stay in heaven though\n모든 게 다 fake and fools\nLike rum-pum-pum-pum-pum\n여긴 꿈 속의 꿈 IDYPIA\nLike rum-pum-pum-pum-pum\n\n[Pre-Chorus: Marty]\n아득히 번지는 melody\n하루 종일 들려 in my head (Oh)\n\n[Chorus: MAVE:]\nHappily ever after the end (쉿)\n완벽히 가려져버린 everything\n비밀 속 간직 했었던 story\n황홀한 dream 안에 갇힌 irony\n\n[Post-Chorus: Marty, _Siu_]\nWonderland, wonder-wonderland\nWonderland, wonder-wonderland\n_꿈 속에서 봤던 déjà vu\n선명하게 느껴진 온기_\n\n[Verse 3: Zena, _Siu_, **Tyra**]\nWhat's going on? 다시 마주한 눈빛이\n파도 치듯이 밀려 오는걸 how you feel?\n_그건 아마도_ (**I can hear your voice**)\n_내 귀에 속삭이는 voice_ (Whisper) (**Welcome to my world**)\n\n[Pre-Chorus: Marty]\n끝없이 들리는 melody\n어지럽게 엉켜 in my head (Oh)\n\n[Chorus: MAVE:]\nHappily ever after the end (쉿)\n완벽히 가려져버린 everything\n비밀 속 간직 했었던 story\n황홀한 dream 안에 갇힌 irony\n\n[Post-Chorus: Marty]\nWonderland, wonder-wonderland\nWonderland, wonder-wonderland\n\n[Bridge: Siu, _Zena_]\nSay my name\nMAVE:, we will change the whole world\n_차원의 문 너머\n날 이끄는 작은 떨림_ (_Oh_)\n\n[Chorus: MAVE:, _Zena_]\nHappily ever after the end (쉿)\n완벽히 가려져버린 everything (_Everything_)\n비밀 속 간직 했었던 story\n황홀한 dream 안에 갇힌 irony (_Irony_)\nHappily ever after, 이 꿈에 (_Oh_)\n모든 게 사라져버린 fantasy\n누구도 알 수 없는 mystery\n황홀한 dream 안에 갇힌 iro-irony (_Iro-irony_)",
+      "customLinks": {
+        "spotify": "",
+        "yt": "https://music.youtube.com/watch?v=mTAO26w2yEY",
+        "deezer": "https://www.deezer.com/es/track/2123284547",
+        "hasLocal": false,
+        "localName": ""
+      },
+      "artistImages": {
+        "Siu": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F04%2F84%2F25%2F048425f855ef607e1b5735f213eca620.jpg&f=1&nofb=1&ipt=730b06b5598b1d6dfd59721c0120de869ddeb852294b99c08cc57348bf7011b5",
+        "MAVE:": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia-cdn-v2.laodong.vn%2FStorage%2FNewsPortal%2F2023%2F2%2F20%2F1149955%2FMAVE.jpg&f=1&nofb=1&ipt=dae85b680662bfc38b0977f11ac09199ea8f61b9d249668e5c676442187d3961",
+        "Zena": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F5b%2Fb1%2F21%2F5bb1217e992c3f3ef7ba356cf8df17b0.jpg&f=1&nofb=1&ipt=0a4003c7f488166b42dc80a2a1697c595bb34ac588984a464899d81862f8896f",
+        "Tyra": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fkpopping.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fcdn.kpopping.com%252Fidols%252FTyra%252Fprofile.webp%26w%3D1920%26q%3D75&f=1&nofb=1&ipt=a892004457400636e47131d5321c12bd40de8940ea90b9d202ec4c5be167be86",
+        "Marty": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fkpopping.com%2F_next%2Fimage%3Furl%3Dhttps%3A%252F%252Fcdn.kpopping.com%252Fidols%252FMarty%252Fprofile.webp%26w%3D1920%26q%3D75&f=1&nofb=1&ipt=067a82a7fd8bc1e4e2b152b08eb0d497b0800ecc4fc76a47cd3a15292294a203"
+      },
+      "artistColors": {
+        "Tyra": "#f67904"
+      },
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b5/25/73/b5257300-6efb-5c1d-5cf4-0f5cd2309a5f/mzaf_135864856275035043.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true,
+      "forceSource": "deezer",
+      "playId": 1788287302623
     }
   ],
   "settings": {
@@ -86119,7 +89787,7 @@
     "cardGap": 16,
     "isRounded": false,
     "borderRadius": 16,
-    "bgImageOpacity": 1,
+    "bgImageOpacity": 0.9,
     "cosmosSplitRatio": 60,
     "liveSyncFontSize": 4.5,
     "focusedSyncFontSize": 5.9,
@@ -86129,10 +89797,10 @@
     "bgPreemptionTime": 400,
     "modalPaddingY": 3,
     "eqFadeOutTime": 500,
-    "translationColor": "#e8e8e8",
-    "translationOpacity": 0.9,
-    "transliterationColor": "#e8e8e8",
-    "transliterationOpacity": 0.75,
+    "translationColor": "#d6d6d6",
+    "translationOpacity": 1,
+    "transliterationColor": "#d6d6d6",
+    "transliterationOpacity": 0.9,
     "disableAnimations": false,
     "adsEnabled": false,
     "spotifyConfig": {
