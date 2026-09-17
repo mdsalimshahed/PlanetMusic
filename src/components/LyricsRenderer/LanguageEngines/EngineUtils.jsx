@@ -120,9 +120,14 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
   renderedParts.forEach((part) => {
     if (!part) return;
     if (part.type === 'token' && part.isPunct && groupedParts.length > 0) {
-      const previous = groupedParts[groupedParts.length - 1];
-      if (previous.type === 'token-group') {
+      let previousIndex = groupedParts.length - 1;
+      const space = groupedParts[previousIndex]?.type === 'space' ? groupedParts[previousIndex] : null;
+      if (space) previousIndex--;
+      const previous = groupedParts[previousIndex];
+      if (previous?.type === 'token-group') {
+        if (space) previous.nodes.push(space.node);
         previous.nodes.push(part.node);
+        if (space) groupedParts.splice(previousIndex + 1, 1);
         return;
       }
     }
@@ -197,8 +202,32 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       words.push(elements[i]); 
     } else if (isPunctuation(char)) {
       flushWord(i);
+
+      // Find the last non-whitespace word rendered so far
+      let previousIndex = words.length - 1;
+      const space = words[previousIndex] && !words[previousIndex].props?.className?.includes('lyric-word') ? words[previousIndex] : null;
+      if (space) previousIndex--;
+
+      const previousWord = words[previousIndex];
+
       currentWord = [elements[i]];
       flushWord(i);
+      const punctuationWord = words.pop();
+
+      if (previousWord && punctuationWord) {
+        if (space) {
+          words.splice(previousIndex + 1, 1);
+        }
+        words[previousIndex] = (
+          <span key={`wg-${i}`} className="lyric-word-group">
+            {previousWord}
+            {space}
+            {punctuationWord}
+          </span>
+        );
+      } else if (punctuationWord) {
+        words.push(punctuationWord);
+      }
     } else {
       if (char === '-') {
         hyphenCount++;
