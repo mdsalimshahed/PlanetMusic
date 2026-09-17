@@ -1,10 +1,17 @@
 /* --- src/components/Workspaces/Lyrics/LyricsEqualizer.jsx --- */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './LyricsEqualizer.css';
 
 const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, isEditing }) => {
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
+  // Track internal playing state from globalPlayState event as well as props
+  const isPlayingRef = useRef(isPlaying && isPlayingCurrentSong);
+
+  // Keep ref in sync with props
+  useEffect(() => {
+    isPlayingRef.current = isPlaying && isPlayingCurrentSong;
+  }, [isPlaying, isPlayingCurrentSong]);
 
   useEffect(() => {
     if (disableAnimations || isEditing) return;
@@ -32,8 +39,6 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
     });
     resizeObserver.observe(canvas);
 
-    let lastPollTime = 0;
-    const pollInterval = 1000 / 24; 
     const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
@@ -47,8 +52,9 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
 
       const hasRealWebAudio = window.globalAudioAnalyser && window.globalFreqData;
       const currentScales = eqScalesRef.current;
+      const playing = isPlayingRef.current;
       
-      if (isPlaying && isPlayingCurrentSong && hasRealWebAudio) {
+      if (playing && hasRealWebAudio) {
         idleFrames = 0;
         
         // We pull frequencies continuously at native frame rate.
@@ -137,15 +143,44 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
       rafId = requestAnimationFrame(renderEQ);
     };
 
+    const startLoop = () => {
+      if (!rafId) {
+        idleFrames = 0;
+        rafId = requestAnimationFrame(renderEQ);
+      }
+    };
+
+    // Listen directly to globalPlayState so we catch Deezer autoplay
+    // which may not trigger a React re-render fast enough
+    const handleGlobalPlayState = (e) => {
+      const playing = e.detail?.isPlaying;
+      isPlayingRef.current = playing && isPlayingCurrentSong;
+
+      // CRITICAL: Resume AudioContext if it was suspended by browser autoplay policy
+      if (playing && window.audioCtx && window.audioCtx.state === 'suspended') {
+        window.audioCtx.resume().catch(() => {});
+      }
+      // Also try the analyser's own context
+      if (playing && window.globalAudioAnalyser?.context?.state === 'suspended') {
+        window.globalAudioAnalyser.context.resume().catch(() => {});
+      }
+
+      if (playing) startLoop();
+    };
+
+    window.addEventListener('globalPlayState', handleGlobalPlayState);
+
+    // Start immediately if already playing when mounted
     if (isPlaying && isPlayingCurrentSong) {
-      rafId = requestAnimationFrame(renderEQ);
+      startLoop();
     }
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
       resizeObserver.disconnect();
+      window.removeEventListener('globalPlayState', handleGlobalPlayState);
     };
-  }, [isPlaying, isPlayingCurrentSong, disableAnimations, isEditing]);
+  }, [disableAnimations, isEditing, isPlayingCurrentSong]);
 
   if (disableAnimations || isEditing) return null;
 

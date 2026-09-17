@@ -28,15 +28,11 @@
 }
 
 .logo-text {
-  /* Matches the vibrant palette from the fluid background */
-  background: linear-gradient(270deg, #ff0a54, #ff7000, #ffc300, #00f5d4, #00bbf9, #f15bb5, #ff0a54);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: dynamicGradientPulse 10s ease infinite;
+  color: var(--text-base);
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: 0.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   margin: 0;
 }
 

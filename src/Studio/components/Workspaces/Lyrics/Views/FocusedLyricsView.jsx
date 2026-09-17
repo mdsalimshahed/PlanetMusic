@@ -12,13 +12,17 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   useEffect(() => {
     const timer = setTimeout(() => {
       if (containerRef.current) {
-        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
-            node,
-            start: parseFloat(node.dataset.start),
-            end: parseFloat(node.dataset.end),
-            nextStart: parseFloat(node.dataset.nextStart),
-            isActive: node.classList.contains('active')
-        }));
+        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
+            const words = node.querySelectorAll('.lyric-word, .trans-word');
+            node.style.setProperty('--total-words', words.length);
+            return {
+                node,
+                start: parseFloat(node.dataset.start),
+                end: parseFloat(node.dataset.end),
+                nextStart: parseFloat(node.dataset.nextStart),
+                isActive: node.classList.contains('active')
+            };
+        });
         
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
@@ -56,13 +60,24 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     for (let i = 0; i < lines.length; i++) {
         const item = lines[i];
         const shouldBeActive = (i === newActiveIndex);
+        const isPast = (newActiveIndex !== -1 && i < newActiveIndex);
         
-        if (shouldBeActive && !item.isActive) {
-            item.node.classList.add('active');
-            item.isActive = true;
-        } else if (!shouldBeActive && item.isActive) {
-            item.node.classList.remove('active');
-            item.isActive = false;
+        if (shouldBeActive) {
+            if (!item.isActive) {
+                item.node.classList.add('active');
+                item.isActive = true;
+            }
+            item.node.classList.remove('past');
+        } else {
+            if (item.isActive) {
+                item.node.classList.remove('active');
+                item.isActive = false;
+            }
+            if (isPast) {
+                item.node.classList.add('past');
+            } else {
+                item.node.classList.remove('past');
+            }
         }
     }
 

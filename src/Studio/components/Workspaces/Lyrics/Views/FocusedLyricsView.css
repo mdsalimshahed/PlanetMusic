@@ -88,6 +88,44 @@
   overflow-wrap: normal !important;
 }
 
+/* ENTRY / FUTURE state (default) */
+.focused-line:not(.past) .lyric-word,
+.focused-line:not(.past) .trans-word,
+.focused-adlib-line:not(.past) .lyric-word,
+.focused-adlib-line:not(.past) .trans-word {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Optional: fast forward-stagger if jumping backwards in song */
+  transition-delay: calc(var(--word-index, 0) * 0.02s);
+  will-change: opacity, transform;
+}
+
+/* EXIT / PAST state (vanish in reverse) */
+.focused-line.past .lyric-word,
+.focused-line.past .trans-word,
+.focused-adlib-line.past .lyric-word,
+.focused-adlib-line.past .trans-word {
+  opacity: 0;
+  transform: translateY(-15px); /* Exit upwards */
+  /* Fast 0.2s exit duration */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  /* Reverse stagger: delay depends on how close it is to the end */
+  transition-delay: calc((var(--total-words, 10) - var(--word-index, 0)) * 0.03s);
+  will-change: opacity, transform;
+}
+
+/* ACTIVE state (entering) */
+.focused-line.active .lyric-word,
+.focused-line.active .trans-word,
+.focused-adlib-line.active .lyric-word,
+.focused-adlib-line.active .trans-word {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-delay: calc(var(--word-index, 0) * 0.08s);
+}
+
 .focused-adlibs-container {
   position: absolute;
   top: 0;
@@ -129,6 +167,15 @@
   transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
   pointer-events: auto;
   cursor: pointer;
+}
+
+.focused-adlib-line.past {
+  opacity: 0;
+  transform: translate3d(-50%, calc(-50% - 15px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  pointer-events: none;
 }
 
 /* Soft dark drop-shadow behind main text and ad-libs elements */

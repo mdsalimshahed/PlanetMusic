@@ -87,57 +87,96 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
-export const renderFormattedTranslation = (text, isFocused = false) => {
+export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
-  const parts = text.split(/([\p{P}\p{S}\s]+)/u);
-  return parts.map((part, pIdx) => {
+  const parts = text.split(/(\s+|[\p{P}\p{S}])/u);
+  const renderedParts = parts.map((part, pIdx) => {
     if (!part) return null;
     const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);
     const isBengaliPart = /[\u0980-\u09FF]/.test(part);
     const font = isArabicPart ? 'var(--arabic-font-family)' : (isBengaliPart ? 'var(--bengali-font-family)' : 'var(--font-family)');
 
+    const isSpaceOnly = /^\s+$/.test(part);
+    
+    if (isSpaceOnly) {
+      return { type: 'space', node: <span key={pIdx} style={{ whiteSpace: 'pre' }}>{part}</span> };
+    }
+
+    const currentIdx = state.index;
+    state.index++;
+
     if (isPunct && part.trim() !== '') {
-      return (
-        <span key={pIdx} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font }}>
+      return { type: 'token', isPunct: true, node: (
+        <span key={pIdx} className="trans-word" style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font, '--word-index': currentIdx, display: 'inline-block', whiteSpace: 'pre-wrap' }}>
           {part}
         </span>
-      );
+      ) };
     }
-    return <span key={pIdx} style={{ fontFamily: font }}>{part}</span>;
+    return { type: 'token', isPunct: false, node: <span key={pIdx} className="trans-word" style={{ fontFamily: font, '--word-index': currentIdx, display: 'inline-block', whiteSpace: 'pre-wrap' }}>{part}</span> };
+  });
+
+  const groupedParts = [];
+  renderedParts.forEach((part) => {
+    if (!part) return;
+    if (part.type === 'token' && part.isPunct && groupedParts.length > 0) {
+      const previous = groupedParts[groupedParts.length - 1];
+      if (previous.type === 'token-group') {
+        previous.nodes.push(part.node);
+        return;
+      }
+    }
+    if (part.type === 'token') {
+      groupedParts.push({ type: 'token-group', nodes: [part.node] });
+    } else {
+      groupedParts.push(part);
+    }
+  });
+
+  return groupedParts.map((part, pIdx) => {
+    if (part.type === 'space') return part.node;
+    if (part.nodes.length === 1) return part.nodes[0];
+    return <span key={`trans-group-${pIdx}`} className="trans-word-group">{part.nodes}</span>;
   });
 };
 
-export const groupWords = (elements, charData, isFocused, hasSpacingText = false) => {
+export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }) => {
   const words = [];
   let currentWord = [];
   let hyphenCount = 0;
 
+  const isPunctuation = (char) => /^[\p{P}\p{S}]+$/u.test(char);
+
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
+      const currentIdx = state.index;
       words.push(
         <span
           key={`w-${keySuffix}`}
+          className="lyric-word"
           style={
             shouldWrap
               ? {
                   whiteSpace: 'normal',
-                  display: 'inline',
+                  display: 'inline-block',
                   wordBreak: 'normal',
-                  overflowWrap: 'normal'
+                  overflowWrap: 'normal',
+                  '--word-index': currentIdx
                 }
               : {
-                  whiteSpace: 'pre-line', 
+                  whiteSpace: 'pre-wrap', 
                   wordBreak: 'normal', 
                   overflowWrap: 'normal',
-                  display: 'inline'
+                  display: 'inline-block',
+                  '--word-index': currentIdx
                 }
           }
         >
           {currentWord}
         </span>
       );
+      state.index++;
       currentWord = [];
       hyphenCount = 0;
     }
@@ -156,6 +195,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     if (shouldBreak) {
       flushWord(i);
       words.push(elements[i]); 
+    } else if (isPunctuation(char)) {
+      flushWord(i);
+      currentWord = [elements[i]];
+      flushWord(i);
     } else {
       if (char === '-') {
         hyphenCount++;
@@ -307,11 +350,14 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
     });
 
     // 3. Render chunks completely free of CSS background masks
+    // Shared state so word indices progress naturally across chunks and words
+    const wordState = { index: 0 };
     const chunkElements = alignedChunks.map((chunk, chunkIdx) => {
         const renderedText = chunk.chars.map(c => renderColoredChar(c, c.globalIndex, isFocused));
         if (renderedText.every(c => c === null)) return null;
 
-        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText);
+        const chunkBaseIndex = wordState.index;
+        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText, wordState);
 
         if (isRTL) {
             return (
@@ -328,8 +374,10 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
                 let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
                 if (isAdlib) {
-                    cleanTrans = cleanTrans.replace(/[()\[\]{}]/g, '').trim();
+                    cleanTrans = cleanTrans.replace(/[()[\]{}]/g, '').trim();
                 }
+                // Pronunciation for this chunk animates alongside the chunk itself
+                const pronState = { index: chunkBaseIndex };
                 return (
                   <span
                     key={`chunk-${chunkIdx}`}
@@ -357,7 +405,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                          style={basePronStyle}
                          dir="ltr"
                       >
-                        {renderFormattedTranslation(cleanTrans, isFocused)}
+                        {renderFormattedTranslation(cleanTrans, isFocused, pronState)}
                       </span>
                     ) : null}
                   </span>

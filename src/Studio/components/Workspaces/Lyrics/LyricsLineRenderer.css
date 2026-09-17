@@ -151,6 +151,11 @@ rt.pronunciation-text,
     visibility 0s linear 0.4s;
 }
 
+.trans-word-group {
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .preview-line.active .live-translation {
   opacity: 1;
   visibility: visible;
