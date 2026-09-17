@@ -13,7 +13,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
-            const words = node.querySelectorAll('.lyric-word, .trans-word');
+            const words = node.querySelectorAll('.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation');
             node.style.setProperty('--total-words', words.length);
             return {
                 node,

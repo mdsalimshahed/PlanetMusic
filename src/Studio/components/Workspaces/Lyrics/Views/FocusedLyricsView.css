@@ -90,8 +90,11 @@
 
 /* ENTRY / FUTURE state (default) */
 .focused-line:not(.past) .lyric-word,
+.focused-line:not(.past) .lyric-punctuation,
 .focused-line:not(.past) .trans-word,
+.focused-line:not(.past) .trans-punctuation,
 .focused-adlib-line:not(.past) .lyric-word,
+.focused-adlib-line:not(.past) .lyric-punctuation,
 .focused-adlib-line:not(.past) .trans-word {
   opacity: 0;
   transform: translateY(15px);
@@ -103,8 +106,11 @@
 
 /* EXIT / PAST state (vanish in reverse) */
 .focused-line.past .lyric-word,
+.focused-line.past .lyric-punctuation,
 .focused-line.past .trans-word,
+.focused-line.past .trans-punctuation,
 .focused-adlib-line.past .lyric-word,
+.focused-adlib-line.past .lyric-punctuation,
 .focused-adlib-line.past .trans-word {
   opacity: 0;
   transform: translateY(-15px); /* Exit upwards */
@@ -117,8 +123,11 @@
 
 /* ACTIVE state (entering) */
 .focused-line.active .lyric-word,
+.focused-line.active .lyric-punctuation,
 .focused-line.active .trans-word,
+.focused-line.active .trans-punctuation,
 .focused-adlib-line.active .lyric-word,
+.focused-adlib-line.active .lyric-punctuation,
 .focused-adlib-line.active .trans-word {
   opacity: 1;
   transform: translateY(0);

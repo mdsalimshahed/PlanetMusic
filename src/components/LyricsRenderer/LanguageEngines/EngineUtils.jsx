@@ -89,10 +89,9 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
 
 export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
-  const parts = text.split(/(\s+|[\p{P}\p{S}])/u);
+  const parts = text.split(/(\s+)/u);
   const renderedParts = parts.map((part, pIdx) => {
     if (!part) return null;
-    const isPunct = /^[\p{P}\p{S}\s]+$/u.test(part);
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);
     const isBengaliPart = /[\u0980-\u09FF]/.test(part);
     const font = isArabicPart ? 'var(--arabic-font-family)' : (isBengaliPart ? 'var(--bengali-font-family)' : 'var(--font-family)');
@@ -103,34 +102,29 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       return { type: 'space', node: <span key={pIdx} style={{ whiteSpace: 'pre' }}>{part}</span> };
     }
 
+    const tokenParts = part.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
     const currentIdx = state.index;
     state.index++;
-
-    if (isPunct && part.trim() !== '') {
-      return { type: 'token', isPunct: true, node: (
-        <span key={pIdx} className="trans-word" style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', fontFamily: font, '--word-index': currentIdx, display: 'inline-block', whiteSpace: 'pre-wrap' }}>
-          {part}
-        </span>
-      ) };
-    }
-    return { type: 'token', isPunct: false, node: <span key={pIdx} className="trans-word" style={{ fontFamily: font, '--word-index': currentIdx, display: 'inline-block', whiteSpace: 'pre-wrap' }}>{part}</span> };
+    const punctuationCount = tokenParts.filter(tokenPart => /^[\p{P}\p{S}]+$/u.test(tokenPart)).length;
+    state.index += isFocused ? punctuationCount : 0;
+    return { type: 'token', node: (
+      <span key={pIdx} className={isFocused ? 'trans-word-group' : 'trans-word'} style={{ fontFamily: font, display: isFocused ? 'inline-block' : 'inline-block', whiteSpace: 'nowrap' }}>
+        {tokenParts.map((tokenPart, tokenIdx) => {
+          const isPunct = /^[\p{P}\p{S}]+$/u.test(tokenPart);
+          const tokenIndex = isPunct ? currentIdx + tokenParts.slice(0, tokenIdx).filter(value => /^[\p{P}\p{S}]+$/u.test(value)).length + 1 : currentIdx;
+          return isPunct
+            ? <span key={tokenIdx} className={isFocused ? 'trans-punctuation' : undefined} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', ...(isFocused ? { '--word-index': tokenIndex, display: 'inline-block' } : {}) }}>{tokenPart}</span>
+            : isFocused
+              ? <span key={tokenIdx} className="trans-word" style={{ fontFamily: font, '--word-index': tokenIndex, display: 'inline-block', whiteSpace: 'pre-wrap' }}>{tokenPart}</span>
+              : tokenPart;
+        })}
+      </span>
+    ) };
   });
 
   const groupedParts = [];
   renderedParts.forEach((part) => {
     if (!part) return;
-    if (part.type === 'token' && part.isPunct && groupedParts.length > 0) {
-      let previousIndex = groupedParts.length - 1;
-      const space = groupedParts[previousIndex]?.type === 'space' ? groupedParts[previousIndex] : null;
-      if (space) previousIndex--;
-      const previous = groupedParts[previousIndex];
-      if (previous?.type === 'token-group') {
-        if (space) previous.nodes.push(space.node);
-        previous.nodes.push(part.node);
-        if (space) groupedParts.splice(previousIndex + 1, 1);
-        return;
-      }
-    }
     if (part.type === 'token') {
       groupedParts.push({ type: 'token-group', nodes: [part.node] });
     } else {
@@ -146,8 +140,64 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
 };
 
 export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }) => {
+  if (isFocused) {
+    const words = [];
+    let currentToken = [];
+    let currentText = [];
+
+    const flushText = (keySuffix) => {
+      if (currentText.length === 0) return;
+      const index = state.index++;
+      currentToken.push(
+        <span key={`focused-word-${keySuffix}`} className="lyric-word" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', '--word-index': index }}>
+          {currentText}
+        </span>
+      );
+      currentText = [];
+    };
+
+    const flushToken = (keySuffix) => {
+      flushText(`${keySuffix}-text`);
+      if (currentToken.length > 0) {
+        words.push(currentToken.length === 1 ? currentToken[0] : (
+          <span key={`focused-group-${keySuffix}`} className="lyric-word-group">
+            {currentToken}
+          </span>
+        ));
+      }
+      currentToken = [];
+    };
+
+    for (let i = 0; i < elements.length; i++) {
+      if (!elements[i]) {
+        flushToken(i);
+        words.push(elements[i]);
+        continue;
+      }
+      const char = charData[i] ? charData[i].char : '';
+      if (/\s/.test(char)) {
+        flushToken(i);
+        words.push(elements[i]);
+      } else if (/^[\p{P}\p{S}]+$/u.test(char)) {
+        flushText(`${i}-before-punctuation`);
+        const index = state.index++;
+        currentToken.push(
+          <span key={`focused-punctuation-${i}`} className="lyric-punctuation" style={{ color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', display: 'inline-block', '--word-index': index }}>
+            {elements[i]}
+          </span>
+        );
+      } else {
+        currentText.push(elements[i]);
+      }
+    }
+
+    flushToken('end');
+    return words;
+  }
+
   const words = [];
   let currentWord = [];
+  let currentWordIndex = null;
   let hyphenCount = 0;
 
   const isPunctuation = (char) => /^[\p{P}\p{S}]+$/u.test(char);
@@ -155,7 +205,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   const flushWord = (keySuffix) => {
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
-      const currentIdx = state.index;
       words.push(
         <span
           key={`w-${keySuffix}`}
@@ -167,24 +216,29 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
                   display: 'inline-block',
                   wordBreak: 'normal',
                   overflowWrap: 'normal',
-                  '--word-index': currentIdx
+                  '--word-index': currentWordIndex
                 }
               : {
                   whiteSpace: 'pre-wrap', 
                   wordBreak: 'normal', 
                   overflowWrap: 'normal',
                   display: 'inline-block',
-                  '--word-index': currentIdx
+                  '--word-index': currentWordIndex
                 }
           }
         >
           {currentWord}
         </span>
       );
-      state.index++;
       currentWord = [];
+      currentWordIndex = null;
       hyphenCount = 0;
     }
+  };
+
+  const addToCurrentWord = (element) => {
+    if (currentWordIndex === null) currentWordIndex = state.index++;
+    currentWord.push(element);
   };
 
   for (let i = 0; i < elements.length; i++) {
@@ -203,21 +257,18 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     } else if (isPunctuation(char)) {
       flushWord(i);
 
-      // Find the last non-whitespace word rendered so far
       let previousIndex = words.length - 1;
       const space = words[previousIndex] && !words[previousIndex].props?.className?.includes('lyric-word') ? words[previousIndex] : null;
       if (space) previousIndex--;
 
       const previousWord = words[previousIndex];
-
       currentWord = [elements[i]];
+      currentWordIndex = state.index++;
       flushWord(i);
       const punctuationWord = words.pop();
 
       if (previousWord && punctuationWord) {
-        if (space) {
-          words.splice(previousIndex + 1, 1);
-        }
+        if (space) words.splice(previousIndex + 1, 1);
         words[previousIndex] = (
           <span key={`wg-${i}`} className="lyric-word-group">
             {previousWord}
@@ -232,7 +283,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       if (char === '-') {
         hyphenCount++;
       }
-      currentWord.push(elements[i]);
+      addToCurrentWord(elements[i]);
     }
   }
 
