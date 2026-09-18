@@ -153,6 +153,17 @@
   }
 }
 
+@keyframes focused-adlib-fade-down {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, calc(-50% + 12px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  }
+}
+
 /* Only the active line is visible. This prevents centered lines from overlapping. */
 .focused-line:not(.active):not(.exiting),
 .focused-adlib-line:not(.active):not(.exiting) {
@@ -200,16 +211,28 @@
 .focused-line.exiting .lyric-word,
 .focused-line.exiting .lyric-punctuation,
 .focused-line.exiting .trans-word,
-.focused-line.exiting .trans-punctuation,
+.focused-line.exiting .trans-punctuation {
+  opacity: 1;
+  transform: none;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  will-change: opacity, transform;
+}
+
+/* Ad-libs always exit as one complete sentence, never word by word. */
+.focused-adlib-line.exiting {
+  animation: focused-adlib-fade-down var(--focused-exit-duration, 0.24s) ease both !important;
+  animation-delay: 0s !important;
+}
+
 .focused-adlib-line.exiting .lyric-word,
 .focused-adlib-line.exiting .lyric-punctuation,
 .focused-adlib-line.exiting .trans-word,
 .focused-adlib-line.exiting .trans-punctuation {
   opacity: 1;
   transform: none;
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
-  will-change: opacity, transform;
+  animation: none !important;
+  animation-delay: 0s !important;
 }
 
 .focused-line.active .chunk-translation.focused-translation {

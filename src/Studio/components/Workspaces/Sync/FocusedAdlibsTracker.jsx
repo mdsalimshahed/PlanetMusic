@@ -9,20 +9,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const cachedTrackNodesRef = useRef([]);
   const lastZoneIdRef = useRef(null);
 
-  const measureAdlibRows = (node) => {
-    const tokens = Array.from(node.querySelectorAll(
-      '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
-    ));
-    const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
-      .sort((firstTop, secondTop) => firstTop - secondTop);
-
-    tokens.forEach(token => {
-      const top = Math.round(token.getBoundingClientRect().top);
-      const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
-      token.style.setProperty('--wrapped-line-index', rowIndex);
-    });
-  };
-
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!Array.isArray(syncData)) return items;
@@ -234,7 +220,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             if (pos.zoneId !== undefined) {
               lastZoneIdRef.current = pos.zoneId;
             }
-            requestAnimationFrame(() => measureAdlibRows(item.node));
           }
           item.node.classList.add('active');
           item.node.classList.remove('exiting', 'past');
