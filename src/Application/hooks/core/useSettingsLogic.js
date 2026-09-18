@@ -86,12 +86,23 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       formData.append('arl_token', settings.deezerArl);
       formData.append('quality', '1');
       formData.append('action', 'stream');
+      formData.append('obfuscate', 'true');
       const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: { Accept: 'application/octet-stream' },
+        cache: 'no-store'
       });
       
       if (response.ok) {
+        // Verification only needs the server response; never consume a full MP3 in settings.
+        const reader = response.body?.getReader();
+        if (reader) {
+          await reader.read();
+          await reader.cancel();
+        } else {
+          await response.body?.cancel();
+        }
         setVerifyResult('success');
       } else {
         setVerifyResult('error');
