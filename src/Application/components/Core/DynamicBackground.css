@@ -97,7 +97,7 @@
 }
 
 .singer-name-separator {
-   color: rgba(255, 255, 255, 1) !important;
+   color: #fbbf24 !important;
    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
    font-weight: 600;
    white-space: pre-wrap;
