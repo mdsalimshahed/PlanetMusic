@@ -58,6 +58,19 @@ export const LyricLineWrapper = React.memo(({
       const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
       token.style.setProperty('--wrapped-line-index', rowIndex);
     });
+
+    wrapperRef.current.querySelectorAll('.inline-cjk-chunk > .pronunciation-text').forEach(pronunciation => {
+      const pairedToken = pronunciation.parentElement?.querySelector(
+        '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
+      );
+      if (pairedToken) {
+        pronunciation.style.setProperty(
+          '--wrapped-line-index',
+          pairedToken.style.getPropertyValue('--wrapped-line-index')
+        );
+      }
+    });
+
     wrapperRef.current.style.setProperty('--wrapped-line-count', rowTops.length);
     wrapperRef.current.style.setProperty('--focused-wrap-exit-stagger', '0.07s');
   }, [renderedContent, viewMode]);

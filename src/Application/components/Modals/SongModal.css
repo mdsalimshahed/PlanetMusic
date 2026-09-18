@@ -25,6 +25,7 @@
   height: 100dvh;
   max-height: 100dvh;
   border-radius: 0;
+  border: none !important;
   position: relative;
   overflow: hidden;
   display: flex;
