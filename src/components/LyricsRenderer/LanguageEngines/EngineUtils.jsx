@@ -87,7 +87,7 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
-export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }, isAdlib = false) => {
+export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
   const parts = text.split(/(\s+)/u);
   const renderedParts = parts.map((part, pIdx) => {
@@ -105,24 +105,14 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
     const tokenParts = part.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
     const currentIdx = state.index;
     state.index++;
-    const punctuationCount = tokenParts.filter(tokenPart => {
-      const isPunctuation = /^[\p{P}\p{S}]+$/u.test(tokenPart);
-      const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(tokenPart);
-      return isPunctuation && !isParenthesis;
-    }).length;
-    state.index += isFocused ? punctuationCount : 0;
     return { type: 'token', node: (
       <span key={pIdx} className={isFocused ? 'trans-word-group' : 'trans-word'} style={{ fontFamily: font, display: isFocused ? 'inline-block' : 'inline-block', whiteSpace: 'nowrap' }}>
         {tokenParts.map((tokenPart, tokenIdx) => {
           const isPunct = /^[\p{P}\p{S}]+$/u.test(tokenPart);
-          const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(tokenPart);
-          const tokenIndex = isPunct
-            ? isParenthesis
-              ? currentIdx
-              : currentIdx + tokenParts.slice(0, tokenIdx).filter(value => /^[\p{P}\p{S}]+$/u.test(value) && !(isAdlib && /^[()[\]{}]+$/u.test(value))).length + 1
-            : currentIdx;
+          const tokenIndex = currentIdx;
+            const followsWord = isPunct && tokenParts.slice(0, tokenIdx).some(value => !/^[\p{P}\p{S}]+$/u.test(value));
           return isPunct
-            ? <span key={tokenIdx} className={isFocused ? 'trans-punctuation' : undefined} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', ...(isFocused ? { '--word-index': tokenIndex, display: 'inline-block' } : {}) }}>{tokenPart}</span>
+              ? <span key={tokenIdx} className={isFocused ? 'trans-punctuation' : undefined} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', ...(isFocused ? { '--word-index': tokenIndex, '--punctuation-offset': followsWord ? '0.035s' : '0s', display: 'inline-block' } : {}) }}>{tokenPart}</span>
             : isFocused
               ? <span key={tokenIdx} className="trans-word" style={{ fontFamily: font, '--word-index': tokenIndex, display: 'inline-block', whiteSpace: 'pre-wrap' }}>{tokenPart}</span>
               : tokenPart;
@@ -148,15 +138,17 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
   });
 };
 
-export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }, isAdlib = false) => {
+export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }) => {
   if (isFocused) {
     const words = [];
     let currentToken = [];
     let currentText = [];
+    let lastWordIndex = null;
 
     const flushText = (keySuffix) => {
       if (currentText.length === 0) return;
       const index = state.index++;
+      lastWordIndex = index;
       currentToken.push(
         <span key={`focused-word-${keySuffix}`} className="lyric-word" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', '--word-index': index }}>
           {currentText}
@@ -175,6 +167,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
         ));
       }
       currentToken = [];
+      lastWordIndex = null;
     };
 
     for (let i = 0; i < elements.length; i++) {
@@ -190,12 +183,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       } else if (/^[\p{P}\p{S}]+$/u.test(char)) {
         const hadTextBeforePunctuation = currentText.length > 0;
         flushText(`${i}-before-punctuation`);
-        const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(char);
-        const index = isParenthesis
-          ? Math.max(0, state.index - (hadTextBeforePunctuation ? 1 : 0))
-          : state.index++;
+        const punctuationFollowsWord = hadTextBeforePunctuation || lastWordIndex !== null;
+        const index = lastWordIndex !== null ? lastWordIndex : state.index++;
         currentToken.push(
-          <span key={`focused-punctuation-${i}`} className="lyric-punctuation" style={{ color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', display: 'inline-block', '--word-index': index }}>
+          <span key={`focused-punctuation-${i}`} className="lyric-punctuation" style={{ color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', display: 'inline-block', '--word-index': index, '--punctuation-offset': punctuationFollowsWord ? '0.035s' : '0s' }}>
             {elements[i]}
           </span>
         );
@@ -450,7 +441,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
         if (renderedText.every(c => c === null)) return null;
 
         const chunkBaseIndex = wordState.index;
-        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText, wordState, isAdlib);
+        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText, wordState);
 
         if (isRTL) {
             return (
@@ -498,7 +489,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                          style={basePronStyle}
                          dir="ltr"
                       >
-                        {renderFormattedTranslation(cleanTrans, isFocused, pronState, isAdlib)}
+                        {renderFormattedTranslation(cleanTrans, isFocused, pronState)}
                       </span>
                     ) : null}
                   </span>

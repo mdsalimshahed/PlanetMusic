@@ -206,7 +206,8 @@
 .focused-line .trans-punctuation,
 .focused-adlib-line .lyric-word,
 .focused-adlib-line .lyric-punctuation,
-.focused-adlib-line .trans-word {
+.focused-adlib-line .trans-word,
+.focused-adlib-line .trans-punctuation {
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   animation: none;
@@ -220,9 +221,10 @@
 .focused-line.active .trans-punctuation,
 .focused-adlib-line.active .lyric-word,
 .focused-adlib-line.active .lyric-punctuation,
-.focused-adlib-line.active .trans-word {
+.focused-adlib-line.active .trans-word,
+.focused-adlib-line.active .trans-punctuation {
   animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc(var(--word-index, 0) * 0.055s);
+  animation-delay: calc((var(--word-index, 0) * 0.055s) + var(--punctuation-offset, 0s));
 }
 
 .focused-line.exiting .lyric-word,
@@ -275,6 +277,7 @@
 
 .focused-line .pronunciation-text,
 .focused-adlib-line .pronunciation-text {
+  opacity: 1;
   transform: none;
   transition: none;
 }
