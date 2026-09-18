@@ -9,15 +9,16 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
   const deezerStartedAtRef = useRef(0);
   const pauseStartedAtRef = useRef(0);
   // Track internal playing state from globalPlayState event as well as props
-  const isPlayingRef = useRef(isPlaying && isPlayingCurrentSong && activeSource === 'deezer');
+  const supportsEqualizer = activeSource === 'deezer' || activeSource === 'local';
+  const isPlayingRef = useRef(isPlaying && isPlayingCurrentSong && supportsEqualizer);
 
   // Keep ref in sync with props
   useEffect(() => {
-    isPlayingRef.current = isPlaying && isPlayingCurrentSong && activeSource === 'deezer';
+    isPlayingRef.current = isPlaying && isPlayingCurrentSong && (activeSource === 'deezer' || activeSource === 'local');
   }, [activeSource, isPlaying, isPlayingCurrentSong]);
 
   useEffect(() => {
-    if (disableAnimations || isEditing || activeSource !== 'deezer') return;
+    if (disableAnimations || isEditing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -168,7 +169,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     // which may not trigger a React re-render fast enough
     const handleGlobalPlayState = (e) => {
       const playing = e.detail?.isPlaying;
-      isPlayingRef.current = playing && isPlayingCurrentSong;
+      isPlayingRef.current = playing && isPlayingCurrentSong && (activeSource === 'deezer' || activeSource === 'local');
 
       // CRITICAL: Resume AudioContext if it was suspended by browser autoplay policy
       if (playing && window.audioCtx && window.audioCtx.state === 'suspended') {
@@ -185,7 +186,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     window.addEventListener('globalPlayState', handleGlobalPlayState);
 
     // Start immediately if already playing when mounted
-    if (isPlaying && isPlayingCurrentSong) {
+    if (isPlayingCurrentSong) {
       startLoop();
     }
 
@@ -196,10 +197,10 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     };
   }, [activeSource, disableAnimations, isEditing, isPlayingCurrentSong]);
 
-  if (disableAnimations || isEditing || activeSource !== 'deezer') return null;
+  if (disableAnimations || isEditing) return null;
 
   return (
-    <div className="lyrics-equalizer">
+    <div className={`lyrics-equalizer ${supportsEqualizer ? 'source-supported' : 'source-fading-out'}`}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
     </div>
   );
