@@ -134,17 +134,6 @@
   }
 }
 
-@keyframes focused-translation-exit {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-}
-
 @keyframes focused-pronunciation-exit {
   from {
     opacity: 1;
@@ -261,6 +250,21 @@
   animation-delay: 0s !important;
 }
 
+/* Hyphen segments use the same exit timing as regular lyric tokens. */
+.focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .core-chunks {
+  animation: none !important;
+}
+
+.focused-line.exiting .hyphenated-word-part,
+.focused-line.exiting:not(.has-wrapped-content) .hyphenated-word-part {
+  display: inline-block !important;
+  opacity: 1;
+  transform: none;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  will-change: opacity, transform;
+}
+
 /* Ad-libs always exit as one complete sentence, never word by word. */
 .focused-adlib-line.exiting {
   animation: focused-adlib-fade-down var(--focused-exit-duration, 0.24s) ease both !important;
@@ -294,6 +298,23 @@
 .focused-adlib-line.exiting .chunk-translation {
   opacity: 1;
   animation: none !important;
+}
+
+.focused-line.active .chunk-translation .trans-word,
+.focused-adlib-line.active .chunk-translation .trans-word {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both !important;
+  animation-delay: calc(var(--word-index, 0) * 0.055s) !important;
+}
+
+.focused-line.exiting .chunk-translation .trans-word,
+.focused-adlib-line.exiting .chunk-translation .trans-word {
+  opacity: 1;
+  transform: none;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  will-change: opacity, transform;
 }
 
 .focused-line .pronunciation-text,

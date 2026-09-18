@@ -109,7 +109,7 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       return (
         <span
           key={`${pIdx}-${wordIdx}`}
-          className="trans-word"
+          className={`trans-word${wordParts.length > 1 ? ' hyphenated-word-part' : ''}`}
           style={{
             fontFamily: font,
             display: 'inline-block',
@@ -181,12 +181,17 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const flushToken = (keySuffix) => {
       flushText(`${keySuffix}-text`);
       if (currentToken.length > 0) {
+        const tokenParts = currentToken.length > 1
+          ? currentToken.map(token => React.cloneElement(token, {
+              className: `${token.props.className} hyphenated-word-part`
+            }))
+          : currentToken;
         words.push(currentToken.length === 1 ? currentToken[0] : (
           <span
             key={`focused-group-${keySuffix}`}
             className={`lyric-word-group${currentToken.length > 1 ? ' hyphenated-word-group' : ''}`}
           >
-            {currentToken}
+            {tokenParts}
           </span>
         ));
       }
