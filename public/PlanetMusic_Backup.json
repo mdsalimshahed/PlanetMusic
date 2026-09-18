@@ -7915,7 +7915,7 @@
           "gradient": "",
           "sectionHeader": "[Verse 3: Eminem]",
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "auto",
           "start": 105.629258,
@@ -7924,40 +7924,21 @@
           "adlibs": [
             {
               "text": "(Ayy)",
-              "charStart": 25,
-              "charEnd": 30,
-              "start": 107.288072,
-              "end": 107.970576,
+              "charStart": 42,
+              "charEnd": 47,
+              "start": 107.19615800000223,
+              "end": 107.93935800000149,
               "segments": [
                 {
-                  "text": "(",
-                  "color": "#f9dc86",
-                  "isGradient": false,
-                  "gradient": "",
-                  "artists": [
-                    "Eminem"
-                  ]
-                },
-                {
-                  "text": "Ayy",
+                  "text": "(Ayy)",
                   "color": "#ffffff",
                   "isGradient": false,
                   "gradient": "",
                   "artists": []
-                },
-                {
-                  "text": ")",
-                  "color": "#f9dc86",
-                  "isGradient": false,
-                  "gradient": "",
-                  "artists": [
-                    "Eminem"
-                  ]
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -8059,7 +8040,7 @@
           "gradient": "",
           "sectionHeader": null,
           "translation": "",
-          "pronunciation": null,
+          "pronunciation": "",
           "spacingText": "",
           "lang": "auto",
           "start": 114.49000000000001,
@@ -8068,14 +8049,14 @@
           "adlibs": [
             {
               "text": "(Finger)",
-              "charStart": 25,
-              "charEnd": 33,
-              "start": 115.621182,
-              "end": 116.435119,
+              "charStart": 40,
+              "charEnd": 48,
+              "start": 115.78660000000149,
+              "end": 116.27369999999924,
               "segments": [
                 {
                   "text": "(Finger)",
-                  "color": "#f9dc86",
+                  "color": "#ff0033",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -8084,19 +8065,18 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             },
             {
               "text": "('Xam)",
               "charStart": 49,
               "charEnd": 55,
-              "start": 117.115527,
+              "start": 117.1383999999985,
               "end": 117.22999999999999,
               "segments": [
                 {
                   "text": "('Xam)",
-                  "color": "#f9dc86",
+                  "color": "#ff0033",
                   "isGradient": false,
                   "gradient": "",
                   "artists": [
@@ -8105,8 +8085,7 @@
                 }
               ],
               "singer": "Eminem",
-              "pronunciation": null,
-              "translation": ""
+              "pronunciation": null
             }
           ]
         },
@@ -8503,7 +8482,7 @@
           "spacingText": "",
           "lang": "auto",
           "start": 149.616736,
-          "end": 151.66563600000597,
+          "end": 150.5,
           "isSplit": false
         },
         {
@@ -8528,8 +8507,8 @@
           "pronunciation": null,
           "spacingText": "",
           "lang": "auto",
-          "start": 151.73643600000298,
-          "end": 152.72053600000447,
+          "start": 150.5,
+          "end": 152.63,
           "isSplit": false
         },
         {
