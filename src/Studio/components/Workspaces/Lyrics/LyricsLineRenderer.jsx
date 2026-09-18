@@ -50,6 +50,7 @@ export const LyricLineWrapper = React.memo(({
     const tokens = Array.from(wrapperRef.current.querySelectorAll('.lyric-word, .trans-word'));
     const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
       .sort((firstTop, secondTop) => firstTop - secondTop);
+    wrapperRef.current.classList.toggle('has-wrapped-content', rowTops.length > 1);
 
     tokens.forEach(token => {
       const top = Math.round(token.getBoundingClientRect().top);

@@ -104,6 +104,25 @@
   overflow-wrap: normal !important;
 }
 
+/* Keep hyphenated spellings together; only emergency-wrap an oversized sequence. */
+.focused-line .hyphenated-word-group,
+.focused-adlib-line .hyphenated-word-group {
+  display: inline-block !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+}
+
+.focused-line .hyphenated-word-group > .lyric-word,
+.focused-line .hyphenated-word-group > .trans-word,
+.focused-adlib-line .hyphenated-word-group > .lyric-word,
+.focused-adlib-line .hyphenated-word-group > .trans-word {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
 @keyframes focused-word-enter {
   from {
     opacity: 0;
@@ -228,6 +247,20 @@
   will-change: opacity, transform;
 }
 
+/* A single-row line exits as one block; wrapped lines keep their row stagger. */
+.focused-line.exiting:not(.has-wrapped-content) .core-chunks {
+  animation: focused-main-content-exit var(--focused-exit-layer-duration, 0.18s) ease both !important;
+  animation-delay: 0s !important;
+}
+
+.focused-line.exiting:not(.has-wrapped-content) .lyric-word,
+.focused-line.exiting:not(.has-wrapped-content) .trans-word {
+  opacity: 1;
+  transform: none;
+  animation: none !important;
+  animation-delay: 0s !important;
+}
+
 /* Ad-libs always exit as one complete sentence, never word by word. */
 .focused-adlib-line.exiting {
   animation: focused-adlib-fade-down var(--focused-exit-duration, 0.24s) ease both !important;
@@ -284,7 +317,7 @@
   will-change: opacity, transform;
 }
 
-.focused-line.exiting .main-lyrics-layer,
+.focused-line.exiting.has-wrapped-content .main-lyrics-layer,
 .focused-adlib-line.exiting > .primary-text {
   opacity: 1;
   animation: none;

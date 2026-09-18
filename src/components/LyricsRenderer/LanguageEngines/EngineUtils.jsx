@@ -138,7 +138,7 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
     });
 
     return { type: 'token', node: isFocused ? (
-      <span key={pIdx} className="trans-word-group">
+      <span key={pIdx} className={`trans-word-group${wordParts.length > 1 ? ' hyphenated-word-group' : ''}`}>
         {nodes}
       </span>
     ) : nodes[0] };
@@ -182,7 +182,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       flushText(`${keySuffix}-text`);
       if (currentToken.length > 0) {
         words.push(currentToken.length === 1 ? currentToken[0] : (
-          <span key={`focused-group-${keySuffix}`} className="lyric-word-group">
+          <span
+            key={`focused-group-${keySuffix}`}
+            className={`lyric-word-group${currentToken.length > 1 ? ' hyphenated-word-group' : ''}`}
+          >
             {currentToken}
           </span>
         ));
