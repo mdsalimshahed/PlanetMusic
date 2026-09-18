@@ -107,7 +107,10 @@
 /* Keep hyphenated spellings together; only emergency-wrap an oversized sequence. */
 .focused-line .hyphenated-word-group,
 .focused-adlib-line .hyphenated-word-group {
-  display: inline-block !important;
+  display: inline-flex !important;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
   max-width: 100% !important;
   box-sizing: border-box;
   white-space: normal !important;
