@@ -436,14 +436,20 @@ a.platform-label.yt-color:hover {
 }
 
 .segment-btn:focus {
-  outline: none;
-  box-shadow: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .segment-btn:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 75%, white);
-  outline-offset: -2px;
-  box-shadow: none;
+  outline: none !important;
+  outline-offset: 0;
+  box-shadow: none !important;
+}
+
+.segment-btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .segment-btn.active {

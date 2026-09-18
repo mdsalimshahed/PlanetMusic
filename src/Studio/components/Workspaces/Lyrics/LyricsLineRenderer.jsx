@@ -1,5 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.jsx --- */
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
@@ -42,8 +42,29 @@ export const LyricLineWrapper = React.memo(({
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
 
+  const wrapperRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (viewMode !== 'focused' || !wrapperRef.current) return;
+
+    const tokens = Array.from(wrapperRef.current.querySelectorAll(
+      '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
+    ));
+    const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
+      .sort((firstTop, secondTop) => firstTop - secondTop);
+
+    tokens.forEach(token => {
+      const top = Math.round(token.getBoundingClientRect().top);
+      const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
+      token.style.setProperty('--wrapped-line-index', rowIndex);
+    });
+    wrapperRef.current.style.setProperty('--wrapped-line-count', rowTops.length);
+    wrapperRef.current.style.setProperty('--focused-wrap-exit-stagger', '0.07s');
+  }, [renderedContent, viewMode]);
+
   return (
     <div
+      ref={wrapperRef}
       className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
       data-start={start}
       data-end={end}

@@ -9,6 +9,20 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const cachedTrackNodesRef = useRef([]);
   const lastZoneIdRef = useRef(null);
 
+  const measureAdlibRows = (node) => {
+    const tokens = Array.from(node.querySelectorAll(
+      '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
+    ));
+    const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
+      .sort((firstTop, secondTop) => firstTop - secondTop);
+
+    tokens.forEach(token => {
+      const top = Math.round(token.getBoundingClientRect().top);
+      const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
+      token.style.setProperty('--wrapped-line-index', rowIndex);
+    });
+  };
+
   const adlibsToRender = useMemo(() => {
     const items = [];
     if (!Array.isArray(syncData)) return items;
@@ -120,13 +134,18 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line')).map((node, i) => {
         const dataItem = adlibsToRender[i];
         const words = node.querySelectorAll('.lyric-word, .trans-word');
+            const displayEnd = Math.max(dataItem.end, dataItem.start + 0.5);
             node.style.setProperty('--total-words', words.length);
             node.style.setProperty('--focused-exit-duration', '0.24s');
             node.style.setProperty('--focused-exit-stagger', '0s');
+            node.style.setProperty('--focused-exit-layer-duration', '0.15s');
+            node.style.setProperty('--focused-exit-translation-delay', '0s');
+            node.style.setProperty('--focused-exit-pronunciation-delay', '0.045s');
+            node.style.setProperty('--focused-exit-main-delay', '0.09s');
         return {
           node,
           start: dataItem.start,
-          end: dataItem.end,
+          end: displayEnd,
           isMulti: dataItem.isMulti,
           cols: dataItem.cols,
           activeSingersList: dataItem.activeSingersList,
@@ -215,6 +234,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             if (pos.zoneId !== undefined) {
               lastZoneIdRef.current = pos.zoneId;
             }
+            requestAnimationFrame(() => measureAdlibRows(item.node));
           }
           item.node.classList.add('active');
           item.node.classList.remove('exiting', 'past');

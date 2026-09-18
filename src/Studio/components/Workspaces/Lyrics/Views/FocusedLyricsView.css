@@ -100,28 +100,6 @@
   }
 }
 
-@keyframes focused-line-exit {
-  from {
-    opacity: 1;
-    transform: translate3d(-50%, -50%, 0);
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(-50%, calc(-50% + 12px), 0);
-  }
-}
-
-@keyframes focused-adlib-line-exit {
-  from {
-    opacity: 1;
-    transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
-  }
-  to {
-    opacity: 0;
-    transform: translate3d(-50%, calc(-50% + 12px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
-  }
-}
-
 @keyframes focused-translation-exit {
   from {
     opacity: 1;
@@ -140,7 +118,38 @@
   }
   to {
     opacity: 0;
-    transform: translate3d(0, -10px, 0);
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes focused-main-content-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+@keyframes focused-wrapped-line-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes focused-wrapper-fade-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
@@ -158,12 +167,8 @@
   visibility: visible;
   transform: translate3d(-50%, -50%, 0);
   z-index: 1;
-  animation: focused-line-exit var(--focused-exit-duration, 0.18s) ease both;
-  animation-delay: 0.08s;
-}
-
-.focused-adlib-line.exiting {
-  animation-name: focused-adlib-line-exit;
+  animation: focused-wrapper-fade-exit var(--focused-exit-duration, 0.3s) linear forwards !important;
+  animation-delay: 0s !important;
 }
 
 /* Words are hidden until the active line starts their single entry animation. */
@@ -202,7 +207,9 @@
 .focused-adlib-line.exiting .trans-punctuation {
   opacity: 1;
   transform: none;
-  animation: none;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  will-change: opacity, transform;
 }
 
 .focused-line.active .chunk-translation.focused-translation {
@@ -222,8 +229,8 @@
 
 .focused-line.exiting .chunk-translation,
 .focused-adlib-line.exiting .chunk-translation {
-  animation: focused-translation-exit var(--focused-exit-duration, 0.18s) ease both !important;
-  animation-delay: 0s !important;
+  opacity: 1;
+  animation: none !important;
 }
 
 .focused-line .pronunciation-text,
@@ -234,9 +241,14 @@
 
 .focused-line.exiting .pronunciation-text,
 .focused-adlib-line.exiting .pronunciation-text {
+  opacity: 1 !important;
+  animation: none;
+}
+
+.focused-line.exiting .main-lyrics-layer,
+.focused-adlib-line.exiting > .primary-text {
   opacity: 1;
-  animation: focused-pronunciation-exit var(--focused-exit-duration, 0.18s) ease both;
-  animation-delay: 0s;
+  animation: none;
 }
 
 .focused-adlibs-container {

@@ -24,10 +24,14 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
                             ? exitBoundary - start
                             : 0;
                         const exitWindow = activeDuration * 0.05;
-                        const exitDuration = Math.max(0.04, exitWindow);
+                        const exitDuration = Math.max(0.30, exitWindow);
             node.style.setProperty('--total-words', words.length);
                         node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
                         node.style.setProperty('--focused-exit-stagger', '0s');
+            node.style.setProperty('--focused-exit-layer-duration', `${Math.max(0.18, exitDuration * 0.62)}s`);
+            node.style.setProperty('--focused-exit-translation-delay', '0s');
+            node.style.setProperty('--focused-exit-pronunciation-delay', `${exitDuration * 0.18}s`);
+            node.style.setProperty('--focused-exit-main-delay', `${exitDuration * 0.36}s`);
             return {
                 node,
                                 start,
