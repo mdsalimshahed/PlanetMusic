@@ -14,7 +14,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
-            const words = node.querySelectorAll('.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation');
+            const words = node.querySelectorAll('.lyric-word, .trans-word');
                         const start = parseFloat(node.dataset.start);
                         const end = parseFloat(node.dataset.end);
                         const nextStart = parseFloat(node.dataset.nextStart);

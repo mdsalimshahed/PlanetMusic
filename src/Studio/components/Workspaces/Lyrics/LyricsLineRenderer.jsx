@@ -47,9 +47,7 @@ export const LyricLineWrapper = React.memo(({
   useLayoutEffect(() => {
     if (viewMode !== 'focused' || !wrapperRef.current) return;
 
-    const tokens = Array.from(wrapperRef.current.querySelectorAll(
-      '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
-    ));
+    const tokens = Array.from(wrapperRef.current.querySelectorAll('.lyric-word, .trans-word'));
     const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
       .sort((firstTop, secondTop) => firstTop - secondTop);
 
@@ -60,9 +58,7 @@ export const LyricLineWrapper = React.memo(({
     });
 
     wrapperRef.current.querySelectorAll('.inline-cjk-chunk > .pronunciation-text').forEach(pronunciation => {
-      const pairedToken = pronunciation.parentElement?.querySelector(
-        '.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation'
-      );
+      const pairedToken = pronunciation.parentElement?.querySelector('.lyric-word, .trans-word');
       if (pairedToken) {
         pronunciation.style.setProperty(
           '--wrapped-line-index',

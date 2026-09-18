@@ -85,10 +85,8 @@
 
 .focused-line .lyric-word-group,
 .focused-line .lyric-word-group > .lyric-word,
-.focused-line .lyric-word-group > .lyric-punctuation,
 .focused-line .trans-word-group,
-.focused-line .trans-word-group > .trans-word,
-.focused-line .trans-word-group > .trans-punctuation {
+.focused-line .trans-word-group > .trans-word {
   display: inline !important;
 }
 
@@ -201,13 +199,9 @@
 
 /* Words are hidden until the active line starts their single entry animation. */
 .focused-line .lyric-word,
-.focused-line .lyric-punctuation,
 .focused-line .trans-word,
-.focused-line .trans-punctuation,
 .focused-adlib-line .lyric-word,
-.focused-adlib-line .lyric-punctuation,
-.focused-adlib-line .trans-word,
-.focused-adlib-line .trans-punctuation {
+.focused-adlib-line .trans-word {
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   animation: none;
@@ -216,21 +210,17 @@
 
 /* Entry uses a word-by-word stagger. */
 .focused-line.active .lyric-word,
-.focused-line.active .lyric-punctuation,
 .focused-line.active .trans-word,
-.focused-line.active .trans-punctuation,
 .focused-adlib-line.active .lyric-word,
-.focused-adlib-line.active .lyric-punctuation,
-.focused-adlib-line.active .trans-word,
-.focused-adlib-line.active .trans-punctuation {
+.focused-adlib-line.active .trans-word {
   animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc((var(--word-index, 0) * 0.055s) + var(--punctuation-offset, 0s));
+  animation-delay: calc(var(--word-index, 0) * 0.055s);
 }
 
 .focused-line.exiting .lyric-word,
-.focused-line.exiting .lyric-punctuation,
 .focused-line.exiting .trans-word,
-.focused-line.exiting .trans-punctuation {
+.focused-adlib-line.exiting .lyric-word,
+.focused-adlib-line.exiting .trans-word {
   opacity: 1;
   transform: none;
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
@@ -245,9 +235,7 @@
 }
 
 .focused-adlib-line.exiting .lyric-word,
-.focused-adlib-line.exiting .lyric-punctuation,
-.focused-adlib-line.exiting .trans-word,
-.focused-adlib-line.exiting .trans-punctuation {
+.focused-adlib-line.exiting .trans-word {
   opacity: 1;
   transform: none;
   animation: none !important;

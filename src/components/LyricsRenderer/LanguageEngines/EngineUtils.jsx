@@ -102,23 +102,46 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       return { type: 'space', node: <span key={pIdx} style={{ whiteSpace: 'pre' }}>{part}</span> };
     }
 
-    const tokenParts = part.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
-    const currentIdx = state.index;
-    state.index++;
-    return { type: 'token', node: (
-      <span key={pIdx} className={isFocused ? 'trans-word-group' : 'trans-word'} style={{ fontFamily: font, display: isFocused ? 'inline-block' : 'inline-block', whiteSpace: 'nowrap' }}>
-        {tokenParts.map((tokenPart, tokenIdx) => {
-          const isPunct = /^[\p{P}\p{S}]+$/u.test(tokenPart);
-          const tokenIndex = currentIdx;
-            const followsWord = isPunct && tokenParts.slice(0, tokenIdx).some(value => !/^[\p{P}\p{S}]+$/u.test(value));
-          return isPunct
-              ? <span key={tokenIdx} className={isFocused ? 'trans-punctuation' : undefined} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', ...(isFocused ? { '--word-index': tokenIndex, '--punctuation-offset': followsWord ? '0.035s' : '0s', display: 'inline-block' } : {}) }}>{tokenPart}</span>
-            : isFocused
-              ? <span key={tokenIdx} className="trans-word" style={{ fontFamily: font, '--word-index': tokenIndex, display: 'inline-block', whiteSpace: 'pre-wrap' }}>{tokenPart}</span>
-              : tokenPart;
-        })}
+    const wordParts = isFocused ? part.split(/(?<=-)/u) : [part];
+    const nodes = wordParts.map((wordPart, wordIdx) => {
+      const tokenIndex = isFocused ? state.index++ : null;
+      const punctuationParts = wordPart.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
+      return (
+        <span
+          key={`${pIdx}-${wordIdx}`}
+          className="trans-word"
+          style={{
+            fontFamily: font,
+            display: 'inline-block',
+            whiteSpace: 'nowrap',
+            ...(isFocused ? { '--word-index': tokenIndex } : {})
+          }}
+        >
+          {punctuationParts.map((punctuationPart, punctuationIdx) => {
+            const isPunctuation = /^[\p{P}\p{S}]+$/u.test(punctuationPart);
+            return isPunctuation ? (
+              <span
+                key={`${pIdx}-${wordIdx}-${punctuationIdx}`}
+                className="translation-punctuation"
+                style={{
+                  color: '#fbbf24',
+                  WebkitTextFillColor: '#fbbf24',
+                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+                }}
+              >
+                {punctuationPart}
+              </span>
+            ) : punctuationPart;
+          })}
+        </span>
+      );
+    });
+
+    return { type: 'token', node: isFocused ? (
+      <span key={pIdx} className="trans-word-group">
+        {nodes}
       </span>
-    ) };
+    ) : nodes[0] };
   });
 
   const groupedParts = [];
@@ -143,12 +166,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const words = [];
     let currentToken = [];
     let currentText = [];
-    let lastWordIndex = null;
 
     const flushText = (keySuffix) => {
       if (currentText.length === 0) return;
       const index = state.index++;
-      lastWordIndex = index;
       currentToken.push(
         <span key={`focused-word-${keySuffix}`} className="lyric-word" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', '--word-index': index }}>
           {currentText}
@@ -167,7 +188,6 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
         ));
       }
       currentToken = [];
-      lastWordIndex = null;
     };
 
     for (let i = 0; i < elements.length; i++) {
@@ -180,16 +200,9 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       if (/\s/.test(char)) {
         flushToken(i);
         words.push(elements[i]);
-      } else if (/^[\p{P}\p{S}]+$/u.test(char)) {
-        const hadTextBeforePunctuation = currentText.length > 0;
-        flushText(`${i}-before-punctuation`);
-        const punctuationFollowsWord = hadTextBeforePunctuation || lastWordIndex !== null;
-        const index = lastWordIndex !== null ? lastWordIndex : state.index++;
-        currentToken.push(
-          <span key={`focused-punctuation-${i}`} className="lyric-punctuation" style={{ color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', display: 'inline-block', '--word-index': index, '--punctuation-offset': punctuationFollowsWord ? '0.035s' : '0s' }}>
-            {elements[i]}
-          </span>
-        );
+      } else if (char === '-') {
+        currentText.push(elements[i]);
+        flushText(`${i}-hyphen`);
       } else {
         currentText.push(elements[i]);
       }

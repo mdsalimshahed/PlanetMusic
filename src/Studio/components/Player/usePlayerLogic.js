@@ -21,6 +21,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const lastPolledTimeRef = useRef(-1);
   const lastSyncTimeRef = useRef(0);
   const abortControllerRef = useRef(null);
+  const sourceLoadGenerationRef = useRef(0);
   const audioCacheRef = useRef(new Map());
   const MAX_CACHE_SIZE = 5;
 
@@ -211,6 +212,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
   useEffect(() => {
     if (!currentTrack) {
+      sourceLoadGenerationRef.current += 1;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
@@ -271,6 +273,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const sourceChanged = intendedSource !== activeSourceRef.current;
 
     if (trackChanged || sourceChanged || isNewPlayAction) {
+      const sourceLoadGeneration = ++sourceLoadGenerationRef.current;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
@@ -326,6 +329,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setYtVideoId(null);
           if (source === 'local') {
             const file = await getAudioFile(trackId);
+            if (sourceLoadGeneration !== sourceLoadGenerationRef.current) return;
             if (file) {
               const url = URL.createObjectURL(file);
               addToCache(`local_${trackId}`, url);
@@ -538,7 +542,15 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
       
-      if (!currentTrack || currentTrack.trackId !== track.trackId) {
+      const hasSameTrack = Boolean(
+        currentTrack &&
+        track &&
+        currentTrack.trackId != null &&
+        track.trackId != null &&
+        String(currentTrack.trackId) === String(track.trackId)
+      );
+
+      if (!hasSameTrack) {
         setCurrentTrack({ ...track, playId: Date.now() });
         setPendingSeek(time);
       } else {
