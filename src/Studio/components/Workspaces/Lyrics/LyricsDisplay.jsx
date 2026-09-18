@@ -1,5 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.jsx --- */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LyricsEqualizer from './LyricsEqualizer.jsx';
 import EditLyricsView from './Views/EditLyricsView.jsx';
 import LiveLyricsView from './Views/LiveLyricsView.jsx';
@@ -13,6 +13,19 @@ const LyricsDisplay = ({
     isPlaying, settings 
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
+  const [activeSource, setActiveSource] = useState(() => {
+    const source = window.globalActiveSource;
+    return source?.trackId === selectedSong?.trackId ? source.source : null;
+  });
+
+  useEffect(() => {
+    const handleSource = (event) => {
+      const source = event.detail || {};
+      setActiveSource(source.trackId === selectedSong?.trackId ? source.source : null);
+    };
+    window.addEventListener('globalActiveSource', handleSource);
+    return () => window.removeEventListener('globalActiveSource', handleSource);
+  }, [selectedSong?.trackId]);
 
   return (
     <>
@@ -54,6 +67,7 @@ const LyricsDisplay = ({
       <LyricsEqualizer 
         isPlaying={isPlaying} 
         isPlayingCurrentSong={isPlayingCurrentSong} 
+        activeSource={activeSource}
         disableAnimations={settings?.disableAnimations} 
         isEditing={isEditing} 
       />

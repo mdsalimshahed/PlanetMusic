@@ -11,6 +11,34 @@
    border-radius: 0;
 }
 
+/* Stable two-slot crossfade. The incoming slot is always mounted hidden first. */
+.background-slot {
+   position: absolute;
+   inset: 0;
+   opacity: 0;
+   z-index: 0;
+   pointer-events: none;
+   transition: opacity var(--bg-crossfade-duration, 1200ms) ease-in-out;
+}
+
+.background-slot.ready {
+   opacity: 0;
+}
+
+.background-slot.visible {
+   opacity: var(--bg-opacity, 0.25);
+   z-index: 1;
+}
+
+.background-slot.fading {
+   opacity: 0;
+   z-index: 0;
+}
+
+.matrix-watermark-container.background-slot {
+   display: grid;
+}
+
 .singer-watermark {
    position: absolute;
    top: 0;

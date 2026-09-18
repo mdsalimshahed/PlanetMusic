@@ -2,19 +2,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './LyricsEqualizer.css';
 
-const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, isEditing }) => {
+const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disableAnimations, isEditing }) => {
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
+  const revealRef = useRef(Array(40).fill(0));
+  const deezerStartedAtRef = useRef(0);
+  const pauseStartedAtRef = useRef(0);
   // Track internal playing state from globalPlayState event as well as props
-  const isPlayingRef = useRef(isPlaying && isPlayingCurrentSong);
+  const isPlayingRef = useRef(isPlaying && isPlayingCurrentSong && activeSource === 'deezer');
 
   // Keep ref in sync with props
   useEffect(() => {
-    isPlayingRef.current = isPlaying && isPlayingCurrentSong;
-  }, [isPlaying, isPlayingCurrentSong]);
+    isPlayingRef.current = isPlaying && isPlayingCurrentSong && activeSource === 'deezer';
+  }, [activeSource, isPlaying, isPlayingCurrentSong]);
 
   useEffect(() => {
-    if (disableAnimations || isEditing) return;
+    if (disableAnimations || isEditing || activeSource !== 'deezer') return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -55,6 +58,8 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
       const playing = isPlayingRef.current;
       
       if (playing && hasRealWebAudio) {
+        if (!deezerStartedAtRef.current) deezerStartedAtRef.current = timestamp;
+        pauseStartedAtRef.current = 0;
         idleFrames = 0;
         
         // We pull frequencies continuously at native frame rate.
@@ -99,6 +104,8 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
           }
         }
       } else {
+        deezerStartedAtRef.current = 0;
+        if (!pauseStartedAtRef.current) pauseStartedAtRef.current = timestamp;
         let allSettled = true;
         for (let i = 0; i < numBars; i++) {
           if (currentScales[i] > 0.051) {
@@ -109,7 +116,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
             allSettled = false;
           }
         }
-        if (allSettled) idleFrames++;
+        if (allSettled && revealRef.current.every(value => value <= 0.01)) idleFrames++;
       }
 
       if (idleFrames > 5) {
@@ -125,20 +132,27 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
       const barWidth = Math.max(1, barSpacing * 0.75); 
       const startX = (barSpacing - barWidth) / 2; 
 
-      ctx.beginPath();
       for (let i = 0; i < numBars; i++) {
+        const revealStart = i * 12;
+        const revealProgress = playing
+          ? Math.max(0, Math.min(1, (timestamp - deezerStartedAtRef.current - revealStart) / 140))
+          : Math.max(0, 1 - Math.max(0, timestamp - pauseStartedAtRef.current - revealStart) / 140);
+        revealRef.current[i] += (revealProgress - revealRef.current[i]) * 0.24;
         const barHeight = currentScales[i] * displayHeight;
         const x = startX + (i * barSpacing);
         const y = displayHeight - barHeight;
         const radius = Math.min(4, barHeight / 2);
 
+        ctx.globalAlpha = revealRef.current[i];
+        ctx.beginPath();
         if (ctx.roundRect) {
           ctx.roundRect(x, y, barWidth, barHeight, [radius, radius, 0, 0]);
         } else {
           ctx.rect(x, y, barWidth, barHeight);
         }
+        ctx.fill();
       }
-      ctx.fill();
+      ctx.globalAlpha = 1;
 
       rafId = requestAnimationFrame(renderEQ);
     };
@@ -180,9 +194,9 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, disableAnimations, i
       resizeObserver.disconnect();
       window.removeEventListener('globalPlayState', handleGlobalPlayState);
     };
-  }, [disableAnimations, isEditing, isPlayingCurrentSong]);
+  }, [activeSource, disableAnimations, isEditing, isPlayingCurrentSong]);
 
-  if (disableAnimations || isEditing) return null;
+  if (disableAnimations || isEditing || activeSource !== 'deezer') return null;
 
   return (
     <div className="lyrics-equalizer">
