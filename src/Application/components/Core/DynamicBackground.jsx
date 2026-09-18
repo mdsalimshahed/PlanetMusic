@@ -7,10 +7,18 @@ import './DynamicBackground.css';
 // waits one frame, and then triggers the CSS crossfade without "popping in".
 const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singerImages }) => {
   const [renderedActive, setRenderedActive] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
+
+  const handleImageLoad = (event) => {
+    const layerImages = event.currentTarget.closest('.matrix-watermark-container')?.querySelectorAll('img');
+    if (!layerImages || Array.from(layerImages).every(image => image.complete)) {
+      setImageReady(true);
+    }
+  };
 
   useEffect(() => {
     let frameId;
-    if (isActive) {
+    if (isActive && imageReady) {
       // Double rAF ensures the browser paints the 'opacity: 0' state first before 
       // transitioning to the target opacity, creating a flawless crossfade.
       frameId = requestAnimationFrame(() => {
@@ -25,7 +33,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
     };
-  }, [isActive]);
+  }, [isActive, imageReady]);
 
   const imgClass = renderedActive ? 'active-watermark' : 'inactive-watermark';
   const matrixClass = renderedActive ? 'active-matrix' : 'inactive-matrix';
@@ -41,6 +49,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
           src={finalImgUrl}
           loading="lazy"
           decoding="async"
+          onLoad={handleImageLoad}
           alt=""
           className={`singer-watermark full-screen-watermark ${imgClass}`}
         />
@@ -64,6 +73,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
                     src={finalImgUrl}
                     loading="lazy"
                     decoding="async"
+                    onLoad={handleImageLoad}
                     alt=""
                     className={`singer-watermark matrix-cell-img ${imgClass}`}
                   />
