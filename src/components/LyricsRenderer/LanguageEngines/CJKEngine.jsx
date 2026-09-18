@@ -188,8 +188,8 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);
-    const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused) : null;
-    const pronJSX = displayPronString ? renderFormattedTranslation(displayPronString, isFocused) : null;
+    const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused, { index: 0 }, isAdlib) : null;
+    const pronJSX = displayPronString ? renderFormattedTranslation(displayPronString, isFocused, { index: 0 }, isAdlib) : null;
 
     return { mainJSX, translationJSX: transJSX, pronunciationJSX: pronJSX };
 };

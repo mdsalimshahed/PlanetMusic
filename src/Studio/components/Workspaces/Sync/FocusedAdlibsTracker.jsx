@@ -120,7 +120,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       cachedTrackNodesRef.current = Array.from(containerRef.current.querySelectorAll('.focused-adlib-line')).map((node, i) => {
         const dataItem = adlibsToRender[i];
         const words = node.querySelectorAll('.lyric-word, .trans-word');
-        node.style.setProperty('--total-words', words.length);
+            node.style.setProperty('--total-words', words.length);
+            node.style.setProperty('--focused-exit-duration', '0.24s');
+            node.style.setProperty('--focused-exit-stagger', '0s');
         return {
           node,
           start: dataItem.start,
@@ -142,7 +144,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         cachedTrackNodesRef.current.forEach(item => {
           if (item.isActive) {
             item.node.classList.remove('active');
-            item.node.classList.remove('past');
+            item.node.classList.remove('exiting', 'past');
             item.isActive = false;
           }
         });
@@ -162,6 +164,17 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       for (let i = 0; i < nodes.length; i++) {
         const item = nodes[i];
         const shouldBeActive = time >= item.start && time <= item.end;
+        const isExiting = item.node.classList.contains('exiting');
+
+        if (isExiting) {
+          if (shouldBeActive) {
+            item.node.classList.add('active');
+            item.node.classList.remove('exiting', 'past');
+            item.isActive = true;
+          }
+          continue;
+        }
+
         if (shouldBeActive && !item.isActive) {
           let pos = null;
           
@@ -204,22 +217,18 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
             }
           }
           item.node.classList.add('active');
-          item.node.classList.remove('past');
+          item.node.classList.remove('exiting', 'past');
           item.isActive = true;
         } else if (!shouldBeActive && item.isActive) {
           item.node.classList.remove('active');
           if (time > item.end) {
-            item.node.classList.add('past');
+            item.node.classList.add('exiting');
           } else {
-            item.node.classList.remove('past');
+            item.node.classList.remove('exiting', 'past');
           }
           item.isActive = false;
-        } else if (!shouldBeActive && !item.isActive) {
-          if (time > item.end) {
-            item.node.classList.add('past');
-          } else {
-            item.node.classList.remove('past');
-          }
+        } else if (!shouldBeActive && !item.isActive && time <= item.end) {
+          item.node.classList.remove('exiting', 'past');
         }
       }
     };

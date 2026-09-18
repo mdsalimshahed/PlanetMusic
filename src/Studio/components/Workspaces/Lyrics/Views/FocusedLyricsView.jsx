@@ -8,18 +8,33 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
+    const activeLineIndexRef = useRef(-1);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
             const words = node.querySelectorAll('.lyric-word, .lyric-punctuation, .trans-word, .trans-punctuation');
+                        const start = parseFloat(node.dataset.start);
+                        const end = parseFloat(node.dataset.end);
+                        const nextStart = parseFloat(node.dataset.nextStart);
+                        const boundaries = [end, nextStart].filter(value => !isNaN(value));
+                        const exitBoundary = boundaries.length > 0 ? Math.min(...boundaries) : NaN;
+                        const activeDuration = !isNaN(start) && !isNaN(exitBoundary) && exitBoundary > start
+                            ? exitBoundary - start
+                            : 0;
+                        const exitWindow = activeDuration * 0.05;
+                        const exitDuration = Math.max(0.04, exitWindow);
             node.style.setProperty('--total-words', words.length);
+                        node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
+                        node.style.setProperty('--focused-exit-stagger', '0s');
             return {
                 node,
-                start: parseFloat(node.dataset.start),
-                end: parseFloat(node.dataset.end),
-                nextStart: parseFloat(node.dataset.nextStart),
+                                start,
+                                end,
+                                nextStart,
+                                exitStart: !isNaN(start) && activeDuration > 0 ? start + activeDuration * 0.95 : NaN,
+                                exitBoundary,
                 isActive: node.classList.contains('active')
             };
         });
@@ -46,40 +61,40 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     let newActiveIndex = -1;
 
     for (let i = 0; i < lines.length; i++) {
-        const { start, end, nextStart } = lines[i];
-        if (!isNaN(start) && time >= start) {
-            const isBeforeEnd = isNaN(end) || time <= end;
-            const isBeforeNext = isNaN(nextStart) || time < nextStart;
-            if (isBeforeEnd && isBeforeNext) {
-                newActiveIndex = i;
-                break;
-            }
+        const { start, end } = lines[i];
+        if (!isNaN(start) && time >= start && (isNaN(end) || time <= end)) {
+            newActiveIndex = i;
         }
     }
 
+    const scheduledExitIndex = newActiveIndex;
+    if (scheduledExitIndex !== -1) {
+        const line = lines[scheduledExitIndex];
+        if (!isNaN(line.exitStart) && time >= line.exitStart && time < line.exitBoundary) {
+            newActiveIndex = -1;
+        }
+    }
+
+    const previousActiveIndex = activeLineIndexRef.current;
     for (let i = 0; i < lines.length; i++) {
         const item = lines[i];
         const shouldBeActive = (i === newActiveIndex);
-        const isPast = (newActiveIndex !== -1 && i < newActiveIndex);
-        
+
         if (shouldBeActive) {
-            if (!item.isActive) {
-                item.node.classList.add('active');
-                item.isActive = true;
-            }
-            item.node.classList.remove('past');
+            item.node.classList.add('active');
+            item.node.classList.remove('exiting', 'past');
+            item.isActive = true;
+        } else if (i === previousActiveIndex && previousActiveIndex !== newActiveIndex) {
+            item.node.classList.remove('active', 'past');
+            item.node.classList.add('exiting');
+            item.isActive = false;
         } else {
-            if (item.isActive) {
-                item.node.classList.remove('active');
-                item.isActive = false;
-            }
-            if (isPast) {
-                item.node.classList.add('past');
-            } else {
-                item.node.classList.remove('past');
-            }
+            // Keep an exiting line mounted until its CSS animation finishes.
+            item.node.classList.remove('active', 'past');
+            item.isActive = false;
         }
     }
+    activeLineIndexRef.current = newActiveIndex;
 
     const adlibs = cachedAdlibsRef.current;
     for (let i = 0; i < adlibs.length; i++) {
@@ -110,11 +125,10 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   useEffect(() => {
     const clearAllActive = () => {
         cachedLinesRef.current.forEach(item => {
-            if (item.isActive) {
-                item.node.classList.remove('active');
-                item.isActive = false;
-            }
+            item.node.classList.remove('active', 'exiting', 'past');
+            item.isActive = false;
         });
+        activeLineIndexRef.current = -1;
         cachedAdlibsRef.current.forEach(item => {
             if (item.state !== 'hidden') {
                 item.node.classList.add('adlib-hidden');

@@ -87,7 +87,7 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
-export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
+export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }, isAdlib = false) => {
   if (!text) return null;
   const parts = text.split(/(\s+)/u);
   const renderedParts = parts.map((part, pIdx) => {
@@ -105,13 +105,22 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
     const tokenParts = part.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
     const currentIdx = state.index;
     state.index++;
-    const punctuationCount = tokenParts.filter(tokenPart => /^[\p{P}\p{S}]+$/u.test(tokenPart)).length;
+    const punctuationCount = tokenParts.filter(tokenPart => {
+      const isPunctuation = /^[\p{P}\p{S}]+$/u.test(tokenPart);
+      const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(tokenPart);
+      return isPunctuation && !isParenthesis;
+    }).length;
     state.index += isFocused ? punctuationCount : 0;
     return { type: 'token', node: (
       <span key={pIdx} className={isFocused ? 'trans-word-group' : 'trans-word'} style={{ fontFamily: font, display: isFocused ? 'inline-block' : 'inline-block', whiteSpace: 'nowrap' }}>
         {tokenParts.map((tokenPart, tokenIdx) => {
           const isPunct = /^[\p{P}\p{S}]+$/u.test(tokenPart);
-          const tokenIndex = isPunct ? currentIdx + tokenParts.slice(0, tokenIdx).filter(value => /^[\p{P}\p{S}]+$/u.test(value)).length + 1 : currentIdx;
+          const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(tokenPart);
+          const tokenIndex = isPunct
+            ? isParenthesis
+              ? currentIdx
+              : currentIdx + tokenParts.slice(0, tokenIdx).filter(value => /^[\p{P}\p{S}]+$/u.test(value) && !(isAdlib && /^[()[\]{}]+$/u.test(value))).length + 1
+            : currentIdx;
           return isPunct
             ? <span key={tokenIdx} className={isFocused ? 'trans-punctuation' : undefined} style={{ color: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', WebkitTextFillColor: '#fbbf24', ...(isFocused ? { '--word-index': tokenIndex, display: 'inline-block' } : {}) }}>{tokenPart}</span>
             : isFocused
@@ -139,7 +148,7 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
   });
 };
 
-export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }) => {
+export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }, isAdlib = false) => {
   if (isFocused) {
     const words = [];
     let currentToken = [];
@@ -179,8 +188,12 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
         flushToken(i);
         words.push(elements[i]);
       } else if (/^[\p{P}\p{S}]+$/u.test(char)) {
+        const hadTextBeforePunctuation = currentText.length > 0;
         flushText(`${i}-before-punctuation`);
-        const index = state.index++;
+        const isParenthesis = isAdlib && /^[()[\]{}]+$/u.test(char);
+        const index = isParenthesis
+          ? Math.max(0, state.index - (hadTextBeforePunctuation ? 1 : 0))
+          : state.index++;
         currentToken.push(
           <span key={`focused-punctuation-${i}`} className="lyric-punctuation" style={{ color: '#fbbf24', WebkitTextFillColor: '#fbbf24', textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)', display: 'inline-block', '--word-index': index }}>
             {elements[i]}
@@ -437,7 +450,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
         if (renderedText.every(c => c === null)) return null;
 
         const chunkBaseIndex = wordState.index;
-        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText, wordState);
+        const groupedText = groupWords(renderedText, chunk.chars, isFocused, hasSpacingText, wordState, isAdlib);
 
         if (isRTL) {
             return (
@@ -485,7 +498,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                          style={basePronStyle}
                          dir="ltr"
                       >
-                        {renderFormattedTranslation(cleanTrans, isFocused, pronState)}
+                        {renderFormattedTranslation(cleanTrans, isFocused, pronState, isAdlib)}
                       </span>
                     ) : null}
                   </span>

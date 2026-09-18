@@ -77,6 +77,16 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
   };
 
+  useEffect(() => {
+    window.globalActiveSource = {
+      source: activeSource,
+      trackId: currentTrack?.trackId ?? null
+    };
+    window.dispatchEvent(new CustomEvent('globalActiveSource', {
+      detail: { source: activeSource, trackId: currentTrack?.trackId ?? null }
+    }));
+  }, [activeSource, currentTrack?.trackId]);
+
   const triggerFallbackMessage = (msg) => {
     setFallbackMessage(msg);
     if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);

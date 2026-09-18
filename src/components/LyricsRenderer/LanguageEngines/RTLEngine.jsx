@@ -51,12 +51,12 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);
-    const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused) : null;
+    const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused, { index: 0 }, isAdlib) : null;
     
     // Explicitly set fontFamily to var(--font-family) for the Latin pronunciation block
     const pronJSX = displayPronString ? (
         <span style={{ display: 'block', textAlign: 'center', width: '100%', fontFamily: 'var(--font-family)' }}>
-            {renderFormattedTranslation(displayPronString, isFocused)}
+            {renderFormattedTranslation(displayPronString, isFocused, { index: 0 }, isAdlib)}
         </span>
     ) : null;
 

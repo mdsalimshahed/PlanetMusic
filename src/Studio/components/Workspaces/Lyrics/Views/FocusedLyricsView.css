@@ -34,9 +34,8 @@
   text-wrap: pretty;
   opacity: 0;
   transform: translate3d(-50%, calc(-50% + 20px), 0);
-  transition:
-    opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
-    transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  visibility: hidden;
+  transition: none;
   pointer-events: none;
   will-change: opacity, transform;
   backface-visibility: hidden;
@@ -50,7 +49,9 @@
 
 .focused-line.active {
   opacity: 1;
+  visibility: visible;
   transform: translate3d(-50%, -50%, 0);
+  z-index: 2;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -88,40 +89,98 @@
   overflow-wrap: normal !important;
 }
 
-/* ENTRY / FUTURE state (default) */
-.focused-line:not(.past) .lyric-word,
-.focused-line:not(.past) .lyric-punctuation,
-.focused-line:not(.past) .trans-word,
-.focused-line:not(.past) .trans-punctuation,
-.focused-adlib-line:not(.past) .lyric-word,
-.focused-adlib-line:not(.past) .lyric-punctuation,
-.focused-adlib-line:not(.past) .trans-word {
+@keyframes focused-word-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes focused-line-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, calc(-50% + 12px), 0);
+  }
+}
+
+@keyframes focused-adlib-line-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-50%, calc(-50% + 12px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  }
+}
+
+@keyframes focused-translation-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes focused-pronunciation-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+/* Only the active line is visible. This prevents centered lines from overlapping. */
+.focused-line:not(.active):not(.exiting),
+.focused-adlib-line:not(.active):not(.exiting) {
   opacity: 0;
-  transform: translateY(15px);
-  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  /* Optional: fast forward-stagger if jumping backwards in song */
-  transition-delay: calc(var(--word-index, 0) * 0.02s);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.focused-line.exiting,
+.focused-adlib-line.exiting {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(-50%, -50%, 0);
+  z-index: 1;
+  animation: focused-line-exit var(--focused-exit-duration, 0.18s) ease both;
+  animation-delay: 0.08s;
+}
+
+.focused-adlib-line.exiting {
+  animation-name: focused-adlib-line-exit;
+}
+
+/* Words are hidden until the active line starts their single entry animation. */
+.focused-line .lyric-word,
+.focused-line .lyric-punctuation,
+.focused-line .trans-word,
+.focused-line .trans-punctuation,
+.focused-adlib-line .lyric-word,
+.focused-adlib-line .lyric-punctuation,
+.focused-adlib-line .trans-word {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  animation: none;
   will-change: opacity, transform;
 }
 
-/* EXIT / PAST state (vanish in reverse) */
-.focused-line.past .lyric-word,
-.focused-line.past .lyric-punctuation,
-.focused-line.past .trans-word,
-.focused-line.past .trans-punctuation,
-.focused-adlib-line.past .lyric-word,
-.focused-adlib-line.past .lyric-punctuation,
-.focused-adlib-line.past .trans-word {
-  opacity: 0;
-  transform: translateY(-15px); /* Exit upwards */
-  /* Fast 0.2s exit duration */
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  /* Reverse stagger: delay depends on how close it is to the end */
-  transition-delay: calc((var(--total-words, 10) - var(--word-index, 0)) * 0.03s);
-  will-change: opacity, transform;
-}
-
-/* ACTIVE state (entering) */
+/* Entry uses a word-by-word stagger. */
 .focused-line.active .lyric-word,
 .focused-line.active .lyric-punctuation,
 .focused-line.active .trans-word,
@@ -129,10 +188,55 @@
 .focused-adlib-line.active .lyric-word,
 .focused-adlib-line.active .lyric-punctuation,
 .focused-adlib-line.active .trans-word {
+  animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--word-index, 0) * 0.055s);
+}
+
+.focused-line.exiting .lyric-word,
+.focused-line.exiting .lyric-punctuation,
+.focused-line.exiting .trans-word,
+.focused-line.exiting .trans-punctuation,
+.focused-adlib-line.exiting .lyric-word,
+.focused-adlib-line.exiting .lyric-punctuation,
+.focused-adlib-line.exiting .trans-word,
+.focused-adlib-line.exiting .trans-punctuation {
   opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-delay: calc(var(--word-index, 0) * 0.08s);
+  transform: none;
+  animation: none;
+}
+
+.focused-line.active .chunk-translation.focused-translation {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  animation: none !important;
+}
+
+.focused-line.exiting .chunk-translation.focused-translation,
+.focused-adlib-line.exiting .chunk-translation.focused-translation {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  animation: none !important;
+}
+
+.focused-line.exiting .chunk-translation,
+.focused-adlib-line.exiting .chunk-translation {
+  animation: focused-translation-exit var(--focused-exit-duration, 0.18s) ease both !important;
+  animation-delay: 0s !important;
+}
+
+.focused-line .pronunciation-text,
+.focused-adlib-line .pronunciation-text {
+  transform: none;
+  transition: none;
+}
+
+.focused-line.exiting .pronunciation-text,
+.focused-adlib-line.exiting .pronunciation-text {
+  opacity: 1;
+  animation: focused-pronunciation-exit var(--focused-exit-duration, 0.18s) ease both;
+  animation-delay: 0s;
 }
 
 .focused-adlibs-container {
@@ -176,14 +280,15 @@
   transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
   pointer-events: auto;
   cursor: pointer;
+  visibility: visible;
+  transition: none;
 }
 
-.focused-adlib-line.past {
-  opacity: 0;
-  transform: translate3d(-50%, calc(-50% - 15px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+.focused-adlib-line.exiting {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(-50%, -50%, 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
+  transition: none;
   pointer-events: none;
 }
 

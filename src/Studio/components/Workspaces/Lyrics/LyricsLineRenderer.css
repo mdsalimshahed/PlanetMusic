@@ -20,7 +20,7 @@ rt.pronunciation-text,
   -webkit-text-fill-color: var(--dyn-translit-color, #ffffff) !important;
   background-image: none !important;
   -webkit-background-clip: border-box !important;
-  opacity: var(--dyn-translit-opacity, 0.8) !important;
+  opacity: var(--dyn-translit-opacity, 0.8);
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -57,14 +57,6 @@ rt.pronunciation-text,
 .focused-line .pronunciation-text {
   opacity: 0;
   transform: translate3d(0, -8px, 0);
-}
-
-.focused-line.active .pronunciation-text {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  transition:
-    opacity 0.5s ease 0.1s,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
 }
 
 .sync-text,
@@ -202,28 +194,6 @@ rt.pronunciation-text,
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   opacity: 0;
   visibility: hidden;
-  will-change: transform, opacity;
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.5s linear;
-}
-
-.focused-line.active .chunk-translation.focused-translation {
-  animation: fadeUpTranslation 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeUpTranslation {
-  0% {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-  }
-  100% {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
 }
 
 .adlib-node {

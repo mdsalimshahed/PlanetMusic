@@ -70,6 +70,12 @@ const ModalLeft = ({
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
+  const [activePlaybackSource, setActivePlaybackSource] = useState(() => {
+    const current = window.globalActiveSource;
+    return current && String(current.trackId) === String(selectedSong?.trackId)
+      ? current.source
+      : null;
+  });
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
   const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
@@ -77,6 +83,18 @@ const ModalLeft = ({
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
   const hasLocalFile = Boolean(customData?.hasLocal);
   const hasArl = Boolean(settings?.deezerArl);
+
+  useEffect(() => {
+    const handleActiveSource = (event) => {
+      const { source, trackId } = event.detail || {};
+      setActivePlaybackSource(
+        String(trackId) === String(selectedSong?.trackId) ? source : null
+      );
+    };
+
+    window.addEventListener('globalActiveSource', handleActiveSource);
+    return () => window.removeEventListener('globalActiveSource', handleActiveSource);
+  }, [selectedSong?.trackId]);
 
   useEffect(() => {
     if (settings?.deezerArl && showDeezerNotice) {
@@ -268,7 +286,7 @@ const ModalLeft = ({
           ) : (
             <div className="platform-links">
               <button 
-                 className="platform-btn spotify" 
+                  className={`platform-btn spotify ${activePlaybackSource === 'spotify' ? 'active-source' : ''}`} 
                  onClick={handleSpotifyPlay}
               >
                 Spotify
@@ -276,7 +294,7 @@ const ModalLeft = ({
               
               {hasDeezerLink && (
                 <button 
-                   className="platform-btn deezer" 
+                   className={`platform-btn deezer ${activePlaybackSource === 'deezer' ? 'active-source' : ''}`} 
                    onClick={handleDeezerPlay}
                 >
                   Deezer
@@ -285,7 +303,7 @@ const ModalLeft = ({
               
               {hasYtLink && (
                 <button 
-                   className="platform-btn yt" 
+                   className={`platform-btn yt ${activePlaybackSource === 'youtube' ? 'active-source' : ''}`} 
                    onClick={handleYtPlay}
                 >
                   YT Music
@@ -294,7 +312,7 @@ const ModalLeft = ({
               
               {customData.hasLocal && (
                 <button 
-                   className="platform-btn local" 
+                   className={`platform-btn local ${activePlaybackSource === 'local' ? 'active-source' : ''}`} 
                    onClick={handleLocalPlay}
                 >
                   Local Audio File

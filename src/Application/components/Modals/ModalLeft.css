@@ -284,6 +284,18 @@ a.platform-label.yt-color:hover {
   filter: brightness(1.2);
 }
 
+.platform-links:has(.active-source) .platform-btn:not(.active-source) {
+  opacity: 0.35;
+  filter: saturate(0.45) brightness(0.75);
+}
+
+.platform-btn.active-source {
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 18px rgba(255, 255, 255, 0.45);
+  opacity: 1;
+  filter: brightness(1.12) saturate(1.15);
+}
+
 .platform-btn.spotify {
   background-color: #1DB954;
   color: black;
