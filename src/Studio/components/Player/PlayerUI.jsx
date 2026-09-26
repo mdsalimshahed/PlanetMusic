@@ -61,11 +61,18 @@ export const PlayerInfo = ({ currentTrack, isPlaying, togglePlay, fallbackMessag
     <div className="player-text">
       <MarqueeText className="track-title" text={currentTrack.trackName} />
       <MarqueeText className="artist-name" text={currentTrack.artistName} />
-      <p className="source-text">
+      <p className={`source-text ${isBuffering ? 'is-buffering' : ''}`}>
         {fallbackMessage ? (
           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{fallbackMessage}</span>
         ) : isBuffering ? (
-          "Buffering Stream..."
+          <span className="buffering-status" role="status" aria-live="polite">
+            <span>Buffering stream</span>
+            <span className="buffering-dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </span>
         ) : (
           activeSource === 'youtube' ? "YT Music Stream" :
           activeSource === 'local' ? "Local Audio File" :

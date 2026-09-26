@@ -1,5 +1,4 @@
 /* --- src/components/Modals/ModalRight.jsx --- */
-import React from 'react';
 import DynamicBackground from '../../../Application/components/Core/DynamicBackground.jsx';
 import ImageManager from '../../../Studio/components/Workspaces/Lyrics/ImageManager.jsx';
 import { SyncWorkspace } from '../../../Studio/components/Workspaces/Sync/SyncWorkspace.jsx';
@@ -31,7 +30,20 @@ const ModalRight = (props) => {
       {props.isSyncMode && !props.isImageManagerOpen ? (
         <SyncWorkspace {...props} />
       ) : !props.isImageManagerOpen && (
-        <LyricsDisplay {...props} />
+        <LyricsDisplay
+          isEditing={props.isEditing}
+          customData={props.customData}
+          handleDataChange={props.handleDataChange}
+          hasValidSyncData={props.hasValidSyncData}
+          lyricsViewMode={props.lyricsViewMode}
+          liveParsedLyrics={props.liveParsedLyrics}
+          handleLineClick={props.handleLineClick}
+          selectedSong={props.selectedSong}
+          masterPalette={props.masterPalette}
+          currentTrack={props.currentTrack}
+          isPlaying={props.isPlaying}
+          settings={props.settings}
+        />
       )}
 
       {/* Experimental Debug Layers */}

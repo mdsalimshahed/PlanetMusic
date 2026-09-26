@@ -209,6 +209,60 @@ body .global-player.glass-panel-heavy.centered-mode {
   line-height: 1.1;
 }
 
+.player-text .source-text.is-buffering {
+  color: #9bdcff;
+}
+
+.buffering-status,
+.buffering-dots {
+  display: inline-flex;
+  align-items: center;
+}
+
+.buffering-status {
+  gap: 3px;
+}
+
+.buffering-dots {
+  gap: 2px;
+  height: 8px;
+}
+
+.buffering-dots > span {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+  animation: player-buffering-dot 0.9s ease-in-out infinite;
+}
+
+.buffering-dots > span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.buffering-dots > span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes player-buffering-dot {
+  0%, 65%, 100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buffering-dots > span {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+
 .player-right-controls {
   display: flex;
   align-items: center;

@@ -7,6 +7,9 @@ import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/L
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
+  const boundaryEventsRef = useRef([]);
+  const boundaryCursorRef = useRef(0);
+  const lastTimeRef = useRef(null);
   const lastZoneIdRef = useRef(null);
 
   const adlibsToRender = useMemo(() => {
@@ -140,20 +143,24 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           isActive: node.classList.contains('active')
         };
       });
+
+      boundaryEventsRef.current = cachedTrackNodesRef.current.flatMap(item => [
+        { time: item.start, type: 'start', item },
+        { time: item.end + 0.001, type: 'end', item }
+      ]).sort((first, second) => first.time - second.time);
+      boundaryCursorRef.current = 0;
+      lastTimeRef.current = null;
     }
   }, [adlibsToRender]);
 
   useEffect(() => {
     const clearActiveNodes = () => {
-      if (cachedTrackNodesRef.current.length > 0) {
-        cachedTrackNodesRef.current.forEach(item => {
-          if (item.isActive) {
-            item.node.classList.remove('active');
-            item.node.classList.remove('exiting', 'past');
-            item.isActive = false;
-          }
-        });
-      }
+      cachedTrackNodesRef.current.forEach(item => {
+        item.node.classList.remove('active', 'exiting', 'past');
+        item.isActive = false;
+      });
+      boundaryCursorRef.current = 0;
+      lastTimeRef.current = null;
       lastZoneIdRef.current = null;
     };
 
@@ -162,80 +169,87 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       return;
     }
 
+    const activateItem = (item) => {
+      let pos = null;
+      const container = containerRef.current?.parentElement;
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
+        const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
+        const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
+        const cBox = getRelativeRect(lyricsNode, containerRect);
+        if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
+          cBox.top -= 20;
+          cBox.bottom -= 20;
+        }
+        const sBox = getRelativeRect(singerNode, containerRect);
+
+        pos = generateSafeAdlibPosition(
+          item.node,
+          containerRect,
+          cBox,
+          sBox,
+          item.isMulti,
+          item.cols,
+          item.activeSingersList,
+          item.activeNames,
+          lastZoneIdRef.current
+        );
+      }
+      if (pos) {
+        item.node.style.setProperty('--adlib-left', pos.left);
+        item.node.style.setProperty('--adlib-top', pos.top);
+        item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
+        item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
+        item.node.style.setProperty('--adlib-scale', pos.scale);
+        if (pos.zoneId !== undefined) lastZoneIdRef.current = pos.zoneId;
+      }
+      item.node.classList.add('active');
+      item.node.classList.remove('exiting', 'past');
+      item.isActive = true;
+    };
+
+    const deactivateItem = (item) => {
+      item.node.classList.remove('active');
+      item.node.classList.add('exiting');
+      item.isActive = false;
+    };
+
     const handleTime = (e) => {
       const time = e.detail;
       const nodes = cachedTrackNodesRef.current;
-      
-      for (let i = 0; i < nodes.length; i++) {
-        const item = nodes[i];
-        const shouldBeActive = time >= item.start && time <= item.end;
-        const isExiting = item.node.classList.contains('exiting');
+      const events = boundaryEventsRef.current;
 
-        if (isExiting) {
-          if (shouldBeActive) {
-            item.node.classList.add('active');
-            item.node.classList.remove('exiting', 'past');
-            item.isActive = true;
-          }
-          continue;
-        }
-
-        if (shouldBeActive && !item.isActive) {
-          let pos = null;
-          
-          const container = containerRef.current?.parentElement;
-          if (container) {
-            const containerRect = container.getBoundingClientRect();
-            
-            const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
-            const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
-            
-            const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
-            
-            const cBox = getRelativeRect(lyricsNode, containerRect);
-            if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
-                cBox.top -= 20;
-                cBox.bottom -= 20;
-            }
-            const sBox = getRelativeRect(singerNode, containerRect);
-            
-            pos = generateSafeAdlibPosition(
-              item.node, 
-              containerRect,
-              cBox,
-              sBox,
-              item.isMulti,
-              item.cols,
-              item.activeSingersList,
-              item.activeNames,
-              lastZoneIdRef.current
-            );
-          }
-          if (pos) {
-            item.node.style.setProperty('--adlib-left', pos.left);
-            item.node.style.setProperty('--adlib-top', pos.top);
-            item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
-            item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
-            item.node.style.setProperty('--adlib-scale', pos.scale);
-            if (pos.zoneId !== undefined) {
-              lastZoneIdRef.current = pos.zoneId;
-            }
-          }
-          item.node.classList.add('active');
-          item.node.classList.remove('exiting', 'past');
-          item.isActive = true;
-        } else if (!shouldBeActive && item.isActive) {
-          item.node.classList.remove('active');
-          if (time > item.end) {
-            item.node.classList.add('exiting');
-          } else {
-            item.node.classList.remove('exiting', 'past');
-          }
+      if (lastTimeRef.current === null || time < lastTimeRef.current) {
+        nodes.forEach(item => {
+          item.node.classList.remove('active', 'exiting', 'past');
           item.isActive = false;
-        } else if (!shouldBeActive && !item.isActive && time <= item.end) {
-          item.node.classList.remove('exiting', 'past');
+        });
+        lastZoneIdRef.current = null;
+        nodes.forEach(item => {
+          if (time >= item.start && time <= item.end) activateItem(item);
+        });
+
+        let low = 0;
+        let high = events.length;
+        while (low < high) {
+          const middle = (low + high) >>> 1;
+          if (events[middle].time <= time) low = middle + 1;
+          else high = middle;
+        }
+        boundaryCursorRef.current = low;
+      } else {
+        while (boundaryCursorRef.current < events.length && events[boundaryCursorRef.current].time <= time) {
+          const event = events[boundaryCursorRef.current++];
+          if (event.type === 'start' && time <= event.item.end && !event.item.isActive) {
+            activateItem(event.item);
+          } else if (event.type === 'end' && event.item.isActive && time > event.item.end) {
+            deactivateItem(event.item);
+          }
         }
       }
+
+      lastTimeRef.current = time;
     };
 
     const handlePlayState = (e) => {

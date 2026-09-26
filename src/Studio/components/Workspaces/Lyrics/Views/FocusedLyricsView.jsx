@@ -1,14 +1,30 @@
 /* --- src/components/Workspaces/Lyrics/Views/FocusedLyricsView.jsx --- */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
+import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './FocusedLyricsView.css';
 
 const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
+    const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
+    const adlibTimelineRef = useRef([]);
+    const adlibCursorRef = useRef(0);
+    const lastAdlibTimeRef = useRef(null);
     const activeLineIndexRef = useRef(-1);
+    const syncList = selectedSong?.syncData;
+    const nextStarts = useMemo(() => {
+        const syncData = syncList || [];
+        const result = Array(syncData.length).fill('NaN');
+        let nextStart = 'NaN';
+        for (let index = syncData.length - 1; index >= 0; index--) {
+            result[index] = nextStart;
+            if (syncData[index]?.start != null) nextStart = syncData[index].start;
+        }
+        return result;
+    }, [syncList]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,6 +58,11 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
                 isActive: node.classList.contains('active')
             };
         });
+                timedLinesRef.current = cachedLinesRef.current
+                    .map((line, index) => ({ ...line, index }))
+                    .filter(line => !isNaN(line.start))
+                    .sort((first, second) => first.start - second.start);
+                activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
         
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
             node,
@@ -49,6 +70,9 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
             end: parseFloat(node.dataset.end),
             state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
         }));
+        adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
+        adlibCursorRef.current = 0;
+        lastAdlibTimeRef.current = null;
 
         if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
             handleTimeUpdate(window.currentAudioTime);
@@ -62,12 +86,21 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     if (!isPlayingCurrentSong) return;
     
     const lines = cachedLinesRef.current;
-    let newActiveIndex = -1;
+    const timedLines = timedLinesRef.current;
+    let low = 0;
+    let high = timedLines.length;
+    while (low < high) {
+        const middle = (low + high) >>> 1;
+        if (timedLines[middle].start <= time) low = middle + 1;
+        else high = middle;
+    }
 
-    for (let i = 0; i < lines.length; i++) {
-        const { start, end } = lines[i];
-        if (!isNaN(start) && time >= start && (isNaN(end) || time <= end)) {
-            newActiveIndex = i;
+    let newActiveIndex = -1;
+    for (let i = low - 1; i >= 0; i--) {
+        const candidate = timedLines[i];
+        if (isNaN(candidate.end) || time <= candidate.end) {
+            newActiveIndex = candidate.index;
+            break;
         }
     }
 
@@ -80,50 +113,35 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     }
 
     const previousActiveIndex = activeLineIndexRef.current;
-    for (let i = 0; i < lines.length; i++) {
-        const item = lines[i];
-        const shouldBeActive = (i === newActiveIndex);
+    if (previousActiveIndex !== newActiveIndex) {
+        if (previousActiveIndex !== -1) {
+            const previousLine = lines[previousActiveIndex];
+            previousLine.node.classList.remove('active', 'past');
+            previousLine.node.classList.add('exiting');
+            previousLine.isActive = false;
+        }
 
-        if (shouldBeActive) {
-            item.node.classList.add('active');
-            item.node.classList.remove('exiting', 'past');
-            item.isActive = true;
-        } else if (i === previousActiveIndex && previousActiveIndex !== newActiveIndex) {
-            item.node.classList.remove('active', 'past');
-            item.node.classList.add('exiting');
-            item.isActive = false;
-        } else {
-            // Keep an exiting line mounted until its CSS animation finishes.
-            item.node.classList.remove('active', 'past');
-            item.isActive = false;
+        if (newActiveIndex !== -1) {
+            const activeLine = lines[newActiveIndex];
+            activeLine.node.classList.add('active');
+            activeLine.node.classList.remove('exiting', 'past');
+            activeLine.isActive = true;
+        }
+        activeLineIndexRef.current = newActiveIndex;
+    }
+
+    const adlibTimeline = adlibTimelineRef.current;
+    const lastAdlibTime = lastAdlibTimeRef.current;
+    if (lastAdlibTime === null || time < lastAdlibTime) {
+        cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(item, time));
+        adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
+    } else {
+        while (adlibCursorRef.current < adlibTimeline.length && adlibTimeline[adlibCursorRef.current].time <= time) {
+            updateAdlibStateAtTime(adlibTimeline[adlibCursorRef.current].item, time);
+            adlibCursorRef.current++;
         }
     }
-    activeLineIndexRef.current = newActiveIndex;
-
-    const adlibs = cachedAdlibsRef.current;
-    for (let i = 0; i < adlibs.length; i++) {
-        const item = adlibs[i];
-        if (isNaN(item.start)) continue;
-
-        let targetState = 'hidden';
-        if (time >= item.start && time <= item.end) targetState = 'active';
-        else if (time >= item.start) targetState = 'visible';
-        
-        if (item.state !== targetState) {
-            const cl = item.node.classList;
-            if (targetState === 'active') {
-                cl.add('adlib-active');
-                cl.remove('adlib-hidden', 'adlib-visible');
-            } else if (targetState === 'visible') {
-                cl.add('adlib-visible');
-                cl.remove('adlib-hidden', 'adlib-active');
-            } else {
-                cl.add('adlib-hidden');
-                cl.remove('adlib-active', 'adlib-visible');
-            }
-            item.state = targetState;
-        }
-    }
+    lastAdlibTimeRef.current = time;
   };
 
   useEffect(() => {
@@ -140,6 +158,8 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
                 item.state = 'hidden';
             }
         });
+        adlibCursorRef.current = 0;
+        lastAdlibTimeRef.current = null;
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
@@ -166,21 +186,12 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   return (
     <div className="focused-lyrics-preview" ref={containerRef}>
       {liveParsedLyrics.map((line, i) => {
-        let nextStart = 'NaN';
-        const syncList = selectedSong?.syncData || [];
-        for (let j = i + 1; j < syncList.length; j++) {
-            if (syncList[j]?.start != null) {
-                nextStart = syncList[j].start;
-                break;
-            }
-        }
-
         return (
             <LyricLineWrapper
                 key={i}
                 lineObj={line}
-                savedNode={syncList[i]}
-                nextStart={nextStart}
+                savedNode={syncList?.[i]}
+                nextStart={nextStarts[i]}
                 viewMode="focused"
                 handleLineClick={handleLineClick}
                 masterPalette={masterPalette}

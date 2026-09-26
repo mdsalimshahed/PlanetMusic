@@ -75,4 +75,4 @@ const LyricsDisplay = ({
   );
 };
 
-export default LyricsDisplay;
+export default React.memo(LyricsDisplay);

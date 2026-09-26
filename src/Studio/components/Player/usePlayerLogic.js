@@ -1,6 +1,7 @@
 /* --- src/Studio/components/Player/usePlayerLogic.js --- */
 import { useRef, useState, useEffect } from 'react';
 import { getAudioFile } from '../../../Application/services/db.js';
+import { getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock } from '../../utils/clockEngine.js';
 import { formatTime } from './PlayerUI.jsx';
@@ -22,6 +23,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const lastSyncTimeRef = useRef(0);
   const abortControllerRef = useRef(null);
   const sourceLoadGenerationRef = useRef(0);
+  const deezerObjectUrlRef = useRef(null);
   const audioCacheRef = useRef(new Map());
   const MAX_CACHE_SIZE = 5;
 
@@ -52,6 +54,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     return () => {
       if (abortControllerRef.current) abortControllerRef.current.abort();
       if (fallbackTimerRef.current) clearTimeout(fallbackTimerRef.current);
+      if (deezerObjectUrlRef.current) URL.revokeObjectURL(deezerObjectUrlRef.current);
       audioCacheRef.current.forEach(url => URL.revokeObjectURL(url));
       audioCacheRef.current.clear();
     };
@@ -221,6 +224,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
+      if (deezerObjectUrlRef.current) {
+        URL.revokeObjectURL(deezerObjectUrlRef.current);
+        deezerObjectUrlRef.current = null;
+      }
       if (ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
       }
@@ -281,6 +288,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
+      }
+      if (deezerObjectUrlRef.current) {
+        URL.revokeObjectURL(deezerObjectUrlRef.current);
+        deezerObjectUrlRef.current = null;
       }
       if (ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
@@ -345,49 +356,20 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               setFailedSources(prev => [...prev, 'deezer']);
               return;
             }
-            const cacheKey = `deezer_${trackId}`;
-            if (audioCacheRef.current.has(cacheKey)) {
-              setActiveSource('deezer');
-              setAudioSrc(audioCacheRef.current.get(cacheKey));
-              return;
-            }
-            
             setActiveSource('deezer');
             setIsBuffering(true);
             const controller = new AbortController();
             abortControllerRef.current = controller;
             
             try {
-              const formData = new FormData();
-              formData.append('session_id', `stream_${Date.now()}`);
-              formData.append('url', dzUrl);
-              formData.append('arl_token', settings?.deezerArl?.trim() || '');
-              formData.append('quality', '1');
-              formData.append('action', 'stream');
-              formData.append('obfuscate', 'true');
-              
-              const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
-                method: 'POST',
-                body: formData,
-                signal: controller.signal
-              });
-              
-              if (!response.ok) throw new Error("Deezer stream failed");
-              
-              const buffer = await response.arrayBuffer();
-              const data = new Uint8Array(buffer);
-              
-              if (response.headers.get('X-Audio-Obfuscated') === 'true') {
-                const OBFUSCATION_KEY = 0x5A;
-                const limit = Math.min(data.length, 2048);
-                for (let i = 0; i < limit; i++) {
-                  data[i] ^= OBFUSCATION_KEY;
-                }
-              }
-              const blob = new Blob([data], { type: 'audio/mpeg' });
+              const blob = await getDeezerAudioBlob(
+                dzUrl,
+                settings?.deezerArl?.trim() || '',
+                controller.signal
+              );
+              if (sourceLoadGeneration !== sourceLoadGenerationRef.current || controller.signal.aborted) return;
               const url = URL.createObjectURL(blob);
-              addToCache(cacheKey, url);
-              
+              deezerObjectUrlRef.current = url;
               if (!controller.signal.aborted) {
                 setAudioSrc(url);
               }

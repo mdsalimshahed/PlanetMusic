@@ -2,6 +2,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './DynamicBackground.css';
 
+const ARTIST_IMAGE_CACHE_LIMIT = 48;
+const artistImagePreloadCache = new Map();
+
+const preloadArtistImage = (url, priority = 'low') => {
+  if (!url) return Promise.resolve(false);
+
+  const cached = artistImagePreloadCache.get(url);
+  if (cached) {
+    artistImagePreloadCache.delete(url);
+    artistImagePreloadCache.set(url, cached);
+    if (priority === 'high') cached.image.fetchPriority = priority;
+    return cached.promise;
+  }
+
+  const image = new Image();
+  image.decoding = 'async';
+  image.fetchPriority = priority;
+  image.src = url;
+
+  const entry = { image, promise: null };
+  entry.promise = image.decode().then(
+    () => true,
+    () => {
+      if (artistImagePreloadCache.get(url) === entry) {
+        artistImagePreloadCache.delete(url);
+      }
+      return false;
+    }
+  );
+  artistImagePreloadCache.set(url, entry);
+
+  if (artistImagePreloadCache.size > ARTIST_IMAGE_CACHE_LIMIT) {
+    const oldestUrl = artistImagePreloadCache.keys().next().value;
+    artistImagePreloadCache.delete(oldestUrl);
+  }
+
+  return entry.promise;
+};
+
 // A standalone component for each artist layer. 
 // This ensures that when React mounts a new artist, it correctly starts at opacity 0, 
 // waits one frame, and then triggers the CSS crossfade without "popping in".
@@ -9,9 +48,18 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
   const [renderedActive, setRenderedActive] = useState(false);
   const [imageReady, setImageReady] = useState(false);
 
-  const handleImageLoad = (event) => {
-    const layerImages = event.currentTarget.closest('.matrix-watermark-container')?.querySelectorAll('img');
-    if (!layerImages || Array.from(layerImages).every(image => image.complete)) {
+  const handleImageLoad = async (event) => {
+    const image = event.currentTarget;
+    const layerImages = image.closest('.matrix-watermark-container')?.querySelectorAll('img');
+    if (!layerImages) {
+      await image.decode().catch(() => {});
+      setImageReady(true);
+      return;
+    }
+
+    const images = Array.from(layerImages);
+    if (images.every(layerImage => layerImage.complete)) {
+      await Promise.all(images.map(layerImage => layerImage.decode().catch(() => {})));
       setImageReady(true);
     }
   };
@@ -47,7 +95,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
     return (
       <img
           src={finalImgUrl}
-          loading="lazy"
+          loading="eager"
           decoding="async"
           onLoad={handleImageLoad}
           alt=""
@@ -71,7 +119,7 @@ const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singer
               {finalImgUrl && (
                 <img
                     src={finalImgUrl}
-                    loading="lazy"
+                    loading="eager"
                     decoding="async"
                     onLoad={handleImageLoad}
                     alt=""
@@ -100,19 +148,17 @@ const DynamicBackground = ({
   const activeComboKey = activeNames.join('|');
   const isMulti = activeNames.length > 1;
 
-  // --- PRELOADER ENGINE (Fixes Artist Image Pop-In) ---
+  // Preload current artists first, then retain likely next images in a shared cache.
   useEffect(() => {
-    if (!allPotentialSingers) return;
-    
-    allPotentialSingers.forEach(singer => {
+    const prioritizedNames = activeComboKey.split('|').filter(Boolean);
+    const candidateNames = [...new Set(allPotentialSingers || [])];
+    const namesToPreload = [...new Set([...candidateNames, ...prioritizedNames])];
+
+    namesToPreload.forEach(singer => {
       const finalImgUrl = customData.artistImages?.[singer] ?? globalArtistData?.images?.[singer] ?? singerImages[singer];
-      if (finalImgUrl) {
-        // Creates a silent background request to force the browser to cache the image into memory
-        const preloader = new Image();
-        preloader.src = finalImgUrl;
-      }
+      preloadArtistImage(finalImgUrl, prioritizedNames.includes(singer) ? 'high' : 'low');
     });
-  }, [allPotentialSingers, customData.artistImages, globalArtistData.images, singerImages]);
+  }, [allPotentialSingers, activeComboKey, customData.artistImages, globalArtistData?.images, singerImages]);
 
   // --- LAYER STACK GARBAGE COLLECTION ENGINE ---
   const [layers, setLayers] = useState([]);

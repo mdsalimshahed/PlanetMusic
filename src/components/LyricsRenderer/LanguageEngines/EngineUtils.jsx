@@ -227,12 +227,13 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   const isPunctuation = (char) => /^[\p{P}\p{S}]+$/u.test(char);
 
-  const flushWord = (keySuffix) => {
+  const flushWord = () => {
     if (currentWord.length > 0) {
       const shouldWrap = hyphenCount > 3;
+      const wordKey = currentWordIndex;
       words.push(
         <span
-          key={`w-${keySuffix}`}
+          key={`w-${wordKey}`}
           className="lyric-word"
           style={
             shouldWrap
@@ -268,7 +269,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   for (let i = 0; i < elements.length; i++) {
     if (!elements[i]) {
-      flushWord(i);
+      flushWord();
       words.push(elements[i]);
       continue;
     }
@@ -277,10 +278,10 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
 
     if (shouldBreak) {
-      flushWord(i);
+      flushWord();
       words.push(elements[i]); 
     } else if (isPunctuation(char)) {
-      flushWord(i);
+      flushWord();
 
       let previousIndex = words.length - 1;
       const space = words[previousIndex] && !words[previousIndex].props?.className?.includes('lyric-word') ? words[previousIndex] : null;
@@ -289,7 +290,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       const previousWord = words[previousIndex];
       currentWord = [elements[i]];
       currentWordIndex = state.index++;
-      flushWord(i);
+      flushWord();
       const punctuationWord = words.pop();
 
       if (previousWord && punctuationWord) {
@@ -312,7 +313,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     }
   }
 
-  flushWord('end');
+  flushWord();
   return words;
 };
 

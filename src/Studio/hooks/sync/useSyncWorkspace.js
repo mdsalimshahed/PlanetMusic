@@ -1,6 +1,7 @@
 /* --- src/Studio/hooks/sync/useSyncWorkspace.js --- */
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { getAudioFile } from '../../../Application/services/db.js';
+import { getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers.js';
 import { workspaceClock } from '../../utils/clockEngine.js';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic.js';
@@ -33,7 +34,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
-  const cachedUrlsRef = useRef({ local: null, deezer: null });
+  const cachedUrlsRef = useRef({ local: null, deezer: null, deezerKey: null });
+  const syncLoadGenerationRef = useRef(0);
 
   useEffect(() => {
     workspaceClock.setEventName('workspaceTimeUpdate');
@@ -81,7 +83,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       
       if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
       if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
-      cachedUrlsRef.current = { local: null, deezer: null };
+      cachedUrlsRef.current = { local: null, deezer: null, deezerKey: null };
     }
   }, [selectedSong]);
 
@@ -118,6 +120,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   }, [isSyncLoading]);
 
   useEffect(() => {
+    const loadGeneration = ++syncLoadGenerationRef.current;
+    const isCurrentLoad = () => loadGeneration === syncLoadGenerationRef.current;
+
     const loadSyncAudio = async () => {
       if (isSyncMode && songTrackId) {
         const sourceToLoad = computedSource;
@@ -153,6 +158,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
               setActiveSyncSource('local');
             } else {
               const file = await getAudioFile(songTrackId);
+              if (!isCurrentLoad()) return;
               if (file) {
                 const url = URL.createObjectURL(file);
                 cachedUrlsRef.current.local = url;
@@ -166,53 +172,39 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             setActiveSyncSource('youtube');
           } else if (sourceToLoad === 'deezer') {
             setActiveSyncSource('deezer');
-            
-            if (cachedUrlsRef.current.deezer) {
+
+            const dzUrl = deezerCustomLink;
+            const deezerKey = `${dzUrl}|quality=1`;
+            if (cachedUrlsRef.current.deezer && cachedUrlsRef.current.deezerKey === deezerKey) {
               setSyncAudioSrc(cachedUrlsRef.current.deezer);
             } else {
               setIsSyncLoading(true);
-              const dzUrl = deezerCustomLink;
-              const formData = new FormData();
-              formData.append('session_id', `stream_${Date.now()}`);
-              formData.append('url', dzUrl);
-              formData.append('arl_token', settings?.deezerArl || '');
-              formData.append('quality', '1');
-              formData.append('action', 'stream');
-              formData.append('obfuscate', 'true');
-              
-              const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
-                method: 'POST',
-                body: formData
-              });
-              if (!response.ok) throw new Error("Deezer secure stream buffer failed.");
-              const buffer = await response.arrayBuffer();
-              const data = new Uint8Array(buffer);
-              
-              if (response.headers.get('X-Audio-Obfuscated') === 'true') {
-                const OBFUSCATION_KEY = 0x5A;
-                const limit = Math.min(data.length, 2048);
-                for (let i = 0; i < limit; i++) {
-                  data[i] ^= OBFUSCATION_KEY;
-                }
-              }
-              const blob = new Blob([data], { type: 'audio/mpeg' });
+              const blob = await getDeezerAudioBlob(dzUrl, settings?.deezerArl || '');
+              if (!isCurrentLoad()) return;
+
+              if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
               const url = URL.createObjectURL(blob);
               cachedUrlsRef.current.deezer = url;
+              cachedUrlsRef.current.deezerKey = deezerKey;
               setSyncAudioSrc(url);
             }
           }
         } catch (e) {
+          if (!isCurrentLoad()) return;
           console.error("Audio stream initialization issue:", e);
           if (availableSources.includes('youtube')) setManualSource('youtube');
           else if (availableSources.includes('local')) setManualSource('local');
         } finally {
-          setIsSyncLoading(false);
+          if (isCurrentLoad()) setIsSyncLoading(false);
         }
       } else {
         setIsSyncLoading(false);
       }
     };
     loadSyncAudio();
+    return () => {
+      syncLoadGenerationRef.current++;
+    };
   }, [isSyncMode, computedSource, songTrackId, ytCustomLink, deezerCustomLink, settings?.deezerArl]);
 
   useEffect(() => {
