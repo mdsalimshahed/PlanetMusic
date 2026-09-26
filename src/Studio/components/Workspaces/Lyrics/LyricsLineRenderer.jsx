@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
+import { toSmartPunctuation } from '../../../../utils/smartPunctuation.js';
 import './LyricsLineRenderer.css';
 
 // Re-export formatter utilities from their new centralized locations so the Views don't break
@@ -10,11 +11,31 @@ export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
 export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
-  const { chars, hasSpacingText } = extractCharsAndSegments(lineObj, savedNode);
+  const displayLine = {
+    ...lineObj,
+    text: toSmartPunctuation(lineObj.text),
+    segments: lineObj.segments?.map(segment => ({
+      ...segment,
+      text: toSmartPunctuation(segment.text)
+    }))
+  };
+  const displayNode = savedNode ? {
+    ...savedNode,
+    spacingText: toSmartPunctuation(savedNode.spacingText),
+    translation: toSmartPunctuation(savedNode.translation),
+    pronunciation: toSmartPunctuation(savedNode.pronunciation),
+    adlibs: savedNode.adlibs?.map(adlib => ({
+      ...adlib,
+      text: toSmartPunctuation(adlib.text),
+      translation: toSmartPunctuation(adlib.translation),
+      pronunciation: toSmartPunctuation(adlib.pronunciation)
+    }))
+  } : savedNode;
+  const { chars, hasSpacingText } = extractCharsAndSegments(displayLine, displayNode);
 
   const commonProps = {
-    lineObj,
-    savedNode,
+    lineObj: displayLine,
+    savedNode: displayNode,
     masterPalette,
     isPlayingCurrentSong,
     chars,

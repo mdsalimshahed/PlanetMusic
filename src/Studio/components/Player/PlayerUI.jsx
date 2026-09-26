@@ -1,5 +1,6 @@
 /* --- src/Studio/components/Player/PlayerUI.jsx --- */
 import React, { useRef, useState, useEffect } from 'react';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
 // Exported for the logic hook to use when updating the raw DOM refs
 export const formatTime = (seconds) => {
@@ -13,6 +14,7 @@ export const MarqueeText = ({ text, className }) => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const displayText = toSmartPunctuation(text);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -35,8 +37,8 @@ export const MarqueeText = ({ text, className }) => {
       }}
     >
       <div className={`marquee-content ${isOverflowing ? 'animate-marquee' : ''}`}>
-        <span ref={textRef} className="marquee-text">{text}</span>
-        {isOverflowing && <span className="marquee-text gap-pl">{text}</span>}
+        <span ref={textRef} className="marquee-text">{displayText}</span>
+        {isOverflowing && <span className="marquee-text gap-pl">{displayText}</span>}
       </div>
     </div>
   );

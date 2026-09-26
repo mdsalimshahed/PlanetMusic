@@ -46,13 +46,13 @@ const PrivacyTab = ({ adsEnabled }) => {
                   <strong>Zero Central Hosting:</strong> PlanetMusic does <em>not</em> host, upload, store, or distribute copyrighted media, full audio recordings, official master tracks, or proprietary media files on central servers.
                 </li>
                 <li>
-                  <strong>Client-Side Storage Sovereignty:</strong> All song cards, metadata entries, attached audio samples, custom lyrics, and synced timestamp data are created by the user and stored 100% locally inside the user's personal browser storage (IndexedDB and LocalStorage).
+                  <strong>Client-Side Storage Sovereignty:</strong> All song cards, metadata entries, attached audio samples, custom lyrics, and synced timestamp data are created by the user and stored 100% locally inside the user’s personal browser storage (IndexedDB and LocalStorage).
                 </li>
                 <li>
                   <strong>Educational & Accessibility Use:</strong> The interactive lyric canvases, side-by-side translations, phonetic transliteration guides, and alignment tools provided by PlanetMusic are intended purely for private, non-commercial, educational, research, and language-learning purposes.
                 </li>
                 <li>
-                  <strong>Public Search Integrations:</strong> Metadata searches, cover artwork, and public information retrieved through third-party services (such as iTunes or public database endpoints) are fetched directly by the user's browser client for identification purposes only.
+                  <strong>Public Search Integrations:</strong> Metadata searches, cover artwork, and public information retrieved through third-party services (such as iTunes or public database endpoints) are fetched directly by the user’s browser client for identification purposes only.
                 </li>
               </ul>
             </div>
@@ -68,12 +68,12 @@ const PrivacyTab = ({ adsEnabled }) => {
               
               <h3>A. LocalStorage</h3>
               <p>
-                Your browser's <code>localStorage</code> is used to persist your personal application preferences, custom visual card scales, lyric font ratios, color palettes, and saved track metadata locally on your device.
+                Your browser’s <code>localStorage</code> is used to persist your personal application preferences, custom visual card scales, lyric font ratios, color palettes, and saved track metadata locally on your device.
               </p>
 
               <h3>B. IndexedDB (`PlanetMusicDB`)</h3>
               <p>
-                When you attach local audio files to tracks in your vault, they are saved directly into your browser's private <code>IndexedDB</code> binary storage. These files remain entirely on your device and are never transmitted to external servers.
+                When you attach local audio files to tracks in your vault, they are saved directly into your browser’s private <code>IndexedDB</code> binary storage. These files remain entirely on your device and are never transmitted to external servers.
               </p>
 
               <h3>C. No Account Tracking</h3>

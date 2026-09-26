@@ -1,6 +1,7 @@
 /* --- src/components/Workspaces/Lyrics/Views/PlainLyricsView.jsx --- */
 import React, { useMemo } from 'react';
 import { getGraphemes } from '../../../../../components/LyricsRenderer/textUtils.js';
+import { toSmartPunctuation } from '../../../../../utils/smartPunctuation.js';
 import './PlainLyricsView.css';
 
 const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
@@ -76,7 +77,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
       parentStyle = { color: activeColor };
     }
 
-    const chars = getGraphemes(item.text || '');
+    const chars = getGraphemes(toSmartPunctuation(item.text || ''));
     const renderedChars = chars.map((char, cIdx) => {
       const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
       let childStyle = {};
@@ -104,7 +105,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
   const renderColoredSingerHeader = (singerString) => {
     if (!singerString) {
       const defaultSinger = selectedSong?.artistName || 'Default Artist';
-      return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{defaultSinger}</span>;
+      return <span style={{ color: masterPalette[defaultSinger] || '#ffffff' }}>{toSmartPunctuation(defaultSinger)}</span>;
     }
     const artists = singerString.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
     
@@ -112,7 +113,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
       const artistColor = masterPalette[artist] || '#ffffff';
       return (
         <React.Fragment key={aIdx}>
-          <span style={{ color: artistColor }}>{artist}</span>
+          <span style={{ color: artistColor }}>{toSmartPunctuation(artist)}</span>
           {aIdx < artists.length - 1 && <span style={{ color: 'rgba(255, 255, 255, 0.4)', margin: '0 4px' }}>, </span>}
         </React.Fragment>
       );
@@ -129,6 +130,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
             if (displayHeader.includes(':')) {
               displayHeader = displayHeader.split(':')[0].trim();
             }
+            displayHeader = toSmartPunctuation(displayHeader);
           }
 
           return (
@@ -159,7 +161,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
                       )}
                     </div>
                     {line.translation && (
-                      <span className="plain-lyric-translation" dir="ltr">{line.translation}</span>
+                      <span className="plain-lyric-translation" dir="ltr">{toSmartPunctuation(line.translation)}</span>
                     )}
                   </div>
                 ))}

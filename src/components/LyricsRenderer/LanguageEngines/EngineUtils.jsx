@@ -1,6 +1,7 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/EngineUtils.jsx --- */
 import React from 'react';
 import { getGraphemes, normalizeTrans } from '../textUtils.js';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
 // --- COLOR INTERPOLATION HELPERS ---
 export const hexToRgb = (hex) => {
@@ -89,7 +90,7 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
 
 export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
-  const parts = text.split(/(\s+)/u);
+  const parts = toSmartPunctuation(text).split(/(\s+)/u);
   const renderedParts = parts.map((part, pIdx) => {
     if (!part) return null;
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);

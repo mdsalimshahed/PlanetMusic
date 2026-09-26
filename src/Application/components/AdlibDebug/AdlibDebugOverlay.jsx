@@ -1,5 +1,6 @@
 /* --- src/components/AdlibDebug/AdlibDebugOverlay.jsx --- */
 import React, { useEffect, useRef, useState } from 'react';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './AdlibDebugOverlay.css';
 
 const getClosestPoints = (r1, r2) => {
@@ -555,7 +556,7 @@ const AdlibDebugOverlay = ({
                   <strong>Placement:</strong> {stat.isCorrect ? (
                       <span style={{color: '#4ade80'}}>  Correct Quadrant ({stat.evalMode})</span>
                     ) : (
-                      <span style={{color: '#ef4444'}}>  Wrong (in {stat.quadArtist}'s quad)</span>
+                      <span style={{color: '#ef4444'}}>  Wrong (in {toSmartPunctuation(stat.quadArtist)}’s quad)</span>
                     )}
                 </div>
                 <div>

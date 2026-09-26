@@ -1,6 +1,7 @@
 /* --- src/App.jsx --- */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
+import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
 
 // Core root styles
@@ -286,12 +287,12 @@ const App = () => {
         ) : isSearching ? (
           <div className="empty-message glass-panel">
             <h2>Searching the Cosmos...</h2>
-            <p>Looking for "{searchQuery}"</p>
+            <p>Looking for “{toSmartPunctuation(searchQuery)}”</p>
           </div>
         ) : (
           <div className="empty-message glass-panel">
             <h2>No matches found</h2>
-            <p>No songs match "{searchQuery}" in your Vault or Cosmos.</p>
+            <p>No songs match “{toSmartPunctuation(searchQuery)}” in your Vault or Cosmos.</p>
           </div>
         )
       )}
@@ -424,7 +425,7 @@ const App = () => {
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
             <h3>Remove Song?</h3>
-            <p>Are you sure you want to delete <strong>{songToRemove.trackName}</strong> from your Vault? This action cannot be undone.</p>
+            <p>Are you sure you want to delete <strong>{toSmartPunctuation(songToRemove.trackName)}</strong> from your Vault? This action cannot be undone.</p>
             <div className="confirm-actions">
               <button className="confirm-btn cancel" onClick={cancelRemove}>Cancel</button>
               <button className="confirm-btn delete" onClick={confirmRemove}>Delete</button>

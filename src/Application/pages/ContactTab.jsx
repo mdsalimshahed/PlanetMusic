@@ -64,7 +64,7 @@ const ContactTab = ({ adsEnabled }) => {
           <div className="contact-hero glass-panel">
             <h1 className="contact-hero-title">Get in Touch</h1>
             <p className="contact-hero-sub">
-              Have a question, feedback, or a legal inquiry? We're here to help. 
+              Have a question, feedback, or a legal inquiry? We’re here to help.
             </p>
           </div>
 

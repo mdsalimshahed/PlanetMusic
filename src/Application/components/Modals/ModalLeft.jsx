@@ -1,6 +1,7 @@
 /* --- src/components/Modals/ModalLeft.jsx --- */
 import React, { useState, useEffect } from 'react';
 import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../../Studio/utils/songHelpers.js';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './ModalLeft.css';
 
 // SVG Icon Helper
@@ -167,13 +168,13 @@ const ModalLeft = ({
           <img src={highResArt} alt="Artwork" className="modal-cover" />
           <div className="modal-header-info">
             <h2>
-              {mainTitle}
+              {toSmartPunctuation(mainTitle)}
               {extras.map((extra, idx) => (
-                <span key={idx} className="title-extra"> ({extra})</span>
+                <span key={idx} className="title-extra"> ({toSmartPunctuation(extra)})</span>
               ))}
             </h2>
             <div className="modal-artist-row">
-              <strong>{selectedSong.artistName}</strong>
+              <strong>{toSmartPunctuation(selectedSong.artistName)}</strong>
               <span className="album-subtext">
                 {selectedSong.trackNumber && releaseType !== 'Single' ? `#${selectedSong.trackNumber} on ${releaseType}` : releaseType}
               </span>
@@ -184,7 +185,7 @@ const ModalLeft = ({
           {featuredArtists.length > 0 && (
             <div className="detail-item">
               <label>Featured Artists</label>
-              <p>{featuredArtists.join(', ')}</p>
+              <p>{toSmartPunctuation(featuredArtists.join(', '))}</p>
             </div>
           )}
           {selectedSong.releaseDate && (
@@ -385,7 +386,7 @@ const ModalLeft = ({
                 </>
               ) : hasPlainLyrics ? (
                 <span className="no-sync-warning">
-                  Lyrics aren't synced. Manual or Auto-Sync is needed.
+                  Lyrics aren’t synced. Manual or Auto-Sync is needed.
                 </span>
               ) : (
                 <span className="no-sync-warning">

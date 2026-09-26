@@ -1,6 +1,7 @@
 /* --- src/Application/components/Core/Background.jsx --- */
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { fetchSingerImage } from '../../utils/apiUtils.js';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './Background.css';
 
 // Helper to resolve the correct artist image across all storage scopes, now with Wikipedia API fallback
@@ -417,8 +418,8 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
           >
             <img src={b.photo} alt={b.artist} className="bubble-artist-photo" />
             <div className="bubble-content">
-              <span className="bubble-artist">{b.artist}</span>
-              <span className="bubble-lyric">"{b.line}"</span>
+              <span className="bubble-artist">{toSmartPunctuation(b.artist)}</span>
+              <span className="bubble-lyric">“{toSmartPunctuation(b.line)}”</span>
             </div>
           </div>
         ))}

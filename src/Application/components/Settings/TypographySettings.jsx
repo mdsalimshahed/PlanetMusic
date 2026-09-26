@@ -57,7 +57,7 @@ const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider 
       label="Artist Transition Timing" 
-      description="How long a singer's name delays before fading in (useful for fast duets)." 
+      description="How long a singer’s name delays before fading in (useful for fast duets)."
       name="artistTransitionTime" value={settings.artistTransitionTime ?? 0} min={0} max={3000} step={100} unit="ms" 
       handleChange={handleChange} getSliderStyle={getSliderStyle} 
     />

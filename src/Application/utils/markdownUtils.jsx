@@ -1,5 +1,6 @@
 /* --- src/utils/markdownUtils.jsx --- */
 import React from 'react';
+import { toSmartPunctuation } from '../../utils/smartPunctuation.js';
 
 // Vibrant bold text colors palette
 const BOLD_COLORS = [
@@ -139,12 +140,12 @@ const parseInline = (text) => {
       const boldColor = getRandomColor();
       return (
         <strong key={i} style={{ color: boldColor, fontWeight: 800 }}>
-          {boldText}
+          {toSmartPunctuation(boldText)}
         </strong>
       );
     }
     if (part.startsWith('*') && part.endsWith('*')) {
-      return <em key={i}>{part.slice(1, -1)}</em>;
+      return <em key={i}>{toSmartPunctuation(part.slice(1, -1))}</em>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return <code key={i}>{part.slice(1, -1)}</code>;
@@ -153,10 +154,10 @@ const parseInline = (text) => {
     if (linkMatch) {
       return (
         <a key={i} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)' }}>
-          {linkMatch[1]}
+          {toSmartPunctuation(linkMatch[1])}
         </a>
       );
     }
-    return part;
+    return toSmartPunctuation(part);
   });
 };

@@ -1,6 +1,7 @@
 /* --- src/components/Core/SongCard.jsx --- */
 import React, { useState, useEffect } from 'react';
 import { extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './SongCard.css';
 
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
@@ -93,7 +94,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
       <div className="artwork-wrapper">
         <img
           src={highResArt}
-          alt={song.trackName}
+          alt={toSmartPunctuation(song.trackName)}
           className="artwork"
           loading="lazy"
           decoding="async"
@@ -133,12 +134,12 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
         )}
 
         <div className="card-info-text-only">
-          <h4 title={song.trackName}>
-            <span className="text-fill-span">{song.trackName}</span>
+          <h4 title={toSmartPunctuation(song.trackName)}>
+            <span className="text-fill-span">{toSmartPunctuation(song.trackName)}</span>
           </h4>
           
-          <p title={song.artistName}>
-            <span className="text-fill-span artist-span">{song.artistName}</span>
+          <p title={toSmartPunctuation(song.artistName)}>
+            <span className="text-fill-span artist-span">{toSmartPunctuation(song.artistName)}</span>
           </p>
         </div>
       </div>
