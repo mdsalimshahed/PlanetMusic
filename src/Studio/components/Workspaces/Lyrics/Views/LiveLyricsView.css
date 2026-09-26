@@ -46,7 +46,7 @@
   transform-origin: left center;
   transition:
     opacity 0.5s ease,
-    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform 0.18s ease-out;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   box-sizing: border-box;
@@ -60,6 +60,9 @@
 .preview-line.active {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Soft dark drop-shadow behind main text */
