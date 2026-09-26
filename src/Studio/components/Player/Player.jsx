@@ -53,9 +53,9 @@ const Player = (props) => {
         style={{
           position: 'fixed',
           top: 0,
-          left: 0,
-          width: '1px',
-          height: '1px',
+          left: '-220px',
+          width: '200px',
+          height: '200px',
           opacity: 0.01,
           pointerEvents: 'none',
           overflow: 'hidden',

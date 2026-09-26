@@ -409,14 +409,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
           autoplay: 1, playsinline: 1, rel: 0, enablejsapi: 1,
-          suggestedQuality: 'small', origin: window.location.origin
+          suggestedQuality: 'highres', origin: window.location.origin
         },
         events: {
           onReady: (event) => {
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
-              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('small');
+              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('highres');
               event.target.setVolume(volume * 100);
               const dur = event.target.getDuration();
               if (dur && !isNaN(dur)) setDuration(dur);
@@ -440,7 +440,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               emitPlayState(true, false);
               
               if (ytPlayerRef.current) {
-                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('small');
+                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('highres');
                 const dur = ytPlayerRef.current.getDuration();
                 if (dur && !isNaN(dur)) setDuration(dur);
               }
