@@ -89945,6 +89945,4148 @@
       "hasDeezerMetaBound": true,
       "forceSource": "deezer",
       "playId": 1788287302623
+    },
+    {
+      "wrapperType": "track",
+      "kind": "song",
+      "artistId": 1616740364,
+      "collectionId": 1682502020,
+      "trackId": 1682502483,
+      "artistName": "LE SSERAFIM",
+      "collectionName": "UNFORGIVEN",
+      "trackName": "Eve, Psyche & The Bluebeard’s wife",
+      "collectionViewUrl": "https://music.apple.com/us/album/eve-psyche-the-bluebeards-wife/1682502020?i=1682502483&uo=4",
+      "previewUrl": "",
+      "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/27/13/c3/2713c389-4f01-b5e7-59f5-3204b37cb594/196922444470_Cover.jpg/100x100bb.jpg",
+      "collectionPrice": 15.99,
+      "trackPrice": 1.29,
+      "releaseDate": "2023-05-01T12:00:00Z",
+      "collectionExplicitness": "notExplicit",
+      "trackExplicitness": "notExplicit",
+      "discCount": 1,
+      "discNumber": 1,
+      "trackCount": 13,
+      "trackNumber": 10,
+      "trackTimeMillis": 185539,
+      "country": "USA",
+      "currency": "USD",
+      "primaryGenreName": "K-Pop",
+      "isStreamable": true,
+      "sourceNames": [
+        "iTunes"
+      ],
+      "autoSyncData": [
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Refrain: Huh Yunjin]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 5.79,
+          "end": 8.83,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 8.83,
+          "end": 12.35,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess in distress, but we're still the best dressed",
+          "segments": [
+            {
+              "text": "I'm a mess in distress, but we're still the best dressed",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 12.35,
+          "end": 15.64,
+          "isSplit": false
+        },
+        {
+          "text": "Fearless, say yes, we don't dress to impress",
+          "segments": [
+            {
+              "text": "Fearless, say yes, we don't dress to impress",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 15.64,
+          "end": 20.09,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮단다 뭐를 해도",
+          "segments": [
+            {
+              "text": "괜찮단다 뭐를 해도",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Kim Chaewon, _Kazuha_, **Hong Eunchae**, **_Huh Yunjin_**]",
+          "translation": "It's okay, whatever you do",
+          "pronunciation": "{\"full\":\"gwaenchanhdanda mwoleul haedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮단다\",\"trans\":\"gwaenchanhdanda\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 20.09,
+          "end": 23.04,
+          "isSplit": false
+        },
+        {
+          "text": "거짓말인 걸 난 알아",
+          "segments": [
+            {
+              "text": "거짓말인 걸 난 알아",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I know it's a lie",
+          "pronunciation": "{\"full\":\"geojismal-in geol nan al-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"거짓말인\",\"trans\":\"geojismal-in\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알아\",\"trans\":\"al-a\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 23.04,
+          "end": 26.72,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮겠지 뭘 해도",
+          "segments": [
+            {
+              "text": "괜찮겠지 뭘 해도",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "It'll be okay no matter what",
+          "pronunciation": "{\"full\":\"gwaenchanhgessji mwol haedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮겠지\",\"trans\":\"gwaenchanhgessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭘\",\"trans\":\"mwol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 26.72,
+          "end": 29.24,
+          "isSplit": false
+        },
+        {
+          "text": "착한 얼굴에 네 말 잘 들을 땐",
+          "segments": [
+            {
+              "text": "착한 얼굴에 네 말 잘 들을 땐",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "When I listen to you with a kind face",
+          "pronunciation": "{\"full\":\"chaghan eolgul-e ne mal jal deul-eul ttaen\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼굴에\",\"trans\":\"eolgul-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"네\",\"trans\":\"ne\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘\",\"trans\":\"jal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들을\",\"trans\":\"deul-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"땐\",\"trans\":\"ttaen\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 29.24,
+          "end": 33.71,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮지 않아 그런 건",
+          "segments": [
+            {
+              "text": "괜찮지 않아 그런 건",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "That's not okay",
+          "pronunciation": "{\"full\":\"gwaenchanhji anh-a geuleon geon\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮지\",\"trans\":\"gwaenchanhji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않아\",\"trans\":\"anh-a\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그런\",\"trans\":\"geuleon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"건\",\"trans\":\"geon\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 33.71,
+          "end": 36.58,
+          "isSplit": false
+        },
+        {
+          "text": "내 룰은 나만 정할래, yeah",
+          "segments": [
+            {
+              "text": "내 룰은 나만 정할래, yeah",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I'm the only one who decides my own rules, yeah",
+          "pronunciation": "{\"full\":\"nae lul-eun naman jeonghallae, yeah\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"룰은\",\"trans\":\"lul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나만\",\"trans\":\"naman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"정할래,\",\"trans\":\"jeonghallae,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 36.58,
+          "end": 40.57,
+          "isSplit": false
+        },
+        {
+          "text": "볼 거야 금지된 걸",
+          "segments": [
+            {
+              "text": "볼 거야 금지된 걸",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I'm going to see something that's forbidden",
+          "pronunciation": "{\"full\":\"bol geoya geumjidoen geol\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"볼\",\"trans\":\"bol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거야\",\"trans\":\"geoya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"금지된\",\"trans\":\"geumjidoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 40.57,
+          "end": 43.02,
+          "isSplit": false
+        },
+        {
+          "text": "Never hold back, 더 자유롭게",
+          "segments": [
+            {
+              "text": "Never hold back, 더 자유롭게",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Never hold back, more freely",
+          "pronunciation": "{\"full\":\"Never hold back, deo jayulobge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Never\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hold\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"back,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자유롭게\",\"trans\":\"jayulobge\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 43.02,
+          "end": 46.13,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Kim Chaewon, _Sakura_, **Hong Eunchae**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 46.56760000000149,
+          "end": 49.86439999999851,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 49.94439999999851,
+          "end": 51.111000000000004,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Hong Eunchae",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #9a86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 51.17510000000149,
+          "end": 53.12739999999852,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 52.4786,
+              "end": 53.12739999999852,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#9a86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Hong Eunchae"
+                  ]
+                }
+              ],
+              "singer": "Hong Eunchae",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 53.208100000001494,
+          "end": 56.44770000000298,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 56.520500000000006,
+          "end": 57.8325,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 57.904600000001494,
+          "end": 59.168700000002985,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Huh Yunjin, _Kim Chaewon_, **Kazuha**, **_Hong Eunchae_**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 59.25720000000299,
+          "end": 63.31370000000299,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 59.25730000000448,
+              "end": 60.823699999999995,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 63.392500000000005,
+          "end": 65.96809999999404,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 66.042,
+          "end": 69.76310000000149,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 66.042,
+              "end": 67.15390000000596,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#86d4f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kazuha"
+                  ]
+                }
+              ],
+              "singer": "Kazuha",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 69.84169999999553,
+          "end": 72.71339999999851,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Refrain: Sakura, _Hong Eunchae_, **Kazuha**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 72.73,
+          "end": 75.82,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 75.82,
+          "end": 79.78,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess in distress, but we're still the best dressed",
+          "segments": [
+            {
+              "text": "I'm a mess in distress, but we're still the best dressed",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 79.78,
+          "end": 82.59,
+          "isSplit": false
+        },
+        {
+          "text": "Fearless, say yes, we don't dress to impress",
+          "segments": [
+            {
+              "text": "Fearless, say yes, we don't dress to impress",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 82.59,
+          "end": 86.9,
+          "isSplit": false
+        },
+        {
+          "text": "웃어 웃어 더 인형이 되렴",
+          "segments": [
+            {
+              "text": "웃어 웃어 더 인형이 되렴",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Kim Chaewon, _Huh Yunjin_, **Sakura**, **_Hong Eunchae_**]",
+          "translation": "Smile, smile, become more of a doll",
+          "pronunciation": "{\"full\":\"us-eo us-eo deo inhyeong-i doelyeom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"웃어\",\"trans\":\"us-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃어\",\"trans\":\"us-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"인형이\",\"trans\":\"inhyeong-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"되렴\",\"trans\":\"doelyeom\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 86.9,
+          "end": 90.13,
+          "isSplit": false
+        },
+        {
+          "text": "덮어, 덮어 다 감정 따윈 다",
+          "segments": [
+            {
+              "text": "덮어, 덮어 다 감정 따윈 다",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Cover it up, cover it up, all the emotions.",
+          "pronunciation": "{\"full\":\"deop-eo, deop-eo da gamjeong ttawin da\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"덮어,\",\"trans\":\"deop-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"덮어\",\"trans\":\"deop-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"감정\",\"trans\":\"gamjeong\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 90.13,
+          "end": 93.75999999999999,
+          "isSplit": false
+        },
+        {
+          "text": "싫어, 싫어, 난 인형이 아냐",
+          "segments": [
+            {
+              "text": "싫어, 싫어, 난 인형이 아냐",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I hate it, I hate it, I'm not a doll",
+          "pronunciation": "{\"full\":\"silh-eo, silh-eo, nan inhyeong-i anya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"싫어,\",\"trans\":\"silh-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"싫어,\",\"trans\":\"silh-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"인형이\",\"trans\":\"inhyeong-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아냐\",\"trans\":\"anya\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 93.75999999999999,
+          "end": 96.66,
+          "isSplit": false
+        },
+        {
+          "text": "찡그린대도 그것도 나야",
+          "segments": [
+            {
+              "text": "찡그린대도 그것도 나야",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Even if you frown, that’s me too",
+          "pronunciation": "{\"full\":\"jjing-geulindaedo geugeosdo naya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"찡그린대도\",\"trans\":\"jjing-geulindaedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그것도\",\"trans\":\"geugeosdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나야\",\"trans\":\"naya\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 96.66,
+          "end": 100.89,
+          "isSplit": false
+        },
+        {
+          "text": "보지 말라 보고파",
+          "segments": [
+            {
+              "text": "보지 말라 보고파",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Don't look, I miss you",
+          "pronunciation": "{\"full\":\"boji malla bogopa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"보지\",\"trans\":\"boji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말라\",\"trans\":\"malla\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보고파\",\"trans\":\"bogopa\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 100.89,
+          "end": 103.52000000000001,
+          "isSplit": false
+        },
+        {
+          "text": "날 둘러싼 이 금기들, yeah",
+          "segments": [
+            {
+              "text": "날 둘러싼 이 금기들, yeah",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "These taboos surrounding me, yeah",
+          "pronunciation": "{\"full\":\"nal dulleossan i geumgideul, yeah\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"날\",\"trans\":\"nal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"둘러싼\",\"trans\":\"dulleossan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"금기들,\",\"trans\":\"geumgideul,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 104.17180000000447,
+          "end": 106.87410000000149,
+          "isSplit": false
+        },
+        {
+          "text": "그날의 이브처럼",
+          "segments": [
+            {
+              "text": "그날의 이브처럼",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Like the eve of that day",
+          "pronunciation": "{\"full\":\"geunal-ui ibeucheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그날의\",\"trans\":\"geunal-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이브처럼\",\"trans\":\"ibeucheoleom\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 107.47999999999999,
+          "end": 110.08,
+          "isSplit": false
+        },
+        {
+          "text": "Take it on the chain, I know I like that",
+          "segments": [
+            {
+              "text": "Take it on the chain, I know I like that",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 110.08,
+          "end": 113.46000000000001,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Huh Yunjin, _Sakura_, **Hong Eunchae**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 113.64530000000447,
+          "end": 116.85239999999851,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 116.92439999999851,
+          "end": 118.14910000000148,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin, Hong Eunchae",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #b3f986, #9a86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 118.22820000000297,
+          "end": 120.21210000000148,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 119.4213000000015,
+              "end": 120.21210000000148,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#9a86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Hong Eunchae"
+                  ]
+                }
+              ],
+              "singer": "Hong Eunchae",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 120.30060000000148,
+          "end": 123.5895,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 123.6465,
+          "end": 124.90880000000448,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 124.97260000000149,
+          "end": 126.34830000000447,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Kazuha, _Hong Eunchae_, **Huh Yunjin**, **_Kim Chaewon_**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 126.42039999999851,
+          "end": 130.33969999999553,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 126.42039999999851,
+              "end": 127.67479899999852,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#86d4f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kazuha"
+                  ]
+                }
+              ],
+              "singer": "Kazuha",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 130.4115,
+          "end": 133.07610000000147,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 133.172799999997,
+          "end": 137.0455,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 133.17299999999253,
+              "end": 134.2846989999985,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom (Oh-oh)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": "(Oh-oh)",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 137.124799999997,
+          "end": 140.81999999999255,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh-oh)",
+              "charStart": 55,
+              "charEnd": 62,
+              "start": 140.05079899999998,
+              "end": 140.81999999999255,
+              "segments": [
+                {
+                  "text": "(Oh-oh)",
+                  "color": "#86f9bb",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kim Chaewon"
+                  ]
+                }
+              ],
+              "singer": "Kim Chaewon",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "What you waiting for?",
+          "segments": [
+            {
+              "text": "What you waiting for?",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Kazuha, _Huh Yunjin_]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 140.89109999999403,
+          "end": 142.0033999999985,
+          "isSplit": false
+        },
+        {
+          "text": "이게 타락이면 we fall, fall, fall",
+          "segments": [
+            {
+              "text": "이게 타락이면 we fall, fall, fall",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If this is corruption, we fall, fall, fall",
+          "pronunciation": "{\"full\":\"ige talag-imyeon we fall, fall, fall\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이게\",\"trans\":\"ige\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"타락이면\",\"trans\":\"talag-imyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 142.05159999999404,
+          "end": 146.99659999999403,
+          "isSplit": false
+        },
+        {
+          "text": "What you looking for?",
+          "segments": [
+            {
+              "text": "What you looking for?",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 147.61959999999405,
+          "end": 148.85250000000002,
+          "isSplit": false
+        },
+        {
+          "text": "원한다면 now we fall, we fall, we fall",
+          "segments": [
+            {
+              "text": "원한다면 now we fall, we fall, we fall",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you want, now we fall, we fall, we fall",
+          "pronunciation": "{\"full\":\"wonhandamyeon now we fall, we fall, we fall\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 148.90729999999704,
+          "end": 154.01249999999257,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Hong Eunchae, _Kazuha_, **Sakura**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 155.67559999999406,
+          "end": 158.92449999999258,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 158.98739999999853,
+          "end": 160.17139999999853,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae, Sakura",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #9a86f9, #f986f5)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 160.23519999999556,
+          "end": 162.19529999999705,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 161.5315989999985,
+              "end": 162.19529999999705,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#f986f5",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Sakura"
+                  ]
+                }
+              ],
+              "singer": "Sakura",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 162.29119999999554,
+          "end": 165.61249999999256,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 165.69219999999555,
+          "end": 166.83619999999556,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 166.91949999999258,
+          "end": 167.94809999999407,
+          "isSplit": false
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Outro: Huh Yunjin, _Sakura_, **Kim Chaewon**, **_Kazuha_**, (All)]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 168.05,
+          "end": 169.64,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 169.5373999999985,
+              "end": 169.64,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 169.64,
+          "end": 172.15,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 171.20860000000147,
+              "end": 172.15,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 172.15,
+          "end": 173.47,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 173.47,
+          "end": 174.77,
+          "isSplit": false
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Huh Yunjin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #b3f986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 174.77,
+          "end": 176.34,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 176.16260000000148,
+              "end": 176.34,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Huh Yunjin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #b3f986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 176.34,
+          "end": 178.380799999997,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 177.8433000000045,
+              "end": 178.67000000000002,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 179.1401000000015,
+          "end": 180.34820000000298,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 180.42020000000298,
+          "end": 181.74100000000746,
+          "isSplit": false
+        }
+      ],
+      "syncData": [
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Refrain: Huh Yunjin]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 5.79,
+          "end": 8.83,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 8.83,
+          "end": 12.35,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess in distress, but we're still the best dressed",
+          "segments": [
+            {
+              "text": "I'm a mess in distress, but we're still the best dressed",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 12.35,
+          "end": 15.64,
+          "isSplit": false
+        },
+        {
+          "text": "Fearless, say yes, we don't dress to impress",
+          "segments": [
+            {
+              "text": "Fearless, say yes, we don't dress to impress",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 15.64,
+          "end": 20.09,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮단다 뭐를 해도",
+          "segments": [
+            {
+              "text": "괜찮단다 뭐를 해도",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 1: Kim Chaewon, _Kazuha_, **Hong Eunchae**, **_Huh Yunjin_**]",
+          "translation": "It's okay, whatever you do",
+          "pronunciation": "{\"full\":\"gwaenchanhdanda mwoleul haedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮단다\",\"trans\":\"gwaenchanhdanda\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭐를\",\"trans\":\"mwoleul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 20.09,
+          "end": 23.04,
+          "isSplit": false
+        },
+        {
+          "text": "거짓말인 걸 난 알아",
+          "segments": [
+            {
+              "text": "거짓말인 걸 난 알아",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I know it's a lie",
+          "pronunciation": "{\"full\":\"geojismal-in geol nan al-a\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"거짓말인\",\"trans\":\"geojismal-in\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"알아\",\"trans\":\"al-a\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 23.04,
+          "end": 26.72,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮겠지 뭘 해도",
+          "segments": [
+            {
+              "text": "괜찮겠지 뭘 해도",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "It'll be okay no matter what",
+          "pronunciation": "{\"full\":\"gwaenchanhgessji mwol haedo\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮겠지\",\"trans\":\"gwaenchanhgessji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뭘\",\"trans\":\"mwol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"해도\",\"trans\":\"haedo\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 26.72,
+          "end": 29.24,
+          "isSplit": false
+        },
+        {
+          "text": "착한 얼굴에 네 말 잘 들을 땐",
+          "segments": [
+            {
+              "text": "착한 얼굴에 네 말 잘 들을 땐",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "When I listen to you with a kind face",
+          "pronunciation": "{\"full\":\"chaghan eolgul-e ne mal jal deul-eul ttaen\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"착한\",\"trans\":\"chaghan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"얼굴에\",\"trans\":\"eolgul-e\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"네\",\"trans\":\"ne\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말\",\"trans\":\"mal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"잘\",\"trans\":\"jal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"들을\",\"trans\":\"deul-eul\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"땐\",\"trans\":\"ttaen\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 29.24,
+          "end": 33.71,
+          "isSplit": false
+        },
+        {
+          "text": "괜찮지 않아 그런 건",
+          "segments": [
+            {
+              "text": "괜찮지 않아 그런 건",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "That's not okay",
+          "pronunciation": "{\"full\":\"gwaenchanhji anh-a geuleon geon\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"괜찮지\",\"trans\":\"gwaenchanhji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"않아\",\"trans\":\"anh-a\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그런\",\"trans\":\"geuleon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"건\",\"trans\":\"geon\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 33.71,
+          "end": 36.58,
+          "isSplit": false
+        },
+        {
+          "text": "내 룰은 나만 정할래, yeah",
+          "segments": [
+            {
+              "text": "내 룰은 나만 정할래, yeah",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I'm the only one who decides my own rules, yeah",
+          "pronunciation": "{\"full\":\"nae lul-eun naman jeonghallae, yeah\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"룰은\",\"trans\":\"lul-eun\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나만\",\"trans\":\"naman\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"정할래,\",\"trans\":\"jeonghallae,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 36.58,
+          "end": 40.57,
+          "isSplit": false
+        },
+        {
+          "text": "볼 거야 금지된 걸",
+          "segments": [
+            {
+              "text": "볼 거야 금지된 걸",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I'm going to see something that's forbidden",
+          "pronunciation": "{\"full\":\"bol geoya geumjidoen geol\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"볼\",\"trans\":\"bol\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"거야\",\"trans\":\"geoya\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"금지된\",\"trans\":\"geumjidoen\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"걸\",\"trans\":\"geol\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 40.57,
+          "end": 43.02,
+          "isSplit": false
+        },
+        {
+          "text": "Never hold back, 더 자유롭게",
+          "segments": [
+            {
+              "text": "Never hold back, 더 자유롭게",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Never hold back, more freely",
+          "pronunciation": "{\"full\":\"Never hold back, deo jayulobge\",\"chunks\":[{\"type\":\"en\",\"text\":\"Never\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"hold\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"back,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"자유롭게\",\"trans\":\"jayulobge\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 43.02,
+          "end": 46.13,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Kim Chaewon, _Sakura_, **Hong Eunchae**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 46.56760000000149,
+          "end": 49.86439999999851,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 49.94439999999851,
+          "end": 51.111000000000004,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Hong Eunchae",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #9a86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 51.17510000000149,
+          "end": 53.12739999999852,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 52.4786,
+              "end": 53.12739999999852,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#9a86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Hong Eunchae"
+                  ]
+                }
+              ],
+              "singer": "Hong Eunchae",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 53.208100000001494,
+          "end": 56.44770000000298,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 56.520500000000006,
+          "end": 57.8325,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 57.904600000001494,
+          "end": 59.168700000002985,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Huh Yunjin, _Kim Chaewon_, **Kazuha**, **_Hong Eunchae_**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 59.25720000000299,
+          "end": 63.31370000000299,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 59.25730000000448,
+              "end": 60.823699999999995,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 63.392500000000005,
+          "end": 65.96809999999404,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 66.042,
+          "end": 69.76310000000149,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 66.042,
+              "end": 67.15390000000596,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#86d4f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kazuha"
+                  ]
+                }
+              ],
+              "singer": "Kazuha",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 69.84169999999553,
+          "end": 72.71339999999851,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Refrain: Sakura, _Hong Eunchae_, **Kazuha**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 72.73,
+          "end": 75.82,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+          "segments": [
+            {
+              "text": "I'm a mess, mess, mess, mess, mess, mess, mess",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 75.82,
+          "end": 79.78,
+          "isSplit": false
+        },
+        {
+          "text": "I'm a mess in distress, but we're still the best dressed",
+          "segments": [
+            {
+              "text": "I'm a mess in distress, but we're still the best dressed",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 79.78,
+          "end": 82.59,
+          "isSplit": false
+        },
+        {
+          "text": "Fearless, say yes, we don't dress to impress",
+          "segments": [
+            {
+              "text": "Fearless, say yes, we don't dress to impress",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 82.59,
+          "end": 86.9,
+          "isSplit": false
+        },
+        {
+          "text": "웃어 웃어 더 인형이 되렴",
+          "segments": [
+            {
+              "text": "웃어 웃어 더 인형이 되렴",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Verse 2: Kim Chaewon, _Huh Yunjin_, **Sakura**, **_Hong Eunchae_**]",
+          "translation": "Smile, smile, become more of a doll",
+          "pronunciation": "{\"full\":\"us-eo us-eo deo inhyeong-i doelyeom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"웃어\",\"trans\":\"us-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"웃어\",\"trans\":\"us-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"더\",\"trans\":\"deo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"인형이\",\"trans\":\"inhyeong-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"되렴\",\"trans\":\"doelyeom\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 86.9,
+          "end": 90.13,
+          "isSplit": false
+        },
+        {
+          "text": "덮어, 덮어 다 감정 따윈 다",
+          "segments": [
+            {
+              "text": "덮어, 덮어 다 감정 따윈 다",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Cover it up, cover it up, all the emotions.",
+          "pronunciation": "{\"full\":\"deop-eo, deop-eo da gamjeong ttawin da\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"덮어,\",\"trans\":\"deop-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"덮어\",\"trans\":\"deop-eo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"감정\",\"trans\":\"gamjeong\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"따윈\",\"trans\":\"ttawin\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"다\",\"trans\":\"da\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 90.13,
+          "end": 93.75999999999999,
+          "isSplit": false
+        },
+        {
+          "text": "싫어, 싫어, 난 인형이 아냐",
+          "segments": [
+            {
+              "text": "싫어, 싫어, 난 인형이 아냐",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "I hate it, I hate it, I'm not a doll",
+          "pronunciation": "{\"full\":\"silh-eo, silh-eo, nan inhyeong-i anya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"싫어,\",\"trans\":\"silh-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"싫어,\",\"trans\":\"silh-eo,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"난\",\"trans\":\"nan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"인형이\",\"trans\":\"inhyeong-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"아냐\",\"trans\":\"anya\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 93.75999999999999,
+          "end": 96.66,
+          "isSplit": false
+        },
+        {
+          "text": "찡그린대도 그것도 나야",
+          "segments": [
+            {
+              "text": "찡그린대도 그것도 나야",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Even if you frown, that’s me too",
+          "pronunciation": "{\"full\":\"jjing-geulindaedo geugeosdo naya\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"찡그린대도\",\"trans\":\"jjing-geulindaedo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"그것도\",\"trans\":\"geugeosdo\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"나야\",\"trans\":\"naya\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 96.66,
+          "end": 100.89,
+          "isSplit": false
+        },
+        {
+          "text": "보지 말라 보고파",
+          "segments": [
+            {
+              "text": "보지 말라 보고파",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Don't look, I miss you",
+          "pronunciation": "{\"full\":\"boji malla bogopa\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"보지\",\"trans\":\"boji\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"말라\",\"trans\":\"malla\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"보고파\",\"trans\":\"bogopa\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 100.89,
+          "end": 103.52000000000001,
+          "isSplit": false
+        },
+        {
+          "text": "날 둘러싼 이 금기들, yeah",
+          "segments": [
+            {
+              "text": "날 둘러싼 이 금기들, yeah",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "These taboos surrounding me, yeah",
+          "pronunciation": "{\"full\":\"nal dulleossan i geumgideul, yeah\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"날\",\"trans\":\"nal\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"둘러싼\",\"trans\":\"dulleossan\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이\",\"trans\":\"i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"금기들,\",\"trans\":\"geumgideul,\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"yeah\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 104.17180000000447,
+          "end": 106.87410000000149,
+          "isSplit": false
+        },
+        {
+          "text": "그날의 이브처럼",
+          "segments": [
+            {
+              "text": "그날의 이브처럼",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Like the eve of that day",
+          "pronunciation": "{\"full\":\"geunal-ui ibeucheoleom\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"그날의\",\"trans\":\"geunal-ui\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"이브처럼\",\"trans\":\"ibeucheoleom\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 107.47999999999999,
+          "end": 110.08,
+          "isSplit": false
+        },
+        {
+          "text": "Take it on the chain, I know I like that",
+          "segments": [
+            {
+              "text": "Take it on the chain, I know I like that",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 110.08,
+          "end": 113.46000000000001,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Huh Yunjin, _Sakura_, **Hong Eunchae**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 113.64530000000447,
+          "end": 116.85239999999851,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 116.92439999999851,
+          "end": 118.14910000000148,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin, Hong Eunchae",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #b3f986, #9a86f9)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 118.22820000000297,
+          "end": 120.21210000000148,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 119.4213000000015,
+              "end": 120.21210000000148,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#9a86f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Hong Eunchae"
+                  ]
+                }
+              ],
+              "singer": "Hong Eunchae",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 120.30060000000148,
+          "end": 123.5895,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 123.6465,
+          "end": 124.90880000000448,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 124.97260000000149,
+          "end": 126.34830000000447,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Post-Chorus: Kazuha, _Hong Eunchae_, **Huh Yunjin**, **_Kim Chaewon_**]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 126.42039999999851,
+          "end": 130.33969999999553,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 126.42039999999851,
+              "end": 127.67479899999852,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#86d4f9",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kazuha"
+                  ]
+                }
+              ],
+              "singer": "Kazuha",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 130.4115,
+          "end": 133.07610000000147,
+          "isSplit": false
+        },
+        {
+          "text": "I wish for what's forbidden (Push it)",
+          "segments": [
+            {
+              "text": "I wish for what's forbidden ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Push it)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 133.172799999997,
+          "end": 137.0455,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Push it)",
+              "charStart": 28,
+              "charEnd": 37,
+              "start": 133.17299999999253,
+              "end": 134.2846989999985,
+              "segments": [
+                {
+                  "text": "(Push it)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom, get it like boom-boom-boom (Oh-oh)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom, get it like boom-boom-boom",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": "(Oh-oh)",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon",
+          "color": "#86f9bb",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 137.124799999997,
+          "end": 140.81999999999255,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Oh-oh)",
+              "charStart": 55,
+              "charEnd": 62,
+              "start": 140.05079899999998,
+              "end": 140.81999999999255,
+              "segments": [
+                {
+                  "text": "(Oh-oh)",
+                  "color": "#86f9bb",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Kim Chaewon"
+                  ]
+                }
+              ],
+              "singer": "Kim Chaewon",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "What you waiting for?",
+          "segments": [
+            {
+              "text": "What you waiting for?",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Bridge: Kazuha, _Huh Yunjin_]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 140.89109999999403,
+          "end": 142.0033999999985,
+          "isSplit": false
+        },
+        {
+          "text": "이게 타락이면 we fall, fall, fall",
+          "segments": [
+            {
+              "text": "이게 타락이면 we fall, fall, fall",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If this is corruption, we fall, fall, fall",
+          "pronunciation": "{\"full\":\"ige talag-imyeon we fall, fall, fall\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"이게\",\"trans\":\"ige\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"타락이면\",\"trans\":\"talag-imyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 142.05159999999404,
+          "end": 146.99659999999403,
+          "isSplit": false
+        },
+        {
+          "text": "What you looking for?",
+          "segments": [
+            {
+              "text": "What you looking for?",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 147.61959999999405,
+          "end": 148.85250000000002,
+          "isSplit": false
+        },
+        {
+          "text": "원한다면 now we fall, we fall, we fall",
+          "segments": [
+            {
+              "text": "원한다면 now we fall, we fall, we fall",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "If you want, now we fall, we fall, we fall",
+          "pronunciation": "{\"full\":\"wonhandamyeon now we fall, we fall, we fall\",\"chunks\":[{\"type\":\"foreign\",\"text\":\"원한다면\",\"trans\":\"wonhandamyeon\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"now\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"we\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"fall\",\"trans\":\"\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 148.90729999999704,
+          "end": 154.01249999999257,
+          "isSplit": false
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Chorus: Hong Eunchae, _Kazuha_, **Sakura**]",
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 155.67559999999406,
+          "end": 158.92449999999258,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae",
+          "color": "#9a86f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 158.98739999999853,
+          "end": 160.17139999999853,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom (Boom-boom, now)",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom ",
+              "color": "#9a86f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Hong Eunchae"
+              ]
+            },
+            {
+              "text": "(Boom-boom, now)",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Hong Eunchae, Sakura",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #9a86f9, #f986f5)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 160.23519999999556,
+          "end": 162.19529999999705,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Boom-boom, now)",
+              "charStart": 27,
+              "charEnd": 43,
+              "start": 161.5315989999985,
+              "end": 162.19529999999705,
+              "segments": [
+                {
+                  "text": "(Boom-boom, now)",
+                  "color": "#f986f5",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Sakura"
+                  ]
+                }
+              ],
+              "singer": "Sakura",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Boom, boom, boom 내 심장이 뛰네",
+          "segments": [
+            {
+              "text": "Boom, boom, boom 내 심장이 뛰네",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "Boom, boom, boom my heart is racing",
+          "pronunciation": "{\"full\":\"Boom, boom, boom nae simjang-i ttwine\",\"chunks\":[{\"type\":\"en\",\"text\":\"Boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom,\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"en\",\"text\":\"boom\",\"trans\":\"\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"내\",\"trans\":\"nae\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"심장이\",\"trans\":\"simjang-i\"},{\"type\":\"en\",\"text\":\" \",\"trans\":\"\"},{\"type\":\"foreign\",\"text\":\"뛰네\",\"trans\":\"ttwine\"}]}",
+          "spacingText": "",
+          "lang": "ko",
+          "start": 162.29119999999554,
+          "end": 165.61249999999256,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 165.69219999999555,
+          "end": 166.83619999999556,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 166.91949999999258,
+          "end": 167.94809999999407,
+          "isSplit": false
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": "[Outro: Huh Yunjin, _Sakura_, **Kim Chaewon**, **_Kazuha_**, (All)]",
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 168.05,
+          "end": 169.64,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 169.5373999999985,
+              "end": 169.64,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Huh Yunjin",
+          "color": "#b3f986",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 169.64,
+          "end": 172.15,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 171.20860000000147,
+              "end": 172.15,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 172.15,
+          "end": 173.47,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#f986f5",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Sakura"
+              ]
+            }
+          ],
+          "singer": "Sakura",
+          "color": "#f986f5",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 173.47,
+          "end": 174.77,
+          "isSplit": false
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Huh Yunjin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #b3f986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 174.77,
+          "end": 176.34,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 176.16260000000148,
+              "end": 176.34,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Girl wanna have fun (Girl)",
+          "segments": [
+            {
+              "text": "Girl wanna have fun",
+              "color": "#86f9bb",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kim Chaewon"
+              ]
+            },
+            {
+              "text": " ",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            },
+            {
+              "text": "(Girl)",
+              "color": "#b3f986",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Huh Yunjin"
+              ]
+            }
+          ],
+          "singer": "Kim Chaewon, Huh Yunjin",
+          "color": "#ffffff",
+          "isGradient": true,
+          "gradient": "linear-gradient(90deg, #86f9bb, #b3f986)",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 176.34,
+          "end": 178.380799999997,
+          "isSplit": true,
+          "adlibs": [
+            {
+              "text": "(Girl)",
+              "charStart": 20,
+              "charEnd": 26,
+              "start": 177.8433000000045,
+              "end": 178.67000000000002,
+              "segments": [
+                {
+                  "text": "(Girl)",
+                  "color": "#b3f986",
+                  "isGradient": false,
+                  "gradient": "",
+                  "artists": [
+                    "Huh Yunjin"
+                  ]
+                }
+              ],
+              "singer": "Huh Yunjin",
+              "pronunciation": "",
+              "translation": "",
+              "lang": "en",
+              "spacingText": ""
+            }
+          ]
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 179.1401000000015,
+          "end": 180.34820000000298,
+          "isSplit": false
+        },
+        {
+          "text": "Get it like boom-boom-boom",
+          "segments": [
+            {
+              "text": "Get it like boom-boom-boom",
+              "color": "#86d4f9",
+              "isGradient": false,
+              "gradient": "",
+              "artists": [
+                "Kazuha"
+              ]
+            }
+          ],
+          "singer": "Kazuha",
+          "color": "#86d4f9",
+          "isGradient": false,
+          "gradient": "",
+          "sectionHeader": null,
+          "translation": "",
+          "pronunciation": "",
+          "spacingText": "",
+          "lang": "en",
+          "start": 180.42020000000298,
+          "end": 181.74100000000746,
+          "isSplit": false
+        }
+      ],
+      "lyrics": "[르세라핌 \"이브, 프시케 그리고 푸른 수염의 아내\" 가사]\n\n[Refrain: Huh Yunjin]\nI'm a mess, mess, mess, mess, mess, mess, mess\nI'm a mess, mess, mess, mess, mess, mess, mess\nI'm a mess in distress, but we're still the best dressed\nFearless, say yes, we don't dress to impress\n\n[Verse 1: Kim Chaewon, _Kazuha_, **Hong Eunchae**, **_Huh Yunjin_**]\n괜찮단다 뭐를 해도\n거짓말인 걸 난 알아\n_괜찮겠지 뭘 해도\n착한 얼굴에 네 말 잘 들을 땐_\n**괜찮지 않아 그런 건\n내 룰은 나만 정할래, yeah\n_볼 거야 금지된 걸\nNever hold back, 더 자유롭게_**\n\n[Chorus: Kim Chaewon, _Sakura_, **Hong Eunchae**]\nBoom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom (**Boom-boom, now**)\n_Boom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom_\n\n[Post-Chorus: Huh Yunjin, _Kim Chaewon_, **Kazuha**, **_Hong Eunchae_**]\n(Push it) I wish for what's forbidden\n_Get it like boom-boom-boom, get it like boom-boom-boom_\n(**Push it**) **I wish for what's forbidden\n_Get it like boom-boom-boom, get it like boom-boom-boom_**\n\n[Refrain: Sakura, _Hong Eunchae_, **Kazuha**]\nI'm a mess, mess, mess, mess, mess, mess, mess\nI'm a mess, mess, mess, mess, mess, mess, mess\n_I'm a mess in distress, but we're still the best dressed_\n**Fearless, say yes, we don't dress to impress**\n\n[Verse 2: Kim Chaewon, _Huh Yunjin_, **Sakura**, **_Hong Eunchae_**]\n웃어 웃어 더 인형이 되렴\n덮어, 덮어 다 감정 따윈 다\n_싫어, 싫어, 난 인형이 아냐\n찡그린대도 그것도 나야_\n**보지 말라 보고파**\n**날 둘러싼 이 금기들, yeah\n_그날의 이브처럼_**\nTake it on the chain, I know I like that\n\n[Chorus: Huh Yunjin, _Sakura_, **Hong Eunchae**]\nBoom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom (**Boom-boom, now**)\n_Boom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom_\n\n[Post-Chorus: Kazuha, _Hong Eunchae_, **Huh Yunjin**, **_Kim Chaewon_**]\n(Push it) I wish for what's forbidden\n_Get it like boom-boom-boom, get it like boom-boom-boom_\n(**Push it**) **I wish for what's forbidden\n_Get it like boom-boom-boom, get it like boom-boom-boom_** (Oh-oh)\n\n[Bridge: Kazuha, _Huh Yunjin_]\nWhat you waiting for?\n이게 타락이면 we fall, fall, fall\n_What you looking for?\n원한다면 now we fall, we fall, we fall_\n\n[Chorus: Hong Eunchae, _Kazuha_, **Sakura**]\nBoom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom (**Boom-boom, now**)\n_Boom, boom, boom 내 심장이 뛰네\nGet it like boom-boom-boom\nGet it like boom-boom-boom_\n\n[Outro: Huh Yunjin, _Sakura_, **Kim Chaewon**, **_Kazuha_**, (All)]\nGirl wanna have fun (Girl)\nGirl wanna have fun (Girl)\n_Get it like boom-boom-boom\nGet it like boom-boom-boom_\n**Girl wanna have fun** (Girl)\n**Girl wanna have fun** (Girl)\n**_Get it like boom-boom-boom\nGet it like boom-boom-boom_**",
+      "customLinks": {
+        "spotify": "",
+        "yt": "https://music.youtube.com/watch?v=eS-NAO3zmn4",
+        "deezer": "https://www.deezer.com/es/track/2258042687",
+        "hasLocal": false,
+        "localName": ""
+      },
+      "artistImages": {},
+      "artistColors": {},
+      "originalPreviewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/58/b6/a4/58b6a479-4750-bc36-83ef-dc096e80e512/mzaf_7713972725375701992.plus.aac.p.m4a",
+      "hasDeezerMetaBound": true,
+      "forceSource": "deezer",
+      "playId": 1790447958960
     }
   ],
   "settings": {
@@ -89955,7 +94097,7 @@
     "cardGap": 16,
     "isRounded": false,
     "borderRadius": 16,
-    "bgImageOpacity": 0.9,
+    "bgImageOpacity": 1,
     "cosmosSplitRatio": 60,
     "liveSyncFontSize": 4.5,
     "focusedSyncFontSize": 5.9,

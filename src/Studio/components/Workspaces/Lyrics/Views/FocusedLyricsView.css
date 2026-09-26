@@ -254,6 +254,13 @@
 }
 
 /* Hyphen segments use the same exit timing as regular lyric tokens. */
+.focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .lyric-word:not(.hyphenated-word-part),
+.focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .trans-word:not(.hyphenated-word-part) {
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  will-change: opacity, transform;
+}
+
 .focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .core-chunks {
   animation: none !important;
 }
