@@ -38,4 +38,24 @@ body .modal-right-col.glass-panel-light {
     padding: 0 !important;
     border-radius: 0 !important;
   }
+
+  body .modal-right-col.glass-panel-light:has(.tw-container),
+  body .modal-right-col.glass-panel-light:has(.sync-mode-container) {
+    align-self: stretch !important;
+    height: auto !important;
+    min-height: calc(100dvh - 24px) !important;
+    aspect-ratio: auto !important;
+    overflow: visible;
+  }
+
+  body .modal-right-col.glass-panel-light:has(.tw-container) .tw-container,
+  body .modal-right-col.glass-panel-light:has(.sync-mode-container) .sync-mode-container {
+    height: calc(100dvh - 24px);
+    min-height: calc(100dvh - 24px);
+  }
+
+  body .modal-right-col.glass-panel-light:has(.tw-container) .tw-list,
+  body .modal-right-col.glass-panel-light:has(.sync-mode-container) .sync-lines-container {
+    min-height: 0;
+  }
 }
