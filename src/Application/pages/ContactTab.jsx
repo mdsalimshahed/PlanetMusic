@@ -4,6 +4,7 @@ import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 
 const FEEDBACK_FRAME_NAME = 'feedback-submit-frame';
+const DEFAULT_FEEDBACK_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsgSeL4WumbQNVFc9goFRjiEyUtZldk0IOyhwaB2Pnj0lxRtDKZ_k5Govq7qbWNzZg/exec';
 
 const ContactTab = ({ adsEnabled }) => {
   const [formData, setFormData] = useState({ name: '', subject: '', message: '' });
@@ -76,7 +77,7 @@ const ContactTab = ({ adsEnabled }) => {
     setSubmitStatus(null);
     setSubmitDetail('');
 
-    const scriptUrl = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL;
+    const scriptUrl = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL || DEFAULT_FEEDBACK_SCRIPT_URL;
     if (!scriptUrl) {
       setSubmitStatus('error');
       setSubmitDetail('The feedback service has not been configured yet.');
