@@ -7,7 +7,6 @@ const ImageManager = ({
 }) => {
   return (
     <div className="image-manager-container">
-      <h3 className="image-manager-title">Manage Artists</h3>
       <p className="image-manager-sub">
         Set custom HD images and tag colors for each artist appearing in the lyrics. Values saved here will persist across all songs.
       </p>

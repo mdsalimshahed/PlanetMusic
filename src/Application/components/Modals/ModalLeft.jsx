@@ -544,9 +544,14 @@ const ModalLeft = ({
                 </div>
               </>
             ) : isImageManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={saveImageManager}>
-                <Icon name="save" /> Save Artists Data
-              </button>
+              <>
+                <button className="edit-links-btn close-editor-btn" onClick={() => setIsImageManagerOpen(false)}>
+                  <Icon name="x" /> Close Editor
+                </button>
+                <button className="edit-links-btn save-mode" onClick={saveImageManager}>
+                  <Icon name="save" /> Save Artists Data
+                </button>
+              </>
             ) : (
               <>
                 <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
