@@ -29,6 +29,7 @@ export const useAppStorage = (urlSearchQuery) => {
       if (parsed.disableAnimations === undefined) parsed.disableAnimations = false;
       
       if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
+      parsed.deezerArl = '';
       
       delete parsed.youtubeApiKey;
       delete parsed.spotifyClientId;
@@ -94,7 +95,9 @@ export const useAppStorage = (urlSearchQuery) => {
 
   // Persistent Memory engine - ALWAYS ON
   useEffect(() => {
-    localStorage.setItem('appSettings', JSON.stringify(settings));
+    const persistedSettings = { ...settings };
+    delete persistedSettings.deezerArl;
+    localStorage.setItem('appSettings', JSON.stringify(persistedSettings));
     localStorage.setItem('songLibrary', JSON.stringify(library));
     localStorage.setItem('searchQuery', searchQuery);
     localStorage.setItem('searchResults', JSON.stringify(searchResults));

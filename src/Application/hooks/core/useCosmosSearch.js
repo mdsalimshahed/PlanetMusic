@@ -1,6 +1,7 @@
 /* --- src/hooks/useCosmosSearch.js --- */
 import { useState, useEffect } from 'react';
 import { norm, filterAndSortByTitleMatch } from '../../utils/searchEngine.js';
+import { fetchDeezerApi } from '../../services/deezerBackend.js';
 
 export const useCosmosSearch = ({
   searchQuery, searchResults, setSearchResults,
@@ -108,7 +109,7 @@ export const useCosmosSearch = ({
           return { results: [] };
         });
 
-      const deezerPromise = fetch(`https://ytdownloader-jnt0.onrender.com/search-deezer?q=${encodeURIComponent(query)}`)
+      const deezerPromise = fetchDeezerApi(`/search-deezer?q=${encodeURIComponent(query)}`)
         .then(res => {
           if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
           return res.json();

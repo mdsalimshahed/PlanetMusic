@@ -1,6 +1,7 @@
 /* --- src/hooks/useSettingsLogic.js --- */
 import { useState, useMemo } from 'react';
 import { getProceduralColor, getProceduralGradient } from '../../../utils/proceduralColors.js';
+import { fetchDeezerApi } from '../../services/deezerBackend.js';
 
 export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showArl, setShowArl] = useState(false);
@@ -60,8 +61,9 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       formData.append('arl_token', settings.deezerArl);
       formData.append('quality', '1');
       formData.append('action', 'stream');
+      formData.append('local_dir', '');
       formData.append('obfuscate', 'true');
-      const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
+      const response = await fetchDeezerApi('/download-deezer', {
         method: 'POST',
         body: formData,
         headers: { Accept: 'application/octet-stream' },
@@ -69,6 +71,11 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       });
       
       if (response.ok) {
+        if (response.headers.get('content-type')?.includes('application/json')) {
+          const result = await response.json();
+          setVerifyResult(result.success ? 'success' : 'error');
+          return;
+        }
         // Verification only needs the server response; never consume a full MP3 in settings.
         const reader = response.body?.getReader();
         if (reader) {

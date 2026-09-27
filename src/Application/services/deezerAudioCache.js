@@ -3,6 +3,7 @@ import {
   getDeezerCachedAudio,
   saveDeezerCachedAudio
 } from './db.js';
+import { fetchDeezerApi } from './deezerBackend.js';
 
 const MEBIBYTE = 1024 * 1024;
 const deviceMemoryGb = typeof navigator !== 'undefined' ? Number(navigator.deviceMemory) || 4 : 4;
@@ -70,13 +71,17 @@ const downloadDeezerAudio = async (deezerUrl, arlToken, signal) => {
   formData.append('quality', '1');
   formData.append('action', 'stream');
   formData.append('obfuscate', 'true');
+  formData.append('local_dir', '');
 
-  const response = await fetch('https://ytdownloader-jnt0.onrender.com/download-deezer', {
+  const response = await fetchDeezerApi('/download-deezer', {
     method: 'POST',
     body: formData,
     signal
   });
   if (!response.ok) throw new Error('Deezer stream failed');
+  if (response.headers.get('content-type')?.includes('application/json')) {
+    throw new Error('Deezer stream is unavailable. Please check the ARL and try again.');
+  }
 
   const data = new Uint8Array(await response.arrayBuffer());
   if (response.headers.get('X-Audio-Obfuscated') === 'true') {

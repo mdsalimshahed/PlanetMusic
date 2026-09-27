@@ -1,5 +1,5 @@
 /* --- src/components/Topbar.jsx --- */
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Topbar.css';
 
@@ -9,8 +9,7 @@ const Topbar = ({
   albumAccentColor,
   handleHomeClick, 
   handleExport, 
-  handleImport, 
-  handleLoadSample
+  handleImport
 }) => {
   const fileInputRef = useRef(null);
 
@@ -42,6 +41,14 @@ const Topbar = ({
           </Link>
           
           <Link 
+            to="/deezer"
+            className={`nav-btn ${activeTab === 'deezer' ? 'active' : ''}`}
+            style={{ textDecoration: 'none' }}
+          >
+            Deezer
+          </Link>
+
+          <Link
             to="/blog" 
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
             style={{ textDecoration: 'none' }}

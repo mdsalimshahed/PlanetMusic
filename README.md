@@ -25,3 +25,9 @@ Ad units load only in production when a valid publisher ID, a slot ID, and the s
 4. For visitors in the EEA, UK, or Switzerland, configure a Google-certified consent management platform in AdSense. The existing site notice is not a substitute for that requirement.
 
 Vite embeds `VITE_` values in client code, so use these only for public publisher and slot IDs, never secret credentials.
+
+## Deezer backend
+
+Deezer requests use same-origin `/api/*` routes handled by the Cloudflare Pages Function. The Function adds its private backend gateway token; do not put that token, the Flask `SECRET_KEY`, an app password, or Deezer ARL in frontend code or Cloudflare Pages build variables. Deezer ARL is requested only for download/stream actions and held in page memory.
+
+Plain Vite development does not proxy API calls to Render. To test backend requests locally, use the Cloudflare Pages development runtime with the Pages Function and its server-side secrets configured.

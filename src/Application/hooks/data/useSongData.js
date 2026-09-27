@@ -1,6 +1,7 @@
 /* --- src/hooks/data/useSongData.js --- */
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db.js';
+import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
@@ -114,17 +115,14 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         if (match) targetId = match[1];
       }
 
-      // Read settings directly to check if an ARL exists
-      const appSettings = JSON.parse(localStorage.getItem('appSettings') || '{}');
-      const hasArl = Boolean(appSettings.deezerArl?.trim());
-
-      if (targetId && hasArl) {
+      if (targetId) {
         if (!hasFetchedDeezerMetaRef.current.has(targetId)) {
           hasFetchedDeezerMetaRef.current.add(targetId);
           
           const fetchDeezerMeta = async () => {
             try {
-              const res = await fetch(`https://ytdownloader-jnt0.onrender.com/track-info-deezer/${targetId}`);
+              const res = await fetchDeezerApi(`/track-info-deezer/${encodeURIComponent(targetId)}`);
+              if (!res.ok) return;
               const json = await res.json();
               
               if (json.success && json.data) {

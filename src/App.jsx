@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -22,6 +22,7 @@ import ContactTab from './Application/pages/ContactTab.jsx';
 import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
+import DeezerTab from './Application/pages/DeezerTab.jsx';
 
 // Custom Hooks for Modular Logic
 import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
@@ -61,6 +62,7 @@ const App = () => {
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
                     pathParts[0] === 'contact' ? 'contact' : 
+                    pathParts[0] === 'deezer' ? 'deezer' :
                     pathParts[0] === 'ambient' ? 'ambient' : 'main';
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
@@ -416,6 +418,8 @@ const App = () => {
             <Route path="/contact" element={
               <ContactTab adsEnabled={settings.adsEnabled !== false} />
             } />
+
+            <Route path="/deezer" element={<DeezerTab />} />
           </Routes>
 
           {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}

@@ -1,6 +1,4 @@
 /* --- src/components/Settings/DeezerAuthCard.jsx --- */
-import React from 'react';
-
 const DeezerAuthCard = ({ 
   settings, handleChange, handleVerifyArl, 
   showArl, setShowArl, isVerifying, verifyResult, setVerifyResult, authGradient 
@@ -11,7 +9,7 @@ const DeezerAuthCard = ({
       <div className="deezer-auth-instructions">
         <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
         <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-        <p className="security-warning">  <strong>Privacy & Security:</strong> Your token is stored entirely locally on your device. It is only sent to our secure backend proxy to fetch audio streams and is <strong>NEVER</strong> exported or shared when you backup your database to JSON.</p>
+        <p className="security-warning"><strong>Privacy & Security:</strong> Your token stays in memory for this page session and is sent only to the backend when needed. It is not saved in browser storage or included in backups. Paste it again after reloading PlanetMusic.</p>
       </div>
       <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
         <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
