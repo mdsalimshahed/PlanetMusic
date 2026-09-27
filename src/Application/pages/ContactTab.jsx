@@ -240,14 +240,14 @@ const ContactTab = ({ adsEnabled }) => {
           {adsEnabled && (
             <>
               <SponsorUnit 
-                testMode={true} 
+                placement="contactSidebar"
                 className="glass-panel dynamic-radius-override"
                 style={{ minHeight: '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
-                testMode={true} 
+                placement="contactStickySidebar"
                 className="glass-panel dynamic-radius-override"
                 style={{ minHeight: '300px' }}
                 adTitle="Discover More"
@@ -262,7 +262,7 @@ const ContactTab = ({ adsEnabled }) => {
       {/* BOTTOM SPONSOR AD (Matches Settings Page Format) */}
       {adsEnabled && (
         <SponsorUnit 
-          testMode={true} 
+          placement="contactBottom"
           className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor Message"

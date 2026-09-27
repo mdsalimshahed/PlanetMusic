@@ -51,7 +51,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
         {adsEnabled !== false && (
           <div style={{ breakInside: 'avoid', marginBottom: '24px' }}>
             <SponsorUnit 
-              testMode={true} 
+              placement="settingsFeedOne"
               className="glass-panel dynamic-radius-override" 
               style={{ minHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               adTitle="Partner Content" 
@@ -71,7 +71,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
         {adsEnabled !== false && (
           <div style={{ breakInside: 'avoid', marginBottom: '24px' }}>
             <SponsorUnit 
-              testMode={true} 
+              placement="settingsFeedTwo"
               className="glass-panel dynamic-radius-override" 
               style={{ minHeight: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               adTitle="Discover More" 
@@ -129,7 +129,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
       {/* BOTTOM SPONSOR AD */}
       {adsEnabled !== false && (
         <SponsorUnit 
-          testMode={true} 
+          placement="settingsBottom"
           className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Sponsor Message"

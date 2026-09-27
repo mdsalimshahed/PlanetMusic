@@ -300,7 +300,7 @@ const App = () => {
       {/* BOTTOM SPONSOR AD (Main Dashboard) */}
       {!isAmbientMode && settings.adsEnabled !== false && (
         <SponsorUnit 
-          testMode={true} 
+          placement="dashboardBottom"
           className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Discover More"

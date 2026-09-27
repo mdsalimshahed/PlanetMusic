@@ -551,7 +551,7 @@ const BlogTab = ({ adsEnabled }) => {
               {adsEnabled && (
                 <div className="blog-bottom-sponsor-wrapper" style={{ marginTop: '40px' }}>
                   <SponsorUnit
-                    testMode={true}
+                    placement="blogPostBottom"
                     className="glass-panel dynamic-radius-override blog-bottom-sponsor"
                     style={{ minHeight: '280px' }}
                     adTitle="Sponsored Feature"
@@ -700,7 +700,7 @@ const BlogTab = ({ adsEnabled }) => {
                           )}
                         </div>
                         {adsEnabled && showAdAfter && (
-                          <InFeedSponsor adClass="in-feed-blog-ad" testMode={true} wrapperClass="blog-card dynamic-radius-override" />
+                          <InFeedSponsor placement="blogFeed" adClass="in-feed-blog-ad" wrapperClass="blog-card dynamic-radius-override" />
                         )}
                       </React.Fragment>
                     );
@@ -729,14 +729,14 @@ const BlogTab = ({ adsEnabled }) => {
           {adsEnabled && (
             <>
               <SponsorUnit
-                testMode={true}
+                placement="blogSidebar"
                 className="glass-panel dynamic-radius-override blog-sidebar-sponsor-large"
                 style={{ minHeight: viewMode === 'studio' ? '200px' : '600px', height: viewMode === 'studio' ? '200px' : '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit
-                testMode={true}
+                placement="blogStickySidebar"
                 className="glass-panel dynamic-radius-override blog-sidebar-sponsor-small"
                 style={{ minHeight: viewMode === 'studio' ? '200px' : '300px', height: viewMode === 'studio' ? '200px' : '300px' }}
                 adTitle="Discover More"

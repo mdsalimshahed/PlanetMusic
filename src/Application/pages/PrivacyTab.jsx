@@ -139,14 +139,14 @@ const PrivacyTab = ({ adsEnabled }) => {
           {adsEnabled && (
             <>
               <SponsorUnit 
-                testMode={true} 
+                placement="privacySidebar"
                 className="glass-panel dynamic-radius-override"
                 style={{ minHeight: '600px' }}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
-                testMode={true} 
+                placement="privacyStickySidebar"
                 className="glass-panel dynamic-radius-override"
                 style={{ minHeight: '300px' }}
                 adTitle="Discover More"
@@ -160,7 +160,7 @@ const PrivacyTab = ({ adsEnabled }) => {
       {/* BOTTOM SPONSOR AD (Same format as Settings page) */}
       {adsEnabled && (
         <SponsorUnit 
-          testMode={true} 
+          placement="privacyBottom"
           className="glass-panel settings-promo-box dynamic-radius-override" 
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor / Partner"

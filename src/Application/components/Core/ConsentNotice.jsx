@@ -13,6 +13,7 @@ const ConsentNotice = () => {
 
   const handleAccept = () => {
     localStorage.setItem('planetmusic_site_consent', 'true');
+    window.dispatchEvent(new Event('planetmusic-site-consent-changed'));
     setIsVisible(false);
   };
 

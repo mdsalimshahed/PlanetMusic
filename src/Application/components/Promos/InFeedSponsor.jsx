@@ -2,10 +2,11 @@
 import React from 'react';
 import SponsorUnit from './SponsorUnit.jsx';
 
-const InFeedSponsor = ({ testMode = true, wrapperClass = "track-grid-item", adClass = "in-feed-promo-box", wrapperStyle = {} }) => {
+const InFeedSponsor = ({ placement = 'trackGrid', testMode = false, wrapperClass = "track-grid-item", adClass = "in-feed-promo-box", wrapperStyle = {} }) => {
   return (
     <div className={wrapperClass} style={{ minWidth: 0, display: 'flex', padding: 0, overflow: 'hidden', ...wrapperStyle }}>
       <SponsorUnit 
+        placement={placement}
         testMode={testMode}
         className={adClass}
         format="fluid"

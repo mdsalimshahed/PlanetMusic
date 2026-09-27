@@ -32,7 +32,7 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
             {/* INJECT IN-FEED AD IF ENABLED */}
             {adsEnabled && showAdAfter && (
               <InFeedSponsor 
-                testMode={true} 
+                placement="trackGrid"
                 wrapperClass="track-grid-item dynamic-radius-override" 
                 wrapperStyle={{ animationDelay: `${staggerDelay + 0.02}s` }} 
               />
