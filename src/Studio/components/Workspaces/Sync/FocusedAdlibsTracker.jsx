@@ -179,8 +179,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
         const cBox = getRelativeRect(lyricsNode, containerRect);
         if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
-          cBox.top -= 20;
-          cBox.bottom -= 20;
+          const lyricBoundsOffset = containerRect.height * 0.05;
+          cBox.top -= lyricBoundsOffset;
+          cBox.bottom -= lyricBoundsOffset;
         }
         const sBox = getRelativeRect(singerNode, containerRect);
 
@@ -200,9 +201,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         item.node.style.setProperty('--adlib-left', pos.left);
         item.node.style.setProperty('--adlib-top', pos.top);
         item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
-        item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
+        item.node.style.setProperty('--adlib-max-width', pos.maxWidth);
         item.node.style.setProperty('--adlib-scale', pos.scale);
         if (pos.zoneId !== undefined) lastZoneIdRef.current = pos.zoneId;
+      } else {
+        item.node.classList.remove('active', 'exiting', 'past');
+        item.isActive = false;
+        return;
       }
       item.node.classList.add('active');
       item.node.classList.remove('exiting', 'past');
