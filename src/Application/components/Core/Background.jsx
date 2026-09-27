@@ -446,7 +446,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
             <img src={b.photo} alt={b.artist} className="bubble-artist-photo" />
             <div className="bubble-content">
               <span className="bubble-artist">{toSmartPunctuation(b.artist)}</span>
-              <span className="bubble-lyric">“{toSmartPunctuation(b.line)}”</span>
+              <span className="bubble-lyric">{toSmartPunctuation(b.line)}</span>
             </div>
           </div>
         ))}
