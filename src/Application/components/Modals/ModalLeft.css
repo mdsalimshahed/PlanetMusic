@@ -646,8 +646,7 @@ a.platform-label.yt-color:hover {
   }
 
   .sync-emulation-key:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+    outline: none !important;
   }
 
   .sync-emulation-space {

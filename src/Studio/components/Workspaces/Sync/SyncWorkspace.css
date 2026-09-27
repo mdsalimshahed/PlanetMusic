@@ -14,6 +14,14 @@
    border-radius: 500px; background: rgba(0, 0, 0, 0.4);
 }
 
+.sync-workspace-controls-slot,
+.sync-workspace-header-actions {
+   display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+   gap: 10px; width: 100%;
+}
+
+.sync-workspace-controls-slot { margin-bottom: 10px; }
+
 .sync-play-btn {
    background: rgba(255, 255, 255, 0.1);
    color: white;

@@ -1,5 +1,6 @@
 /* --- src/Studio/components/Workspaces/Sync/SyncWorkspace.jsx --- */
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
 import './SyncWorkspace.css';
@@ -20,7 +21,7 @@ export const SyncWorkspace = ({
   syncAudioRef, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
   selectedSong, isShowingAutoSync, toggleWorkspaceMode, handleMapAutoSync,
-  availableSources, setManualSource, setNotification, handleShiftTimings
+  handleShiftTimings
 }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
@@ -39,9 +40,14 @@ export const SyncWorkspace = ({
     return savedMuted !== null ? savedMuted === 'true' : savedVolume !== null && Number(savedVolume) === 0;
   });
   const [isAdjustingVolume, setIsAdjustingVolume] = useState(false);
+  const [syncControlsTarget, setSyncControlsTarget] = useState(null);
   const [lyricScale, setLyricScale] = useState(0.5);
   const cycleScale = () => setLyricScale(s => s === 1 ? 0.75 : s === 0.75 ? 0.5 : 1);
   const currentFontSize = Math.max(12, 34 * lyricScale);
+
+  useEffect(() => {
+    setSyncControlsTarget(document.querySelector('.sync-workspace-controls-slot'));
+  }, []);
 
   useEffect(() => {
     if (!selectedSong || !selectedSong.artworkUrl100) return;
@@ -265,51 +271,6 @@ export const SyncWorkspace = ({
     return () => window.removeEventListener('workspaceTimeUpdate', handleWorkspaceTime);
   }, []);
 
-  const cycleSource = () => {
-    if (availableSources && availableSources.length > 1) {
-      const currentIndex = availableSources.indexOf(activeSyncSource);
-      const effectiveIndex = currentIndex >= 0 ? currentIndex : 0;
-      const nextIndex = (effectiveIndex + 1) % availableSources.length;
-      
-      const upcomingSource = availableSources[nextIndex];
-      if (upcomingSource === 'deezer' && !Boolean(localStorage.getItem('appSettings') ? JSON.parse(localStorage.getItem('appSettings')).deezerArl : false)) {
-        if (setNotification) {
-          setNotification({ show: true, message: 'Deezer ARL required. Falling back to next source.', progress: 100 });
-          setTimeout(() => setNotification({ show: false }), 3500);
-        }
-        const fallbackIndex = (nextIndex + 1) % availableSources.length;
-        setManualSource(availableSources[fallbackIndex]);
-      } else {
-        setManualSource(upcomingSource);
-      }
-    }
-  };
-
-  const renderSourceBadge = () => {
-    const isMultiple = availableSources && availableSources.length > 1;
-    const cursorStyle = isMultiple ? { cursor: 'pointer', userSelect: 'none', transition: 'transform 0.2s' } : {};
-    const title = isMultiple ? "Click to switch audio source" : "";
-
-    let badgeElement = null;
-    if (activeSyncSource === 'youtube') badgeElement = <span className="source-badge" style={{background: '#FF0000', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>YT Music</span>;
-    else if (activeSyncSource === 'local') badgeElement = <span className="source-badge" style={{background: '#4ade80', color: 'black', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>LOCAL</span>;
-    else if (activeSyncSource === 'deezer') badgeElement = <span className="source-badge" style={{background: '#9200FF', color: 'white', padding: '3px 6px', borderRadius: '4px', fontWeight: 'bold'}}>DEEZER</span>;
-
-    if (!badgeElement) return null;
-
-    return (
-      <span 
-        onClick={cycleSource} 
-        style={{...cursorStyle, display: 'inline-block'}} 
-        title={title}
-        onMouseEnter={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1.05)'; }}
-        onMouseLeave={(e) => { if (isMultiple) e.currentTarget.style.transform = 'scale(1)'; }}
-      >
-        {badgeElement}
-      </span>
-    );
-  };
-
   const renderSyncNode = (node, isMain) => {
     if (!node) return null;
     const isRTL = isRTLLanguage(node.text || '');
@@ -469,43 +430,36 @@ export const SyncWorkspace = ({
         '--player-accent': accentColor,
         '--workspace-lyric-size': `${currentFontSize}px`
       }}>
+      {syncControlsTarget && createPortal(
+        <div className="sync-workspace-header-actions">
+          <button
+            onClick={toggleWorkspaceMode}
+            className="edit-links-btn"
+            style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
+          >
+            {isShowingAutoSync ? 'Auto Sync Mode' : 'Manual Sync Mode'}
+          </button>
+          <button className="edit-links-btn" onClick={cycleScale} style={{ margin: 0 }}>
+            Text Size: {lyricScale * 100}%
+          </button>
+          {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
+            <button
+              onClick={handleMapAutoSync}
+              className="edit-links-btn"
+              style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
+              title="Map Timings from Auto to Manual Lyrics"
+            >
+              Map Timings from Auto
+            </button>
+          )}
+        </div>,
+        syncControlsTarget
+      )}
       
       <div 
            id="sync-yt-target-container" 
            style={{ display: activeSyncSource === 'youtube' ? 'block' : 'none', width: '1px', height: '1px', position: 'absolute', opacity: 0, pointerEvents: 'none' }}
       ></div>
-
-      <div className="sync-top-toolbar glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', marginBottom: '-4px' }}>
-         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button 
-                onClick={toggleWorkspaceMode} 
-                className="edit-links-btn"
-                style={{ background: isShowingAutoSync ? 'rgba(29, 185, 84, 0.2)' : 'rgba(255, 255, 255, 0.1)', borderColor: isShowingAutoSync ? '#1DB954' : 'rgba(255, 255, 255, 0.2)', color: isShowingAutoSync ? '#1DB954' : 'white', margin: 0 }}
-            >
-              {isShowingAutoSync ? 'Auto Sync Mode' : 'Manual Sync Mode'}
-            </button>
-            <button className="edit-links-btn" onClick={cycleScale} style={{ background: 'rgba(255, 255, 255, 0.1)', borderColor: 'rgba(255, 255, 255, 0.2)', color: 'white', margin: 0 }}>
-              Text Size: {lyricScale * 100}%
-            </button>
-            {!isShowingAutoSync && selectedSong?.autoSyncData?.length > 0 && (
-              <button 
-                  onClick={handleMapAutoSync} 
-                  className="edit-links-btn"
-                  style={{ background: 'rgba(251, 191, 36, 0.2)', borderColor: '#fbbf24', color: '#fbbf24', margin: 0 }}
-                  title="Map Timings from Auto to Manual Lyrics"
-              >
-                  Map Timings from Auto
-              </button>
-            )}
-         </div>
-
-         <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {renderSourceBadge()}
-            </div>
-            <span>{isShowingAutoSync ? 'Only Ad-libs Editable' : 'Full Edit Enabled'}</span>
-         </div>
-      </div>
 
       <div className="sync-player glass-panel">
         <button className="sync-play-btn" onClick={toggleSyncPlay}>
@@ -537,17 +491,20 @@ export const SyncWorkspace = ({
             aria-valuenow={Math.round((syncMuted ? 0 : syncVolume) * 100)}
             title={`Volume: ${Math.round((syncMuted ? 0 : syncVolume) * 100)}%`}
             onPointerDown={(event) => {
-              if (event.target === event.currentTarget) {
-                event.currentTarget.setPointerCapture(event.pointerId);
+              if (event.button !== 0) return;
+              event.preventDefault();
+              event.currentTarget.setPointerCapture(event.pointerId);
+              setIsAdjustingVolume(true);
+              handleVolumeKnobPointer(event);
+            }}
+            onPointerMove={(event) => {
+              if (event.buttons === 1 || event.currentTarget.hasPointerCapture(event.pointerId)) {
                 setIsAdjustingVolume(true);
                 handleVolumeKnobPointer(event);
               }
             }}
-            onPointerMove={(event) => {
-              if (event.currentTarget.hasPointerCapture(event.pointerId)) handleVolumeKnobPointer(event);
-            }}
             onPointerUp={() => setIsAdjustingVolume(false)}
-            onLostPointerCapture={() => setIsAdjustingVolume(false)}
+            onPointerCancel={() => setIsAdjustingVolume(false)}
             onKeyDown={handleVolumeKnobKeyDown}
             onKeyUp={() => setIsAdjustingVolume(false)}
             onBlur={() => setIsAdjustingVolume(false)}

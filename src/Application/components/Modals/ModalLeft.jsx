@@ -67,7 +67,7 @@ const ModalLeft = ({
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
   closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
-  triggerSyncKey
+  triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
@@ -168,6 +168,19 @@ const ModalLeft = ({
 
   const handleDeezerPlay = () => {
     setShowSpotifyNotice(false);
+    if (isSyncMode) {
+      setShowDeezerNotice(!settings?.deezerArl);
+      if (settings?.deezerArl) {
+        setManualSource('deezer');
+      } else {
+        const fallbackSource = availableSources?.includes('youtube')
+          ? 'youtube'
+          : availableSources?.includes('local') ? 'local' : null;
+        if (fallbackSource) setManualSource(fallbackSource);
+        else setNotification?.({ show: true, message: 'A Deezer ARL is required to play this source.', progress: 100 });
+      }
+      return;
+    }
     if (!settings?.deezerArl) {
       setShowDeezerNotice(true);
       setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'preview', playId: Date.now() });
@@ -180,12 +193,20 @@ const ModalLeft = ({
   const handleYtPlay = () => {
     setShowDeezerNotice(false);
     setShowSpotifyNotice(false);
+    if (isSyncMode) {
+      setManualSource('youtube');
+      return;
+    }
     setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'youtube', playId: Date.now() });
   };
 
   const handleLocalPlay = () => {
     setShowDeezerNotice(false);
     setShowSpotifyNotice(false);
+    if (isSyncMode) {
+      setManualSource('local');
+      return;
+    }
     setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() });
   };
 
@@ -332,7 +353,7 @@ const ModalLeft = ({
               
               {hasDeezerLink && (
                 <button 
-                   className={`platform-btn deezer ${activePlaybackSource === 'deezer' ? 'active-source' : ''}`} 
+                  className={`platform-btn deezer ${(isSyncMode ? activeSyncSource : activePlaybackSource) === 'deezer' ? 'active-source' : ''}`} 
                    onClick={handleDeezerPlay}
                 >
                   Deezer
@@ -341,7 +362,7 @@ const ModalLeft = ({
               
               {hasYtLink && (
                 <button 
-                   className={`platform-btn yt ${activePlaybackSource === 'youtube' ? 'active-source' : ''}`} 
+                   className={`platform-btn yt ${(isSyncMode ? activeSyncSource : activePlaybackSource) === 'youtube' ? 'active-source' : ''}`} 
                    onClick={handleYtPlay}
                 >
                   YT Music
@@ -350,7 +371,7 @@ const ModalLeft = ({
               
               {customData.hasLocal && (
                 <button 
-                   className={`platform-btn local ${activePlaybackSource === 'local' ? 'active-source' : ''}`} 
+                   className={`platform-btn local ${(isSyncMode ? activeSyncSource : activePlaybackSource) === 'local' ? 'active-source' : ''}`} 
                    onClick={handleLocalPlay}
                 >
                   Local Audio File
@@ -481,6 +502,9 @@ const ModalLeft = ({
                 </div>
               </div>
             </div>
+          )}
+          {isSyncMode && !isTranslationManagerOpen && (
+            <div className="sync-workspace-controls-slot" />
           )}
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
