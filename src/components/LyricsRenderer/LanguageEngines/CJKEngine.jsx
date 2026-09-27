@@ -3,6 +3,8 @@ import React from 'react';
 import { normalizeTrans, parsePronunciation, getGraphemes } from '../textUtils.js';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
+const isLatinText = (text) => /^[\p{Script=Latin}\d\s]*$/u.test(String(text || '').replace(/[\p{P}\p{S}]+/gu, ''));
+
 const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
     let alignedChunks = [];
@@ -43,7 +45,7 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
                 if (/\s/.test(c.char)) {
                     if (currentBlockChars.length > 0) {
                         const textStr = currentBlockChars.map(x => x.char).join('');
-                        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
+                        const isLatin = isLatinText(textStr);
                         const isOnlyP = /^[\p{P}\p{S}]+$/u.test(textStr);
                         
                         if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
@@ -59,7 +61,7 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
             });
             if (currentBlockChars.length > 0) {
                 const textStr = currentBlockChars.map(x => x.char).join('');
-                const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(textStr);
+                const isLatin = isLatinText(textStr);
                 const isOnlyP = /^[\p{P}\p{S}]+$/u.test(textStr);
                 
                 if (isOnlyP || isLatin) alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
@@ -112,7 +114,7 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
             let isLatinMode = null;
             
             chars.forEach(c => {
-                const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(c.char);
+                const isLatin = isLatinText(c.char);
                 if (isLatinMode === null) {
                     isLatinMode = isLatin;
                     currentBlockChars.push(c);

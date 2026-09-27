@@ -3,6 +3,16 @@ import React from 'react';
 import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils.js';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
+const normalizeWordForMatch = (word) => word.toLowerCase().replace(/[\p{P}\p{S}]+/gu, '').trim();
+const pronunciationMatchesLyricWord = (lyrics, pronunciation) => {
+    const normalizedPronunciation = normalizeWordForMatch(pronunciation);
+    if (!normalizedPronunciation) return false;
+
+    return String(lyrics || '').split(/\s+/u).some(word =>
+        normalizeWordForMatch(word) === normalizedPronunciation
+    );
+};
+
 const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
     let alignedChunks = [];
@@ -57,7 +67,7 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
 
                         if (isOnlyP) {
                             alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
-                        } else if (isLatin && cleanStr.toLowerCase() === (pronWords[tIdx] || '').toLowerCase()) {
+                        } else if (isLatin && cleanStr.toLowerCase() === normalizeWordForMatch(pronWords[tIdx] || '')) {
                             // English word matches transliteration -> muted transliteration
                             alignedChunks.push({ type: 'en', trans: '', chars: currentBlockChars });
                             tIdx++;
@@ -82,7 +92,7 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
 
                 if (isOnlyP) {
                     alignedChunks.push({ type: 'main', trans: '', chars: currentBlockChars });
-                } else if (isLatin && cleanStr.toLowerCase() === (pronWords[tIdx] || '').toLowerCase()) {
+                } else if (isLatin && cleanStr.toLowerCase() === normalizeWordForMatch(pronWords[tIdx] || '')) {
                     alignedChunks.push({ type: 'en', trans: '', chars: currentBlockChars });
                 } else {
                     alignedChunks.push({ type: 'foreign', trans: pronWords[tIdx] || '', chars: currentBlockChars });
@@ -158,7 +168,7 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
         if (!isCJKLine && !parsedChunks) {
             const cleanOrig = originalText.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
             const cleanPron = pronunciation.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
-            if (cleanOrig !== cleanPron) {
+            if (cleanOrig !== cleanPron && !pronunciationMatchesLyricWord(originalText, pronunciation)) {
                 displayPronString = normalizeTrans(pronunciation, !isAdlib);
             }
         }

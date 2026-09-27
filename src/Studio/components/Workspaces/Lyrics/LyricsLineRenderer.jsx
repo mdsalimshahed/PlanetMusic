@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
-import { toSmartPunctuation } from '../../../../utils/smartPunctuation.js';
+import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../../utils/smartPunctuation.js';
 import './LyricsLineRenderer.css';
 
 // Re-export formatter utilities from their new centralized locations so the Views don't break
@@ -23,12 +23,12 @@ export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayi
     ...savedNode,
     spacingText: toSmartPunctuation(savedNode.spacingText),
     translation: toSmartPunctuation(savedNode.translation),
-    pronunciation: toSmartPunctuation(savedNode.pronunciation),
+    pronunciation: normalizeStructuredPunctuation(savedNode.pronunciation),
     adlibs: savedNode.adlibs?.map(adlib => ({
       ...adlib,
       text: toSmartPunctuation(adlib.text),
       translation: toSmartPunctuation(adlib.translation),
-      pronunciation: toSmartPunctuation(adlib.pronunciation)
+      pronunciation: normalizeStructuredPunctuation(adlib.pronunciation)
     }))
   } : savedNode;
   const { chars, hasSpacingText } = extractCharsAndSegments(displayLine, displayNode);

@@ -9,6 +9,8 @@ import './TranslationWorkspace.css';
 
 const TranslationWorkspace = ({
   selectedSong,
+  realSelectedSong,
+  isSaved,
   customData,
   masterPalette,
   updateSongInLibrary,
@@ -36,6 +38,8 @@ const TranslationWorkspace = ({
     handleImportText
   } = useTranslationWorkspaceData({
     selectedSong,
+    realSelectedSong,
+    isSaved,
     customData,
     masterPalette,
     updateSongInLibrary,

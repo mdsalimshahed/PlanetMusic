@@ -1,5 +1,6 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
 import { useState, useEffect } from 'react';
+import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
@@ -25,7 +26,8 @@ export const useVaultOperations = ({
   const applyParsedData = (parsedData, shouldRedirect = true) => {
     const newLibrary = [...library];
     const mergeSongs = (importedSongs) => {
-      importedSongs.forEach(newSong => {
+      importedSongs.forEach(importedSong => {
+        const newSong = normalizeSongLyrics(importedSong);
         const existingIdx = newLibrary.findIndex(s => s.trackId === newSong.trackId);
         if (existingIdx >= 0) newLibrary[existingIdx] = { ...newLibrary[existingIdx], ...newSong };
         else newLibrary.push(newSong);
@@ -119,7 +121,7 @@ export const useVaultOperations = ({
       updatedSong.previewUrl = updatedSong.originalPreviewUrl;
     }
 
-    const finalSong = { ...updatedSong };
+    const finalSong = normalizeSongLyrics(updatedSong);
 
     setLibrary(prevLibrary => {
       const exists = prevLibrary.some(s => String(s.trackId) === String(finalSong.trackId));

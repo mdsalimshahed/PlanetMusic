@@ -1,5 +1,6 @@
 /* --- src/hooks/data/useAppStorage.js --- */
 import { useState, useEffect } from 'react';
+import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 
 export const useAppStorage = (urlSearchQuery) => {
   const [settings, setSettings] = useState(() => {
@@ -75,7 +76,8 @@ export const useAppStorage = (urlSearchQuery) => {
 
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
-    return saved ? JSON.parse(saved) : [];
+    const parsed = saved ? JSON.parse(saved) : [];
+    return Array.isArray(parsed) ? parsed.map(normalizeSongLyrics) : [];
   });
 
   const [isSampleVaultActive, setIsSampleVaultActive] = useState(() => {

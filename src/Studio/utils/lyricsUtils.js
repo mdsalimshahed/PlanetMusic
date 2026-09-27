@@ -1,8 +1,9 @@
 /* --- src/utils/lyricsUtils.js --- */
+import { toSmartPunctuation } from '../../utils/smartPunctuation.js';
 
 export const parseLyrics = (raw, defaultArtist, colorPalette) => {
   if (!raw) return [];
-  const lines = raw.split('\n').map(l => l.trim());
+  const lines = toSmartPunctuation(raw).split('\n').map(l => l.trim());
   const result = [];
   const globalDefaultArtists = defaultArtist ? defaultArtist.split(/\s*(?:,|&|\band\b|\+)\s*/i).filter(Boolean).map(n => n.trim()) : [];
   let currentRules = [{ marker: '', artists: globalDefaultArtists }];

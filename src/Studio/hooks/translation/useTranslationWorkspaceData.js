@@ -1,6 +1,7 @@
 /* --- src/hooks/translation/useTranslationWorkspaceData.js --- */
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { parseLyrics } from '../../utils/songHelpers.js';
+import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return '';
@@ -133,6 +134,10 @@ export const useTranslationWorkspaceData = ({
   }, [workspaceData, initialDataSnapshot]);
 
   const handleChange = (index, field, value) => {
+    if (field === 'translation' || field === 'displayPron' || field === 'spacingText') {
+      value = toSmartPunctuation(value);
+    }
+
     const newData = [...workspaceData];
 
     if (field === 'lang') {
@@ -211,7 +216,7 @@ export const useTranslationWorkspaceData = ({
       const isEn = item.lang === 'en';
       
       let finalPron = isEn ? '' : item.pronunciation;
-      let finalTrans = isEn ? '' : (item.translation || '');
+      let finalTrans = isEn ? '' : toSmartPunctuation(item.translation || '');
 
       if (!isEn) {
         if (meta.isAdlib) {
@@ -233,6 +238,8 @@ export const useTranslationWorkspaceData = ({
         }
       }
 
+      finalPron = normalizeStructuredPunctuation(finalPron);
+
       if (meta.isAdlib) {
         if (newSyncData[meta.lineIndex] && newSyncData[meta.lineIndex].adlibs) {
           const target = newSyncData[meta.lineIndex].adlibs[meta.adlibIndex];
@@ -240,7 +247,7 @@ export const useTranslationWorkspaceData = ({
             target.translation = finalTrans;
             target.pronunciation = finalPron;
             target.lang = item.lang || 'auto';
-            target.spacingText = item.spacingText || ''; 
+            target.spacingText = toSmartPunctuation(item.spacingText || '');
           }
         }
       } else {
@@ -249,7 +256,7 @@ export const useTranslationWorkspaceData = ({
           target.translation = finalTrans;
           target.pronunciation = finalPron;
           target.lang = item.lang || 'auto';
-          target.spacingText = item.spacingText || ''; 
+          target.spacingText = toSmartPunctuation(item.spacingText || '');
         }
       }
     });
@@ -320,6 +327,9 @@ export const useTranslationWorkspaceData = ({
             importedPron = lines[1];
             importedTrans = lines[2];
           }
+
+          importedPron = toSmartPunctuation(importedPron);
+          importedTrans = toSmartPunctuation(importedTrans);
 
           let targetIndex = newData.findIndex(
             w => w.displayText.toLowerCase() === originalText.toLowerCase()

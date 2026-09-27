@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
+import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
 export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -77,7 +78,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setSingerImages({});
       }
 
-      const initialLyricsStr = selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+      const initialLyricsStr = toSmartPunctuation(selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : ''));
       
       setCustomData({
         spotify: selectedSong.customLinks?.spotify || '',
@@ -186,7 +187,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const handleDataChange = (e) => {
     const { name, value } = e.target;
-    const finalValue = name === 'lyrics' ? value : cleanUrl(value);
+    const finalValue = name === 'lyrics' ? toSmartPunctuation(value) : cleanUrl(value);
     setCustomData({ ...customData, [name]: finalValue });
   };
 
