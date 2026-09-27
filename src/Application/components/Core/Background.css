@@ -28,8 +28,8 @@
 /* CHAT BUBBLE STYLING */
 .lyric-chat-bubble {
   position: absolute;
-  /* JavaScript sets player-relative or viewport-bottom spawn coordinates inline. */
-  top: 100%; 
+  /* JavaScript positions each bubble at the viewport's bottom edge. */
+  top: 100%;
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -94,6 +94,7 @@
   word-break: break-word;
   overflow-wrap: anywhere;
   line-height: 1.35;
+  will-change: opacity, transform, filter;
 }
 
 /* FULL SCREEN BOTTOM-TO-TOP WATERFALL KEYFRAMES */
@@ -106,14 +107,11 @@
     opacity: 0.85;
     transform: translateY(0px) scale(1);
   }
-  95% {
+  85% {
     opacity: 0.85;
-    /* Travel all the way up past the top of the viewport */
-    transform: translateY(-80vh) scale(1);
   }
   100% {
     opacity: 0;
-    /* Final gentle shrink as it vanishes off-screen */
-    transform: translateY(-85vh) scale(0.85);
+    transform: translateY(calc(-100vh - 100% - 1px)) scale(1);
   }
 }

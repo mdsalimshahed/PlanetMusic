@@ -2,7 +2,33 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { fetchSingerImage } from '../../utils/apiUtils.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import { normalizeTrans, parsePronunciation } from '../../../components/LyricsRenderer/textUtils.js';
 import './Background.css';
+
+const getBubblePronunciation = (pronunciation) => {
+  if (!pronunciation) return '';
+  const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
+  const chunkText = Array.isArray(parsedChunks)
+    ? parsedChunks.map(chunk => chunk.trans || chunk.text || '').filter(Boolean).join(' ')
+    : '';
+  return normalizeTrans(fullTrans || chunkText || String(pronunciation), true);
+};
+
+const getBubbleZoneCrossingTime = (baseY, screenHeight, duration, boundaryY) => {
+  const initialY = baseY + 50;
+  const standardTravel = screenHeight;
+
+  if (initialY <= boundaryY) return 0;
+  if (baseY < boundaryY) {
+    return duration * 0.05 * ((initialY - boundaryY) / 50);
+  }
+
+  const distance = baseY - boundaryY;
+  if (distance <= standardTravel) {
+    return duration * (0.05 + (distance / standardTravel) * 0.8);
+  }
+  return null;
+};
 
 // Helper to resolve the correct artist image across all storage scopes, now with Wikipedia API fallback
 const getArtistPhoto = async (artistName, track = null, profilesMap = new Map(), fetchedCache = new Map()) => {
@@ -110,7 +136,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
                   if (adText && adText.length > 2 && !seenLines.has(adText)) {
                     const adArtist = (adlib.singer || lineObj.singer || trackArtist).split(',')[0].trim();
                     seenLines.add(adText);
-                    poolArray.push({ line: adText, artist: adArtist, track: track, trackId: track.trackId });
+                    poolArray.push({ line: adText, pronunciation: adlib.pronunciation, artist: adArtist, track: track, trackId: track.trackId });
                   }
                   // Erase the ad-lib from the main line text entirely
                   mainText = mainText.replace(adTextRaw, '');
@@ -122,7 +148,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
               if (cleanMainText.length > 3 && cleanMainText.length < 120 && !cleanMainText.startsWith('http') && !seenLines.has(cleanMainText)) {
                 const lineArtist = (lineObj.singer || trackArtist).split(',')[0].trim();
                 seenLines.add(cleanMainText);
-                poolArray.push({ line: cleanMainText, artist: lineArtist, track: track, trackId: track.trackId });
+                poolArray.push({ line: cleanMainText, pronunciation: lineObj.pronunciation, artist: lineArtist, track: track, trackId: track.trackId });
               }
             });
           } else if (typeof track.lyrics === 'string') {
@@ -148,6 +174,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   const currentTrackRef = useRef(currentTrack);
   const isPlayingRef = useRef(false);
   const fetchedImageCacheRef = useRef(new Map());
+  const bubbleModeTimersRef = useRef(new Map());
   
   // Spatial Anti-Collision Engine Memory
   const recentSpawnsRef = useRef([]);
@@ -157,6 +184,70 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     profilesRef.current = profiles;
     currentTrackRef.current = currentTrack;
   }, [pool, profiles, currentTrack]);
+
+  const clearBubbleModeTimers = (bubbleId) => {
+    const timers = bubbleModeTimersRef.current.get(bubbleId) || [];
+    timers.forEach(clearTimeout);
+    bubbleModeTimersRef.current.delete(bubbleId);
+  };
+
+  const scheduleBubbleTimer = (bubbleId, callback, delay) => {
+    let timer;
+    timer = setTimeout(() => {
+      const timers = bubbleModeTimersRef.current.get(bubbleId) || [];
+      const remainingTimers = timers.filter(existingTimer => existingTimer !== timer);
+      if (remainingTimers.length > 0) bubbleModeTimersRef.current.set(bubbleId, remainingTimers);
+      else bubbleModeTimersRef.current.delete(bubbleId);
+      callback();
+    }, Math.max(0, delay));
+
+    const timers = bubbleModeTimersRef.current.get(bubbleId) || [];
+    bubbleModeTimersRef.current.set(bubbleId, [...timers, timer]);
+  };
+
+  const animateBubbleText = (bubbleId, sourceText, targetText) => {
+    const sourceCharacters = Array.from(sourceText);
+    const targetCharacters = Array.from(targetText);
+    const characterCount = Math.max(sourceCharacters.length, targetCharacters.length);
+    const displayCharacters = Array.from({ length: characterCount }, (_, index) => sourceCharacters[index] || '');
+    const randomCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&*?';
+
+    setBubbles(prev => prev.map(bubble => bubble.id === bubbleId
+      ? { ...bubble, displayCharacters }
+      : bubble
+    ));
+
+    const updateCharacter = (index, character) => {
+      setBubbles(prev => prev.map(bubble => {
+        if (bubble.id !== bubbleId) return bubble;
+        const nextCharacters = [...(bubble.displayCharacters || displayCharacters)];
+        nextCharacters[index] = character;
+        return { ...bubble, displayCharacters: nextCharacters };
+      }));
+    };
+
+    for (let index = 0; index < characterCount; index++) {
+      const targetCharacter = targetCharacters[index] || '';
+      const hasVisibleCharacter = Boolean(sourceCharacters[index]?.trim() || targetCharacter.trim());
+      const characterDelay = Math.random() * 280 + index * 2;
+
+      scheduleBubbleTimer(bubbleId, () => {
+        if (!hasVisibleCharacter) {
+          updateCharacter(index, targetCharacter);
+          return;
+        }
+
+        const randomCharacter = randomCharacters[Math.floor(Math.random() * randomCharacters.length)];
+        updateCharacter(index, randomCharacter);
+        scheduleBubbleTimer(bubbleId, () => updateCharacter(index, targetCharacter), 25 + Math.random() * 65);
+      }, characterDelay);
+    }
+  };
+
+  useEffect(() => () => {
+    bubbleModeTimersRef.current.forEach(timers => timers.forEach(clearTimeout));
+    bubbleModeTimersRef.current.clear();
+  }, []);
 
   // Sync with global player state
   useEffect(() => {
@@ -171,18 +262,21 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     return () => window.removeEventListener('globalPlayState', handlePlayState);
   }, []);
 
-  const spawnBubble = (line, artist, photo, isSynced) => {
+  const spawnBubble = (line, artist, photo, isSynced, rawPronunciation = null) => {
     const now = Date.now();
-    const floatingPlayer = isSynced ? document.querySelector('.global-player:not(.stacked)') : null;
-    const playerRect = floatingPlayer?.getBoundingClientRect();
-    const spawnBehindPlayer = Boolean(
-      playerRect && playerRect.width > 0 && playerRect.height > 0 &&
-      playerRect.bottom > 0 && playerRect.top < window.innerHeight
-    );
     const viewportWidth = window.innerWidth;
     const bubbleHalfWidth = Math.min(170, Math.max(0, (viewportWidth - 40) / 2));
     const minCenterX = Math.min(viewportWidth / 2, bubbleHalfWidth + 20);
     const maxCenterX = Math.max(viewportWidth / 2, viewportWidth - bubbleHalfWidth - 20);
+    const screenHeight = Math.max(1, window.innerHeight);
+    const floatingPlayer = isSynced
+      ? document.querySelector('.global-player:not(.stacked)') || document.querySelector('.global-player')
+      : null;
+    const playerRect = floatingPlayer?.getBoundingClientRect();
+    const spawnBehindPlayer = Boolean(
+      playerRect && playerRect.width > 0 && playerRect.height > 0 &&
+      playerRect.bottom > 0 && playerRect.top < screenHeight
+    );
     const maxHorizontalOffset = spawnBehindPlayer
       ? Math.min(playerRect.width * 0.5, viewportWidth * 0.25)
       : 0;
@@ -192,29 +286,17 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     const playerCenterX = spawnBehindPlayer
       ? (Math.max(minCenterX, Math.min(maxCenterX, requestedCenterX)) / viewportWidth) * 100
       : null;
-    const spawnTop = spawnBehindPlayer
-      ? Math.max(0, playerRect.top - 72)
-      : window.innerHeight - 115;
+    const spawnTop = spawnBehindPlayer ? Math.max(0, playerRect.top - 72) : screenHeight;
 
     // Scrub bubbles older than 2.5s from memory to free up space
     recentSpawnsRef.current = recentSpawnsRef.current.filter(s => now - s.time < 2500);
 
-    // VERTICAL STACKING: Check for bubbles that fired essentially simultaneously (< 500ms) of the SAME type
-    const simultaneousSpawns = recentSpawnsRef.current.filter(s => now - s.time < 500 && s.isSynced === isSynced);
-    const yOffset = simultaneousSpawns.length * 90; 
-
-    let spawnX;
+    let spawnX = playerCenterX;
     // Always assign an independent, fully randomized float duration for dynamic speed variation!
     const duration = isSynced ? Math.floor(Math.random() * 4) + 8 : Math.floor(Math.random() * 10) + 12;
 
-    // If part of a simultaneous stack, strictly inherit the exact X coordinate so it launches
-    // cleanly from the same vertical line, but keep its independent randomized speed.
-    if (simultaneousSpawns.length > 0) {
-        spawnX = simultaneousSpawns[0].x;
-    } else if (spawnBehindPlayer) {
-      spawnX = playerCenterX;
-    } else {
-        // Not a stack: Calculate brand new spawn location
+    if (!spawnBehindPlayer) {
+      // Give each bubble its own horizontal lane while keeping every spawn on the bottom edge.
         let attempts = 0;
         let bestX = 50;
         let maxMinDist = -1;
@@ -279,15 +361,53 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         x: spawnX,
         spawnTop,
         spawnBehindPlayer,
-        yOffset, // Apply vertical stacking offset
         duration,
-        isSynced
+        isSynced,
+        pronunciation: getBubblePronunciation(rawPronunciation),
+        displayCharacters: Array.from(line),
+        showingPronunciation: false
     };
 
     setBubbles(prev => {
         if (prev.length >= 24) return [...prev.slice(1), newBubble];
         return [...prev, newBubble];
     });
+
+    if (newBubble.pronunciation) {
+      const screenHeight = Math.max(1, window.innerHeight);
+      const baseY = spawnTop;
+      const initialY = baseY + 50;
+      const topBoundary = screenHeight * 0.1;
+      const bottomBoundary = screenHeight * 0.8;
+      const startsInTopZone = initialY <= topBoundary;
+
+      if (!startsInTopZone) {
+        const enterDelay = initialY < bottomBoundary
+          ? 0
+          : getBubbleZoneCrossingTime(baseY, screenHeight, duration, bottomBoundary);
+        const exitDelay = getBubbleZoneCrossingTime(baseY, screenHeight, duration, topBoundary);
+
+        const scheduleModeChange = (delay, showPronunciation) => {
+          if (delay === null) return;
+          scheduleBubbleTimer(newBubble.id, () => {
+            setBubbles(prev => prev.map(bubble => bubble.id === newBubble.id
+              ? { ...bubble, showingPronunciation: showPronunciation }
+              : bubble
+            ));
+            animateBubbleText(
+              newBubble.id,
+              showPronunciation ? newBubble.line : newBubble.pronunciation,
+              showPronunciation ? newBubble.pronunciation : newBubble.line
+            );
+          }, delay * 1000);
+        };
+
+        scheduleModeChange(enterDelay, true);
+        if (exitDelay !== null && (enterDelay === null || exitDelay > enterDelay)) {
+          scheduleModeChange(exitDelay, false);
+        }
+      }
+    }
   };
 
   // 2. Synced Lyric Engine (Event-driven to support independent ad-lib timings)
@@ -343,7 +463,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
                         if (cleanText.length > 0) {
                             const artistName = (node.singer || track.artistName || 'Unknown').split(',')[0].trim();
                             getArtistPhoto(artistName, track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
-                                spawnBubble(cleanText, artistName, photo, true);
+                                spawnBubble(cleanText, artistName, photo, true, node.pronunciation);
                             });
                         }
                     }
@@ -363,7 +483,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
                                 if (cleanAdlibText.length > 0) {
                                     const artistName = (adlib.singer || node.singer || track.artistName || 'Unknown').split(',')[0].trim();
                                     getArtistPhoto(artistName, track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
-                                        spawnBubble(cleanAdlibText, artistName, photo, true);
+                                        spawnBubble(cleanAdlibText, artistName, photo, true, adlib.pronunciation);
                                     });
                                 }
                             }
@@ -405,7 +525,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         if (filteredPool.length > 0) {
           const randomItem = filteredPool[Math.floor(Math.random() * filteredPool.length)];
           getArtistPhoto(randomItem.artist, randomItem.track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
-              spawnBubble(randomItem.line, randomItem.artist, photo, false);
+              spawnBubble(randomItem.line, randomItem.artist, photo, false, randomItem.pronunciation);
           });
         }
         scheduleNextSpawn();
@@ -421,6 +541,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   }, [isModalOpen]); 
 
   const handleAnimationEnd = (id) => {
+    clearBubbleModeTimers(id);
     setBubbles((prev) => prev.filter((b) => b.id !== id));
   };
 
@@ -433,20 +554,24 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         {bubbles.map((b) => (
           <div
             key={b.id}
-            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''} ${b.spawnBehindPlayer ? 'player-origin' : ''}`}
+            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''}`}
             style={{
-              // Center player-origin bubbles on the measured player; keep the existing placement for others.
-              left: b.spawnBehindPlayer ? `${b.x}%` : `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
-              // Apply dynamic vertical stack offset
-              top: `${b.spawnTop - (b.yOffset || 0)}px`,
+              left: `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
+              top: `${b.spawnTop}px`,
               animationDuration: `${b.duration}s`
             }}
-            onAnimationEnd={() => handleAnimationEnd(b.id)}
+            onAnimationEnd={(event) => {
+              if (event.target === event.currentTarget && event.animationName === 'floatUpFade') {
+                handleAnimationEnd(b.id);
+              }
+            }}
           >
             <img src={b.photo} alt={b.artist} className="bubble-artist-photo" />
             <div className="bubble-content">
               <span className="bubble-artist">{toSmartPunctuation(b.artist)}</span>
-              <span className="bubble-lyric">{toSmartPunctuation(b.line)}</span>
+              <span className="bubble-lyric">
+                {toSmartPunctuation((b.displayCharacters || Array.from(b.line)).join(''))}
+              </span>
             </div>
           </div>
         ))}
