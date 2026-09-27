@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -32,6 +32,11 @@ import { useDeepLink } from './Application/hooks/core/useDeepLink.js';
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const contentScrollAreaRef = useRef(null);
+
+  useEffect(() => {
+    contentScrollAreaRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // Parse routing variables from URL
   const pathParts = location.pathname.split('/').filter(Boolean);
@@ -346,7 +351,7 @@ const App = () => {
           </div>
         )}
 
-        <div className={`content-scroll-area ${isExplicitSearch && (activeTab === 'main' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
+        <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'main' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
           <Routes>
             <Route path="/" element={renderDashboardView()} />
