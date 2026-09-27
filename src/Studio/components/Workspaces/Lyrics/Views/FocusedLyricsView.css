@@ -84,9 +84,7 @@
 }
 
 .focused-line .lyric-word-group,
-.focused-line .lyric-word-group > .lyric-word,
-.focused-line .trans-word-group,
-.focused-line .trans-word-group > .trans-word {
+.focused-line .trans-word-group {
   display: inline !important;
 }
 
