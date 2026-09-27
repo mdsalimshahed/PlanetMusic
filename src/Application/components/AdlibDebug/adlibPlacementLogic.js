@@ -47,6 +47,19 @@ export const getRelativeRect = (element, containerRect) => {
   };
 };
 
+export const getAdlibCenterBounds = (area, width, height, containerRect) => {
+  const safeRadius = Math.hypot(width, height) / 2;
+  const padX = containerRect.width * 0.01;
+  const padY = containerRect.height * 0.01;
+  let left = area.left + safeRadius + padX;
+  let right = area.right - safeRadius - padX;
+  let top = area.top + safeRadius + padY;
+  let bottom = area.bottom - safeRadius - padY;
+  if (left > right) left = right = (area.left + area.right) / 2;
+  if (top > bottom) top = bottom = (area.top + area.bottom) / 2;
+  return { left, right, top, bottom };
+};
+
 export const generateSafeAdlibPosition = (
   node,
   containerRect,
@@ -56,7 +69,7 @@ export const generateSafeAdlibPosition = (
   cols,
   activeSingersList,
   masterNamesArray,
-  lastZoneId = null
+  occupiedPlacements = []
 ) => {
   // 1. The Goldilocks Margins
   const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
@@ -166,12 +179,18 @@ export const generateSafeAdlibPosition = (
     });
   });
 
-  // 5. Choose the available area whose center is closest to the canvas center.
+  // 5. Prefer an unoccupied quadrant, then an unoccupied safe zone.
   const candidateAreas = intersectedAreas.length > 0
     ? intersectedAreas
     : cBox ? [] : validCells.map(vc => ({ ...vc, zoneId: `Cell-${vc.quadIdx}` }));
 
-  if (candidateAreas.length === 0) return null;
+  const unoccupiedQuadrantAreas = candidateAreas.filter(area =>
+    !occupiedPlacements.some(placement => placement.quadIdx === area.quadIdx)
+  );
+  const availableAreas = unoccupiedQuadrantAreas.length > 0
+    ? unoccupiedQuadrantAreas
+    : candidateAreas.filter(area => !occupiedPlacements.some(placement => placement.zoneId === area.zoneId));
+  if (availableAreas.length === 0) return null;
 
   const canvasMidX = containerRect.width / 2;
   const canvasMidY = containerRect.height / 2;
@@ -179,31 +198,35 @@ export const generateSafeAdlibPosition = (
     (area.left + area.right) / 2 - canvasMidX,
     (area.top + area.bottom) / 2 - canvasMidY
   );
-  const nearestDistance = Math.min(...candidateAreas.map(getCenterDistance));
-  const centralAreas = candidateAreas.filter(area => getCenterDistance(area) <= nearestDistance + containerRect.height * 0.001);
   const getAreaSize = (area) => (area.right - area.left) * (area.bottom - area.top);
-  const targetArea = (lastZoneId !== null
-    ? centralAreas.find(area => area.zoneId !== lastZoneId)
-    : null) || centralAreas.sort((first, second) =>
-    getAreaSize(second) - getAreaSize(first)
+  const targetArea = [...availableAreas].sort((first, second) =>
+    getAreaSize(second) - getAreaSize(first) || getCenterDistance(first) - getCenterDistance(second)
   )[0];
 
   const areaWidth = targetArea.right - targetArea.left;
   const areaHeight = targetArea.bottom - targetArea.top;
   const availableWidth = areaWidth * 0.95;
   const availableHeight = areaHeight * 0.95;
-  const centerX = (targetArea.left + targetArea.right) / 2;
-  const centerY = (targetArea.top + targetArea.bottom) / 2;
-  const rotMultiplier = (centerX - canvasMidX) / (canvasMidX || 1);
-  const ySign = centerY < canvasMidY ? 1 : -1;
+  const areaCenterX = (targetArea.left + targetArea.right) / 2;
+  const areaCenterY = (targetArea.top + targetArea.bottom) / 2;
+  const rotMultiplier = (areaCenterX - canvasMidX) / (canvasMidX || 1);
+  const ySign = areaCenterY < canvasMidY ? 1 : -1;
   const finalRotation = rotMultiplier * ySign * 18 + (Math.random() * 10) - 5;
   const rotationRadians = finalRotation * Math.PI / 180;
   const cosRotation = Math.abs(Math.cos(rotationRadians));
   const sinRotation = Math.abs(Math.sin(rotationRadians));
+  const getRotatedBounds = (width, height, scale) => ({
+    width: (width * cosRotation + height * sinRotation) * scale,
+    height: (width * sinRotation + height * cosRotation) * scale
+  });
+  const collidesWith = (box, centerX, centerY, width, height) => box &&
+    centerX + width / 2 > box.left &&
+    centerX - width / 2 < box.right &&
+    centerY + height / 2 > box.top &&
+    centerY - height / 2 < box.bottom;
   const fitsArea = (width, height, scale) => {
-    const rotatedWidth = (width * cosRotation + height * sinRotation) * scale;
-    const rotatedHeight = (width * sinRotation + height * cosRotation) * scale;
-    return rotatedWidth <= availableWidth && rotatedHeight <= availableHeight;
+    const bounds = getRotatedBounds(width, height, scale);
+    return bounds.width <= availableWidth && bounds.height <= availableHeight;
   };
 
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
@@ -218,7 +241,7 @@ export const generateSafeAdlibPosition = (
   };
   node.style.setProperty('width', 'max-content', 'important');
 
-  // First preserve the settings size and natural one-line layout.
+  // Preserve the configured size and wrap only if the line cannot fit naturally.
   setTemporaryMaxWidth('none');
   const naturalWidth = node.scrollWidth;
   const naturalHeight = node.scrollHeight;
@@ -226,44 +249,69 @@ export const generateSafeAdlibPosition = (
   let measuredHeight = naturalHeight;
   let maxWidth = 'none';
 
-  // Wrap only when the natural layout cannot fit at the configured size.
+  // Wrapping gets the first chance to fit the complete ad-lib inside its box.
   if (!fitsArea(naturalWidth, naturalHeight, 1)) {
-    const wrapWidth = Math.min(availableWidth, naturalWidth * 0.9);
+    const wrapWidth = availableWidth;
     maxWidth = `${wrapWidth}px`;
     setTemporaryMaxWidth(maxWidth);
     measuredWidth = node.scrollWidth;
     measuredHeight = node.scrollHeight;
   }
 
-  // Reduce the rendered size by 0.1% per step only after wrapping still fails.
-  let scale = 1;
-  while (!fitsArea(measuredWidth, measuredHeight, scale) && scale > Number.EPSILON) {
-    scale *= 0.999;
-  }
-
+  // Scaling is the last resort, after the full line has had a chance to wrap.
   const restoreProperty = (property, value, priority) => {
     if (value) node.style.setProperty(property, value, priority);
     else node.style.removeProperty(property);
   };
-  restoreProperty('--adlib-max-width', originalMaxWidth, originalMaxWidthPriority);
-  restoreProperty('width', originalWidth, originalWidthPriority);
-  restoreProperty('max-width', originalCssMaxWidth, originalCssMaxWidthPriority);
+  const restoreMeasurementStyles = () => {
+    restoreProperty('--adlib-max-width', originalMaxWidth, originalMaxWidthPriority);
+    restoreProperty('width', originalWidth, originalWidthPriority);
+    restoreProperty('max-width', originalCssMaxWidth, originalCssMaxWidthPriority);
+  };
+  const fitsWithoutCollision = (scale) => {
+    const bounds = getRotatedBounds(measuredWidth, measuredHeight, scale);
+    return bounds.width <= availableWidth &&
+      bounds.height <= availableHeight &&
+      !collidesWith(cBox, areaCenterX, areaCenterY, bounds.width, bounds.height) &&
+      !collidesWith(sBox, areaCenterX, areaCenterY, bounds.width, bounds.height);
+  };
 
-  const fittedWidth = measuredWidth * scale;
-  const fittedHeight = measuredHeight * scale;
+  let scale = 1;
+  while (!fitsWithoutCollision(scale) && scale > 0.01) {
+    scale = Math.round((scale - 0.01) * 100) / 100;
+  }
+  if (!fitsWithoutCollision(scale)) {
+    restoreMeasurementStyles();
+    return null;
+  }
+  restoreMeasurementStyles();
+
+  const centerBounds = getAdlibCenterBounds(
+    targetArea,
+    measuredWidth * scale,
+    measuredHeight * scale,
+    containerRect
+  );
+  const centerX = centerBounds.left + Math.random() * (centerBounds.right - centerBounds.left);
+  const centerY = centerBounds.top + Math.random() * (centerBounds.bottom - centerBounds.top);
+
+  const finalWidth = measuredWidth * scale;
+  const finalHeight = measuredHeight * scale;
+  const finalRotatedWidth = finalWidth * cosRotation + finalHeight * sinRotation;
+  const finalRotatedHeight = finalWidth * sinRotation + finalHeight * cosRotation;
   return {
     left: `${centerX}px`,
     top: `${centerY}px`,
     rot: finalRotation.toFixed(2),
     maxWidth,
-    scale: scale.toFixed(6),
+    scale: scale.toFixed(2),
     quadIdx: targetArea.quadIdx,
     zoneId: targetArea.zoneId,
     debugZone: {
-      left: centerX - fittedWidth / 2,
-      top: centerY - fittedHeight / 2,
-      width: Math.max(1, fittedWidth),
-      height: Math.max(1, fittedHeight)
+      left: centerX - finalRotatedWidth / 2,
+      top: centerY - finalRotatedHeight / 2,
+      width: Math.max(1, finalRotatedWidth),
+      height: Math.max(1, finalRotatedHeight)
     }
   };
 };

@@ -191,6 +191,7 @@ const App = () => {
     '--dyn-live-sync-font-size': `${settings.liveSyncFontSize}vh`,
     '--dyn-focused-sync-font-size': `${settings.focusedSyncFontSize}vh`,
     '--dyn-focused-adlib-font-size': `${settings.focusedAdlibFontSize ?? 3.5}vh`,
+    '--dyn-focused-adlib-width-font-size': `${settings.focusedAdlibFontSize ?? 3.5}cqw`,
     '--dyn-artist-name-font-size': `${settings.artistNameFontSize ?? 3.5}vh`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,

@@ -1,5 +1,4 @@
 /* --- src/components/Settings/TypographySettings.jsx --- */
-import React from 'react';
 import SettingSlider from './SettingSlider.jsx';
 
 const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
