@@ -28,7 +28,7 @@
 /* CHAT BUBBLE STYLING */
 .lyric-chat-bubble {
   position: absolute;
-  /* Lock starting position to the very bottom off-screen */
+  /* JavaScript sets player-relative or viewport-bottom spawn coordinates inline. */
   top: 100%; 
   display: flex;
   align-items: flex-start;
@@ -51,6 +51,10 @@
   animation-name: floatUpFade;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+}
+
+.lyric-chat-bubble.player-origin {
+  translate: -50% 0;
 }
 
 .bubble-artist-photo {

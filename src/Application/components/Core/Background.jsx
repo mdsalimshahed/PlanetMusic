@@ -173,6 +173,29 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
 
   const spawnBubble = (line, artist, photo, isSynced) => {
     const now = Date.now();
+    const floatingPlayer = isSynced ? document.querySelector('.global-player:not(.stacked)') : null;
+    const playerRect = floatingPlayer?.getBoundingClientRect();
+    const spawnBehindPlayer = Boolean(
+      playerRect && playerRect.width > 0 && playerRect.height > 0 &&
+      playerRect.bottom > 0 && playerRect.top < window.innerHeight
+    );
+    const viewportWidth = window.innerWidth;
+    const bubbleHalfWidth = Math.min(170, Math.max(0, (viewportWidth - 40) / 2));
+    const minCenterX = Math.min(viewportWidth / 2, bubbleHalfWidth + 20);
+    const maxCenterX = Math.max(viewportWidth / 2, viewportWidth - bubbleHalfWidth - 20);
+    const maxHorizontalOffset = spawnBehindPlayer
+      ? Math.min(playerRect.width * 0.5, viewportWidth * 0.25)
+      : 0;
+    const requestedCenterX = spawnBehindPlayer
+      ? playerRect.left + playerRect.width / 2 + (Math.random() - 0.5) * maxHorizontalOffset
+      : null;
+    const playerCenterX = spawnBehindPlayer
+      ? (Math.max(minCenterX, Math.min(maxCenterX, requestedCenterX)) / viewportWidth) * 100
+      : null;
+    const spawnTop = spawnBehindPlayer
+      ? Math.max(0, playerRect.top - 72)
+      : window.innerHeight - 115;
+
     // Scrub bubbles older than 2.5s from memory to free up space
     recentSpawnsRef.current = recentSpawnsRef.current.filter(s => now - s.time < 2500);
 
@@ -188,6 +211,8 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     // cleanly from the same vertical line, but keep its independent randomized speed.
     if (simultaneousSpawns.length > 0) {
         spawnX = simultaneousSpawns[0].x;
+    } else if (spawnBehindPlayer) {
+      spawnX = playerCenterX;
     } else {
         // Not a stack: Calculate brand new spawn location
         let attempts = 0;
@@ -252,6 +277,8 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         artist,
         photo,
         x: spawnX,
+        spawnTop,
+        spawnBehindPlayer,
         yOffset, // Apply vertical stacking offset
         duration,
         isSynced
@@ -406,12 +433,12 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         {bubbles.map((b) => (
           <div
             key={b.id}
-            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''}`}
+            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''} ${b.spawnBehindPlayer ? 'player-origin' : ''}`}
             style={{
-              // Flawless alignment calculation mapping 'b.x' strictly to the center axis of the 340px bubble
-              left: `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
+              // Center player-origin bubbles on the measured player; keep the existing placement for others.
+              left: b.spawnBehindPlayer ? `${b.x}%` : `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
               // Apply dynamic vertical stack offset
-              top: `calc(100% - 115px - ${b.yOffset || 0}px)`,
+              top: `${b.spawnTop - (b.yOffset || 0)}px`,
               animationDuration: `${b.duration}s`
             }}
             onAnimationEnd={() => handleAnimationEnd(b.id)}
