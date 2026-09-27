@@ -453,7 +453,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               return;
             }
 
-            if (extractedYtId && !failedSources.includes('youtube')) {
+            if (currentTrack.forceSource !== 'deezer' && extractedYtId && !failedSources.includes('youtube')) {
               activeSourceRef.current = 'youtube';
               setYtVideoId(extractedYtId);
               setActiveSource('youtube');
