@@ -21,19 +21,62 @@
 }
 
 /* --- DYNAMIC LOGO COLOR ANIMATION --- */
+@property --logo-hue {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 @keyframes dynamicGradientPulse {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+@keyframes logoHueShift {
+  from { --logo-hue: 0; }
+  to { --logo-hue: 360; }
+}
+
 .logo-text {
-  color: var(--text-base);
+  color: transparent;
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin: 0;
+  background-image: linear-gradient(
+    120deg,
+    hsl(var(--logo-hue), 88%, 66%),
+    hsl(calc(var(--logo-hue) + 120), 88%, 60%),
+    hsl(calc(var(--logo-hue) + 240), 88%, 66%)
+  );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logoHueShift 18s linear infinite, dynamicGradientPulse 7s ease infinite;
+}
+
+.logo-text.is-playing {
+  background-image: linear-gradient(
+    120deg,
+    var(--logo-art-accent) 0%,
+    var(--logo-art-accent) 32%,
+    hsl(var(--logo-hue), 88%, 64%) 56%,
+    var(--logo-art-accent) 76%,
+    hsl(calc(var(--logo-hue) + 150), 88%, 62%) 100%
+  );
+}
+
+.disable-animations .logo-text {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-text {
+    animation: none;
+  }
 }
 
 /* ------------------------------------ */

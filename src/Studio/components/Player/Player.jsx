@@ -1,12 +1,21 @@
 /* --- src/Studio/components/Player/Player.jsx --- */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePlayerLogic } from './usePlayerLogic.js';
 import PlayerUI from './PlayerUI.jsx';
 import './Player.css';
 
-const Player = (props) => {
+const Player = ({ onPlaybackVisualChange, ...props }) => {
   const { refs, state, handlers } = usePlayerLogic(props);
+
+  useEffect(() => {
+    onPlaybackVisualChange?.({
+      isPlaying: state.isPlaying,
+      albumAccentColor: state.currentTrack?.artworkUrl100 && state.accentArtworkUrl === state.currentTrack.artworkUrl100
+        ? state.accentColor
+        : null
+    });
+  }, [onPlaybackVisualChange, state.isPlaying, state.currentTrack, state.accentArtworkUrl, state.accentColor]);
 
   const playerUI = state.currentTrack ? (
     <PlayerUI

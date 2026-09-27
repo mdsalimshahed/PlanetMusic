@@ -80,6 +80,7 @@ const App = () => {
 
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
   
   // Ambient View State synced with URL route
@@ -338,6 +339,8 @@ const App = () => {
       
       <Topbar 
         activeTab={activeTab} 
+        isMusicPlaying={logoPlaybackVisuals.isPlaying}
+        albumAccentColor={logoPlaybackVisuals.albumAccentColor}
         handleHomeClick={handleHomeClick}
         handleExport={handleExport}
         handleImport={handleImport}
@@ -422,6 +425,7 @@ const App = () => {
       
       <Player 
         currentTrack={currentTrack} 
+        onPlaybackVisualChange={setLogoPlaybackVisuals}
         setCurrentTrack={setCurrentTrack} 
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}

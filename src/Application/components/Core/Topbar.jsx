@@ -5,6 +5,8 @@ import './Topbar.css';
 
 const Topbar = ({ 
   activeTab, 
+  isMusicPlaying,
+  albumAccentColor,
   handleHomeClick, 
   handleExport, 
   handleImport, 
@@ -17,7 +19,12 @@ const Topbar = ({
       {/* Left: Logo Text Only */}
       <div className="topbar-left" onClick={handleHomeClick} style={{ cursor: 'pointer' }}>
         <div className="logo-area" title="PlanetMusic">
-          <h2 className="logo-text">PlanetMusic</h2>
+          <h2
+            className={`logo-text ${isMusicPlaying && albumAccentColor ? 'is-playing' : ''}`}
+            style={isMusicPlaying && albumAccentColor ? { '--logo-art-accent': albumAccentColor } : undefined}
+          >
+            PlanetMusic
+          </h2>
         </div>
       </div>
 
