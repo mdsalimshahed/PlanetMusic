@@ -60,12 +60,11 @@ export const generateSafeAdlibPosition = (
 ) => {
   // 1. The Goldilocks Margins
   const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
-  // Apply a negative pad to pierce through the parent container's padding to touch the absolute edge!
-  const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? -16 : Math.max(30, containerRect.width * 0.08);
-  const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
-  const LYRIC_PAD = 25;
-  const SINGER_PAD = 20;
-  const MAX_DIST = isMoreThanThree ? Infinity : 160;
+  const EDGE_PAD_X = containerRect.width * ((masterNamesArray && masterNamesArray.length > 2) ? 0.04 : 0.08);
+  const EDGE_PAD_Y = containerRect.height * (isMoreThanThree ? 0.04 : 0.08);
+  const LYRIC_PAD = containerRect.height * 0.0625;
+  const SINGER_PAD = containerRect.height * 0.05;
+  const MAX_DIST = isMoreThanThree ? Infinity : containerRect.height * 0.4;
 
   const safeLeft = EDGE_PAD_X;
   const safeRight = containerRect.width - EDGE_PAD_X;
@@ -124,7 +123,7 @@ export const generateSafeAdlibPosition = (
       const artist = getArtistForCell(i);
       
       if (activeSingersList.includes(artist)) {
-        // Expand the outer cells to span across the negative padding space!
+        // Let outer cells use the safe inset while keeping their labels on-canvas.
         const cellLeft = c === 0 ? safeLeft : c * colW;
         const cellRight = c === cols - 1 ? safeRight : (c + 1) * colW;
         const cellTop = r === 0 ? safeTop : r * rowH;
@@ -186,8 +185,8 @@ export const generateSafeAdlibPosition = (
   candidateAreas.forEach(area => {
     area.width = area.width || (area.right - area.left);
     area.height = area.height || (area.bottom - area.top);
-    const tw = Math.max(20, area.width);
-    const th = Math.max(20, area.height);
+    const tw = Math.max(containerRect.width * 0.05, area.width);
+    const th = Math.max(containerRect.height * 0.05, area.height);
     
     // Normal wrapping limits for standard display
     const currentMaxWidth = tw * 0.95; 
@@ -283,8 +282,8 @@ export const generateSafeAdlibPosition = (
   const safeRadius = Math.sqrt(Math.pow(visualWidth, 2) + Math.pow(visualHeight, 2)) / 2;
   
   // Add a tiny extra margin (e.g. 5px) just to be perfectly safe from edge anti-aliasing pixels
-  const padX = safeRadius + 5; 
-  const padY = safeRadius + 5;
+  const padX = safeRadius + containerRect.width * 0.01;
+  const padY = safeRadius + containerRect.height * 0.01;
 
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;

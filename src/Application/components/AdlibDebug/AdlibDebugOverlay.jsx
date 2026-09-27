@@ -137,12 +137,12 @@ const AdlibDebugOverlay = ({
       const canvasBottom = containerRect.bottom - overlayRect.top;
 
       const isMoreThanThree = activeNames.length > 3;
-      const EDGE_PAD_X = activeNames.length > 2 ? -16 : Math.max(30, containerRect.width * 0.08);
-      const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
-      
-      const LYRIC_PAD = 25;
-      const SINGER_PAD = 20;
-      const MAX_DIST = isMoreThanThree ? Infinity : 160;
+      const EDGE_PAD_X = containerRect.width * (activeNames.length > 2 ? 0.04 : 0.08);
+      const EDGE_PAD_Y = containerRect.height * (isMoreThanThree ? 0.04 : 0.08);
+
+      const LYRIC_PAD = containerRect.height * 0.0625;
+      const SINGER_PAD = containerRect.height * 0.05;
+      const MAX_DIST = isMoreThanThree ? Infinity : containerRect.height * 0.4;
 
       const safeTop = canvasTop + EDGE_PAD_Y;
       const safeLeft = canvasLeft + EDGE_PAD_X;
@@ -461,8 +461,8 @@ const AdlibDebugOverlay = ({
         activeViableZones.forEach((zone, zIdx) => {
           // Sync with the safe logic radius
           const safeRadius = Math.sqrt(Math.pow(adlibBox.unrotatedWidth, 2) + Math.pow(adlibBox.unrotatedHeight, 2)) / 2;
-          const padX = safeRadius + 5; 
-          const padY = safeRadius + 5;
+          const padX = safeRadius + containerRect.width * 0.01;
+          const padY = safeRadius + containerRect.height * 0.01;
 
           let iLeft = zone.left + padX;
           let iRight = zone.left + zone.width - padX;
