@@ -446,7 +446,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
                 colors = matches.map(m => m[0]);
             }
         } else if (targetArtists && targetArtists.length === 1) {
-            colors = [masterPalette[targetArtists[0]] || '#ffffff'];
+          colors = [masterPalette[targetArtists[0]] || seg?.color || '#ffffff'];
         } else if (seg?.color) {
             colors = [seg.color];
         }

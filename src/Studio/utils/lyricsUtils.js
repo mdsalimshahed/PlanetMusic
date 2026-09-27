@@ -402,7 +402,34 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
       if (matchedNode.isSplit && matchedNode.adlibs) {
         if (newLine.text === matchedNode.text) {
           isSplit = matchedNode.isSplit;
-          newAdlibs = matchedNode.adlibs;
+          newAdlibs = matchedNode.adlibs.map(adlib => {
+            const adlibSegments = [];
+            const adlibArtists = new Set();
+            let segmentStart = 0;
+
+            for (const segment of newLine.segments || []) {
+              const segmentChars = Array.from(segment.text || '');
+              const segmentEnd = segmentStart + segmentChars.length;
+              const overlapStart = Math.max(adlib.charStart, segmentStart);
+              const overlapEnd = Math.min(adlib.charEnd, segmentEnd);
+
+              if (overlapStart < overlapEnd) {
+                const text = segmentChars.slice(overlapStart - segmentStart, overlapEnd - segmentStart).join('');
+                adlibSegments.push({ ...segment, text });
+                if (!/^[\s.,!?;:"'()[\]{}\uff08\uff09\-]*$/.test(text)) {
+                  segment.artists?.forEach(artist => adlibArtists.add(artist));
+                }
+              }
+
+              segmentStart = segmentEnd;
+            }
+
+            return {
+              ...adlib,
+              segments: adlibSegments,
+              singer: Array.from(adlibArtists).join(', ') || newLine.singer
+            };
+          });
         }
       }
 

@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, Routes, Route } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -82,6 +82,22 @@ const App = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
+
+  const backgroundTrack = useMemo(() => {
+    if (!currentTrack) return null;
+    const savedTrack = library.find(song => String(song.trackId) === String(currentTrack.trackId));
+    if (!savedTrack) return currentTrack;
+
+    return {
+      ...currentTrack,
+      artistName: savedTrack.artistName ?? currentTrack.artistName,
+      lyrics: savedTrack.lyrics ?? currentTrack.lyrics,
+      syncData: savedTrack.syncData ?? currentTrack.syncData,
+      autoSyncData: savedTrack.autoSyncData ?? currentTrack.autoSyncData,
+      artistImages: savedTrack.artistImages ?? currentTrack.artistImages,
+      artistColors: savedTrack.artistColors ?? currentTrack.artistColors
+    };
+  }, [currentTrack, library]);
   
   // Ambient View State synced with URL route
   const isAmbientMode = activeTab === 'ambient';
@@ -335,7 +351,7 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      <Background isModalOpen={!!selectedSong} currentTrack={currentTrack} />
+      <Background isModalOpen={!!selectedSong} currentTrack={backgroundTrack} />
       
       <Topbar 
         activeTab={activeTab} 
