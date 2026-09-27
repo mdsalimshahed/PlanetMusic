@@ -15,7 +15,9 @@ const TranslationWorkspace = ({
   masterPalette,
   updateSongInLibrary,
   setIsTranslationManagerOpen,
-  setNotification
+  setNotification,
+  registerTranslationCancelHandler,
+  closeTranslationWorkspace
 }) => {
   const [confirmModalState, setConfirmModalState] = useState({
     isOpen: false,
@@ -74,11 +76,18 @@ const TranslationWorkspace = ({
   });
 
   useEffect(() => {
+    registerTranslationCancelHandler?.(handleCancel);
+    return () => registerTranslationCancelHandler?.(null);
+  }, [handleCancel, registerTranslationCancelHandler]);
+
+  useEffect(() => {
     if (!hasUnsavedChanges) return;
     const handleGlobalCaptureClick = (e) => {
       const workspaceContainer = document.querySelector('.tw-container');
+      const workspaceControls = document.querySelector('.workspace-controls');
       const modalOverlay = document.querySelector('.confirm-modal-overlay');
       if (modalOverlay && modalOverlay.contains(e.target)) return;
+      if (workspaceControls && workspaceControls.contains(e.target)) return;
 
       if (workspaceContainer && !workspaceContainer.contains(e.target)) {
         e.preventDefault();
@@ -136,9 +145,9 @@ const TranslationWorkspace = ({
         handleRefreshWorkspace={handleRefreshWorkspace}
         handleExport={handleExport}
         handleImportText={handleImportText}
-        handleCancel={handleCancel}
         handleSave={handleSave}
         cancelTranslationRef={cancelTranslationRef}
+        onCloseEditor={closeTranslationWorkspace}
       />
       {showSuccessBanner && (
         <div className="tw-success-banner">

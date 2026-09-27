@@ -19,39 +19,54 @@
 
 .full-width-actions {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
-.tw-header-spacer {
-    flex-grow: 1;
-}
-
-.tw-btn {
-    padding: 8px 16px;
-    border-radius: 500px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: inherit;
-    cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.1);
-    color: white;
-    transition: all 0.2s ease;
-    display: inline-flex;
+    flex-direction: column;
     align-items: center;
     gap: 8px;
-    white-space: nowrap;
+    width: 100%;
 }
 
-.tw-btn:hover:not(:disabled) {
-    background: rgba(255,255,255,0.2);
-    transform: translateY(-2px);
+.tw-header-primary-actions,
+.tw-header-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
 }
 
-.tw-btn:disabled {
+.tw-header-footer {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tw-header-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+}
+
+.tw-header-primary-actions > .edit-links-btn,
+.tw-header-tools > .edit-links-btn {
+    flex: 0 0 auto;
+    width: fit-content;
+    max-width: 100%;
+    justify-content: center;
+    text-align: center;
+}
+
+.tw-header-footer > .edit-links-btn {
+    flex: 0 0 auto;
+    width: fit-content;
+    max-width: calc(50% - 4px);
+    justify-content: center;
+    white-space: normal;
+}
+
+.tw-header-actions .edit-links-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
@@ -60,16 +75,6 @@
     background: rgba(251, 191, 36, 0.15) !important;
     border-color: #fbbf24 !important;
     color: #fbbf24 !important;
-}
-
-.tw-btn-save {
-    background: #fbbf24 !important;
-    color: black !important;
-    border-color: #fbbf24 !important;
-}
-
-.tw-btn-save:hover:not(:disabled) {
-    filter: brightness(1.15);
 }
 
 .tw-success-banner {

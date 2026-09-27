@@ -1,7 +1,7 @@
 /* --- src/Studio/components/Player/usePlayerLogic.js --- */
 import { useRef, useState, useEffect } from 'react';
 import { getAudioFile } from '../../../Application/services/db.js';
-import { getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
+import { getCachedDeezerAudioBlob, getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock } from '../../utils/clockEngine.js';
 import { formatTime } from './PlayerUI.jsx';
@@ -34,6 +34,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const [audioSrc, setAudioSrc] = useState(undefined);
   const [ytVideoId, setYtVideoId] = useState(null);
   const [ytPlayerReady, setYtPlayerReady] = useState(false);
+  const pendingSeekShouldPlayRef = useRef(true);
   const [activeSource, setActiveSource] = useState(null);
   const [accentColor, setAccentColor] = useState('#ffffff');
   const [pendingSeek, setPendingSeek] = useState(null);
@@ -271,8 +272,8 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const hasArl = Boolean(settings?.deezerArl?.trim());
 
     const getBestSource = (exclude = []) => {
+      if (dzUrl && !exclude.includes('deezer')) return 'deezer';
       if (hasLocal && !exclude.includes('local')) return 'local';
-      if (dzUrl && hasArl && !exclude.includes('deezer')) return 'deezer';
       if (extractedYtId && !exclude.includes('youtube')) return 'youtube';
       if (currentTrack.previewUrl && !exclude.includes('preview')) return 'preview';
       return null;
@@ -368,11 +369,78 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               setFailedSources(prev => [...prev, 'local']);
             }
           } else if (source === 'deezer') {
+            const cachedBlob = await getCachedDeezerAudioBlob(dzUrl);
+            if (sourceLoadGeneration !== sourceLoadGenerationRef.current) return;
+
+            if (cachedBlob) {
+              const url = URL.createObjectURL(cachedBlob);
+              deezerObjectUrlRef.current = url;
+              activeSourceRef.current = 'deezer';
+              setYtVideoId(null);
+              setActiveSource('deezer');
+              setBuffering(false);
+              setAudioSrc(url);
+              return;
+            }
+
             if (!hasArl) {
               triggerFallbackMessage("Deezer ARL required. Falling back...");
               setFailedSources(prev => [...prev, 'deezer']);
               return;
             }
+
+            if (extractedYtId && !failedSources.includes('youtube')) {
+              activeSourceRef.current = 'youtube';
+              setYtVideoId(extractedYtId);
+              setActiveSource('youtube');
+              setBuffering(false);
+
+              const controller = new AbortController();
+              abortControllerRef.current = controller;
+              getDeezerAudioBlob(dzUrl, settings?.deezerArl?.trim() || '', controller.signal)
+                .then(blob => {
+                  if (
+                    sourceLoadGeneration !== sourceLoadGenerationRef.current ||
+                    controller.signal.aborted ||
+                    activeSourceRef.current !== 'youtube'
+                  ) return;
+
+                  let switchTime = Number(window.currentAudioTime) || 0;
+                  if (ytPlayerRef.current && typeof ytPlayerRef.current.getCurrentTime === 'function') {
+                    try {
+                      const playerTime = ytPlayerRef.current.getCurrentTime();
+                      if (Number.isFinite(playerTime)) switchTime = playerTime;
+                    } catch {
+                      switchTime = Number(window.currentAudioTime) || 0;
+                    }
+                  }
+                  const shouldResume = window.globalIsAudioPlaying === true || pendingSeek !== null;
+                  const url = URL.createObjectURL(blob);
+                  deezerObjectUrlRef.current = url;
+                  activeSourceRef.current = 'deezer';
+                  pendingSeekShouldPlayRef.current = shouldResume;
+                  setPendingSeek(switchTime);
+                  setYtVideoId(null);
+                  setAudioSrc(url);
+                  setActiveSource('deezer');
+                  setBuffering(false);
+                  setIsPlaying(false);
+                  globalClock.pause();
+                  globalClock.seek(switchTime);
+                  window.currentAudioTime = switchTime;
+                  emitPlayState(false, false);
+                })
+                .catch(error => {
+                  if (error.name !== 'AbortError' && sourceLoadGeneration === sourceLoadGenerationRef.current) {
+                    triggerFallbackMessage("Deezer stream failed. Continuing with YouTube...");
+                  }
+                })
+                .finally(() => {
+                  if (abortControllerRef.current === controller) abortControllerRef.current = null;
+                });
+              return;
+            }
+
             setActiveSource('deezer');
             setBuffering(true);
             const controller = new AbortController();
@@ -587,10 +655,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         globalClock.seek(0);
         emitPlayState(false, false);
         setCurrentTrack({ ...track, playId: Date.now() });
+        pendingSeekShouldPlayRef.current = true;
         setPendingSeek(time);
       } else {
         if (time !== null) {
           if (bufferingRef.current) {
+            pendingSeekShouldPlayRef.current = true;
             setPendingSeek(time);
             return;
           }
@@ -621,6 +691,16 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       audioRef.current.volume = isMuted ? 0 : volume;
     }
   }, [volume, isMuted, ytVideoId, ytPlayerReady]);
+
+  useEffect(() => {
+    const handleSharedVolumeChange = (event) => {
+      const nextVolume = Number(event.detail?.volume);
+      if (Number.isFinite(nextVolume) && nextVolume > 0) setVolume(nextVolume);
+      if (typeof event.detail?.isMuted === 'boolean') setIsMuted(event.detail.isMuted);
+    };
+    window.addEventListener('playerVolumeChange', handleSharedVolumeChange);
+    return () => window.removeEventListener('playerVolumeChange', handleSharedVolumeChange);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -665,7 +745,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       if (pendingSeek !== null) {
         audioRef.current.currentTime = pendingSeek;
         globalClock.seek(pendingSeek);
-        attemptPlay();
+        const shouldPlay = pendingSeekShouldPlayRef.current;
+        pendingSeekShouldPlayRef.current = true;
+        if (shouldPlay) attemptPlay();
+        else emitPlayState(false, false);
         setPendingSeek(null);
       }
     }
@@ -739,12 +822,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     if (vol === 0) {
       setIsMuted(true);
       localStorage.setItem('playerMuted', 'true');
+      window.dispatchEvent(new CustomEvent('playerVolumeChange', { detail: { volume, isMuted: true } }));
       return;
     }
     setVolume(vol);
     localStorage.setItem('playerVolume', vol);
     setIsMuted(false);
     localStorage.setItem('playerMuted', 'false');
+    window.dispatchEvent(new CustomEvent('playerVolumeChange', { detail: { volume: vol, isMuted: false } }));
   };
 
   const toggleMute = (e) => {
@@ -753,6 +838,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     setIsMuted(nextMuted);
     localStorage.setItem('playerMuted', String(nextMuted));
     if (volume > 0) localStorage.setItem('playerVolume', volume);
+    window.dispatchEvent(new CustomEvent('playerVolumeChange', { detail: { volume, isMuted: nextMuted } }));
   };
 
   const closePlayer = (e) => {

@@ -42,6 +42,26 @@ const cacheBlob = (key, blob) => {
   }
 };
 
+export const getCachedDeezerAudioBlob = async (deezerUrl) => {
+  if (cacheClearing || !deezerUrl) return null;
+
+  const cacheKey = `${deezerUrl}|quality=1`;
+  const cachedEntry = audioBlobs.get(cacheKey);
+  if (cachedEntry) {
+    touchEntry(cacheKey, cachedEntry);
+    return cachedEntry.blob;
+  }
+
+  try {
+    const blob = await getDeezerCachedAudio(cacheKey);
+    if (!blob || cacheClearing) return null;
+    cacheBlob(cacheKey, blob);
+    return blob;
+  } catch {
+    return null;
+  }
+};
+
 const downloadDeezerAudio = async (deezerUrl, arlToken, signal) => {
   const formData = new FormData();
   formData.append('session_id', `stream_${Date.now()}`);

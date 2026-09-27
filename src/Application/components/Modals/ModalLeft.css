@@ -188,10 +188,20 @@
 }
 
 .edit-links-btn.save-mode {
-  background: var(--accent);
+  background: #fbbf24;
   color: black;
-  border-color: var(--accent);
+  border-color: #fbbf24;
   font-weight: bold;
+}
+
+.edit-links-btn.close-editor-btn {
+  background: rgba(250, 36, 60, 0.15);
+  border-color: rgba(250, 36, 60, 0.4);
+  color: #fa243c;
+}
+
+.edit-links-btn.close-editor-btn:hover {
+  background: rgba(250, 36, 60, 0.28);
 }
 
 .platform-inputs-grid {
@@ -384,7 +394,24 @@ a.platform-label.yt-color:hover {
 .action-buttons-grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
+}
+
+.translation-workspace-controls-slot {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+.edit-info-action-footer {
+  display: flex;
+  flex: 0 0 100%;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .view-mode-segmented-slider {

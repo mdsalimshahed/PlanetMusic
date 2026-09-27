@@ -1,5 +1,6 @@
 /* --- src/components/Workspaces/Translation/TranslationHeader.jsx --- */
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const TranslationHeader = ({
   isTranslatingAll,
@@ -11,17 +12,24 @@ const TranslationHeader = ({
   handleRefreshWorkspace,
   handleExport,
   handleImportText,
-  handleCancel,
   handleSave,
-  cancelTranslationRef
+  cancelTranslationRef,
+  onCloseEditor
 }) => {
   const importFileInputRef = useRef(null);
+  const [portalTarget, setPortalTarget] = useState(null);
 
-  return (
-    <div className="tw-header glass-panel">
-      <div className="tw-header-actions full-width-actions">
+  useEffect(() => {
+    setPortalTarget(document.querySelector('.translation-workspace-controls-slot'));
+  }, []);
+
+  if (!portalTarget) return null;
+
+  return createPortal(
+    <div className="tw-header-actions full-width-actions">
+      <div className="tw-header-primary-actions">
         <button
-          className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+          className={`edit-links-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
           onClick={handleTranslateAll}
           disabled={isAutoSpacing}
         >
@@ -36,42 +44,41 @@ const TranslationHeader = ({
         </button>
         
         <button
-          className={`tw-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
+          className={`edit-links-btn ${isTranslatingAll ? 'tw-btn-loading' : ''}`}
           onClick={handleTranslateWithContext}
-          style={{ background: 'rgba(179, 136, 235, 0.2)', borderColor: 'var(--accent)', color: 'var(--accent)' }}
           disabled={isAutoSpacing}
         >
           Translate with Context
         </button>
 
         <button
-          className={`tw-btn ${isAutoSpacing ? 'tw-btn-loading' : ''}`}
+          className={`edit-links-btn ${isAutoSpacing ? 'tw-btn-loading' : ''}`}
           onClick={handleAutoSpacing}
-          style={{ background: 'rgba(56, 189, 248, 0.2)', borderColor: '#38bdf8', color: '#38bdf8' }}
           disabled={isTranslatingAll || isAutoSpacing}
           title="Reverse-engineer API transliteration payloads to automatically inject proper sentence spacing for Japanese and Chinese lines"
         >
           {isAutoSpacing ? (
             <>
-              <span className="tw-spinner" style={{ borderTopColor: '#38bdf8' }}></span>
+              <span className="tw-spinner"></span>
               <span>Spacing...</span>
             </>
           ) : (
             'Auto Spacing'
           )}
         </button>
-        
+      </div>
+
+      <div className="tw-header-tools">
         <button
-          className="tw-btn"
+          className="edit-links-btn"
           onClick={handleRefreshWorkspace}
           disabled={isTranslatingAll || isAutoSpacing}
           title="Wipe all translation, spacing and transliteration fields"
-          style={{ background: 'rgba(250, 36, 60, 0.15)', borderColor: 'rgba(250, 36, 60, 0.3)', color: '#FA243C' }}
         >
           Refresh Lyrics
         </button>
         
-        <button className="tw-btn" onClick={handleExport} disabled={isTranslatingAll || isAutoSpacing}>
+        <button className="edit-links-btn" onClick={handleExport} disabled={isTranslatingAll || isAutoSpacing}>
           Export Text
         </button>
         
@@ -82,21 +89,24 @@ const TranslationHeader = ({
           style={{ display: 'none' }}
           onChange={handleImportText}
         />
-        <button className="tw-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll || isAutoSpacing}>
+        <button className="edit-links-btn" onClick={() => importFileInputRef.current?.click()} disabled={isTranslatingAll || isAutoSpacing}>
           Import Text
         </button>
-        
-        <div className="tw-header-spacer"></div>
-        
-        <button className="tw-btn tw-btn-cancel" onClick={handleCancel}>Cancel</button>
+      </div>
+
+      <div className="tw-header-footer">
+        <button className="edit-links-btn close-editor-btn" onClick={() => onCloseEditor?.()}>
+          Close Editor
+        </button>
         <button
-          className="tw-btn tw-btn-save"
+          className="edit-links-btn save-mode"
           onClick={() => handleSave(cancelTranslationRef)}
         >
           Save Changes
         </button>
       </div>
-    </div>
+    </div>,
+    portalTarget
   );
 };
 

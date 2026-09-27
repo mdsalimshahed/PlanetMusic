@@ -66,7 +66,7 @@ const ModalLeft = ({
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
-  handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
+  closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
   triggerSyncKey
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
@@ -138,6 +138,10 @@ const ModalLeft = ({
 
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
+      if (closeTranslationWorkspace) {
+        closeTranslationWorkspace(actionCallback);
+        return;
+      }
       const workspaceElement = document.querySelector('.tw-container');
       if (workspaceElement) {
         const cancelBtn = workspaceElement.querySelector('.tw-btn-cancel');
@@ -480,9 +484,7 @@ const ModalLeft = ({
           )}
           <div className="action-buttons-grid">
             {isTranslationManagerOpen ? (
-              <button className="edit-links-btn save-mode" onClick={() => handleProtectedAction(() => setIsTranslationManagerOpen(false))}>
-                <Icon name="x" /> Close Editor
-              </button>
+              <div className="translation-workspace-controls-slot" />
             ) : isSyncMode ? (
               <>
                 <button className="edit-links-btn" onClick={() => setIsSyncMode(false)}>
@@ -502,15 +504,20 @@ const ModalLeft = ({
               </>
             ) : isEditing ? (
               <>
-                <button className="edit-links-btn save-mode" onClick={saveData}>
-                  <Icon name="save" /> Save Info & Lyrics
-                </button>
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName}`)}&gl=us&hl=en`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn" title="Search Google US region to easily find platform links">
                   <Icon name="search" /> Find Platform Links (US)
                 </a>
                 <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">
                   <Icon name="search" /> Search Google for Lyrics
                 </a>
+                <div className="edit-info-action-footer">
+                  <button className="edit-links-btn close-editor-btn" onClick={() => setIsEditing(false)}>
+                    <Icon name="x" /> Close Editor
+                  </button>
+                  <button className="edit-links-btn save-mode" onClick={saveData}>
+                    <Icon name="save" /> Save Info & Lyrics
+                  </button>
+                </div>
               </>
             ) : isImageManagerOpen ? (
               <button className="edit-links-btn save-mode" onClick={saveImageManager}>

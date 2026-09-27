@@ -1,5 +1,5 @@
 /* --- src/components/SongModal.jsx --- */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModalLeft from './ModalLeft.jsx';
 import ModalRight from './ModalRight.jsx';
@@ -10,6 +10,13 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
+  const translationCancelHandlerRef = useRef(null);
+  const registerTranslationCancelHandler = useCallback(handler => {
+    translationCancelHandlerRef.current = handler;
+  }, []);
+  const closeTranslationWorkspace = useCallback(onClosed => {
+    translationCancelHandlerRef.current?.(onClosed);
+  }, []);
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
@@ -108,6 +115,8 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     ...songDataProps, 
     ...displayProps, 
     ...syncProps,
+    registerTranslationCancelHandler,
+    closeTranslationWorkspace,
 
     // EXPLICIT OVERRIDES: Bypass internal hooks to force the UI to render what the URL dictates
     isEditing: isEdit,

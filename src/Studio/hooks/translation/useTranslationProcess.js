@@ -95,7 +95,7 @@ export const useTranslationProcess = ({
     });
   };
 
-  const handleCancel = () => {
+  const handleCancel = (onClosed) => {
     if (isTranslatingAll || isAutoSpacing) {
       stopTranslationProcess();
       return;
@@ -112,6 +112,7 @@ export const useTranslationProcess = ({
           setConfirmModalState(prev => ({ ...prev, isOpen: false }));
           cancelTranslationRef.current = true;
           setIsTranslationManagerOpen(false);
+          onClosed?.();
         }
       });
       return;
@@ -119,6 +120,7 @@ export const useTranslationProcess = ({
     
     cancelTranslationRef.current = true;
     setIsTranslationManagerOpen(false);
+    onClosed?.();
   };
 
   return {
