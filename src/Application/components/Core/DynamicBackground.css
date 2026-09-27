@@ -96,8 +96,8 @@
 /* Singer Names */
 .singer-name-corner {
    position: absolute;
-   bottom: 32px;
-   right: 32px;
+   bottom: 3%;
+   right: 3%;
    z-index: 2;
    pointer-events: none;
    display: flex;
