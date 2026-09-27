@@ -40,14 +40,6 @@ const Topbar = ({
             Home
           </Link>
           
-          <Link 
-            to="/deezer"
-            className={`nav-btn ${activeTab === 'deezer' ? 'active' : ''}`}
-            style={{ textDecoration: 'none' }}
-          >
-            Deezer
-          </Link>
-
           <Link
             to="/blog" 
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
