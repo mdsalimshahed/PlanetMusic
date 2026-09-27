@@ -23,6 +23,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const lastSyncTimeRef = useRef(0);
   const abortControllerRef = useRef(null);
   const sourceLoadGenerationRef = useRef(0);
+  const bufferingRef = useRef(false);
   const deezerObjectUrlRef = useRef(null);
   const audioCacheRef = useRef(new Map());
   const MAX_CACHE_SIZE = 5;
@@ -79,6 +80,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     if (playing) globalClock.start(window.currentAudioTime || 0);
     else globalClock.pause();
     window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
+  };
+
+  const setBuffering = (buffering) => {
+    bufferingRef.current = buffering;
+    setIsBuffering(buffering);
   };
 
   useEffect(() => {
@@ -152,6 +158,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   }, []);
 
   const attemptPlay = async () => {
+    if (bufferingRef.current) return;
     window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
     
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
@@ -235,7 +242,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setYtVideoId(null);
       setPendingSeek(null);
       setIsPlaying(false);
-      setIsBuffering(false);
+      setBuffering(false);
       setActiveSource(null);
       setFallbackMessage('');
       activeSourceRef.current = null;
@@ -297,7 +304,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         try { ytPlayerRef.current.stopVideo(); } catch(e) {}
       }
       setIsPlaying(false);
-      setIsBuffering(false);
+      setBuffering(true);
       globalClock.pause();
       globalClock.seek(0);
       window.currentAudioTime = 0;
@@ -324,6 +331,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setActiveSource(null);
           setAudioSrc(undefined);
           setYtVideoId(null);
+          setBuffering(false);
           return;
         }
         activeSourceRef.current = source;
@@ -334,6 +342,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setActiveSource('youtube');
         } else if (source === 'preview') {
           setYtVideoId(null);
+          setBuffering(false);
           setAudioSrc(currentTrack.previewUrl);
           setActiveSource('preview');
         } else {
@@ -344,6 +353,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             if (file) {
               const url = URL.createObjectURL(file);
               addToCache(`local_${trackId}`, url);
+              setBuffering(false);
               setAudioSrc(url);
               setActiveSource('local');
             } else {
@@ -357,7 +367,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               return;
             }
             setActiveSource('deezer');
-            setIsBuffering(true);
+            setBuffering(true);
             const controller = new AbortController();
             abortControllerRef.current = controller;
             
@@ -380,7 +390,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               setFailedSources(prev => [...prev, 'deezer']);
             } finally {
               if (abortControllerRef.current === controller) {
-                setIsBuffering(false);
+                setBuffering(false);
               }
             }
           }
@@ -403,16 +413,21 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       if (!container) return;
       
       container.innerHTML = '<div id="yt-player-target" style="width:100%;height:100%;"></div>';
+      const playerGeneration = sourceLoadGenerationRef.current;
       
       playerInstance = new window.YT.Player('yt-player-target', {
         videoId: ytVideoId,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
-          autoplay: 1, playsinline: 1, rel: 0, enablejsapi: 1,
+          autoplay: 0, playsinline: 1, rel: 0, enablejsapi: 1,
           suggestedQuality: 'highres', origin: window.location.origin
         },
         events: {
           onReady: (event) => {
+            if (playerGeneration !== sourceLoadGenerationRef.current) {
+              event.target.stopVideo();
+              return;
+            }
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
@@ -426,13 +441,17 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
                 globalClock.seek(pendingSeek);
                 setPendingSeek(null);
               }
-              
+              setBuffering(false);
               event.target.playVideo();
               setIsPlaying(true);
               emitPlayState(true, false);
             } catch (e) {}
           },
           onStateChange: (event) => {
+            if (playerGeneration !== sourceLoadGenerationRef.current) {
+              if (event.data === window.YT.PlayerState.PLAYING) event.target.stopVideo();
+              return;
+            }
             if (event.data === window.YT.PlayerState.PLAYING) {
               const apiTime = ytPlayerRef.current?.getCurrentTime() || 0;
               globalClock.updateAnchor(apiTime, true);
@@ -451,7 +470,9 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             }
           },
           onError: (event) => {
+            if (playerGeneration !== sourceLoadGenerationRef.current) return;
             console.warn("YouTube Error Code:", event.data);
+            setBuffering(false);
             setYtVideoId(null);
             setYtPlayerReady(false);
             setAudioSrc(undefined);
@@ -533,10 +554,39 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       );
 
       if (!hasSameTrack) {
+        sourceLoadGenerationRef.current += 1;
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+          abortControllerRef.current = null;
+        }
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        }
+        if (deezerObjectUrlRef.current) {
+          URL.revokeObjectURL(deezerObjectUrlRef.current);
+          deezerObjectUrlRef.current = null;
+        }
+        if (ytPlayerRef.current && ytPlayerReady) {
+          try { ytPlayerRef.current.stopVideo(); } catch (err) {}
+        }
+        setBuffering(true);
+        setIsPlaying(false);
+        setAudioSrc(undefined);
+        setYtVideoId(null);
+        setActiveSource(null);
+        activeSourceRef.current = null;
+        globalClock.pause();
+        globalClock.seek(0);
+        emitPlayState(false, false);
         setCurrentTrack({ ...track, playId: Date.now() });
         setPendingSeek(time);
       } else {
         if (time !== null) {
+          if (bufferingRef.current) {
+            setPendingSeek(time);
+            return;
+          }
           globalClock.seek(time);
           if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
             try {
@@ -696,13 +746,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     }
     setCurrentTrack(null);
     setIsPlaying(false);
-    setIsBuffering(false);
+    setBuffering(false);
     globalClock.pause();
     emitPlayState(false, true);
   };
 
   const togglePlay = (e) => {
     if (e) e.stopPropagation();
+    if (bufferingRef.current) return;
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
       try {
         if (isPlaying) {
@@ -735,7 +786,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   };
 
   const handleAudioEnded = () => { setIsPlaying(false); emitPlayState(false, true); };
-  const handleAudioPlay = () => { setIsPlaying(true); emitPlayState(true, false); };
+  const handleAudioPlay = () => {
+    if (bufferingRef.current) {
+      audioRef.current?.pause();
+      return;
+    }
+    setIsPlaying(true);
+    emitPlayState(true, false);
+  };
   const handleAudioPause = () => { setIsPlaying(false); emitPlayState(false, false); };
   const handleAudioContextMenu = (e) => e.preventDefault();
 
