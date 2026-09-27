@@ -227,6 +227,8 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   let hyphenCount = 0;
 
   const isPunctuation = (char) => /^[\p{P}\p{S}]+$/u.test(char);
+  const isWordCharacter = (char) => /[\p{L}\p{N}]/u.test(char || '');
+  const isApostrophe = (char) => /^[\u0027\u2018\u2019\u02bc\uff07]$/u.test(char);
 
   const flushWord = () => {
     if (currentWord.length > 0) {
@@ -277,11 +279,14 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const char = charData[i] ? charData[i].char : '';
     const isSpace = /\s/.test(char);
     const shouldBreak = hasSpacingText ? isSpace : isSpace;
+    const isInWordApostrophe = isApostrophe(char) &&
+      isWordCharacter(charData[i - 1]?.char) &&
+      isWordCharacter(charData[i + 1]?.char);
 
     if (shouldBreak) {
       flushWord();
       words.push(elements[i]); 
-    } else if (isPunctuation(char)) {
+    } else if (isPunctuation(char) && !isInWordApostrophe) {
       flushWord();
 
       let previousIndex = words.length - 1;
