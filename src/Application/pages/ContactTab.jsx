@@ -1,5 +1,5 @@
 /* --- src/pages/ContactTab.jsx --- */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 
@@ -7,6 +7,9 @@ const ContactTab = ({ adsEnabled }) => {
   const [formData, setFormData] = useState({ name: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const statusTimeoutRef = useRef(null);
+
+  useEffect(() => () => clearTimeout(statusTimeoutRef.current), []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,6 +18,7 @@ const ContactTab = ({ adsEnabled }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    clearTimeout(statusTimeoutRef.current);
     setSubmitStatus(null);
 
     try {
@@ -45,11 +49,7 @@ const ContactTab = ({ adsEnabled }) => {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
-      
-      // Clear the status message after 5 seconds
-      if (submitStatus !== 'error') {
-        setTimeout(() => setSubmitStatus(null), 5000);
-      }
+      statusTimeoutRef.current = setTimeout(() => setSubmitStatus(null), 5000);
     }
   };
 
@@ -107,7 +107,7 @@ const ContactTab = ({ adsEnabled }) => {
                 ></textarea>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '10px' }}>
+              <div className="contact-form-actions">
                 <button 
                   type="submit" 
                   className="contact-submit-btn"
@@ -117,15 +117,25 @@ const ContactTab = ({ adsEnabled }) => {
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
                 
-                {submitStatus === 'success' && (
-                  <span style={{ color: '#4ade80', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                      Message sent successfully!
-                  </span>
-                )}
-                {submitStatus === 'error' && (
-                  <span style={{ color: '#FA243C', fontWeight: 600, fontSize: '14px', animation: 'fadeIn 0.3s ease' }}>
-                      Failed to send. Please try again.
-                  </span>
+                {submitStatus && (
+                  <div
+                    className={`contact-status-notice ${submitStatus}`}
+                    role={submitStatus === 'error' ? 'alert' : 'status'}
+                    aria-live={submitStatus === 'error' ? 'assertive' : 'polite'}
+                  >
+                    <span className="contact-status-icon" aria-hidden="true">
+                      {submitStatus === 'success' ? (
+                        <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" /></svg>
+                      )}
+                    </span>
+                    <span className="contact-status-copy">
+                      <strong>{submitStatus === 'success' ? 'Message sent' : 'Message not sent'}</strong>
+                      <span>{submitStatus === 'success' ? 'Thanks for getting in touch.' : 'Please try again in a moment.'}</span>
+                    </span>
+                    <span className="contact-status-timer" aria-hidden="true" />
+                  </div>
                 )}
               </div>
             </form>
