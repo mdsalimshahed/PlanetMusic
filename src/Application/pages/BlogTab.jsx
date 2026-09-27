@@ -1,6 +1,6 @@
 /* --- src/pages/BlogTab.jsx --- */
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
@@ -662,10 +662,7 @@ const BlogTab = ({ adsEnabled }) => {
                     return (
                       <React.Fragment key={post.id}>
                         <div className="blog-card-wrapper">
-                          <div 
-                            className="blog-card" 
-                            onClick={() => navigate(`/blog/post/${post.id}`)}
-                          >
+                          <Link to={`/blog/post/${post.id}`} className="blog-card">
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
                             <div className="blog-card-top">
                               <span className="blog-category-badge">{post.category}</span>
@@ -689,9 +686,8 @@ const BlogTab = ({ adsEnabled }) => {
                                   <span key={i} className="blog-mini-tag">#{t}</span>
                                 ))}
                               </div>
-                              <span className="blog-read-more">Read Article</span>
                             </div>
-                          </div>
+                          </Link>
                           {blogSection === 'custom' && (
                             <div className="blog-card-admin-controls">
                               <button className="blog-admin-btn edit" onClick={() => handleOpenStudio(post)}>

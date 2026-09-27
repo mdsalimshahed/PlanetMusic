@@ -3,54 +3,127 @@ import React, { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 
+const FEEDBACK_FRAME_NAME = 'feedback-submit-frame';
+
 const ContactTab = ({ adsEnabled }) => {
   const [formData, setFormData] = useState({ name: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [submitDetail, setSubmitDetail] = useState('');
   const statusTimeoutRef = useRef(null);
+  const responseTimeoutRef = useRef(null);
+  const iframeLoadFallbackRef = useRef(null);
+  const iframeRef = useRef(null);
+  const pendingRequestRef = useRef(null);
+  const outgoingFormRef = useRef(null);
 
-  useEffect(() => () => clearTimeout(statusTimeoutRef.current), []);
+  useEffect(() => {
+    const completeSubmission = (success) => {
+      if (!pendingRequestRef.current) return;
+
+      pendingRequestRef.current = null;
+      clearTimeout(responseTimeoutRef.current);
+      clearTimeout(iframeLoadFallbackRef.current);
+      outgoingFormRef.current?.remove();
+      outgoingFormRef.current = null;
+      setIsSubmitting(false);
+      setSubmitStatus(success ? 'success' : 'error');
+      setSubmitDetail(success ? 'Thanks for getting in touch.' : 'Please try again in a moment.');
+      if (success) setFormData({ name: '', subject: '', message: '' });
+
+      clearTimeout(statusTimeoutRef.current);
+      statusTimeoutRef.current = setTimeout(() => setSubmitStatus(null), 5000);
+    };
+
+    const handleFeedbackResponse = (event) => {
+      if (event.data?.type !== 'planetmusic-feedback-result') return;
+      if (event.data.requestId !== pendingRequestRef.current) return;
+
+      completeSubmission(event.data.success === true);
+    };
+
+    const handleIframeLoad = () => {
+      const requestId = pendingRequestRef.current;
+      if (!requestId) return;
+
+      clearTimeout(iframeLoadFallbackRef.current);
+      iframeLoadFallbackRef.current = setTimeout(() => {
+        if (pendingRequestRef.current === requestId) completeSubmission(true);
+      }, 750);
+    };
+
+    window.addEventListener('message', handleFeedbackResponse);
+    iframeRef.current?.addEventListener('load', handleIframeLoad);
+    return () => {
+      window.removeEventListener('message', handleFeedbackResponse);
+      iframeRef.current?.removeEventListener('load', handleIframeLoad);
+      clearTimeout(statusTimeoutRef.current);
+      clearTimeout(responseTimeoutRef.current);
+      clearTimeout(iframeLoadFallbackRef.current);
+      outgoingFormRef.current?.remove();
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     clearTimeout(statusTimeoutRef.current);
+    clearTimeout(responseTimeoutRef.current);
+    clearTimeout(iframeLoadFallbackRef.current);
     setSubmitStatus(null);
+    setSubmitDetail('');
 
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
-          name: formData.name || "Anonymous User",
-          subject: formData.subject,
-          message: formData.message,
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setSubmitStatus('success');
-        setFormData({ name: '', subject: '', message: '' });
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch (error) {
-      console.error("Submission failed:", error);
+    const scriptUrl = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL;
+    if (!scriptUrl) {
       setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
+      setSubmitDetail('The feedback service has not been configured yet.');
       statusTimeoutRef.current = setTimeout(() => setSubmitStatus(null), 5000);
+      return;
     }
+
+    const requestId = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    pendingRequestRef.current = requestId;
+    setIsSubmitting(true);
+
+    responseTimeoutRef.current = setTimeout(() => {
+      if (pendingRequestRef.current !== requestId) return;
+      pendingRequestRef.current = null;
+      clearTimeout(iframeLoadFallbackRef.current);
+      outgoingFormRef.current?.remove();
+      outgoingFormRef.current = null;
+      setIsSubmitting(false);
+      setSubmitStatus('error');
+      setSubmitDetail('We could not confirm delivery. Please try again.');
+      statusTimeoutRef.current = setTimeout(() => setSubmitStatus(null), 5000);
+    }, 30000);
+
+    const outgoingForm = document.createElement('form');
+    outgoingForm.method = 'POST';
+    outgoingForm.action = scriptUrl;
+    outgoingForm.target = FEEDBACK_FRAME_NAME;
+    outgoingForm.style.display = 'none';
+
+    const fields = {
+      name: formData.name,
+      subject: formData.subject,
+      message: formData.message,
+      requestId,
+      website: ''
+    };
+    Object.entries(fields).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      outgoingForm.appendChild(input);
+    });
+
+    document.body.appendChild(outgoingForm);
+    outgoingFormRef.current = outgoingForm;
+    outgoingForm.submit();
   };
 
   return (
@@ -132,13 +205,21 @@ const ContactTab = ({ adsEnabled }) => {
                     </span>
                     <span className="contact-status-copy">
                       <strong>{submitStatus === 'success' ? 'Message sent' : 'Message not sent'}</strong>
-                      <span>{submitStatus === 'success' ? 'Thanks for getting in touch.' : 'Please try again in a moment.'}</span>
+                      <span>{submitDetail}</span>
                     </span>
                     <span className="contact-status-timer" aria-hidden="true" />
                   </div>
                 )}
               </div>
             </form>
+            <iframe
+              ref={iframeRef}
+              name={FEEDBACK_FRAME_NAME}
+              title="Feedback submission response"
+              className="contact-submit-frame"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
 
             <div className="contact-info-blocks">
               <div className="info-block">

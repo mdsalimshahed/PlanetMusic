@@ -37,7 +37,7 @@
   margin-bottom: 32px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(10, 10, 25, 0.5) !important;
+  background: rgba(17, 17, 17, 0.94) !important;
 }
 
 .contact-hero-title {
@@ -60,7 +60,7 @@
   padding: 40px;
   border-radius: var(--dyn-border-radius);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(10, 10, 25, 0.7) !important;
+  background: rgba(17, 17, 17, 0.94) !important;
   text-align: left;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .contact-input, .contact-textarea {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
   padding: 14px 16px;
@@ -134,6 +134,15 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-top: 10px;
+}
+
+.contact-submit-frame {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .contact-status-notice {
