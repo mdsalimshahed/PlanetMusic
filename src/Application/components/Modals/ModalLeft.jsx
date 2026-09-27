@@ -66,17 +66,50 @@ const ModalLeft = ({
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
-  handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings
+  handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
+  triggerSyncKey
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
+  const [pressedSyncKey, setPressedSyncKey] = useState(null);
   const [activePlaybackSource, setActivePlaybackSource] = useState(() => {
     const current = window.globalActiveSource;
     return current && String(current.trackId) === String(selectedSong?.trackId)
       ? current.source
       : null;
   });
+
+  useEffect(() => {
+    if (!isSyncMode) {
+      setPressedSyncKey(null);
+      return;
+    }
+
+    const getSyncKey = (event) => {
+      if (event.code === 'Space') return 'Space';
+      return event.key === 'ArrowUp' || event.key === 'ArrowDown' ? event.key : null;
+    };
+    const handleKeyDown = (event) => {
+      const key = getSyncKey(event);
+      if (key) setPressedSyncKey(key);
+    };
+    const handleKeyUp = (event) => {
+      const key = getSyncKey(event);
+      if (key) setPressedSyncKey(current => current === key ? null : current);
+    };
+    const clearPressedKey = () => setPressedSyncKey(null);
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('blur', clearPressedKey);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('blur', clearPressedKey);
+    };
+  }, [isSyncMode]);
+
   const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
   const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
@@ -400,18 +433,48 @@ const ModalLeft = ({
           <div className="links-header"><label>Workspace Controls</label></div>
           
           {isSyncMode && !isTranslationManagerOpen && (
-            <div className="sync-instructions-left">
-              <div className="instruction-row">
-                <kbd className="modal-kbd-badge">Space</kbd>
-                <span>Play / Pause audio</span>
+            <div className="sync-instructions-controls-row">
+              <div className="sync-instructions-left">
+                <div className="instruction-row">
+                  <kbd className="modal-kbd-badge">Space</kbd>
+                  <span>Play / Pause audio</span>
+                </div>
+                <div className="instruction-row">
+                  <kbd className="modal-kbd-badge"><Icon name="arrow-down" /></kbd>
+                  <span>Tap to set <strong>Start</strong> time. Tap again to set <strong>End</strong> and advance.</span>
+                </div>
+                <div className="instruction-row subtle">
+                  <kbd className="modal-kbd-badge"><Icon name="arrow-up" /></kbd>
+                  <span>Undo last timing & step back</span>
+                </div>
               </div>
-              <div className="instruction-row">
-                <kbd className="modal-kbd-badge"><Icon name="arrow-down" /></kbd>
-                <span>Tap to set <strong>Start</strong> time. Tap again to set <strong>End</strong> and advance.</span>
-              </div>
-              <div className="instruction-row subtle">
-                <kbd className="modal-kbd-badge"><Icon name="arrow-up" /></kbd>
-                <span>Undo last timing & step back</span>
+              <div className="sync-emulation-keys" aria-label="Sync keyboard controls">
+                <button
+                  className={`sync-emulation-key sync-emulation-space ${pressedSyncKey === 'Space' ? 'is-key-pressed' : ''}`}
+                  onClick={() => triggerSyncKey('Space')}
+                  aria-label="Toggle sync playback"
+                  title="Space: play or pause"
+                >
+                  SPACE
+                </button>
+                <div className="sync-emulation-arrow-row">
+                  <button
+                    className={`sync-emulation-key sync-emulation-arrow ${pressedSyncKey === 'ArrowUp' ? 'is-key-pressed' : ''}`}
+                    onClick={() => triggerSyncKey('ArrowUp')}
+                    aria-label="Arrow Up: undo boundary or go to previous line"
+                    title="Arrow Up"
+                  >
+                    <Icon name="arrow-up" />
+                  </button>
+                  <button
+                    className={`sync-emulation-key sync-emulation-arrow ${pressedSyncKey === 'ArrowDown' ? 'is-key-pressed' : ''}`}
+                    onClick={() => triggerSyncKey('ArrowDown')}
+                    aria-label="Arrow Down: set boundary or go to next line"
+                    title="Arrow Down"
+                  >
+                    <Icon name="arrow-down" />
+                  </button>
+                </div>
               </div>
             </div>
           )}

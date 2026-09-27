@@ -233,9 +233,13 @@
     margin-bottom: 16px;
   }
 
-  .workspace-controls:not(.lyrics-view-modes-panel) .sync-instructions-left {
-    width: min(100%, 320px);
+  .workspace-controls:not(.lyrics-view-modes-panel) .sync-instructions-controls-row {
+    width: min(100%, 360px);
     box-sizing: border-box;
+  }
+
+  .workspace-controls:not(.lyrics-view-modes-panel) .sync-instructions-left {
+    width: auto;
   }
 
   .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid {

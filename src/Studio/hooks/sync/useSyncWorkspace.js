@@ -281,7 +281,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     constrainedEndRef, setConstrainedEnd
   });
 
-  useSyncKeyboard({
+  const triggerSyncKey = useSyncKeyboard({
     isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
     loopRangeRef, isShowingAutoSync
@@ -433,6 +433,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
-    availableSources, setManualSource, handleShiftTimings
+    availableSources, setManualSource, handleShiftTimings, triggerSyncKey
   };
 };

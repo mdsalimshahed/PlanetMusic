@@ -150,6 +150,8 @@ export const useSyncKeyboard = ({
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
   loopRangeRef, isShowingAutoSync
 }) => {
+  const keyboardActionRef = useRef(null);
+
   const getCurrentTime = () => {
     return workspaceClock.getCurrentTime();
   };
@@ -164,7 +166,10 @@ export const useSyncKeyboard = ({
   };
 
   useEffect(() => {
-    if (!isSyncMode) return;
+    if (!isSyncMode) {
+      keyboardActionRef.current = null;
+      return;
+    }
 
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
@@ -315,9 +320,20 @@ export const useSyncKeyboard = ({
       }
     };
 
+    keyboardActionRef.current = handleKeyDown;
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (keyboardActionRef.current === handleKeyDown) keyboardActionRef.current = null;
+    };
   }, [isSyncMode, isShowingAutoSync, syncYtVideoId]);
+
+  return (key) => keyboardActionRef.current?.({
+    code: key === 'Space' ? 'Space' : '',
+    key,
+    target: document.body,
+    preventDefault: () => {}
+  });
 };
 
 // ------------------------------------------------------------------
