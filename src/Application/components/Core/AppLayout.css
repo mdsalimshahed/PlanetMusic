@@ -172,14 +172,7 @@
 @media (max-width: 768px) {
   .content-scroll-area {
     padding: 0 20px calc(160px + env(safe-area-inset-bottom, 20px)) 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
   }
-
-  .content-scroll-area::-webkit-scrollbar {
-    display: none;
-  }
-
   .search-container ~ .content-scroll-area {
     padding-top: 56px; 
   }

@@ -1,7 +1,6 @@
 /* --- src/components/AdlibDebug/AdlibDebugOverlay.jsx --- */
 import React, { useEffect, useRef, useState } from 'react';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
-import { getCollisionSafeZones } from './adlibPlacementLogic.js';
 import './AdlibDebugOverlay.css';
 
 const getClosestPoints = (r1, r2) => {
@@ -43,11 +42,9 @@ const AdlibDebugOverlay = ({
   const [safeZones, setSafeZones] = useState([]);
   const [innerSafeZones, setInnerSafeZones] = useState([]);
   const [activeAdlibSingers, setActiveAdlibSingers] = useState([]);
-  const [activeAdlibParentNames, setActiveAdlibParentNames] = useState([]);
 
   const syncDataRef = useRef(selectedSong?.syncData || []);
   const prevAdlibSingersRef = useRef(null);
-  const prevAdlibParentNamesRef = useRef(null);
 
   useEffect(() => {
     syncDataRef.current = selectedSong?.syncData || [];
@@ -67,14 +64,11 @@ const AdlibDebugOverlay = ({
   const isMulti = activeNames.length > 1;
   const cols = Math.max(2, activeNames.length);
 
-  const matrixNames = activeAdlibParentNames.length > 0 ? activeAdlibParentNames : activeNames;
-  const matrixCols = Math.max(2, matrixNames.length);
-
   const getArtistForCell = (cellIndex) => {
-    if (matrixNames.length === 0) return null;
-    const row = Math.floor(cellIndex / matrixCols);
-    const col = cellIndex % matrixCols;
-    return matrixNames[(col + row) % matrixNames.length];
+    if (activeNames.length === 0) return null;
+    const row = Math.floor(cellIndex / cols);
+    const col = cellIndex % cols;
+    return activeNames[(col + row) % activeNames.length];
   };
 
   const getTightTextBounds = (element, overlayRect) => {
@@ -142,14 +136,14 @@ const AdlibDebugOverlay = ({
       const canvasRight = containerRect.right - overlayRect.left;
       const canvasBottom = containerRect.bottom - overlayRect.top;
 
-      overlayRef.current.style.setProperty('--debug-canvas-top', `${canvasTop}px`);
-      overlayRef.current.style.setProperty('--debug-canvas-left', `${canvasLeft}px`);
-      overlayRef.current.style.setProperty('--debug-canvas-width', `${containerRect.width}px`);
-      overlayRef.current.style.setProperty('--debug-canvas-height', `${containerRect.height}px`);
-
-      const EDGE_PAD_X = Math.max(8, Math.min(28, containerRect.width * 0.05));
-      const EDGE_PAD_Y = Math.max(8, Math.min(28, containerRect.height * 0.05));
+      const isMoreThanThree = activeNames.length > 3;
+      const EDGE_PAD_X = activeNames.length > 2 ? -16 : Math.max(30, containerRect.width * 0.08);
+      const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
       
+      const LYRIC_PAD = 25;
+      const SINGER_PAD = 20;
+      const MAX_DIST = isMoreThanThree ? Infinity : 160;
+
       const safeTop = canvasTop + EDGE_PAD_Y;
       const safeLeft = canvasLeft + EDGE_PAD_X;
       const safeRight = canvasRight - EDGE_PAD_X;
@@ -253,45 +247,32 @@ const AdlibDebugOverlay = ({
       const activeSingersList = currentAdlibSingers
         ? currentAdlibSingers.split(',').map(s => s.trim()).filter(Boolean)
         : [];
-      const currentParentNames = adlibBoxes.length > 0 && adlibBoxes[0].datasetParentSingers
-        ? adlibBoxes[0].datasetParentSingers.split(',').map(s => s.trim()).filter(Boolean)
-        : [];
 
       if (currentAdlibSingers !== prevAdlibSingersRef.current) {
         prevAdlibSingersRef.current = currentAdlibSingers;
         setActiveAdlibSingers(activeSingersList);
-      }
-      const parentNamesKey = currentParentNames.join('\u0000');
-      if (parentNamesKey !== prevAdlibParentNamesRef.current) {
-        prevAdlibParentNamesRef.current = parentNamesKey;
-        setActiveAdlibParentNames(currentParentNames);
       }
 
       const newSafeZones = [];
       const newInnerZones = [];
 
       const validCells = [];
-      const adlibCols = Math.max(2, currentParentNames.length);
-      const adlibIsMulti = currentParentNames.length > 1;
-      if (!adlibIsMulti || activeSingersList.length === 0) {
+      if (!isMulti || activeSingersList.length === 0) {
         validCells.push({ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop });
       } else {
-        const colWidth = containerRect.width / adlibCols;
-        const rowHeight = containerRect.height / 2;
+        const colWidth = overlayRect.width / cols;
+        const rowHeight = overlayRect.height / 2;
 
-        for (let i = 0; i < adlibCols * 2; i++) {
-          const row = Math.floor(i / adlibCols);
-          const col = i % adlibCols;
-          const artist = currentParentNames[(col + row) % currentParentNames.length];
-          const belongsToSinger = activeSingersList.some(
-            singer => singer.toLocaleLowerCase() === String(artist || '').toLocaleLowerCase()
-          );
+        for (let i = 0; i < cols * 2; i++) {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          const artist = getArtistForCell(i);
 
-          if (belongsToSinger) {
-            const cellLeft = col === 0 ? safeLeft : canvasLeft + col * colWidth;
-            const cellRight = col === adlibCols - 1 ? safeRight : canvasLeft + (col + 1) * colWidth;
-            const cellTop = row === 0 ? safeTop : canvasTop + row * rowHeight;
-            const cellBottom = row === 1 ? safeBottom : canvasTop + (row + 1) * rowHeight;
+          if (activeSingersList.includes(artist)) {
+            const cellLeft = col === 0 ? safeLeft : col * colWidth;
+            const cellRight = col === cols - 1 ? safeRight : (col + 1) * colWidth;
+            const cellTop = row === 0 ? safeTop : row * rowHeight;
+            const cellBottom = row === 1 ? safeBottom : (row + 1) * rowHeight;
 
             validCells.push({
               left: cellLeft,
@@ -305,40 +286,58 @@ const AdlibDebugOverlay = ({
         }
       }
 
-      const toCanvasLocalBox = (box) => box && ({
-        left: box.left - canvasLeft,
-        right: box.right - canvasLeft,
-        top: box.top - canvasTop,
-        bottom: box.bottom - canvasTop
-      });
-      const baseZones = getCollisionSafeZones(
-        containerRect.width,
-        containerRect.height,
-        toCanvasLocalBox(combinedBox),
-        toCanvasLocalBox(singerBox)
-      );
+      if (combinedBox) {
+        const baseZones = [];
 
-      baseZones.forEach(bz => {
-        validCells.forEach(vc => {
-          const ixLeft = Math.max(canvasLeft + bz.left, vc.left);
-          const ixRight = Math.min(canvasLeft + bz.right, vc.right);
-          const ixTop = Math.max(canvasTop + bz.top, vc.top);
-          const ixBottom = Math.min(canvasTop + bz.bottom, vc.bottom);
-
-          if (ixLeft < ixRight && ixTop < ixBottom) {
-            newSafeZones.push({
-              id: `sz-${bz.zoneId}-${Math.round(ixLeft)}-${Math.round(ixTop)}`,
-              top: ixTop,
-              left: ixLeft,
-              width: ixRight - ixLeft,
-              height: ixBottom - ixTop,
-              label: 'Collision-Free Zone'
-            });
+        if (combinedBox.top > safeTop) {
+          const bottomEdge = combinedBox.top - LYRIC_PAD;
+          const topEdge = Math.max(safeTop, bottomEdge - MAX_DIST);
+          if (bottomEdge > topEdge) {
+            baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
           }
-        });
-      });
+        }
 
-      const activeViableZones = newSafeZones;
+        if (combinedBox.top + combinedBox.height < safeBottom) {
+          const topEdge = combinedBox.top + combinedBox.height + LYRIC_PAD;
+          let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
+
+          if (singerBox && singerBox.top < safeBottom) {
+            const sTopAdjusted = singerBox.top - SINGER_PAD;
+            if (sTopAdjusted > topEdge) {
+              bottomEdge = Math.min(bottomEdge, sTopAdjusted);
+              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+            }
+          } else {
+            if (bottomEdge > topEdge) {
+              baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
+            }
+          }
+        }
+
+        baseZones.forEach(bz => {
+          validCells.forEach(vc => {
+            const ixLeft = Math.max(bz.left, vc.left);
+            const ixRight = Math.min(bz.right, vc.right);
+            const ixTop = Math.max(bz.top, vc.top);
+            const ixBottom = Math.min(bz.bottom, vc.bottom);
+
+            if (ixLeft < ixRight && ixTop < ixBottom) {
+              newSafeZones.push({
+                id: `sz-${bz.type}-${Math.round(ixLeft)}-${Math.round(ixTop)}`,
+                top: ixTop,
+                left: ixLeft,
+                width: ixRight - ixLeft,
+                height: ixBottom - ixTop,
+                label: `${bz.type} Zone`
+              });
+            }
+          });
+        });
+      }
+
+      const activeViableZones = newSafeZones.length > 0 ? newSafeZones :
+        (validCells.length > 0 ? validCells.map((vc, i) => ({...vc, id: `sz-vc-${i}`, label: 'Valid Cell'})) :
+        [{ id: 'sz-full', left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop, label: 'Full Safe Zone' }]);
 
       setSafeZones(activeViableZones);
 
@@ -362,14 +361,14 @@ const AdlibDebugOverlay = ({
         const centerX = adlibBox.left + adlibBox.width / 2;
         const centerY = adlibBox.top + adlibBox.height / 2;
 
-        const canvasMidX = canvasLeft + containerRect.width / 2;
-        const canvasMidY = canvasTop + containerRect.height / 2;
+        const canvasMidX = overlayRect.width / 2;
+        const canvasMidY = overlayRect.height / 2;
         const distToCenter = Math.round(Math.sqrt(Math.pow(centerX - canvasMidX, 2) + Math.pow(centerY - canvasMidY, 2)));
 
         const actualRot = parseFloat(adlibBox.rotation) || 0;
-        const rotMultiplier = (centerX - canvasMidX) / (containerRect.width / 2 || 1);
+        const rotMultiplier = (centerX - canvasMidX) / (canvasMidX || 1);
         const ySign = (centerY < canvasMidY) ? 1 : -1;
-        const expectedBaseRot = rotMultiplier * ySign * 8;
+        const expectedBaseRot = rotMultiplier * ySign * 18;
 
         stat.isRotationCorrect = Math.abs(actualRot - expectedBaseRot) <= 12;
         stat.expectedRotation = expectedBaseRot;
@@ -435,27 +434,23 @@ const AdlibDebugOverlay = ({
 
         if (isAdlibMulti) {
           const matchedSinger = adlibBox.datasetSinger || '';
-          const parsedSingers = matchedSinger.split(',').map(singer => singer.trim().toLocaleLowerCase()).filter(Boolean);
 
-          const colWidth = containerRect.width / adlibCols;
-          const rowHeight = containerRect.height / 2;
+          const colWidth = overlayRect.width / adlibCols;
+          const rowHeight = overlayRect.height / 2;
 
-          const firstCol = Math.max(0, Math.min(adlibCols - 1, Math.floor((adlibBox.left - canvasLeft) / colWidth)));
-          const lastCol = Math.max(0, Math.min(adlibCols - 1, Math.floor((aRight - canvasLeft - 0.01) / colWidth)));
-          const firstRow = Math.max(0, Math.min(1, Math.floor((adlibBox.top - canvasTop) / rowHeight)));
-          const lastRow = Math.max(0, Math.min(1, Math.floor((aBottom - canvasTop - 0.01) / rowHeight)));
-          const coveredArtists = [];
-          for (let row = firstRow; row <= lastRow; row++) {
-            for (let col = firstCol; col <= lastCol; col++) {
-              coveredArtists.push(getAdlibArtistForCell(row * adlibCols + col));
-            }
+          const physCol = Math.max(0, Math.min(adlibCols - 1, Math.floor(centerX / colWidth)));
+          const physRow = Math.max(0, Math.min(1, Math.floor(centerY / rowHeight)));
+          const physCellIdx = physRow * adlibCols + physCol;
+
+          const quadrantArtist = getAdlibArtistForCell(physCellIdx);
+
+          if (matchedSinger && quadrantArtist) {
+            const parsedSingers = matchedSinger.split(',').map(s => s.trim()).filter(Boolean);
+            stat.isCorrect = parsedSingers.includes(quadrantArtist);
+          } else {
+            stat.isCorrect = false;
           }
-
-          const unauthorizedArtist = coveredArtists.find(
-            artist => !parsedSingers.includes(String(artist || '').trim().toLocaleLowerCase())
-          );
-          stat.isCorrect = parsedSingers.length > 0 && coveredArtists.length > 0 && !unauthorizedArtist;
-          stat.quadArtist = unauthorizedArtist || coveredArtists[0] || null;
+          stat.quadArtist = quadrantArtist;
           stat.evalMode = `Matrix (${adlibCols}x2)`;
         } else {
           stat.evalMode = 'Full Screen';
@@ -464,9 +459,10 @@ const AdlibDebugOverlay = ({
         newStats.push(stat);
 
         activeViableZones.forEach((zone, zIdx) => {
-          const angle = (parseFloat(adlibBox.rotation) || 0) * Math.PI / 180;
-          const padX = (adlibBox.unrotatedWidth * Math.abs(Math.cos(angle)) + adlibBox.unrotatedHeight * Math.abs(Math.sin(angle))) / 2 + 5;
-          const padY = (adlibBox.unrotatedWidth * Math.abs(Math.sin(angle)) + adlibBox.unrotatedHeight * Math.abs(Math.cos(angle))) / 2 + 5;
+          // Sync with the safe logic radius
+          const safeRadius = Math.sqrt(Math.pow(adlibBox.unrotatedWidth, 2) + Math.pow(adlibBox.unrotatedHeight, 2)) / 2;
+          const padX = safeRadius + 5; 
+          const padY = safeRadius + 5;
 
           let iLeft = zone.left + padX;
           let iRight = zone.left + zone.width - padX;
@@ -586,12 +582,12 @@ const AdlibDebugOverlay = ({
           </>
         )}
       </div>
-      {isSingerVisible && matrixNames.length === 1 && (
-        <div className="debug-fullscreen-box" style={{ borderColor: masterPalette[matrixNames[0]] || '#ff00ff' }}></div>
+      {isSingerVisible && !isMulti && activeNames.length === 1 && (
+        <div className="debug-fullscreen-box" style={{ borderColor: masterPalette[activeNames[0]] || '#ff00ff' }}></div>
       )}
-      {isSingerVisible && matrixNames.length > 1 && (
-        <div className="debug-matrix-grid" style={{ gridTemplateColumns: `repeat(${matrixCols}, 1fr)` }}>
-          {Array.from({ length: matrixCols * 2 }).map((_, cellIdx) => {
+      {isSingerVisible && isMulti && (
+        <div className="debug-matrix-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+          {Array.from({ length: cols * 2 }).map((_, cellIdx) => {
             const targetArtist = getArtistForCell(cellIdx);
             const artistColor = masterPalette[targetArtist] || '#ff00ff';
             const isDimmed = activeAdlibSingers.length > 0 && !activeAdlibSingers.includes(targetArtist);

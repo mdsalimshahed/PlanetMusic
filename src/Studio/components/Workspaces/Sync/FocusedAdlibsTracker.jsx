@@ -29,19 +29,10 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
           const renderAdlibPure = (adlibObj) => {
-            const { chars: extractedChars, hasSpacingText } = extractCharsAndSegments(
+            const { chars, hasSpacingText } = extractCharsAndSegments(
                 { text: adlibObj.text, segments: adlibObj.segments }, 
                 adlibObj
             );
-            const chars = [...extractedChars];
-            for (let index = chars.length - 1; index >= 0; index--) {
-              if (/^[)\uff09]$/u.test(chars[index].char)) {
-                while (index > 0 && /\s/u.test(chars[index - 1].char)) {
-                  chars.splice(index - 1, 1);
-                  index--;
-                }
-              }
-            }
             const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
             const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
                 chars,
@@ -80,7 +71,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                     {translationJSX}
                   </span>
                 )}
-                <span className="primary-text" style={{ whiteSpace: 'normal', display: 'inline-block', maxWidth: '100%' }} dir="auto">
+                <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
                   {mainJSX}
                 </span>
                 {pronunciationJSX && (
@@ -166,7 +157,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     const clearActiveNodes = () => {
       cachedTrackNodesRef.current.forEach(item => {
         item.node.classList.remove('active', 'exiting', 'past');
-        item.node.style.removeProperty('visibility');
         item.isActive = false;
       });
       boundaryCursorRef.current = 0;
@@ -206,20 +196,14 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           lastZoneIdRef.current
         );
       }
-      if (!pos) {
-        item.node.style.setProperty('visibility', 'hidden');
-        item.node.classList.add('active');
-        item.node.classList.remove('exiting', 'past');
-        item.isActive = true;
-        return;
+      if (pos) {
+        item.node.style.setProperty('--adlib-left', pos.left);
+        item.node.style.setProperty('--adlib-top', pos.top);
+        item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
+        item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
+        item.node.style.setProperty('--adlib-scale', pos.scale);
+        if (pos.zoneId !== undefined) lastZoneIdRef.current = pos.zoneId;
       }
-      item.node.style.removeProperty('visibility');
-      item.node.style.setProperty('--adlib-left', pos.left);
-      item.node.style.setProperty('--adlib-top', pos.top);
-      item.node.style.setProperty('--adlib-rot', `${pos.rot}deg`);
-      item.node.style.setProperty('--adlib-max-width', `${pos.maxWidth}px`);
-      item.node.style.setProperty('--adlib-scale', pos.scale);
-      if (pos.zoneId !== undefined) lastZoneIdRef.current = pos.zoneId;
       item.node.classList.add('active');
       item.node.classList.remove('exiting', 'past');
       item.isActive = true;
@@ -272,31 +256,11 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       if (e.detail.isEnded) clearActiveNodes();
     };
 
-    let resizeFrame = null;
-    const handleCanvasResize = () => {
-      if (resizeFrame !== null) return;
-      resizeFrame = requestAnimationFrame(() => {
-        resizeFrame = null;
-        cachedTrackNodesRef.current.forEach(item => {
-          if (item.isActive) activateItem(item);
-        });
-      });
-    };
-    const canvasNode = containerRef.current?.parentElement;
-    const resizeObserver = typeof ResizeObserver !== 'undefined' && canvasNode
-      ? new ResizeObserver(handleCanvasResize)
-      : null;
-    if (canvasNode) resizeObserver?.observe(canvasNode);
-
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
-    window.addEventListener('resize', handleCanvasResize);
     return () => {
       window.removeEventListener('globalTimeUpdate', handleTime);
       window.removeEventListener('globalPlayState', handlePlayState);
-      window.removeEventListener('resize', handleCanvasResize);
-      resizeObserver?.disconnect();
-      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
     };
   }, [isPlayingCurrentSong]);
 
