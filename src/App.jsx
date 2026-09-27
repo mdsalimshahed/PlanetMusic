@@ -33,9 +33,26 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
+  const previousPathRef = useRef(location.pathname);
+  const blogListScrollTopRef = useRef(0);
 
   useEffect(() => {
-    contentScrollAreaRef.current?.scrollTo(0, 0);
+    const previousPath = previousPathRef.current;
+    const isBlogList = (path) => /^\/blog(?:\/(?:dev|custom))?\/?$/.test(path);
+    const isBlogPost = (path) => /^\/blog\/post\//.test(path);
+    const scrollArea = contentScrollAreaRef.current;
+
+    if (isBlogList(previousPath) && isBlogPost(location.pathname)) {
+      blogListScrollTopRef.current = scrollArea?.scrollTop ?? 0;
+    }
+
+    if (isBlogPost(previousPath) && isBlogList(location.pathname)) {
+      scrollArea?.scrollTo(0, blogListScrollTopRef.current);
+    } else {
+      scrollArea?.scrollTo(0, 0);
+    }
+
+    previousPathRef.current = location.pathname;
   }, [location.pathname]);
 
   // Parse routing variables from URL
