@@ -4,7 +4,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
-import { renderMarkdown, getRandomGradient } from '../utils/markdownUtils.jsx';
+import { renderMarkdown } from '../utils/markdownUtils.jsx';
+import { getProceduralGradient } from '../../utils/proceduralColors.js';
 
 const Icon = ({ name, size = 18 }) => {
   const props = {
@@ -161,11 +162,13 @@ const BlogTab = ({ adsEnabled }) => {
   }, [viewMode, activeArticleId, customPosts]);
 
   const currentFeed = blogSection === 'dev' ? devPosts : customPosts;
+  const allPosts = [...devPosts, ...customPosts];
 
   const activePost = useMemo(() => {
     if (viewMode !== 'reader' || !activeArticleId) return null;
-    return [...devPosts, ...customPosts].find((p) => p.id === activeArticleId) || null;
+    return allPosts.find((p) => p.id === activeArticleId) || null;
   }, [viewMode, activeArticleId, devPosts, customPosts]);
+  const activePostColorIndex = Math.max(0, allPosts.findIndex((post) => post.id === activeArticleId));
 
   const categories = useMemo(() => {
     const list = new Set(currentFeed.map((p) => p.category).filter(Boolean));
@@ -492,7 +495,7 @@ const BlogTab = ({ adsEnabled }) => {
                 <div className="blog-markdown-preview-pane">
                   <span className="preview-pane-badge">Live Preview</span>
                   <div className="blog-article-body" style={{ marginTop: '16px' }}>
-                    {formData.title && <h1 className="blog-article-title">{renderMarkdown(formData.title)}</h1>}
+                    {formData.title && <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(Math.max(0, customPosts.findIndex((post) => post.id === formData.id))) }}>{renderMarkdown(formData.title)}</h1>}
                     {formData.summary && <p className="blog-article-summary">{renderMarkdown(formData.summary)}</p>}
                     {formData.heroImage && <img src={formData.heroImage} alt="" className="blog-article-hero-img" />}
                     <hr className="blog-divider" />
@@ -524,7 +527,7 @@ const BlogTab = ({ adsEnabled }) => {
                     </>
                   )}
                 </div>
-                <h1 className="blog-article-title">{renderMarkdown(activePost.title)}</h1>
+                <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(activePostColorIndex) }}>{renderMarkdown(activePost.title)}</h1>
                 <p className="blog-article-summary">{renderMarkdown(activePost.summary)}</p>
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
               </header>
@@ -671,7 +674,7 @@ const BlogTab = ({ adsEnabled }) => {
                             <h3 
                               className="blog-card-title"
                               style={{
-                                backgroundImage: getRandomGradient(),
+                                backgroundImage: getProceduralGradient(idx),
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 display: 'inline-block'

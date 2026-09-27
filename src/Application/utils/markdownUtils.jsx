@@ -1,40 +1,10 @@
 /* --- src/utils/markdownUtils.jsx --- */
 import React from 'react';
 import { toSmartPunctuation } from '../../utils/smartPunctuation.js';
+import { getProceduralColor, getProceduralGradient } from '../../utils/proceduralColors.js';
 
-// Vibrant bold text colors palette
-const BOLD_COLORS = [
-  '#fbbf24', // Amber Gold
-  '#1DB954', // Spotify Green
-  '#38bdf8', // Neon Sky Blue
-  '#a855f7', // Electric Purple
-  '#f43f5e', // Rose Coral
-  '#34d399', // Mint Emerald
-  '#fb923c', // Bright Orange
-  '#c084fc'  // Lavender
-];
-
-// Dynamic linear gradient mixes for Title Headings
-const GRADIENTS = [
-  'linear-gradient(135deg, #fbbf24 0%, #f43f5e 100%)',
-  'linear-gradient(135deg, #38bdf8 0%, #a855f7 100%)',
-  'linear-gradient(135deg, #1DB954 0%, #38bdf8 100%)',
-  'linear-gradient(135deg, #c084fc 0%, #f43f5e 100%)',
-  'linear-gradient(135deg, #fb923c 0%, #fbbf24 100%)',
-  'linear-gradient(135deg, #34d399 0%, #38bdf8 100%)',
-  'linear-gradient(135deg, #f43f5e 0%, #a855f7 100%)'
-];
-
-export const getRandomColor = () => {
-  return BOLD_COLORS[Math.floor(Math.random() * BOLD_COLORS.length)];
-};
-
-export const getRandomGradient = () => {
-  return GRADIENTS[Math.floor(Math.random() * GRADIENTS.length)];
-};
-
-const getGradientStyle = () => ({
-  backgroundImage: getRandomGradient(),
+const getGradientStyle = (nextColorIndex) => ({
+  backgroundImage: getProceduralGradient(nextColorIndex()),
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
   display: 'inline-block',
@@ -44,6 +14,8 @@ const getGradientStyle = () => ({
 export const renderMarkdown = (text) => {
   if (!text) return null;
 
+  let colorIndex = 0;
+  const nextColorIndex = () => colorIndex++;
   const blocks = text.split(/\n\n+/);
 
   return blocks.map((block, idx) => {
@@ -65,7 +37,7 @@ export const renderMarkdown = (text) => {
               return (
                 <React.Fragment key={pIdx}>
                   {pIdx > 0 && <hr className="blog-divider" />}
-                  {renderBlockUnit(partTrimmed, `${idx}-${pIdx}`)}
+                  {renderBlockUnit(partTrimmed, `${idx}-${pIdx}`, nextColorIndex)}
                 </React.Fragment>
               );
             })}
@@ -74,27 +46,27 @@ export const renderMarkdown = (text) => {
       }
     }
 
-    return renderBlockUnit(trimmed, idx);
+    return renderBlockUnit(trimmed, idx, nextColorIndex);
   });
 };
 
-const renderBlockUnit = (trimmed, key) => {
+const renderBlockUnit = (trimmed, key, nextColorIndex) => {
   if (trimmed.startsWith('### ')) {
     const content = trimmed.replace(/^###\s+/, '');
-    return <h3 key={key} style={getGradientStyle()}>{parseInline(content)}</h3>;
+    return <h3 key={key} style={getGradientStyle(nextColorIndex)}>{parseInline(content, nextColorIndex)}</h3>;
   }
   if (trimmed.startsWith('## ')) {
     const content = trimmed.replace(/^##\s+/, '');
-    return <h2 key={key} style={getGradientStyle()}>{parseInline(content)}</h2>;
+    return <h2 key={key} style={getGradientStyle(nextColorIndex)}>{parseInline(content, nextColorIndex)}</h2>;
   }
   if (trimmed.startsWith('# ')) {
     const content = trimmed.replace(/^#\s+/, '');
-    return <h1 key={key} style={getGradientStyle()}>{parseInline(content)}</h1>;
+    return <h1 key={key} style={getGradientStyle(nextColorIndex)}>{parseInline(content, nextColorIndex)}</h1>;
   }
 
   if (trimmed.startsWith('> ')) {
     const quoteText = trimmed.split('\n').map(l => l.replace(/^>\s*/, '')).join(' ');
-    return <blockquote key={key} className="blog-tip-box">{parseInline(quoteText)}</blockquote>;
+    return <blockquote key={key} className="blog-tip-box">{parseInline(quoteText, nextColorIndex)}</blockquote>;
   }
 
   if (trimmed.startsWith('```')) {
@@ -107,11 +79,13 @@ const renderBlockUnit = (trimmed, key) => {
   }
 
   if (/^[-*]\s+/m.test(trimmed)) {
-    const items = trimmed.split('\n').filter(l => /^[-*]\s+/.test(l.trim()));
+    const items = trimmed.split('\n')
+      .filter(line => line.trim().startsWith('- ') || line.trim().startsWith('* '))
+      .map(line => line.trim().slice(2));
     return (
       <ul key={key}>
         {items.map((it, i) => (
-          <li key={i}>{parseInline(it.replace(/^[-*]\s+/, ''))}</li>
+          <li key={i}>{parseInline(it, nextColorIndex)}</li>
         ))}
       </ul>
     );
@@ -122,7 +96,7 @@ const renderBlockUnit = (trimmed, key) => {
     <p key={key}>
       {lines.map((line, lIdx) => (
         <React.Fragment key={lIdx}>
-          {parseInline(line)}
+          {parseInline(line, nextColorIndex)}
           {lIdx < lines.length - 1 && <br />}
         </React.Fragment>
       ))}
@@ -130,14 +104,14 @@ const renderBlockUnit = (trimmed, key) => {
   );
 };
 
-const parseInline = (text) => {
+const parseInline = (text, nextColorIndex) => {
   if (!text) return '';
   const regex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\[.*?\]\(.*?\))/g;
   const parts = text.split(regex);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       const boldText = part.slice(2, -2);
-      const boldColor = getRandomColor();
+      const boldColor = getProceduralColor(nextColorIndex());
       return (
         <strong key={i} style={{ color: boldColor, fontWeight: 800 }}>
           {toSmartPunctuation(boldText)}

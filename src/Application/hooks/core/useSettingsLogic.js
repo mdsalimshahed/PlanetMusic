@@ -1,20 +1,6 @@
 /* --- src/hooks/useSettingsLogic.js --- */
 import { useState, useMemo } from 'react';
-
-const DUAL_GRADIENT_PALETTE = [
-  ['#00f5d4', '#00bbf9'],
-  ['#38b000', '#00f5d4'],
-  ['#ffc300', '#ff7000'],
-  ['#ff7000', '#f15bb5'],
-  ['#f15bb5', '#e0aaff'],
-  ['#00bbf9', '#e0aaff'],
-  ['#e0aaff', '#ff99c8'],
-  ['#ff99c8', '#ffc300'],
-  ['#00f5d4', '#ffc300'],
-  ['#38b000', '#f15bb5'],
-  ['#00bbf9', '#ff7000'],
-  ['#e0aaff', '#38b000']
-];
+import { getProceduralColor, getProceduralGradient } from '../../../utils/proceduralColors.js';
 
 export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showArl, setShowArl] = useState(false);
@@ -23,8 +9,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showPurgeConfirm, setShowPurgeConfirm] = useState(false);
 
   const authGradient = useMemo(() => {
-    const palette = DUAL_GRADIENT_PALETTE[Math.floor(Math.random() * DUAL_GRADIENT_PALETTE.length)];
-    return `linear-gradient(90deg, ${palette[0]}, ${palette[1]})`;
+    return getProceduralGradient(Math.floor(Math.random() * 360));
   }, []);
 
   const sliderGradients = useMemo(() => {
@@ -37,23 +22,9 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       'transliterationOpacity', 'transliterationFontSize', 'transliterationBottomPadding'
     ];
     
-    const palettePool = [...DUAL_GRADIENT_PALETTE];
-    
-    for (let i = palettePool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.sin(i * 9999) * 10000) % (i + 1);
-      const positiveJ = Math.abs(j);
-      [palettePool[i], palettePool[positiveJ]] = [palettePool[positiveJ], palettePool[i]];
-    }
     const gradMap = {};
-    let lastPair = null;
     keys.forEach((key, index) => {
-      let candidatePair = palettePool[index % palettePool.length];
-      if (lastPair && candidatePair[0] === lastPair[0] && candidatePair[1] === lastPair[1]) {
-        const offsetIndex = (index + 1) % palettePool.length;
-        candidatePair = palettePool[offsetIndex];
-      }
-      gradMap[key] = candidatePair;
-      lastPair = candidatePair;
+      gradMap[key] = [getProceduralColor(index * 2), getProceduralColor(index * 2 + 1)];
     });
     return gradMap;
   }, []);

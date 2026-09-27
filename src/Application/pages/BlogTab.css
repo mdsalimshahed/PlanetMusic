@@ -858,7 +858,6 @@
 
 /* --- Gradient Styling for Main Article Titles --- */
 .blog-article-title {
-   background: linear-gradient(135deg, #fbbf24 0%, #f43f5e 50%, #c084fc 100%);
    -webkit-background-clip: text;
    -webkit-text-fill-color: transparent;
    display: inline-block;
