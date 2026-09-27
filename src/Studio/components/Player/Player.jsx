@@ -21,7 +21,9 @@ const Player = (props) => {
       isBuffering={state.isBuffering}
       activeSource={state.activeSource}
       volume={state.volume}
+      isMuted={state.isMuted}
       handleVolumeChange={handlers.handleVolumeChange}
+      toggleMute={handlers.toggleMute}
       closePlayer={handlers.closePlayer}
       duration={state.duration}
       hoverTime={state.hoverTime}

@@ -285,8 +285,20 @@ body .global-player.glass-panel-heavy.centered-mode {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--text-subdued);
+  cursor: pointer;
+  line-height: 0;
   transition: color 0.2s;
+}
+
+.volume-icon:focus-visible {
+  outline: 2px solid var(--player-accent, white);
+  outline-offset: 2px;
 }
 
 .volume-container:hover .volume-icon {

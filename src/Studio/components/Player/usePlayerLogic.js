@@ -41,8 +41,15 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const [fallbackMessage, setFallbackMessage] = useState('');
   const [failedSources, setFailedSources] = useState([]);
   const [volume, setVolume] = useState(() => {
+    const savedVolume = Number(localStorage.getItem('playerVolume'));
+    return Number.isFinite(savedVolume) && savedVolume > 0 ? savedVolume : 1;
+  });
+  const [isMuted, setIsMuted] = useState(() => {
+    const savedMuteState = localStorage.getItem('playerMuted');
     const savedVolume = localStorage.getItem('playerVolume');
-    return savedVolume !== null ? parseFloat(savedVolume) : 1;
+    return savedMuteState !== null
+      ? savedMuteState === 'true'
+      : savedVolume !== null && Number(savedVolume) === 0;
   });
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
@@ -432,7 +439,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             setYtPlayerReady(true);
             try {
               if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('highres');
-              event.target.setVolume(volume * 100);
+              event.target.setVolume((isMuted ? 0 : volume) * 100);
               const dur = event.target.getDuration();
               if (dur && !isNaN(dur)) setDuration(dur);
               
@@ -535,7 +542,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
   useEffect(() => {
     if (!ytVideoId && audioSrc && audioRef.current) {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = isMuted ? 0 : volume;
       if (pendingSeek === null) attemptPlay();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -609,11 +616,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
   useEffect(() => {
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
-      try { ytPlayerRef.current.setVolume(volume * 100); } catch (e) {}
+      try { ytPlayerRef.current.setVolume((isMuted ? 0 : volume) * 100); } catch (e) {}
     } else if (audioRef.current) {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = isMuted ? 0 : volume;
     }
-  }, [volume, ytVideoId, ytPlayerReady]);
+  }, [volume, isMuted, ytVideoId, ytPlayerReady]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -729,8 +736,23 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const handleVolumeChange = (e) => {
     e.stopPropagation();
     const vol = Number(e.target.value);
+    if (vol === 0) {
+      setIsMuted(true);
+      localStorage.setItem('playerMuted', 'true');
+      return;
+    }
     setVolume(vol);
     localStorage.setItem('playerVolume', vol);
+    setIsMuted(false);
+    localStorage.setItem('playerMuted', 'false');
+  };
+
+  const toggleMute = (e) => {
+    e.stopPropagation();
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    localStorage.setItem('playerMuted', String(nextMuted));
+    if (volume > 0) localStorage.setItem('playerVolume', volume);
   };
 
   const closePlayer = (e) => {
@@ -818,6 +840,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       hoverTime,
       fallbackMessage,
       volume,
+      isMuted,
       isStacked,
       slotNode
     },
@@ -828,6 +851,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       handleProgressMouseMove,
       handleProgressMouseLeave,
       handleVolumeChange,
+      toggleMute,
       closePlayer,
       togglePlay,
       openModal,
