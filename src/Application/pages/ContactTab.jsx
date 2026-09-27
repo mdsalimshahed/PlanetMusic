@@ -25,8 +25,7 @@ const ContactTab = ({ adsEnabled }) => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          // Get your free access key from https://web3forms.com/
-          access_key: "YOUR_ACCESS_KEY_HERE", 
+          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
           name: formData.name || "Anonymous User",
           subject: formData.subject,
           message: formData.message,
