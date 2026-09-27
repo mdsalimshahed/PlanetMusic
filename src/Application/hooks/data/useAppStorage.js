@@ -2,6 +2,25 @@
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 
+const DEEZER_ARL_SESSION_KEY = 'planetmusic.deezerArl';
+
+const readRememberedDeezerArl = () => {
+  try {
+    return sessionStorage.getItem(DEEZER_ARL_SESSION_KEY) || '';
+  } catch {
+    return '';
+  }
+};
+
+const updateRememberedDeezerArl = (arl) => {
+  try {
+    if (arl) sessionStorage.setItem(DEEZER_ARL_SESSION_KEY, arl);
+    else sessionStorage.removeItem(DEEZER_ARL_SESSION_KEY);
+  } catch {
+    // Keep the token in React memory if session storage is unavailable.
+  }
+};
+
 export const useAppStorage = (urlSearchQuery) => {
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('appSettings');
@@ -29,7 +48,9 @@ export const useAppStorage = (urlSearchQuery) => {
       if (parsed.disableAnimations === undefined) parsed.disableAnimations = false;
       
       if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
-      parsed.deezerArl = '';
+      parsed.rememberDeezerArl = parsed.rememberDeezerArl === true;
+      parsed.deezerArl = parsed.rememberDeezerArl ? readRememberedDeezerArl() : '';
+      if (!parsed.rememberDeezerArl) updateRememberedDeezerArl('');
       
       delete parsed.youtubeApiKey;
       delete parsed.spotifyClientId;
@@ -61,6 +82,7 @@ export const useAppStorage = (urlSearchQuery) => {
       transliterationColor: '#ffffff',
       transliterationOpacity: 0.8,
       deezerArl: '',
+      rememberDeezerArl: false,
       disableAnimations: false,
       adsEnabled: true
     };
@@ -97,6 +119,7 @@ export const useAppStorage = (urlSearchQuery) => {
   useEffect(() => {
     const persistedSettings = { ...settings };
     delete persistedSettings.deezerArl;
+    updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
     localStorage.setItem('appSettings', JSON.stringify(persistedSettings));
     localStorage.setItem('songLibrary', JSON.stringify(library));
     localStorage.setItem('searchQuery', searchQuery);

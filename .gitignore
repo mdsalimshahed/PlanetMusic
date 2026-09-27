@@ -28,3 +28,8 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Cloudflare Pages local runtime secrets
+.dev.vars
+.dev.vars.*
+!.dev.vars.example

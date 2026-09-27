@@ -9,7 +9,7 @@ const DeezerAuthCard = ({
       <div className="deezer-auth-instructions">
         <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
         <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-        <p className="security-warning"><strong>Privacy & Security:</strong> Your token stays in memory for this page session and is sent only to the backend when needed. It is not saved in browser storage or included in backups. Paste it again after reloading PlanetMusic.</p>
+        <p className="security-warning"><strong>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it in this tab across refreshes; it is stored in session storage and can be read by scripts running on this site.</p>
       </div>
       <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
         <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
@@ -44,6 +44,19 @@ const DeezerAuthCard = ({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
             )}
           </button>
+        </div>
+        <div className="setting-item toggle-item">
+          <label htmlFor="remember-deezer-arl">
+            <span>Remember for this tab</span>
+            <span className="setting-desc">Keeps the ARL through refreshes; cleared when this tab session ends.</span>
+          </label>
+          <input
+            id="remember-deezer-arl"
+            type="checkbox"
+            name="rememberDeezerArl"
+            checked={settings.rememberDeezerArl === true}
+            onChange={handleChange}
+          />
         </div>
         <button 
           className="verify-arl-btn" 

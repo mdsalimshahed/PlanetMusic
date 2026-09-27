@@ -116,6 +116,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
         settings: { ...settings } 
       };
       delete exportData.settings.deezerArl;
+      delete exportData.settings.rememberDeezerArl;
       const jsonString = JSON.stringify(exportData, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -131,6 +132,11 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       console.error("Backup trigger failed before purge:", e);
     }
     localStorage.clear();
+    try {
+      sessionStorage.removeItem('planetmusic.deezerArl');
+    } catch {
+      // Continue clearing other app data if session storage is unavailable.
+    }
     localStorage.setItem('hasVisitedBefore', 'true');
     localStorage.setItem('isSampleVaultActive', 'false');
     

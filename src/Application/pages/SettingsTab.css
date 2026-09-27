@@ -17,6 +17,10 @@
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2) !important;
 }
 
+.deezer-auth-card .toggle-item {
+  margin-top: 20px;
+}
+
 .deezer-auth-card h3 {
   border-bottom-color: rgba(255, 255, 255, 0.1) !important;
   display: block;
@@ -327,6 +331,10 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.toggle-item input[type="checkbox"] {
+  flex: 0 0 20px;
 }
 
 .toggle-item label {
