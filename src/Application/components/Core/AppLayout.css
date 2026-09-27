@@ -168,23 +168,6 @@
   font-weight: 500;
 }
 
-.ad-toggle-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  padding: 8px 20px;
-  border-radius: 500px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.ad-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-}
-
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .content-scroll-area {

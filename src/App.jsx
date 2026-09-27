@@ -363,6 +363,8 @@ const App = () => {
                 setSettings={handleSetSettings} 
                 dismissSampleMode={dismissSampleMode}
                 adsEnabled={settings.adsEnabled !== false}
+                isAmbientMode={isAmbientMode}
+                toggleAmbientMode={toggleAmbientMode}
               />
             } />
             
@@ -378,23 +380,6 @@ const App = () => {
           {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}
           <div className="global-footer">
             <p>&copy; {new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <button 
-                className={`ad-toggle-btn ${isAmbientMode ? 'active' : ''}`}
-                onClick={toggleAmbientMode}
-                title="Toggle ambient view to hide cards and watch lyrics"
-                style={isAmbientMode ? { background: 'var(--accent)', color: '#000000', borderColor: 'var(--accent)', fontWeight: 700 } : {}}
-              >
-                {isAmbientMode ? 'Exit Ambient View' : 'Ambient View'}
-              </button>
-              <button 
-                className="ad-toggle-btn"
-                onClick={() => handleSetSettings({ ...settings, adsEnabled: settings.adsEnabled === false ? true : false })}
-                title="Toggle to hide or show non-obtrusive sponsor placements"
-              >
-                {settings.adsEnabled === false ? 'Enable Ads' : 'Disable Ads'}
-              </button>
-            </div>
           </div>
         </div>
       </main>

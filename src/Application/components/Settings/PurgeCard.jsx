@@ -6,9 +6,17 @@ const PurgeCard = ({ showPurgeConfirm, setShowPurgeConfirm, handlePurgeAllData }
     <div className="settings-card glass-panel purge-card">
       <h3 style={{ color: '#FA243C' }}>Danger Zone</h3>
       {!showPurgeConfirm ? (
-        <button className="purge-action-btn" onClick={() => setShowPurgeConfirm(true)}>
-          Purge All Local Data
-        </button>
+        <>
+          <p className="purge-card-description">
+            Remove PlanetMusic data stored in this browser, including your Vault, settings, custom blog posts, and locally stored audio.
+          </p>
+          <p className="purge-card-backup-note">
+            A JSON backup of your song library and settings downloads before deletion. It does not include local audio files or your Deezer ARL.
+          </p>
+          <button className="purge-action-btn" onClick={() => setShowPurgeConfirm(true)}>
+            Purge All Local Data
+          </button>
+        </>
       ) : (
         <div className="purge-warning-box">
           <h4>Are you absolutely sure?</h4>

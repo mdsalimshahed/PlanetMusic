@@ -10,7 +10,7 @@ import TranslationSettings from '../components/Settings/TranslationSettings.jsx'
 import PurgeCard from '../components/Settings/PurgeCard.jsx';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 
-const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled }) => {
+const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isAmbientMode, toggleAmbientMode }) => {
   const {
     showArl, setShowArl,
     isVerifying,
@@ -86,6 +86,36 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled }) =
           handleChange={handleChange} 
           getSliderStyle={getSliderStyle} 
         />
+
+        <div className="settings-card glass-panel experience-card">
+          <h3>Viewing Experience</h3>
+          <div className="experience-setting">
+            <div>
+              <strong>Ambient View</strong>
+              <p className="setting-desc">Hide the song grid and watch floating lyrics.</p>
+            </div>
+            <button
+              className={`experience-toggle ${isAmbientMode ? 'active' : ''}`}
+              onClick={toggleAmbientMode}
+              aria-pressed={isAmbientMode}
+            >
+              {isAmbientMode ? 'Exit Ambient View' : 'Enter Ambient View'}
+            </button>
+          </div>
+          <div className="experience-setting">
+            <div>
+              <strong>Sponsor placements</strong>
+              <p className="setting-desc">Show or hide sponsor placements around the app.</p>
+            </div>
+            <button
+              className={`experience-toggle ${settings.adsEnabled !== false ? 'active' : ''}`}
+              onClick={() => setSettings({ ...settings, adsEnabled: settings.adsEnabled === false })}
+              aria-pressed={settings.adsEnabled !== false}
+            >
+              {settings.adsEnabled === false ? 'Enable' : 'Disable'}
+            </button>
+          </div>
+        </div>
 
         {/* PURGE DATA BLOCK */}
         <PurgeCard 
