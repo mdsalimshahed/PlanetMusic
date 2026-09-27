@@ -10,6 +10,7 @@ const normalizeResults = (payload) => {
 const getErrorMessage = (status) => {
   if (status === 403) return 'The backend gateway could not authorize this request. Please try again later.';
   if (status === 429) return 'You have made requests too quickly. Please wait a moment and try again.';
+  if (status === 502) return 'The Deezer service could not be reached. Please retry in a moment.';
   if (status === 503) return 'The Deezer service is temporarily unavailable. Please try again later.';
   if (status === 401) return 'The request was not authorized. Please reload the page and try again.';
   return 'The request could not be completed. Please try again.';
@@ -58,6 +59,9 @@ const DeezerTab = () => {
     try {
       const response = await fetchDeezerApi(`/search-deezer?q=${encodeURIComponent(searchTerm)}`);
       if (!response.ok) throw new Error(getErrorMessage(response.status));
+      if (!response.headers.get('content-type')?.toLowerCase().includes('application/json')) {
+        throw new Error('The Deezer API returned an unexpected response. Please retry in a moment.');
+      }
       const payload = await response.json();
       setResults(normalizeResults(payload));
     } catch (searchError) {
@@ -76,6 +80,9 @@ const DeezerTab = () => {
     try {
       const response = await fetchDeezerApi(`/track-info-deezer/${encodeURIComponent(track.id)}`);
       if (!response.ok) throw new Error(getErrorMessage(response.status));
+      if (!response.headers.get('content-type')?.toLowerCase().includes('application/json')) {
+        throw new Error('Track details could not be loaded. Please retry in a moment.');
+      }
       const payload = await response.json();
       if (payload?.success === false) throw new Error('Track details could not be loaded. Please try again.');
       setMetadata(payload?.data ?? payload);
@@ -135,13 +142,16 @@ const DeezerTab = () => {
     try {
       const response = await fetchDeezerApi('/download-deezer', { method: 'POST', body: formData });
       if (!response.ok) throw new Error(getErrorMessage(response.status));
-      const contentType = response.headers.get('content-type') || '';
+      const contentType = (response.headers.get('content-type') || '').toLowerCase();
       if (contentType.includes('application/json')) {
         const payload = await response.json();
         if (payload.success === false) throw new Error('The backend could not complete this action. Please check the Deezer ARL and try again.');
         setNotice(payload.message || 'The backend completed the request.');
         setProgress({ message: 'Complete', percent: 100 });
       } else {
+        if (contentType.includes('text/html') || !(contentType.startsWith('audio/') || contentType.includes('application/octet-stream'))) {
+          throw new Error('The Deezer API returned an unexpected response. Please retry in a moment.');
+        }
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
         setAudioUrl((previousUrl) => {

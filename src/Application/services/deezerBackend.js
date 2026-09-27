@@ -4,8 +4,14 @@ export const getDeezerApiUrl = (path) => {
 };
 
 export const fetchDeezerApi = async (path, options = {}) => {
-  return fetch(getDeezerApiUrl(path), {
+  const response = await fetch(getDeezerApiUrl(path), {
     ...options,
     credentials: 'same-origin'
   });
+
+  if (response.ok && response.headers.get('content-type')?.toLowerCase().includes('text/html')) {
+    throw new Error('The Deezer API route is unavailable. Please retry in a moment.');
+  }
+
+  return response;
 };
