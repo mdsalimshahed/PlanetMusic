@@ -78,9 +78,9 @@
 @media (max-width: 900px) {
   .preview-line {
     font-size: clamp(
-      16px,
-      4.5vw,
-      min(var(--dyn-live-sync-font-size, 34px), 26px)
+      14px,
+      5.5cqw,
+      min(var(--dyn-live-sync-font-size, 34px), 30px)
     );
   }
 }

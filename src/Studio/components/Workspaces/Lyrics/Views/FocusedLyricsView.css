@@ -426,11 +426,19 @@
   
   .focused-adlib-line {
     font-size: clamp(
-      11px,
-      3.5vw,
-      min(var(--dyn-focused-adlib-font-size, 28px), 18px)
+      12px,
+      4cqw,
+      min(var(--dyn-focused-adlib-font-size, 28px), 22px)
     );
     max-width: var(--adlib-max-width, 85vw);
+  }
+
+  .focused-line {
+    font-size: clamp(
+      16px,
+      6.25cqw,
+      min(var(--dyn-focused-sync-font-size, 42px), 32px)
+    );
   }
 }
 

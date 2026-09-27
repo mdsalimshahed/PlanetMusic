@@ -25,13 +25,17 @@ body .modal-right-col.glass-panel-light {
 @media (max-width: 900px) {
   .modal-right-col {
     flex: none !important; 
-    width: 100% !important;
-    max-width: min(100%, calc(100vh - 200px)) !important;
+    align-self: stretch !important;
+    container-type: inline-size;
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
     min-height: 0 !important;
     max-height: none !important; 
-    margin: 0 auto calc(60px + env(safe-area-inset-bottom, 20px)) auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     border-radius: 0 !important;
   }
 }

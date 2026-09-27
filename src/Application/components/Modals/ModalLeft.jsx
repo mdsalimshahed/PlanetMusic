@@ -338,7 +338,7 @@ const ModalLeft = ({
           )}
         </div>
         {!isTranslationManagerOpen && !isSyncMode && !isEditing && !isImageManagerOpen && !isSyncLoading && (
-          <div className="workspace-controls glass-panel-light">
+          <div className="workspace-controls glass-panel-light lyrics-view-modes-panel">
             <div className="links-header"><label>Lyrics View Modes</label></div>
             <div className="action-buttons-grid" style={{ flexDirection: 'column' }}>
               {hasValidSyncData ? (
