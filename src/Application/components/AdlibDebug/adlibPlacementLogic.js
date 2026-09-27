@@ -47,6 +47,51 @@ export const getRelativeRect = (element, containerRect) => {
   };
 };
 
+export const getCollisionSafeZones = (width, height, lyricsBox, singerBox) => {
+  const edgePadX = Math.max(8, Math.min(28, width * 0.05));
+  const edgePadY = Math.max(8, Math.min(28, height * 0.05));
+  let zones = [{
+    left: edgePadX,
+    right: width - edgePadX,
+    top: edgePadY,
+    bottom: height - edgePadY
+  }];
+  const obstacles = [
+    lyricsBox && { box: lyricsBox, padding: 25 },
+    singerBox && { box: singerBox, padding: 20 }
+  ].filter(Boolean);
+
+  obstacles.forEach(({ box, padding }) => {
+    const obstacle = {
+      left: box.left - padding,
+      right: box.right + padding,
+      top: box.top - padding,
+      bottom: box.bottom + padding
+    };
+    zones = zones.flatMap(zone => {
+      const left = Math.max(zone.left, obstacle.left);
+      const right = Math.min(zone.right, obstacle.right);
+      const top = Math.max(zone.top, obstacle.top);
+      const bottom = Math.min(zone.bottom, obstacle.bottom);
+      if (left >= right || top >= bottom) return [zone];
+
+      return [
+        { left: zone.left, right: zone.right, top: zone.top, bottom: top },
+        { left: zone.left, right: zone.right, top: bottom, bottom: zone.bottom },
+        { left: zone.left, right: left, top, bottom },
+        { left: right, right: zone.right, top, bottom }
+      ].filter(piece => piece.left < piece.right && piece.top < piece.bottom);
+    });
+  });
+
+  return zones.map((zone, index) => ({
+    ...zone,
+    zoneId: `Safe-${index}`,
+    width: zone.right - zone.left,
+    height: zone.bottom - zone.top
+  }));
+};
+
 export const generateSafeAdlibPosition = (
   node,
   containerRect,
@@ -58,50 +103,15 @@ export const generateSafeAdlibPosition = (
   masterNamesArray,
   lastZoneId = null
 ) => {
-  // 1. The Goldilocks Margins
-  const isMoreThanThree = masterNamesArray && masterNamesArray.length > 3;
-  // Apply a negative pad to pierce through the parent container's padding to touch the absolute edge!
-  const EDGE_PAD_X = (masterNamesArray && masterNamesArray.length > 2) ? -16 : Math.max(30, containerRect.width * 0.08);
-  const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
-  const LYRIC_PAD = 25;
-  const SINGER_PAD = 20;
-  const MAX_DIST = isMoreThanThree ? Infinity : 160;
+  const edgePadX = Math.max(8, Math.min(28, containerRect.width * 0.05));
+  const edgePadY = Math.max(8, Math.min(28, containerRect.height * 0.05));
 
-  const safeLeft = EDGE_PAD_X;
-  const safeRight = containerRect.width - EDGE_PAD_X;
-  const safeTop = EDGE_PAD_Y;
-  const safeBottom = containerRect.height - EDGE_PAD_Y;
+  const safeLeft = edgePadX;
+  const safeRight = containerRect.width - edgePadX;
+  const safeTop = edgePadY;
+  const safeBottom = containerRect.height - edgePadY;
 
-  // 2. Define Base Safe Zones
-  const baseZones = [];
-  if (cBox) {
-    if (cBox.top > safeTop) {
-      const bottomEdge = cBox.top - LYRIC_PAD;
-      const topEdge = Math.max(safeTop, bottomEdge - MAX_DIST);
-      if (bottomEdge > topEdge) {
-        baseZones.push({ type: 'Top', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
-      }
-    }
-    
-    if (cBox.bottom < safeBottom) {
-      const topEdge = cBox.bottom + LYRIC_PAD;
-      let bottomEdge = Math.min(safeBottom, topEdge + MAX_DIST);
-      
-      if (sBox && sBox.top < safeBottom) {
-        const sTopAdjusted = sBox.top - SINGER_PAD;
-        if (sTopAdjusted > topEdge) {
-          bottomEdge = Math.min(bottomEdge, sTopAdjusted);
-          baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
-        }
-      } else {
-        if (bottomEdge > topEdge) {
-          baseZones.push({ type: 'Bottom', left: safeLeft, right: safeRight, top: topEdge, bottom: bottomEdge });
-        }
-      }
-    }
-  } else {
-    baseZones.push({ type: 'Full', left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
-  }
+  const baseZones = getCollisionSafeZones(containerRect.width, containerRect.height, cBox, sBox);
 
   // 3. Determine Valid Quadrants based on Active Singer
   const validCells = [];
@@ -115,7 +125,7 @@ export const generateSafeAdlibPosition = (
     return masterNamesArray[(c + r) % masterNamesArray.length];
   };
 
-  if (!isMulti || activeSingersList.length === 0) {
+  if (!isMulti) {
     validCells.push({ quadIdx: 0, left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom });
   } else {
     for (let i = 0; i < cols * 2; i++) {
@@ -123,7 +133,12 @@ export const generateSafeAdlibPosition = (
       const c = i % cols;
       const artist = getArtistForCell(i);
       
-      if (activeSingersList.includes(artist)) {
+      const normalizedArtist = String(artist || '').trim().toLocaleLowerCase();
+      const matchesActiveSinger = activeSingersList.some(
+        singer => String(singer || '').trim().toLocaleLowerCase() === normalizedArtist
+      );
+
+      if (matchesActiveSinger) {
         // Expand the outer cells to span across the negative padding space!
         const cellLeft = c === 0 ? safeLeft : c * colW;
         const cellRight = c === cols - 1 ? safeRight : (c + 1) * colW;
@@ -138,9 +153,21 @@ export const generateSafeAdlibPosition = (
         });
       }
     }
+
+    // Missing or stale singer metadata must not send an ad-lib across the full canvas.
+    if (validCells.length === 0 && cols > 0) {
+      const cellRight = cols === 1 ? safeRight : colW;
+      validCells.push({
+        quadIdx: 0,
+        left: safeLeft,
+        right: cellRight,
+        top: safeTop,
+        bottom: rowH
+      });
+    }
   }
 
-  // 4. Intersect Base Zones with Valid Cells
+  // 4. Intersect collision-free areas with the active artists' cells.
   const intersectedAreas = [];
   baseZones.forEach(bz => {
     validCells.forEach(vc => {
@@ -151,7 +178,7 @@ export const generateSafeAdlibPosition = (
       
       if (ixLeft < ixRight && ixTop < ixBottom) {
         intersectedAreas.push({
-          zoneId: `${bz.type}-${vc.quadIdx}`,
+          zoneId: `${bz.zoneId}-${vc.quadIdx}`,
           quadIdx: vc.quadIdx,
           left: ixLeft,
           right: ixRight,
@@ -164,25 +191,18 @@ export const generateSafeAdlibPosition = (
     });
   });
 
-  // 5. COMPILE ALL CANDIDATE AREAS
-  let candidateAreas = [];
-  if (intersectedAreas.length > 0) {
-    candidateAreas = intersectedAreas;
-  } else if (validCells.length > 0) {
-    candidateAreas = validCells.map(vc => ({ ...vc, zoneId: `Cell-${vc.quadIdx}` }));
-  } else {
-    candidateAreas = [{ zoneId: 'Full-0', quadIdx: 0, left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom }];
-  }
+  // Do not fall back to a cell that overlaps a lyric or singer obstacle.
+  if (intersectedAreas.length === 0) return null;
 
-  // Temporarily force max-content for pure physical dimension checks
+  const candidateAreas = intersectedAreas;
+
+  // Preserve the renderer's width while measuring each candidate zone.
   const originalMaxWidth = node.style.getPropertyValue('--adlib-max-width');
   const originalWidth = node.style.getPropertyValue('width');
-  node.style.setProperty('width', 'max-content', 'important');
 
-  let bestScale = -1;
-  let bestCandidates = [];
+  const measuredCandidates = [];
 
-  // 6. EVALUATE ALL QUADRANTS FOR LEAST SCALING PENALTY
+  // 6. Try wrapping at the configured font size before considering any shrink.
   candidateAreas.forEach(area => {
     area.width = area.width || (area.right - area.left);
     area.height = area.height || (area.bottom - area.top);
@@ -190,51 +210,21 @@ export const generateSafeAdlibPosition = (
     const th = Math.max(20, area.height);
     
     // Normal wrapping limits for standard display
-    const currentMaxWidth = tw * 0.95; 
+    const currentMaxWidth = tw * 0.96; 
     node.style.setProperty('--adlib-max-width', `${currentMaxWidth}px`);
+    node.style.setProperty('width', `${currentMaxWidth}px`, 'important');
     node.style.setProperty('max-width', `${currentMaxWidth}px`, 'important');
     
-    // Read the exact physical dimensions required by the text *after* natural browser wrapping
+    // Measure the full-size text after the browser wraps it to this area.
     const actualWidth = node.scrollWidth;
     const actualHeight = node.scrollHeight;
-    
-    let scale = 1;
-    if (actualWidth > currentMaxWidth) {
-      scale = currentMaxWidth / actualWidth;
-    }
-    if (actualHeight * scale > th * 0.95) {
-      scale = (th * 0.95) / actualHeight;
-    }
-    
-    // Edge-specific check: Only apply extra scaling to the leftmost and rightmost quadrants
-    const isLeftEdge = Math.abs(area.left - safeLeft) <= 1;
-    const isRightEdge = Math.abs(area.right - safeRight) <= 1;
-    
-    if (isLeftEdge || isRightEdge) {
-      const currentVisualWidth = actualWidth * scale;
-      const currentVisualHeight = actualHeight * scale;
-      const diagonal = Math.sqrt(Math.pow(currentVisualWidth, 2) + Math.pow(currentVisualHeight, 2));
-      
-      // If the text block is long enough that spinning it would clip outside the quadrant width
-      if (diagonal > tw * 0.95) {
-        const edgeFixScale = (tw * 0.95) / Math.sqrt(Math.pow(actualWidth, 2) + Math.pow(actualHeight, 2));
-        // Apply a minuscule constraint just enough to keep it contained
-        scale = Math.min(scale, edgeFixScale);
-      }
-    }
-    
-    // Clamp scale so text doesn't disappear entirely
-    scale = Math.max(0.15, scale);
-
-    const result = { area, scale, actualWidth, actualHeight, maxWidth: currentMaxWidth };
-
-    // Group the quadrants that require the least amount of scaling down
-    if (scale > bestScale) {
-      bestScale = scale;
-      bestCandidates = [result];
-    } else if (Math.abs(scale - bestScale) < 0.001) {
-      bestCandidates.push(result);
-    }
+    measuredCandidates.push({
+      area,
+      actualWidth,
+      actualHeight,
+      maxWidth: currentMaxWidth,
+      fitsAtConfiguredSize: actualWidth <= tw && actualHeight <= th
+    });
   });
 
   // Reset node to original state
@@ -244,10 +234,39 @@ export const generateSafeAdlibPosition = (
   else node.style.removeProperty('width');
   node.style.removeProperty('max-width');
 
+  const fullSizeCandidates = measuredCandidates.filter(candidate => candidate.fitsAtConfiguredSize);
+  const artistCount = masterNamesArray ? masterNamesArray.length : 1;
+  let bestCandidates;
+  if (artistCount >= 4) {
+    const largestArea = Math.max(...measuredCandidates.map(candidate => candidate.area.width * candidate.area.height));
+    bestCandidates = measuredCandidates
+      .filter(candidate => Math.abs(candidate.area.width * candidate.area.height - largestArea) < 0.5)
+      .map(candidate => ({ ...candidate, scale: 1 }));
+  } else if (fullSizeCandidates.length > 0) {
+    bestCandidates = fullSizeCandidates.map(candidate => ({ ...candidate, scale: 1 }));
+  } else {
+    // Keep the configured font size and choose the area with the best wrapped fit.
+    const candidatesToRank = measuredCandidates;
+    let bestFitScore = -Infinity;
+    bestCandidates = [];
+    candidatesToRank.forEach(candidate => {
+      const fitScore = Math.min(
+        candidate.area.width / candidate.actualWidth,
+        candidate.area.height / candidate.actualHeight
+      );
+      const result = { ...candidate, scale: 1 };
+      if (fitScore > bestFitScore) {
+        bestFitScore = fitScore;
+        bestCandidates = [result];
+      } else if (Math.abs(fitScore - bestFitScore) < 0.001) {
+        bestCandidates.push(result);
+      }
+    });
+  }
+
   // 7. SELECT THE OPTIMAL QUADRANT (STRICT NO-CONSECUTIVE REPEAT RULE)
   let chosen;
   let validCandidates = bestCandidates;
-  const artistCount = masterNamesArray ? masterNamesArray.length : 1;
 
   // STRICT RULE: Divert consecutive ad-libs away from the exact same physical space if 4 or fewer artists
   if (lastZoneId !== null && bestCandidates.length > 1 && artistCount <= 4) {
@@ -273,18 +292,16 @@ export const generateSafeAdlibPosition = (
   }
 
   const targetArea = chosen.area;
-  const scale = chosen.scale;
   const maxWidth = chosen.maxWidth;
-  const visualWidth = chosen.actualWidth * scale;
-  const visualHeight = chosen.actualHeight * scale;
+  const visualWidth = chosen.actualWidth;
+  const visualHeight = chosen.actualHeight;
 
-  // 8. GENERATE INNER SAFE ZONE
-  // Calculate the absolute maximum radius (diagonal) so it NEVER clips when rotated
-  const safeRadius = Math.sqrt(Math.pow(visualWidth, 2) + Math.pow(visualHeight, 2)) / 2;
-  
-  // Add a tiny extra margin (e.g. 5px) just to be perfectly safe from edge anti-aliasing pixels
-  const padX = safeRadius + 5; 
-  const padY = safeRadius + 5;
+  // Reserve space for the largest possible angle without shrinking the text for it.
+  const maxRotationRadians = 10 * Math.PI / 180;
+  const maxAngleWidth = visualWidth * Math.cos(maxRotationRadians) + visualHeight * Math.sin(maxRotationRadians);
+  const maxAngleHeight = visualWidth * Math.sin(maxRotationRadians) + visualHeight * Math.cos(maxRotationRadians);
+  const padX = maxAngleWidth / 2 + 5;
+  const padY = maxAngleHeight / 2 + 5;
 
   let innerLeft = targetArea.left + padX;
   let innerRight = targetArea.right - padX;
@@ -304,14 +321,23 @@ export const generateSafeAdlibPosition = (
   // Generate a random center point STRICTLY inside the Inner Safe Zone, totally on the fly
   const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
   const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
-
-  // 9. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
   const rotMultiplier = (randomX - canvasMidX) / (canvasMidX || 1);
   const ySign = (randomY < canvasMidY) ? 1 : -1;
-  let finalRotation = rotMultiplier * ySign * 18;
-  const noise = (Math.random() * 10) - 5;
+  let finalRotation = rotMultiplier * ySign * 8;
+  const noise = (Math.random() * 4) - 2;
   finalRotation += noise;
+  const rotationRadians = finalRotation * Math.PI / 180;
+  const rotatedWidth = visualWidth * Math.abs(Math.cos(rotationRadians)) + visualHeight * Math.abs(Math.sin(rotationRadians));
+  const rotatedHeight = visualWidth * Math.abs(Math.sin(rotationRadians)) + visualHeight * Math.abs(Math.cos(rotationRadians));
+  let scale = 1;
+  for (let step = 1; step <= 200; step++) {
+    const candidateScale = 1 - step * 0.005;
+    if (rotatedWidth * candidateScale <= targetArea.width && rotatedHeight * candidateScale <= targetArea.height) {
+      scale = candidateScale;
+      break;
+    }
+  }
 
   return {
     left: `${randomX}px`,

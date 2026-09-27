@@ -369,13 +369,14 @@
   top: var(--adlib-top, 50%);
   left: var(--adlib-left, 50%);
   font-family: var(--font-family);
-  font-size: clamp(12px, 3.8vw, var(--dyn-focused-adlib-font-size, 28px));
+  font-size: var(--dyn-focused-adlib-font-size, 28px);
   font-weight: 700;
   line-height: 1.35;
   text-align: center;
   white-space: normal;
   word-break: normal;
   overflow-wrap: normal;
+  width: var(--adlib-max-width, max-content);
   max-width: var(--adlib-max-width, 85%);
   box-sizing: border-box;
   opacity: 0;
@@ -425,11 +426,6 @@
   }
   
   .focused-adlib-line {
-    font-size: clamp(
-      12px,
-      4cqw,
-      min(var(--dyn-focused-adlib-font-size, 28px), 22px)
-    );
     max-width: var(--adlib-max-width, 85vw);
   }
 
