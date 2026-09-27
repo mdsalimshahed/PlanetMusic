@@ -17,11 +17,11 @@ const SponsorUnit = ({
 }) => {
   const adRef = useRef(null);
   const { client: resolvedClient, slot: resolvedSlot, isValid } = getAdSenseConfig({ client, slot, placement });
-  const previewMode = testMode || import.meta.env.DEV;
   const [hasConsent, setHasConsent] = React.useState(() => (
     typeof window !== 'undefined' && localStorage.getItem('planetmusic_site_consent') === 'true'
   ));
-  const shouldServeAd = !previewMode && isValid && hasConsent;
+  const previewMode = testMode || import.meta.env.DEV || !isValid || !hasConsent;
+  const shouldServeAd = !previewMode;
 
   useEffect(() => {
     const syncConsent = () => setHasConsent(localStorage.getItem('planetmusic_site_consent') === 'true');
@@ -58,8 +58,6 @@ const SponsorUnit = ({
       </div>
     );
   }
-
-  if (!shouldServeAd) return null;
 
   return (
     <div className={className} style={{ display: 'flex', justifyContent: 'center', position: 'relative', overflow: 'hidden', ...style }}>
