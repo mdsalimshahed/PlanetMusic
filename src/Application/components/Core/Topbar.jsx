@@ -21,6 +21,7 @@ const Topbar = ({
         <div className="logo-area" title="PlanetMusic">
           <h2
             className={`logo-text ${isMusicPlaying && albumAccentColor ? 'is-playing' : ''}`}
+            data-logo-text="PlanetMusic"
             style={isMusicPlaying && albumAccentColor ? { '--logo-art-accent': albumAccentColor } : undefined}
           >
             PlanetMusic

@@ -27,6 +27,12 @@
   initial-value: 0;
 }
 
+@property --logo-art-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
 @keyframes dynamicGradientPulse {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -39,6 +45,7 @@
 }
 
 .logo-text {
+  position: relative;
   color: transparent;
   font-size: 24px;
   font-weight: 800;
@@ -56,9 +63,17 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: logoHueShift 18s linear infinite, dynamicGradientPulse 7s ease infinite;
+  transition: --logo-art-accent 1.2s ease;
 }
 
-.logo-text.is-playing {
+.logo-text::after {
+  content: attr(data-logo-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   background-image: linear-gradient(
     120deg,
     var(--logo-art-accent) 0%,
@@ -67,15 +82,30 @@
     var(--logo-art-accent) 76%,
     hsl(calc(var(--logo-hue) + 150), 88%, 62%) 100%
   );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  pointer-events: none;
+  animation: logoHueShift 18s linear infinite, dynamicGradientPulse 7s ease infinite;
+  transition: opacity 1.1s ease;
 }
 
-.disable-animations .logo-text {
+.logo-text.is-playing::after {
+  opacity: 1;
+}
+
+.disable-animations .logo-text,
+.disable-animations .logo-text::after {
   animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logo-text {
+  .logo-text,
+  .logo-text::after {
     animation: none;
+    transition: none;
   }
 }
 
