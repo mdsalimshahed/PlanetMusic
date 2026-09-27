@@ -1,4 +1,8 @@
 const GOLDEN_ANGLE = 137.50776405003785;
+const REFRESH_HUE_OFFSET = Math.random() * 360;
+const colorAssignments = new Map();
+const usedColors = new Set();
+let nextHueIndex = 0;
 
 const hslToHex = (hue, saturation, lightness) => {
   const normalizedHue = ((hue % 360) + 360) % 360;
@@ -16,13 +20,23 @@ const hslToHex = (hue, saturation, lightness) => {
   return `#${channels.map(channel => Math.round((channel + match) * 255).toString(16).padStart(2, '0')).join('')}`;
 };
 
-export const getProceduralColor = (index) => {
-  return hslToHex(index * GOLDEN_ANGLE, 70, 64);
+export const getProceduralColor = (key) => {
+  const colorKey = String(key);
+  if (colorAssignments.has(colorKey)) return colorAssignments.get(colorKey);
+
+  let color;
+  do {
+    color = hslToHex(REFRESH_HUE_OFFSET + nextHueIndex * GOLDEN_ANGLE, 70, 64);
+    nextHueIndex += 1;
+  } while (usedColors.has(color));
+
+  colorAssignments.set(colorKey, color);
+  usedColors.add(color);
+  return color;
 };
 
-export const getProceduralGradient = (index) => {
-  const hue = index * GOLDEN_ANGLE;
-  const first = hslToHex(hue, 70, 64);
-  const second = hslToHex(hue + 38, 72, 62);
+export const getProceduralGradient = (key) => {
+  const first = getProceduralColor(`${key}:start`);
+  const second = getProceduralColor(`${key}:end`);
   return `linear-gradient(135deg, ${first} 0%, ${second} 100%)`;
 };

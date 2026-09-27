@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import { getProceduralGradient } from '../../utils/proceduralColors.js';
 
 const FEEDBACK_FRAME_NAME = 'feedback-submit-frame';
 const DEFAULT_FEEDBACK_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsgSeL4WumbQNVFc9goFRjiEyUtZldk0IOyhwaB2Pnj0lxRtDKZ_k5Govq7qbWNzZg/exec';
@@ -135,7 +136,7 @@ const ContactTab = ({ adsEnabled }) => {
         <div className="contact-main-content">
           
           <div className="contact-hero glass-panel">
-            <h1 className="contact-hero-title">Get in Touch</h1>
+            <h1 className="contact-hero-title" style={{ backgroundImage: getProceduralGradient('contact:heading') }}>Get in Touch</h1>
             <p className="contact-hero-sub">
               Have a question, feedback, or a legal inquiry? We’re here to help.
             </p>

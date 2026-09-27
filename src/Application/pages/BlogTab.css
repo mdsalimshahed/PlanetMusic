@@ -87,7 +87,6 @@
   font-weight: 800;
   letter-spacing: -1px;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #ffffff 30%, var(--accent, #fbbf24) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

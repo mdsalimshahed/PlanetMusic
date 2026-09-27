@@ -11,11 +11,11 @@ const getGradientStyle = (nextColorIndex) => ({
   maxWidth: '100%'
 });
 
-export const renderMarkdown = (text) => {
+export const renderMarkdown = (text, colorScope) => {
   if (!text) return null;
 
   let colorIndex = 0;
-  const nextColorIndex = () => colorIndex++;
+  const nextColorIndex = () => `${colorScope}:${colorIndex++}`;
   const blocks = text.split(/\n\n+/);
 
   return blocks.map((block, idx) => {

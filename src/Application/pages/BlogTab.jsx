@@ -168,7 +168,6 @@ const BlogTab = ({ adsEnabled }) => {
     if (viewMode !== 'reader' || !activeArticleId) return null;
     return allPosts.find((p) => p.id === activeArticleId) || null;
   }, [viewMode, activeArticleId, devPosts, customPosts]);
-  const activePostColorIndex = Math.max(0, allPosts.findIndex((post) => post.id === activeArticleId));
 
   const categories = useMemo(() => {
     const list = new Set(currentFeed.map((p) => p.category).filter(Boolean));
@@ -495,11 +494,11 @@ const BlogTab = ({ adsEnabled }) => {
                 <div className="blog-markdown-preview-pane">
                   <span className="preview-pane-badge">Live Preview</span>
                   <div className="blog-article-body" style={{ marginTop: '16px' }}>
-                    {formData.title && <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(Math.max(0, customPosts.findIndex((post) => post.id === formData.id))) }}>{renderMarkdown(formData.title)}</h1>}
-                    {formData.summary && <p className="blog-article-summary">{renderMarkdown(formData.summary)}</p>}
+                    {formData.title && <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(`blog:editor-title:${formData.id || 'draft'}`) }}>{renderMarkdown(formData.title, `blog:editor:${formData.id || 'draft'}:title`)}</h1>}
+                    {formData.summary && <p className="blog-article-summary">{renderMarkdown(formData.summary, `blog:editor:${formData.id || 'draft'}:summary`)}</p>}
                     {formData.heroImage && <img src={formData.heroImage} alt="" className="blog-article-hero-img" />}
                     <hr className="blog-divider" />
-                    {formData.content ? renderMarkdown(formData.content) : <p style={{ opacity: 0.5 }}>Your markdown preview will render here...</p>}
+                    {formData.content ? renderMarkdown(formData.content, `blog:editor:${formData.id || 'draft'}:content`) : <p style={{ opacity: 0.5 }}>Your markdown preview will render here...</p>}
                   </div>
                 </div>
               </div>
@@ -527,8 +526,8 @@ const BlogTab = ({ adsEnabled }) => {
                     </>
                   )}
                 </div>
-                <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(activePostColorIndex) }}>{renderMarkdown(activePost.title)}</h1>
-                <p className="blog-article-summary">{renderMarkdown(activePost.summary)}</p>
+                <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(`blog:article-title:${activePost.id}`) }}>{renderMarkdown(activePost.title, `blog:article:${activePost.id}:title`)}</h1>
+                <p className="blog-article-summary">{renderMarkdown(activePost.summary, `blog:article:${activePost.id}:summary`)}</p>
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
               </header>
 
@@ -542,7 +541,7 @@ const BlogTab = ({ adsEnabled }) => {
 
               <hr className="blog-divider" />
 
-              <main className="blog-article-body">{renderMarkdown(activePost.content)}</main>
+              <main className="blog-article-body">{renderMarkdown(activePost.content, `blog:article:${activePost.id}:content`)}</main>
 
               <button 
                 className="blog-back-btn bottom-back" 
@@ -568,7 +567,7 @@ const BlogTab = ({ adsEnabled }) => {
               <div className="blog-hero glass-panel">
                 <div className="blog-hero-top">
                   <div>
-                    <h1 className="blog-hero-title">Documentation & Blogs</h1>
+                    <h1 className="blog-hero-title" style={{ backgroundImage: getProceduralGradient('blog:documentation-heading') }}>Documentation & Blogs</h1>
                     <p className="blog-hero-sub">Explore official system guides or create your own personal articles.</p>
                   </div>
                   <div className="blog-hero-actions">
@@ -674,7 +673,7 @@ const BlogTab = ({ adsEnabled }) => {
                             <h3 
                               className="blog-card-title"
                               style={{
-                                backgroundImage: getProceduralGradient(idx),
+                                backgroundImage: getProceduralGradient(`blog:card-title:${post.id}`),
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
                                 display: 'inline-block'

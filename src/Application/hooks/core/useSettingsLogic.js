@@ -9,7 +9,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showPurgeConfirm, setShowPurgeConfirm] = useState(false);
 
   const authGradient = useMemo(() => {
-    return getProceduralGradient(Math.floor(Math.random() * 360));
+    return getProceduralGradient('settings:auth');
   }, []);
 
   const sliderGradients = useMemo(() => {
@@ -23,8 +23,11 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
     ];
     
     const gradMap = {};
-    keys.forEach((key, index) => {
-      gradMap[key] = [getProceduralColor(index * 2), getProceduralColor(index * 2 + 1)];
+    keys.forEach((key) => {
+      gradMap[key] = [
+        getProceduralColor(`settings:slider:${key}:start`),
+        getProceduralColor(`settings:slider:${key}:end`)
+      ];
     });
     return gradMap;
   }, []);
