@@ -95,39 +95,6 @@ button, input, select, textarea {
   text-shadow: 0 0 20px var(--accent-glow);
 }
 
-.storage-notice {
-  position: fixed;
-  z-index: 10000;
-  top: 76px;
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: min(600px, calc(100vw - 32px));
-  padding: 12px 16px;
-  transform: translateX(-50%);
-  border: 1px solid #a66b35;
-  border-radius: 8px;
-  background: #21190f;
-  color: #fff;
-  font-size: 14px;
-  box-shadow: 0 4px 18px rgb(0 0 0 / 35%);
-}
-
-.storage-notice span {
-  flex: 1;
-}
-
-.storage-notice button {
-  flex: none;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  text-decoration: underline;
-}
-
 /* ==========================================================================
    GLOBAL BORDER RADIUS ENFORCEMENT
    Guarantees all containers, cards, and ads instantly become sharp when 

@@ -4,8 +4,6 @@ import { extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './SongCard.css';
 
-const FALLBACK_ARTWORK = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><rect width="300" height="300" fill="#151515"/><text x="150" y="158" fill="#888" font-family="sans-serif" font-size="24" text-anchor="middle">No Cover</text></svg>')}`;
-
 const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
@@ -102,7 +100,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           decoding="async"
           fetchPriority="low"
           crossOrigin="anonymous" 
-          onError={(event) => { event.currentTarget.src = FALLBACK_ARTWORK; }}
+          onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
         
         <div className="card-top-left-badges">
@@ -149,4 +147,4 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
   );
 };
 
-export default React.memo(SongCard);
+export default SongCard;

@@ -8,7 +8,7 @@ import { useLyricsDisplay } from '../../../Studio/hooks/sync/useLyricsDisplay.js
 import { useSyncWorkspace } from '../../../Studio/hooks/sync/useSyncWorkspace.js';
 import './SongModal.css';
 
-const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings, library }) => {
+const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
   const translationCancelHandlerRef = useRef(null);
   const registerTranslationCancelHandler = useCallback(handler => {
@@ -17,7 +17,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const closeTranslationWorkspace = useCallback(onClosed => {
     translationCancelHandlerRef.current?.(onClosed);
   }, []);
-  const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary, library);
+  const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings

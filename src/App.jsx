@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import { useState, useEffect, useRef, useMemo, useCallback, Suspense, lazy } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -9,20 +9,19 @@ import './Application/components/Core/AppLayout.css';
 import './Application/components/Core/SearchArea.css';
 import './Application/components/Core/SampleVault.css';
 
-const Background = lazy(() => import('./Application/components/Core/Background.jsx'));
+import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
-const SongModal = lazy(() => import('./Application/components/Modals/SongModal.jsx'));
+import SongModal from './Application/components/Modals/SongModal.jsx';
 import Player from './Studio/components/Player/Player.jsx';
 
-const SettingsTab = lazy(() => import('./Application/pages/SettingsTab.jsx'));
-const BlogTab = lazy(() => import('./Application/pages/BlogTab.jsx'));
-const PrivacyTab = lazy(() => import('./Application/pages/PrivacyTab.jsx'));
-const ContactTab = lazy(() => import('./Application/pages/ContactTab.jsx'));
+import SettingsTab from './Application/pages/SettingsTab.jsx';
+import BlogTab from './Application/pages/BlogTab.jsx';
+import PrivacyTab from './Application/pages/PrivacyTab.jsx';
+import ContactTab from './Application/pages/ContactTab.jsx';
 
 import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
-import SearchArea from './Application/components/Core/SearchArea.jsx';
 
 // Custom Hooks for Modular Logic
 import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
@@ -83,18 +82,6 @@ const App = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
-  const [storageNotice, setStorageNotice] = useState('');
-
-  useEffect(() => {
-    const handleStorageError = (event) => {
-      setStorageNotice(event.detail?.quota
-        ? 'Your browser storage is full. Free up space, then save your changes again.'
-        : 'PlanetMusic could not save your changes to this browser.');
-    };
-
-    window.addEventListener('planetmusic:storage-error', handleStorageError);
-    return () => window.removeEventListener('planetmusic:storage-error', handleStorageError);
-  }, []);
 
   const backgroundTrack = useMemo(() => {
     if (!currentTrack) return null;
@@ -134,7 +121,7 @@ const App = () => {
   }, [searchQuery, isAmbientMode, navigate]);
 
   // Routing Handlers
-  const handleSetSelectedSong = useCallback((song) => {
+  const handleSetSelectedSong = (song) => {
     if (song) {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
       navigate(`/song/${song.trackId}/live${qParam}`);
@@ -144,12 +131,12 @@ const App = () => {
       navigate(tabPath);
     }
     setSelectedSong(song);
-  }, [activeTab, navigate, searchQuery, setSelectedSong]);
+  };
 
   // Direct State Update Handler (No Navigation / Route Interruption)
-  const updateSelectedSongDirect = useCallback((song) => {
+  const updateSelectedSongDirect = (song) => {
     setSelectedSong(song);
-  }, []);
+  };
 
   const handleHomeClick = () => {
     setSearchQuery('');
@@ -365,9 +352,7 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      <Suspense fallback={null}>
-        <Background isModalOpen={!!selectedSong} currentTrack={backgroundTrack} library={library} />
-      </Suspense>
+      <Background isModalOpen={!!selectedSong} currentTrack={backgroundTrack} />
       
       <Topbar 
         activeTab={activeTab} 
@@ -381,49 +366,60 @@ const App = () => {
 
       <main className="main-content">
         {(activeTab === 'main' || activeTab === 'ambient') && (
-          <SearchArea
-            key={searchQuery}
-            searchQuery={searchQuery}
-            onCommit={setSearchQuery}
-            onSearchSubmit={handleSearchSubmit}
-            isSearching={isSearching}
-          />
+          <div className="search-container">
+            <form onSubmit={handleSearchSubmit} className="search-box">
+              <input
+                type="text"
+                placeholder="Search vault (press Enter for full cosmos search)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="search-submit-btn" title="Search Cosmos">
+                {isSearching ? (
+                  <span className="search-spinner"></span>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                )}
+              </button>
+            </form>
+          </div>
         )}
 
         <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'main' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
-          <Suspense fallback={<div className="empty-message glass-panel"><h2>Loading…</h2></div>}>
-            <Routes>
-              <Route path="/" element={renderDashboardView()} />
-              <Route path="/ambient" element={renderDashboardView()} />
-              
-              <Route path="/song/*" element={null} />
-              
-              {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES (/blog/dev, /blog/custom, /blog/post/:id, /blog/write, etc.) */}
-              <Route path="/blog/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
-              
-              <Route path="/settings" element={
-                <SettingsTab 
-                  settings={settings} 
-                  setSettings={handleSetSettings} 
-                  dismissSampleMode={dismissSampleMode}
-                  adsEnabled={settings.adsEnabled !== false}
-                  isAmbientMode={isAmbientMode}
-                  toggleAmbientMode={toggleAmbientMode}
-                />
-              } />
-              
-              <Route path="/privacy" element={
-                <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
-              } />
+          <Routes>
+            <Route path="/" element={renderDashboardView()} />
+            <Route path="/ambient" element={renderDashboardView()} />
+            
+            <Route path="/song/*" element={null} />
+            
+            {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES (/blog/dev, /blog/custom, /blog/post/:id, /blog/write, etc.) */}
+            <Route path="/blog/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
+            
+            <Route path="/settings" element={
+              <SettingsTab 
+                settings={settings} 
+                setSettings={handleSetSettings} 
+                dismissSampleMode={dismissSampleMode}
+                adsEnabled={settings.adsEnabled !== false}
+                isAmbientMode={isAmbientMode}
+                toggleAmbientMode={toggleAmbientMode}
+              />
+            } />
+            
+            <Route path="/privacy" element={
+              <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
+            } />
 
-              <Route path="/contact" element={
-                <ContactTab adsEnabled={settings.adsEnabled !== false} />
-              } />
+            <Route path="/contact" element={
+              <ContactTab adsEnabled={settings.adsEnabled !== false} />
+            } />
 
-              <Route path="/deezer/*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
+            <Route path="/deezer/*" element={<Navigate to="/" replace />} />
+          </Routes>
 
           {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}
           <div className="global-footer">
@@ -434,29 +430,17 @@ const App = () => {
 
       <ConsentNotice />
 
-      {storageNotice && (
-        <div className="storage-notice" role="status">
-          <span>{storageNotice}</span>
-          <button type="button" onClick={() => setStorageNotice('')}>Dismiss</button>
-        </div>
-      )}
-
-      {selectedSong && (
-        <Suspense fallback={null}>
-          <SongModal 
-            key={selectedSong ? selectedSong.trackId : 'modal-empty'}
-            selectedSong={selectedSong}
-            setSelectedSong={handleSetSelectedSong}
-            isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
-            toggleLibrary={toggleLibrary}
-            updateSongInLibrary={updateSongInLibrary}
-            setCurrentTrack={setCurrentTrack}
-            currentTrack={currentTrack}
-            settings={settings}
-            library={library}
-          />
-        </Suspense>
-      )}
+      <SongModal 
+        key={selectedSong ? selectedSong.trackId : 'modal-empty'}
+        selectedSong={selectedSong}
+        setSelectedSong={handleSetSelectedSong}
+        isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
+        toggleLibrary={toggleLibrary}
+        updateSongInLibrary={updateSongInLibrary}
+        setCurrentTrack={setCurrentTrack}
+        currentTrack={currentTrack}
+        settings={settings}
+      />
       
       <Player 
         currentTrack={currentTrack} 
