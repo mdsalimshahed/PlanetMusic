@@ -1,6 +1,7 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
+import { packVault, unpackVault } from '../../services/vaultCodec.js';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
@@ -24,6 +25,8 @@ export const useVaultOperations = ({
   };
 
   const applyParsedData = (parsedData, shouldRedirect = true) => {
+    if (!Array.isArray(parsedData) && !Array.isArray(parsedData?.library)) return;
+    const decodedData = unpackVault(parsedData);
     const newLibrary = [...library];
     const mergeSongs = (importedSongs) => {
       importedSongs.forEach(importedSong => {
@@ -34,14 +37,10 @@ export const useVaultOperations = ({
       });
     };
 
-    if (parsedData.library && Array.isArray(parsedData.library)) {
-      mergeSongs(parsedData.library);
+    if (Array.isArray(decodedData.library)) {
+      mergeSongs(decodedData.library);
       setLibrary(newLibrary);
-      if (parsedData.settings) setSettings(prev => ({ ...prev, ...parsedData.settings }));
-      if (shouldRedirect) handleHomeClick();
-    } else if (Array.isArray(parsedData)) {
-      mergeSongs(parsedData);
-      setLibrary(newLibrary);
+      if (decodedData.settings) setSettings(prev => ({ ...prev, ...decodedData.settings }));
       if (shouldRedirect) handleHomeClick();
     }
   };
@@ -179,9 +178,9 @@ export const useVaultOperations = ({
       return optimizedSong;
     });
     
-    const exportData = { library: optimizedLibrary, settings: { ...settings } };
-    delete exportData.settings.deezerArl;
-    const jsonString = JSON.stringify(exportData, null, 2);
+    const exportSettings = { ...settings };
+    delete exportSettings.deezerArl;
+    const jsonString = JSON.stringify(packVault({ library: optimizedLibrary, settings: exportSettings }));
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     

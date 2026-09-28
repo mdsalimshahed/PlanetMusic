@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { getProceduralColor, getProceduralGradient } from '../../../utils/proceduralColors.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
+import { packVault, unpackVault } from '../../services/vaultCodec.js';
 
 export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showArl, setShowArl] = useState(false);
@@ -99,7 +100,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const handlePurgeAllData = () => {
     try {
       const rawLibrary = localStorage.getItem('songLibrary');
-      const parsedLibrary = rawLibrary ? JSON.parse(rawLibrary) : [];
+      const parsedLibrary = rawLibrary ? unpackVault(JSON.parse(rawLibrary)).library : [];
       const optimizedLibrary = parsedLibrary.map(song => {
         const optimizedSong = { ...song, lyrics: song.lyrics || "", syncData: song.syncData || [] };
         delete optimizedSong.artworkUrl30;
@@ -111,13 +112,10 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
         return optimizedSong;
       });
       
-      const exportData = { 
-        library: optimizedLibrary, 
-        settings: { ...settings } 
-      };
-      delete exportData.settings.deezerArl;
-      delete exportData.settings.rememberDeezerArl;
-      const jsonString = JSON.stringify(exportData, null, 2);
+      const exportSettings = { ...settings };
+      delete exportSettings.deezerArl;
+      delete exportSettings.rememberDeezerArl;
+      const jsonString = JSON.stringify(packVault({ library: optimizedLibrary, settings: exportSettings }));
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       

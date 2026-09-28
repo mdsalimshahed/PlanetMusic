@@ -1,6 +1,7 @@
 /* --- src/hooks/data/useAppStorage.js --- */
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
+import { packVault, unpackVault } from '../../services/vaultCodec.js';
 
 const DEEZER_ARL_STORAGE_KEY = 'planetmusic.deezerArl';
 
@@ -102,7 +103,7 @@ export const useAppStorage = (urlSearchQuery) => {
 
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
-    const parsed = saved ? JSON.parse(saved) : [];
+    const parsed = saved ? unpackVault(JSON.parse(saved)).library : [];
     return Array.isArray(parsed) ? parsed.map(normalizeSongLyrics) : [];
   });
 
@@ -124,7 +125,7 @@ export const useAppStorage = (urlSearchQuery) => {
     delete persistedSettings.deezerArl;
     updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
     localStorage.setItem('appSettings', JSON.stringify(persistedSettings));
-    localStorage.setItem('songLibrary', JSON.stringify(library));
+    localStorage.setItem('songLibrary', JSON.stringify(packVault({ library })));
     localStorage.setItem('searchQuery', searchQuery);
     localStorage.setItem('searchResults', JSON.stringify(searchResults));
     localStorage.setItem('isSampleVaultActive', isSampleVaultActive ? 'true' : 'false');
