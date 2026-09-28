@@ -273,10 +273,10 @@ export const generateSafeAdlibPosition = (
   }
 
   const targetArea = chosen.area;
-  const scale = chosen.scale;
+  let scale = chosen.scale;
   const maxWidth = chosen.maxWidth;
-  const visualWidth = chosen.actualWidth * scale;
-  const visualHeight = chosen.actualHeight * scale;
+  let visualWidth = chosen.actualWidth * scale;
+  let visualHeight = chosen.actualHeight * scale;
 
   // 8. GENERATE INNER SAFE ZONE
   // Calculate the absolute maximum radius (diagonal) so it NEVER clips when rotated
@@ -302,8 +302,8 @@ export const generateSafeAdlibPosition = (
   }
 
   // Generate a random center point STRICTLY inside the Inner Safe Zone, totally on the fly
-  const randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
-  const randomY = innerTop + (Math.random() * (innerBottom - innerTop));
+  let randomX = innerLeft + (Math.random() * (innerRight - innerLeft));
+  let randomY = innerTop + (Math.random() * (innerBottom - innerTop));
 
   // 9. ROTATION PROFILING
   const canvasMidX = containerRect.width / 2;
@@ -312,6 +312,56 @@ export const generateSafeAdlibPosition = (
   let finalRotation = rotMultiplier * ySign * 18;
   const noise = (Math.random() * 10) - 5;
   finalRotation += noise;
+
+  const edgeInset = Math.min(2, containerRect.width / 2, containerRect.height / 2);
+  const getHalfBounds = (rotation, width, height) => {
+    const radians = rotation * Math.PI / 180;
+    const cosine = Math.abs(Math.cos(radians));
+    const sine = Math.abs(Math.sin(radians));
+    return {
+      x: (cosine * width + sine * height) / 2 + edgeInset,
+      y: (sine * width + cosine * height) / 2 + edgeInset
+    };
+  };
+  const fitsAtCurrentPosition = (rotation) => {
+    const bounds = getHalfBounds(rotation, visualWidth, visualHeight);
+    return randomX >= bounds.x
+      && randomX <= containerRect.width - bounds.x
+      && randomY >= bounds.y
+      && randomY <= containerRect.height - bounds.y;
+  };
+
+  if (!fitsAtCurrentPosition(finalRotation)) {
+    for (let adjustment = 0.25; adjustment <= 30; adjustment += 0.25) {
+      let foundFit = false;
+      for (const direction of [1, -1]) {
+        const adjustedRotation = finalRotation + adjustment * direction;
+        if (fitsAtCurrentPosition(adjustedRotation)) {
+          finalRotation = adjustedRotation;
+          foundFit = true;
+          break;
+        }
+      }
+      if (foundFit) break;
+    }
+  }
+
+  const radians = finalRotation * Math.PI / 180;
+  const cosine = Math.abs(Math.cos(radians));
+  const sine = Math.abs(Math.sin(radians));
+  const unscaledWidth = cosine * chosen.actualWidth + sine * chosen.actualHeight;
+  const unscaledHeight = sine * chosen.actualWidth + cosine * chosen.actualHeight;
+  const maxCanvasScale = Math.min(
+    (containerRect.width - edgeInset * 2) / unscaledWidth,
+    (containerRect.height - edgeInset * 2) / unscaledHeight
+  );
+  scale = Math.min(scale, Math.max(0, maxCanvasScale));
+  visualWidth = chosen.actualWidth * scale;
+  visualHeight = chosen.actualHeight * scale;
+
+  const finalHalfBounds = getHalfBounds(finalRotation, visualWidth, visualHeight);
+  randomX = Math.max(finalHalfBounds.x, Math.min(containerRect.width - finalHalfBounds.x, randomX));
+  randomY = Math.max(finalHalfBounds.y, Math.min(containerRect.height - finalHalfBounds.y, randomY));
 
   return {
     left: `${randomX}px`,
