@@ -288,7 +288,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     isSyncMode: isSyncMode && !showBluetoothSyncPrompt,
     isBluetoothDelayCompensationEnabled,
     bluetoothDelayCompensationMs,
-    bluetoothDelayCompensationMs,
     syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
     loopRangeRef, isShowingAutoSync
@@ -312,7 +311,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     }
 
     setIsBluetoothDelayCompensationEnabled(false);
-    setBluetoothDelayCompensationMs(Number.isFinite(settings?.audioDelayCompensationMs) ? settings.audioDelayCompensationMs : 200);
+    setBluetoothDelayCompensationMs(Number.isFinite(settings?.audioDelayCompensationMs)
+      ? Math.max(-250, Math.min(250, settings.audioDelayCompensationMs))
+      : 200);
     setShowBluetoothSyncPrompt(true);
     setIsSyncLoading(true);
     try {

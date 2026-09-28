@@ -151,19 +151,20 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
         activeRef.current = false;
         const matchedDelays = [];
         tapEventsRef.current.forEach((tap) => {
-          const candidate = [...beepEventsRef.current].reverse().find(beep => (
-            !beep.matched && beep.at <= tap && tap - beep.at <= MAX_RESPONSE_MS
-          ));
+          const candidate = beepEventsRef.current
+            .filter(beep => !beep.matched && Math.abs(tap - beep.at) <= MAX_RESPONSE_MS)
+            .sort((first, second) => Math.abs(tap - first.at) - Math.abs(tap - second.at))[0];
           if (candidate) {
             candidate.matched = true;
             matchedDelays.push(tap - candidate.at);
           }
         });
         const completedBeeps = beepEventsRef.current.map(beep => beep.at);
+        const medianDelay = matchedDelays.length ? median(matchedDelays) : null;
         const completedGraph = {
           taps: [...tapEventsRef.current],
           beeps: completedBeeps,
-          delayMs: matchedDelays.length ? Math.round(median(matchedDelays)) : null,
+          delayMs: medianDelay === null ? null : Math.max(-250, Math.min(250, Math.round(medianDelay))),
           responseCount: matchedDelays.length,
           completedAt: new Date().toISOString()
         };
