@@ -1,6 +1,7 @@
 /* --- src/Application/components/Core/Background.jsx --- */
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { fetchSingerImage } from '../../utils/apiUtils.js';
+import { unpackVault } from '../../services/vaultCodec.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import { normalizeTrans, parsePronunciation } from '../../../components/LyricsRenderer/textUtils.js';
 import './Background.css';
@@ -105,7 +106,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         const data = JSON.parse(item);
         
         let tracks = [];
-        if (data.library && Array.isArray(data.library)) tracks = data.library;
+        if (data.library && Array.isArray(data.library)) tracks = unpackVault(data).library;
         else if (Array.isArray(data)) tracks = data;
         else if (data.wrapperType === 'track') tracks = [data];
 

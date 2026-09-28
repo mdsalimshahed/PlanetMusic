@@ -9,6 +9,9 @@ import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic.j
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isShowingAutoSync, setIsShowingAutoSync] = useState(false);
+  const [showBluetoothSyncPrompt, setShowBluetoothSyncPrompt] = useState(false);
+  const [isBluetoothDelayCompensationEnabled, setIsBluetoothDelayCompensationEnabled] = useState(false);
+  const [bluetoothDelayCompensationMs, setBluetoothDelayCompensationMs] = useState(200);
   const [isSyncLoading, setIsSyncLoading] = useState(false);
   const [isLrcFetching, setIsLrcFetching] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
@@ -282,7 +285,11 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   });
 
   const triggerSyncKey = useSyncKeyboard({
-    isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
+    isSyncMode: isSyncMode && !showBluetoothSyncPrompt,
+    isBluetoothDelayCompensationEnabled,
+    bluetoothDelayCompensationMs,
+    bluetoothDelayCompensationMs,
+    syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
     loopRangeRef, isShowingAutoSync
   });
@@ -304,6 +311,9 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       return alert("No full-length audio source available! Please add a Local MP3, Deezer link, or YouTube link to sync. iTunes Preview snippets are not allowed in the sync workspace.");
     }
 
+    setIsBluetoothDelayCompensationEnabled(false);
+    setBluetoothDelayCompensationMs(Number.isFinite(settings?.audioDelayCompensationMs) ? settings.audioDelayCompensationMs : 200);
+    setShowBluetoothSyncPrompt(true);
     setIsSyncLoading(true);
     try {
       window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
@@ -340,6 +350,11 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     } finally {
       setIsSyncLoading(false);
     }
+  };
+
+  const handleBluetoothSyncChoice = (shouldCompensate) => {
+    setIsBluetoothDelayCompensationEnabled(shouldCompensate);
+    setShowBluetoothSyncPrompt(false);
   };
 
   const handleRefreshLyrics = () => {
@@ -429,7 +444,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   return {
-    isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
+    isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, showBluetoothSyncPrompt, handleBluetoothSyncChoice, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
     syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
     syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,

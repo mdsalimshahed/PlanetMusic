@@ -45,6 +45,26 @@
   justify-content: flex-end;
 }
 
+.confirm-modal-extra-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.confirm-modal-extra-action button {
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.78);
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.confirm-modal-extra-action button:hover { color: #fff; }
+
 .confirm-modal-btn {
   flex: 1;
   padding: 10px 16px;

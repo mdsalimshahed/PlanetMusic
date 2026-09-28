@@ -8,9 +8,10 @@ import LayoutSettings from '../components/Settings/LayoutSettings.jsx';
 import TypographySettings from '../components/Settings/TypographySettings.jsx';
 import TranslationSettings from '../components/Settings/TranslationSettings.jsx';
 import PurgeCard from '../components/Settings/PurgeCard.jsx';
+import AudioDelayTester from '../components/Settings/AudioDelayTester.jsx';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 
-const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isAmbientMode, toggleAmbientMode }) => {
+const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isAmbientMode, toggleAmbientMode, returnPath }) => {
   const {
     showArl, setShowArl,
     isVerifying,
@@ -26,6 +27,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
   return (
     <section className="view-section settings-tab-container">
       <div className="settings-grid">
+        <AudioDelayTester settings={settings} setSettings={setSettings} returnPath={returnPath} />
         
         {/* DEEZER AUTHENTICATION BLOCK */}
         <DeezerAuthCard 

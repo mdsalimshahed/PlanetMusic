@@ -407,6 +407,7 @@ const App = () => {
                 adsEnabled={settings.adsEnabled !== false}
                 isAmbientMode={isAmbientMode}
                 toggleAmbientMode={toggleAmbientMode}
+                returnPath={location.state?.returnPath}
               />
             } />
             

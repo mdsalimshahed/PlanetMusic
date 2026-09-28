@@ -539,3 +539,30 @@ body .global-player.glass-panel-heavy.centered-mode {
     --tx: 0px;
   }
 }
+
+@media (max-width: 600px) {
+  .player-bottom-row {
+    display: grid;
+    grid-template-areas:
+      "progress progress"
+      "elapsed duration";
+    grid-template-columns: 1fr 1fr;
+    gap: 0 8px;
+    margin-top: 0;
+  }
+
+  .player-bottom-row .progress-container {
+    grid-area: progress;
+    width: 100%;
+  }
+
+  .player-bottom-row .time-text:first-child {
+    grid-area: elapsed;
+    text-align: left;
+  }
+
+  .player-bottom-row .time-text:last-child {
+    grid-area: duration;
+    text-align: right;
+  }
+}

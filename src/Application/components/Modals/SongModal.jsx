@@ -25,6 +25,9 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   const location = useLocation();
   const navigate = useNavigate();
+  const openAudioDelaySettings = () => navigate('/settings', {
+    state: { returnPath: `${location.pathname}${location.search}` }
+  });
 
   const effectiveSong = useMemo(() => {
     if (!selectedSong) return null;
@@ -115,6 +118,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     ...songDataProps, 
     ...displayProps, 
     ...syncProps,
+    openAudioDelaySettings,
     registerTranslationCancelHandler,
     closeTranslationWorkspace,
 

@@ -1,6 +1,7 @@
 /* --- src/Studio/components/Workspaces/Sync/SyncWorkspace.jsx --- */
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import ConfirmModal from '../../../../Application/components/Modals/ConfirmModal.jsx';
 import { formatPreciseTime } from '../../../utils/songHelpers';
 import { workspaceClock } from '../../../utils/clockEngine';
 import './SyncWorkspace.css';
@@ -21,7 +22,7 @@ export const SyncWorkspace = ({
   syncAudioRef, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, setIsSyncPlaying, activeLineRef, 
   workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, masterPalette,
   selectedSong, isShowingAutoSync, toggleWorkspaceMode, handleMapAutoSync,
-  handleShiftTimings
+  handleShiftTimings, showBluetoothSyncPrompt, handleBluetoothSyncChoice, openAudioDelaySettings, settings
 }) => {
   const progressSliderRef = useRef(null);
   const preciseTimeRef = useRef(null);
@@ -664,6 +665,17 @@ export const SyncWorkspace = ({
           window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
         }}
         onPause={() => setIsSyncPlaying(false)}
+      />
+
+      <ConfirmModal
+        isOpen={showBluetoothSyncPrompt}
+        title="Bluetooth Audio Timing"
+        message={`Are you using Bluetooth headphones? Bluetooth can add playback delay. Choose Yes to apply ${Number.isFinite(settings?.audioDelayCompensationMs) ? `${Math.round(settings.audioDelayCompensationMs)} ms` : '200 ms'} to newly manual-synced lines. Other source timings are unchanged.`}
+        confirmText="Yes, compensate"
+        cancelText="No, use normal timing"
+        onConfirm={() => handleBluetoothSyncChoice(true)}
+        onCancel={() => handleBluetoothSyncChoice(false)}
+        extraAction={<button type="button" onClick={openAudioDelaySettings}>Test audio delay in Settings</button>}
       />
     </div>
   );

@@ -2,7 +2,7 @@
 import React from 'react';
 import './ConfirmModal.css';
 
-const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "Discard Changes", cancelText = "Keep Editing" }) => {
+const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "Discard Changes", cancelText = "Keep Editing", extraAction = null }) => {
   if (!isOpen) return null;
 
   return (
@@ -18,6 +18,7 @@ const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText
             {confirmText}
           </button>
         </div>
+        {extraAction && <div className="confirm-modal-extra-action">{extraAction}</div>}
       </div>
     </div>
   );

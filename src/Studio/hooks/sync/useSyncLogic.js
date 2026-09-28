@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { workspaceClock } from '../../utils/clockEngine';
 import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
 
+const BLUETOOTH_SYNC_OFFSET_SECONDS = 0.2;
+
 // ------------------------------------------------------------------
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking
 // ------------------------------------------------------------------
@@ -148,7 +150,7 @@ export const useSyncEngine = ({
 export const useSyncKeyboard = ({
   isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-  loopRangeRef, isShowingAutoSync
+  loopRangeRef, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs
 }) => {
   const keyboardActionRef = useRef(null);
 
@@ -251,7 +253,11 @@ export const useSyncKeyboard = ({
             return;
         }
 
-        if (itemToMutate.start === null) itemToMutate.start = time;
+        if (itemToMutate.start === null) {
+          itemToMutate.start = isBluetoothDelayCompensationEnabled && !isShowingAutoSync
+            ? Math.max(0, time - ((bluetoothDelayCompensationMs ?? BLUETOOTH_SYNC_OFFSET_SECONDS * 1000) / 1000))
+            : time;
+        }
         else if (itemToMutate.end === null) {
           let newEnd = time;
           if (newEnd < itemToMutate.start) newEnd = itemToMutate.start;
@@ -326,7 +332,7 @@ export const useSyncKeyboard = ({
       window.removeEventListener('keydown', handleKeyDown);
       if (keyboardActionRef.current === handleKeyDown) keyboardActionRef.current = null;
     };
-  }, [isSyncMode, isShowingAutoSync, syncYtVideoId]);
+  }, [isSyncMode, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs, syncYtVideoId]);
 
   return (key) => keyboardActionRef.current?.({
     code: key === 'Space' ? 'Space' : '',
