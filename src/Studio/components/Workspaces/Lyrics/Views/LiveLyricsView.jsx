@@ -1,11 +1,12 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
 const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack }) => {
   const containerRef = useRef(null);
+    const initialRevealTrackRef = useRef(null);
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -24,6 +25,36 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         }
         return result;
     }, [syncList]);
+
+    useLayoutEffect(() => {
+        const container = containerRef.current;
+        const trackId = selectedSong?.trackId;
+        if (!container || trackId == null || initialRevealTrackRef.current === trackId) return;
+        if (settings?.disableAnimations || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            initialRevealTrackRef.current = trackId;
+            return;
+        }
+
+        const containerBounds = container.getBoundingClientRect();
+        const visibleLines = Array.from(container.querySelectorAll('.lyric-line-wrapper')).filter(node => {
+            const bounds = node.getBoundingClientRect();
+            return bounds.height > 0 && bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom;
+        });
+        if (visibleLines.length === 0) return;
+
+        initialRevealTrackRef.current = trackId;
+        visibleLines.forEach((node, index) => {
+            node.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
+            const finishReveal = (event) => {
+                if (event.target !== node) return;
+                node.classList.remove('initial-reveal');
+                node.style.removeProperty('--initial-reveal-delay');
+                node.removeEventListener('animationend', finishReveal);
+            };
+            node.addEventListener('animationend', finishReveal);
+            node.classList.add('initial-reveal');
+        });
+    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

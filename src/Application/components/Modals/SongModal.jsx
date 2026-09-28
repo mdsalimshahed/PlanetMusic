@@ -176,7 +176,15 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   return (
     <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
       <div className="modal-window glass-panel" onClick={(e) => e.stopPropagation()}>
-        <img src={songDataProps.highResArt || undefined} alt="" className="modal-dynamic-bg" aria-hidden="true" />
+        <img
+          key={songDataProps.highResArt || selectedSong.trackId}
+          src={songDataProps.highResArt || undefined}
+          alt=""
+          className="modal-dynamic-bg"
+          aria-hidden="true"
+          onLoad={(event) => event.currentTarget.classList.add('is-ready')}
+          onError={(event) => event.currentTarget.classList.add('is-ready')}
+        />
         
         <div className="modal-content-wrapper">
           <button className="close-btn glass-button" onClick={() => setSelectedSong(null)}></button>

@@ -61,6 +61,53 @@ const Icon = ({ name }) => {
   }
 };
 
+const useMeasuredHeightTransition = () => {
+  const containerRef = React.useRef(null);
+  const contentRef = React.useRef(null);
+
+  React.useLayoutEffect(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+    if (!container || !content || typeof ResizeObserver === 'undefined' || typeof container.animate !== 'function') return;
+
+    let previousContentHeight = null;
+    let activeAnimation = null;
+    const observer = new ResizeObserver(() => {
+      const nextContentHeight = content.getBoundingClientRect().height;
+      if (previousContentHeight === null) {
+        previousContentHeight = nextContentHeight;
+        return;
+      }
+      if (Math.abs(nextContentHeight - previousContentHeight) < 1) return;
+
+      const style = getComputedStyle(container);
+      const verticalExtras = ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth']
+        .reduce((total, property) => total + (Number.parseFloat(style[property]) || 0), 0);
+      const targetHeight = nextContentHeight + verticalExtras;
+      const currentHeight = activeAnimation
+        ? container.getBoundingClientRect().height
+        : previousContentHeight + verticalExtras;
+      previousContentHeight = nextContentHeight;
+      activeAnimation?.cancel();
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      activeAnimation = container.animate(
+        [{ height: `${currentHeight}px` }, { height: `${targetHeight}px` }],
+        { duration: 280, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)' }
+      );
+      activeAnimation.onfinish = () => { activeAnimation = null; };
+    });
+    observer.observe(content);
+
+    return () => {
+      observer.disconnect();
+      activeAnimation?.cancel();
+    };
+  }, []);
+
+  return { containerRef, contentRef };
+};
+
 const ModalLeft = ({
   selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
   handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
@@ -72,8 +119,11 @@ const ModalLeft = ({
   triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
+  const workspaceControlsRefs = useMeasuredHeightTransition();
+  const vaultActionsRefs = useMeasuredHeightTransition();
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
+  const [loadedArtwork, setLoadedArtwork] = useState(null);
   const [pressedSyncKey, setPressedSyncKey] = useState(null);
   const [activePlaybackSource, setActivePlaybackSource] = useState(() => {
     const current = window.globalActiveSource;
@@ -225,7 +275,14 @@ const ModalLeft = ({
     <div className="modal-left-col">
       <div className="modal-left-static">
         <div className="modal-top">
-          <img src={highResArt} alt="Artwork" className="modal-cover" />
+          <img
+            key={highResArt || selectedSong.trackId}
+            src={highResArt}
+            alt="Artwork"
+            className={`modal-cover${loadedArtwork === highResArt ? ' is-ready' : ''}`}
+            onLoad={() => setLoadedArtwork(highResArt)}
+            onError={() => setLoadedArtwork(highResArt)}
+          />
           <div className="modal-header-info">
             <h2>
               {toSmartPunctuation(mainTitle)}
@@ -456,7 +513,8 @@ const ModalLeft = ({
             </div>
           </div>
         )}
-        <div className="workspace-controls glass-panel-light">
+        <div ref={workspaceControlsRefs.containerRef} className="workspace-controls glass-panel-light measured-height-panel">
+          <div ref={workspaceControlsRefs.contentRef} className="measured-height-content">
           <div className="links-header"><label>Workspace Controls</label></div>
           
           {isSyncMode && !isTranslationManagerOpen && (
@@ -587,25 +645,22 @@ const ModalLeft = ({
                     </button>
                   </>
                 ) : (
-                  <>
-                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
-                      <Icon name="plus" /> Add Custom Lyrics
-                    </button>
-                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">
-                      <Icon name="search" /> Search Google
-                    </a>
-                  </>
+                  <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
+                    <Icon name="plus" /> Add Custom Lyrics
+                  </button>
                 )}
               </>
             )}
           </div>
+          </div>
         </div>
         <div id="mobile-player-slot"></div>
-        <div className="workspace-controls glass-panel-light bottom-actions">
+        <div ref={vaultActionsRefs.containerRef} className="workspace-controls glass-panel-light bottom-actions measured-height-panel">
+          <div ref={vaultActionsRefs.contentRef} className="measured-height-content">
           <div className="links-header"><label>Vault Actions</label></div>
           <div className="action-buttons-grid">
             {isSaved ? (
-              <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
+              <button className="edit-links-btn delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
                 <Icon name="trash" /> Remove from Vault
               </button>
             ) : (
@@ -616,9 +671,10 @@ const ModalLeft = ({
                 <Icon name="plus" /> Add to Vault
               </button>
             )}
-            <button className="return-dashboard-btn" onClick={handleCloseModal}>
+            <button className="edit-links-btn return-dashboard-btn" onClick={handleCloseModal}>
               <Icon name="home" /> Return to Dashboard
             </button>
+          </div>
           </div>
         </div>
       </div>

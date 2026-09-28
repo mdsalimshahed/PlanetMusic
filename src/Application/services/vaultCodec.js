@@ -330,6 +330,25 @@ export const unpackVault = (data) => {
   };
 };
 
+export const getVaultArtistData = (data) => {
+  let songs;
+  if (Array.isArray(data)) {
+    songs = data;
+  } else if (data && Array.isArray(data.library)) {
+    if (data.format === VAULT_FORMAT && data.version !== VAULT_VERSION) {
+      throw new Error(`Unsupported PlanetMusic vault version: ${data.version}`);
+    }
+    songs = isPackedVault(data) ? data.library.map((song) => song?.m) : data.library;
+  } else {
+    return [];
+  }
+
+  return songs.map((song) => ({
+    artistImages: song?.artistImages,
+    artistColors: song?.artistColors
+  }));
+};
+
 export const packVault = ({ library, settings }) => {
   const packed = { format: VAULT_FORMAT, version: VAULT_VERSION, library: library.map(packSong) };
   if (settings !== undefined) packed.settings = settings;

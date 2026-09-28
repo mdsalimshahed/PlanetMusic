@@ -29,7 +29,7 @@
     gap: clamp(12px, 2vw, 20px);
     overflow-y: auto;
     padding-right: 12px;
-    padding-bottom: 120px;
+    padding-bottom: 24px;
     min-height: 0;
     min-width: 0;
     -webkit-overflow-scrolling: touch;
@@ -56,6 +56,72 @@
     border-radius: 0;
     box-shadow: 0 15px 40px rgba(0,0,0,0.6);
     flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 0.55s ease, transform 0.8s cubic-bezier(0.2, 0.75, 0.25, 1);
+  }
+
+  .modal-cover.is-ready {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .modal-links,
+  .lyrics-view-modes-panel {
+    animation: modalControlGroupEnter 0.42s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+  }
+
+  .modal-links {
+    animation-delay: 0.08s;
+  }
+
+  .lyrics-view-modes-panel {
+    animation-delay: 0.15s;
+  }
+
+  .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a),
+  .workspace-controls:not(.lyrics-view-modes-panel) .edit-info-action-footer > :is(button, a),
+  .sync-emulation-keys > .sync-emulation-key,
+  .sync-emulation-arrow-row > .sync-emulation-key {
+    animation: modalWorkspaceActionEnter 0.34s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+  }
+
+  .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a):nth-child(2),
+  .workspace-controls:not(.lyrics-view-modes-panel) .edit-info-action-footer > :is(button, a):nth-child(2),
+  .sync-emulation-arrow-row > .sync-emulation-key:nth-child(1) {
+    animation-delay: 0.06s;
+  }
+
+  .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a):nth-child(3),
+  .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a):nth-child(4),
+  .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a):nth-child(5),
+  .sync-emulation-arrow-row > .sync-emulation-key:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  @keyframes modalControlGroupEnter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes modalWorkspaceActionEnter {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal-cover,
+    .modal-links,
+    .lyrics-view-modes-panel,
+    .workspace-controls:not(.lyrics-view-modes-panel) .action-buttons-grid > :is(button, a),
+    .workspace-controls:not(.lyrics-view-modes-panel) .edit-info-action-footer > :is(button, a),
+    .sync-emulation-keys > .sync-emulation-key,
+    .sync-emulation-arrow-row > .sync-emulation-key {
+      animation: none;
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
 }
 
 .modal-header-info {
@@ -383,6 +449,18 @@ a.platform-label.yt-color:hover {
   flex-shrink: 0;
 }
 
+.measured-height-panel {
+  overflow: hidden;
+}
+
+.workspace-controls.bottom-actions {
+  margin-top: -24px;
+}
+
+.measured-height-content {
+  width: 100%;
+}
+
 .view-controls-section {
   display: flex;
   gap: 10px;
@@ -516,19 +594,7 @@ a.platform-label.yt-color:hover {
 }
 
 .return-dashboard-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 6px 14px;
-  border-radius: 500px;
-  font-size: clamp(10px, 1.2vw, 12px);
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: inherit;
 }
 
 .return-dashboard-btn:hover {
@@ -537,18 +603,9 @@ a.platform-label.yt-color:hover {
 }
 
 .delete-icon-btn {
-    background: rgba(250, 36, 60, 0.15);
-    border: 1px solid rgba(250, 36, 60, 0.3);
-    color: #FA243C;
-    font-size: clamp(10px, 1.2vw, 12px);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 6px 14px;
-    border-radius: 500px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  background: rgba(250, 36, 60, 0.15);
+  border-color: rgba(250, 36, 60, 0.3);
+  color: #FA243C;
 }
 
 .delete-icon-btn:hover {
@@ -711,6 +768,12 @@ a.platform-label.yt-color:hover {
   }
   .modal-left-scrollable {
     padding-bottom: 0px;
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .measured-height-panel {
     overflow: visible;
   }
 }

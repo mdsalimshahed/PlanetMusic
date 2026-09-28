@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { isPackedVault, packVault, unpackVault } from '../src/Application/services/vaultCodec.js';
+import { getVaultArtistData, isPackedVault, packVault, unpackVault } from '../src/Application/services/vaultCodec.js';
 
 const sampleUrl = new URL('../public/PlanetMusic_Backup.json', import.meta.url);
 
@@ -61,6 +61,22 @@ test('continues to read legacy arrays and object backups', () => {
     settings: { adsEnabled: false }
   });
   assert.equal(isPackedVault(packVault({ library: songs })), true);
+});
+
+test('reads artist metadata without unpacking packed song lyrics', () => {
+  const songs = [
+    { trackId: 1, artistColors: { Artist: '#abcdef' }, artistImages: { Artist: '/artist.jpg' }, syncData: [{ text: 'lyrics' }] }
+  ];
+  const packed = packVault({ library: songs });
+
+  assert.deepStrictEqual(getVaultArtistData(packed), [{
+    artistColors: { Artist: '#abcdef' },
+    artistImages: { Artist: '/artist.jpg' }
+  }]);
+  assert.deepStrictEqual(getVaultArtistData({ library: songs }), [{
+    artistColors: { Artist: '#abcdef' },
+    artistImages: { Artist: '/artist.jpg' }
+  }]);
 });
 
 test('preserves null and empty sync fields and reserved source keys', () => {

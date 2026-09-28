@@ -65,6 +65,31 @@
     transform 0.18s ease-out;
 }
 
+.preview-line.initial-reveal {
+  animation: liveLineIntro 260ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+  animation-delay: var(--initial-reveal-delay, 0ms);
+}
+
+.preview-line.active.initial-reveal {
+  animation-name: liveActiveLineIntro;
+}
+
+@keyframes liveLineIntro {
+  from { opacity: 0; transform: translate3d(18px, 0, 0) scale(0.95); }
+  to { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); }
+}
+
+@keyframes liveActiveLineIntro {
+  from { opacity: 0; transform: translate3d(18px, 0, 0) scale(0.95); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-line.initial-reveal {
+    animation: none;
+  }
+}
+
 /* Soft dark drop-shadow behind main text */
 .preview-line .main-lyrics-layer,
 .preview-line .adlib-node .primary-text {

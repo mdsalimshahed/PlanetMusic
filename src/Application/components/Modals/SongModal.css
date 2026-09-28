@@ -17,6 +17,7 @@
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  animation: modalBackdropEnter 0.24s ease-out both;
 }
 
 .modal-window {
@@ -31,9 +32,18 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: modalWindowEnter 0.38s cubic-bezier(0.2, 0.75, 0.25, 1) both;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+}
+
+.modal-two-column-layout > .modal-left-col,
+.modal-two-column-layout > .modal-right-col {
+  animation: modalSectionEnter 0.36s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.modal-two-column-layout > .modal-right-col {
+  animation-delay: 0.07s;
 }
 
 .modal-dynamic-bg {
@@ -44,9 +54,16 @@
   height: 100%;
   object-fit: cover;
   filter: brightness(0.2) saturate(120%);
-  transition: opacity 0.8s ease-in-out;
+  opacity: 0;
+  transform: scale(1.035);
+  transition: opacity 0.8s ease-in-out, transform 1.2s cubic-bezier(0.2, 0.75, 0.25, 1);
   z-index: 0;
   pointer-events: none;
+}
+
+.modal-dynamic-bg.is-ready {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .modal-content-wrapper {
@@ -70,9 +87,34 @@
   }
 }
 
-@keyframes modalPop {
-  0% { transform: scale(0.9); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes modalBackdropEnter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalWindowEnter {
+  from { transform: scale(0.985) translateY(8px); opacity: 0.7; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes modalSectionEnter {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-window,
+  .modal-two-column-layout > .modal-left-col,
+  .modal-two-column-layout > .modal-right-col {
+    animation: none;
+  }
+
+  .modal-dynamic-bg {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .close-btn {

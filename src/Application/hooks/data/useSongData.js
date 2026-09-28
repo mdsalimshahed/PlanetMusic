@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
-import { unpackVault } from '../../services/vaultCodec.js';
+import { getVaultArtistData } from '../../services/vaultCodec.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
@@ -21,21 +21,18 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     try {
       const libraryStr = localStorage.getItem('songLibrary');
       if (libraryStr) {
-        const lib = unpackVault(JSON.parse(libraryStr)).library;
-        if (Array.isArray(lib)) {
-          lib.forEach(song => {
-            if (song.artistImages) {
-              Object.entries(song.artistImages).forEach(([artist, url]) => {
-                if (url && !parsed.images[artist]) parsed.images[artist] = url;
-              });
-            }
-            if (song.artistColors) {
-              Object.entries(song.artistColors).forEach(([artist, color]) => {
-                if (color && !parsed.colors[artist]) parsed.colors[artist] = color;
-              });
-            }
-          });
-        }
+        getVaultArtistData(JSON.parse(libraryStr)).forEach(({ artistImages, artistColors }) => {
+          if (artistImages) {
+            Object.entries(artistImages).forEach(([artist, url]) => {
+              if (url && !parsed.images[artist]) parsed.images[artist] = url;
+            });
+          }
+          if (artistColors) {
+            Object.entries(artistColors).forEach(([artist, color]) => {
+              if (color && !parsed.colors[artist]) parsed.colors[artist] = color;
+            });
+          }
+        });
       }
     } catch (e) {
       console.error("Vault artist data hydration failed", e);
