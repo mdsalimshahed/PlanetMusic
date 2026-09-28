@@ -1,4 +1,5 @@
 /* --- src/utils/clockEngine.js --- */
+import { getAnimationFrameInterval } from './performance.js';
 
 /**
  * High-Precision Interpolated Clock Engine
@@ -13,6 +14,12 @@ class ClockEngine {
     this.isPlaying = false;
     this.eventName = 'globalTimeUpdate';
     this.animFrameId = null;
+    this.timerId = null;
+    this.tickInterval = getAnimationFrameInterval();
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
   }
 
   setEventName(name) {
@@ -64,6 +71,7 @@ class ClockEngine {
   }
 
   start(initialTime = 0) {
+    this.cancelScheduledTick();
     this.anchorTime = initialTime;
     this.anchorPerf = performance.now();
     this.lastPlayerTime = initialTime;
@@ -77,10 +85,7 @@ class ClockEngine {
       this.anchorPerf = performance.now();
       this.isPlaying = false;
     }
-    if (this.animFrameId) {
-      cancelAnimationFrame(this.animFrameId);
-      this.animFrameId = null;
-    }
+    this.cancelScheduledTick();
   }
 
   seek(time) {
@@ -92,11 +97,36 @@ class ClockEngine {
   }
 
   tick = () => {
-    if (!this.isPlaying) return;
+    this.animFrameId = null;
+    this.timerId = null;
+    if (!this.isPlaying || (typeof document !== 'undefined' && document.hidden)) return;
     const time = this.getCurrentTime();
     window.currentAudioTime = time;
     window.dispatchEvent(new CustomEvent(this.eventName, { detail: time }));
-    this.animFrameId = requestAnimationFrame(this.tick);
+    if (this.tickInterval) {
+      this.timerId = setTimeout(this.tick, this.tickInterval);
+    } else {
+      this.animFrameId = requestAnimationFrame(this.tick);
+    }
+  };
+
+  cancelScheduledTick() {
+    if (this.animFrameId !== null) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
+    if (this.timerId !== null) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }
+  }
+
+  handleVisibilityChange = () => {
+    if (document.hidden) {
+      this.cancelScheduledTick();
+    } else if (this.isPlaying) {
+      this.tick();
+    }
   };
 }
 

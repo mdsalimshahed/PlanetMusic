@@ -34,3 +34,6 @@ dist-ssr
 .dev.vars
 .dev.vars.*
 !.dev.vars.example
+
+# Wrangler local state and temporary bundles
+.wrangler/
