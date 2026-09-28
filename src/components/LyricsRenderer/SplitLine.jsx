@@ -20,7 +20,6 @@ const SplitLine = ({
 
   const [dynamicRowGaps, setDynamicRowGaps] = useState({});
   const parentPronRef = useRef(null);
-  const parentCoreRef = useRef(null);
   const adlibRefs = useRef([]);
 
   // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
@@ -80,33 +79,25 @@ const SplitLine = ({
 
   // Calculate dynamic clearance based on the bottom edge of the parent line's pronunciation block
   useLayoutEffect(() => {
-    const coreNode = parentCoreRef.current;
-    if (!coreNode) return;
-
-    const coreRect = coreNode.getBoundingClientRect();
     const pronNode = parentPronRef.current;
     const pronRect = pronNode ? pronNode.getBoundingClientRect() : null;
 
     const newGaps = {};
+    let clearedPronunciation = false;
     adlibRefs.current.forEach((ref, bIdx) => {
       if (!ref) return;
       
       const adlibRect = ref.getBoundingClientRect();
-      const isWrapped = adlibRect.top > (coreRect.top + coreRect.height / 2);
+      const transNode = ref.querySelector('.chunk-translation');
+      const clearanceRect = transNode?.getBoundingClientRect() || adlibRect;
+      const overlapsPronunciation = pronRect
+        && clearanceRect.bottom > pronRect.top
+        && clearanceRect.top < pronRect.bottom;
 
-      if (isWrapped) {
-        const transNode = ref.querySelector('.chunk-translation');
-        if (transNode) {
-          // Compute clearance needed to move the ad-lib text below the parent line's pronunciation block
-          const transHeight = transNode.getBoundingClientRect().height || 16;
-          const pronHeight = pronRect ? pronRect.height : 0;
-          
-          newGaps[bIdx] = `calc(${transHeight + pronHeight}px + var(--dyn-trans-top-padding, 8px))`;
-        } else if (pronRect) {
-          newGaps[bIdx] = `calc(${pronRect.height}px + 4px)`;
-        } else {
-          newGaps[bIdx] = '0px';
-        }
+      if (!clearedPronunciation && overlapsPronunciation) {
+        const clearance = Math.ceil(pronRect.bottom - clearanceRect.top + 4);
+        newGaps[bIdx] = `${clearance}px`;
+        clearedPronunciation = true;
       } else {
         newGaps[bIdx] = '0px';
       }
@@ -156,7 +147,6 @@ const SplitLine = ({
 
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
-        <span className="adlib-spacer" style={{ whiteSpace: 'pre' }}> </span>
         <span
           ref={el => adlibRefs.current[bIdx] = el}
           className={`adlib-container adlib-node ${initialClass}`}
@@ -173,6 +163,7 @@ const SplitLine = ({
             boxSizing: 'border-box',
             margin: 0,
             padding: 0,
+            marginInlineStart: '0.25em',
             marginTop: adlibMarginTop
           }}
         >
@@ -221,7 +212,6 @@ const SplitLine = ({
           }}
       >
         <span
-            ref={parentCoreRef}
             className="core-chunks"
             style={{
               position: 'relative',
