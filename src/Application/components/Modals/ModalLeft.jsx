@@ -40,6 +40,8 @@ const Icon = ({ name }) => {
       return <svg {...baseProps}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>;
     case 'search': 
       return <svg {...baseProps}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>;
+    case 'home':
+      return <svg {...baseProps}><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-6h6v6"></path></svg>;
     case 'edit': 
       return <svg {...baseProps}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
     case 'clock': 
@@ -274,7 +276,7 @@ const ModalLeft = ({
       </div>
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
-          <div className="links-header"><label>Play Music From:</label></div>
+          <div className="links-header"><label>Play Music From</label></div>
           
           {isEditing ? (
             <div className="platform-inputs-grid">
@@ -599,23 +601,25 @@ const ModalLeft = ({
           </div>
         </div>
         <div id="mobile-player-slot"></div>
-        <div className="bottom-actions">
-          {isSaved ? (
-            <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
-              <Icon name="trash" /> Remove from Vault
+        <div className="workspace-controls glass-panel-light bottom-actions">
+          <div className="links-header"><label>Vault Actions</label></div>
+          <div className="action-buttons-grid">
+            {isSaved ? (
+              <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
+                <Icon name="trash" /> Remove from Vault
+              </button>
+            ) : (
+              <button className="edit-links-btn save-mode" onClick={(e) => {
+                toggleLibrary(e, selectedSong);
+                handleAutoSyncDatabases(true);
+              }}>
+                <Icon name="plus" /> Add to Vault
+              </button>
+            )}
+            <button className="return-dashboard-btn" onClick={handleCloseModal}>
+              <Icon name="home" /> Return to Dashboard
             </button>
-          ) : (
-            <button className="edit-links-btn save-mode" onClick={(e) => {
-              toggleLibrary(e, selectedSong);
-              handleAutoSyncDatabases(true);
-            }}>
-              <Icon name="plus" /> Add to Vault
-            </button>
-          )}
-          
-          <button className="return-dashboard-btn" onClick={handleCloseModal}>
-            Return to Dashboard
-          </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 /* --- src/components/Modals/ModalLeft.css --- */
 .modal-left-col {
+  --modal-detail-inset: clamp(10px, 1.5vw, 16px);
     flex: var(--dyn-modal-split, 50);
     display: flex;
     flex-direction: column;
@@ -124,7 +125,7 @@
 }
 
 .modal-details {
-  padding: clamp(10px, 1.5vw, 16px);
+  padding: var(--modal-detail-inset);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: clamp(8px, 1.5vw, 16px);
@@ -147,7 +148,7 @@
 }
 
 .modal-links {
-  padding: clamp(16px, 2vw, 24px);
+  padding: 0 var(--modal-detail-inset) 16px;
   border-radius: 16px;
   flex-shrink: 0;
 }
@@ -156,7 +157,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .links-header label {
@@ -376,7 +377,7 @@ a.platform-label.yt-color:hover {
 }
 
 .workspace-controls {
-  padding: clamp(16px, 2vw, 24px);
+  padding: 0 var(--modal-detail-inset) 16px;
   border-radius: 16px;
   margin-top: 0;
   flex-shrink: 0;
@@ -493,6 +494,10 @@ a.platform-label.yt-color:hover {
   margin-top: 8px;
 }
 
+.lyrics-view-modes-panel .debug-toggle-btn {
+  margin-top: 0;
+}
+
 .debug-toggle-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
@@ -510,29 +515,19 @@ a.platform-label.yt-color:hover {
   color: black;
 }
 
-.bottom-actions {
-    margin-top: auto;
-    padding-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
 .return-dashboard-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 10px 20px;
+  padding: 6px 14px;
   border-radius: 500px;
-  font-size: clamp(12px, 1.4vw, 14px);
+  font-size: clamp(10px, 1.2vw, 12px);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: inherit;
 }
 
@@ -545,15 +540,15 @@ a.platform-label.yt-color:hover {
     background: rgba(250, 36, 60, 0.15);
     border: 1px solid rgba(250, 36, 60, 0.3);
     color: #FA243C;
-    font-size: clamp(12px, 1.4vw, 14px);
+    font-size: clamp(10px, 1.2vw, 12px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 10px 20px;
+    padding: 6px 14px;
     border-radius: 500px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .delete-icon-btn:hover {
@@ -725,19 +720,6 @@ a.platform-label.yt-color:hover {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
   .bottom-actions {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 8px;
     width: 100%;
-  }
-  .bottom-actions > button {
-    flex: 1 1 0;
-    width: auto;
-    min-width: 0;
-    justify-content: center;
-    padding: 10px 8px;
-    font-size: 11px;
-    box-sizing: border-box;
   }
 }

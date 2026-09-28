@@ -194,6 +194,12 @@
     box-sizing: border-box;
   }
 
+  .modal-links,
+  .workspace-controls {
+    padding-right: calc(16px + var(--modal-detail-inset));
+    padding-left: calc(16px + var(--modal-detail-inset));
+  }
+
   .lyrics-view-modes-panel {
     order: 2;
     width: 100%;
@@ -203,7 +209,7 @@
 
   .lyrics-view-modes-panel .view-mode-segmented-slider {
     align-self: center;
-    width: min(100%, 300px);
+    width: min(100%, 480px);
   }
 
   #mobile-player-slot {
@@ -228,9 +234,9 @@
   }
 
   .workspace-controls:not(.lyrics-view-modes-panel) > .links-header {
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .workspace-controls:not(.lyrics-view-modes-panel) .sync-instructions-controls-row {
@@ -256,7 +262,7 @@
     box-sizing: border-box;
   }
 
-  .bottom-actions {
+  .workspace-controls.bottom-actions {
     order: 6;
     width: 100%;
     box-sizing: border-box;
