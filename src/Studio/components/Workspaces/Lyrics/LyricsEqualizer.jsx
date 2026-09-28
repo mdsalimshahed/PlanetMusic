@@ -1,6 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/LyricsEqualizer.jsx --- */
 import { useEffect, useRef } from 'react';
-import { getAnimationFrameInterval } from '../../../utils/performance.js';
 import './LyricsEqualizer.css';
 
 const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disableAnimations, isEditing }) => {
@@ -28,8 +27,6 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     const pauseDecayFactor = 0.05; 
     let idleFrames = 0; 
     const numBars = 40;
-    const frameInterval = getAnimationFrameInterval();
-    let lastRenderAt = 0;
     
     let cw = canvas.clientWidth;
     let ch = canvas.clientHeight;
@@ -49,12 +46,6 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
-      if (frameInterval && timestamp - lastRenderAt < frameInterval) {
-        rafId = requestAnimationFrame(renderEQ);
-        return;
-      }
-      lastRenderAt = timestamp;
-
       const displayWidth = cw;
       const displayHeight = ch;
       
