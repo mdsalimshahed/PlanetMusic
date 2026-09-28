@@ -2,10 +2,12 @@
 import React from 'react';
 import SettingSlider from './SettingSlider.jsx';
 import SettingToggle from './SettingToggle.jsx';
+import SettingsCardHeading from './SettingsCardHeading.jsx';
+import SettingsSubheading from './SettingsSubheading.jsx';
 
 const LayoutSettings = ({ settings, handleChange, getSliderStyle }) => (
   <div className="settings-card glass-panel">
-    <h3>Canvas & Card Layout</h3>
+    <SettingsCardHeading seed="layout">Canvas & Card Layout</SettingsCardHeading>
     <SettingSlider 
       label="Card Width" 
       description="Sets the base width of each song card relative to the screen width."
@@ -46,7 +48,7 @@ const LayoutSettings = ({ settings, handleChange, getSliderStyle }) => (
     )}
     
     <div className="group-divider" />
-    <h4 className="sub-group-title">Modal Settings</h4>
+    <SettingsSubheading seed="layout-modal">Modal Settings</SettingsSubheading>
     <SettingSlider 
       label="Modal Split Ratio" 
       description="Adjusts the width split between the album art column and the lyrics column." 
@@ -67,7 +69,7 @@ const LayoutSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     
     <div className="group-divider" />
-    <h4 className="sub-group-title">Search Layout</h4>
+    <SettingsSubheading seed="layout-search">Search Layout</SettingsSubheading>
     <SettingSlider 
       label="Cosmos vs Vault Split" 
       description="Adjusts the dual-column width priority when searching online." 
@@ -76,7 +78,7 @@ const LayoutSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
 
     <div className="group-divider" />
-    <h4 className="sub-group-title">Performance</h4>
+    <SettingsSubheading seed="layout-performance">Performance</SettingsSubheading>
     <SettingToggle 
       label="Disable Animations" 
       description="Globally kills all CSS animations, transitions, and background motion to reduce battery drain."

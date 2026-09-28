@@ -1,12 +1,14 @@
 /* --- src/components/Settings/TranslationSettings.jsx --- */
 import React from 'react';
 import SettingSlider from './SettingSlider.jsx';
+import SettingsCardHeading from './SettingsCardHeading.jsx';
+import SettingsSubheading from './SettingsSubheading.jsx';
 
 const TranslationSettings = ({ settings, handleChange, getSliderStyle }) => (
   <div className="settings-card glass-panel">
-    <h3>Translation & Transliteration</h3>
+    <SettingsCardHeading seed="translation">Translation & Transliteration</SettingsCardHeading>
     
-    <h4 className="sub-group-title">Native Translation</h4>
+    <SettingsSubheading seed="translation-native">Native Translation</SettingsSubheading>
     <div className="setting-item color-picker-row" style={{ flexDirection: 'row' }}>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <label style={{ margin: 0 }}>Translation Text Color</label>
@@ -36,7 +38,7 @@ const TranslationSettings = ({ settings, handleChange, getSliderStyle }) => (
     
     <div className="group-divider" />
     
-    <h4 className="sub-group-title">Phonetic Transliteration</h4>
+    <SettingsSubheading seed="translation-phonetic">Phonetic Transliteration</SettingsSubheading>
     <div className="setting-item color-picker-row" style={{ flexDirection: 'row' }}>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <label style={{ margin: 0 }}>Transliteration Text Color</label>

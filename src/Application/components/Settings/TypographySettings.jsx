@@ -1,11 +1,13 @@
 /* --- src/components/Settings/TypographySettings.jsx --- */
 import SettingSlider from './SettingSlider.jsx';
+import SettingsCardHeading from './SettingsCardHeading.jsx';
+import SettingsSubheading from './SettingsSubheading.jsx';
 
 const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
   <div className="settings-card glass-panel">
-    <h3>Lyrics View & Typography</h3>
+    <SettingsCardHeading seed="typography">Lyrics View & Typography</SettingsCardHeading>
     
-    <h4 className="sub-group-title">Live Scrolling View</h4>
+    <SettingsSubheading seed="typography-live">Live Scrolling View</SettingsSubheading>
     <SettingSlider 
       label="Live Line Gap" 
       description="Adjusts the vertical space between lyric lines in Live View."
@@ -20,7 +22,7 @@ const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     
     <div className="group-divider" />
-    <h4 className="sub-group-title">Focused Space View</h4>
+    <SettingsSubheading seed="typography-focused">Focused Space View</SettingsSubheading>
     <SettingSlider 
       label="Focused Main Font Size" 
       description="Sets the text size for the primary active lyric in Focused View."
@@ -35,7 +37,7 @@ const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     
     <div className="group-divider" />
-    <h4 className="sub-group-title">Watermarks & Visuals</h4>
+    <SettingsSubheading seed="typography-visuals">Watermarks & Visuals</SettingsSubheading>
     <SettingSlider 
       label="Background Watermark Opacity" 
       description="Controls the transparency of the artist images behind the lyrics."
@@ -62,7 +64,7 @@ const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     
     <div className="group-divider" />
-    <h4 className="sub-group-title">Audio Elements</h4>
+    <SettingsSubheading seed="typography-audio">Audio Elements</SettingsSubheading>
     <SettingSlider 
       label="Equalizer Fade Out Time" 
       description="How long the Web Audio EQ takes to drop upon pausing." 

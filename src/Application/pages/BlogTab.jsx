@@ -1,6 +1,6 @@
 /* --- src/pages/BlogTab.jsx --- */
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
@@ -81,6 +81,7 @@ const Icon = ({ name, size = 18 }) => {
 
 const BlogTab = ({ adsEnabled }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams();
 
   const subPath = params['*'] || '';
@@ -92,6 +93,21 @@ const BlogTab = ({ adsEnabled }) => {
 
   const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
   const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
+
+  useEffect(() => {
+    const targetId = location.state?.focusBlogCardId;
+    if (viewMode !== 'grid' || targetId === undefined || targetId === null) return undefined;
+
+    const frameId = window.requestAnimationFrame(() => {
+      const card = Array.from(document.querySelectorAll('[data-blog-card-id]'))
+        .find(element => element.dataset.blogCardId === String(targetId));
+      if (!card) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      navigate(location.pathname, { replace: true, state: null });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [viewMode, location.pathname, location.state?.focusBlogCardId, navigate]);
 
   const [devPosts, setDevPosts] = useState([]);
   const [customPosts, setCustomPosts] = useState(() => {
@@ -507,7 +523,7 @@ const BlogTab = ({ adsEnabled }) => {
             <div className="blog-reader-view glass-panel">
               <button 
                 className="blog-back-btn" 
-                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev')}
+                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev', { state: { focusBlogCardId: activePost.id } })}
               >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
@@ -545,7 +561,7 @@ const BlogTab = ({ adsEnabled }) => {
 
               <button 
                 className="blog-back-btn bottom-back" 
-                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev')}
+                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev', { state: { focusBlogCardId: activePost.id } })}
               >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
@@ -663,7 +679,7 @@ const BlogTab = ({ adsEnabled }) => {
                     const showAdAfter = (idx + 1) % 4 === 0;
                     return (
                       <React.Fragment key={post.id}>
-                        <div className="blog-card-wrapper">
+                        <div className="blog-card-wrapper" data-blog-card-id={String(post.id)}>
                           <Link to={`/blog/post/${post.id}`} className="blog-card">
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
                             <div className="blog-card-top">

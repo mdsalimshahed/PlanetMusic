@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SettingsCardHeading from './SettingsCardHeading.jsx';
 
 const RUN_MS = 10000;
 const TONE_INTERVAL_MS = 900;
@@ -201,7 +202,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
 
   return (
     <section className="settings-card glass-panel audio-delay-card">
-      <h3>Audio Delay Test</h3>
+      <SettingsCardHeading seed="audio-delay">Audio Delay Test</SettingsCardHeading>
       <p className="setting-desc">Tap the button or press Arrow Down as each beep sounds for 10 seconds. Missed beeps are ignored. Your taps appear on the timeline; beep moments are revealed when the test ends. The estimate includes your response time, so use it as a personal sync adjustment.</p>
       {savedMs !== null && <p className="audio-delay-saved">Saved sync adjustment: <strong>{Math.round(savedMs)} ms</strong></p>}
 
@@ -242,7 +243,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
           </div>
         </div>
       ) : (
-        <button type="button" className="experience-toggle active audio-delay-start-btn" onClick={startTest}>Start 10-second test</button>
+        <button type="button" className="audio-delay-start-btn" onClick={startTest}>Start 10-second test</button>
       )}
       {error && <p className="audio-delay-error" role="alert">{error}</p>}
       {returnPath && <button className="audio-delay-return-btn" onClick={() => navigate(returnPath)}>Return to Sync</button>}

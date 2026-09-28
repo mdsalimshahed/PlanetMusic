@@ -1,10 +1,11 @@
 /* --- src/components/Settings/PurgeCard.jsx --- */
 import React from 'react';
+import SettingsCardHeading from './SettingsCardHeading.jsx';
 
 const PurgeCard = ({ showPurgeConfirm, setShowPurgeConfirm, handlePurgeAllData }) => {
   return (
     <div className="settings-card glass-panel purge-card">
-      <h3 style={{ color: '#FA243C' }}>Danger Zone</h3>
+      <SettingsCardHeading seed="danger-zone">Danger Zone</SettingsCardHeading>
       {!showPurgeConfirm ? (
         <>
           <p className="purge-card-description">

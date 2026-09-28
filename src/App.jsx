@@ -33,26 +33,9 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
-  const previousPathRef = useRef(location.pathname);
-  const blogListScrollTopRef = useRef(0);
 
   useEffect(() => {
-    const previousPath = previousPathRef.current;
-    const isBlogList = (path) => /^\/blog(?:\/(?:dev|custom))?\/?$/.test(path);
-    const isBlogPost = (path) => /^\/blog\/post\//.test(path);
-    const scrollArea = contentScrollAreaRef.current;
-
-    if (isBlogList(previousPath) && isBlogPost(location.pathname)) {
-      blogListScrollTopRef.current = scrollArea?.scrollTop ?? 0;
-    }
-
-    if (isBlogPost(previousPath) && isBlogList(location.pathname)) {
-      scrollArea?.scrollTo(0, blogListScrollTopRef.current);
-    } else {
-      scrollArea?.scrollTo(0, 0);
-    }
-
-    previousPathRef.current = location.pathname;
+    contentScrollAreaRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
 
   // Parse routing variables from URL
@@ -366,7 +349,7 @@ const App = () => {
 
       <main className="main-content">
         {(activeTab === 'main' || activeTab === 'ambient') && (
-          <div className="search-container">
+          <div className={`search-container ${activeTab === 'ambient' ? 'ambient-search-entry' : ''}`}>
             <form onSubmit={handleSearchSubmit} className="search-box">
               <input
                 type="text"

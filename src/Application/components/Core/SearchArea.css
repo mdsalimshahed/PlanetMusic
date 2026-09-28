@@ -11,6 +11,19 @@
   pointer-events: none;
 }
 
+.search-container.ambient-search-entry {
+  animation: ambientSearchEnter 520ms cubic-bezier(0.2, 0.75, 0.3, 1) both;
+}
+
+@keyframes ambientSearchEnter {
+  from { opacity: 0; transform: translateX(-105vw); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-container.ambient-search-entry { animation: none; }
+}
+
 .search-box {
   pointer-events: auto; 
   display: flex;
