@@ -162,12 +162,12 @@ export const useCosmosSearch = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, activeTab, filteredLibrary.length]);
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e, submittedQuery = searchQuery) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return;
+    if (!submittedQuery.trim()) return;
     setIsExplicitSearch(true);
-    navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
-    performOnlineSearch(searchQuery);
+    navigate(`/?q=${encodeURIComponent(submittedQuery.trim())}`);
+    performOnlineSearch(submittedQuery);
   };
 
   const uniqueOnlineResults = searchResults.filter(

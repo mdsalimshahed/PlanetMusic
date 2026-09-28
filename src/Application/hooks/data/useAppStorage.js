@@ -1,6 +1,8 @@
 /* --- src/hooks/data/useAppStorage.js --- */
 import { useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
+import { getStoredLibrary, saveStoredLibrary } from '../../services/db.js';
 
 const DEEZER_ARL_STORAGE_KEY = 'planetmusic.deezerArl';
 
@@ -22,6 +24,58 @@ const updateRememberedDeezerArl = (arl) => {
   } catch {
     // Keep the token in React memory if browser storage is unavailable.
   }
+};
+
+const useDebouncedStorageWrite = (key, value) => {
+  const pendingValueRef = useRef(null);
+  const timerRef = useRef(null);
+  const persistRef = useRef(() => {});
+
+  persistRef.current = () => {
+    const pendingValue = pendingValueRef.current;
+    if (pendingValue === null) return;
+    pendingValueRef.current = null;
+
+    try {
+      if (localStorage.getItem(key) !== pendingValue) {
+        localStorage.setItem(key, pendingValue);
+      }
+    } catch (error) {
+      window.dispatchEvent(new CustomEvent('planetmusic:storage-error', {
+        detail: { quota: error?.name === 'QuotaExceededError' || error?.code === 22 }
+      }));
+    }
+  };
+
+  useEffect(() => {
+    pendingValueRef.current = key === 'searchQuery'
+      ? value
+      : key === 'isSampleVaultActive'
+        ? (value ? 'true' : 'false')
+        : JSON.stringify(key === 'appSettings' ? { ...value, deezerArl: undefined } : value);
+
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => persistRef.current(), 500);
+    return () => clearTimeout(timerRef.current);
+  }, [key, value]);
+
+  useEffect(() => {
+    const flushPendingWrite = () => {
+      if (document.visibilityState === 'hidden' || !document.visibilityState) {
+        clearTimeout(timerRef.current);
+        persistRef.current();
+      }
+    };
+
+    document.addEventListener('visibilitychange', flushPendingWrite);
+    window.addEventListener('pagehide', flushPendingWrite);
+    return () => {
+      document.removeEventListener('visibilitychange', flushPendingWrite);
+      window.removeEventListener('pagehide', flushPendingWrite);
+      clearTimeout(timerRef.current);
+      persistRef.current();
+    };
+  }, []);
 };
 
 export const useAppStorage = (urlSearchQuery) => {
@@ -95,16 +149,51 @@ export const useAppStorage = (urlSearchQuery) => {
     return urlSearchQuery || localStorage.getItem('searchQuery') || '';
   });
 
-  const [searchResults, setSearchResults] = useState(() => {
-    const saved = localStorage.getItem('searchResults');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [searchResults, setSearchResults] = useState([]);
 
   const [library, setLibrary] = useState(() => {
     const saved = localStorage.getItem('songLibrary');
     const parsed = saved ? JSON.parse(saved) : [];
     return Array.isArray(parsed) ? parsed.map(normalizeSongLyrics) : [];
   });
+  const libraryHydratedRef = useRef(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const hydrateLibrary = async () => {
+      try {
+        const storedLibrary = await getStoredLibrary();
+        if (!isMounted) return;
+
+        if (Array.isArray(storedLibrary)) {
+          setLibrary(storedLibrary.map(normalizeSongLyrics));
+        } else {
+          const legacyLibrary = localStorage.getItem('songLibrary');
+          const parsedLegacyLibrary = legacyLibrary ? JSON.parse(legacyLibrary) : [];
+          if (Array.isArray(parsedLegacyLibrary) && parsedLegacyLibrary.length > 0) {
+            const migratedLibrary = parsedLegacyLibrary.map(normalizeSongLyrics);
+            await saveStoredLibrary(migratedLibrary);
+            localStorage.removeItem('songLibrary');
+            if (isMounted) setLibrary(migratedLibrary);
+          }
+        }
+      } catch (error) {
+        window.dispatchEvent(new CustomEvent('planetmusic:storage-error', { detail: { quota: false, error } }));
+      } finally {
+        if (isMounted) libraryHydratedRef.current = true;
+      }
+    };
+
+    hydrateLibrary();
+    return () => { isMounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!libraryHydratedRef.current) return;
+    saveStoredLibrary(library).catch((error) => {
+      window.dispatchEvent(new CustomEvent('planetmusic:storage-error', { detail: { quota: false, error } }));
+    });
+  }, [library]);
 
   const [isSampleVaultActive, setIsSampleVaultActive] = useState(() => {
     return localStorage.getItem('isSampleVaultActive') === 'true';
@@ -117,18 +206,13 @@ export const useAppStorage = (urlSearchQuery) => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlSearchQuery]);
-
-  // Persistent Memory engine - ALWAYS ON
   useEffect(() => {
-    const persistedSettings = { ...settings };
-    delete persistedSettings.deezerArl;
     updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
-    localStorage.setItem('appSettings', JSON.stringify(persistedSettings));
-    localStorage.setItem('songLibrary', JSON.stringify(library));
-    localStorage.setItem('searchQuery', searchQuery);
-    localStorage.setItem('searchResults', JSON.stringify(searchResults));
-    localStorage.setItem('isSampleVaultActive', isSampleVaultActive ? 'true' : 'false');
-  }, [settings, library, searchQuery, searchResults, isSampleVaultActive]);
+  }, [settings]);
+
+  useDebouncedStorageWrite('appSettings', settings);
+  useDebouncedStorageWrite('searchQuery', searchQuery);
+  useDebouncedStorageWrite('isSampleVaultActive', isSampleVaultActive);
 
   return {
     settings, setSettings,

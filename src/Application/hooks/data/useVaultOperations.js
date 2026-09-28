@@ -1,6 +1,8 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
+import { isPackedVault, unpackVault, packVault } from '../../services/vaultCodec.js';
+import { clearStoredLibrary } from '../../services/db.js';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
@@ -10,13 +12,13 @@ export const useVaultOperations = ({
   const [songToRemove, setSongToRemove] = useState(null);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
 
-  const dismissSampleMode = () => {
+  const dismissSampleMode = useCallback(() => {
     if (isSampleVaultActive) {
       setIsSampleVaultActive(false);
       localStorage.setItem('isSampleVaultActive', 'false');
       localStorage.setItem('hasVisitedBefore', 'true');
     }
-  };
+  }, [isSampleVaultActive, setIsSampleVaultActive]);
 
   const handleSetSettings = (newSettingsAction) => {
     dismissSampleMode();
@@ -73,7 +75,7 @@ export const useVaultOperations = ({
 
   const handleClearSampleVault = () => {
     setLibrary([]);
-    localStorage.removeItem('songLibrary');
+    clearStoredLibrary().catch(() => {});
     localStorage.setItem('isSampleVaultActive', 'false');
     localStorage.setItem('hasVisitedBefore', 'true');
     setIsSampleVaultActive(false);
@@ -83,7 +85,7 @@ export const useVaultOperations = ({
     dismissSampleMode();
   };
 
-  const toggleLibrary = (e, song) => {
+  const toggleLibrary = useCallback((e, song) => {
     if (e) e.stopPropagation();
     dismissSampleMode();
     const isSaved = library.some((s) => s.trackId === song.trackId);
@@ -93,7 +95,7 @@ export const useVaultOperations = ({
     } else {
       setLibrary([...library, song]);
     }
-  };
+  }, [dismissSampleMode, library, setSongToRemove, setLibrary]);
 
   const confirmRemove = () => {
     if (songToRemove) {
@@ -181,7 +183,8 @@ export const useVaultOperations = ({
     
     const exportData = { library: optimizedLibrary, settings: { ...settings } };
     delete exportData.settings.deezerArl;
-    const jsonString = JSON.stringify(exportData, null, 2);
+    const packed = packVault(exportData);
+    const jsonString = JSON.stringify(packed);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     
@@ -201,8 +204,11 @@ export const useVaultOperations = ({
     reader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
+        const normalizedData = isPackedVault(parsedData)
+          ? unpackVault(parsedData)
+          : parsedData;
         dismissSampleMode();
-        applyParsedData(parsedData);
+        applyParsedData(normalizedData);
       } catch (err) {
         alert('Could not read the JSON file.');
       }

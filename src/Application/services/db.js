@@ -2,19 +2,36 @@
 const DB_NAME = 'PlanetMusicDB';
 const STORE_NAME = 'audioStore';
 const DEEZER_CACHE_STORE = 'deezerAudioCache';
-const DB_VERSION = 2;
+const LIBRARY_STORE = 'libraryStore';
+const LIBRARY_KEY = 'library';
+const DB_VERSION = 3;
+let dbPromise;
 
 export const initDB = () => {
-  return new Promise((resolve, reject) => {
+  if (!dbPromise) {
+    dbPromise = new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
       if (!db.objectStoreNames.contains(DEEZER_CACHE_STORE)) db.createObjectStore(DEEZER_CACHE_STORE);
+      if (!db.objectStoreNames.contains(LIBRARY_STORE)) db.createObjectStore(LIBRARY_STORE);
     };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+      request.onsuccess = () => {
+        const db = request.result;
+        db.onversionchange = () => {
+          db.close();
+          dbPromise = null;
+        };
+        resolve(db);
+      };
+      request.onerror = () => {
+        dbPromise = null;
+        reject(request.error);
+      };
+    });
+  }
+  return dbPromise;
 };
 
 export const saveAudioFile = async (id, file) => {
@@ -63,12 +80,8 @@ export const getDeezerCachedAudio = async (key) => {
         store.put(entry, key);
       }
     };
-    tx.oncomplete = () => {
-      db.close();
-      resolve(blob);
-    };
+    tx.oncomplete = () => resolve(blob);
     tx.onerror = tx.onabort = () => {
-      db.close();
       if (blob) resolve(blob);
       else reject(tx.error);
     };
@@ -108,12 +121,8 @@ export const saveDeezerCachedAudio = async (key, blob, maxBytes) => {
 
       store.put({ blob, size: blob.size, lastUsed: Date.now() }, key);
     };
-    tx.oncomplete = () => {
-      db.close();
-      resolve();
-    };
+    tx.oncomplete = () => resolve();
     tx.onerror = tx.onabort = () => {
-      db.close();
       reject(tx.error);
     };
   });
@@ -124,13 +133,39 @@ export const clearDeezerAudioCacheStore = async () => {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(DEEZER_CACHE_STORE, 'readwrite');
     tx.objectStore(DEEZER_CACHE_STORE).clear();
-    tx.oncomplete = () => {
-      db.close();
-      resolve();
-    };
+    tx.oncomplete = () => resolve();
     tx.onerror = tx.onabort = () => {
-      db.close();
       reject(tx.error);
     };
+  });
+};
+
+export const getStoredLibrary = async () => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(LIBRARY_STORE, 'readonly');
+    const request = tx.objectStore(LIBRARY_STORE).get(LIBRARY_KEY);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
+export const saveStoredLibrary = async (library) => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(LIBRARY_STORE, 'readwrite');
+    tx.objectStore(LIBRARY_STORE).put(library, LIBRARY_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = tx.onabort = () => reject(tx.error);
+  });
+};
+
+export const clearStoredLibrary = async () => {
+  const db = await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(LIBRARY_STORE, 'readwrite');
+    tx.objectStore(LIBRARY_STORE).delete(LIBRARY_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = tx.onabort = () => reject(tx.error);
   });
 };

@@ -5,43 +5,35 @@ import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
-export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
+export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library = []) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
   
-  const [globalArtistData, setGlobalArtistData] = useState(() => {
+  const [savedArtistData, setSavedArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
-    const parsed = stored ? JSON.parse(stored) : { images: {}, colors: {} };
-    
-    // HYDRATE FROM VAULT: Scan the entire library for manually set images/colors.
-    // This ensures that if an artist was customized in any other song, 
-    // we reuse those assets globally instead of auto-fetching new ones.
-    try {
-      const libraryStr = localStorage.getItem('songLibrary');
-      if (libraryStr) {
-        const lib = JSON.parse(libraryStr);
-        if (Array.isArray(lib)) {
-          lib.forEach(song => {
-            if (song.artistImages) {
-              Object.entries(song.artistImages).forEach(([artist, url]) => {
-                if (url && !parsed.images[artist]) parsed.images[artist] = url;
-              });
-            }
-            if (song.artistColors) {
-              Object.entries(song.artistColors).forEach(([artist, color]) => {
-                if (color && !parsed.colors[artist]) parsed.colors[artist] = color;
-              });
-            }
-          });
-        }
-      }
-    } catch (e) {
-      console.error("Vault artist data hydration failed", e);
-    }
-    
-    return parsed;
+    const parsed = stored ? JSON.parse(stored) : {};
+    return { images: parsed.images || {}, colors: parsed.colors || {} };
   });
+
+  const vaultArtistData = useMemo(() => {
+    const images = {};
+    const colors = {};
+    library.forEach(song => {
+      Object.entries(song.artistImages || {}).forEach(([artist, url]) => {
+        if (url && !images[artist]) images[artist] = url;
+      });
+      Object.entries(song.artistColors || {}).forEach(([artist, color]) => {
+        if (color && !colors[artist]) colors[artist] = color;
+      });
+    });
+    return { images, colors };
+  }, [library]);
+
+  const globalArtistData = useMemo(() => ({
+    images: { ...vaultArtistData.images, ...savedArtistData.images },
+    colors: { ...vaultArtistData.colors, ...savedArtistData.colors }
+  }), [vaultArtistData, savedArtistData]);
 
   const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
   const [singerImages, setSingerImages] = useState({});
@@ -250,7 +242,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     };
     
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
-    setGlobalArtistData(newGlobal);
+    setSavedArtistData(newGlobal);
     
     const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
 

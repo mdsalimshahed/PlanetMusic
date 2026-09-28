@@ -88,7 +88,7 @@ const getArtistPhoto = async (artistName, track = null, profilesMap = new Map(),
   return '';
 };
 
-const Background = ({ isModalOpen = false, currentTrack = null }) => {
+const Background = ({ isModalOpen = false, currentTrack = null, library = [] }) => {
   
   // 1. Hyper-targeted Vault JSON Scanner (Extracts cleanly separated main lines & ad-libs)
   const { pool, profiles } = useMemo(() => {
@@ -98,19 +98,9 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
 
     const getHighRes = (url) => url ? url.replace('100x100', '300x300') : null;
 
-    for (let i = 0; i < localStorage.length; i++) {
-      try {
-        const item = localStorage.getItem(localStorage.key(i));
-        if (!item || (!item.startsWith('{') && !item.startsWith('['))) continue;
-        const data = JSON.parse(item);
-        
-        let tracks = [];
-        if (data.library && Array.isArray(data.library)) tracks = data.library;
-        else if (Array.isArray(data)) tracks = data;
-        else if (data.wrapperType === 'track') tracks = [data];
-
-        tracks.forEach(track => {
-          if (track.wrapperType !== 'track') return;
+    for (const track of library) {
+        try {
+          if (track.wrapperType !== 'track') continue;
           const trackArtist = track.artistName || 'Unknown Artist';
           
           const trackArt = getHighRes(track.artworkUrl100 || track.artworkUrl || track.coverUrl);
@@ -160,11 +150,10 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
               }
             });
           }
-        });
-      } catch (e) {}
+        } catch (e) {}
     }
     return { pool: poolArray, profiles: profilesMap };
-  }, []);
+  }, [library]);
 
   const [bubbles, setBubbles] = useState([]);
   

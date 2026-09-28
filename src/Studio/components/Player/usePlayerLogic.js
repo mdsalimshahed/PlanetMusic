@@ -4,6 +4,7 @@ import { getAudioFile } from '../../../Application/services/db.js';
 import { getCachedDeezerAudioBlob, getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock } from '../../utils/clockEngine.js';
+import { isLowPowerDevice } from '../../utils/performance.js';
 import { formatTime } from './PlayerUI.jsx';
 
 export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings }) => {
@@ -26,6 +27,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const bufferingRef = useRef(false);
   const deezerObjectUrlRef = useRef(null);
   const audioCacheRef = useRef(new Map());
+  const ytApiPromiseRef = useRef(null);
   const MAX_CACHE_SIZE = 5;
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -75,6 +77,23 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const handlePageVisibility = () => {
+      if (document.hidden) {
+        if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+          try { ytPlayerRef.current.pauseVideo(); } catch (e) {}
+        } else if (audioRef.current && !audioRef.current.paused) {
+          audioRef.current.pause();
+        }
+        setIsPlaying(false);
+        emitPlayState(false, false);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handlePageVisibility);
+    return () => document.removeEventListener('visibilitychange', handlePageVisibility);
+  }, [ytVideoId, ytPlayerReady]);
 
   useEffect(() => {
     if (selectedSong && isStacked) {
@@ -153,18 +172,31 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     if (!window.globalFreqData) window.globalFreqData = new Uint8Array(64);
   }, []);
 
-  useEffect(() => {
-    if (!window.YT) {
+  const ensureYouTubeApi = () => {
+    if (window.YT && window.YT.Player) return Promise.resolve();
+    if (ytApiPromiseRef.current) return ytApiPromiseRef.current;
+
+    ytApiPromiseRef.current = new Promise((resolve, reject) => {
       const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.async = true;
+      tag.defer = true;
+      tag.onload = () => resolve();
+      tag.onerror = () => {
+        ytApiPromiseRef.current = null;
+        reject(new Error('YouTube API failed to load'));
+      };
+
       const firstScriptTag = document.getElementsByTagName('script')[0];
       if (firstScriptTag && firstScriptTag.parentNode) {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       } else {
         document.head.appendChild(tag);
       }
-    }
-  }, []);
+    });
+
+    return ytApiPromiseRef.current;
+  };
 
   const attemptPlay = async () => {
     if (bufferingRef.current) return;
@@ -192,6 +224,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const artworkUrl = currentTrack?.artworkUrl100;
     if (!artworkUrl) {
       setAccentArtworkUrl(null);
+      return;
+    }
+
+    if (isLowPowerDevice()) {
+      setAccentColor('#ffffff');
+      setAccentArtworkUrl(artworkUrl);
       return;
     }
 
@@ -410,6 +448,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
         if (source === 'youtube') {
           setAudioSrc(undefined);
+          ensureYouTubeApi()
+            .catch(() => {
+              triggerFallbackMessage('YouTube player is unavailable right now.');
+              setFailedSources(prev => [...prev, 'youtube']);
+            });
           setYtVideoId(extractedYtId);
           setActiveSource('youtube');
         } else if (source === 'preview') {

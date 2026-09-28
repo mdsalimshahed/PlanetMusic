@@ -63,10 +63,17 @@ const normalizeLyricRecord = (record) => {
 export const normalizeSongLyrics = (song) => {
   if (!song || typeof song !== 'object') return song;
 
-  return {
-    ...song,
-    lyrics: typeof song.lyrics === 'string' ? toSmartPunctuation(song.lyrics) : song.lyrics,
-    syncData: Array.isArray(song.syncData) ? song.syncData.map(normalizeLyricRecord) : song.syncData,
-    autoSyncData: Array.isArray(song.autoSyncData) ? song.autoSyncData.map(normalizeLyricRecord) : song.autoSyncData
-  };
+  const hasLyrics = typeof song.lyrics === 'string';
+  const hasSyncData = Array.isArray(song.syncData);
+  const hasAutoSyncData = Array.isArray(song.autoSyncData);
+
+  if (!hasLyrics && !hasSyncData && !hasAutoSyncData) return song;
+
+  const normalizedSong = { ...song };
+
+  if (hasLyrics) normalizedSong.lyrics = toSmartPunctuation(song.lyrics);
+  if (hasSyncData) normalizedSong.syncData = song.syncData.map(normalizeLyricRecord);
+  if (hasAutoSyncData) normalizedSong.autoSyncData = song.autoSyncData.map(normalizeLyricRecord);
+
+  return normalizedSong;
 };
