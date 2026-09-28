@@ -9,7 +9,7 @@ const DeezerAuthCard = ({
       <div className="deezer-auth-instructions">
         <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
         <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-        <p className="security-warning"><strong>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it in this tab across refreshes; it is stored in session storage and can be read by scripts running on this site.</p>
+        <p className="security-warning"><strong>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it across reloads and browser restarts; it is stored in local storage and can be read by scripts running on this site.</p>
       </div>
       <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
         <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
@@ -47,8 +47,8 @@ const DeezerAuthCard = ({
         </div>
         <div className="setting-item toggle-item">
           <label htmlFor="remember-deezer-arl">
-            <span>Remember for this tab</span>
-            <span className="setting-desc">Keeps the ARL through refreshes; cleared when this tab session ends.</span>
+            <span>Remember on this device</span>
+            <span className="setting-desc">Keeps the ARL through reloads and browser restarts until you turn this off.</span>
           </label>
           <input
             id="remember-deezer-arl"

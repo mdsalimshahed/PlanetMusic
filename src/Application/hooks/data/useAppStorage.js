@@ -2,11 +2,13 @@
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 
-const DEEZER_ARL_SESSION_KEY = 'planetmusic.deezerArl';
+const DEEZER_ARL_STORAGE_KEY = 'planetmusic.deezerArl';
 
 const readRememberedDeezerArl = () => {
   try {
-    return sessionStorage.getItem(DEEZER_ARL_SESSION_KEY) || '';
+    return localStorage.getItem(DEEZER_ARL_STORAGE_KEY)
+      || sessionStorage.getItem(DEEZER_ARL_STORAGE_KEY)
+      || '';
   } catch {
     return '';
   }
@@ -14,10 +16,11 @@ const readRememberedDeezerArl = () => {
 
 const updateRememberedDeezerArl = (arl) => {
   try {
-    if (arl) sessionStorage.setItem(DEEZER_ARL_SESSION_KEY, arl);
-    else sessionStorage.removeItem(DEEZER_ARL_SESSION_KEY);
+    if (arl) localStorage.setItem(DEEZER_ARL_STORAGE_KEY, arl);
+    else localStorage.removeItem(DEEZER_ARL_STORAGE_KEY);
+    sessionStorage.removeItem(DEEZER_ARL_STORAGE_KEY);
   } catch {
-    // Keep the token in React memory if session storage is unavailable.
+    // Keep the token in React memory if browser storage is unavailable.
   }
 };
 

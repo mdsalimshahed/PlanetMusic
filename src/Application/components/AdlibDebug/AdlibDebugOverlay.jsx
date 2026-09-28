@@ -1,7 +1,5 @@
 /* --- src/components/AdlibDebug/AdlibDebugOverlay.jsx --- */
 import React, { useEffect, useRef, useState } from 'react';
-import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
-import { getAdlibCenterBounds } from './adlibPlacementLogic.js';
 import './AdlibDebugOverlay.css';
 
 const getClosestPoints = (r1, r2) => {
@@ -138,12 +136,12 @@ const AdlibDebugOverlay = ({
       const canvasBottom = containerRect.bottom - overlayRect.top;
 
       const isMoreThanThree = activeNames.length > 3;
-      const EDGE_PAD_X = containerRect.width * (activeNames.length > 2 ? 0.04 : 0.08);
-      const EDGE_PAD_Y = containerRect.height * (isMoreThanThree ? 0.04 : 0.08);
-
-      const LYRIC_PAD = containerRect.height * 0.0625;
-      const SINGER_PAD = containerRect.height * 0.05;
-      const MAX_DIST = isMoreThanThree ? Infinity : containerRect.height * 0.4;
+      const EDGE_PAD_X = activeNames.length > 2 ? -16 : Math.max(30, containerRect.width * 0.08);
+      const EDGE_PAD_Y = isMoreThanThree ? -16 : Math.max(30, containerRect.height * 0.08);
+      
+      const LYRIC_PAD = 25;
+      const SINGER_PAD = 20;
+      const MAX_DIST = isMoreThanThree ? Infinity : 160;
 
       const safeTop = canvasTop + EDGE_PAD_Y;
       const safeLeft = canvasLeft + EDGE_PAD_X;
@@ -261,8 +259,8 @@ const AdlibDebugOverlay = ({
       if (!isMulti || activeSingersList.length === 0) {
         validCells.push({ left: safeLeft, right: safeRight, top: safeTop, bottom: safeBottom, width: safeRight - safeLeft, height: safeBottom - safeTop });
       } else {
-        const colWidth = containerRect.width / cols;
-        const rowHeight = containerRect.height / 2;
+        const colWidth = overlayRect.width / cols;
+        const rowHeight = overlayRect.height / 2;
 
         for (let i = 0; i < cols * 2; i++) {
           const row = Math.floor(i / cols);
@@ -270,10 +268,10 @@ const AdlibDebugOverlay = ({
           const artist = getArtistForCell(i);
 
           if (activeSingersList.includes(artist)) {
-            const cellLeft = col === 0 ? safeLeft : canvasLeft + col * colWidth;
-            const cellRight = col === cols - 1 ? safeRight : canvasLeft + (col + 1) * colWidth;
-            const cellTop = row === 0 ? safeTop : canvasTop + row * rowHeight;
-            const cellBottom = row === 1 ? safeBottom : canvasTop + (row + 1) * rowHeight;
+            const cellLeft = col === 0 ? safeLeft : col * colWidth;
+            const cellRight = col === cols - 1 ? safeRight : (col + 1) * colWidth;
+            const cellTop = row === 0 ? safeTop : row * rowHeight;
+            const cellBottom = row === 1 ? safeBottom : (row + 1) * rowHeight;
 
             validCells.push({
               left: cellLeft,
@@ -436,13 +434,11 @@ const AdlibDebugOverlay = ({
         if (isAdlibMulti) {
           const matchedSinger = adlibBox.datasetSinger || '';
 
-          const colWidth = containerRect.width / adlibCols;
-          const rowHeight = containerRect.height / 2;
+          const colWidth = overlayRect.width / adlibCols;
+          const rowHeight = overlayRect.height / 2;
 
-          const canvasCenterX = centerX - canvasLeft;
-          const canvasCenterY = centerY - canvasTop;
-          const physCol = Math.max(0, Math.min(adlibCols - 1, Math.floor(canvasCenterX / colWidth)));
-          const physRow = Math.max(0, Math.min(1, Math.floor(canvasCenterY / rowHeight)));
+          const physCol = Math.max(0, Math.min(adlibCols - 1, Math.floor(centerX / colWidth)));
+          const physRow = Math.max(0, Math.min(1, Math.floor(centerY / rowHeight)));
           const physCellIdx = physRow * adlibCols + physCol;
 
           const quadrantArtist = getAdlibArtistForCell(physCellIdx);
@@ -462,17 +458,15 @@ const AdlibDebugOverlay = ({
         newStats.push(stat);
 
         activeViableZones.forEach((zone, zIdx) => {
-          const centerBounds = getAdlibCenterBounds({
-            left: zone.left,
-            right: zone.left + zone.width,
-            top: zone.top,
-            bottom: zone.top + zone.height
-          }, adlibBox.unrotatedWidth, adlibBox.unrotatedHeight, containerRect);
+          // Sync with the safe logic radius
+          const safeRadius = Math.sqrt(Math.pow(adlibBox.unrotatedWidth, 2) + Math.pow(adlibBox.unrotatedHeight, 2)) / 2;
+          const padX = safeRadius + 5; 
+          const padY = safeRadius + 5;
 
-          let iLeft = centerBounds.left;
-          let iRight = centerBounds.right;
-          let iTop = centerBounds.top;
-          let iBottom = centerBounds.bottom;
+          let iLeft = zone.left + padX;
+          let iRight = zone.left + zone.width - padX;
+          let iTop = zone.top + padY;
+          let iBottom = zone.top + zone.height - padY;
 
           if (iLeft > iRight) {
             const mid = zone.left + zone.width / 2;
@@ -561,7 +555,7 @@ const AdlibDebugOverlay = ({
                   <strong>Placement:</strong> {stat.isCorrect ? (
                       <span style={{color: '#4ade80'}}>  Correct Quadrant ({stat.evalMode})</span>
                     ) : (
-                      <span style={{color: '#ef4444'}}>  Wrong (in {toSmartPunctuation(stat.quadArtist)}’s quad)</span>
+                      <span style={{color: '#ef4444'}}>  Wrong (in {stat.quadArtist}'s quad)</span>
                     )}
                 </div>
                 <div>
