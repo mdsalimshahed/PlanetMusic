@@ -37,3 +37,6 @@ dist-ssr
 
 # Wrangler local state and temporary bundles
 .wrangler/
+
+# Local assistant instruction files
+claude instructed files/
