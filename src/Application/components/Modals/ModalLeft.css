@@ -38,6 +38,10 @@
 .modal-left-scrollable::-webkit-scrollbar { width: 6px; }
 .modal-left-scrollable::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
+body:has(.global-player:not(.stacked)) .modal-left-scrollable {
+  padding-bottom: 120px;
+}
+
 .modal-top {
     display: flex;
     flex-direction: row;
