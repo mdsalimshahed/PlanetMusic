@@ -10,7 +10,7 @@ import './LyricsDisplay.css';
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-    isPlaying, settings 
+    isPlaying, settings, lyricsPlaybackOffsetSeconds
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const [activeSource, setActiveSource] = useState(() => {
@@ -45,6 +45,7 @@ const LyricsDisplay = ({
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}
+          lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
         />
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (
         <FocusedLyricsView 
@@ -55,6 +56,7 @@ const LyricsDisplay = ({
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}
+          lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
         />
       ) : (
         <PlainLyricsView 

@@ -4,7 +4,7 @@ import { generateSafeAdlibPosition, getRelativeRect } from "../../../../Applicat
 import EngineRouter from '../../../../components/LyricsRenderer/LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
-export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong }) => {
+export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
   const cachedTrackNodesRef = useRef([]);
   const boundaryEventsRef = useRef([]);
@@ -216,7 +216,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
     };
 
     const handleTime = (e) => {
-      const time = e.detail;
+      const time = e.detail - lyricsPlaybackOffsetSeconds;
       const nodes = cachedTrackNodesRef.current;
       const events = boundaryEventsRef.current;
 
@@ -262,7 +262,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       window.removeEventListener('globalTimeUpdate', handleTime);
       window.removeEventListener('globalPlayState', handlePlayState);
     };
-  }, [isPlayingCurrentSong]);
+  }, [isPlayingCurrentSong, lyricsPlaybackOffsetSeconds]);
 
   if (adlibsToRender.length === 0) return null;
 

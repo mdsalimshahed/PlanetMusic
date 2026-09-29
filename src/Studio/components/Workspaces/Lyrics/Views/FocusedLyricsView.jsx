@@ -5,7 +5,7 @@ import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './FocusedLyricsView.css';
 
-const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack }) => {
+const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
@@ -75,12 +75,12 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         lastAdlibTimeRef.current = null;
 
         if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
-            handleTimeUpdate(window.currentAudioTime);
+            handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
         }
       }
     }, 50);
     return () => clearTimeout(timer);
-  }, [liveParsedLyrics, selectedSong?.syncData]);
+    }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
 
   const handleTimeUpdate = (time) => {
     if (!isPlayingCurrentSong) return;
@@ -163,7 +163,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         lastAdlibTimeRef.current = null;
     };
 
-    const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
+    const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
     const handlePlayState = (e) => {
         if (e.detail.isEnded) clearAllActive();
     };
@@ -173,7 +173,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
 
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
-        handleTimeUpdate(initialTime);
+        handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
     } else {
         clearAllActive();
     }
@@ -182,7 +182,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-  }, [isPlayingCurrentSong, currentTrack]);
+    }, [isPlayingCurrentSong, currentTrack, lyricsPlaybackOffsetSeconds]);
 
   return (
     <div className="focused-lyrics-preview" ref={containerRef}>
@@ -205,6 +205,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         handleLineClick={handleLineClick}
         masterPalette={masterPalette}
         isPlayingCurrentSong={isPlayingCurrentSong}
+            lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
       />
     </div>
   );

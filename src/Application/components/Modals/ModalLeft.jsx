@@ -46,6 +46,8 @@ const Icon = ({ name }) => {
       return <svg {...baseProps}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
     case 'clock': 
       return <svg {...baseProps}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
+    case 'headphones':
+      return <svg {...baseProps}><path d="M3 14v-3a9 9 0 0 1 18 0v3"></path><path d="M5 14h2v6H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm14 0h-2v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2z"></path></svg>;
     case 'refresh': 
       return <svg {...baseProps}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
     case 'zap': 
@@ -64,6 +66,8 @@ const Icon = ({ name }) => {
 const useMeasuredHeightTransition = () => {
   const containerRef = React.useRef(null);
   const contentRef = React.useRef(null);
+  const setContainerRef = React.useCallback(node => { containerRef.current = node; }, []);
+  const setContentRef = React.useCallback(node => { contentRef.current = node; }, []);
 
   React.useLayoutEffect(() => {
     const container = containerRef.current;
@@ -105,7 +109,7 @@ const useMeasuredHeightTransition = () => {
     };
   }, []);
 
-  return { containerRef, contentRef };
+  return { setContainerRef, setContentRef };
 };
 
 const ModalLeft = ({
@@ -114,13 +118,14 @@ const ModalLeft = ({
   saveData, finalLinks, setCurrentTrack, currentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
+  isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
   closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
   triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
-  const workspaceControlsRefs = useMeasuredHeightTransition();
-  const vaultActionsRefs = useMeasuredHeightTransition();
+  const { setContainerRef: setWorkspaceControlsContainer, setContentRef: setWorkspaceControlsContent } = useMeasuredHeightTransition();
+  const { setContainerRef: setVaultActionsContainer, setContentRef: setVaultActionsContent } = useMeasuredHeightTransition();
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
   const [loadedArtwork, setLoadedArtwork] = useState(null);
@@ -482,24 +487,28 @@ const ModalLeft = ({
                     </button>
                   </div>
                   
-                  {lyricsViewMode === 'focused' && (
-                    <button 
-                       className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`} 
-                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                    >
-                      <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
-                      {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
-                    </button>
-                  )}
-                  {lyricsViewMode === 'live' && (
-                    <button 
-                       className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`} 
-                       onClick={() => setShowLiveDebug(!showLiveDebug)}
-                    >
-                      <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
-                      {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
-                    </button>
-                  )}
+                  <div className={`lyrics-debug-slot ${lyricsViewMode !== 'plain' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode === 'plain'}>
+                    <div className="lyrics-debug-slot-inner">
+                      {lyricsViewMode === 'focused' && (
+                        <button
+                          className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
+                           onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                        >
+                          <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
+                          {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
+                        </button>
+                      )}
+                      {lyricsViewMode === 'live' && (
+                        <button
+                          className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`}
+                           onClick={() => setShowLiveDebug(!showLiveDebug)}
+                        >
+                          <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
+                          {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </>
               ) : hasPlainLyrics ? (
                 <span className="no-sync-warning">
@@ -513,8 +522,8 @@ const ModalLeft = ({
             </div>
           </div>
         )}
-        <div ref={workspaceControlsRefs.containerRef} className="workspace-controls glass-panel-light measured-height-panel">
-          <div ref={workspaceControlsRefs.contentRef} className="measured-height-content">
+        <div ref={setWorkspaceControlsContainer} className="workspace-controls glass-panel-light measured-height-panel">
+          <div ref={setWorkspaceControlsContent} className="measured-height-content">
           <div className="links-header"><label>Workspace Controls</label></div>
           
           {isSyncMode && !isTranslationManagerOpen && (
@@ -625,7 +634,7 @@ const ModalLeft = ({
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? <Icon name="clock" /> : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? <Icon name="refresh" /> : <Icon name="refresh" />) : <Icon name="zap" />)}
-                  {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Show Manual Sync' : 'Show Auto-Sync') : 'Auto-Sync Lyrics')}
+                  {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Auto-Sync' : 'Manual Sync') : 'Auto-Sync Lyrics')}
                 </button>
                 {customData.lyrics ? (
                   <>
@@ -651,12 +660,23 @@ const ModalLeft = ({
                 )}
               </>
             )}
+            {!isSyncMode && !isTranslationManagerOpen && !isEditing && !isImageManagerOpen && hasValidSyncData && (
+              <button
+                className={`edit-links-btn debug-toggle-btn sync-delay-toggle ${isHeadphoneDelayEnabled ? 'is-active' : ''}`}
+                onClick={toggleHeadphoneDelay}
+                aria-pressed={isHeadphoneDelayEnabled}
+                title={`Toggle synced lyric delay (${Math.round(headphoneDelayMs)} ms)`}
+              >
+                <Icon name="headphones" />
+                Sync Delay: {Math.round(headphoneDelayMs)} ms
+              </button>
+            )}
           </div>
           </div>
         </div>
         <div id="mobile-player-slot"></div>
-        <div ref={vaultActionsRefs.containerRef} className="workspace-controls glass-panel-light bottom-actions measured-height-panel">
-          <div ref={vaultActionsRefs.contentRef} className="measured-height-content">
+        <div ref={setVaultActionsContainer} className="workspace-controls glass-panel-light bottom-actions measured-height-panel">
+          <div ref={setVaultActionsContent} className="measured-height-content">
           <div className="links-header"><label>Vault Actions</label></div>
           <div className="action-buttons-grid">
             {isSaved ? (

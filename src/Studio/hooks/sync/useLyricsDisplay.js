@@ -4,6 +4,7 @@ import { parseLyrics } from '../../utils/songHelpers.js';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
+  const [isHeadphoneDelayEnabled, setIsHeadphoneDelayEnabled] = useState(() => localStorage.getItem('lyricsHeadphoneDelayEnabled') === 'true');
   const [playState, setPlayState] = useState({
       isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false,
       isEnded: false
@@ -24,6 +25,16 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   const hasValidSyncData = selectedSong?.syncData?.some(line => line.start !== null);
   const preemptionTimeSec = (settings?.bgPreemptionTime ?? 400) / 1000;
+  const headphoneDelayMs = Number.isFinite(settings?.audioDelayCompensationMs)
+    ? Math.max(-250, Math.min(250, settings.audioDelayCompensationMs))
+    : 200;
+  const lyricsPlaybackOffsetSeconds = isHeadphoneDelayEnabled ? headphoneDelayMs / 1000 : 0;
+
+  const toggleHeadphoneDelay = () => {
+    const next = !isHeadphoneDelayEnabled;
+    setIsHeadphoneDelayEnabled(next);
+    localStorage.setItem('lyricsHeadphoneDelayEnabled', String(next));
+  };
 
   const liveParsedLyrics = useMemo(() => {
     if (!selectedSong) return [];
@@ -45,7 +56,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   useEffect(() => {
     const handleGlobalTime = (e) => {
-      const time = e.detail;
+      const time = e.detail - lyricsPlaybackOffsetSeconds;
       const validSync = selectedSong?.syncData?.some(line => line.start !== null);
       const isPlayingCurrentSong = currentTrack && selectedSong && String(currentTrack.trackId) === String(selectedSong.trackId);
              
@@ -76,7 +87,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
          
     window.addEventListener('globalTimeUpdate', handleGlobalTime);
     return () => window.removeEventListener('globalTimeUpdate', handleGlobalTime);
-  }, [selectedSong, currentTrack, isSyncMode, isEditing, isImageManagerOpen, playState.isEnded, preemptionTimeSec]);
+  }, [selectedSong, currentTrack, isSyncMode, isEditing, isImageManagerOpen, playState.isEnded, preemptionTimeSec, lyricsPlaybackOffsetSeconds]);
 
   useEffect(() => {
     if (selectedSong && selectedSong.trackId !== previousTrackId.current) {
@@ -167,7 +178,8 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
 
   return {
-    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics, 
+    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics,
+    isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs, lyricsPlaybackOffsetSeconds,
     currentSingerBg: displaySingerBg, isSingerVisible,
     activePreviewRef, handleLineClick, hasValidSyncData,
     isPlaying: playState.isPlaying

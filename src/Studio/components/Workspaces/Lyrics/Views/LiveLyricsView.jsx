@@ -4,7 +4,7 @@ import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
-const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack }) => {
+const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
     const initialRevealTrackRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -83,12 +83,12 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         lastAdlibTimeRef.current = null;
 
         if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
-            handleTimeUpdate(window.currentAudioTime);
+            handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
         }
       }
     }, 50);
     return () => clearTimeout(timer);
-  }, [liveParsedLyrics, selectedSong?.syncData]);
+    }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
 
   const handleTimeUpdate = (time) => {
     if (!isPlayingCurrentSong) return;
@@ -172,7 +172,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         lastAdlibTimeRef.current = null;
     };
 
-    const handleTimeEvent = (e) => handleTimeUpdate(e.detail);
+    const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearAllActive();
@@ -184,7 +184,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
 
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
-        handleTimeUpdate(initialTime);
+        handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
     } else {
         clearAllActive();
     }
@@ -193,7 +193,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-  }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations]);
+    }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations, lyricsPlaybackOffsetSeconds]);
 
   return (
     <div

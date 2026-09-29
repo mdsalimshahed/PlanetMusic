@@ -12,6 +12,11 @@
     transform: translateZ(0);
 }
 
+  .modal-left-col :is(button, a):focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+  }
+
 .modal-left-static {
     display: flex;
     flex-direction: column;
@@ -373,8 +378,8 @@ a.platform-label.yt-color:hover {
 }
 
 .platform-btn.active-source {
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 2px var(--accent), 0 0 18px rgba(255, 255, 255, 0.45);
+  border: none;
+  box-shadow: none;
   opacity: 1;
   filter: brightness(1.12) saturate(1.15);
 }
@@ -580,6 +585,30 @@ a.platform-label.yt-color:hover {
   margin-top: 0;
 }
 
+.lyrics-debug-slot {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition: max-height 280ms cubic-bezier(0.2, 0.75, 0.25, 1), opacity 180ms ease, transform 180ms ease;
+}
+
+.lyrics-debug-slot.is-visible {
+  max-height: 48px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lyrics-debug-slot-inner {
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+}
+
+.workspace-controls .sync-delay-toggle {
+  margin-top: 0;
+}
+
 .debug-toggle-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
@@ -595,6 +624,24 @@ a.platform-label.yt-color:hover {
 .debug-toggle-btn.is-active:hover {
   background: var(--accent);
   color: black;
+}
+
+.debug-toggle-btn.sync-delay-toggle.is-active {
+  background: rgba(29, 185, 84, 0.2);
+  border-color: #1DB954;
+  color: white;
+}
+
+.debug-toggle-btn.sync-delay-toggle.is-active:hover {
+  background: #1DB954;
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lyrics-debug-slot {
+    transition: none;
+    transform: none;
+  }
 }
 
 .return-dashboard-btn {

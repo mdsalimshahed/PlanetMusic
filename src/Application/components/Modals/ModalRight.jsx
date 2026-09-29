@@ -43,6 +43,7 @@ const ModalRight = (props) => {
           currentTrack={props.currentTrack}
           isPlaying={props.isPlaying}
           settings={props.settings}
+          lyricsPlaybackOffsetSeconds={props.lyricsPlaybackOffsetSeconds}
         />
       )}
 
