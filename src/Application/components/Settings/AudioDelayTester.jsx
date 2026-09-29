@@ -21,7 +21,9 @@ const AudioDelayGraph = ({ taps, beeps, revealBeeps }) => {
 
   taps.forEach((tap) => {
     const x = xFor(tap);
-    trace += ` L ${Math.max(0, x - 8)} ${baseline} L ${x} 24 L ${Math.min(width, x + 8)} ${baseline}`;
+    const left = Math.max(0, x - 12);
+    const right = Math.min(width, x + 12);
+    trace += ` L ${left} ${baseline} C ${x - 5} ${baseline} ${x - 5} 24 ${x} 24 C ${x + 5} 24 ${x + 5} ${baseline} ${right} ${baseline}`;
   });
   trace += ` L ${width} ${baseline}`;
 
