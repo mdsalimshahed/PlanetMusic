@@ -1,6 +1,6 @@
 /* --- src/components/Workspaces/Lyrics/Views/FocusedLyricsView.jsx --- */
 import React, { useEffect, useMemo, useRef } from 'react';
-import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
+import { LyricLineWrapper, measureFocusedLineLayout } from '../LyricsLineRenderer.jsx';
 import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './FocusedLyricsView.css';
@@ -116,6 +116,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     if (previousActiveIndex !== newActiveIndex) {
         if (previousActiveIndex !== -1) {
             const previousLine = lines[previousActiveIndex];
+            measureFocusedLineLayout(previousLine.node);
             previousLine.node.classList.remove('active', 'past');
             previousLine.node.classList.add('exiting');
             previousLine.isActive = false;

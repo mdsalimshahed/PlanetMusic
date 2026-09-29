@@ -52,6 +52,32 @@ export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayi
   return <StandardLine {...commonProps} isFocused={isFocused} />;
 };
 
+export const measureFocusedLineLayout = (wrapper) => {
+  const tokens = Array.from(wrapper.querySelectorAll('.lyric-word, .trans-word'));
+  const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
+    .sort((firstTop, secondTop) => firstTop - secondTop);
+  wrapper.classList.toggle('has-wrapped-content', rowTops.length > 1);
+
+  tokens.forEach(token => {
+    const top = Math.round(token.getBoundingClientRect().top);
+    const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
+    token.style.setProperty('--wrapped-line-index', rowIndex);
+  });
+
+  wrapper.querySelectorAll('.inline-cjk-chunk > .pronunciation-text').forEach(pronunciation => {
+    const pairedToken = pronunciation.parentElement?.querySelector('.lyric-word, .trans-word');
+    if (pairedToken) {
+      pronunciation.style.setProperty(
+        '--wrapped-line-index',
+        pairedToken.style.getPropertyValue('--wrapped-line-index')
+      );
+    }
+  });
+
+  wrapper.style.setProperty('--wrapped-line-count', rowTops.length);
+  wrapper.style.setProperty('--focused-wrap-exit-stagger', '0.07s');
+};
+
 export const LyricLineWrapper = React.memo(({
   lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong
 }) => {
@@ -63,39 +89,8 @@ export const LyricLineWrapper = React.memo(({
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
 
-  const wrapperRef = useRef(null);
-
-  useLayoutEffect(() => {
-    if (viewMode !== 'focused' || !wrapperRef.current) return;
-
-    const tokens = Array.from(wrapperRef.current.querySelectorAll('.lyric-word, .trans-word'));
-    const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
-      .sort((firstTop, secondTop) => firstTop - secondTop);
-    wrapperRef.current.classList.toggle('has-wrapped-content', rowTops.length > 1);
-
-    tokens.forEach(token => {
-      const top = Math.round(token.getBoundingClientRect().top);
-      const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
-      token.style.setProperty('--wrapped-line-index', rowIndex);
-    });
-
-    wrapperRef.current.querySelectorAll('.inline-cjk-chunk > .pronunciation-text').forEach(pronunciation => {
-      const pairedToken = pronunciation.parentElement?.querySelector('.lyric-word, .trans-word');
-      if (pairedToken) {
-        pronunciation.style.setProperty(
-          '--wrapped-line-index',
-          pairedToken.style.getPropertyValue('--wrapped-line-index')
-        );
-      }
-    });
-
-    wrapperRef.current.style.setProperty('--wrapped-line-count', rowTops.length);
-    wrapperRef.current.style.setProperty('--focused-wrap-exit-stagger', '0.07s');
-  }, [renderedContent, viewMode]);
-
   return (
     <div
-      ref={wrapperRef}
       className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
       data-start={start}
       data-end={end}
