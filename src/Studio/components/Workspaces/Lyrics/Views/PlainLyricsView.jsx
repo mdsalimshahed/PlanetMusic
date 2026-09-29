@@ -114,7 +114,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
       return (
         <React.Fragment key={aIdx}>
           <span style={{ color: artistColor }}>{toSmartPunctuation(artist)}</span>
-          {aIdx < artists.length - 1 && <span style={{ color: 'rgba(255, 255, 255, 0.4)', margin: '0 4px' }}>, </span>}
+          {aIdx < artists.length - 1 && <><span className="plain-artist-separator">,</span>{' '}</>}
         </React.Fragment>
       );
     });
@@ -136,14 +136,17 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
           return (
           <React.Fragment key={group.id}>
             {group.sectionHeader && (
-              <div className="plain-section-header" style={{ marginTop: gIdx === 0 ? '0' : '32px' }}>
+              <div
+                className={`plain-section-header ${gIdx < 6 ? 'plain-entry-item' : ''}`}
+                style={{ marginTop: gIdx === 0 ? '0' : '32px', animationDelay: `${Math.min(gIdx, 5) * 45}ms` }}
+              >
                 {displayHeader}
               </div>
             )}
             
             <div 
-              className="plain-artist-block"
-              style={{ borderLeftColor: group.borderColor }}
+              className={`plain-artist-block ${gIdx < 6 ? 'plain-entry-item' : ''}`}
+              style={{ borderLeftColor: group.borderColor, animationDelay: `${Math.min(gIdx, 5) * 45}ms` }}
             >
               <div className="plain-artist-name">
                 {renderColoredSingerHeader(group.singer)}
