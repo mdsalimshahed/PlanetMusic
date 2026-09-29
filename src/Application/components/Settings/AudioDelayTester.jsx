@@ -53,6 +53,11 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
   const [taps, setTaps] = useState([]);
   const [beeps, setBeeps] = useState([]);
   const [lastGraph, setLastGraph] = useState(() => settings?.audioDelayTestGraph || null);
+  const [customDelayInput, setCustomDelayInput] = useState(() => {
+    const graph = settings?.audioDelayTestGraph;
+    const initialValue = graph?.customDelayMs ?? graph?.delayMs;
+    return Number.isFinite(initialValue) ? String(initialValue) : '';
+  });
   const [error, setError] = useState('');
   const activeRef = useRef(false);
   const contextRef = useRef(null);
@@ -174,6 +179,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
         setTaps(completedGraph.taps);
         setBeeps(completedBeeps);
         setLastGraph(completedGraph);
+        setCustomDelayInput(completedGraph.delayMs === null ? '' : String(completedGraph.delayMs));
         setSettings({ ...settings, audioDelayTestGraph: completedGraph });
         setTestState('complete');
         setRemaining(0);
@@ -194,19 +200,55 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
   const graphBeeps = testState === 'testing' ? beeps : (lastGraph?.beeps || []);
   const delayMs = testState === 'testing' ? null : (lastGraph?.delayMs ?? null);
   const savedMs = Number.isFinite(settings?.audioDelayCompensationMs) ? settings.audioDelayCompensationMs : null;
-  const isAdjustmentSaved = delayMs !== null && savedMs === delayMs;
+  const savedCustomMs = Number.isFinite(lastGraph?.customDelayMs) ? lastGraph.customDelayMs : null;
+  const isAdjustmentSaved = savedCustomMs !== null && savedMs === savedCustomMs;
+  const parsedCustomDelay = customDelayInput.trim() === '' ? NaN : Number(customDelayInput);
+  const isCustomDelayValid = Number.isFinite(parsedCustomDelay) && parsedCustomDelay >= -250 && parsedCustomDelay <= 250;
+  const isCustomEdited = delayMs !== null && (!Number.isFinite(parsedCustomDelay) || parsedCustomDelay !== delayMs);
+
+  const saveCustomAdjustment = () => {
+    if (!isCustomDelayValid || !lastGraph || delayMs === null) return;
+    const customDelayMs = Math.round(parsedCustomDelay);
+    const updatedGraph = { ...lastGraph, customDelayMs };
+    setLastGraph(updatedGraph);
+    setSettings({
+      ...settings,
+      audioDelayCompensationMs: customDelayMs,
+      audioDelayTestGraph: updatedGraph
+    });
+  };
 
   const resetAdjustment = () => {
     const nextSettings = { ...settings };
     delete nextSettings.audioDelayCompensationMs;
-    setSettings(nextSettings);
+    const updatedGraph = { ...lastGraph };
+    delete updatedGraph.customDelayMs;
+    setLastGraph(updatedGraph);
+    setCustomDelayInput(delayMs === null ? '' : String(delayMs));
+    setSettings({ ...nextSettings, audioDelayTestGraph: updatedGraph });
   };
+
+  const customDelayEditor = (
+    <span className="audio-delay-input-wrap">
+      <input
+        type="text"
+        inputMode="decimal"
+        value={customDelayInput}
+        onChange={(event) => setCustomDelayInput(event.target.value)}
+        aria-label="Measured delay in milliseconds; edit to set a custom value"
+      />
+      <span>ms</span>
+    </span>
+  );
+  const showCustomComparison = isAdjustmentSaved
+    ? savedCustomMs !== delayMs
+    : isCustomEdited;
 
   return (
     <section className="settings-card glass-panel audio-delay-card">
       <SettingsCardHeading seed="audio-delay">Audio Delay Test</SettingsCardHeading>
-      <p className="setting-desc">Tap the button or press Arrow Down as each beep sounds for 10 seconds. Missed beeps are ignored. Your taps appear on the timeline; beep moments are revealed when the test ends. The estimate includes your response time, so use it as a personal sync adjustment.</p>
-      {savedMs !== null && <p className="audio-delay-saved">Saved sync adjustment: <strong>{Math.round(savedMs)} ms</strong></p>}
+      <p className="setting-desc">Anticipate each beep and tap when you expect it to sound, as if your tap caused it. Tap the button or press Arrow Down. Missed beeps are ignored.</p>
+      {savedMs !== null && <p className="audio-delay-saved">Current sync correction: <strong>{Math.round(savedMs)} ms</strong></p>}
 
       {(testState === 'testing' || lastGraph) && (
         <AudioDelayGraph taps={graphTaps} beeps={graphBeeps} revealBeeps={testState !== 'testing'} />
@@ -227,8 +269,42 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
       ) : lastGraph ? (
         <div className="audio-delay-result" role="status">
           {delayMs === null ? <p>No taps matched a beep. Missed inputs were ignored; run the test again when ready.</p> : <>
-            <p>{testState === 'complete' ? 'Estimated response delay' : 'Last measured response delay'}</p>
-            <strong>{delayMs} ms</strong>
+            <p>{testState === 'complete' ? 'Measured and custom sync correction' : 'Last measured sync response'}</p>
+            <div className={`audio-delay-values ${showCustomComparison ? 'has-custom-value' : ''}`}>
+              {showCustomComparison && isAdjustmentSaved ? (
+                <>
+                  <div className="audio-delay-value">
+                    <span>Calculated</span>
+                    <strong>{delayMs} ms</strong>
+                  </div>
+                  <div className="audio-delay-value">
+                    <span>Custom in use</span>
+                    <strong>{savedCustomMs} ms</strong>
+                  </div>
+                </>
+              ) : showCustomComparison ? (
+                <>
+                  <div className="audio-delay-value">
+                    <span>Calculated</span>
+                    <strong>{delayMs} ms</strong>
+                  </div>
+                  <label className="audio-delay-custom-field">
+                    <span>Custom value</span>
+                    {customDelayEditor}
+                  </label>
+                </>
+              ) : isAdjustmentSaved ? (
+                <div className="audio-delay-single-result">
+                  <span>Calculated delay</span>
+                  <strong>{delayMs} ms</strong>
+                </div>
+              ) : (
+                <label className="audio-delay-custom-field audio-delay-single-value">
+                  <span>Calculated delay · edit to customize</span>
+                  {customDelayEditor}
+                </label>
+              )}
+            </div>
             <span>{lastGraph.responseCount} matched responses</span>
           </>}
           <div className="audio-delay-actions">
@@ -236,7 +312,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
               <button className="audio-delay-action-btn" onClick={resetAdjustment}>Reset adjustment</button>
             ) : delayMs !== null ? (
               <>
-                <button className="audio-delay-action-btn" onClick={() => setSettings({ ...settings, audioDelayCompensationMs: delayMs })}>Save adjustment</button>
+                <button className="audio-delay-action-btn" onClick={saveCustomAdjustment} disabled={!isCustomDelayValid}>Save adjustment</button>
                 <button className="audio-delay-action-btn" onClick={startTest}>Run again</button>
               </>
             ) : (

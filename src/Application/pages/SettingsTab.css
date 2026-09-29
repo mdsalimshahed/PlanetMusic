@@ -156,6 +156,17 @@
 .audio-delay-countdown { color: rgba(255, 255, 255, 0.82); font-size: 13px; font-variant-numeric: tabular-nums; }
 .audio-delay-result strong { color: #fff; font-size: 24px; font-variant-numeric: tabular-nums; }
 .audio-delay-result p, .audio-delay-saved { color: var(--text-subdued); font-size: 12px; line-height: 1.5; }
+.audio-delay-values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; width: 100%; text-align: center; }
+.audio-delay-single-value { grid-column: 1 / -1; }
+.audio-delay-value,
+.audio-delay-custom-field { display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; color: var(--text-subdued); font-size: 11px; }
+.audio-delay-values.has-custom-value > :nth-child(2) { border-left: 1px solid rgba(255, 255, 255, 0.18); }
+.audio-delay-value strong { font-size: 16px; }
+.audio-delay-single-result { display: flex; grid-column: 1 / -1; flex-direction: column; align-items: center; gap: 4px; color: var(--text-subdued); font-size: 12px; }
+.audio-delay-single-result strong { color: #fff; font-size: 24px; font-variant-numeric: tabular-nums; }
+.audio-delay-input-wrap { display: flex; justify-content: center; align-items: center; gap: 6px; color: rgba(255, 255, 255, 0.7); }
+.audio-delay-input-wrap input { width: 7ch; min-width: 0; height: 36px; padding: 4px 2px; color: #fff; background: transparent; border: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.48); border-radius: 0; font: inherit; font-size: 16px; font-variant-numeric: tabular-nums; text-align: center; }
+.audio-delay-input-wrap input:focus { outline: none; border-bottom-color: var(--accent); box-shadow: 0 1px 0 var(--accent); }
 .audio-delay-response-btn,
 .audio-delay-start-btn {
   width: 100%;
@@ -192,6 +203,7 @@
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 .audio-delay-action-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.28); }
+.audio-delay-action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .audio-delay-return-btn { min-height: 38px; padding: 8px 12px; color: rgba(255,255,255,.8); background: transparent; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; cursor: pointer; }
 .audio-delay-return-btn { width: 100%; margin-top: 14px; }
 .audio-delay-error { color: #fca5a5; font-size: 12px; }
