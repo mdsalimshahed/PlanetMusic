@@ -91,6 +91,40 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
 export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
   const parts = toSmartPunctuation(text).split(/(\s+)/u);
+  if (isFocused) {
+    const attachedParts = [];
+    let leadingPunctuation = '';
+
+    parts.forEach((part) => {
+      if (!part) return;
+      if (/^\s+$/u.test(part)) {
+        if (!leadingPunctuation) attachedParts.push(part);
+        return;
+      }
+
+      if (/^[\p{P}]+$/u.test(part)) {
+        let previousWordIndex = attachedParts.length - 1;
+        while (previousWordIndex >= 0 && /^\s+$/u.test(attachedParts[previousWordIndex])) {
+          previousWordIndex -= 1;
+        }
+
+        const previousWord = attachedParts[previousWordIndex];
+        if (previousWord && !/^[\p{P}]+$/u.test(previousWord)) {
+          attachedParts.splice(previousWordIndex + 1);
+          attachedParts[previousWordIndex] += part;
+        } else {
+          leadingPunctuation += part;
+        }
+        return;
+      }
+
+      attachedParts.push(`${leadingPunctuation}${part}`);
+      leadingPunctuation = '';
+    });
+
+    if (leadingPunctuation) attachedParts.push(leadingPunctuation);
+    parts.splice(0, parts.length, ...attachedParts);
+  }
   const renderedParts = parts.map((part, pIdx) => {
     if (!part) return null;
     const isArabicPart = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(part);

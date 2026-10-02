@@ -40,14 +40,10 @@ const Icon = ({ name }) => {
       return <svg {...baseProps}><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>;
     case 'search': 
       return <svg {...baseProps}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>;
-    case 'home':
-      return <svg {...baseProps}><path d="m3 10 9-7 9 7"></path><path d="M5 9v11h14V9"></path><path d="M9 20v-6h6v6"></path></svg>;
     case 'edit': 
       return <svg {...baseProps}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
     case 'clock': 
       return <svg {...baseProps}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
-    case 'headphones':
-      return <svg {...baseProps}><path d="M3 14v-3a9 9 0 0 1 18 0v3"></path><path d="M5 14h2v6H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2zm14 0h-2v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2z"></path></svg>;
     case 'refresh': 
       return <svg {...baseProps}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>;
     case 'zap': 
@@ -63,72 +59,19 @@ const Icon = ({ name }) => {
   }
 };
 
-const useMeasuredHeightTransition = () => {
-  const containerRef = React.useRef(null);
-  const contentRef = React.useRef(null);
-  const setContainerRef = React.useCallback(node => { containerRef.current = node; }, []);
-  const setContentRef = React.useCallback(node => { contentRef.current = node; }, []);
-
-  React.useLayoutEffect(() => {
-    const container = containerRef.current;
-    const content = contentRef.current;
-    if (!container || !content || typeof ResizeObserver === 'undefined' || typeof container.animate !== 'function') return;
-
-    let previousContentHeight = null;
-    let activeAnimation = null;
-    const observer = new ResizeObserver(() => {
-      const nextContentHeight = content.getBoundingClientRect().height;
-      if (previousContentHeight === null) {
-        previousContentHeight = nextContentHeight;
-        return;
-      }
-      if (Math.abs(nextContentHeight - previousContentHeight) < 1) return;
-
-      const style = getComputedStyle(container);
-      const verticalExtras = ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth']
-        .reduce((total, property) => total + (Number.parseFloat(style[property]) || 0), 0);
-      const targetHeight = nextContentHeight + verticalExtras;
-      const currentHeight = activeAnimation
-        ? container.getBoundingClientRect().height
-        : previousContentHeight + verticalExtras;
-      previousContentHeight = nextContentHeight;
-      activeAnimation?.cancel();
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      activeAnimation = container.animate(
-        [{ height: `${currentHeight}px` }, { height: `${targetHeight}px` }],
-        { duration: 280, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)' }
-      );
-      activeAnimation.onfinish = () => { activeAnimation = null; };
-    });
-    observer.observe(content);
-
-    return () => {
-      observer.disconnect();
-      activeAnimation?.cancel();
-    };
-  }, []);
-
-  return { setContainerRef, setContentRef };
-};
-
 const ModalLeft = ({
   selectedSong, realSelectedSong, setSelectedSong, highResArt, releaseType, isSaved, toggleLibrary, customData,
-  handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
+  setCustomData, handleDataChange, handleLocalFileChange, handleClearLocal, isEditing, setIsEditing,
   saveData, finalLinks, setCurrentTrack, currentTrack, isSyncMode, setIsSyncMode, isSyncLoading,
   startSyncMode, saveSyncData, isImageManagerOpen, setIsImageManagerOpen,
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
-  isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
   closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
   triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
-  const { setContainerRef: setWorkspaceControlsContainer, setContentRef: setWorkspaceControlsContent } = useMeasuredHeightTransition();
-  const { setContainerRef: setVaultActionsContainer, setContentRef: setVaultActionsContent } = useMeasuredHeightTransition();
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
   const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
-  const [loadedArtwork, setLoadedArtwork] = useState(null);
   const [pressedSyncKey, setPressedSyncKey] = useState(null);
   const [activePlaybackSource, setActivePlaybackSource] = useState(() => {
     const current = window.globalActiveSource;
@@ -174,6 +117,37 @@ const ModalLeft = ({
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
   const hasLocalFile = Boolean(customData?.hasLocal);
   const hasArl = Boolean(settings?.deezerArl);
+
+  useEffect(() => {
+    const localUrl = new URL(window.location.href);
+    const videoId = localUrl.searchParams.get('playYoutube');
+    if (!videoId || !selectedSong?.trackId) return;
+
+    const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    if (customData?.yt !== youtubeUrl) {
+      setCustomData(previous => previous.yt === youtubeUrl ? previous : { ...previous, yt: youtubeUrl });
+      return;
+    }
+    if (isSyncMode && !availableSources?.includes('youtube')) return;
+
+    localUrl.searchParams.delete('playYoutube');
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${localUrl.pathname}${localUrl.search}${localUrl.hash}`
+    );
+
+    if (isSyncMode) {
+      setManualSource('youtube');
+    } else {
+      setCurrentTrack({
+        ...selectedSong,
+        customLinks: { ...selectedSong.customLinks, ...customData, yt: youtubeUrl },
+        forceSource: 'youtube',
+        playId: Date.now()
+      });
+    }
+  }, [selectedSong?.trackId, isSyncMode, customData?.yt, availableSources, setCustomData, setManualSource, setCurrentTrack]);
 
   useEffect(() => {
     const handleActiveSource = (event) => {
@@ -250,6 +224,14 @@ const ModalLeft = ({
   const handleYtPlay = () => {
     setShowDeezerNotice(false);
     setShowSpotifyNotice(false);
+    const videoId = extractYouTubeId(ytUrl);
+    if (window.location.hostname === '127.0.0.1' && videoId) {
+      const localUrl = new URL(window.location.href);
+      localUrl.hostname = 'localhost';
+      localUrl.searchParams.set('playYoutube', videoId);
+      window.location.replace(localUrl.href);
+      return;
+    }
     if (isSyncMode) {
       setManualSource('youtube');
       return;
@@ -280,14 +262,7 @@ const ModalLeft = ({
     <div className="modal-left-col">
       <div className="modal-left-static">
         <div className="modal-top">
-          <img
-            key={highResArt || selectedSong.trackId}
-            src={highResArt}
-            alt="Artwork"
-            className={`modal-cover${loadedArtwork === highResArt ? ' is-ready' : ''}`}
-            onLoad={() => setLoadedArtwork(highResArt)}
-            onError={() => setLoadedArtwork(highResArt)}
-          />
+          <img src={highResArt} alt="Artwork" className="modal-cover" />
           <div className="modal-header-info">
             <h2>
               {toSmartPunctuation(mainTitle)}
@@ -338,7 +313,7 @@ const ModalLeft = ({
       </div>
       <div className="modal-left-scrollable">
         <div className="modal-links glass-panel-light">
-          <div className="links-header"><label>Play Music From</label></div>
+          <div className="links-header"><label>Play Music From:</label></div>
           
           {isEditing ? (
             <div className="platform-inputs-grid">
@@ -487,28 +462,24 @@ const ModalLeft = ({
                     </button>
                   </div>
                   
-                  <div className={`lyrics-debug-slot ${lyricsViewMode !== 'plain' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode === 'plain'}>
-                    <div className="lyrics-debug-slot-inner">
-                      {lyricsViewMode === 'focused' && (
-                        <button
-                          className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`}
-                           onClick={() => setShowAdlibDebug(!showAdlibDebug)}
-                        >
-                          <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
-                          {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
-                        </button>
-                      )}
-                      {lyricsViewMode === 'live' && (
-                        <button
-                          className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`}
-                           onClick={() => setShowLiveDebug(!showLiveDebug)}
-                        >
-                          <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
-                          {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                  {lyricsViewMode === 'focused' && (
+                    <button 
+                       className={`edit-links-btn debug-toggle-btn ${showAdlibDebug ? 'is-active' : ''}`} 
+                       onClick={() => setShowAdlibDebug(!showAdlibDebug)}
+                    >
+                      <Icon name={showAdlibDebug ? 'eye-off' : 'tools'} />
+                      {showAdlibDebug ? 'Hide Adlib Debug' : 'Show Adlib Debug'}
+                    </button>
+                  )}
+                  {lyricsViewMode === 'live' && (
+                    <button 
+                       className={`edit-links-btn debug-toggle-btn ${showLiveDebug ? 'is-active' : ''}`} 
+                       onClick={() => setShowLiveDebug(!showLiveDebug)}
+                    >
+                      <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
+                      {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
+                    </button>
+                  )}
                 </>
               ) : hasPlainLyrics ? (
                 <span className="no-sync-warning">
@@ -522,8 +493,7 @@ const ModalLeft = ({
             </div>
           </div>
         )}
-        <div ref={setWorkspaceControlsContainer} className="workspace-controls glass-panel-light measured-height-panel">
-          <div ref={setWorkspaceControlsContent} className="measured-height-content">
+        <div className="workspace-controls glass-panel-light">
           <div className="links-header"><label>Workspace Controls</label></div>
           
           {isSyncMode && !isTranslationManagerOpen && (
@@ -634,7 +604,7 @@ const ModalLeft = ({
                   style={{ opacity: isLrcFetching ? 0.6 : 1, cursor: isLrcFetching ? 'wait' : 'pointer', background: 'rgba(29, 185, 84, 0.2)', borderColor: '#1DB954' }}
                 >
                   {isLrcFetching ? <Icon name="clock" /> : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? <Icon name="refresh" /> : <Icon name="refresh" />) : <Icon name="zap" />)}
-                  {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Auto-Sync' : 'Manual Sync') : 'Auto-Sync Lyrics')}
+                  {isLrcFetching ? 'Fetching Databases...' : (realSelectedSong?.autoSyncData?.length > 0 ? (isShowingAutoSync ? 'Show Manual Sync' : 'Show Auto-Sync') : 'Auto-Sync Lyrics')}
                 </button>
                 {customData.lyrics ? (
                   <>
@@ -654,48 +624,37 @@ const ModalLeft = ({
                     </button>
                   </>
                 ) : (
-                  <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
-                    <Icon name="plus" /> Add Custom Lyrics
-                  </button>
+                  <>
+                    <button className="edit-links-btn" onClick={() => setIsEditing(true)}>
+                      <Icon name="plus" /> Add Custom Lyrics
+                    </button>
+                    <a href={`https://www.google.com/search?q=${encodeURIComponent(`${selectedSong.trackName} ${selectedSong.artistName} lyrics`)}`} target="_blank" rel="noreferrer" className="edit-links-btn search-google-btn">
+                      <Icon name="search" /> Search Google
+                    </a>
+                  </>
                 )}
               </>
             )}
-            {!isSyncMode && !isTranslationManagerOpen && !isEditing && !isImageManagerOpen && hasValidSyncData && (
-              <button
-                className={`edit-links-btn debug-toggle-btn sync-delay-toggle ${isHeadphoneDelayEnabled ? 'is-active' : ''}`}
-                onClick={toggleHeadphoneDelay}
-                aria-pressed={isHeadphoneDelayEnabled}
-                title={`Toggle synced lyric delay (${Math.round(headphoneDelayMs)} ms)`}
-              >
-                <Icon name="headphones" />
-                Sync Delay: {Math.round(headphoneDelayMs)} ms
-              </button>
-            )}
-          </div>
           </div>
         </div>
         <div id="mobile-player-slot"></div>
-        <div ref={setVaultActionsContainer} className="workspace-controls glass-panel-light bottom-actions measured-height-panel">
-          <div ref={setVaultActionsContent} className="measured-height-content">
-          <div className="links-header"><label>Vault Actions</label></div>
-          <div className="action-buttons-grid">
-            {isSaved ? (
-              <button className="edit-links-btn delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
-                <Icon name="trash" /> Remove from Vault
-              </button>
-            ) : (
-              <button className="edit-links-btn save-mode" onClick={(e) => {
-                toggleLibrary(e, selectedSong);
-                handleAutoSyncDatabases(true);
-              }}>
-                <Icon name="plus" /> Add to Vault
-              </button>
-            )}
-            <button className="edit-links-btn return-dashboard-btn" onClick={handleCloseModal}>
-              <Icon name="home" /> Return to Dashboard
+        <div className="bottom-actions">
+          {isSaved ? (
+            <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
+              <Icon name="trash" /> Remove from Vault
             </button>
-          </div>
-          </div>
+          ) : (
+            <button className="edit-links-btn save-mode" onClick={(e) => {
+              toggleLibrary(e, selectedSong);
+              handleAutoSyncDatabases(true);
+            }}>
+              <Icon name="plus" /> Add to Vault
+            </button>
+          )}
+          
+          <button className="return-dashboard-btn" onClick={handleCloseModal}>
+            Return to Dashboard
+          </button>
         </div>
       </div>
     </div>
