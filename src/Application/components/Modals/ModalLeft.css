@@ -666,16 +666,6 @@ a.platform-label.yt-color:hover {
     box-shadow: 0 4px 15px rgba(250, 36, 60, 0.4);
 }
 
-.bottom-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: min(100%, 420px);
-  margin-inline: auto;
-  box-sizing: border-box;
-}
-
 .search-google-btn {
   background: rgba(255, 255, 255, 0.15);
   text-decoration: none;

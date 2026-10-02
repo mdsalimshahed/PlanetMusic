@@ -262,12 +262,7 @@ const ModalLeft = ({
     <div className="modal-left-col">
       <div className="modal-left-static">
         <div className="modal-top">
-          <img
-            src={highResArt}
-            alt="Artwork"
-            className="modal-cover"
-            onLoad={(event) => event.currentTarget.classList.add('is-ready')}
-          />
+          <img src={highResArt} alt="Artwork" className="modal-cover" />
           <div className="modal-header-info">
             <h2>
               {toSmartPunctuation(mainTitle)}
@@ -645,7 +640,7 @@ const ModalLeft = ({
         <div id="mobile-player-slot"></div>
         <div className="bottom-actions">
           {isSaved ? (
-            <button className="edit-links-btn delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
+            <button className="delete-icon-btn" onClick={(e) => toggleLibrary(e, selectedSong)} title="Remove from Vault">
               <Icon name="trash" /> Remove from Vault
             </button>
           ) : (
@@ -657,7 +652,7 @@ const ModalLeft = ({
             </button>
           )}
           
-          <button className="edit-links-btn return-dashboard-btn" onClick={handleCloseModal}>
+          <button className="return-dashboard-btn" onClick={handleCloseModal}>
             Return to Dashboard
           </button>
         </div>
