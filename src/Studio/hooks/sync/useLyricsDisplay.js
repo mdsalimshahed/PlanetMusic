@@ -143,7 +143,6 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       if (activeBgLineObj.singer) {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (activeBgLineObj.singer !== displaySingerBg?.name) {
-          setIsSingerVisible(false);
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
                      
           transitionTimerRef.current = setTimeout(() => {
