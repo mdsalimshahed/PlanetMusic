@@ -132,6 +132,8 @@
   position: relative;
   z-index: 6;
   margin: 8px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   pointer-events: none;
   background: transparent !important;
   border: none !important;
