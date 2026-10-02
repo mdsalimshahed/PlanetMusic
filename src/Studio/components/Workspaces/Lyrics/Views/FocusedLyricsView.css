@@ -83,13 +83,6 @@
   overflow-wrap: break-word !important;
 }
 
-.focused-line .chunk-translation .trans-word,
-.focused-adlib-line .chunk-translation .trans-word {
-  white-space: nowrap !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-}
-
 .focused-line .lyric-word-group,
 .focused-line .trans-word-group {
   display: inline !important;
