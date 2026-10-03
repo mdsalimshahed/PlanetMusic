@@ -227,8 +227,8 @@
 .focused-line.active .trans-word,
 .focused-adlib-line.active .lyric-word,
 .focused-adlib-line.active .trans-word {
-  animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc(var(--word-index, 0) * 0.055s);
+  animation: focused-word-enter var(--focused-enter-duration, 0.36s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0.055s));
 }
 
 .focused-line.exiting .lyric-word,

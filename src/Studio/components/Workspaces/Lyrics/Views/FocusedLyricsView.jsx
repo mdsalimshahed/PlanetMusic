@@ -31,30 +31,37 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
             const words = node.querySelectorAll('.lyric-word, .trans-word');
-                        const start = parseFloat(node.dataset.start);
-                        const end = parseFloat(node.dataset.end);
-                        const nextStart = parseFloat(node.dataset.nextStart);
-                        const boundaries = [end, nextStart].filter(value => !isNaN(value));
-                        const exitBoundary = boundaries.length > 0 ? Math.min(...boundaries) : NaN;
-                        const activeDuration = !isNaN(start) && !isNaN(exitBoundary) && exitBoundary > start
-                            ? exitBoundary - start
-                            : 0;
-                        const exitWindow = activeDuration * 0.05;
-                        const exitDuration = Math.max(0.30, exitWindow);
+            const start = parseFloat(node.dataset.start);
+            const end = parseFloat(node.dataset.end);
+            const nextStart = parseFloat(node.dataset.nextStart);
+            const boundaries = [end, nextStart].filter(value => !isNaN(value));
+            const exitBoundary = boundaries.length > 0 ? Math.min(...boundaries) : NaN;
+            const activeDuration = !isNaN(start) && !isNaN(exitBoundary) && exitBoundary > start
+                ? exitBoundary - start
+                : 0;
+
+            const exitDuration = activeDuration > 0 ? Math.max(0.05, Math.min(0.25, activeDuration * 0.2)) : 0.30;
+            const exitStart = !isNaN(start) && activeDuration > 0 ? exitBoundary - exitDuration : NaN;
+
+            const enterDuration = activeDuration > 0 ? Math.min(0.36, activeDuration * 0.4) : 0.36;
+            const enterStagger = activeDuration > 0 ? Math.min(0.055, (activeDuration * 0.25) / Math.max(1, words.length)) : 0.055;
+
             node.style.setProperty('--total-words', words.length);
-                        node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
-                        node.style.setProperty('--focused-exit-stagger', '0s');
-            node.style.setProperty('--focused-exit-layer-duration', `${Math.max(0.18, exitDuration * 0.62)}s`);
+            node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);
+            node.style.setProperty('--focused-enter-stagger', `${enterStagger}s`);
+            node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
+            node.style.setProperty('--focused-exit-stagger', '0s');
+            node.style.setProperty('--focused-exit-layer-duration', `${Math.max(0.10, exitDuration * 0.62)}s`);
             node.style.setProperty('--focused-exit-translation-delay', '0s');
             node.style.setProperty('--focused-exit-pronunciation-delay', `${exitDuration * 0.18}s`);
             node.style.setProperty('--focused-exit-main-delay', `${exitDuration * 0.36}s`);
             return {
                 node,
-                                start,
-                                end,
-                                nextStart,
-                                exitStart: !isNaN(start) && activeDuration > 0 ? start + activeDuration * 0.95 : NaN,
-                                exitBoundary,
+                start,
+                end,
+                nextStart,
+                exitStart,
+                exitBoundary,
                 isActive: node.classList.contains('active')
             };
         });
