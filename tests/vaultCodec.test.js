@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { getVaultArtistData, isPackedVault, packVault, unpackVault } from '../src/Application/services/vaultCodec.js';
+import { getVaultArtistData, isPackedVault, packVault, sanitizeVaultSettings, unpackVault } from '../src/Application/services/vaultCodec.js';
 
 const sampleUrl = new URL('../public/PlanetMusic_Backup.json', import.meta.url);
 
@@ -61,6 +61,22 @@ test('continues to read legacy arrays and object backups', () => {
     settings: { adsEnabled: false }
   });
   assert.equal(isPackedVault(packVault({ library: songs })), true);
+});
+
+test('removes obsolete client credentials from vault settings', () => {
+  const settings = {
+    spotifyConfig: { clientId: 'public-id', clientSecret: 'private-secret' },
+    spotifyClientId: 'legacy-id',
+    spotifyClientSecret: 'legacy-secret',
+    youtubeApiKey: 'legacy-key',
+    deezerArl: 'remembered-arl',
+    adsEnabled: false
+  };
+
+  assert.deepStrictEqual(sanitizeVaultSettings(settings), {
+    deezerArl: 'remembered-arl',
+    adsEnabled: false
+  });
 });
 
 test('reads artist metadata without unpacking packed song lyrics', () => {

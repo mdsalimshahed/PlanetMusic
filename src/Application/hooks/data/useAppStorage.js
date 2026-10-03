@@ -1,7 +1,7 @@
 /* --- src/hooks/data/useAppStorage.js --- */
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
-import { packVault, unpackVault } from '../../services/vaultCodec.js';
+import { packVault, sanitizeVaultSettings, unpackVault } from '../../services/vaultCodec.js';
 
 const DEEZER_ARL_STORAGE_KEY = 'planetmusic.deezerArl';
 
@@ -56,12 +56,9 @@ export const useAppStorage = (urlSearchQuery) => {
       parsed.deezerArl = parsed.rememberDeezerArl ? readRememberedDeezerArl() : '';
       if (!parsed.rememberDeezerArl) updateRememberedDeezerArl('');
       
-      delete parsed.youtubeApiKey;
-      delete parsed.spotifyClientId;
-      delete parsed.spotifyClientSecret;
       delete parsed.persistentMemory; // Cleanup legacy setting if it exists
       
-      return parsed;
+      return sanitizeVaultSettings(parsed);
     }
     return {
       cardFontSize: 1.6,
@@ -121,7 +118,7 @@ export const useAppStorage = (urlSearchQuery) => {
 
   // Persistent Memory engine - ALWAYS ON
   useEffect(() => {
-    const persistedSettings = { ...settings };
+    const persistedSettings = sanitizeVaultSettings(settings);
     delete persistedSettings.deezerArl;
     updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
     localStorage.setItem('appSettings', JSON.stringify(persistedSettings));

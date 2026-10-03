@@ -349,6 +349,15 @@ export const getVaultArtistData = (data) => {
   }));
 };
 
+export const sanitizeVaultSettings = (settings) => {
+  const sanitized = { ...settings };
+  delete sanitized.spotifyConfig;
+  delete sanitized.spotifyClientId;
+  delete sanitized.spotifyClientSecret;
+  delete sanitized.youtubeApiKey;
+  return sanitized;
+};
+
 export const packVault = ({ library, settings }) => {
   const packed = { format: VAULT_FORMAT, version: VAULT_VERSION, library: library.map(packSong) };
   if (settings !== undefined) packed.settings = settings;

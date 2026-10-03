@@ -1,7 +1,7 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
 import { useState, useEffect } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
-import { packVault, unpackVault } from '../../services/vaultCodec.js';
+import { packVault, sanitizeVaultSettings, unpackVault } from '../../services/vaultCodec.js';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
@@ -40,7 +40,10 @@ export const useVaultOperations = ({
     if (Array.isArray(decodedData.library)) {
       mergeSongs(decodedData.library);
       setLibrary(newLibrary);
-      if (decodedData.settings) setSettings(prev => ({ ...prev, ...decodedData.settings }));
+      if (decodedData.settings) {
+        const importedSettings = sanitizeVaultSettings(decodedData.settings);
+        setSettings(prev => ({ ...prev, ...importedSettings }));
+      }
       if (shouldRedirect) handleHomeClick();
     }
   };
@@ -178,7 +181,7 @@ export const useVaultOperations = ({
       return optimizedSong;
     });
     
-    const exportSettings = { ...settings };
+    const exportSettings = sanitizeVaultSettings(settings);
     delete exportSettings.deezerArl;
     const jsonString = JSON.stringify(packVault({ library: optimizedLibrary, settings: exportSettings }));
     const blob = new Blob([jsonString], { type: 'application/json' });

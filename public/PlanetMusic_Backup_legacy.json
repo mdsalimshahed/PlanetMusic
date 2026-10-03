@@ -89803,10 +89803,6 @@
     "transliterationOpacity": 0.9,
     "disableAnimations": false,
     "adsEnabled": false,
-    "spotifyConfig": {
-      "clientId": "4afd9bd0c3d8453c8e297b5e93b08001",
-      "clientSecret": "5e21379985a244ad9b046e06958d6dd6"
-    },
     "liveSyncLineGap": 0,
     "translationTopPadding": 4,
     "transliterationBottomPadding": 5,
