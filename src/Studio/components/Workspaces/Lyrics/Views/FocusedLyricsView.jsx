@@ -1,6 +1,7 @@
 /* --- src/components/Workspaces/Lyrics/Views/FocusedLyricsView.jsx --- */
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { LyricLineWrapper, measureFocusedLineLayout } from '../LyricsLineRenderer.jsx';
+import { getFocusedLyricsAnimationTiming } from '../focusedLyricsTiming.js';
 import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './FocusedLyricsView.css';
@@ -8,89 +9,70 @@ import './FocusedLyricsView.css';
 const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
-    const timedLinesRef = useRef([]);
+  const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-    const adlibTimelineRef = useRef([]);
-    const adlibCursorRef = useRef(0);
-    const lastAdlibTimeRef = useRef(null);
-    const activeLineIndexRef = useRef(-1);
-    const syncList = selectedSong?.syncData;
-    const nextStarts = useMemo(() => {
-        const syncData = syncList || [];
-        const result = Array(syncData.length).fill('NaN');
-        let nextStart = 'NaN';
-        for (let index = syncData.length - 1; index >= 0; index--) {
-            result[index] = nextStart;
-            if (syncData[index]?.start != null) nextStart = syncData[index].start;
-        }
-        return result;
-    }, [syncList]);
+  const adlibTimelineRef = useRef([]);
+  const adlibCursorRef = useRef(0);
+  const lastAdlibTimeRef = useRef(null);
+  const lastLyricsTimeRef = useRef(null);
+  const activeLineIndexRef = useRef(-1);
+  const syncList = selectedSong?.syncData;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (containerRef.current) {
-        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
-            const words = node.querySelectorAll('.lyric-word, .trans-word');
-            const start = parseFloat(node.dataset.start);
-            const end = parseFloat(node.dataset.end);
-            const nextStart = parseFloat(node.dataset.nextStart);
-            const boundaries = [end, nextStart].filter(value => !isNaN(value));
-            const exitBoundary = boundaries.length > 0 ? Math.min(...boundaries) : NaN;
-            const activeDuration = !isNaN(start) && !isNaN(exitBoundary) && exitBoundary > start
-                ? exitBoundary - start
-                : 0;
+  useLayoutEffect(() => {
+    if (!containerRef.current) return;
 
-            const exitDuration = activeDuration > 0 ? Math.max(0.05, Math.min(0.25, activeDuration * 0.2)) : 0.30;
-            const exitStart = !isNaN(start) && activeDuration > 0 ? exitBoundary - exitDuration : NaN;
+    cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
+      const indexedWords = Array.from(node.querySelectorAll('.lyric-word, .trans-word'))
+        .map(word => parseFloat(word.style.getPropertyValue('--word-index')))
+        .filter(Number.isFinite);
+      const wordCount = indexedWords.reduce((count, index) => Math.max(count, index + 1), 1);
+      const start = parseFloat(node.dataset.start);
+      const end = parseFloat(node.dataset.end);
+      const lineDuration = Number.isFinite(start) && Number.isFinite(end) && end > start
+        ? end - start
+        : 0;
+      const animationTiming = getFocusedLyricsAnimationTiming(lineDuration, wordCount);
+      const { enterDuration, enterStagger, exitDuration } = animationTiming;
+      const exitStart = lineDuration > 0 ? end - exitDuration : NaN;
 
-            const enterDuration = activeDuration > 0 ? Math.min(0.36, activeDuration * 0.4) : 0.36;
-            const enterStagger = activeDuration > 0 ? Math.min(0.055, (activeDuration * 0.25) / Math.max(1, words.length)) : 0.055;
+      node.style.setProperty('--total-words', wordCount);
+      node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);
+      node.style.setProperty('--focused-enter-stagger', `${enterStagger}s`);
+      node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
+      node.style.setProperty('--focused-exit-layer-duration', `${animationTiming.exitLayerDuration}s`);
+      return {
+        node,
+        start,
+        end,
+        exitStart,
+        exitBoundary: end,
+        isActive: node.classList.contains('active')
+      };
+    });
+    timedLinesRef.current = cachedLinesRef.current
+      .map((line, index) => ({ ...line, index }))
+      .filter(line => Number.isFinite(line.start))
+      .sort((first, second) => first.start - second.start);
+    activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
 
-            node.style.setProperty('--total-words', words.length);
-            node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);
-            node.style.setProperty('--focused-enter-stagger', `${enterStagger}s`);
-            node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
-            node.style.setProperty('--focused-exit-stagger', '0s');
-            node.style.setProperty('--focused-exit-layer-duration', `${Math.max(0.10, exitDuration * 0.62)}s`);
-            node.style.setProperty('--focused-exit-translation-delay', '0s');
-            node.style.setProperty('--focused-exit-pronunciation-delay', `${exitDuration * 0.18}s`);
-            node.style.setProperty('--focused-exit-main-delay', `${exitDuration * 0.36}s`);
-            return {
-                node,
-                start,
-                end,
-                nextStart,
-                exitStart,
-                exitBoundary,
-                isActive: node.classList.contains('active')
-            };
-        });
-                timedLinesRef.current = cachedLinesRef.current
-                    .map((line, index) => ({ ...line, index }))
-                    .filter(line => !isNaN(line.start))
-                    .sort((first, second) => first.start - second.start);
-                activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
-        
-        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
-            node,
-            start: parseFloat(node.dataset.start),
-            end: parseFloat(node.dataset.end),
-            state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
-        }));
-        adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
-        adlibCursorRef.current = 0;
-        lastAdlibTimeRef.current = null;
+    cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
+      node,
+      start: parseFloat(node.dataset.start),
+      end: parseFloat(node.dataset.end),
+      state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
+    }));
+    adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
+    adlibCursorRef.current = 0;
+    lastAdlibTimeRef.current = null;
 
-        if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
-            handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
-        }
-      }
-    }, 50);
-    return () => clearTimeout(timer);
-    }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
+  }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
 
-  const handleTimeUpdate = (time) => {
+  const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;
+
+    const previousTime = lastLyricsTimeRef.current;
+    const isSeek = previousTime !== null && Math.abs(time - previousTime) > 0.35;
+    lastLyricsTimeRef.current = time;
     
     const lines = cachedLinesRef.current;
     const timedLines = timedLinesRef.current;
@@ -102,14 +84,11 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         else high = middle;
     }
 
-    let newActiveIndex = -1;
-    for (let i = low - 1; i >= 0; i--) {
-        const candidate = timedLines[i];
-        if (isNaN(candidate.end) || time <= candidate.end) {
-            newActiveIndex = candidate.index;
-            break;
-        }
-    }
+    const candidate = timedLines[low - 1];
+    let newActiveIndex = candidate &&
+      (isNaN(candidate.exitBoundary) || time < candidate.exitBoundary)
+      ? candidate.index
+      : -1;
 
     const scheduledExitIndex = newActiveIndex;
     if (scheduledExitIndex !== -1) {
@@ -131,11 +110,37 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
 
         if (newActiveIndex !== -1) {
             const activeLine = lines[newActiveIndex];
+            activeLine.node.style.setProperty(
+              '--focused-enter-elapsed',
+              `${isSeek ? 0 : Math.max(0, time - activeLine.start)}s`
+            );
             activeLine.node.classList.add('active');
             activeLine.node.classList.remove('exiting', 'past');
             activeLine.isActive = true;
         }
         activeLineIndexRef.current = newActiveIndex;
+    }
+
+    if (isSeek && newActiveIndex !== -1 && previousActiveIndex === newActiveIndex) {
+      const activeLine = lines[newActiveIndex];
+      activeLine.node.classList.remove('active', 'exiting', 'past');
+      void activeLine.node.offsetWidth;
+      activeLine.node.style.setProperty('--focused-enter-elapsed', '0s');
+      activeLine.node.classList.add('active');
+      activeLine.isActive = true;
+    }
+
+    const isInsideExitWindow = candidate &&
+      Number.isFinite(candidate.exitStart) &&
+      time >= candidate.exitStart &&
+      time < candidate.exitBoundary;
+    if (isSeek && isInsideExitWindow) {
+      const exitLine = lines[candidate.index];
+      measureFocusedLineLayout(exitLine.node);
+      exitLine.node.classList.remove('active', 'exiting', 'past');
+      void exitLine.node.offsetWidth;
+      exitLine.node.classList.add('exiting');
+      exitLine.isActive = false;
     }
 
     const adlibTimeline = adlibTimelineRef.current;
@@ -150,7 +155,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         }
     }
     lastAdlibTimeRef.current = time;
-  };
+  }, [isPlayingCurrentSong]);
 
   useEffect(() => {
     const clearAllActive = () => {
@@ -159,6 +164,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
             item.isActive = false;
         });
         activeLineIndexRef.current = -1;
+        lastLyricsTimeRef.current = null;
         cachedAdlibsRef.current.forEach(item => {
             if (item.state !== 'hidden') {
                 item.node.classList.add('adlib-hidden');
@@ -189,7 +195,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-    }, [isPlayingCurrentSong, currentTrack, lyricsPlaybackOffsetSeconds]);
+    }, [isPlayingCurrentSong, currentTrack, liveParsedLyrics, syncList, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
 
   return (
     <div className="focused-lyrics-preview" ref={containerRef}>
@@ -199,7 +205,6 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
                 key={i}
                 lineObj={line}
                 savedNode={syncList?.[i]}
-                nextStart={nextStarts[i]}
                 viewMode="focused"
                 handleLineClick={handleLineClick}
                 masterPalette={masterPalette}

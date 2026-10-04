@@ -176,9 +176,11 @@
 @keyframes focused-wrapper-fade-exit {
   from {
     opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
   }
   to {
     opacity: 0;
+    transform: translate3d(-50%, calc(-50% + 12px), 0);
   }
 }
 
@@ -207,8 +209,6 @@
   visibility: visible;
   transform: translate3d(-50%, -50%, 0);
   z-index: 1;
-  animation: focused-wrapper-fade-exit var(--focused-exit-duration, 0.3s) linear forwards !important;
-  animation-delay: 0s !important;
 }
 
 /* Words are hidden until the active line starts their single entry animation. */
@@ -227,8 +227,8 @@
 .focused-line.active .trans-word,
 .focused-adlib-line.active .lyric-word,
 .focused-adlib-line.active .trans-word {
-  animation: focused-word-enter var(--focused-enter-duration, 0.36s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0.055s));
+  animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s));
 }
 
 .focused-line.exiting .lyric-word,
@@ -237,14 +237,14 @@
 .focused-adlib-line.exiting .trans-word {
   opacity: 1;
   transform: none;
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
   will-change: opacity, transform;
 }
 
 /* A single-row line exits as one block; wrapped lines keep their row stagger. */
 .focused-line.exiting:not(.has-wrapped-content) .core-chunks {
-  animation: focused-main-content-exit var(--focused-exit-layer-duration, 0.18s) ease both !important;
+  animation: focused-main-content-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: 0s !important;
 }
 
@@ -259,8 +259,8 @@
 /* Hyphen segments use the same exit timing as regular lyric tokens. */
 .focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .lyric-word:not(.hyphenated-word-part),
 .focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .trans-word:not(.hyphenated-word-part) {
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
   will-change: opacity, transform;
 }
 
@@ -273,8 +273,8 @@
   display: inline-block !important;
   opacity: 1;
   transform: none;
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
   will-change: opacity, transform;
 }
 
@@ -317,16 +317,16 @@
 .focused-adlib-line.active .chunk-translation .trans-word {
   opacity: 0;
   transform: translate3d(0, 8px, 0);
-  animation: focused-word-enter 0.36s cubic-bezier(0.25, 0.8, 0.25, 1) both !important;
-  animation-delay: calc(var(--word-index, 0) * 0.055s) !important;
+  animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both !important;
+  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s)) !important;
 }
 
 .focused-line.exiting .chunk-translation .trans-word,
 .focused-adlib-line.exiting .chunk-translation .trans-word {
   opacity: 1;
   transform: none;
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
   will-change: opacity, transform;
 }
 
@@ -337,7 +337,19 @@
   transition: none;
 }
 
-.focused-line.exiting .pronunciation-text,
+.focused-line.active .pronunciation-text {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
+  animation-delay: calc(var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s));
+}
+
+.focused-line.exiting .pronunciation-text {
+  opacity: 1 !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
+}
+
 .focused-adlib-line.exiting .pronunciation-text {
   opacity: 1 !important;
   animation: none;
@@ -346,8 +358,8 @@
 .focused-line.exiting .inline-cjk-chunk > .pronunciation-text {
   opacity: 1 !important;
   transform: none;
-  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0.12s) ease both !important;
-  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0.035s)) !important;
+  animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
+  animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
   will-change: opacity, transform;
 }
 
@@ -385,6 +397,9 @@
   overflow-wrap: normal;
   max-width: var(--adlib-max-width, 85%);
   box-sizing: border-box;
+  --focused-enter-duration: 0.36s;
+  --focused-enter-stagger: 0.055s;
+  --focused-wrap-exit-stagger: 0.035s;
   opacity: 0;
   transform: translate3d(-50%, calc(-50% + 20px), 0) rotate(var(--adlib-rot, 0deg)) scale(var(--adlib-scale, 1));
   transition:
@@ -443,4 +458,3 @@
     );
   }
 }
-

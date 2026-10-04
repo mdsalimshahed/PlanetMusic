@@ -53,16 +53,28 @@ export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayi
 };
 
 export const measureFocusedLineLayout = (wrapper) => {
-  const tokens = Array.from(wrapper.querySelectorAll('.lyric-word, .trans-word'));
-  const rowTops = [...new Set(tokens.map(token => Math.round(token.getBoundingClientRect().top)))]
-    .sort((firstTop, secondTop) => firstTop - secondTop);
-  wrapper.classList.toggle('has-wrapped-content', rowTops.length > 1);
+  const tokenPositions = Array.from(wrapper.querySelectorAll('.lyric-word, .trans-word'))
+    .map(token => {
+      let top = 0;
+      let element = token;
+      while (element && element !== wrapper) {
+        top += element.offsetTop;
+        element = element.offsetParent;
+      }
+      return { token, top };
+    })
+    .sort((first, second) => first.top - second.top);
+  let rowIndex = -1;
+  let rowTop = null;
 
-  tokens.forEach(token => {
-    const top = Math.round(token.getBoundingClientRect().top);
-    const rowIndex = rowTops.findIndex(rowTop => Math.abs(rowTop - top) <= 6);
+  tokenPositions.forEach(({ token, top }) => {
+    if (rowTop === null || Math.abs(rowTop - top) > 6) {
+      rowIndex++;
+      rowTop = top;
+    }
     token.style.setProperty('--wrapped-line-index', rowIndex);
   });
+  wrapper.classList.toggle('has-wrapped-content', rowIndex > 0);
 
   wrapper.querySelectorAll('.inline-cjk-chunk > .pronunciation-text').forEach(pronunciation => {
     const pairedToken = pronunciation.parentElement?.querySelector('.lyric-word, .trans-word');
@@ -74,8 +86,20 @@ export const measureFocusedLineLayout = (wrapper) => {
     }
   });
 
-  wrapper.style.setProperty('--wrapped-line-count', rowTops.length);
-  wrapper.style.setProperty('--focused-wrap-exit-stagger', '0.07s');
+  const rowCount = rowIndex + 1;
+  wrapper.querySelectorAll('.pronunciation-text').forEach(pronunciation => {
+    if (!pronunciation.parentElement?.classList.contains('inline-cjk-chunk')) {
+      pronunciation.style.setProperty('--wrapped-line-index', rowCount);
+    }
+  });
+
+  wrapper.style.setProperty('--wrapped-line-count', rowCount);
+  const exitDuration = parseFloat(wrapper.style.getPropertyValue('--focused-exit-duration')) || 0;
+  const exitLayerDuration = parseFloat(wrapper.style.getPropertyValue('--focused-exit-layer-duration')) || 0;
+  wrapper.style.setProperty(
+    '--focused-wrap-exit-stagger',
+    `${rowCount > 0 ? Math.max(0, exitDuration - exitLayerDuration) / rowCount : 0}s`
+  );
 };
 
 export const LyricLineWrapper = React.memo(({
