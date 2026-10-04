@@ -167,7 +167,6 @@ const ModalLeft = ({
     };
   }, [isSyncMode]);
 
-  const hasManualSync = realSelectedSong?.syncData?.some(l => l.start !== null);
   const hasPlainLyrics = Boolean(customData?.lyrics && customData.lyrics.trim());
   const ytUrl = customData?.yt || selectedSong?.customLinks?.yt || selectedSong?.yt;
   const hasYtLink = Boolean(extractYouTubeId(ytUrl));
@@ -639,8 +638,8 @@ const ModalLeft = ({
                 {customData.lyrics ? (
                   <>
                     <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? <Icon name="clock" /> : (hasManualSync ? <Icon name="edit" /> : <Icon name="clock" />)}
-                      {isSyncLoading ? 'Loading...' : hasManualSync ? 'Edit Timings' : 'Manual Sync'}
+                      {isSyncLoading ? <Icon name="clock" /> : <Icon name="edit" />}
+                      {isSyncLoading ? 'Loading...' : 'Edit Sync Timing'}
                     </button>
                     
                     <button 

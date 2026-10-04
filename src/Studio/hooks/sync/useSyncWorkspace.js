@@ -6,6 +6,11 @@ import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers.js';
 import { workspaceClock } from '../../utils/clockEngine.js';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic.js';
 
+const cloneSyncData = (data = []) => data.map(line => ({
+  ...line,
+  adlibs: line.adlibs?.map(adlib => ({ ...adlib }))
+}));
+
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isShowingAutoSync, setIsShowingAutoSync] = useState(false);
@@ -257,23 +262,26 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const toggleWorkspaceMode = () => {
     if (isShowingAutoSync) {
       setIsShowingAutoSync(false);
-      setSyncData(selectedSong.syncData || []);
-      syncDataRef.current = selectedSong.syncData || [];
+      const manualSyncDraft = cloneSyncData(selectedSong.syncData || []);
+      setSyncData(manualSyncDraft);
+      syncDataRef.current = manualSyncDraft;
       setActiveSyncIndex(0);
     } else {
       if (!selectedSong.autoSyncData || selectedSong.autoSyncData.length === 0) {
         return alert("No Auto-Sync data available! Please fetch it from the dashboard first.");
       }
       setIsShowingAutoSync(true);
-      setSyncData(selectedSong.autoSyncData);
-      syncDataRef.current = selectedSong.autoSyncData;
+      const autoSyncDraft = cloneSyncData(selectedSong.autoSyncData);
+      setSyncData(autoSyncDraft);
+      syncDataRef.current = autoSyncDraft;
       setActiveSyncIndex(0);
     }
   };
 
-  const updateWorkspaceData = (newData) => {
+  const updateWorkspaceData = (newData, { promoteToManual = true } = {}) => {
     setSyncData(newData);
     syncDataRef.current = newData;
+    if (promoteToManual && isShowingAutoSync) setIsShowingAutoSync(false);
   };
 
   useSyncEngine({
@@ -321,11 +329,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
       const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
       let initialData = [];
-      const sourceData = isShowingAutoSync && selectedSong.autoSyncData ? selectedSong.autoSyncData : selectedSong.syncData;
+      const hasManualSync = selectedSong.syncData?.some(line => line.start !== null);
+      const hasAutoSync = selectedSong.autoSyncData?.some(line => line.start !== null);
+      const useAutoSync = isShowingAutoSync || (!hasManualSync && hasAutoSync);
+      const sourceData = useAutoSync ? selectedSong.autoSyncData : selectedSong.syncData;
 
       if (hasManualText) {
         initialData = parsedLines.map((line, i) => {
-          const existingNode = selectedSong?.syncData?.[i] || {};
+          const existingNode = sourceData?.[i] || {};
           return {
             ...line,
             translation: existingNode.translation || '',
@@ -335,13 +346,14 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
             start: existingNode.start !== undefined ? existingNode.start : null,
             end: existingNode.end !== undefined ? existingNode.end : null,
             isSplit: existingNode.isSplit || false,
-            adlibs: existingNode.adlibs || undefined
+            adlibs: existingNode.adlibs?.map(adlib => ({ ...adlib }))
           };
         });
       } else if (sourceData && sourceData.length > 0) {
-        initialData = sourceData.map((node) => ({ ...node }));
+        initialData = cloneSyncData(sourceData);
       }
 
+      setIsShowingAutoSync(false);
       setSyncData(initialData);
       syncDataRef.current = initialData;
       setActiveSyncIndex(0);
@@ -370,8 +382,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       isSplit: false,
       adlibs: undefined
     }));
-    setSyncData(resetData);
-    syncDataRef.current = resetData;
+    updateWorkspaceData(resetData);
     
     if (setNotification) {
       const modeLabel = isShowingAutoSync ? "Auto-Sync" : "Manual Sync";
@@ -386,11 +397,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const saveSyncData = () => {
-    if (isShowingAutoSync) {
-      updateSongInLibrary({ ...selectedSong, autoSyncData: syncDataRef.current });
-    } else {
-      updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
-    }
+    updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
     workspaceClock.pause();
