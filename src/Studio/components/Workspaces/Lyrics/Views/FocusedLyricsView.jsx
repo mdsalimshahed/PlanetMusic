@@ -33,7 +33,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         : 0;
       const animationTiming = getFocusedLyricsAnimationTiming(lineDuration, wordCount);
       const { enterDuration, enterStagger, exitDuration } = animationTiming;
-      const exitStart = lineDuration > 0 ? end - exitDuration : NaN;
+      const exitStart = lineDuration > 0 ? Math.max(start, end - exitDuration) : NaN;
 
       node.style.setProperty('--total-words', wordCount);
       node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);

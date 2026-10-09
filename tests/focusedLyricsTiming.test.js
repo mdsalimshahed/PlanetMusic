@@ -6,7 +6,7 @@ test('keeps percentage-based timings below the legacy caps', () => {
   assert.deepEqual(getFocusedLyricsAnimationTiming(1, 4), {
     enterDuration: 0.18,
     enterStagger: 0.04,
-    exitDuration: 0.1,
+    exitDuration: 0.15,
     exitLayerDuration: 0.1
   });
 });
@@ -29,6 +29,15 @@ test('caps single-word entry duration and retains the exit-layer minimum', () =>
   });
 
   assert.equal(getFocusedLyricsAnimationTiming(0.2, 2).exitLayerDuration, 0.1);
+});
+
+test('applies minimum entry and exit timings to short lines without negative staggers', () => {
+  assert.deepEqual(getFocusedLyricsAnimationTiming(0.5, 4), {
+    enterDuration: 0.18,
+    enterStagger: 0,
+    exitDuration: 0.15,
+    exitLayerDuration: 0.1
+  });
 });
 
 test('returns zero animation timings when line duration is invalid', () => {
