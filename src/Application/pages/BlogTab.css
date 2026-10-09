@@ -213,9 +213,8 @@
 .blog-card {
   padding: 24px;
   border-radius: var(--dyn-border-radius, 16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(17, 17, 17, 0.94) !important;
-  backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   cursor: pointer;
