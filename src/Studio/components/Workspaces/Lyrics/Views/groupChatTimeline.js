@@ -1,6 +1,6 @@
 const PRESENCE_LEAD_SECONDS = 4;
-const PRESENCE_TRAIL_SECONDS = 3.5;
-const TYPING_LEAD_SECONDS = 2;
+const PRESENCE_TRAIL_SECONDS = 8.5;
+const TYPING_ACTIVITY_WINDOW_SECONDS = 2;
 
 const splitArtists = (singer, fallbackArtist) => {
   const names = (singer || fallbackArtist || '').split(/\s*(?:,|&|\band\b|\+)\s*/i);
@@ -236,16 +236,16 @@ export const getGroupChatState = (timeline, time) => {
     currentTime >= artist.onlineAt && currentTime < artist.offlineAt
   );
   const messages = timeline.events.filter(event => event.time <= currentTime);
-  const nextLine = timeline.lines.find(line =>
+  const eligibleArtists = line =>
+    line.artists.filter(name => artists.some(artist => artist.name === name));
+  const upcomingLines = timeline.lines.filter(line =>
     line.start > currentTime &&
-    line.start - currentTime <= TYPING_LEAD_SECONDS &&
-    line.artists.some(name => artists.some(artist => artist.name === name))
+    line.start - currentTime <= TYPING_ACTIVITY_WINDOW_SECONDS &&
+    eligibleArtists(line).length > 0
   );
-  const typingArtists = nextLine
-    ? nextLine.artists.filter(name => artists.some(artist => artist.name === name))
-    : [];
+  const typingArtists = [...new Set(upcomingLines.flatMap(eligibleArtists))];
 
-  return { artists, messages: messages.slice(-24), typingArtists };
+  return { artists, messages, typingArtists };
 };
 
 export const getActiveChatLines = (timeline, time) => {
