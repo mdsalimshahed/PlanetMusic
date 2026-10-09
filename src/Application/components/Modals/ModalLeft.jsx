@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import LyricsViewModeSlider from './LyricsViewModeSlider.jsx';
 import './ModalLeft.css';
 
 // SVG Icon Helper
@@ -61,15 +62,6 @@ const Icon = ({ name }) => {
     default: 
       return null;
   }
-};
-
-const activeViewModeStyle = {
-  background: '#ffffff',
-  backgroundColor: '#ffffff',
-  color: '#111111',
-  opacity: 1,
-  filter: 'none',
-  boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.9), 0 2px 12px rgba(255, 255, 255, 0.35)'
 };
 
 const useMeasuredHeightTransition = () => {
@@ -473,40 +465,10 @@ const ModalLeft = ({
             <div className="action-buttons-grid" style={{ flexDirection: 'column' }}>
               {hasValidSyncData ? (
                 <>
-                  <div className="view-mode-segmented-slider">
-                    <button 
-                       className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`} 
-                       style={lyricsViewMode === 'live' ? activeViewModeStyle : undefined}
-                       aria-pressed={lyricsViewMode === 'live'}
-                       onClick={() => setLyricsViewMode('live')}
-                    >
-                      Live
-                    </button>
-                    <button 
-                       className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`} 
-                       style={lyricsViewMode === 'focused' ? activeViewModeStyle : undefined}
-                       aria-pressed={lyricsViewMode === 'focused'}
-                       onClick={() => setLyricsViewMode('focused')}
-                    >
-                      Focused
-                    </button>
-                    <button
-                       className={`segment-btn ${lyricsViewMode === 'group-chat' ? 'active' : ''}`}
-                       style={lyricsViewMode === 'group-chat' ? activeViewModeStyle : undefined}
-                       aria-pressed={lyricsViewMode === 'group-chat'}
-                       onClick={() => setLyricsViewMode('group-chat')}
-                    >
-                      Group Chat
-                    </button>
-                    <button 
-                       className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`} 
-                       style={lyricsViewMode === 'plain' ? activeViewModeStyle : undefined}
-                       aria-pressed={lyricsViewMode === 'plain'}
-                       onClick={() => setLyricsViewMode('plain')}
-                    >
-                      Plain Text
-                    </button>
-                  </div>
+                  <LyricsViewModeSlider
+                    lyricsViewMode={lyricsViewMode}
+                    setLyricsViewMode={setLyricsViewMode}
+                  />
                   
                   <div className={`lyrics-debug-slot ${lyricsViewMode === 'live' || lyricsViewMode === 'focused' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode !== 'live' && lyricsViewMode !== 'focused'}>
                     <div className="lyrics-debug-slot-inner">
