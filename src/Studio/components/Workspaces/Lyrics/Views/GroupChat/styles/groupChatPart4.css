@@ -1,0 +1,150 @@
+.group-chat-message-text .pronunciation-text {
+  text-align: start !important;
+}
+
+.group-chat-message-text-rtl .pronunciation-text,
+.group-chat-message-text-rtl .pronunciation-text > span {
+  text-align: right !important;
+}
+
+.group-chat .group-chat-message-text .chunk-translation {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 0 !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  align-self: stretch !important;
+  box-sizing: border-box;
+  display: block !important;
+  margin-top: 0;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  text-wrap: pretty;
+  text-align: center !important;
+}
+
+.group-chat .group-chat-message-text .chunk-translation .trans-word {
+  text-align: center !important;
+}
+
+.group-chat .group-chat-message-text .chunk-translation .trans-word-group {
+  display: inline !important;
+  white-space: normal;
+}
+
+.group-chat .group-chat-message-text .chunk-translation.focused-translation {
+  opacity: 1;
+  visibility: visible;
+}
+
+.group-chat .group-chat-message-text .chunk-translation.live-translation {
+  opacity: 1;
+  visibility: visible;
+}
+
+.group-chat .pronunciation-text {
+  opacity: 1;
+  transform: none;
+}
+
+.group-chat-message-line time {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: block;
+  margin: 0;
+  color: rgba(226, 235, 237, 0.46);
+  font-size: 9px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.group-chat-turn-left .group-chat-message-line time {
+  right: auto;
+  left: 0;
+  text-align: left;
+}
+
+.group-chat-typing {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  color: rgba(228, 237, 239, 0.72);
+  font-size: 11px;
+  opacity: 1;
+}
+
+.group-chat-typing.is-visible {
+  animation: group-chat-typing-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.group-chat-typing.is-exiting {
+  animation: group-chat-typing-exit 260ms ease-in both;
+  pointer-events: none;
+}
+
+.group-chat-typing-avatar {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  font-size: 9px;
+  animation: group-chat-typing-artist-in 180ms ease-out both;
+  animation-delay: var(--typing-stagger, 0ms);
+}
+
+.group-chat-typing-avatar.is-exiting {
+  width: 0;
+  flex-basis: 0;
+  margin-left: 0;
+  border-width: 0;
+  opacity: 0;
+  transform: scale(0.65);
+  transition:
+    width 180ms ease,
+    flex-basis 180ms ease,
+    margin 180ms ease,
+    border-width 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+  animation: none;
+}
+
+.group-chat-typing-names {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.group-chat-typing-label {
+  flex: 0 0 auto;
+  margin-left: 0.25em;
+}
+
+.group-chat-typing-name {
+  display: inline-block;
+  max-width: 16em;
+  overflow: hidden;
+  animation: group-chat-typing-artist-in 180ms ease-out both;
+  animation-delay: var(--typing-stagger, 0ms);
+}
+
+.group-chat-typing-separator {
+  flex: 0 0 auto;
+  white-space: pre;
+}
+
+.group-chat-typing-name.is-exiting {
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: max-width 180ms ease, opacity 180ms ease, transform 180ms ease;
+  animation: none;
+}
