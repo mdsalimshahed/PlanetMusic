@@ -101,7 +101,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [selectedSong]);
 
   const cycleViewMode = useCallback(() => setLyricsViewMode(prev => 
-       prev === 'live' ? 'focused' : prev === 'focused' ? 'plain' : 'live'
+       prev === 'live' ? 'focused' : prev === 'focused' ? 'group-chat' : prev === 'group-chat' ? 'plain' : 'live'
   ), []);
 
   const handleLineClick = useCallback((startTime) => {

@@ -503,44 +503,30 @@ a.platform-label.yt-color:hover {
 }
 
 .view-mode-segmented-slider {
-  position: relative;
   display: flex;
+  align-items: stretch;
+  gap: 4px;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 500px;
   padding: 4px;
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
-  z-index: 1;
 }
-
-.slider-pill {
-  position: absolute;
-  top: 4px;
-  bottom: 4px;
-  width: calc((100% - 8px) / 3);
-  background: var(--accent);
-  border-radius: 500px;
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: -1;
-  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
-}
-
-.slider-pill.live { transform: translateX(0%); }
-.slider-pill.focused { transform: translateX(100%); }
-.slider-pill.plain { transform: translateX(200%); }
 
 .segment-btn {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.6);
   font-size: clamp(10px, 1.2vw, 12px);
   font-weight: 700;
   font-family: inherit;
-  padding: 8px 0;
+  padding: 8px 4px;
+  border-radius: 500px;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
   text-align: center;
   display: flex;
   align-items: center;
@@ -569,8 +555,15 @@ a.platform-label.yt-color:hover {
   -webkit-tap-highlight-color: transparent;
 }
 
-.segment-btn.active {
-  color: black;
+.lyrics-view-modes-panel .view-mode-segmented-slider > button.segment-btn[aria-pressed="true"] {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  color: #111 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
 }
 
 .debug-toggle-btn {

@@ -40,6 +40,8 @@ const ModalRight = (props) => {
           handleLineClick={props.handleLineClick}
           selectedSong={props.selectedSong}
           masterPalette={props.masterPalette}
+          singerImages={props.singerImages}
+          globalArtistData={props.globalArtistData}
           currentTrack={props.currentTrack}
           isPlaying={props.isPlaying}
           settings={props.settings}

@@ -4,13 +4,14 @@ import LyricsEqualizer from './LyricsEqualizer.jsx';
 import EditLyricsView from './Views/EditLyricsView.jsx';
 import LiveLyricsView from './Views/LiveLyricsView.jsx';
 import FocusedLyricsView from './Views/FocusedLyricsView.jsx';
+import GroupChatLyricsView from './Views/GroupChatLyricsView.jsx';
 import PlainLyricsView from './Views/PlainLyricsView.jsx';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-    isPlaying, settings, lyricsPlaybackOffsetSeconds
+    isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const [activeSource, setActiveSource] = useState(() => {
@@ -57,6 +58,22 @@ const LyricsDisplay = ({
           settings={settings}
           currentTrack={currentTrack}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+        />
+      ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
+        <GroupChatLyricsView
+          liveParsedLyrics={liveParsedLyrics}
+          selectedSong={selectedSong}
+          masterPalette={masterPalette}
+          artistImages={{
+            ...(singerImages || {}),
+            ...(globalArtistData?.images || {}),
+            ...(customData?.artistImages || {})
+          }}
+          isPlayingCurrentSong={isPlayingCurrentSong}
+          isPlaying={isPlaying}
+          handleLineClick={handleLineClick}
+          lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+          settings={settings}
         />
       ) : (
         <PlainLyricsView 

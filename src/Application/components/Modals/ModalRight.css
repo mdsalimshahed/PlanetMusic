@@ -22,6 +22,14 @@ body .modal-right-col.glass-panel-light {
    margin: 0 auto; /* Ensures it stays centered when scaling down */
 }
 
+body .modal-right-col.glass-panel-light:has(.group-chat) .singer-name-corner {
+  display: none !important;
+}
+
+body .modal-right-col.glass-panel-light:has(.group-chat) {
+  background: transparent !important;
+}
+
 @media (max-width: 900px) {
   .modal-right-col {
     flex: none !important; 

@@ -63,6 +63,15 @@ const Icon = ({ name }) => {
   }
 };
 
+const activeViewModeStyle = {
+  background: '#ffffff',
+  backgroundColor: '#ffffff',
+  color: '#111111',
+  opacity: 1,
+  filter: 'none',
+  boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.9), 0 2px 12px rgba(255, 255, 255, 0.35)'
+};
+
 const useMeasuredHeightTransition = () => {
   const containerRef = React.useRef(null);
   const contentRef = React.useRef(null);
@@ -465,28 +474,41 @@ const ModalLeft = ({
               {hasValidSyncData ? (
                 <>
                   <div className="view-mode-segmented-slider">
-                    <div className={`slider-pill ${lyricsViewMode}`}></div>
                     <button 
                        className={`segment-btn ${lyricsViewMode === 'live' ? 'active' : ''}`} 
+                       style={lyricsViewMode === 'live' ? activeViewModeStyle : undefined}
+                       aria-pressed={lyricsViewMode === 'live'}
                        onClick={() => setLyricsViewMode('live')}
                     >
                       Live
                     </button>
                     <button 
                        className={`segment-btn ${lyricsViewMode === 'focused' ? 'active' : ''}`} 
+                       style={lyricsViewMode === 'focused' ? activeViewModeStyle : undefined}
+                       aria-pressed={lyricsViewMode === 'focused'}
                        onClick={() => setLyricsViewMode('focused')}
                     >
                       Focused
                     </button>
+                    <button
+                       className={`segment-btn ${lyricsViewMode === 'group-chat' ? 'active' : ''}`}
+                       style={lyricsViewMode === 'group-chat' ? activeViewModeStyle : undefined}
+                       aria-pressed={lyricsViewMode === 'group-chat'}
+                       onClick={() => setLyricsViewMode('group-chat')}
+                    >
+                      Group Chat
+                    </button>
                     <button 
                        className={`segment-btn ${lyricsViewMode === 'plain' ? 'active' : ''}`} 
+                       style={lyricsViewMode === 'plain' ? activeViewModeStyle : undefined}
+                       aria-pressed={lyricsViewMode === 'plain'}
                        onClick={() => setLyricsViewMode('plain')}
                     >
                       Plain Text
                     </button>
                   </div>
                   
-                  <div className={`lyrics-debug-slot ${lyricsViewMode !== 'plain' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode === 'plain'}>
+                  <div className={`lyrics-debug-slot ${lyricsViewMode === 'live' || lyricsViewMode === 'focused' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode !== 'live' && lyricsViewMode !== 'focused'}>
                     <div className="lyrics-debug-slot-inner">
                       {lyricsViewMode === 'focused' && (
                         <button

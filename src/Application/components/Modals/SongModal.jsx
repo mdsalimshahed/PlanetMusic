@@ -59,7 +59,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   // 1. URL -> STATE: The URL is the absolute single source of truth
   // ------------------------------------------------------------------
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const urlViewMode = ['live', 'focused', 'plain'].includes(pathParts[2]) ? pathParts[2] : 'live';
+  const urlViewMode = ['live', 'focused', 'group-chat', 'plain'].includes(pathParts[2]) ? pathParts[2] : 'live';
   const urlDebug = pathParts.includes('debug');
 
   const validWorkspaces = ['edit', 'translate', 'sync-workspace', 'manage-artists'];
