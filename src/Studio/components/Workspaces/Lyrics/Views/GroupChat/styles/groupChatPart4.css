@@ -54,11 +54,10 @@
 }
 
 .group-chat-message-line time {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  position: static;
+  align-self: flex-end;
   display: block;
-  margin: 0;
+  margin-top: 3px;
   color: rgba(226, 235, 237, 0.46);
   font-size: 9px;
   text-align: right;
@@ -66,8 +65,7 @@
 }
 
 .group-chat-turn-left .group-chat-message-line time {
-  right: auto;
-  left: 0;
+  align-self: flex-start;
   text-align: left;
 }
 

@@ -49,13 +49,15 @@
 .group-chat-message-line {
   position: relative;
   z-index: 2;
-  display: block;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
   min-width: 0;
   max-width: 100%;
-  align-self: stretch;
+  align-self: auto;
+  align-items: stretch;
   box-sizing: border-box;
-  padding: 1px 0 14px;
+  padding: 1px 0 0;
   border: 0;
   background: transparent;
   color: #f4f6f7;
@@ -70,10 +72,13 @@
   border-radius: 4px;
 }
 
+.group-chat-turn-right .group-chat-message-line {
+  align-items: flex-end;
+}
+
 .group-chat-message-text {
   display: block;
-  width: 100%;
-  min-width: 0;
+  width: max-content;
   max-width: 100%;
   font-size: clamp(16px, 2.2vw, 21px);
   line-height: 1.5;
@@ -88,8 +93,7 @@
 }
 
 .group-chat-message-text .primary-text {
-  width: 100% !important;
-  min-width: 0 !important;
+  width: max-content !important;
   max-width: 100%;
   align-items: start !important;
   text-align: start !important;
@@ -97,8 +101,7 @@
 }
 
 .group-chat .group-chat-message-text > div {
-  width: 100% !important;
-  min-width: 0 !important;
+  width: max-content !important;
   max-width: 100%;
   align-items: start !important;
   text-align: start !important;
@@ -106,8 +109,7 @@
 }
 
 .group-chat-message-text .core-chunks {
-  width: 100% !important;
-  min-width: 0 !important;
+  width: max-content !important;
   max-width: 100% !important;
   align-items: start !important;
   text-align: start !important;
@@ -133,12 +135,11 @@
 }
 
 .group-chat-message-text .main-lyrics-layer {
-  display: flex !important;
+  display: inline-flex !important;
   flex-wrap: wrap !important;
   justify-content: start !important;
   align-items: start !important;
-  width: 100% !important;
-  min-width: 0 !important;
+  width: max-content !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
   text-align: start !important;
