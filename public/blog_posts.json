@@ -270,5 +270,21 @@
     ],
     "heroImage": "",
     "content": "Have a question, feedback, or a bug report? The Contact tab is your direct line to me.\n\n---\n\n## 1. Sending a message\n\nGo to the **Contact** tab in the main navigation bar. There's a simple form where you can type out your issue.\n\nIt's just me behind this app, and I read every message that comes through so I can keep improving it.\n\n## 2. If you want a reply\n\nI have a zero-tracking policy and respect your privacy, so the contact form doesn't make you enter an email address.\n\nHere's the catch: **if you want me to get back to you, put your email address in the message itself.**\n\nMessages come in every week, and if you ask a question without leaving any contact info, I have no way to send you an answer.\n\nPlease be specific in your message, and I'll get back to you as soon as I can."
+  },
+  {
+    "id": "group-chat-lyrics-view",
+    "title": "Group Chat: A New Way to Experience Synced Lyrics",
+    "category": "Lyrics & Syncing",
+    "readTime": "3 min read",
+    "summary": "Turn synced lyrics into a live group conversation, with artist colors, presence, and clickable lines.",
+    "tags": [
+      "Lyrics",
+      "GroupChat",
+      "SyncedLyrics",
+      "Artists",
+      "UI"
+    ],
+    "heroImage": "",
+    "content": "Lyrics don't have to feel like a block of text on a screen. I built **Group Chat View** to make synced lyrics feel more like a conversation between the artists.\n\n---\n\n## 1. Switching to Group Chat View\n\nOpen a song with synced lyrics and find **Lyrics View Modes** in the song panel. Select **Group Chat**, alongside Live, Focused, and Plain Text.\n\nEach lyric appears as a message bubble, arranged into a conversation as the song plays. The active line gets a highlight, and you can click any lyric bubble to jump to that point in the track.\n\n## 2. Follow who's singing\n\nWhen the lyrics have singer information, each artist gets their own color and position in the chat. Artist avatars show who's currently active, while join and leave notices mark when they enter or exit the conversation.\n\nFor split lyrics and ad-libs, each timed part can appear as its own message, so background vocals have room in the conversation too.\n\n## 3. A conversation that follows the music\n\nThe chat follows the song's timing. You'll see the lyric history build as the track plays, and artists can appear as typing shortly before their next line. The message timestamps follow playback as well.\n\n> **TIP:** Group Chat View works best with synced lyrics and singer assignments. Use the Sync Workspace to add timing, then check the singer tags in the lyrics so each message can be attributed to the right artist."
   }
 ]
