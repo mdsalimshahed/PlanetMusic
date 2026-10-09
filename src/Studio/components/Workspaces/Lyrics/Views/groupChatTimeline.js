@@ -40,7 +40,9 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
     const adlibRanges = adlibs.map(adlib => ({ start: adlib.charStart, end: adlib.charEnd }))
       .filter(range => Number.isFinite(range.start) && Number.isFinite(range.end));
     const mainArtists = getSegmentArtists(lyric.segments, adlibRanges);
-    const lineArtists = mainArtists.length ? mainArtists : splitArtists(lyric.singer, fallbackArtist);
+    const lineArtists = lyric.singer
+      ? (mainArtists.length ? mainArtists : splitArtists(lyric.singer, fallbackArtist))
+      : [];
     const line = {
       index,
       sourceIndex: index,
@@ -64,10 +66,9 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
         ? Number(adlib.end)
         : adlibStart;
       const adlibArtists = getSegmentArtists(adlib.segments);
-      const artists = adlibArtists.length
-        ? adlibArtists
-        : splitArtists(adlib.singer, fallbackArtist);
-      if (!artists.length) return;
+      const artists = adlib.singer
+        ? (adlibArtists.length ? adlibArtists : splitArtists(adlib.singer, fallbackArtist))
+        : [];
       messages.push({
         type: 'message',
         time: adlibStart,
@@ -169,7 +170,11 @@ export const groupConsecutiveMessages = events => {
       return;
     }
 
-    if (side) {
+    if (!artistsKey) {
+      side = previousGroup
+        ? (previousGroup.side === 'left' ? 'right' : 'left')
+        : nextSide;
+    } else if (side) {
       if (!event.line.isAdlib) mainSideByLineIndex.set(event.line.index, side);
     } else if (event.line.isAdlib) {
       const mainSide = mainSideByLineIndex.get(event.line.sourceIndex);

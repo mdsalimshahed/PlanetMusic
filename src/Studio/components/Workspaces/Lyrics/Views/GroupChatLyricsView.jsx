@@ -6,6 +6,7 @@ import {
   getActiveChatLines,
   getGroupChatState
 } from './groupChatTimeline.js';
+import { isRTLLanguage } from '../../../../../components/LyricsRenderer/textUtils.js';
 import './GroupChatLyricsView.css';
 
 const getClockTime = (eventTime, playbackTime) => {
@@ -30,11 +31,18 @@ const GroupChatLyricText = React.memo(({
   savedNode,
   masterPalette,
   isPlayingCurrentSong
-}) => (
-  <span className="group-chat-message-text">
-    {renderLine(line, savedNode, true, masterPalette, isPlayingCurrentSong)}
-  </span>
-));
+}) => {
+  const isRTL = isRTLLanguage(line.text || '');
+
+  return (
+    <span
+      className={`group-chat-message-text${isRTL ? ' group-chat-message-text-rtl' : ''}`}
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      {renderLine(line, savedNode, true, masterPalette, isPlayingCurrentSong)}
+    </span>
+  );
+});
 
 const getBubbleBorderPath = (width, height, side, shape) => {
   const left = 1;
@@ -507,11 +515,9 @@ const GroupChatLyricsView = ({
     const container = chatRef.current;
     if (!container || !pendingScrollToLatestRef.current) return;
 
-    const reduceMotion = settings?.disableAnimations ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     container.scrollTo({
       top: container.scrollHeight,
-      behavior: reduceMotion ? 'auto' : 'smooth'
+      behavior: 'auto'
     });
     pendingScrollToLatestRef.current = false;
   }, [chatState.messages.length, isPlaying, settings?.disableAnimations]);
@@ -593,18 +599,19 @@ const GroupChatLyricsView = ({
             >
               {group.events.map((event, eventIndex) => {
                 const { line } = event;
+                const isUncredited = group.artists.length === 0;
                 const isActive = activeLineIndices.has(line.index);
                 const isExpanded = !playbackEnded &&
                   (isActive || expandedLineIndices.has(String(line.index)));
                 const lyricLine = line.lyric || liveParsedLyrics[line.sourceIndex ?? line.index] || { text: line.text };
-                const avatarCount = Math.max(1, group.artists.length);
-                const avatarSlotWidth = 34 + 22 * (avatarCount - 1);
+                const avatarCount = isUncredited ? 0 : group.artists.length;
+                const avatarSlotWidth = isUncredited ? 0 : 34 + 22 * (avatarCount - 1);
                 const bubbleShape = group.events.length === 1
                   ? 'single'
                   : (eventIndex === group.events.length - 1 ? 'last' : 'middle');
                 return (
                   <div
-                    className={`group-chat-turn group-chat-turn-${group.side} group-chat-turn-${bubbleShape}`}
+                    className={`group-chat-turn group-chat-turn-${group.side} group-chat-turn-${bubbleShape}${isUncredited ? ' group-chat-turn-uncredited' : ''}`}
                     key={`turn-${line.index}`}
                     data-chat-line-index={line.index}
                   >
@@ -651,7 +658,7 @@ const GroupChatLyricsView = ({
                       >
                         {isActive && (
                           <ActiveBubbleBorder
-                            colors={artistColors}
+                            colors={artistColors.length ? artistColors : [color]}
                             side={group.side}
                             shape={bubbleShape}
                           />
@@ -660,7 +667,7 @@ const GroupChatLyricsView = ({
                           type="button"
                           className="group-chat-message-line"
                           onClick={() => handleLineClick(line.start)}
-                          aria-label={`${name}: ${line.text}`}
+                          aria-label={name ? `${name}: ${line.text}` : line.text}
                         >
                           <GroupChatLyricText
                             line={lyricLine}
@@ -671,18 +678,16 @@ const GroupChatLyricsView = ({
                           <time>{getClockTime(event.time, playbackTime)}</time>
                         </button>
                       </div>
-                      {eventIndex === group.events.length - 1 && (
+                      {eventIndex === group.events.length - 1 && group.artists.length > 0 && (
                         <span className="group-chat-artist">
-                          {group.artists.length
-                            ? group.artists.map((artistName, index) => (
-                              <React.Fragment key={artistName}>
-                                {index > 0 && <span className="group-chat-artist-separator">, </span>}
-                                <span style={{ color: artistByName.get(artistName)?.color || color }}>
-                                  {artistName}
-                                </span>
-                              </React.Fragment>
-                            ))
-                            : 'Artist'}
+                          {group.artists.map((artistName, index) => (
+                            <React.Fragment key={artistName}>
+                              {index > 0 && <span className="group-chat-artist-separator">, </span>}
+                              <span style={{ color: artistByName.get(artistName)?.color || color }}>
+                                {artistName}
+                              </span>
+                            </React.Fragment>
+                          ))}
                         </span>
                       )}
                     </div>
