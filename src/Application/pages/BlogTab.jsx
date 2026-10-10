@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import './BlogTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
+import ConfirmModal from '../components/Modals/ConfirmModal.jsx';
 import { renderMarkdown } from '../utils/markdownUtils.jsx';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
 
@@ -117,6 +118,7 @@ const BlogTab = ({ adsEnabled }) => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [postToDelete, setPostToDelete] = useState(null);
   
   const bodyTextareaRef = useRef(null);
   const importFileInputRef = useRef(null);
@@ -230,13 +232,15 @@ const BlogTab = ({ adsEnabled }) => {
   const handleDeletePost = (e, postId) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm('Delete this article from your Custom Vault?')) {
-      const updated = customPosts.filter((p) => p.id !== postId);
-      setCustomPosts(updated);
-      if (activeArticleId === postId) {
-        navigate('/blog/custom');
-      }
-    }
+    const post = customPosts.find((item) => item.id === postId);
+    if (post) setPostToDelete(post);
+  };
+
+  const confirmDeletePost = () => {
+    if (!postToDelete) return;
+    setCustomPosts((posts) => posts.filter((post) => post.id !== postToDelete.id));
+    if (activeArticleId === postToDelete.id) navigate('/blog/custom');
+    setPostToDelete(null);
   };
 
   const handleSaveArticle = (e) => {
@@ -367,6 +371,15 @@ const BlogTab = ({ adsEnabled }) => {
 
   return (
     <section className="view-section blog-tab-container">
+      <ConfirmModal
+        isOpen={Boolean(postToDelete)}
+        title="Delete Custom Article?"
+        message={`“${postToDelete?.title || 'Untitled article'}” will be permanently removed from your Custom Vault.`}
+        confirmText="Delete Article"
+        cancelText="Keep Article"
+        onConfirm={confirmDeletePost}
+        onCancel={() => setPostToDelete(null)}
+      />
       <div className={`blog-layout-wrapper ${viewMode === 'studio' ? 'studio-active' : ''}`}>
         <div className="blog-main-content">
           {viewMode === 'studio' ? (
@@ -533,8 +546,10 @@ const BlogTab = ({ adsEnabled }) => {
                   <span className="blog-category-badge">{activePost.category}</span>
                   <span className="blog-meta-dot"> </span>
                   <span>{activePost.readTime}</span>
-                  <span className="blog-meta-dot"> </span>
-                  <span>{activePost.date}</span>
+                  {activePost.date && <>
+                    <span className="blog-meta-dot"> </span>
+                    <time>{activePost.date}</time>
+                  </>}
                   {activePost.isCustom && (
                     <>
                       <span className="blog-meta-dot"> </span>
@@ -544,6 +559,9 @@ const BlogTab = ({ adsEnabled }) => {
                 </div>
                 <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(`blog:article-title:${activePost.id}`) }}>{renderMarkdown(activePost.title, `blog:article:${activePost.id}:title`)}</h1>
                 <p className="blog-article-summary">{renderMarkdown(activePost.summary, `blog:article:${activePost.id}:summary`)}</p>
+                {(activePost.author || activePost.isCustom) && (
+                  <p className="blog-article-byline">By {activePost.author || 'You'}</p>
+                )}
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
               </header>
 
@@ -566,17 +584,6 @@ const BlogTab = ({ adsEnabled }) => {
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
 
-              {adsEnabled && (
-                <div className="blog-bottom-sponsor-wrapper" style={{ marginTop: '40px' }}>
-                  <SponsorUnit
-                    placement="blogPostBottom"
-                    className="glass-panel dynamic-radius-override blog-bottom-sponsor"
-                    style={{ minHeight: '280px' }}
-                    adTitle="Sponsored Feature"
-                    adSub="Check out our featured partner"
-                  />
-                </div>
-              )}
             </div>
           ) : (
             <div className="blog-grid-view">
@@ -675,11 +682,9 @@ const BlogTab = ({ adsEnabled }) => {
 
               {filteredPosts.length > 0 ? (
                 <div className="blog-cards-grid">
-                  {filteredPosts.map((post, idx) => {
-                    const showAdAfter = (idx + 1) % 4 === 0;
-                    return (
-                      <React.Fragment key={post.id}>
-                        <div className="blog-card-wrapper" data-blog-card-id={String(post.id)}>
+                  {filteredPosts.map((post, idx) => (
+                    <React.Fragment key={post.id}>
+                      <div className="blog-card-wrapper" data-blog-card-id={String(post.id)}>
                           <Link to={`/blog/post/${post.id}`} className="blog-card">
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
                             <div className="blog-card-top">
@@ -698,6 +703,12 @@ const BlogTab = ({ adsEnabled }) => {
                               {post.title}
                             </h3>
                             <p className="blog-card-summary">{post.summary}</p>
+                            {(post.author || post.date || post.isCustom) && (
+                              <div className="blog-card-byline">
+                                {(post.author || post.isCustom) && <span>By {post.author || 'You'}</span>}
+                                {post.date && <time>{post.date}</time>}
+                              </div>
+                            )}
                             <div className="blog-card-bottom">
                               <div className="blog-card-tags">
                                 {Array.isArray(post.tags) && post.tags.slice(0, 2).map((t, i) => (
@@ -716,13 +727,16 @@ const BlogTab = ({ adsEnabled }) => {
                               </button>
                             </div>
                           )}
-                        </div>
-                        {adsEnabled && showAdAfter && (
-                          <InFeedSponsor placement="blogFeed" adClass="in-feed-blog-ad" wrapperClass="blog-card dynamic-radius-override" />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
+                      </div>
+                      {adsEnabled && (idx + 1) % 4 === 0 && idx < filteredPosts.length - 1 && (
+                        <InFeedSponsor
+                          placement="blogFeed"
+                          adClass="in-feed-blog-ad"
+                          wrapperClass="blog-card dynamic-radius-override in-feed-blog-card"
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
               ) : (
                 <div className="blog-empty-box glass-panel">
@@ -748,15 +762,13 @@ const BlogTab = ({ adsEnabled }) => {
             <>
               <SponsorUnit
                 placement="blogSidebar"
-                className="glass-panel dynamic-radius-override blog-sidebar-sponsor-large"
-                style={{ minHeight: viewMode === 'studio' ? '200px' : '600px', height: viewMode === 'studio' ? '200px' : '600px' }}
+                className={`glass-panel dynamic-radius-override page-sidebar-ad-large blog-sidebar-sponsor-large${viewMode === 'studio' ? ' studio-sidebar-ad' : ''}`}
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit
                 placement="blogStickySidebar"
-                className="glass-panel dynamic-radius-override blog-sidebar-sponsor-small"
-                style={{ minHeight: viewMode === 'studio' ? '200px' : '300px', height: viewMode === 'studio' ? '200px' : '300px' }}
+                className={`glass-panel dynamic-radius-override page-sidebar-ad-small blog-sidebar-sponsor-small${viewMode === 'studio' ? ' studio-sidebar-ad' : ''}`}
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />
@@ -764,6 +776,24 @@ const BlogTab = ({ adsEnabled }) => {
           )}
         </aside>
       </div>
+      {viewMode === 'grid' && adsEnabled && (
+        <SponsorUnit
+          placement="blogFeed"
+          className="glass-panel settings-promo-box dynamic-radius-override"
+          style={{ maxWidth: '1400px', margin: '0 auto' }}
+          adTitle="Discover More"
+          adSub="Thank you for supporting PlanetMusic"
+        />
+      )}
+      {viewMode === 'reader' && activePost && adsEnabled && (
+        <SponsorUnit
+          placement="blogPostBottom"
+          className="glass-panel settings-promo-box dynamic-radius-override"
+          style={{ maxWidth: '1400px', margin: '0 auto' }}
+          adTitle="Sponsored Feature"
+          adSub="Thank you for supporting PlanetMusic"
+        />
+      )}
     </section>
   );
 };

@@ -340,6 +340,18 @@
   width: 100%;
 }
 
+.settings-sponsor-placement {
+  break-inside: avoid;
+  margin-bottom: 24px;
+}
+
+.settings-infeed-ad {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .settings-card {
   padding: 28px;
   border-radius: var(--dyn-border-radius, 16px);
@@ -536,4 +548,3 @@ input[type=checkbox] {
   border: 1px solid rgba(255,255,255,0.1);
   text-transform: uppercase;
 }
-

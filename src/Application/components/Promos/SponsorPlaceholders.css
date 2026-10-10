@@ -95,3 +95,27 @@
   border-radius: 16px !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
+
+.page-sidebar-ad-large,
+.page-sidebar-ad-small {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.page-sidebar-ad-large {
+  height: 600px;
+  min-height: 600px;
+}
+
+.page-sidebar-ad-small {
+  height: 300px;
+  min-height: 300px;
+}
+
+@media (max-width: 1024px) {
+  .page-sidebar-ad-large,
+  .page-sidebar-ad-small {
+    height: 300px;
+    min-height: 300px;
+  }
+}

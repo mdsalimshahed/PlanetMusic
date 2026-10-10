@@ -169,6 +169,17 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
           getSliderStyle={getSliderStyle} 
         />
 
+        {adsEnabled !== false && (
+          <div data-settings-motion-key="sponsor-feed-three" className="settings-sponsor-placement">
+            <SponsorUnit
+              placement="settingsFeedThree"
+              className="glass-panel dynamic-radius-override settings-infeed-ad"
+              adTitle="Discover More"
+              adSub="Sponsored Content"
+            />
+          </div>
+        )}
+
         <div className="settings-card glass-panel experience-card">
           <SettingsCardHeading seed="viewing-experience">Viewing Experience</SettingsCardHeading>
           <div className="experience-setting">
@@ -199,6 +210,17 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
             </button>
           </div>
         </div>
+
+        {adsEnabled !== false && (
+          <div data-settings-motion-key="sponsor-feed-four" className="settings-sponsor-placement">
+            <SponsorUnit
+              placement="settingsFeedFour"
+              className="glass-panel dynamic-radius-override settings-infeed-ad"
+              adTitle="Partner Content"
+              adSub="Advertisement space"
+            />
+          </div>
+        )}
 
         {/* PURGE DATA BLOCK */}
         <PurgeCard 

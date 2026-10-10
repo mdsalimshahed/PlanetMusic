@@ -13,6 +13,8 @@ const slotIds = {
   privacyBottom: import.meta.env.VITE_ADSENSE_SLOT_PRIVACY_BOTTOM,
   settingsFeedOne: import.meta.env.VITE_ADSENSE_SLOT_SETTINGS_FEED_ONE,
   settingsFeedTwo: import.meta.env.VITE_ADSENSE_SLOT_SETTINGS_FEED_TWO,
+  settingsFeedThree: import.meta.env.VITE_ADSENSE_SLOT_SETTINGS_FEED_THREE,
+  settingsFeedFour: import.meta.env.VITE_ADSENSE_SLOT_SETTINGS_FEED_FOUR,
   settingsBottom: import.meta.env.VITE_ADSENSE_SLOT_SETTINGS_BOTTOM
 };
 

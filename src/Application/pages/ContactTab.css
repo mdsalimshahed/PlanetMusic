@@ -9,7 +9,7 @@
 
 .contact-layout-wrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 32px;
   width: 100%;
 }
@@ -28,7 +28,19 @@
   flex-direction: column;
   gap: 24px;
   position: sticky;
-  top: 24px;
+  top: 0;
+}
+
+.contact-sidebar > .page-sidebar-ad-large {
+  flex: 2 1 0;
+  height: auto;
+  min-height: 0;
+}
+
+.contact-sidebar > .page-sidebar-ad-small {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
 }
 
 .contact-hero {
@@ -289,7 +301,6 @@
   .contact-sidebar > * {
     flex: 1;
     min-width: 300px;
-    min-height: 250px !important;
   }
 }
 

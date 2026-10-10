@@ -169,15 +169,13 @@ const PrivacyTab = ({ adsEnabled }) => {
             <>
               <SponsorUnit 
                 placement="privacySidebar"
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '600px' }}
+                className="glass-panel dynamic-radius-override page-sidebar-ad-large"
                 adTitle="Sponsor"
                 adSub="Sidebar Advertisement Space"
               />
               <SponsorUnit 
                 placement="privacyStickySidebar"
-                className="glass-panel dynamic-radius-override"
-                style={{ minHeight: '300px' }}
+                className="glass-panel dynamic-radius-override page-sidebar-ad-small"
                 adTitle="Discover More"
                 adSub="Sticky Sidebar Ad"
               />

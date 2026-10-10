@@ -30,7 +30,7 @@
   flex-direction: column;
   gap: 24px;
   position: sticky;
-  top: 24px;
+  top: 0;
 }
 
 .privacy-hero {
@@ -149,7 +149,6 @@
   .privacy-sidebar > * {
     flex: 1;
     min-width: 300px;
-    min-height: 250px !important;
   }
 }
 
