@@ -1,4 +1,10 @@
 /* --- src/Application/components/Core/SearchArea.css --- */
+@property --search-perimeter-offset {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 .search-container {
   position: absolute;
   top: 0;
@@ -100,11 +106,11 @@
 
 .search-box-orbit-runner {
   stroke-dasharray: 425 575;
-  animation: searchPerimeterOrbit 5s linear infinite;
+  stroke-dashoffset: var(--search-perimeter-offset);
 }
 
 .search-box-orbit-runner-opposite {
-  animation-delay: -2.5s;
+  stroke-dashoffset: calc(var(--search-perimeter-offset) - 500);
 }
 
 .search-box:focus-within {
@@ -124,6 +130,7 @@
 
 .search-box:focus-within .search-box-orbit {
   opacity: 1;
+  animation: searchPerimeterOrbit 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 @keyframes searchFocusShine {
@@ -132,7 +139,7 @@
 }
 
 @keyframes searchPerimeterOrbit {
-  to { stroke-dashoffset: -1000; }
+  to { --search-perimeter-offset: -1000; }
 }
 
 @media (prefers-reduced-motion: reduce) {
