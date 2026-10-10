@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/EngineUtils.jsx --- */
 import React from 'react';
-import { getGraphemes, normalizeTrans } from '../textUtils.js';
+import { getGraphemes, normalizeTrans, stripPronunciationParentheses } from '../textUtils.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 
 // --- COLOR INTERPOLATION HELPERS ---
@@ -486,7 +486,7 @@ export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasS
             if (chunk.type !== 'en' && chunk.trans && chunk.trans.trim()) {
                 let cleanTrans = normalizeTrans(chunk.trans, !isAdlib);
                 if (isAdlib) {
-                    cleanTrans = cleanTrans.replace(/[()[\]{}]/g, '').trim();
+                    cleanTrans = stripPronunciationParentheses(cleanTrans).trim();
                 }
                 // Pronunciation for this chunk animates alongside the chunk itself
                 const pronState = { index: chunkBaseIndex };

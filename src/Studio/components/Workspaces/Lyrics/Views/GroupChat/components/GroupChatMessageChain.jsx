@@ -1,5 +1,4 @@
 import React from 'react';
-import ActiveBubbleBorder from './ActiveBubbleBorder.jsx';
 import GroupChatLyricText from './GroupChatLyricText.jsx';
 import { getArtistImage, getClockTime, getInitials } from '../utils/groupChatUtils.js';
 
@@ -10,18 +9,12 @@ const GroupChatMessageChain = ({
   imageSources,
   masterPalette,
   liveParsedLyrics,
-  activeLineIndices,
-  expandedLineIndices,
-  playbackEnded,
   handleLineClick,
   playbackTime,
   isPlayingCurrentSong
 }) => {
   const firstLine = group.events[0].line;
   const color = artistByName.get(group.artists[0])?.color || firstLine.color;
-  const artistColors = group.artists.map(artistName =>
-    artistByName.get(artistName)?.color || color
-  );
 
   return (
     <div
@@ -32,9 +25,6 @@ const GroupChatMessageChain = ({
       {group.events.map((event, eventIndex) => {
         const { line } = event;
         const isUncredited = group.artists.length === 0;
-        const isActive = activeLineIndices.has(line.index);
-        const isExpanded = !playbackEnded &&
-          (isActive || expandedLineIndices.has(String(line.index)));
         const lyricLine = line.lyric ||
           liveParsedLyrics[line.sourceIndex ?? line.index] ||
           { text: line.text };
@@ -86,19 +76,8 @@ const GroupChatMessageChain = ({
             </span>
             <div className="group-chat-bubble-stack">
               <div
-                className={[
-                  'group-chat-message',
-                  isActive ? 'group-chat-message-active' : '',
-                  isExpanded ? 'group-chat-message-expanded' : 'group-chat-message-shrunk'
-                ].filter(Boolean).join(' ')}
+                className="group-chat-message"
               >
-                {isActive && (
-                  <ActiveBubbleBorder
-                    colors={artistColors.length ? artistColors : [color]}
-                    side={group.side}
-                    shape={bubbleShape}
-                  />
-                )}
                 <button
                   type="button"
                   className="group-chat-message-line"

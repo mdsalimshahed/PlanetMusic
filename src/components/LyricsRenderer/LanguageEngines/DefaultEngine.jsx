@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/DefaultEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation, getGraphemes, isCJ } from '../textUtils.js';
+import { normalizeTrans, parsePronunciation, getGraphemes, isCJ, stripPronunciationParentheses } from '../textUtils.js';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const normalizeWordForMatch = (word) => word.toLowerCase().replace(/[\p{P}\p{S}]+/gu, '').trim();
@@ -174,7 +174,13 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
         }
     }
     if (isAdlib && displayPronString) {
-        displayPronString = displayPronString.replace(/[()\[\]{} ]/g, '').trim();
+        displayPronString = stripPronunciationParentheses(displayPronString)
+            .replaceAll(' ', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll('{', '')
+            .replaceAll('}', '')
+            .trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);

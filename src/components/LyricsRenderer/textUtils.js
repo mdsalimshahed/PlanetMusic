@@ -27,6 +27,9 @@ export const normalizeTrans = (str, keepParens = false) => {
     .trim();
 };
 
+export const stripPronunciationParentheses = (text) =>
+  String(text || '').replace(/[()（）]/g, '');
+
 export const cleanTranslationText = (text) => {
   if (!text) return '';
   return String(text).replace(/\.+$/, '').trim();

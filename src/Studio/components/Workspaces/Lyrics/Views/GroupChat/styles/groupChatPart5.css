@@ -28,11 +28,11 @@
   height: 4px;
   border-radius: 50%;
   background: #c7d0d8;
-  animation: group-chat-typing-dot 900ms ease-in-out infinite;
+  animation: group-chat-typing-dot 1s ease-in-out infinite;
 }
 
-.group-chat-typing-dots i:nth-child(2) { animation-delay: 120ms; }
-.group-chat-typing-dots i:nth-child(3) { animation-delay: 240ms; }
+.group-chat-typing-dots i:nth-child(2) { animation-delay: 160ms; }
+.group-chat-typing-dots i:nth-child(3) { animation-delay: 320ms; }
 
 .group-chat-no-motion *,
 .group-chat-no-motion *::before,
@@ -49,15 +49,6 @@
   transform: none;
 }
 
-.group-chat-no-motion .group-chat-message-text {
-  transition: none;
-}
-
-.group-chat-no-motion .group-chat-typing-avatar,
-.group-chat-no-motion .group-chat-typing-name {
-  transition: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .group-chat *,
   .group-chat *::before,
@@ -65,53 +56,49 @@
     animation: none !important;
   }
 
-  .group-chat-typing-avatar,
-  .group-chat-typing-name {
-    transition: none;
-  }
-
-  .group-chat-message-text {
-    transition: none;
-  }
-
   .group-chat-participant.is-offline {
     display: none;
   }
 }
 
-@keyframes group-chat-avatar-appear {
-  from { opacity: 0; transform: translateY(-7px) scale(0.72); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes group-chat-presence-in {
+  from { opacity: 0; transform: translate3d(0, 5px, 0) scale(0.9); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
-@keyframes group-chat-avatar-disappear {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to { opacity: 0; transform: translateY(-5px) scale(0.72); }
+@keyframes group-chat-presence-out {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 3px, 0) scale(0.94); }
 }
 
 @keyframes group-chat-notification-in {
-  from { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.96); }
+  from { opacity: 0; transform: translate3d(0, 5px, 0) scale(0.98); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @keyframes group-chat-typing-dot {
-  0%, 60%, 100% { opacity: 0.45; transform: translateY(0); }
-  30% { opacity: 1; transform: translateY(-3px); }
+  0%, 65%, 100% { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.88); }
+  32% { opacity: 1; transform: translate3d(0, -3px, 0) scale(1); }
 }
 
 @keyframes group-chat-typing-enter {
-  from { opacity: 0; transform: translate3d(0, 7px, 0); }
+  from { opacity: 0; transform: translate3d(0, 5px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes group-chat-typing-exit {
   from { opacity: 1; transform: translate3d(0, 0, 0); }
-  to { opacity: 0; transform: translate3d(0, 7px, 0); }
+  to { opacity: 0; transform: translate3d(0, 4px, 0); }
 }
 
 @keyframes group-chat-typing-artist-in {
-  from { opacity: 0; transform: translate3d(0, 4px, 0); }
+  from { opacity: 0; transform: translate3d(0, 3px, 0) scale(0.98); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes group-chat-typing-artist-out {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to { opacity: 0; transform: translate3d(0, 2px, 0) scale(0.98); }
 }
 
 @media (max-width: 600px) {

@@ -32,7 +32,7 @@
   color: rgba(233, 241, 242, 0.72);
   font-size: 11px;
   text-align: center;
-  animation: group-chat-notification-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: group-chat-notification-in 340ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
 .group-chat-system-message time {

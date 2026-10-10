@@ -9,13 +9,25 @@ const GroupChatLyricText = React.memo(({
   isPlayingCurrentSong
 }) => {
   const isRTL = isRTLLanguage(line.text || '');
+  const stripParentheses = value =>
+    typeof value === 'string' ? value.replace(/[()（）]/g, '') : value;
+  const displayLine = {
+    ...line,
+    translation: stripParentheses(line.translation),
+    pronunciation: stripParentheses(line.pronunciation)
+  };
+  const displaySavedNode = savedNode ? {
+    ...savedNode,
+    translation: stripParentheses(savedNode.translation),
+    pronunciation: stripParentheses(savedNode.pronunciation)
+  } : savedNode;
 
   return (
     <span
       className={`group-chat-message-text${isRTL ? ' group-chat-message-text-rtl' : ''}`}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {renderLine(line, savedNode, true, masterPalette, isPlayingCurrentSong)}
+      {renderLine(displayLine, displaySavedNode, true, masterPalette, isPlayingCurrentSong)}
     </span>
   );
 });

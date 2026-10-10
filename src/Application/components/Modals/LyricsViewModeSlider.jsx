@@ -9,6 +9,7 @@ const MODES = [
 
 const LyricsViewModeSlider = ({ lyricsViewMode, setLyricsViewMode }) => {
   const sliderRef = useRef(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const [indicator, setIndicator] = useState({ left: 0, width: 0, positioned: false });
 
   useLayoutEffect(() => {
@@ -36,12 +37,20 @@ const LyricsViewModeSlider = ({ lyricsViewMode, setLyricsViewMode }) => {
     Array.from(slider.querySelectorAll('.segment-btn')).forEach(button => {
       observer.observe(button);
     });
-    return () => observer.disconnect();
+    window.addEventListener('resize', updateIndicator);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateIndicator);
+    };
   }, [lyricsViewMode]);
 
   return (
     <div
-      className={`view-mode-segmented-slider${indicator.positioned ? ' is-positioned' : ''}`}
+      className={[
+        'view-mode-segmented-slider',
+        indicator.positioned ? 'is-positioned' : '',
+        hasInteracted ? 'has-interacted' : ''
+      ].filter(Boolean).join(' ')}
       ref={sliderRef}
     >
       <span
@@ -58,7 +67,10 @@ const LyricsViewModeSlider = ({ lyricsViewMode, setLyricsViewMode }) => {
           data-view-mode={mode}
           key={mode}
           aria-pressed={lyricsViewMode === mode}
-          onClick={() => setLyricsViewMode(mode)}
+          onClick={() => {
+            setHasInteracted(true);
+            setLyricsViewMode(mode);
+          }}
         >
           {label}
         </button>

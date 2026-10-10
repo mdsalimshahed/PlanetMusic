@@ -4,7 +4,7 @@ const useGroupChatPresentation = ({
   chatRef,
   activeLineIndices,
   chatState,
-  isPlaying,
+  playbackEnded,
   settings,
   setExpandedLineIndices,
   pendingScrollToLatestRef,
@@ -49,16 +49,16 @@ const useGroupChatPresentation = ({
     const currentIds = new Set(turns.map(turn => turn.dataset.chatLineIndex));
     const previousIds = seenMessageLineIdsRef.current;
     seenMessageLineIdsRef.current = currentIds;
-    if (!previousIds) return undefined;
 
-    const newTurns = turns.filter(turn => !previousIds.has(turn.dataset.chatLineIndex));
+    const newTurns = turns.filter(turn =>
+      !previousIds?.has(turn.dataset.chatLineIndex)
+    );
     if (
-      !isPlaying ||
       settings?.disableAnimations ||
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     ) return undefined;
 
-    const newAnimations = newTurns.flatMap(turn => {
+    const newAnimations = newTurns.flatMap((turn, index) => {
       const bubble = turn.querySelector('.group-chat-message');
       if (!bubble) return [];
       return [bubble.animate(
@@ -66,7 +66,12 @@ const useGroupChatPresentation = ({
           { opacity: 0, transform: 'translate3d(0, 10px, 0)' },
           { opacity: 1, transform: 'translate3d(0, 0, 0)' }
         ],
-        { duration: 340, easing: 'ease-out' }
+        {
+          duration: 380,
+          delay: Math.min(index * 70, 420),
+          easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
+          fill: 'both'
+        }
       )];
     });
     entranceAnimationsRef.current.push(...newAnimations);
@@ -77,7 +82,7 @@ const useGroupChatPresentation = ({
           .filter(current => current !== animation);
       };
     });
-  }, [chatRef, chatState.messages.length, isPlaying, settings?.disableAnimations]);
+  }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
 
   useEffect(() => () => {
     entranceAnimationsRef.current.forEach(animation => animation.cancel());
@@ -90,15 +95,15 @@ const useGroupChatPresentation = ({
     const reduceMotion = settings?.disableAnimations ||
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     container.scrollTo({
-      top: container.scrollHeight,
-      behavior: reduceMotion ? 'auto' : pendingScrollBehaviorRef.current
+      top: container.scrollHeight - container.clientHeight,
+      behavior: reduceMotion ? 'auto' : 'smooth'
     });
     pendingScrollToLatestRef.current = false;
     pendingScrollBehaviorRef.current = 'auto';
   }, [
     chatState.messages.length,
     chatRef,
-    isPlaying,
+    playbackEnded,
     pendingScrollBehaviorRef,
     pendingScrollToLatestRef,
     settings?.disableAnimations

@@ -78,7 +78,7 @@ const useGroupChatPlayback = ({
       }
       if (hasMessageEvents || hasPresenceChanges) {
         pendingScrollToLatestRef.current = true;
-        pendingScrollBehaviorRef.current = hasMessageEvents ? 'smooth' : 'auto';
+        pendingScrollBehaviorRef.current = 'smooth';
       }
       playbackTimeRef.current = nextTime;
       setPlaybackTime(nextTime);
@@ -114,7 +114,11 @@ const useGroupChatPlayback = ({
       const finalOfflineTime = Math.max(endedAt, ...timeline.artists.map(artist => artist.offlineAt));
       if (finalOfflineTime > endedAt) {
         endedTimer = setTimeout(
-          () => setPlaybackTime(finalOfflineTime),
+          () => {
+            pendingScrollToLatestRef.current = true;
+            pendingScrollBehaviorRef.current = 'smooth';
+            setPlaybackTime(finalOfflineTime);
+          },
           (finalOfflineTime - endedAt) * 1000
         );
       }

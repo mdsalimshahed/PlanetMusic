@@ -89,6 +89,7 @@ rt.pronunciation-text,
   white-space: normal;
   overflow-wrap: normal;
   word-break: normal;
+  text-wrap: balance;
   pointer-events: none;
   z-index: 10;
   margin-top: calc(-1 * var(--dyn-trans-top-padding, 8px));
@@ -184,7 +185,6 @@ rt.pronunciation-text,
   overflow-wrap: normal;
   word-break: normal;
   text-wrap: balance;
-  text-wrap: pretty;
   color: color-mix(
     in srgb,
     var(--dyn-trans-color, #ffffff)

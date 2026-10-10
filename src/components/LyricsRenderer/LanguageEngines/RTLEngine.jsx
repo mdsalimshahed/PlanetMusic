@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/RTLEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation } from '../textUtils.js';
+import { normalizeTrans, parsePronunciation, stripPronunciationParentheses } from '../textUtils.js';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
@@ -47,7 +47,12 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
 
     // Always ensure parens are completely stripped if rendering an adlib unit
     if (isAdlib && displayPronString) {
-        displayPronString = displayPronString.replace(/[()\[\]{}]/g, '').trim();
+        displayPronString = stripPronunciationParentheses(displayPronString)
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll('{', '')
+            .replaceAll('}', '')
+            .trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);

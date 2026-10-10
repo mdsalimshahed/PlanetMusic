@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/LanguageEngines/CJKEngine.jsx --- */
 import React from 'react';
-import { normalizeTrans, parsePronunciation, getGraphemes } from '../textUtils.js';
+import { normalizeTrans, parsePronunciation, getGraphemes, stripPronunciationParentheses } from '../textUtils.js';
 import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation } from './EngineUtils.jsx';
 
 const isLatinText = (text) => /^[\p{Script=Latin}\d\s]*$/u.test(String(text || '').replace(/[\p{P}\p{S}]+/gu, ''));
@@ -186,7 +186,13 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
         displayPronString = normalizeTrans(pronunciation, !isAdlib);
     }
     if (isAdlib && displayPronString) {
-        displayPronString = displayPronString.replace(/[()\[\]{} ]/g, '').trim();
+        displayPronString = stripPronunciationParentheses(displayPronString)
+            .replaceAll(' ', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll('{', '')
+            .replaceAll('}', '')
+            .trim();
     }
 
     const displayTrans = getDisplayTranslation(originalText, translation);

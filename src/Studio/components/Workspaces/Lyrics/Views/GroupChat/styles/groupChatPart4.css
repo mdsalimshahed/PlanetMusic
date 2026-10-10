@@ -2,6 +2,11 @@
   text-align: start !important;
 }
 
+.group-chat-message-text .core-chunks > .pronunciation-text {
+  align-self: center;
+  text-align: center !important;
+}
+
 .group-chat-message-text-rtl .pronunciation-text,
 .group-chat-message-text-rtl .pronunciation-text > span {
   text-align: right !important;
@@ -25,7 +30,6 @@
   word-break: normal;
   overflow-wrap: normal;
   text-wrap: balance;
-  text-wrap: pretty;
   text-align: center !important;
 }
 
@@ -80,11 +84,11 @@
 }
 
 .group-chat-typing.is-visible {
-  animation: group-chat-typing-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: group-chat-typing-enter 260ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
 .group-chat-typing.is-exiting {
-  animation: group-chat-typing-exit 260ms ease-in both;
+  animation: group-chat-typing-exit 180ms ease-in both;
   pointer-events: none;
 }
 
@@ -93,25 +97,12 @@
   width: 24px;
   height: 24px;
   font-size: 9px;
-  animation: group-chat-typing-artist-in 180ms ease-out both;
+  animation: group-chat-typing-artist-in 220ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
   animation-delay: var(--typing-stagger, 0ms);
 }
 
 .group-chat-typing-avatar.is-exiting {
-  width: 0;
-  flex-basis: 0;
-  margin-left: 0;
-  border-width: 0;
-  opacity: 0;
-  transform: scale(0.65);
-  transition:
-    width 180ms ease,
-    flex-basis 180ms ease,
-    margin 180ms ease,
-    border-width 180ms ease,
-    opacity 180ms ease,
-    transform 180ms ease;
-  animation: none;
+  animation: group-chat-typing-artist-out 160ms ease-in both;
 }
 
 .group-chat-typing-names {
@@ -130,7 +121,7 @@
   display: inline-block;
   max-width: 16em;
   overflow: hidden;
-  animation: group-chat-typing-artist-in 180ms ease-out both;
+  animation: group-chat-typing-artist-in 220ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
   animation-delay: var(--typing-stagger, 0ms);
 }
 
@@ -140,9 +131,5 @@
 }
 
 .group-chat-typing-name.is-exiting {
-  max-width: 0;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: max-width 180ms ease, opacity 180ms ease, transform 180ms ease;
-  animation: none;
+  animation: group-chat-typing-artist-out 160ms ease-in both;
 }
