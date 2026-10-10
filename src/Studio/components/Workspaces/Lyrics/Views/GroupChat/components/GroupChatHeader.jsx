@@ -54,7 +54,7 @@ const GroupChatHeader = ({
             { transform: `translate(${offsetX}px, ${offsetY}px)` },
             { transform: 'translate(0, 0)' }
           ],
-          { duration: 380, easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)' }
+          { duration: 560, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
         );
       });
     }

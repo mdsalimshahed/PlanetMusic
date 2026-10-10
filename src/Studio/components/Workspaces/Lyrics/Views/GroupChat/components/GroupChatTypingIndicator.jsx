@@ -41,7 +41,7 @@ const GroupChatTypingIndicator = ({
         : []).map(name => ({ name, isExiting: false }));
       displayArtistsRef.current = remainingArtists;
       setDisplayArtists(remainingArtists);
-    }, 200);
+    }, 300);
 
     return () => clearTimeout(exitTimer);
   }, [artistNamesKey]);

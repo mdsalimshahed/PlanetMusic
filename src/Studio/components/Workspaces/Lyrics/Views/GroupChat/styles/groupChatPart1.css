@@ -54,7 +54,10 @@
   height: var(--chat-heading-inactive-avatar-size, 28px);
   align-items: center;
   flex: 0 0 var(--chat-heading-inactive-avatar-size, 28px);
-  transition: width 220ms ease, height 220ms ease, flex-basis 220ms ease;
+  transition:
+    width 520ms cubic-bezier(0.22, 0.8, 0.2, 1),
+    height 520ms cubic-bezier(0.22, 0.8, 0.2, 1),
+    flex-basis 520ms cubic-bezier(0.22, 0.8, 0.2, 1);
 }
 
 .group-chat-participant.is-active {
