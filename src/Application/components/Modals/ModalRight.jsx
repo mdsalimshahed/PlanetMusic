@@ -80,6 +80,7 @@ const ModalRight = (props) => {
                 isPlaying={props.isPlaying}
                 settings={props.settings}
                 lyricsPlaybackOffsetSeconds={props.lyricsPlaybackOffsetSeconds}
+                showGroupChatDebug={props.showGroupChatDebug}
               />
             )}
 

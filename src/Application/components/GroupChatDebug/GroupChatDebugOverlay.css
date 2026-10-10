@@ -1,0 +1,30 @@
+.group-chat-debug-overlay {
+  position: absolute;
+  z-index: 10000;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.group-chat-debug-box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dashed;
+  border-radius: 0;
+}
+
+.group-chat-debug-box-main {
+  border-color: #facc15;
+}
+
+.group-chat-debug-box-timestamp {
+  border-color: #fff;
+}
+
+.group-chat-debug-box-translation {
+  border-color: #00bbf9;
+}
+
+.group-chat-debug-box-pronunciation {
+  border-color: #f97316;
+}

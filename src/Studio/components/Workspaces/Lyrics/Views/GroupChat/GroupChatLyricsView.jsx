@@ -6,6 +6,7 @@ import {
 import GroupChatHeader from './components/GroupChatHeader.jsx';
 import GroupChatHistory from './components/GroupChatHistory.jsx';
 import GroupChatTypingIndicator from './components/GroupChatTypingIndicator.jsx';
+import GroupChatDebugOverlay from '../../../../../../Application/components/GroupChatDebug/GroupChatDebugOverlay.jsx';
 import useGroupChatPlayback from './hooks/useGroupChatPlayback.js';
 import useGroupChatPresentation from './hooks/useGroupChatPresentation.js';
 import './styles/index.css';
@@ -19,7 +20,8 @@ const GroupChatLyricsView = ({
   isPlaying,
   handleLineClick,
   lyricsPlaybackOffsetSeconds = 0,
-  settings
+  settings,
+  showDebug = false
 }) => {
   const pendingScrollToLatestRef = useRef(false);
   const pendingScrollBehaviorRef = useRef('auto');
@@ -73,6 +75,8 @@ const GroupChatLyricsView = ({
     masterPalette,
     liveParsedLyrics,
     settings,
+    activeLineIndices,
+    showDebug,
     expandedLineIndices,
     playbackEnded: playback.playbackEnded,
     handleLineClick,
@@ -131,6 +135,7 @@ const GroupChatLyricsView = ({
           />
         )}
       </div>
+      {showDebug && <GroupChatDebugOverlay />}
     </section>
   );
 };

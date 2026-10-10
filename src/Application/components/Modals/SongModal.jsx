@@ -101,7 +101,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
     let parts = [`/song/${trackId}`];
     if (vMode) parts.push(vMode);
-    if (dbg && (vMode === 'focused' || vMode === 'live')) parts.push('debug');
+    if (dbg && ['focused', 'live', 'group-chat'].includes(vMode)) parts.push('debug');
     if (ws) parts.push(ws);
 
     return parts.join('/');
@@ -161,6 +161,8 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     setShowAdlibDebug: (val) => navigate(buildUrl({ debug: val })),
     showLiveDebug: urlDebug,
     setShowLiveDebug: (val) => navigate(buildUrl({ debug: val })),
+    showGroupChatDebug: urlDebug,
+    setShowGroupChatDebug: (val) => navigate(buildUrl({ debug: val })),
     
     // Hijack Save functions so the URL closes cleanly after saving
     saveData: () => {

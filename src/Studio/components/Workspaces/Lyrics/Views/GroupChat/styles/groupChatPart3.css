@@ -41,7 +41,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  width: max-content;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   align-self: auto;
@@ -66,10 +66,20 @@
   align-items: flex-end;
 }
 
+.group-chat-turn-left .group-chat-message-text {
+  align-self: flex-start;
+}
+
+.group-chat-turn-right .group-chat-message-text {
+  align-self: flex-end;
+}
+
 .group-chat-message-text {
   display: block;
-  width: max-content;
-  max-width: 100%;
+  width: var(--chat-rendered-glyph-width, max-content);
+  max-width: calc(
+    60cqi - clamp(14px, 4vw, 40px) - var(--avatar-slot-width, 0cqi) - 41px
+  );
   font-size: clamp(16px, 2.2vw, 21px);
   line-height: 1.5;
   word-break: normal;
@@ -79,7 +89,7 @@
 }
 
 .group-chat-message-text .primary-text {
-  width: max-content !important;
+  width: 100% !important;
   max-width: 100%;
   align-items: start !important;
   text-align: start !important;
@@ -87,7 +97,7 @@
 }
 
 .group-chat .group-chat-message-text > div {
-  width: max-content !important;
+  width: 100% !important;
   max-width: 100%;
   align-items: start !important;
   text-align: start !important;
@@ -95,7 +105,7 @@
 }
 
 .group-chat-message-text .core-chunks {
-  width: max-content !important;
+  width: 100% !important;
   max-width: 100% !important;
   align-items: start !important;
   text-align: start !important;
@@ -125,7 +135,7 @@
   flex-wrap: wrap !important;
   justify-content: start !important;
   align-items: start !important;
-  width: max-content !important;
+  width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
   text-align: start !important;

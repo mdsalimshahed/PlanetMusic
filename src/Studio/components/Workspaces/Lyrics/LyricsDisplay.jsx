@@ -11,7 +11,8 @@ import './LyricsDisplay.css';
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-    isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData
+    isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
+    showGroupChatDebug
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const [activeSource, setActiveSource] = useState(() => {
@@ -74,6 +75,7 @@ const LyricsDisplay = ({
           handleLineClick={handleLineClick}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
           settings={settings}
+          showDebug={showGroupChatDebug}
         />
       ) : (
         <PlainLyricsView 

@@ -121,7 +121,8 @@ const ModalLeft = ({
   saveImageManager, lyricsViewMode, setLyricsViewMode, hasValidSyncData, allPotentialSingers,
   isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs,
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
-  closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug, settings,
+  closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug,
+  showGroupChatDebug, setShowGroupChatDebug, settings,
   triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
@@ -470,7 +471,7 @@ const ModalLeft = ({
                     setLyricsViewMode={setLyricsViewMode}
                   />
                   
-                  <div className={`lyrics-debug-slot ${lyricsViewMode === 'live' || lyricsViewMode === 'focused' ? 'is-visible' : ''}`} aria-hidden={lyricsViewMode !== 'live' && lyricsViewMode !== 'focused'}>
+                  <div className={`lyrics-debug-slot ${['live', 'focused', 'group-chat'].includes(lyricsViewMode) ? 'is-visible' : ''}`} aria-hidden={!['live', 'focused', 'group-chat'].includes(lyricsViewMode)}>
                     <div className="lyrics-debug-slot-inner">
                       {lyricsViewMode === 'focused' && (
                         <button
@@ -488,6 +489,15 @@ const ModalLeft = ({
                         >
                           <Icon name={showLiveDebug ? 'eye-off' : 'tools'} />
                           {showLiveDebug ? 'Hide Live Debug' : 'Show Live Debug'}
+                        </button>
+                      )}
+                      {lyricsViewMode === 'group-chat' && (
+                        <button
+                          className={`edit-links-btn debug-toggle-btn ${showGroupChatDebug ? 'is-active' : ''}`}
+                          onClick={() => setShowGroupChatDebug(!showGroupChatDebug)}
+                        >
+                          <Icon name={showGroupChatDebug ? 'eye-off' : 'tools'} />
+                          {showGroupChatDebug ? 'Hide Group Chat Debug' : 'Show Group Chat Debug'}
                         </button>
                       )}
                     </div>
