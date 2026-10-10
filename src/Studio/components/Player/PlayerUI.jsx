@@ -1,6 +1,7 @@
 /* --- src/Studio/components/Player/PlayerUI.jsx --- */
 import React, { useRef, useState, useEffect } from 'react';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import { formatPreciseTime } from '../../utils/songHelpers.js';
 
 // Exported for the logic hook to use when updating the raw DOM refs
 export const formatTime = (seconds) => {
@@ -87,9 +88,11 @@ export const PlayerInfo = ({ currentTrack, isPlaying, togglePlay, fallbackMessag
   </div>
 );
 
-export const PlayerControls = ({ volume, isMuted, handleVolumeChange, toggleMute, closePlayer, accentColor }) => (
-  <div className="player-right-controls" onClick={(e) => e.stopPropagation()}>
-    <div className="volume-container">
+export const PlayerControls = ({
+  volume, isMuted, handleVolumeChange, toggleMute, closePlayer, accentColor, isSyncWorkspaceActive
+}) => (
+  <div className={`player-right-controls ${isSyncWorkspaceActive ? 'sync-player-controls' : ''}`} onClick={(e) => e.stopPropagation()}>
+    <div className={`volume-container ${isSyncWorkspaceActive ? 'sync-volume-container' : ''}`}>
       <button
         type="button"
         className="volume-icon"
@@ -107,7 +110,11 @@ export const PlayerControls = ({ volume, isMuted, handleVolumeChange, toggleMute
         )}
       </button>
       <div className="volume-slider-wrapper">
-        <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>{Math.round((isMuted ? 0 : volume) * 100)}%</div>
+        {!isSyncWorkspaceActive && (
+          <div className="volume-tooltip" style={{ background: accentColor, color: '#000' }}>
+            {Math.round((isMuted ? 0 : volume) * 100)}%
+          </div>
+        )}
         <input
           type="range"
           className="custom-slider volume-slider"
@@ -117,6 +124,11 @@ export const PlayerControls = ({ volume, isMuted, handleVolumeChange, toggleMute
           style={{ '--progress': `${(isMuted ? 0 : volume) * 100}%` }}
         />
       </div>
+      {isSyncWorkspaceActive && (
+        <span className="sync-volume-percentage" aria-live="polite">
+          {Math.round((isMuted ? 0 : volume) * 100)}%
+        </span>
+      )}
     </div>
 
     <button className="close-player" onClick={closePlayer} title="Close Player">
@@ -131,54 +143,65 @@ export const PlayerControls = ({ volume, isMuted, handleVolumeChange, toggleMute
 export const PlayerProgress = ({
   duration, hoverTime, handleSeek, handleContainerClick,
   handleProgressMouseMove, handleProgressMouseLeave,
-  progressBarRef, currentTimeRef
-}) => (
-  <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
-    <span className="time-text" ref={currentTimeRef}>0:00</span>
-    <div
-      className="progress-container"
-      onClick={handleContainerClick}
-      onMouseMove={handleProgressMouseMove}
-      onMouseLeave={handleProgressMouseLeave}
-      onTouchStart={handleProgressMouseLeave}
-    >
+  progressBarRef, currentTimeRef, isPrecise
+}) => {
+  const formatDisplayTime = isPrecise ? formatPreciseTime : formatTime;
+
+  useEffect(() => {
+    if (currentTimeRef.current) {
+      currentTimeRef.current.innerText = formatDisplayTime(window.currentAudioTime || 0);
+    }
+  }, [formatDisplayTime, currentTimeRef]);
+
+  return (
+    <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
+      <span className="time-text" ref={currentTimeRef}>{formatDisplayTime(0)}</span>
       <div
-        className="progress-tooltip"
-        style={{
-          opacity: hoverTime !== null ? 1 : 0,
-          left: hoverTime !== null ? `${(hoverTime / (duration || 1)) * 100}%` : '0%'
-        }}
+        className="progress-container"
+        onClick={handleContainerClick}
+        onMouseMove={handleProgressMouseMove}
+        onMouseLeave={handleProgressMouseLeave}
+        onTouchStart={handleProgressMouseLeave}
       >
-        {formatTime(hoverTime || 0)}
+        <div
+          className="progress-tooltip"
+          style={{
+            opacity: hoverTime !== null ? 1 : 0,
+            left: hoverTime !== null ? `${(hoverTime / (duration || 1)) * 100}%` : '0%'
+          }}
+        >
+          {formatDisplayTime(hoverTime || 0)}
+        </div>
+        <input
+          type="range"
+          className="custom-slider progress-slider"
+          ref={progressBarRef}
+          min="0" max={duration || 100}
+          step={isPrecise ? 0.001 : undefined}
+          defaultValue="0"
+          onChange={handleSeek}
+          style={{ '--progress': `0%` }}
+        />
       </div>
-      <input
-        type="range"
-        className="custom-slider progress-slider"
-        ref={progressBarRef}
-        min="0" max={duration || 100}
-        defaultValue="0"
-        onChange={handleSeek}
-        style={{ '--progress': `0%` }}
-      />
+      <span className="time-text">{formatDisplayTime(duration)}</span>
     </div>
-    <span className="time-text">{formatTime(duration)}</span>
-  </div>
-);
+  );
+};
 
 const PlayerUI = ({
-  currentTrack, selectedSong, isStacked, slotNode, accentColor, openModal,
+  currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, accentColor, openModal,
   isPlaying, togglePlay, fallbackMessage, isBuffering, activeSource,
   volume, isMuted, handleVolumeChange, toggleMute, closePlayer,
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
-  progressBarRef, currentTimeRef
+  progressBarRef, currentTimeRef, isPrecise
 }) => {
   if (!currentTrack) return null;
 
   return (
     <div
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
-      onClick={openModal}
-      style={{ '--player-accent': accentColor, cursor: 'pointer' }}
+      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
+      onClick={isSyncWorkspaceActive ? undefined : openModal}
+      style={{ '--player-accent': accentColor, cursor: isSyncWorkspaceActive ? 'default' : 'pointer' }}
     >
       <div className="player-top-row">
         <PlayerInfo
@@ -196,6 +219,7 @@ const PlayerUI = ({
           toggleMute={toggleMute}
           closePlayer={closePlayer}
           accentColor={accentColor}
+          isSyncWorkspaceActive={isSyncWorkspaceActive}
         />
       </div>
       <PlayerProgress
@@ -207,6 +231,7 @@ const PlayerUI = ({
         handleProgressMouseLeave={handleProgressMouseLeave}
         progressBarRef={progressBarRef}
         currentTimeRef={currentTimeRef}
+        isPrecise={isPrecise}
       />
     </div>
   );

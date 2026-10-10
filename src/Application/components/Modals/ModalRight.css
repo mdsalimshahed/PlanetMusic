@@ -28,6 +28,14 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
   background: transparent !important;
 }
 
+@media (min-width: 901px) {
+  .modal-right-col:focus {
+    outline: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
 .modal-canvas-content {
   position: relative;
   display: flex;

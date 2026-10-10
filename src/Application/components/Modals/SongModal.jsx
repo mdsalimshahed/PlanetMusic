@@ -1,8 +1,9 @@
 /* --- src/components/SongModal.jsx --- */
-import React, { useCallback, useRef, useState, useMemo, useEffect } from 'react';
+import { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModalLeft from './ModalLeft.jsx';
 import ModalRight from './ModalRight.jsx';
+import ConfirmModal from './ConfirmModal.jsx';
 import { useSongData } from '../../../Application/hooks/data/useSongData.js';
 import { useLyricsDisplay } from '../../../Studio/hooks/sync/useLyricsDisplay.js';
 import { useSyncWorkspace } from '../../../Studio/hooks/sync/useSyncWorkspace.js';
@@ -20,7 +21,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
-    songDataProps.masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings
+    songDataProps.masterPalette, updateSongInLibrary, setNotification, settings
   );
 
   const location = useLocation();
@@ -72,6 +73,7 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
 
   useEffect(() => {
     if (!selectedSong) return;
+    if (pathParts[0] === 'song' && String(selectedSong.trackId) !== String(pathParts[1])) return;
     
     // Handle deep-linking explicitly into Sync Workspace
     if (isSync && !syncProps.isSyncMode) {
@@ -197,11 +199,21 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
             <ModalLeft {...sharedProps} />
             <ModalRight 
               {...sharedProps} 
-              syncAudioRef={syncProps.syncAudioRef}
               activeLineRef={syncProps.activeLineRef}
               activePreviewRef={displayProps.activePreviewRef}
             />
           </div>
+
+          <ConfirmModal
+            isOpen={syncProps.showBluetoothSyncPrompt && isSync}
+            title="Bluetooth Audio Timing"
+            message={`Are you using Bluetooth headphones? Bluetooth can add playback delay. Choose Yes to apply ${Number.isFinite(settings?.audioDelayCompensationMs) ? `${Math.round(settings.audioDelayCompensationMs)} ms` : '200 ms'} to newly manual-synced lines. Other source timings are unchanged.`}
+            confirmText="Yes, compensate"
+            cancelText="No, use normal timing"
+            onConfirm={() => syncProps.handleBluetoothSyncChoice(true)}
+            onCancel={() => syncProps.handleBluetoothSyncChoice(false)}
+            extraAction={<button type="button" onClick={openAudioDelaySettings}>Test audio delay in Settings</button>}
+          />
 
           {notification.show && (
             <div className="notification-popup">

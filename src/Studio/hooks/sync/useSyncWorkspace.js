@@ -1,17 +1,15 @@
 /* --- src/Studio/hooks/sync/useSyncWorkspace.js --- */
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { getAudioFile } from '../../../Application/services/db.js';
-import { getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers.js';
-import { workspaceClock } from '../../utils/clockEngine.js';
+import { globalClock as workspaceClock } from '../../utils/clockEngine.js';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic.js';
 
-const cloneSyncData = (data = []) => data.map(line => ({
+const cloneSyncData = (data = []) => (Array.isArray(data) ? data : []).map(line => ({
   ...line,
   adlibs: line.adlibs?.map(adlib => ({ ...adlib }))
 }));
 
-export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setCurrentTrack, setNotification, settings) => {
+export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setNotification, settings) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isShowingAutoSync, setIsShowingAutoSync] = useState(false);
   const [showBluetoothSyncPrompt, setShowBluetoothSyncPrompt] = useState(false);
@@ -22,10 +20,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [isTranslating, setIsTranslating] = useState(false);
   const [syncData, setSyncData] = useState([]);
   const [activeSyncIndex, setActiveSyncIndex] = useState(0);
-  const [syncDuration, setSyncDuration] = useState(0);
   const [showRefreshPrompt, setShowRefreshPrompt] = useState(false);
-  const [syncAudioSrc, setSyncAudioSrc] = useState(undefined);
-  const [syncYtVideoId, setSyncYtVideoId] = useState(null);
   const [activeSyncSource, setActiveSyncSource] = useState(null);
   const [manualSource, setManualSource] = useState(null);
   const [isSyncPlaying, setIsSyncPlaying] = useState(false);
@@ -34,21 +29,28 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [constrainedEnd, setConstrainedEnd] = useState(null);
   const [loopRange, setLoopRange] = useState(null);
 
-  const syncAudioRef = useRef(null);
-  const syncYtPlayerRef = useRef(null);
   const activeLineRef = useRef(null);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
   const constrainedEndRef = useRef(constrainedEnd);
   const loopRangeRef = useRef(loopRange);
   const prevTrackRef = useRef(null);
-  const cachedUrlsRef = useRef({ local: null, deezer: null, deezerKey: null });
-  const syncLoadGenerationRef = useRef(0);
+  const playbackRateRef = useRef(playbackRate);
+  const wasSyncModeRef = useRef(isSyncMode);
 
+  useEffect(() => { playbackRateRef.current = playbackRate; }, [playbackRate]);
   useEffect(() => {
-    workspaceClock.setEventName('workspaceTimeUpdate');
-  }, []);
-
+    if (wasSyncModeRef.current && !isSyncMode) {
+      playbackRateRef.current = 1;
+      setPlaybackRate(1);
+      setIsSyncPlaying(false);
+      workspaceClock.setRate(1);
+      window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+        detail: { type: 'rate', rate: 1 }
+      }));
+    }
+    wasSyncModeRef.current = isSyncMode;
+  }, [isSyncMode]);
   useEffect(() => { activeIdxRef.current = activeSyncIndex; }, [activeSyncIndex]);
   useEffect(() => { syncDataRef.current = syncData; }, [syncData]);
   useEffect(() => { constrainedEndRef.current = constrainedEnd; }, [constrainedEnd]);
@@ -56,7 +58,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const workspaceLines = useMemo(() => {
     const lines = [];
-    syncData.forEach((line, i) => {
+    (Array.isArray(syncData) ? syncData : []).forEach((line, i) => {
       lines.push({ type: 'main', lineIndex: i, ref: line });
       if (line.isSplit && line.adlibs) {
         line.adlibs.forEach((adlib, j) => {
@@ -71,13 +73,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   useEffect(() => { workspaceLinesRef.current = workspaceLines; }, [workspaceLines]);
 
   useEffect(() => {
-    return () => {
-      if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
-      if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
-    };
-  }, []);
-
-  useEffect(() => {
     if (selectedSong && selectedSong.trackId !== prevTrackRef.current) {
       prevTrackRef.current = selectedSong.trackId;
       setIsSyncMode(false);
@@ -88,10 +83,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setConstrainedEnd(null);
       setLoopRange(null);
       setManualSource(null);
-      
-      if (cachedUrlsRef.current.local) URL.revokeObjectURL(cachedUrlsRef.current.local);
-      if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
-      cachedUrlsRef.current = { local: null, deezer: null, deezerKey: null };
     }
   }, [selectedSong]);
 
@@ -114,140 +105,59 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       ? manualSource 
       : (availableSources[0] || null);
 
-  // Safety Timeout: Never allow isSyncLoading to remain true forever
   useEffect(() => {
-    let timeoutId;
-    if (isSyncLoading) {
-      timeoutId = setTimeout(() => {
-        setIsSyncLoading(false);
-      }, 5000);
+    if (!isSyncMode || !songTrackId) return;
+
+    if (!computedSource) {
+      window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+        detail: { type: 'pause' }
+      }));
+      return;
     }
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [isSyncLoading]);
 
-  useEffect(() => {
-    const loadGeneration = ++syncLoadGenerationRef.current;
-    const isCurrentLoad = () => loadGeneration === syncLoadGenerationRef.current;
-
-    const loadSyncAudio = async () => {
-      if (isSyncMode && songTrackId) {
-        const sourceToLoad = computedSource;
-        if (!sourceToLoad) {
-          setActiveSyncSource(null);
-          setSyncYtVideoId(null);
-          setSyncAudioSrc(undefined);
-          setIsSyncLoading(false);
-          return;
-        }
-
-        if (activeSyncSource === sourceToLoad && (syncAudioSrc || syncYtVideoId)) {
-          setIsSyncLoading(false);
-          return;
-        }
-
-        setIsSyncPlaying(false);
-        workspaceClock.pause();
-        if (syncAudioRef.current) {
-          syncAudioRef.current.pause();
-          syncAudioRef.current.currentTime = 0;
-        }
-        if (syncYtPlayerRef.current) {
-          try { syncYtPlayerRef.current.pauseVideo(); } catch(e){}
-        }
-        setSyncYtVideoId(null);
-        setSyncAudioSrc(undefined);
-
-        try {
-          if (sourceToLoad === 'local') {
-            if (cachedUrlsRef.current.local) {
-              setSyncAudioSrc(cachedUrlsRef.current.local);
-              setActiveSyncSource('local');
-            } else {
-              const file = await getAudioFile(songTrackId);
-              if (!isCurrentLoad()) return;
-              if (file) {
-                const url = URL.createObjectURL(file);
-                cachedUrlsRef.current.local = url;
-                setSyncAudioSrc(url);
-                setActiveSyncSource('local');
-              }
-            }
-          } else if (sourceToLoad === 'youtube') {
-            const ytUrl = ytCustomLink;
-            setSyncYtVideoId(extractYouTubeId(ytUrl));
-            setActiveSyncSource('youtube');
-          } else if (sourceToLoad === 'deezer') {
-            setActiveSyncSource('deezer');
-
-            const dzUrl = deezerCustomLink;
-            const deezerKey = `${dzUrl}|quality=1`;
-            if (cachedUrlsRef.current.deezer && cachedUrlsRef.current.deezerKey === deezerKey) {
-              setSyncAudioSrc(cachedUrlsRef.current.deezer);
-            } else {
-              setIsSyncLoading(true);
-              const blob = await getDeezerAudioBlob(dzUrl, settings?.deezerArl || '');
-              if (!isCurrentLoad()) return;
-
-              if (cachedUrlsRef.current.deezer) URL.revokeObjectURL(cachedUrlsRef.current.deezer);
-              const url = URL.createObjectURL(blob);
-              cachedUrlsRef.current.deezer = url;
-              cachedUrlsRef.current.deezerKey = deezerKey;
-              setSyncAudioSrc(url);
-            }
-          }
-        } catch (e) {
-          if (!isCurrentLoad()) return;
-          console.error("Audio stream initialization issue:", e);
-          if (availableSources.includes('youtube')) setManualSource('youtube');
-          else if (availableSources.includes('local')) setManualSource('local');
-        } finally {
-          if (isCurrentLoad()) setIsSyncLoading(false);
-        }
-      } else {
-        setIsSyncLoading(false);
-      }
-    };
-    loadSyncAudio();
-    return () => {
-      syncLoadGenerationRef.current++;
-    };
-  }, [isSyncMode, computedSource, songTrackId, ytCustomLink, deezerCustomLink, settings?.deezerArl]);
+    const loadTimer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('globalPlayerLoadTrack', {
+        detail: {
+          track: {
+            ...selectedSong,
+            customLinks: { ...selectedSong.customLinks, ...customData }
+          },
+          source: computedSource,
+          autoplay: false,
+          playbackRate: playbackRateRef.current
+        },
+      }));
+    }, 0);
+    return () => clearTimeout(loadTimer);
+  }, [isSyncMode, songTrackId, computedSource, selectedSong, customData]);
 
   useEffect(() => {
     workspaceClock.setRate(playbackRate);
     if (isSyncMode) {
-      const savedVolume = localStorage.getItem('playerVolume');
-      const vol = savedVolume !== null ? parseFloat(savedVolume) : 1;
-      
-      if (syncYtPlayerRef.current) {
-        try {
-          syncYtPlayerRef.current.setVolume(vol * 100);
-          syncYtPlayerRef.current.setPlaybackRate(playbackRate);
-        } catch (e) {}
-      }
-      if (syncAudioRef.current) {
-        syncAudioRef.current.volume = vol;
-        syncAudioRef.current.playbackRate = playbackRate;
-      }
+      window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+        detail: { type: 'rate', rate: playbackRate }
+      }));
     }
-  }, [isSyncMode, syncAudioSrc, playbackRate]);
+  }, [isSyncMode, playbackRate]);
 
   useEffect(() => {
-    const handleGlobalPlay = () => {
-      if (syncYtPlayerRef.current) {
-        try { syncYtPlayerRef.current.pauseVideo(); } catch (e) {}
-      }
-      if (syncAudioRef.current && !syncAudioRef.current.paused) {
-        syncAudioRef.current.pause();
-      }
-      setIsSyncPlaying(false);
-      workspaceClock.pause();
+    const handlePlayState = (event) => {
+      if (!isSyncMode) return;
+      const { trackId, isPlaying } = event.detail || {};
+      if (trackId != null && String(trackId) !== String(songTrackId)) return;
+      setIsSyncPlaying(Boolean(isPlaying));
     };
-    window.addEventListener('globalPlayerDidPlay', handleGlobalPlay);
-    return () => window.removeEventListener('globalPlayerDidPlay', handleGlobalPlay);
-  }, []);
+    const handleActiveSource = (event) => {
+      if (String(event.detail?.trackId) !== String(songTrackId)) return;
+      setActiveSyncSource(event.detail?.source || null);
+    };
+    window.addEventListener('globalPlayState', handlePlayState);
+    window.addEventListener('globalActiveSource', handleActiveSource);
+    return () => {
+      window.removeEventListener('globalPlayState', handlePlayState);
+      window.removeEventListener('globalActiveSource', handleActiveSource);
+    };
+  }, [isSyncMode, songTrackId]);
 
   useEffect(() => {
     if (isSyncMode && activeLineRef.current) {
@@ -285,7 +195,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   useSyncEngine({
-    syncAudioRef, syncYtVideoId, syncYtPlayerRef, isSyncPlaying, setIsSyncPlaying,
+    isSyncMode, isSyncPlaying, trackId: songTrackId,
     workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
     syncDataRef, updateWorkspaceData,
     loopRangeRef, setLoopRange,
@@ -293,10 +203,10 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   });
 
   const triggerSyncKey = useSyncKeyboard({
-    isSyncMode: isSyncMode && !showBluetoothSyncPrompt,
+    isSyncMode,
     isBluetoothDelayCompensationEnabled,
     bluetoothDelayCompensationMs,
-    syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
+    activeIdxRef, workspaceLinesRef, selectedSong,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
     loopRangeRef, isShowingAutoSync
   });
@@ -318,6 +228,13 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       return alert("No full-length audio source available! Please add a Local MP3, Deezer link, or YouTube link to sync. iTunes Preview snippets are not allowed in the sync workspace.");
     }
 
+    playbackRateRef.current = 1.0;
+    setPlaybackRate(1.0);
+    setIsSyncPlaying(false);
+    workspaceClock.setRate(1.0);
+    workspaceClock.pause();
+    workspaceClock.seek(0);
+    window.currentAudioTime = 0;
     setIsBluetoothDelayCompensationEnabled(false);
     setBluetoothDelayCompensationMs(Number.isFinite(settings?.audioDelayCompensationMs)
       ? Math.max(-250, Math.min(250, settings.audioDelayCompensationMs))
@@ -329,10 +246,12 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
       const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
       let initialData = [];
-      const hasManualSync = selectedSong.syncData?.some(line => line.start !== null);
-      const hasAutoSync = selectedSong.autoSyncData?.some(line => line.start !== null);
+      const hasManualSync = Array.isArray(selectedSong.syncData) && selectedSong.syncData.some(line => line.start !== null);
+      const hasAutoSync = Array.isArray(selectedSong.autoSyncData) && selectedSong.autoSyncData.some(line => line.start !== null);
       const useAutoSync = isShowingAutoSync || (!hasManualSync && hasAutoSync);
-      const sourceData = useAutoSync ? selectedSong.autoSyncData : selectedSong.syncData;
+      const sourceData = useAutoSync
+        ? (Array.isArray(selectedSong.autoSyncData) ? selectedSong.autoSyncData : [])
+        : (Array.isArray(selectedSong.syncData) ? selectedSong.syncData : []);
 
       if (hasManualText) {
         initialData = parsedLines.map((line, i) => {
@@ -359,6 +278,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setActiveSyncIndex(0);
       setIsSyncMode(true);
     } catch (err) {
+      setShowBluetoothSyncPrompt(false);
       console.error("Error launching sync workspace:", err);
     } finally {
       setIsSyncLoading(false);
@@ -404,57 +324,24 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const toggleSyncPlay = () => {
-    if (syncYtVideoId && syncYtPlayerRef.current) {
-      try {
-        if (isSyncPlaying) {
-          syncYtPlayerRef.current.pauseVideo();
-          setIsSyncPlaying(false);
-          workspaceClock.pause();
-        } else {
-          window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-          syncYtPlayerRef.current.playVideo();
-          setIsSyncPlaying(true);
-          workspaceClock.start(workspaceClock.getCurrentTime());
-        }
-      } catch (e) {}
-      return;
-    }
-    if (!syncAudioRef.current) return;
-    if (syncAudioRef.current.paused) {
-      window.dispatchEvent(new CustomEvent('pauseGlobalPlayer'));
-      syncAudioRef.current.play().catch(e => console.log(e));
-      setIsSyncPlaying(true);
-      workspaceClock.start(syncAudioRef.current.currentTime || 0);
-    } else {
-      syncAudioRef.current.pause();
-      setIsSyncPlaying(false);
-      workspaceClock.pause();
-    }
-  };
-
-  const handleSyncSeek = (e) => {
-    const time = Number(e.target.value);
-    workspaceClock.seek(time);
-    if (syncYtVideoId && syncYtPlayerRef.current) {
-      try { syncYtPlayerRef.current.seekTo(time, true); } catch (err) {}
-    } else if (syncAudioRef.current) {
-      syncAudioRef.current.currentTime = time;
-    }
+    window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+      detail: { type: 'toggle', trackId: songTrackId }
+    }));
   };
 
   const handleSpeedChange = (e) => {
     const spd = parseFloat(e.target.value);
     setPlaybackRate(spd);
     workspaceClock.setRate(spd);
-    if (syncYtVideoId && syncYtPlayerRef.current) {
-      try { syncYtPlayerRef.current.setPlaybackRate(spd); } catch (err) {}
-    }
+    window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+      detail: { type: 'rate', rate: spd, trackId: songTrackId }
+    }));
   };
 
   return {
     isSyncMode, setIsSyncMode, isShowingAutoSync, setIsShowingAutoSync, showBluetoothSyncPrompt, handleBluetoothSyncChoice, isSyncLoading, isLrcFetching, isTranslating, syncData, setSyncData, activeSyncIndex, setActiveSyncIndex,
-    syncDuration, setSyncDuration, isSyncPlaying, setIsSyncPlaying, syncAudioSrc, syncYtVideoId, syncYtPlayerRef, activeSyncSource, setActiveSyncSource, playbackRate, debugInfo,
-    syncAudioRef, activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay, handleSyncSeek,
+    isSyncPlaying, activeSyncSource, playbackRate, debugInfo,
+    activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
     availableSources, setManualSource, handleShiftTimings, triggerSyncKey
   };

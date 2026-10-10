@@ -45,6 +45,64 @@ body .global-player.glass-panel-heavy.centered-mode {
   z-index: 10;
 }
 
+.global-player.sync-docked {
+  animation: none !important;
+  transition: none !important;
+  margin-top: 0;
+}
+
+.global-player.sync-docked .close-player {
+  display: none;
+}
+
+.global-player.sync-docked .player-info {
+  max-width: calc(100% - 164px);
+}
+
+.global-player.sync-docked .player-right-controls.sync-player-controls {
+  flex: 0 0 auto;
+  gap: 0;
+}
+
+.global-player.sync-docked .sync-volume-container {
+  width: auto;
+  gap: 6px;
+}
+
+.global-player.sync-docked .volume-slider-wrapper {
+  position: static;
+  width: clamp(56px, 9vw, 90px);
+  min-width: 56px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.global-player.sync-docked .sync-volume-container:hover .volume-slider-wrapper {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.global-player.sync-docked .volume-slider {
+  width: 100%;
+  min-width: 0;
+  transform: none;
+}
+
+.global-player.sync-docked .sync-volume-percentage {
+  min-width: 30px;
+  color: var(--text-subdued);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 .global-player:hover {
   box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 25px color-mix(in srgb, var(--player-accent, transparent) 25%, transparent);
 }

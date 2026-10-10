@@ -20,6 +20,7 @@ const ModalRight = (props) => {
     const updateMobileCanvas = () => {
       setIsMobileCanvas(mobileQuery.matches);
       setIsCanvasActive(false);
+      if (!mobileQuery.matches) canvasRef.current?.blur();
     };
 
     updateMobileCanvas();
@@ -42,7 +43,7 @@ const ModalRight = (props) => {
     <div
       ref={canvasRef}
       className={`modal-right-col glass-panel-light${isMobileCanvas && isCanvasActive ? ' is-canvas-active' : ''}`}
-      tabIndex={isMobileCanvas && isCanvasActive ? 0 : -1}
+      tabIndex={isMobileCanvas ? (isCanvasActive ? 0 : -1) : undefined}
       role="region"
       aria-label="Song canvas"
       onBlur={isMobileCanvas ? handleCanvasBlur : undefined}

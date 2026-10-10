@@ -145,7 +145,7 @@ const ModalLeft = ({
     }
 
     const getSyncKey = (event) => {
-      if (event.code === 'Space') return 'Space';
+      if (event.code === 'Space' || event.key === ' ') return 'Space';
       return event.key === 'ArrowUp' || event.key === 'ArrowDown' ? event.key : null;
     };
     const handleKeyDown = (event) => {
@@ -158,12 +158,12 @@ const ModalLeft = ({
     };
     const clearPressedKey = () => setPressedSyncKey(null);
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('keydown', handleKeyDown, true);
+    window.addEventListener('keyup', handleKeyUp, true);
     window.addEventListener('blur', clearPressedKey);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('keydown', handleKeyDown, true);
+      window.removeEventListener('keyup', handleKeyUp, true);
       window.removeEventListener('blur', clearPressedKey);
     };
   }, [isSyncMode]);

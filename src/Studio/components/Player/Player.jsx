@@ -7,6 +7,10 @@ import './Player.css';
 
 const Player = ({ onPlaybackVisualChange, ...props }) => {
   const { refs, state, handlers } = usePlayerLogic(props);
+  const playerTrack = state.isSyncWorkspaceActive &&
+    String(state.currentTrack?.trackId) !== String(state.selectedSong?.trackId)
+    ? null
+    : state.currentTrack;
 
   useEffect(() => {
     onPlaybackVisualChange?.({
@@ -17,12 +21,12 @@ const Player = ({ onPlaybackVisualChange, ...props }) => {
     });
   }, [onPlaybackVisualChange, state.isPlaying, state.currentTrack, state.accentArtworkUrl, state.accentColor]);
 
-  const playerUI = state.currentTrack ? (
+  const playerUI = playerTrack ? (
     <PlayerUI
-      currentTrack={state.currentTrack}
+      currentTrack={playerTrack}
       selectedSong={state.selectedSong}
-      isStacked={state.isStacked}
       slotNode={state.slotNode}
+      isSyncWorkspaceActive={state.isSyncWorkspaceActive}
       accentColor={state.accentColor}
       isPlaying={state.isPlaying}
       togglePlay={handlers.togglePlay}
@@ -43,6 +47,7 @@ const Player = ({ onPlaybackVisualChange, ...props }) => {
       progressBarRef={refs.progressBarRef}
       currentTimeRef={refs.currentTimeRef}
       openModal={handlers.openModal}
+      isPrecise={state.isSyncWorkspaceActive}
     />
   ) : null;
 

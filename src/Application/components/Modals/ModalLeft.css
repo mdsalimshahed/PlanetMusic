@@ -1,6 +1,7 @@
 /* --- src/components/Modals/ModalLeft.css --- */
 .modal-left-col {
   --modal-detail-inset: clamp(10px, 1.5vw, 16px);
+    padding-top: clamp(20px, 3vh, 36px);
     flex: var(--dyn-modal-split, 50);
     display: flex;
     flex-direction: column;
@@ -767,7 +768,7 @@ a.platform-label.yt-color:hover {
   .sync-emulation-space {
     width: 100%;
     height: 34px;
-    font: 700 11px/1 monospace;
+    font: 700 11px/1 var(--font-family);
   }
 
   .sync-emulation-arrow {
@@ -848,4 +849,49 @@ a.platform-label.yt-color:hover {
   .bottom-actions {
     width: 100%;
   }
+}
+
+@media (min-width: 901px) {
+  .modal-left-col {
+    overflow-y: auto;
+    padding-right: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-left-col::-webkit-scrollbar { width: 6px; }
+  .modal-left-col::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .modal-left-static {
+    padding-right: 0;
+  }
+
+  .modal-left-scrollable {
+    flex: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+.modal-top,
+.modal-header-info {
+  max-height: none;
+}
+
+.modal-header-info {
+  overflow: visible;
+}
+
+.modal-header-info h2 {
+  max-height: none;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.modal-artist-row .album-subtext {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
 }

@@ -4,9 +4,10 @@ import { getAudioFile } from '../../../Application/services/db.js';
 import { getCachedDeezerAudioBlob, getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock } from '../../utils/clockEngine.js';
+import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
 
-export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings }) => {
+export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false }) => {
   const audioRef = useRef(null);
   const ytPlayerRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -26,6 +27,9 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const bufferingRef = useRef(false);
   const deezerObjectUrlRef = useRef(null);
   const audioCacheRef = useRef(new Map());
+  const syncLoadRequestRef = useRef(null);
+  const syncPlaybackRateRef = useRef(1);
+  const pendingAutoplayRef = useRef(true);
   const MAX_CACHE_SIZE = 5;
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,6 +43,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const [accentColor, setAccentColor] = useState('#ffffff');
   const [accentArtworkUrl, setAccentArtworkUrl] = useState(null);
   const [pendingSeek, setPendingSeek] = useState(null);
+  const pendingSeekRef = useRef(null);
   const [hoverTime, setHoverTime] = useState(null);
   const [fallbackMessage, setFallbackMessage] = useState('');
   const [failedSources, setFailedSources] = useState([]);
@@ -55,6 +60,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   });
   const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
+  const formatPlayerTime = isSyncWorkspaceActive ? formatPreciseTime : formatTime;
+  const setPendingSeekValue = (time) => {
+    pendingSeekRef.current = time;
+    setPendingSeek(time);
+  };
 
   useEffect(() => {
     globalClock.setEventName('globalTimeUpdate');
@@ -77,18 +87,22 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   }, []);
 
   useEffect(() => {
-    if (selectedSong && isStacked) {
-      setTimeout(() => setSlotNode(document.getElementById('mobile-player-slot')), 50);
+    if (isSyncWorkspaceActive) {
+      setSlotNode(document.getElementById('sync-player-slot'));
+    } else if (selectedSong && isStacked) {
+      setSlotNode(document.getElementById('mobile-player-slot'));
     } else {
       setSlotNode(null);
     }
-  }, [selectedSong, isStacked]);
+  }, [selectedSong, isStacked, isSyncWorkspaceActive]);
 
   const emitPlayState = (playing, ended = false) => {
     window.globalIsAudioPlaying = playing; // <-- FIX: Persist play state globally for components mounting later
     if (playing) globalClock.start(window.currentAudioTime || 0);
     else globalClock.pause();
-    window.dispatchEvent(new CustomEvent('globalPlayState', { detail: { isPlaying: playing, isEnded: ended } }));
+    window.dispatchEvent(new CustomEvent('globalPlayState', {
+      detail: { trackId: currentTrack?.trackId ?? null, isPlaying: playing, isEnded: ended }
+    }));
   };
 
   const setBuffering = (buffering) => {
@@ -312,7 +326,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       }
       setAudioSrc(undefined);
       setYtVideoId(null);
-      setPendingSeek(null);
+      setPendingSeekValue(null);
       setIsPlaying(false);
       setBuffering(false);
       setActiveSource(null);
@@ -325,7 +339,30 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       emitPlayState(false, true);
       trackIdRef.current = null;
       if (progressBarRef.current) progressBarRef.current.value = 0;
-      if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
+      if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(0);
+      return;
+    }
+    if (
+      isSyncWorkspaceActive &&
+      (!selectedSong || String(currentTrack.trackId) !== String(selectedSong.trackId))
+    ) {
+      sourceLoadGenerationRef.current += 1;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+      if (audioRef.current) audioRef.current.pause();
+      if (ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.stopVideo(); } catch (err) {}
+      }
+      setAudioSrc(undefined);
+      setYtVideoId(null);
+      setIsPlaying(false);
+      setBuffering(false);
+      setActiveSource(null);
+      activeSourceRef.current = null;
+      trackIdRef.current = null;
+      globalClock.pause();
       return;
     }
     const trackId = currentTrack.trackId;
@@ -339,7 +376,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       if (dzUrl && !exclude.includes('deezer')) return 'deezer';
       if (hasLocal && !exclude.includes('local')) return 'local';
       if (extractedYtId && !exclude.includes('youtube')) return 'youtube';
-      if (currentTrack.previewUrl && !exclude.includes('preview')) return 'preview';
+      if (!isSyncWorkspaceActive && currentTrack.previewUrl && !exclude.includes('preview')) return 'preview';
       return null;
     };
 
@@ -359,6 +396,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const sourceChanged = intendedSource !== activeSourceRef.current;
 
     if (trackChanged || sourceChanged || isNewPlayAction) {
+      const syncLoadRequest = syncLoadRequestRef.current;
+      pendingAutoplayRef.current = syncLoadRequest?.playId === currentTrack.playId
+        ? syncLoadRequest.autoplay
+        : !isSyncWorkspaceActive;
       const sourceLoadGeneration = ++sourceLoadGenerationRef.current;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -381,7 +422,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       globalClock.seek(0);
       window.currentAudioTime = 0;
       if (progressBarRef.current) progressBarRef.current.value = 0;
-      if (currentTimeRef.current) currentTimeRef.current.innerText = "0:00";
+      if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(0);
       
       trackIdRef.current = trackId;
       playIdRef.current = currentTrack.playId;
@@ -404,6 +445,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setAudioSrc(undefined);
           setYtVideoId(null);
           setBuffering(false);
+          setDuration(0);
           return;
         }
         activeSourceRef.current = source;
@@ -483,7 +525,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
                   deezerObjectUrlRef.current = url;
                   activeSourceRef.current = 'deezer';
                   pendingSeekShouldPlayRef.current = shouldResume;
-                  setPendingSeek(switchTime);
+                  setPendingSeekValue(switchTime);
                   setYtVideoId(null);
                   setAudioSrc(url);
                   setActiveSource('deezer');
@@ -538,7 +580,29 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       loadAudio(intendedSource);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, settings?.deezerArl, failedSources]);
+  }, [currentTrack, settings?.deezerArl, failedSources, isSyncWorkspaceActive, selectedSong?.trackId]);
+
+  useEffect(() => {
+    if (!isSyncWorkspaceActive) return undefined;
+
+    const handleSyncLoadTrack = (event) => {
+      const { track, source, autoplay = false, playbackRate } = event.detail || {};
+      if (!track || !source || !setCurrentTrack) return;
+      if (!selectedSong || String(track.trackId) !== String(selectedSong.trackId)) return;
+
+      const playId = `sync-${Date.now()}-${sourceLoadGenerationRef.current}`;
+      const requestedRate = Number(playbackRate);
+      if (Number.isFinite(requestedRate) && requestedRate > 0) {
+        syncPlaybackRateRef.current = requestedRate;
+        globalClock.setRate(requestedRate);
+      }
+      syncLoadRequestRef.current = { playId, autoplay: Boolean(autoplay) };
+      setCurrentTrack({ ...track, forceSource: source, playId });
+    };
+
+    window.addEventListener('globalPlayerLoadTrack', handleSyncLoadTrack);
+    return () => window.removeEventListener('globalPlayerLoadTrack', handleSyncLoadTrack);
+  }, [isSyncWorkspaceActive, selectedSong?.trackId, setCurrentTrack]);
 
   useEffect(() => {
     if (!ytVideoId) return;
@@ -572,18 +636,30 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             try {
               if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('highres');
               event.target.setVolume((isMuted ? 0 : volume) * 100);
+              if (typeof event.target.setPlaybackRate === 'function') {
+                event.target.setPlaybackRate(syncPlaybackRateRef.current);
+              }
               const dur = event.target.getDuration();
               if (dur && !isNaN(dur)) setDuration(dur);
               
-              if (pendingSeek !== null) {
-                event.target.seekTo(pendingSeek, true);
-                globalClock.seek(pendingSeek);
-                setPendingSeek(null);
+              let shouldPlay = pendingAutoplayRef.current;
+              if (pendingSeekRef.current !== null) {
+                event.target.seekTo(pendingSeekRef.current, true);
+                globalClock.seek(pendingSeekRef.current);
+                shouldPlay = pendingSeekShouldPlayRef.current;
+                pendingSeekShouldPlayRef.current = true;
+                setPendingSeekValue(null);
               }
               setBuffering(false);
-              event.target.playVideo();
-              setIsPlaying(true);
-              emitPlayState(true, false);
+              if (shouldPlay) {
+                event.target.playVideo();
+                setIsPlaying(true);
+                emitPlayState(true, false);
+              } else {
+                event.target.pauseVideo();
+                setIsPlaying(false);
+                emitPlayState(false, false);
+              }
             } catch (e) {}
           },
           onStateChange: (event) => {
@@ -642,8 +718,8 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         progressBarRef.current.value = time;
         progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
       }
-      if (currentSecond !== lastSecond) {
-        if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
+      if (currentSecond !== lastSecond || isSyncWorkspaceActive) {
+        if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(time);
         lastSecond = currentSecond;
       }
       const now = performance.now();
@@ -670,12 +746,16 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     
     window.addEventListener('globalTimeUpdate', handleTimeUpdate);
     return () => window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
-  }, [duration, ytVideoId, isPlaying]);
+  }, [duration, ytVideoId, isPlaying, isSyncWorkspaceActive, formatPlayerTime]);
 
   useEffect(() => {
     if (!ytVideoId && audioSrc && audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
-      if (pendingSeek === null) attemptPlay();
+      audioRef.current.playbackRate = syncPlaybackRateRef.current;
+      if (pendingSeek === null) {
+        if (pendingAutoplayRef.current) attemptPlay();
+        else emitPlayState(false, false);
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [audioSrc, ytVideoId]);
@@ -720,12 +800,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         emitPlayState(false, false);
         setCurrentTrack({ ...track, playId: Date.now() });
         pendingSeekShouldPlayRef.current = true;
-        setPendingSeek(time);
+        setPendingSeekValue(time);
       } else {
         if (time !== null) {
           if (bufferingRef.current) {
             pendingSeekShouldPlayRef.current = true;
-            setPendingSeek(time);
+            setPendingSeekValue(time);
             return;
           }
           globalClock.seek(time);
@@ -806,14 +886,15 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const handleLoadedMetadata = () => {
     if (audioRef.current && !ytVideoId) {
       setDuration(audioRef.current.duration);
-      if (pendingSeek !== null) {
-        audioRef.current.currentTime = pendingSeek;
-        globalClock.seek(pendingSeek);
+      audioRef.current.playbackRate = syncPlaybackRateRef.current;
+      if (pendingSeekRef.current !== null) {
+        audioRef.current.currentTime = pendingSeekRef.current;
+        globalClock.seek(pendingSeekRef.current);
         const shouldPlay = pendingSeekShouldPlayRef.current;
         pendingSeekShouldPlayRef.current = true;
         if (shouldPlay) attemptPlay();
         else emitPlayState(false, false);
-        setPendingSeek(null);
+        setPendingSeekValue(null);
       }
     }
   };
@@ -836,7 +917,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     }
     
     if (progressBarRef.current) progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
-    if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
+    if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(time);
   };
 
   const handleContainerClick = (e) => {
@@ -864,7 +945,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       progressBarRef.current.value = time;
       progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
     }
-    if (currentTimeRef.current) currentTimeRef.current.innerText = formatTime(time);
+    if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(time);
   };
 
   const handleProgressMouseMove = (e) => {
@@ -948,6 +1029,69 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     }
   };
 
+  useEffect(() => {
+    if (!isSyncWorkspaceActive) return undefined;
+
+    const isCurrentSyncTrack = (trackId) => (
+      trackId == null ||
+      (currentTrack?.trackId != null && String(trackId) === String(currentTrack.trackId))
+    );
+
+    const seekTo = (time) => {
+      if (!Number.isFinite(time) || time < 0) return;
+      globalClock.seek(time);
+      pendingSeekShouldPlayRef.current = false;
+
+      if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.seekTo(time, true); } catch (err) {}
+        setPendingSeekValue(null);
+      } else if (!ytVideoId && audioRef.current?.readyState > 0) {
+        audioRef.current.currentTime = time;
+        setPendingSeekValue(null);
+      } else {
+        setPendingSeekValue(time);
+      }
+    };
+
+    const pausePlayback = () => {
+      if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+        try { ytPlayerRef.current.pauseVideo(); } catch (err) {}
+      } else if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+      }
+      setIsPlaying(false);
+      emitPlayState(false, false);
+    };
+
+    const handlePlayerCommand = (event) => {
+      const { type, trackId, time, rate } = event.detail || {};
+      if (!isCurrentSyncTrack(trackId)) return;
+
+      if (type === 'toggle') {
+        togglePlay();
+      } else if (type === 'seek') {
+        seekTo(Number(time));
+      } else if (type === 'pause') {
+        pausePlayback();
+      } else if (type === 'pauseSeek') {
+        pausePlayback();
+        seekTo(Number(time));
+      } else if (type === 'rate' && Number.isFinite(Number(rate)) && Number(rate) > 0) {
+        const nextRate = Number(rate);
+        syncPlaybackRateRef.current = nextRate;
+        globalClock.setRate(nextRate);
+        if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+          try { ytPlayerRef.current.setPlaybackRate(nextRate); } catch (err) {}
+        } else if (audioRef.current) {
+          audioRef.current.playbackRate = nextRate;
+        }
+      }
+    };
+
+    window.addEventListener('globalPlayerCommand', handlePlayerCommand);
+    return () => window.removeEventListener('globalPlayerCommand', handlePlayerCommand);
+  }, [isSyncWorkspaceActive, currentTrack, isPlaying, ytVideoId, ytPlayerReady, togglePlay]);
+
   const openModal = () => {
     if (currentTrack && setSelectedSong) {
       if (selectedSong && String(selectedSong.trackId) === String(currentTrack.trackId)) {
@@ -993,7 +1137,8 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       volume,
       isMuted,
       isStacked,
-      slotNode
+      slotNode,
+      isSyncWorkspaceActive
     },
     handlers: {
       handleLoadedMetadata,

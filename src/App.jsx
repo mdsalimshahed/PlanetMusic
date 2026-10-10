@@ -203,6 +203,17 @@ const App = () => {
     activeTab, urlSearchQuery, navigate, library, setIsExplicitSearch
   });
 
+  const isSyncWorkspaceActive = Boolean(
+    selectedSong &&
+    pathParts[0] === 'song' &&
+    pathParts.includes('sync-workspace') &&
+    String(selectedSong.trackId) === String(urlTrackId)
+  );
+  const playerTrack = isSyncWorkspaceActive &&
+    String(currentTrack?.trackId) !== String(selectedSong?.trackId)
+    ? null
+    : currentTrack;
+
   const dynamicStyles = {
     '--dyn-card-font-size': `${settings.cardFontSize}vh`,
     '--dyn-modal-font-size': `${settings.modalFontSize}vh`,
@@ -482,12 +493,14 @@ const App = () => {
         settings={settings}
       />
       
-      <Player 
-        currentTrack={currentTrack} 
+      <Player
+        key={isSyncWorkspaceActive ? `sync-player-${urlTrackId}` : 'global-player'}
+        currentTrack={playerTrack}
         onPlaybackVisualChange={setLogoPlaybackVisuals}
-        setCurrentTrack={setCurrentTrack} 
+        setCurrentTrack={setCurrentTrack}
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}
+        isSyncWorkspaceActive={isSyncWorkspaceActive}
         settings={settings}
       />
 

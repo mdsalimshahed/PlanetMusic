@@ -1,6 +1,6 @@
 /* --- src/Studio/hooks/sync/useSyncLogic.js --- */
 import { useEffect, useRef } from 'react';
-import { workspaceClock } from '../../utils/clockEngine';
+import { globalClock as workspaceClock } from '../../utils/clockEngine';
 import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
 
 const BLUETOOTH_SYNC_OFFSET_SECONDS = 0.2;
@@ -9,14 +9,12 @@ const BLUETOOTH_SYNC_OFFSET_SECONDS = 0.2;
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking
 // ------------------------------------------------------------------
 export const useSyncEngine = ({
-  isSyncPlaying, setIsSyncPlaying, syncAudioRef, syncYtVideoId, syncYtPlayerRef,
+  isSyncMode, isSyncPlaying, trackId,
   workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
   syncDataRef, updateWorkspaceData,
   loopRangeRef, setLoopRange,
   constrainedEndRef, setConstrainedEnd
 }) => {
-  const lastSyncTimeRef = useRef(0);
-
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
     if (!wLines || wLines.length === 0) return;
@@ -62,26 +60,14 @@ export const useSyncEngine = ({
 
   useEffect(() => {
     let animationFrameId;
+
+    if (!isSyncMode) {
+      return () => cancelAnimationFrame(animationFrameId);
+    }
     
     const syncTick = () => {
       if (isSyncPlaying) {
         const time = workspaceClock.getCurrentTime();
-        
-        const now = performance.now();
-        if (now - lastSyncTimeRef.current > 2000) {
-            if (syncYtVideoId && syncYtPlayerRef?.current) {
-              try {
-                const ytTime = syncYtPlayerRef.current.getCurrentTime();
-                if (ytTime !== undefined) {
-                    workspaceClock.updateAnchor(ytTime);
-                    lastSyncTimeRef.current = now;
-                }
-              } catch (e) {}
-            } else if (syncAudioRef?.current) {
-              workspaceClock.updateAnchor(syncAudioRef.current.currentTime);
-              lastSyncTimeRef.current = now;
-            }
-        }
         
         const wLines = workspaceLinesRef.current;
         const currentItem = wLines[activeIdxRef.current];
@@ -105,27 +91,16 @@ export const useSyncEngine = ({
         
         if (loopRangeRef.current) {
           if (time >= loopRangeRef.current.end) {
-            if (syncYtVideoId && syncYtPlayerRef?.current) {
-              try {
-                syncYtPlayerRef.current.pauseVideo();
-                syncYtPlayerRef.current.seekTo(loopRangeRef.current.start, true);
-              } catch (e) {}
-            } else if (syncAudioRef?.current) {
-              syncAudioRef.current.pause();
-              syncAudioRef.current.currentTime = loopRangeRef.current.start;
-            }
+            window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+              detail: { type: 'pauseSeek', time: loopRangeRef.current.start, trackId }
+            }));
             workspaceClock.pause();
-            workspaceClock.seek(loopRangeRef.current.start);
-            setIsSyncPlaying(false);
           }
         } else if (constrainedEndRef.current !== null && time >= constrainedEndRef.current) {
-          if (syncYtVideoId && syncYtPlayerRef?.current) {
-            try { syncYtPlayerRef.current.pauseVideo(); } catch (e) {}
-          } else if (syncAudioRef?.current) {
-            syncAudioRef.current.pause();
-          }
+          window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+            detail: { type: 'pause', trackId }
+          }));
           workspaceClock.pause();
-          setIsSyncPlaying(false);
           setConstrainedEnd(null);
         } else {
           autoTrackSyncPlayback(time);
@@ -141,14 +116,14 @@ export const useSyncEngine = ({
       workspaceClock.pause();
     }
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isSyncPlaying, syncYtVideoId]);
+  }, [isSyncMode, isSyncPlaying]);
 };
 
 // ------------------------------------------------------------------
 // 2. KEYBOARD: Handles manual syncing and spacebar controls
 // ------------------------------------------------------------------
 export const useSyncKeyboard = ({
-  isSyncMode, syncAudioRef, syncYtVideoId, syncYtPlayerRef, activeIdxRef, workspaceLinesRef,
+  isSyncMode, activeIdxRef, workspaceLinesRef, selectedSong,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
   loopRangeRef, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs
 }) => {
@@ -160,11 +135,9 @@ export const useSyncKeyboard = ({
 
   const seekToTime = (t) => {
     workspaceClock.seek(t);
-    if (syncYtVideoId && syncYtPlayerRef?.current) {
-      try { syncYtPlayerRef.current.seekTo(t, true); } catch (e) {}
-    } else if (syncAudioRef?.current) {
-      syncAudioRef.current.currentTime = t;
-    }
+    window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+      detail: { type: 'seek', time: t, trackId: selectedSong?.trackId }
+    }));
   };
 
   useEffect(() => {
@@ -174,36 +147,16 @@ export const useSyncKeyboard = ({
     }
 
     const handleKeyDown = (e) => {
-      if (e.code === 'Space') {
-        if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+      if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
+        if (e.repeat) return;
         
-        if (syncYtVideoId && syncYtPlayerRef?.current) {
-          try {
-            const state = syncYtPlayerRef.current.getPlayerState();
-            if (state === window.YT.PlayerState.PLAYING) {
-              syncYtPlayerRef.current.pauseVideo();
-              workspaceClock.pause();
-            } else {
-              if (loopRangeRef?.current && getCurrentTime() >= loopRangeRef.current.end) {
-                seekToTime(loopRangeRef.current.start);
-              }
-              syncYtPlayerRef.current.playVideo();
-              workspaceClock.start(getCurrentTime());
-            }
-          } catch (err) {}
-        } else if (syncAudioRef?.current) {
-          if (loopRangeRef && loopRangeRef.current && syncAudioRef.current.currentTime >= loopRangeRef.current.end) {
-              syncAudioRef.current.currentTime = loopRangeRef.current.start;
-          }
-          if (syncAudioRef.current.paused) {
-            syncAudioRef.current.play().catch(err => console.log(err));
-            workspaceClock.start(syncAudioRef.current.currentTime || 0);
-          } else {
-            syncAudioRef.current.pause();
-            workspaceClock.pause();
-          }
+        if (loopRangeRef?.current && getCurrentTime() >= loopRangeRef.current.end) {
+          seekToTime(loopRangeRef.current.start);
         }
+        window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
+          detail: { type: 'toggle', trackId: selectedSong?.trackId }
+        }));
         return;
       }
 
@@ -327,12 +280,12 @@ export const useSyncKeyboard = ({
     };
 
     keyboardActionRef.current = handleKeyDown;
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown, true);
       if (keyboardActionRef.current === handleKeyDown) keyboardActionRef.current = null;
     };
-  }, [isSyncMode, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs, syncYtVideoId]);
+  }, [isSyncMode, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs, selectedSong?.trackId]);
 
   return (key) => keyboardActionRef.current?.({
     code: key === 'Space' ? 'Space' : '',
