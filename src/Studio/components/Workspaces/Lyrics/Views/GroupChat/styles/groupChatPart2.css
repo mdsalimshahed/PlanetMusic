@@ -67,7 +67,7 @@
 
 .group-chat-turn-uncredited .group-chat-bubble-stack {
   width: fit-content;
-  max-width: 60%;
+  max-width: 100%;
 }
 
 .group-chat-turn-middle.group-chat-turn-left .group-chat-message,
@@ -94,8 +94,8 @@
 .group-chat-bubble-stack {
   display: flex;
   min-width: 0;
-  width: max-content;
-  max-width: 60%;
+  width: fit-content;
+  max-width: 100%;
   flex: 0 1 auto;
   flex-direction: column;
   align-items: flex-start;
