@@ -20,16 +20,20 @@ body .modal-right-col.glass-panel-light {
    margin: 0 auto; /* Ensures it stays centered when scaling down */
 }
 
-body .modal-right-col.glass-panel-light:focus {
-  border: 1px solid #fff !important;
-}
-
 body .modal-right-col.glass-panel-light:has(.group-chat) .singer-name-corner {
   display: none !important;
 }
 
 body .modal-right-col.glass-panel-light:has(.group-chat) {
   background: transparent !important;
+}
+
+.modal-canvas-content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
 }
 
 @media (max-width: 900px) {
@@ -53,34 +57,17 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
     margin: 0 !important;
     padding: 0 !important;
     border-radius: 0 !important;
-    overscroll-behavior: contain;
   }
 
-  .modal-right-col:focus {
+  .modal-right-col.is-canvas-active:focus {
     border: 1px solid #fff !important;
   }
 
-  .modal-right-col .lyrics-display {
+  .modal-right-col.is-canvas-active :is(.lyrics-display, .debug-lyrics-preview, .tw-list, .sync-lines-container, .image-manager-container) {
     overscroll-behavior: contain;
   }
 
-  body .modal-right-col.glass-panel-light:has(.tw-container),
-  body .modal-right-col.glass-panel-light:has(.sync-mode-container) {
-    align-self: stretch !important;
-    height: auto !important;
-    min-height: calc(100dvh - 24px) !important;
-    aspect-ratio: auto !important;
-    overflow: visible;
-  }
-
-  body .modal-right-col.glass-panel-light:has(.tw-container) .tw-container,
-  body .modal-right-col.glass-panel-light:has(.sync-mode-container) .sync-mode-container {
-    height: calc(100dvh - 24px);
-    min-height: calc(100dvh - 24px);
-  }
-
-  body .modal-right-col.glass-panel-light:has(.tw-container) .tw-list,
-  body .modal-right-col.glass-panel-light:has(.sync-mode-container) .sync-lines-container {
-    min-height: 0;
+  .modal-right-col.is-canvas-active .modal-canvas-content {
+    overscroll-behavior: contain;
   }
 }
