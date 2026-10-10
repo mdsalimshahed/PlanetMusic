@@ -33,6 +33,12 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
 }
 
 @media (max-width: 900px) {
+  body .modal-right-col.glass-panel-light {
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
   .modal-right-col {
     flex: none !important; 
     align-self: stretch !important;
