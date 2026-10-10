@@ -72,6 +72,7 @@ const GroupChatLyricsView = ({
     imageSources,
     masterPalette,
     liveParsedLyrics,
+    settings,
     expandedLineIndices,
     playbackEnded: playback.playbackEnded,
     handleLineClick,
@@ -83,6 +84,16 @@ const GroupChatLyricsView = ({
     <section
       className={`group-chat ${settings?.disableAnimations ? 'group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
+      style={{
+        '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}cqi`,
+        '--chat-heading-inactive-avatar-size': `${settings?.groupChatInactiveAvatarSize ?? 3.5}cqi`,
+        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}cqi`,
+        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}cqi`,
+        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}cqi`,
+        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}cqi`,
+        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}cqi`
+      }}
+      data-avatar-ring={settings?.groupChatAvatarRingEnabled !== false}
     >
       <GroupChatHeader
         artists={timeline.artists}
@@ -90,6 +101,7 @@ const GroupChatLyricsView = ({
         lastLineEndByArtist={lastLineEndByArtist}
         playbackTime={playback.playbackTime}
         imageSources={imageSources}
+        disableAnimations={settings?.disableAnimations}
       />
       <div className="group-chat-conversation">
         <div
@@ -101,7 +113,6 @@ const GroupChatLyricsView = ({
         >
           <GroupChatHistory
             history={history}
-            hasMessages={history.some(item => item.type === 'message-chain')}
             playbackTime={playback.playbackTime}
             messageProps={messageProps}
           />

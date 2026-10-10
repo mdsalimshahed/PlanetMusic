@@ -3,6 +3,7 @@ import { getInitials } from '../utils/groupChatUtils.js';
 
 const ArtistPresenceAvatar = ({ artist, artistIndex, isOnline, isDimmed, image }) => {
   const [isVisible, setIsVisible] = useState(isOnline);
+  const isActive = isOnline && !isDimmed;
 
   useEffect(() => {
     if (isOnline) {
@@ -21,9 +22,11 @@ const ArtistPresenceAvatar = ({ artist, artistIndex, isOnline, isDimmed, image }
       className={[
         'group-chat-participant',
         isOnline ? 'is-online' : 'is-offline',
+        isActive ? 'is-active' : 'is-inactive',
         isDimmed ? 'is-dimmed' : ''
       ].filter(Boolean).join(' ')}
       style={{ '--artist-color': artist.color, '--presence-index': artistIndex }}
+      data-artist-name={artist.name}
       aria-label={`${artist.name}, ${isDimmed ? 'inactive' : isOnline ? 'online' : 'offline'}`}
       aria-hidden={!isOnline}
     >

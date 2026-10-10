@@ -9,6 +9,7 @@ const GroupChatMessageChain = ({
   imageSources,
   masterPalette,
   liveParsedLyrics,
+  settings,
   handleLineClick,
   playbackTime,
   isPlayingCurrentSong
@@ -29,7 +30,9 @@ const GroupChatMessageChain = ({
           liveParsedLyrics[line.sourceIndex ?? line.index] ||
           { text: line.text };
         const avatarCount = isUncredited ? 0 : group.artists.length;
-        const avatarSlotWidth = isUncredited ? 0 : 34 + 22 * (avatarCount - 1);
+        const avatarSize = settings?.groupChatBubbleAvatarSize ?? 4.25;
+        const avatarStep = avatarSize * (1 - 12 / 34);
+        const avatarSlotWidth = isUncredited ? 0 : avatarSize + avatarStep * (avatarCount - 1);
         const bubbleShape = group.events.length === 1
           ? 'single'
           : (eventIndex === group.events.length - 1 ? 'last' : 'middle');
@@ -46,7 +49,7 @@ const GroupChatMessageChain = ({
               aria-hidden="true"
               style={{
                 '--avatar-count': avatarCount,
-                '--avatar-slot-width': `${avatarSlotWidth}px`
+                '--avatar-slot-width': `${avatarSlotWidth}cqi`
               }}
             >
               {isLastMessage && (

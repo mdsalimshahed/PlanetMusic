@@ -3,14 +3,10 @@ import { getClockTime } from '../utils/groupChatUtils.js';
 
 const GroupChatHistory = ({
   history,
-  hasMessages,
   playbackTime,
   messageProps
 }) => (
   <div className="group-chat-history-content">
-    {!hasMessages && (
-      <p className="group-chat-empty">The group is waiting for the conversation to start.</p>
-    )}
     {history.map((item, itemIndex) => {
       if (item.type !== 'message-chain') {
         const { event } = item;

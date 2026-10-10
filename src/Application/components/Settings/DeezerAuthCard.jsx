@@ -7,17 +7,11 @@ const DeezerAuthCard = ({
   showArl, setShowArl, isVerifying, verifyResult, setVerifyResult, authGradient
 }) => {
   return (
-    <>
       <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
         <SettingsCardHeading seed="deezer-audio-access" gradient={authGradient}>Deezer Audio Access</SettingsCardHeading>
         <div className="deezer-auth-instructions">
           <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
           <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-        </div>
-      </div>
-      <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
-        <SettingsCardHeading seed="deezer-arl-token" gradient={authGradient}>Deezer ARL Token</SettingsCardHeading>
-        <div className="deezer-auth-instructions">
           <p className="security-warning"><strong style={{ color: getProceduralColor('settings:deezer-security'), WebkitTextFillColor: getProceduralColor('settings:deezer-security') }}>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it across reloads and browser restarts; it is stored in local storage and can be read by scripts running on this site.</p>
         </div>
         <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
@@ -82,7 +76,6 @@ const DeezerAuthCard = ({
           )}
         </div>
       </div>
-    </>
   );
 };
 

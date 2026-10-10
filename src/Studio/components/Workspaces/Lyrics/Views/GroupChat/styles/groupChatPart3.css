@@ -27,7 +27,7 @@
   align-self: flex-start;
   margin: 3px 4px 2px;
   color: var(--message-color, #a8b4c7);
-  font-size: 10px;
+  font-size: var(--chat-artist-name-size, 1.25cqi);
   font-weight: 650;
   line-height: 1.3;
 }

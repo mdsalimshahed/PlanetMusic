@@ -6,6 +6,7 @@ import { useSettingsLogic } from '../hooks/core/useSettingsLogic.js';
 import DeezerAuthCard from '../components/Settings/DeezerAuthCard.jsx';
 import LayoutSettings from '../components/Settings/LayoutSettings.jsx';
 import TypographySettings from '../components/Settings/TypographySettings.jsx';
+import GroupChatSettings from '../components/Settings/GroupChatSettings.jsx';
 import TranslationSettings from '../components/Settings/TranslationSettings.jsx';
 import PurgeCard from '../components/Settings/PurgeCard.jsx';
 import AudioDelayTester from '../components/Settings/AudioDelayTester.jsx';
@@ -147,6 +148,12 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
           settings={settings} 
           handleChange={handleChange} 
           getSliderStyle={getSliderStyle} 
+        />
+
+        <GroupChatSettings
+          settings={settings}
+          handleChange={handleChange}
+          getSliderStyle={getSliderStyle}
         />
 
         {/* IN-FEED SPONSOR AD 2 */}

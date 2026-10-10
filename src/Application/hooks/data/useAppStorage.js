@@ -42,6 +42,20 @@ export const useAppStorage = (urlSearchQuery) => {
       if (parsed.bgPreemptionTime === undefined) parsed.bgPreemptionTime = 400;
       if (parsed.modalPaddingY === undefined) parsed.modalPaddingY = 5;
       if (parsed.eqFadeOutTime === undefined) parsed.eqFadeOutTime = 500;
+      if (parsed.groupChatActiveAvatarSize === undefined) parsed.groupChatActiveAvatarSize = 5;
+      else if (parsed.groupChatActiveAvatarSize > 9) parsed.groupChatActiveAvatarSize /= 8;
+      if (parsed.groupChatInactiveAvatarSize === undefined) parsed.groupChatInactiveAvatarSize = 3.5;
+      else if (parsed.groupChatInactiveAvatarSize > 7) parsed.groupChatInactiveAvatarSize /= 8;
+      if (parsed.groupChatBubbleAvatarSize === undefined) parsed.groupChatBubbleAvatarSize = 4.25;
+      else if (parsed.groupChatBubbleAvatarSize > 9) parsed.groupChatBubbleAvatarSize /= 8;
+      if (parsed.groupChatArtistNameSize === undefined) parsed.groupChatArtistNameSize = 1.25;
+      else if (parsed.groupChatArtistNameSize > 3) parsed.groupChatArtistNameSize /= 8;
+      if (parsed.groupChatTimestampSize === undefined) parsed.groupChatTimestampSize = 1.125;
+      else if (parsed.groupChatTimestampSize > 2.5) parsed.groupChatTimestampSize /= 8;
+      if (parsed.groupChatNotificationSize === undefined) parsed.groupChatNotificationSize = 1.375;
+      else if (parsed.groupChatNotificationSize > 3) parsed.groupChatNotificationSize /= 8;
+      if (parsed.groupChatAvatarRingEnabled === undefined) parsed.groupChatAvatarRingEnabled = true;
+      if (parsed.groupChatAvatarRingThickness === undefined) parsed.groupChatAvatarRingThickness = 0.12;
       if (parsed.translationColor === undefined) parsed.translationColor = '#ffffff';
       if (parsed.translationOpacity === undefined) parsed.translationOpacity = 0.9;
       if (parsed.transliterationColor === undefined) parsed.transliterationColor = '#ffffff';
@@ -78,6 +92,14 @@ export const useAppStorage = (urlSearchQuery) => {
       bgPreemptionTime: 400,
       modalPaddingY: 5,
       eqFadeOutTime: 500,
+      groupChatActiveAvatarSize: 5,
+      groupChatInactiveAvatarSize: 3.5,
+      groupChatBubbleAvatarSize: 4.25,
+      groupChatArtistNameSize: 1.25,
+      groupChatTimestampSize: 1.125,
+      groupChatNotificationSize: 1.375,
+      groupChatAvatarRingEnabled: true,
+      groupChatAvatarRingThickness: 0.12,
       translationColor: '#ffffff',
       translationOpacity: 0.9,
       transliterationColor: '#ffffff',

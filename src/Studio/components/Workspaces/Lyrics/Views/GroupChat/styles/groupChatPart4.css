@@ -63,7 +63,7 @@
   display: block;
   margin-top: 3px;
   color: rgba(226, 235, 237, 0.46);
-  font-size: 9px;
+  font-size: var(--chat-timestamp-size, 1.125cqi);
   text-align: right;
   white-space: nowrap;
 }
