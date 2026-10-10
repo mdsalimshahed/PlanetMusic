@@ -45,7 +45,9 @@ const GroupChatMessageChain = ({
             className={`group-chat-turn group-chat-turn-${group.side} group-chat-turn-${bubbleShape}${isUncredited ? ' group-chat-turn-uncredited' : ''}${showDebug && activeLineIndices.has(line.index) ? ' is-chat-active' : ''}`}
             key={`turn-${line.index}`}
             data-chat-line-index={line.index}
-            style={{ '--avatar-slot-width': `${avatarSlotWidth}cqi` }}
+            style={{
+              '--avatar-slot-width': `${avatarSlotWidth}cqi`
+            }}
           >
             <span
               className="group-chat-avatar-slot"
