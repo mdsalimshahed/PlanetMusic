@@ -2,80 +2,87 @@
 import { getProceduralColor } from '../../../utils/proceduralColors.js';
 import SettingsCardHeading from './SettingsCardHeading.jsx';
 
-const DeezerAuthCard = ({ 
-  settings, handleChange, handleVerifyArl, 
-  showArl, setShowArl, isVerifying, verifyResult, setVerifyResult, authGradient 
+const DeezerAuthCard = ({
+  settings, handleChange, handleVerifyArl,
+  showArl, setShowArl, isVerifying, verifyResult, setVerifyResult, authGradient
 }) => {
   return (
-    <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
-      <SettingsCardHeading seed="deezer-auth" gradient={authGradient}>Deezer ARL Token (Optional)</SettingsCardHeading>
-      <div className="deezer-auth-instructions">
-        <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
-        <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-        <p className="security-warning"><strong style={{ color: getProceduralColor('settings:deezer-security'), WebkitTextFillColor: getProceduralColor('settings:deezer-security') }}>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it across reloads and browser restarts; it is stored in local storage and can be read by scripts running on this site.</p>
+    <>
+      <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
+        <SettingsCardHeading seed="deezer-audio-access" gradient={authGradient}>Deezer Audio Access</SettingsCardHeading>
+        <div className="deezer-auth-instructions">
+          <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works perfectly fine without it</strong>, but you need a valid ARL to actually play the Deezer audio sources.</p>
+          <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
+        </div>
       </div>
-      <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
-        <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
-          <input
-            type={showArl ? 'text' : 'password'}
-            name="deezerArl"
-            value={settings.deezerArl || ''}
-            onChange={(e) => { 
-              handleChange(e); 
-              if (e.target.name === 'deezerArl') setVerifyResult(null); 
-            }}
-            placeholder="Paste Deezer ARL token here..."
-            style={{ 
-              flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
-              background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: 'white', outline: 'none', fontSize: '14px' 
-            }}
-          />
+      <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
+        <SettingsCardHeading seed="deezer-arl-token" gradient={authGradient}>Deezer ARL Token</SettingsCardHeading>
+        <div className="deezer-auth-instructions">
+          <p className="security-warning"><strong style={{ color: getProceduralColor('settings:deezer-security'), WebkitTextFillColor: getProceduralColor('settings:deezer-security') }}>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it across reloads and browser restarts; it is stored in local storage and can be read by scripts running on this site.</p>
+        </div>
+        <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
+          <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
+            <input
+              type={showArl ? 'text' : 'password'}
+              name="deezerArl"
+              value={settings.deezerArl || ''}
+              onChange={(e) => {
+                handleChange(e);
+                if (e.target.name === 'deezerArl') setVerifyResult(null);
+              }}
+              placeholder="Paste Deezer ARL token here..."
+              style={{
+                flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
+                background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
+                color: 'white', outline: 'none', fontSize: '14px'
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowArl(!showArl)}
+              style={{
+                padding: '0 16px', height: '44px', background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px',
+                color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0
+              }}
+              title={showArl ? "Hide Token" : "Show Token"}
+            >
+              {showArl ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              )}
+            </button>
+          </div>
+          <div className="setting-item toggle-item">
+            <label htmlFor="remember-deezer-arl">
+              <span>Remember on this device</span>
+              <span className="setting-desc">Keeps the ARL through reloads and browser restarts until you turn this off.</span>
+            </label>
+            <input
+              id="remember-deezer-arl"
+              type="checkbox"
+              name="rememberDeezerArl"
+              checked={settings.rememberDeezerArl === true}
+              onChange={handleChange}
+            />
+          </div>
           <button
-            type="button"
-            onClick={() => setShowArl(!showArl)}
-            style={{ 
-              padding: '0 16px', height: '44px', background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px',
-              color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 
-            }}
-            title={showArl ? "Hide Token" : "Show Token"}
+            className="verify-arl-btn"
+            onClick={handleVerifyArl}
+            disabled={isVerifying || !settings.deezerArl}
           >
-            {showArl ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-            )}
+            {isVerifying ? 'Verifying Token...' : 'Verify Token Status'}
           </button>
+          {verifyResult === 'success' && (
+            <span style={{ color: '#4ade80', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Valid ARL. High-Quality Streams Unlocked!</span>
+          )}
+          {verifyResult === 'error' && (
+            <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Invalid or Expired ARL. Please replace it.</span>
+          )}
         </div>
-        <div className="setting-item toggle-item">
-          <label htmlFor="remember-deezer-arl">
-            <span>Remember on this device</span>
-            <span className="setting-desc">Keeps the ARL through reloads and browser restarts until you turn this off.</span>
-          </label>
-          <input
-            id="remember-deezer-arl"
-            type="checkbox"
-            name="rememberDeezerArl"
-            checked={settings.rememberDeezerArl === true}
-            onChange={handleChange}
-          />
-        </div>
-        <button 
-          className="verify-arl-btn" 
-          onClick={handleVerifyArl}
-          disabled={isVerifying || !settings.deezerArl}
-        >
-          {isVerifying ? 'Verifying Token...' : 'Verify Token Status'}
-        </button>
-        {verifyResult === 'success' && (
-          <span style={{ color: '#4ade80', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Valid ARL. High-Quality Streams Unlocked!</span>
-        )}
-        {verifyResult === 'error' && (
-          <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Invalid or Expired ARL. Please replace it.</span>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

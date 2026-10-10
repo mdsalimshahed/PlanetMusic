@@ -312,6 +312,10 @@
   margin: -8px 0 16px;
 }
 
+.blog-byline-dot {
+  opacity: 0.55;
+}
+
 .blog-card-bottom {
   display: flex;
   justify-content: space-between;

@@ -560,7 +560,7 @@ const BlogTab = ({ adsEnabled }) => {
                 <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(`blog:article-title:${activePost.id}`) }}>{renderMarkdown(activePost.title, `blog:article:${activePost.id}:title`)}</h1>
                 <p className="blog-article-summary">{renderMarkdown(activePost.summary, `blog:article:${activePost.id}:summary`)}</p>
                 {(activePost.author || activePost.isCustom) && (
-                  <p className="blog-article-byline">By {activePost.author || 'You'}</p>
+                  <p className="blog-article-byline">By {activePost.isCustom ? (activePost.author || 'You') : 'PlanetMusic'}</p>
                 )}
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
               </header>
@@ -705,9 +705,10 @@ const BlogTab = ({ adsEnabled }) => {
                             <p className="blog-card-summary">{post.summary}</p>
                             {(post.author || post.date || post.isCustom) && (
                               <div className="blog-card-byline">
-                                {(post.author || post.isCustom) && <span>By {post.author || 'You'}</span>}
-                                {post.date && <time>{post.date}</time>}
-                              </div>
+                              {(post.author || post.isCustom) && <span>By {post.isCustom ? (post.author || 'You') : 'PlanetMusic'}</span>}
+                              {post.author && post.date && <span className="blog-byline-dot" aria-hidden="true">·</span>}
+                              {post.date && <time>{post.date}</time>}
+                            </div>
                             )}
                             <div className="blog-card-bottom">
                               <div className="blog-card-tags">
