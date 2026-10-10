@@ -134,6 +134,12 @@
   padding: 0 clamp(20px, 5vw, 60px);
 }
 
+@media (min-width: 901px) {
+  .modal-two-column-layout {
+    margin-block: 0;
+  }
+}
+
 .notification-popup {
   position: absolute;
   bottom: 24px;

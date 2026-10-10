@@ -1,11 +1,9 @@
 /* --- src/components/ModalRight.css --- */
 body .modal-right-col.glass-panel-light {
    flex: calc(100 - var(--dyn-modal-split, 50));
-   /* CRITICAL: Force a strict 1:1 square ratio at all times */
-   aspect-ratio: 1 / 1 !important; 
-   /* CRITICAL: Prevent the flex container from stretching it into a rectangle */
-   align-self: center; 
-   max-height: 100%;
+   aspect-ratio: auto !important;
+   align-self: stretch;
+   max-height: none;
    max-width: 100%;
    display: flex;
    flex-direction: column;
@@ -20,6 +18,10 @@ body .modal-right-col.glass-panel-light {
    backface-visibility: hidden;
    transform: translateZ(0);
    margin: 0 auto; /* Ensures it stays centered when scaling down */
+}
+
+body .modal-right-col.glass-panel-light:focus {
+  border: 1px solid #fff !important;
 }
 
 body .modal-right-col.glass-panel-light:has(.group-chat) .singer-name-corner {
@@ -45,6 +47,15 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
     margin: 0 !important;
     padding: 0 !important;
     border-radius: 0 !important;
+    overscroll-behavior: contain;
+  }
+
+  .modal-right-col:focus {
+    border: 1px solid #fff !important;
+  }
+
+  .modal-right-col .lyrics-display {
+    overscroll-behavior: contain;
   }
 
   body .modal-right-col.glass-panel-light:has(.tw-container),

@@ -11,14 +11,14 @@ import './ModalRight.css';
 const ModalRight = (props) => {
   if (props.isTranslationManagerOpen) {
       return (
-          <div className="modal-right-col glass-panel-light">
+          <div className="modal-right-col glass-panel-light" tabIndex={0} role="region" aria-label="Song canvas">
               <TranslationWorkspace {...props} />
           </div>
       );
   }
 
   return (
-    <div className="modal-right-col glass-panel-light">
+    <div className="modal-right-col glass-panel-light" tabIndex={0} role="region" aria-label="Song canvas">
       {props.isImageManagerOpen && <ImageManager {...props} />}
       
       {/* Background Layers */}
