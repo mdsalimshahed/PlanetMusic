@@ -1,5 +1,5 @@
 /* --- src/Studio/components/Player/usePlayerLogic.js --- */
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { getAudioFile } from '../../../Application/services/db.js';
 import { getCachedDeezerAudioBlob, getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
 import { extractYouTubeId } from '../../utils/songHelpers.js';
@@ -7,7 +7,7 @@ import { globalClock } from '../../utils/clockEngine.js';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
 
-export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false }) => {
+export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false, isZenMode = false }) => {
   const audioRef = useRef(null);
   const ytPlayerRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -16,6 +16,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const progressBarRef = useRef(null);
   const currentTimeRef = useRef(null);
   const trackIdRef = useRef(null);
+  const currentTrackIdRef = useRef(currentTrack?.trackId ?? null);
   const activeSourceRef = useRef(null);
   const playIdRef = useRef(null);
   const ytLastPerfRef = useRef(0);
@@ -31,6 +32,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const syncPlaybackRateRef = useRef(1);
   const pendingAutoplayRef = useRef(true);
   const MAX_CACHE_SIZE = 5;
+
+  useLayoutEffect(() => {
+    currentTrackIdRef.current = currentTrack?.trackId ?? null;
+  }, [currentTrack?.trackId]);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
@@ -446,6 +451,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setYtVideoId(null);
           setBuffering(false);
           setDuration(0);
+          if (isZenMode) {
+            window.dispatchEvent(new CustomEvent('globalZenTrackUnavailable', {
+              detail: { trackId: currentTrack?.trackId ?? null }
+            }));
+          }
           return;
         }
         activeSourceRef.current = source;
@@ -580,7 +590,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       loadAudio(intendedSource);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, settings?.deezerArl, failedSources, isSyncWorkspaceActive, selectedSong?.trackId]);
+  }, [currentTrack, settings?.deezerArl, failedSources, isSyncWorkspaceActive, isZenMode, selectedSong?.trackId]);
 
   useEffect(() => {
     if (!isSyncWorkspaceActive) return undefined;
@@ -682,6 +692,9 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               setIsPlaying(false); emitPlayState(false, false);
             } else if (event.data === window.YT.PlayerState.ENDED) {
               setIsPlaying(false); emitPlayState(false, true);
+              window.dispatchEvent(new CustomEvent('globalTrackEnded', {
+                detail: { trackId: currentTrackIdRef.current }
+              }));
             }
           },
           onError: (event) => {
@@ -1101,7 +1114,13 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     }
   };
 
-  const handleAudioEnded = () => { setIsPlaying(false); emitPlayState(false, true); };
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+    emitPlayState(false, true);
+    window.dispatchEvent(new CustomEvent('globalTrackEnded', {
+      detail: { trackId: currentTrack?.trackId ?? null }
+    }));
+  };
   const handleAudioPlay = () => {
     if (bufferingRef.current) {
       audioRef.current?.pause();

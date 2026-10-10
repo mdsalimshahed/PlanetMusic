@@ -22,6 +22,7 @@ import ContactTab from './Application/pages/ContactTab.jsx';
 import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
+import { extractYouTubeId } from './Studio/utils/songHelpers.js';
 
 // Custom Hooks for Modular Logic
 import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
@@ -29,11 +30,61 @@ import { useVaultOperations } from './Application/hooks/data/useVaultOperations.
 import { useCosmosSearch } from './Application/hooks/core/useCosmosSearch.js';
 import { useDeepLink } from './Application/hooks/core/useDeepLink.js';
 
+const shuffleZenPool = (songs, previousSequence = [], previousLastTrackId) => {
+  const previousIds = previousSequence.map(song => String(song.trackId));
+  const samePool = songs.length === previousIds.length &&
+    songs.every(song => previousIds.includes(String(song.trackId)));
+  const previousLastId = previousLastTrackId == null
+    ? previousIds[previousIds.length - 1]
+    : String(previousLastTrackId);
+  const shuffle = (items) => {
+    const shuffled = [...items];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
+  };
+
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    const shuffled = shuffle(songs);
+    const followsLast = previousLastId == null || shuffled.length < 2 ||
+      String(shuffled[0].trackId) !== previousLastId;
+    const changesPositions = !samePool ||
+      shuffled.every((song, index) => String(song.trackId) !== previousIds[index]);
+    if (followsLast && changesPositions) return shuffled;
+  }
+
+  if (samePool && songs.length > 1) {
+    const offsets = Array.from({ length: songs.length - 1 }, (_, index) => index + 1);
+    const offsetsWithoutBoundaryRepeat = offsets.filter(offset => (
+      String(previousSequence[offset].trackId) !== previousLastId
+    ));
+    const availableOffsets = offsetsWithoutBoundaryRepeat.length > 0
+      ? offsetsWithoutBoundaryRepeat
+      : offsets;
+    const offset = availableOffsets[Math.floor(Math.random() * availableOffsets.length)];
+    return previousSequence.slice(offset).concat(previousSequence.slice(0, offset));
+  }
+
+  const shuffled = shuffle(songs);
+  if (shuffled.length > 1 && String(shuffled[0].trackId) === previousLastId) {
+    const swapIndex = 1 + Math.floor(Math.random() * (shuffled.length - 1));
+    [shuffled[0], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[0]];
+  }
+  return shuffled;
+};
+
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
   const searchBoxRef = useRef(null);
+  const zenSequenceRef = useRef([]);
+  const zenIndexRef = useRef(-1);
+  const zenCurrentTrackIdRef = useRef(null);
+  const zenSessionActiveRef = useRef(false);
+  const zenUnavailableTrackIdsRef = useRef(new Set());
   const [searchOrbitSize, setSearchOrbitSize] = useState({ width: 602, height: 52 });
   const [searchOrbitGradients, setSearchOrbitGradients] = useState([
     ['#ff4d6d', '#ffd166', '#50c7ff'],
@@ -84,7 +135,8 @@ const App = () => {
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
                     pathParts[0] === 'contact' ? 'contact' : 
-                    pathParts[0] === 'ambient' ? 'ambient' : 'main';
+                    pathParts[0] === 'ambient' ? 'ambient' :
+                    pathParts[0] === 'zen' ? 'zen' : 'main';
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
@@ -105,6 +157,7 @@ const App = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
+  const [zenMessage, setZenMessage] = useState('');
 
   const backgroundTrack = useMemo(() => {
     if (!currentTrack) return null;
@@ -124,6 +177,134 @@ const App = () => {
   
   // Ambient View State synced with URL route
   const isAmbientMode = activeTab === 'ambient';
+  const isZenMode = activeTab === 'zen';
+  const zenPool = useMemo(() => {
+    const seenTrackIds = new Set();
+    return library.filter(song => {
+      if (song.trackId == null) return false;
+      const trackId = String(song.trackId);
+      if (seenTrackIds.has(trackId)) return false;
+      seenTrackIds.add(trackId);
+
+      const youtubeUrl = song.customLinks?.yt || song.yt || '';
+      return Boolean(
+        song.previewUrl ||
+        song.customLinks?.hasLocal ||
+        song.customLinks?.deezer ||
+        extractYouTubeId(youtubeUrl)
+      );
+    });
+  }, [library]);
+
+  const startZenSession = (songs) => {
+    const sequence = shuffleZenPool(songs);
+    const firstTrack = sequence[0];
+    if (!firstTrack) {
+      setZenMessage('Add playable songs to your Vault to start Zen.');
+      return;
+    }
+
+    zenSequenceRef.current = sequence;
+    zenIndexRef.current = 0;
+    zenCurrentTrackIdRef.current = String(firstTrack.trackId);
+    zenSessionActiveRef.current = true;
+    zenUnavailableTrackIdsRef.current = new Set();
+    setZenMessage('');
+    setCurrentTrack({ ...firstTrack, playId: Date.now() });
+  };
+
+  const toggleZenMode = () => {
+    if (isZenMode) {
+      zenSessionActiveRef.current = false;
+      navigate('/');
+      return;
+    }
+
+    if (zenPool.length > 0) startZenSession(zenPool);
+    navigate('/zen');
+  };
+
+  useEffect(() => {
+    if (!isZenMode) {
+      zenSessionActiveRef.current = false;
+      return undefined;
+    }
+
+    if (!zenSessionActiveRef.current && zenPool.length > 0) {
+      startZenSession(zenPool);
+    }
+
+    const advanceZenSequence = (trackId, isUnavailable = false) => {
+      if (
+        !zenSessionActiveRef.current ||
+        trackId == null ||
+        String(trackId) !== zenCurrentTrackIdRef.current
+      ) return;
+
+      if (isUnavailable) {
+        zenUnavailableTrackIdsRef.current.add(String(trackId));
+      }
+
+      const availablePool = zenPool.filter(song => (
+        !zenUnavailableTrackIdsRef.current.has(String(song.trackId))
+      ));
+      if (availablePool.length === 0) {
+        zenSessionActiveRef.current = false;
+        zenCurrentTrackIdRef.current = null;
+        setCurrentTrack(null);
+        setZenMessage('Zen paused because none of the remaining Vault tracks could be played.');
+        return;
+      }
+
+      let nextIndex = zenIndexRef.current + 1;
+      let sequence = zenSequenceRef.current;
+      while (
+        nextIndex < sequence.length &&
+        (
+          zenUnavailableTrackIdsRef.current.has(String(sequence[nextIndex].trackId)) ||
+          !availablePool.some(song => String(song.trackId) === String(sequence[nextIndex].trackId))
+        )
+      ) {
+        nextIndex += 1;
+      }
+      if (nextIndex >= sequence.length) {
+        const previousAvailableSequence = sequence.filter(song => (
+          availablePool.some(availableSong => String(availableSong.trackId) === String(song.trackId))
+        ));
+        sequence = shuffleZenPool(availablePool, previousAvailableSequence, trackId);
+        zenSequenceRef.current = sequence;
+        nextIndex = 0;
+      }
+
+      const nextTrack = sequence[nextIndex];
+      if (!nextTrack) return;
+      zenIndexRef.current = nextIndex;
+      zenCurrentTrackIdRef.current = String(nextTrack.trackId);
+      setZenMessage('');
+      setCurrentTrack({ ...nextTrack, playId: Date.now() });
+    };
+
+    const handleTrackEnded = (event) => {
+      advanceZenSequence(event.detail?.trackId);
+    };
+    const handleTrackUnavailable = (event) => {
+      advanceZenSequence(event.detail?.trackId, true);
+    };
+
+    window.addEventListener('globalTrackEnded', handleTrackEnded);
+    window.addEventListener('globalZenTrackUnavailable', handleTrackUnavailable);
+    return () => {
+      window.removeEventListener('globalTrackEnded', handleTrackEnded);
+      window.removeEventListener('globalZenTrackUnavailable', handleTrackUnavailable);
+    };
+  }, [isZenMode, zenPool, setCurrentTrack]);
+
+  useEffect(() => {
+    if (searchQuery.trim() !== '' && (isAmbientMode || isZenMode)) {
+      const qParam = `?q=${encodeURIComponent(searchQuery.trim())}`;
+      navigate(`/${qParam}`);
+    }
+  }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
   // Toggle handler for Ambient View button
   const toggleAmbientMode = () => {
@@ -134,14 +315,6 @@ const App = () => {
       navigate('/ambient');
     }
   };
-
-  // Auto-exit Ambient Mode if the user starts searching
-  useEffect(() => {
-    if (searchQuery.trim() !== '' && isAmbientMode) {
-      const qParam = `?q=${encodeURIComponent(searchQuery.trim())}`;
-      navigate(`/${qParam}`);
-    }
-  }, [searchQuery, isAmbientMode, navigate]);
 
   // Routing Handlers
   const handleSetSelectedSong = (song) => {
@@ -265,8 +438,21 @@ const App = () => {
         </div>
       )}
 
-      {isAmbientMode ? (
-        <div style={{ minHeight: '60vh' }} /> // Empty spacer for ambient mode
+      {isAmbientMode || isZenMode ? (
+        <div className="immersive-mode-spacer" style={{ minHeight: '60vh' }}>
+          {isZenMode && zenPool.length === 0 && (
+            <div className="empty-message glass-panel zen-empty-message">
+              <h2>Zen is waiting for your music</h2>
+              <p>Add tracks with playable audio to your Vault to start a no-repeat shuffle.</p>
+            </div>
+          )}
+          {isZenMode && zenMessage && zenPool.length > 0 && (
+            <div className="empty-message glass-panel zen-empty-message">
+              <h2>Zen paused</h2>
+              <p>{zenMessage}</p>
+            </div>
+          )}
+        </div>
       ) : isLoadingSample ? (
         <div className="empty-message glass-panel">
           <h2>Loading PlanetMusic Vault...</h2>
@@ -395,12 +581,14 @@ const App = () => {
         handleHomeClick={handleHomeClick}
         handleExport={handleExport}
         handleImport={handleImport}
+        isZenMode={isZenMode}
+        toggleZenMode={toggleZenMode}
         handleLoadSample={handleLoadSample}
       />
 
       <main className="main-content">
-        {(activeTab === 'main' || activeTab === 'ambient') && (
-          <div className={`search-container ${activeTab === 'ambient' ? 'ambient-search-entry' : ''}`}>
+        {(activeTab === 'main' || activeTab === 'ambient' || isZenMode) && (
+          <div className={`search-container ${activeTab !== 'main' ? 'ambient-search-entry' : ''}`}>
             <form ref={searchBoxRef} onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
               <span className="search-box-shine" aria-hidden="true" />
               <svg className="search-box-orbit" viewBox={`0 0 ${searchOrbitSize.width} ${searchOrbitSize.height}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -443,6 +631,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={renderDashboardView()} />
             <Route path="/ambient" element={renderDashboardView()} />
+            <Route path="/zen" element={renderDashboardView()} />
             
             <Route path="/song/*" element={null} />
             

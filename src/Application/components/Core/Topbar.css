@@ -197,6 +197,10 @@
   gap: 9px;
 }
 
+.backup-menu {
+  position: relative;
+}
+
 .tool-btn {
   display: flex;
   align-items: center;
@@ -214,6 +218,68 @@
   font-weight: 650;
   cursor: pointer;
   transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.backup-menu-trigger {
+  gap: 8px;
+}
+
+.backup-menu-chevron {
+  color: var(--text-subdued);
+  font-size: 15px;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.backup-menu-chevron.open {
+  transform: rotate(180deg);
+}
+
+.backup-menu-popover {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 9px);
+  right: 0;
+  display: grid;
+  gap: 4px;
+  width: max-content;
+  min-width: 210px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(17, 19, 25, 0.97);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.backup-menu-item {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-base);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.backup-menu-item:hover,
+.backup-menu-item:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent);
+  outline: none;
+}
+
+.backup-menu-item-detail {
+  color: var(--text-subdued);
+  font-size: 11px;
+  font-weight: 450;
 }
 
 .tool-btn-format {
@@ -237,6 +303,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .nav-selection.is-positioned {
+    transition: none;
+  }
+
+  .backup-menu-chevron {
     transition: none;
   }
 }

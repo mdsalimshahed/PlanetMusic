@@ -1,5 +1,5 @@
 /* --- src/components/Topbar.jsx --- */
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Topbar.css';
 
@@ -9,11 +9,33 @@ const Topbar = ({
   albumAccentColor,
   handleHomeClick, 
   handleExport, 
-  handleImport
+  handleImport,
+  isZenMode,
+  toggleZenMode
 }) => {
   const fileInputRef = useRef(null);
+  const backupMenuRef = useRef(null);
   const navRef = useRef(null);
   const selectionRef = useRef(null);
+  const [isBackupMenuOpen, setIsBackupMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isBackupMenuOpen) return undefined;
+
+    const closeOnOutsideClick = (event) => {
+      if (!backupMenuRef.current?.contains(event.target)) setIsBackupMenuOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setIsBackupMenuOpen(false);
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isBackupMenuOpen]);
 
   useLayoutEffect(() => {
     const nav = navRef.current;
@@ -72,6 +94,16 @@ const Topbar = ({
           >
             Home
           </Link>
+
+          <button
+            type="button"
+            className={`nav-btn ${isZenMode ? 'active' : ''}`}
+            onClick={toggleZenMode}
+            aria-pressed={isZenMode}
+            title={isZenMode ? 'Exit Zen mode' : 'Start Zen mode'}
+          >
+            Zen
+          </button>
           
           <Link
             to="/blog" 
@@ -114,29 +146,52 @@ const Topbar = ({
 
         {/* Database Quick Actions */}
         <div className="topbar-tools">
-          <button 
-            className="tool-btn"
-            onClick={handleExport}
-            title="Export Backup JSON"
-            aria-label="Export backup JSON"
-          >
-            <span className="tool-btn-label">Export</span>
-            <span className="tool-btn-format">JSON</span>
-          </button>
-
-          <button 
-            className="tool-btn"
-            onClick={() => fileInputRef.current && fileInputRef.current.click()}
-            title="Import Backup JSON"
-            aria-label="Import backup JSON"
-          >
-            <span className="tool-btn-label">Import</span>
-            <span className="tool-btn-format">JSON</span>
-          </button>
+          <div className="backup-menu" ref={backupMenuRef}>
+            <button
+              type="button"
+              className="tool-btn backup-menu-trigger"
+              onClick={() => setIsBackupMenuOpen(open => !open)}
+              aria-expanded={isBackupMenuOpen}
+              aria-haspopup="menu"
+              aria-label="Backup options"
+            >
+              <span className="tool-btn-label">Backup</span>
+              <span className="tool-btn-format">JSON</span>
+              <span className={`backup-menu-chevron ${isBackupMenuOpen ? 'open' : ''}`} aria-hidden="true">⌄</span>
+            </button>
+            {isBackupMenuOpen && (
+              <div className="backup-menu-popover" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="backup-menu-item"
+                  onClick={() => {
+                    setIsBackupMenuOpen(false);
+                    handleExport();
+                  }}
+                >
+                  <span>Export backup</span>
+                  <span className="backup-menu-item-detail">Save as JSON</span>
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="backup-menu-item"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <span>Import backup</span>
+                  <span className="backup-menu-item-detail">Restore from JSON</span>
+                </button>
+              </div>
+            )}
+          </div>
           <input 
             type="file" 
             ref={fileInputRef} 
-            onChange={handleImport} 
+            onChange={(event) => {
+              setIsBackupMenuOpen(false);
+              handleImport(event);
+            }}
             accept=".json" 
             style={{ display: 'none' }} 
           />
