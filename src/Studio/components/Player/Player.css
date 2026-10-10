@@ -596,6 +596,28 @@ body .global-player.glass-panel-heavy.centered-mode {
     transform: none !important;
     --tx: 0px;
   }
+
+  .global-player.sync-docked .volume-slider-wrapper {
+    width: clamp(84px, 23vw, 120px);
+    min-width: 84px;
+    height: 36px;
+  }
+
+  .global-player.sync-docked .volume-slider,
+  .global-player.sync-docked .volume-slider::-webkit-slider-runnable-track {
+    height: 36px;
+  }
+
+  .global-player.sync-docked .volume-slider::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    margin-top: 11px;
+  }
+
+  .global-player.sync-docked .volume-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 @media (max-width: 600px) {

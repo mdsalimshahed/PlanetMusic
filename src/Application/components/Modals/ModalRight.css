@@ -67,6 +67,11 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
     border-radius: 0 !important;
   }
 
+  body .modal-right-col.glass-panel-light:has(.sync-mode-container) {
+    height: min(85dvh, 760px) !important;
+    aspect-ratio: auto !important;
+  }
+
   .modal-right-col.is-canvas-active:focus {
     border: 1px solid #fff !important;
   }
