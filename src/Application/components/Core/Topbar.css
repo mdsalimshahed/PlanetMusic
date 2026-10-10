@@ -185,26 +185,8 @@
 }
 
 /* --- ADDED TOPBAR RESPONSIVENESS --- */
-@media (max-width: 850px) {
-  .topbar {
-    height: auto;
-    flex-direction: column;
-    padding: 16px 20px;
-    gap: 12px;
-  }
-  .topbar-right {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .topbar-divider {
-    display: none; 
-  }
-}
-
 /* --- TOPBAR RESPONSIVENESS --- */
-@media (max-width: 850px) {
+@media (max-width: 1100px) {
   .topbar {
     height: auto;
     flex-wrap: wrap;

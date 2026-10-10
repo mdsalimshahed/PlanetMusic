@@ -33,10 +33,31 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
+  const searchBoxRef = useRef(null);
+  const [searchOrbitSize, setSearchOrbitSize] = useState({ width: 602, height: 52 });
   const [searchOrbitGradients, setSearchOrbitGradients] = useState([
     ['#ff4d6d', '#ffd166', '#50c7ff'],
     ['#8aff80', '#b388ff', '#ff8c42']
   ]);
+
+  useEffect(() => {
+    const searchBox = searchBoxRef.current;
+    if (!searchBox) return undefined;
+
+    const observer = new ResizeObserver(([entry]) => {
+      const bounds = entry.target.getBoundingClientRect();
+      const width = Math.round(bounds.width + 2);
+      const height = Math.round(bounds.height + 2);
+      setSearchOrbitSize((currentSize) => (
+        currentSize.width === width && currentSize.height === height
+          ? currentSize
+          : { width, height }
+      ));
+    });
+
+    observer.observe(searchBox);
+    return () => observer.disconnect();
+  }, []);
 
   const assignSearchOrbitColors = (event) => {
     if (event.currentTarget.contains(event.relatedTarget)) return;
@@ -369,9 +390,9 @@ const App = () => {
       <main className="main-content">
         {(activeTab === 'main' || activeTab === 'ambient') && (
           <div className={`search-container ${activeTab === 'ambient' ? 'ambient-search-entry' : ''}`}>
-            <form onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
+            <form ref={searchBoxRef} onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
               <span className="search-box-shine" aria-hidden="true" />
-              <svg className="search-box-orbit" viewBox="0 0 602 52" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <svg className="search-box-orbit" viewBox={`0 0 ${searchOrbitSize.width} ${searchOrbitSize.height}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
               <defs>
                 {searchOrbitGradients.map((colors, index) => (
                   <linearGradient key={index} id={`search-box-orbit-gradient-${index}`} x1="0" y1="0" x2="1" y2="1">
@@ -381,10 +402,10 @@ const App = () => {
                   </linearGradient>
                 ))}
               </defs>
-              <path className="search-box-orbit-track search-box-orbit-static" stroke="url(#search-box-orbit-gradient-0)" d="M 26 0 H 576 A 26 26 0 0 1 602 26 V 26 A 26 26 0 0 1 576 52 H 26 A 26 26 0 0 1 0 26 V 26 A 26 26 0 0 1 26 0 Z" pathLength="1000" />
-              <path className="search-box-orbit-track search-box-orbit-static search-box-orbit-static-opposite" stroke="url(#search-box-orbit-gradient-1)" d="M 26 0 H 576 A 26 26 0 0 1 602 26 V 26 A 26 26 0 0 1 576 52 H 26 A 26 26 0 0 1 0 26 V 26 A 26 26 0 0 1 26 0 Z" pathLength="1000" />
-              <path className="search-box-orbit-track search-box-orbit-runner" stroke="url(#search-box-orbit-gradient-0)" d="M 26 0 H 576 A 26 26 0 0 1 602 26 V 26 A 26 26 0 0 1 576 52 H 26 A 26 26 0 0 1 0 26 V 26 A 26 26 0 0 1 26 0 Z" pathLength="1000" />
-              <path className="search-box-orbit-track search-box-orbit-runner search-box-orbit-runner-opposite" stroke="url(#search-box-orbit-gradient-1)" d="M 26 0 H 576 A 26 26 0 0 1 602 26 V 26 A 26 26 0 0 1 576 52 H 26 A 26 26 0 0 1 0 26 V 26 A 26 26 0 0 1 26 0 Z" pathLength="1000" />
+              <rect className="search-box-orbit-track search-box-orbit-static" stroke="url(#search-box-orbit-gradient-0)" x="1" y="1" width={searchOrbitSize.width - 2} height={searchOrbitSize.height - 2} rx={(searchOrbitSize.height - 2) / 2} pathLength="1000" />
+              <rect className="search-box-orbit-track search-box-orbit-static search-box-orbit-static-opposite" stroke="url(#search-box-orbit-gradient-1)" x="1" y="1" width={searchOrbitSize.width - 2} height={searchOrbitSize.height - 2} rx={(searchOrbitSize.height - 2) / 2} pathLength="1000" />
+              <rect className="search-box-orbit-track search-box-orbit-runner" stroke="url(#search-box-orbit-gradient-0)" x="1" y="1" width={searchOrbitSize.width - 2} height={searchOrbitSize.height - 2} rx={(searchOrbitSize.height - 2) / 2} pathLength="1000" />
+              <rect className="search-box-orbit-track search-box-orbit-runner search-box-orbit-runner-opposite" stroke="url(#search-box-orbit-gradient-1)" x="1" y="1" width={searchOrbitSize.width - 2} height={searchOrbitSize.height - 2} rx={(searchOrbitSize.height - 2) / 2} pathLength="1000" />
               </svg>
               <input
                 type="text"
