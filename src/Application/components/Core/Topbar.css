@@ -114,40 +114,71 @@
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .nav-menu {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 8px 28px rgba(0, 0, 0, 0.16);
+}
+
+.nav-selection {
+  position: absolute;
+  z-index: 0;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 500px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 3px 12px rgba(0, 0, 0, 0.22);
+}
+
+.nav-selection.is-positioned {
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1), width 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms ease;
 }
 
 .nav-btn {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-subdued);
   font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.015em;
+  padding: 10px 17px;
   border-radius: 500px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .nav-btn:hover {
   color: var(--text-base);
-  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .nav-btn.active {
   color: var(--text-base);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-btn:focus-visible,
+.tool-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .nav-icon {
@@ -163,25 +194,51 @@
 .topbar-tools {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
 }
 
 .tool-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  gap: 9px;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09), 0 5px 16px rgba(0, 0, 0, 0.18);
   color: var(--text-base);
   font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.tool-btn-format {
+  padding: 3px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: var(--text-subdued);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .tool-btn:hover {
   color: var(--accent);
-  border-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.055));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), 0 6px 20px rgba(0, 0, 0, 0.22), 0 0 18px var(--accent-glow);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-selection.is-positioned {
+    transition: none;
+  }
 }
 
 /* --- ADDED TOPBAR RESPONSIVENESS --- */
@@ -213,19 +270,50 @@
   
   .nav-menu {
     order: 2;
-    width: 100%;
-    /* Allows buttons to wrap safely instead of going off-screen */
-    flex-wrap: wrap; 
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    box-sizing: border-box;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: 8px; 
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-menu::-webkit-scrollbar {
+    display: none;
   }
   
   .nav-btn {
-    padding: 8px 14px;
+    flex: 0 0 auto;
+    padding: 9px 10px;
     font-size: 13px;
+  }
+
+  .topbar-tools {
+    order: 3;
+    width: auto;
+    justify-content: center;
   }
   
   .topbar-divider {
     display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-menu {
+    margin-inline: auto;
+    gap: 2px;
+    padding: 4px;
+  }
+
+  .nav-btn {
+    padding: 8px 7px;
+    font-size: 12px;
+  }
+
+  .topbar-tools {
+    margin-inline: auto;
   }
 }

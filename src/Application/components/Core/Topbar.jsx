@@ -1,5 +1,5 @@
 /* --- src/components/Topbar.jsx --- */
-import { useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Topbar.css';
 
@@ -12,6 +12,37 @@ const Topbar = ({
   handleImport
 }) => {
   const fileInputRef = useRef(null);
+  const navRef = useRef(null);
+  const selectionRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    const selection = selectionRef.current;
+    if (!nav || !selection) return undefined;
+
+    const updateSelection = () => {
+      const activeLink = nav.querySelector('.nav-btn.active');
+      if (!activeLink) {
+        selection.style.opacity = '0';
+        return;
+      }
+
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      selection.style.width = `${linkRect.width}px`;
+      selection.style.transform = `translateX(${linkRect.left - navRect.left - nav.clientLeft}px)`;
+      selection.style.opacity = '1';
+      selection.classList.add('is-positioned');
+    };
+
+    updateSelection();
+
+    const resizeObserver = new ResizeObserver(updateSelection);
+    resizeObserver.observe(nav);
+    nav.querySelectorAll('.nav-btn').forEach(link => resizeObserver.observe(link));
+
+    return () => resizeObserver.disconnect();
+  }, [activeTab]);
 
   return (
     <header className="topbar">
@@ -30,11 +61,13 @@ const Topbar = ({
 
       {/* Right: Navigation & Tools */}
       <div className="topbar-right">
-        <nav className="nav-menu">
+        <nav className="nav-menu" ref={navRef}>
+          <span className="nav-selection" ref={selectionRef} aria-hidden="true" />
           <Link 
             to="/" 
             className={`nav-btn ${activeTab === 'main' ? 'active' : ''}`}
             onClick={handleHomeClick}
+            aria-current={activeTab === 'main' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
             Home
@@ -43,6 +76,7 @@ const Topbar = ({
           <Link
             to="/blog" 
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
+            aria-current={activeTab === 'blog' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
             Blog
@@ -51,6 +85,7 @@ const Topbar = ({
           <Link 
             to="/privacy" 
             className={`nav-btn ${activeTab === 'privacy' ? 'active' : ''}`}
+            aria-current={activeTab === 'privacy' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
             Privacy
@@ -59,6 +94,7 @@ const Topbar = ({
           <Link 
             to="/contact" 
             className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`}
+            aria-current={activeTab === 'contact' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
             Contact
@@ -67,6 +103,7 @@ const Topbar = ({
           <Link 
             to="/settings" 
             className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
+            aria-current={activeTab === 'settings' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
             Settings
@@ -78,27 +115,23 @@ const Topbar = ({
         {/* Database Quick Actions */}
         <div className="topbar-tools">
           <button 
-            className="tool-btn glass-button" 
+            className="tool-btn"
             onClick={handleExport}
             title="Export Backup JSON"
+            aria-label="Export backup JSON"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
+            <span className="tool-btn-label">Export</span>
+            <span className="tool-btn-format">JSON</span>
           </button>
 
           <button 
-            className="tool-btn glass-button" 
+            className="tool-btn"
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
             title="Import Backup JSON"
+            aria-label="Import backup JSON"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
+            <span className="tool-btn-label">Import</span>
+            <span className="tool-btn-format">JSON</span>
           </button>
           <input 
             type="file" 
