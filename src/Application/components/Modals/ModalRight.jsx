@@ -49,17 +49,16 @@ const ModalRight = (props) => {
       onBlur={isMobileCanvas ? handleCanvasBlur : undefined}
       onClick={isCanvasInactive ? activateCanvas : undefined}
     >
+      {props.lyricsViewMode !== 'plain' && !props.isSyncMode && !props.isEditing && !props.isImageManagerOpen && !props.isTranslationManagerOpen && (
+        <DynamicBackground {...props} />
+      )}
+
       <div className="modal-canvas-content" inert={isCanvasInactive} aria-hidden={isCanvasInactive}>
         {props.isTranslationManagerOpen ? (
           <TranslationWorkspace {...props} />
         ) : (
           <>
             {props.isImageManagerOpen && <ImageManager {...props} />}
-
-            {/* Background Layers */}
-            {props.lyricsViewMode !== 'plain' && !props.isSyncMode && !props.isEditing && !props.isImageManagerOpen && (
-              <DynamicBackground {...props} />
-            )}
 
             {/* Main Core Workspaces */}
             {props.isSyncMode && !props.isImageManagerOpen ? (

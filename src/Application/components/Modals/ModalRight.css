@@ -37,11 +37,13 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
 }
 
 .modal-canvas-content {
-  position: relative;
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex: 1;
   flex-direction: column;
   min-height: 0;
+  box-sizing: border-box;
+  padding: clamp(16px, 3vw, 24px);
 }
 
 @media (max-width: 900px) {
@@ -65,6 +67,10 @@ body .modal-right-col.glass-panel-light:has(.group-chat) {
     margin: 0 !important;
     padding: 0 !important;
     border-radius: 0 !important;
+  }
+
+  .modal-canvas-content {
+    padding: 0;
   }
 
   body .modal-right-col.glass-panel-light:has(.sync-mode-container) {

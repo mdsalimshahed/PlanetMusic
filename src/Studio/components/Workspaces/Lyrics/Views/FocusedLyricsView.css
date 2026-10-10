@@ -72,7 +72,7 @@
   align-items: center !important;
   justify-content: center !important;
   max-width: 100% !important;
-  width: auto !important;
+  width: 100% !important;
 }
 
 .focused-line .lyric-word,
@@ -100,7 +100,8 @@
   align-items: center !important;
   text-align: center !important;
   max-width: 100% !important;
-  width: auto !important;
+  width: 100% !important;
+  align-self: stretch !important;
   box-sizing: border-box !important;
   white-space: normal !important;
   word-break: normal !important;
@@ -112,6 +113,7 @@
 .focused-adlib-line .hyphenated-word-group {
   display: inline-flex !important;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: baseline;
   gap: 0;
   max-width: 100% !important;
