@@ -86,7 +86,8 @@
   flex: 0 0 auto;
   place-items: center;
   overflow: hidden;
-  border: var(--chat-avatar-ring-thickness, 0.12cqi) solid
+  border: 0;
+  outline: var(--chat-avatar-ring-thickness, 0.12cqi) solid
     color-mix(in srgb, var(--artist-color, #87909e), transparent 35%);
   border-radius: 50%;
   background: #252a33;
@@ -107,7 +108,7 @@
 .group-chat[data-avatar-ring="false"] .group-chat-avatar,
 .group-chat[data-avatar-ring="false"] .group-chat-message-avatar,
 .group-chat[data-avatar-ring="false"] .group-chat-typing-avatar {
-  border-color: transparent;
+  outline: none;
 }
 
 .group-chat-avatar img,
