@@ -2,6 +2,21 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { renderLine } from '../../../LyricsLineRenderer.jsx';
 import { isRTLLanguage } from '../../../../../../../components/LyricsRenderer/textUtils.js';
 
+// The glyph measuring below temporarily switches the bubble into "measuring" classes
+// (unwrapped / shrunk) and forces a layout. While the bubble is briefly shorter, the
+// browser CLAMPS the chat's scrollTop to the shorter scroll range and does NOT restore it
+// when the bubble grows back - so the avatar + artist name of the newest (taller, wrapped)
+// bubble end up scrolled out of view. Remember the scroll position and put it back.
+const withStableScroll = (element, measure) => {
+  const scroller = element?.closest?.('.group-chat-history');
+  const top = scroller ? scroller.scrollTop : 0;
+  try {
+    return measure();
+  } finally {
+    if (scroller && scroller.scrollTop !== top) scroller.scrollTop = top;
+  }
+};
+
 const getMaxTextLineWidth = (elements) => {
   const lineRects = [];
   elements.forEach(element => {
@@ -105,7 +120,7 @@ const GroupChatLyricText = React.memo(({
     const canvas = element?.closest('.group-chat');
     if (!element || !canvas) return undefined;
 
-    const measureGlyphLayout = () => {
+    const measureGlyphLayout = () => withStableScroll(element, () => {
       element.classList.add('is-measuring-glyphs');
       let mainGlyphWidth;
       let pronunciationWidth;
@@ -133,7 +148,7 @@ const GroupChatLyricText = React.memo(({
       setGlyphOffset(previous => (
         Math.abs(previous - offset) < 0.5 ? previous : offset
       ));
-    };
+    });
 
     measureGlyphLayout();
     const observer = new ResizeObserver(measureGlyphLayout);
@@ -154,24 +169,26 @@ const GroupChatLyricText = React.memo(({
       return undefined;
     }
 
-    let contentWidth = wrapLayout.contentWidth;
-    const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
-    const pronunciationGlyphs = [...element.querySelectorAll('.pronunciation-text')];
-    if (wrapLayout.enabled) {
-      contentWidth = Math.ceil(Math.max(
-        getMaxTextLineWidth(mainGlyphs),
-        getMaxTextLineWidth(pronunciationGlyphs)
-      )) + 1;
-      setWrapLayout(previous => (
-        previous.enabled && Math.abs(previous.contentWidth - contentWidth) >= 1
-          ? { ...previous, contentWidth }
-          : previous
+    withStableScroll(element, () => {
+      let contentWidth = wrapLayout.contentWidth;
+      const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
+      const pronunciationGlyphs = [...element.querySelectorAll('.pronunciation-text')];
+      if (wrapLayout.enabled) {
+        contentWidth = Math.ceil(Math.max(
+          getMaxTextLineWidth(mainGlyphs),
+          getMaxTextLineWidth(pronunciationGlyphs)
+        )) + 1;
+        setWrapLayout(previous => (
+          previous.enabled && Math.abs(previous.contentWidth - contentWidth) >= 1
+            ? { ...previous, contentWidth }
+            : previous
+        ));
+      }
+      const offset = getGlyphOffset(element);
+      setGlyphOffset(previous => (
+        Math.abs(previous - offset) < 0.5 ? previous : offset
       ));
-    }
-    const offset = getGlyphOffset(element);
-    setGlyphOffset(previous => (
-      Math.abs(previous - offset) < 0.5 ? previous : offset
-    ));
+    });
     return undefined;
   }, [
     wrapLayout.enabled,

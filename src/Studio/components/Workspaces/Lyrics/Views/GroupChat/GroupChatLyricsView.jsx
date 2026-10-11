@@ -46,7 +46,6 @@ const GroupChatLyricsView = ({
     chatRef,
     activeLineIndices,
     chatState: playback.chatState,
-    isPlaying,
     settings,
     setExpandedLineIndices,
     pendingScrollToLatestRef
@@ -84,7 +83,7 @@ const GroupChatLyricsView = ({
   };
   return (
     <section
-      className={`group-chat ${settings?.disableAnimations ? 'group-chat-no-motion' : ''}`}
+      className={`group-chat${showDebug ? ' group-chat-debug-view' : ''}${settings?.disableAnimations ? ' group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
       style={{
         '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}dvh`,

@@ -4,6 +4,7 @@
   align-items: center;
   min-height: 52px;
   box-sizing: border-box;
+  border-top: 0;
   padding: 0 clamp(14px, 4vw, 40px) 14px;
   background: transparent;
 }
@@ -135,6 +136,8 @@
   isolation: isolate;
   display: flex;
   box-sizing: border-box;
+  max-height: var(--chat-bubble-max-height, none);
+  overflow-y: auto;
   min-width: 0;
   max-width: 100%;
   width: fit-content;
@@ -146,4 +149,29 @@
   border-radius: 20px 20px 20px 6px;
   background: transparent;
   box-shadow: none;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.group-chat-debug-view .group-chat-message {
+  outline: 1px dashed #39e6ff;
+  outline-offset: 2px;
+}
+
+.group-chat-debug-view .group-chat-typing-footer {
+  border-top: 1px dashed #ff4fd8;
+}
+
+.group-chat-message::-webkit-scrollbar {
+  display: none;
+}
+
+.group-chat-debug-view .group-chat-message-avatar {
+  outline: 1px dashed #ffd84d;
+  outline-offset: 2px;
+}
+
+.group-chat-debug-view .group-chat-artist {
+  outline: 1px dashed #66ff8a;
+  outline-offset: 2px;
 }

@@ -20,6 +20,17 @@ const getHistoryPositions = content => new Map(
   ])
 );
 
+// Where scrollTop must be for the LAST message to sit fully above the bottom padding.
+// Uses layout geometry (offsetTop/offsetHeight), NOT scrollHeight, because scrollHeight
+// also counts in-flight transform animations (FLIP glide / entrance) and overshoots.
+const getBottomScrollTop = (container, content) => {
+  const paddingBottom = parseFloat(getComputedStyle(container).paddingBottom) || 0;
+  return Math.max(
+    0,
+    content.offsetTop + content.offsetHeight + paddingBottom - container.clientHeight
+  );
+};
+
 const useGroupChatPresentation = ({
   chatRef,
   activeLineIndices,
@@ -31,6 +42,7 @@ const useGroupChatPresentation = ({
 }) => {
   const entranceAnimationsRef = useRef([]);
   const historyGlideAnimationsRef = useRef(new Map());
+  const historyGlideDeltasRef = useRef(new Map());
   const previousHistoryPositionsRef = useRef(null);
   const previousHistoryMessageCountRef = useRef(null);
   const seenMessageLineIdsRef = useRef(null);
@@ -128,6 +140,65 @@ const useGroupChatPresentation = ({
     };
   }, [chatRef]);
 
+  // FIX (2/2): keep the chat glued to the newest message no matter what changes the layout
+  // after React commits - a bubble re-measuring itself, wrapping, fonts loading, the window
+  // being resized... Whenever we are "following the latest message" and the content/viewport
+  // changes size, or the browser moves the scroll position UP on its own (clamping), snap
+  // back to the bottom. ResizeObserver/scroll callbacks run before paint, so there is no
+  // visible flicker. If the user scrolled up themselves, followsLatestRef is already false
+  // (wheel / touch / keyboard handlers above), so we never fight them.
+  useEffect(() => {
+    const container = chatRef.current;
+    const content = container?.querySelector('.group-chat-history-content');
+    if (!container || !content || typeof ResizeObserver === 'undefined') return undefined;
+
+    let lastScrollTop = container.scrollTop;
+
+    const pinToBottom = () => {
+      const target = getBottomScrollTop(container, content);
+      const shift = target - container.scrollTop;
+      if (Math.abs(shift) < 1) return;
+      container.scrollTop = target;
+      lastScrollTop = container.scrollTop;
+
+      // Old bubbles may be mid-glide from positions computed before this extra shift;
+      // re-aim them so they still start where they visually were (no one-frame jump).
+      historyGlideAnimationsRef.current.forEach((animation, id) => {
+        const deltaY = historyGlideDeltasRef.current.get(id);
+        if (deltaY == null || !animation.effect?.setKeyframes) return;
+        const nextDelta = deltaY + shift;
+        historyGlideDeltasRef.current.set(id, nextDelta);
+        try {
+          animation.effect.setKeyframes([
+            { transform: `translateY(${nextDelta}px)` },
+            { transform: 'translateY(0)' }
+          ]);
+        } catch {
+          /* older browsers: the glide just finishes from its original offset */
+        }
+      });
+    };
+
+    const handleResize = () => {
+      if (followsLatestRef.current) pinToBottom();
+    };
+    const handleScroll = () => {
+      const top = container.scrollTop;
+      const movedUp = top < lastScrollTop - 0.5;
+      lastScrollTop = top;
+      if (movedUp && followsLatestRef.current) pinToBottom();
+    };
+
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(content);
+    observer.observe(container);
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [chatRef]);
+
   useLayoutEffect(() => {
     const turns = Array.from(chatRef.current?.querySelectorAll('[data-chat-line-index]') || []);
     const currentIds = new Set(turns.map(turn => turn.dataset.chatLineIndex));
@@ -181,13 +252,14 @@ const useGroupChatPresentation = ({
     if (previousMessageCount != null && messageCount < previousMessageCount) {
       historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
       historyGlideAnimationsRef.current.clear();
+      historyGlideDeltasRef.current.clear();
       previousHistoryPositionsRef.current = null;
     }
     previousHistoryMessageCountRef.current = messageCount;
 
     const previousPositions = previousHistoryPositionsRef.current;
     if (historyAdded && pendingScrollToLatestRef.current) {
-      container.scrollTop = container.scrollHeight - container.clientHeight;
+      container.scrollTop = getBottomScrollTop(container, content);
       followsLatestRef.current = true;
       pendingScrollToLatestRef.current = false;
     }
@@ -220,9 +292,11 @@ const useGroupChatPresentation = ({
             }
           );
           historyGlideAnimationsRef.current.set(id, animation);
+          historyGlideDeltasRef.current.set(id, deltaY);
           animation.onfinish = () => {
             if (historyGlideAnimationsRef.current.get(id) === animation) {
               historyGlideAnimationsRef.current.delete(id);
+              historyGlideDeltasRef.current.delete(id);
             }
           };
         });
@@ -280,6 +354,7 @@ const useGroupChatPresentation = ({
     entranceAnimationsRef.current.forEach(animation => animation.cancel());
     historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
     historyGlideAnimationsRef.current.clear();
+    historyGlideDeltasRef.current.clear();
   }, []);
 };
 
