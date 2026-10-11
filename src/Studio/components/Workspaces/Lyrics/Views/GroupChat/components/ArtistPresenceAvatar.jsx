@@ -10,19 +10,42 @@ const ArtistPresenceAvatar = ({
   disableAnimations
 }) => {
   const [isVisible, setIsVisible] = useState(isOnline);
+  const participantRef = useRef(null);
   const avatarRef = useRef(null);
   const previousActiveRef = useRef(isOnline && !isDimmed);
+  const previousOnlineRef = useRef(false);
   const isActive = isOnline && !isDimmed;
 
   useEffect(() => {
-    if (isOnline) return undefined;
+    if (isOnline) {
+      if (isVisible) return undefined;
+      const frame = window.requestAnimationFrame(() => setIsVisible(true));
+      return () => window.cancelAnimationFrame(frame);
+    }
 
     const exitTimer = setTimeout(() => setIsVisible(false), 300);
     return () => clearTimeout(exitTimer);
-  }, [isOnline]);
+  }, [isOnline, isVisible]);
+
+  useLayoutEffect(() => {
+    const wasOnline = previousOnlineRef.current;
+    previousOnlineRef.current = isOnline;
+    if (!isOnline || wasOnline || disableAnimations) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const participant = participantRef.current;
+    if (!participant) return;
+
+    const animation = participant.animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 300, easing: 'ease-out' }
+    );
+    animation.onfinish = () => animation.cancel();
+  }, [disableAnimations, isOnline]);
 
   useLayoutEffect(() => {
     const wasActive = previousActiveRef.current;
+    if (!isOnline) return;
     previousActiveRef.current = isActive;
 
     const avatar = avatarRef.current;
@@ -51,7 +74,7 @@ const ArtistPresenceAvatar = ({
       ],
       { duration: 520, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)', fill: 'forwards' }
     );
-  }, [disableAnimations, inactiveScale, isActive]);
+  }, [disableAnimations, inactiveScale, isActive, isOnline]);
 
   if (!isVisible && !isOnline) return null;
 
@@ -63,6 +86,7 @@ const ArtistPresenceAvatar = ({
         isActive ? 'is-active' : 'is-inactive',
         isDimmed ? 'is-dimmed' : ''
       ].filter(Boolean).join(' ')}
+      ref={participantRef}
       style={{ '--artist-color': artist.color }}
       data-artist-name={artist.name}
       aria-label={`${artist.name}, ${isDimmed ? 'inactive' : isOnline ? 'online' : 'offline'}`}

@@ -8,6 +8,34 @@ const splitArtists = (singer, fallbackArtist) => {
   return [...new Set(names.map(name => name.trim()).filter(Boolean))];
 };
 
+const isWhiteColor = color => {
+  if (typeof color !== 'string') return false;
+  const normalized = color.trim().toLowerCase();
+  if (normalized === 'white' || normalized === '#fff' || normalized === '#ffffff') return true;
+  const rgb = normalized.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  return Boolean(rgb && rgb.slice(1).every(channel => Number(channel) === 255));
+};
+
+const isWhiteMarkedAdlib = adlib => {
+  if (isWhiteColor(adlib.color)) return true;
+  const contentSegments = (adlib.segments || []).filter(segment =>
+    (segment.text || '').trim()
+  );
+  return contentSegments.length > 0 &&
+    contentSegments.every(segment => isWhiteColor(segment.color));
+};
+
+const getAdlibArtists = (adlib, palette) => {
+  const segments = adlib.segments || [];
+  const whiteMarked = isWhiteMarkedAdlib(adlib);
+  return getSegmentArtists(segments.map(segment => ({
+    ...segment,
+    artists: whiteMarked || isWhiteColor(segment.color)
+      ? (segment.artists || []).filter(artist => isWhiteColor(palette[artist]))
+      : segment.artists
+  })));
+};
+
 const getSegmentArtists = (segments, excludedRanges = []) => {
   const artists = new Set();
   let segmentStart = 0;
@@ -66,10 +94,8 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
       const adlibEnd = Number.isFinite(Number(adlib.end)) && Number(adlib.end) >= adlibStart
         ? Number(adlib.end)
         : adlibStart;
-      const adlibArtists = getSegmentArtists(adlib.segments);
-      const artists = adlib.singer
-        ? (adlibArtists.length ? adlibArtists : splitArtists(adlib.singer, fallbackArtist))
-        : [];
+      const adlibArtists = getAdlibArtists(adlib, palette);
+      const artists = adlibArtists;
       messages.push({
         type: 'message',
         time: adlibStart,

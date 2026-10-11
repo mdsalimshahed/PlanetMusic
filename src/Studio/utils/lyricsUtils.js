@@ -427,7 +427,7 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
             return {
               ...adlib,
               segments: adlibSegments,
-              singer: Array.from(adlibArtists).join(', ') || newLine.singer
+              singer: Array.from(adlibArtists).join(', ')
             };
           });
         }

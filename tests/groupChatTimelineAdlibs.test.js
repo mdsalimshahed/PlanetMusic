@@ -81,6 +81,125 @@ test('splits ad-lib-only artists into their own chat bubbles', () => {
   assert.equal(sameArtistGroups.length, 2);
 });
 
+test('treats white-marked ad-libs as uncredited without explicit segment attribution', () => {
+  const chat = buildGroupChatTimeline(
+    [{
+      singer: 'Ari',
+      text: 'Lead echo',
+      segments: [
+        { text: 'Lead ', artists: ['Ari'], color: '#ff0000' },
+        { text: 'echo', artists: ['Bea'], color: '#ffffff' }
+      ]
+    }],
+    [{
+      start: 1,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: 'echo',
+        charStart: 5,
+        charEnd: 9,
+        start: 2,
+        end: 2.5,
+        singer: 'Bea',
+        segments: [{ text: 'echo', artists: ['Bea'], color: '#ffffff' }]
+      }]
+    }],
+    'Fallback',
+    { Ari: '#ff0000', Bea: '#0000ff' }
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.deepEqual(adlib.artists, []);
+  assert.deepEqual(chat.artists.map(artist => artist.name), ['Ari']);
+});
+
+test('does not use a parser-inherited singer when an ad-lib has no attributed segments', () => {
+  const chat = buildGroupChatTimeline(
+    [{ singer: 'Eminem', text: 'Main (Hey, hey)' }],
+    [{
+      start: 1,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: 'Hey, hey',
+        start: 2,
+        end: 2.5,
+        singer: 'Eminem',
+        segments: []
+      }]
+    }],
+    'Eminem',
+    { Eminem: '#ff1744' }
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.deepEqual(adlib.artists, []);
+});
+
+test('white ad-lib marker overrides stale non-white segment artist attribution', () => {
+  const chat = buildGroupChatTimeline(
+    [{
+      singer: 'Eminem',
+      text: 'In AA with an AK (Hey, hey)',
+      segments: [{ text: 'In AA with an AK (Hey, hey)', artists: ['Eminem'], color: '#ff1744' }]
+    }],
+    [{
+      start: 1,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: 'Hey, hey',
+        start: 2,
+        end: 2.5,
+        singer: 'Eminem',
+        color: '#ffffff',
+        segments: [{ text: 'Hey, hey', artists: ['Eminem'], color: '#ff1744' }]
+      }]
+    }],
+    'Eminem',
+    { Eminem: '#ff1744' }
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.deepEqual(adlib.artists, []);
+  assert.deepEqual(chat.artists.map(artist => artist.name), ['Eminem']);
+});
+
+test('preserves explicit attribution for an intentionally white artist', () => {
+  const chat = buildGroupChatTimeline(
+    [{
+      singer: 'Ari, Bea',
+      text: 'Lead echo',
+      segments: [
+        { text: 'Lead ', artists: ['Ari'], color: '#ff0000' },
+        { text: 'echo', artists: ['Bea'], color: '#ffffff' }
+      ]
+    }],
+    [{
+      start: 1,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: 'echo',
+        charStart: 5,
+        charEnd: 9,
+        start: 2,
+        end: 2.5,
+        singer: 'Bea',
+        color: '#ffffff',
+        segments: [{ text: 'echo', artists: ['Bea'], color: '#ffffff' }]
+      }]
+    }],
+    'Fallback',
+    { Ari: '#ff0000', Bea: '#ffffff' }
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.deepEqual(adlib.artists, ['Bea']);
+  assert.deepEqual(chat.artists.map(artist => artist.name), ['Ari', 'Bea']);
+});
+
 test('shows the ad-lib artist typing when their bubble is within the activity window', () => {
   const chat = buildGroupChatTimeline(
     [

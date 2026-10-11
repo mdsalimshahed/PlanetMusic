@@ -37,7 +37,8 @@ const GroupChatHeader = ({
   });
   const layoutKey = JSON.stringify(orderedArtists.map(artist => [
     artist.name,
-    onlineArtists.has(artist.name)
+    onlineArtists.has(artist.name),
+    isArtistActive(artist)
   ]));
 
   useLayoutEffect(() => {
@@ -78,7 +79,7 @@ const GroupChatHeader = ({
     }
 
     previousPositionsRef.current = currentPositions;
-  }, [layoutKey, disableAnimations]);
+  }, [layoutKey, disableAnimations, inactiveScale]);
 
   return (
     <header className="group-chat-header">
