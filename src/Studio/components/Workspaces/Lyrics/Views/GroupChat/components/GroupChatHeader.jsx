@@ -1,6 +1,43 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import ArtistPresenceAvatar from './ArtistPresenceAvatar.jsx';
 import { getArtistImage } from '../utils/groupChatUtils.js';
+
+const animateParticipantPositions = (container, previousPositionsRef, disableAnimations) => {
+  const currentPositions = new Map();
+  const avatarElements = new Map();
+  container.querySelectorAll('.group-chat-participant').forEach(participant => {
+    const motionWrapper = participant.querySelector('.group-chat-avatar-motion');
+    const artistName = participant.dataset.artistName;
+    if (motionWrapper && artistName) {
+      currentPositions.set(artistName, {
+        left: participant.offsetLeft,
+        top: participant.offsetTop
+      });
+      avatarElements.set(artistName, motionWrapper);
+    }
+  });
+
+  if (!disableAnimations && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    currentPositions.forEach((position, artistName) => {
+      const previousPosition = previousPositionsRef.current.get(artistName);
+      const avatar = avatarElements.get(artistName);
+      if (!previousPosition || !avatar) return;
+      const offsetX = previousPosition.left - position.left;
+      if (Math.abs(offsetX) < 1) return;
+
+      avatar.getAnimations().forEach(animation => animation.cancel());
+      avatar.animate(
+        [
+          { transform: `translateX(${offsetX}px)` },
+          { transform: 'translate(0, 0)' }
+        ],
+        { duration: 560, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
+      );
+    });
+  }
+
+  previousPositionsRef.current = currentPositions;
+};
 
 const GroupChatHeader = ({
   artists,
@@ -44,42 +81,20 @@ const GroupChatHeader = ({
   useLayoutEffect(() => {
     const container = participantsRef.current;
     if (!container) return;
-
-    const currentPositions = new Map();
-    const avatarElements = new Map();
-    container.querySelectorAll('.group-chat-participant').forEach(participant => {
-      const motionWrapper = participant.querySelector('.group-chat-avatar-motion');
-      const artistName = participant.dataset.artistName;
-      if (motionWrapper && artistName) {
-        currentPositions.set(artistName, {
-          left: participant.offsetLeft,
-          top: participant.offsetTop
-        });
-        avatarElements.set(artistName, motionWrapper);
-      }
-    });
-
-    if (!disableAnimations && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      currentPositions.forEach((position, artistName) => {
-        const previousPosition = previousPositionsRef.current.get(artistName);
-        const avatar = avatarElements.get(artistName);
-        if (!previousPosition || !avatar) return;
-        const offsetX = previousPosition.left - position.left;
-        if (Math.abs(offsetX) < 1) return;
-
-        avatar.getAnimations().forEach(animation => animation.cancel());
-        avatar.animate(
-          [
-            { transform: `translateX(${offsetX}px)` },
-            { transform: 'translate(0, 0)' }
-          ],
-          { duration: 560, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
-        );
-      });
-    }
-
-    previousPositionsRef.current = currentPositions;
+    animateParticipantPositions(container, previousPositionsRef, disableAnimations);
   }, [layoutKey, disableAnimations, inactiveScale]);
+
+  useEffect(() => {
+    const container = participantsRef.current;
+    if (!container || typeof MutationObserver === 'undefined') return undefined;
+
+    const observer = new MutationObserver(records => {
+      if (!records.some(record => record.removedNodes.length > 0)) return;
+      animateParticipantPositions(container, previousPositionsRef, disableAnimations);
+    });
+    observer.observe(container, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [disableAnimations]);
 
   return (
     <header className="group-chat-header">
