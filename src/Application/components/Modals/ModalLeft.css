@@ -538,22 +538,6 @@ a.platform-label.yt-color:hover {
   gap: 6px;
 }
 
-.segment-btn[data-view-mode="live"] {
-  flex-grow: 0.8;
-}
-
-.segment-btn[data-view-mode="focused"] {
-  flex-grow: 1;
-}
-
-.segment-btn[data-view-mode="group-chat"] {
-  flex-grow: 1.3;
-}
-
-.segment-btn[data-view-mode="plain"] {
-  flex-grow: 1.2;
-}
-
 .segment-btn:hover {
   color: white;
 }

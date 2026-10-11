@@ -89,13 +89,13 @@ const GroupChatLyricsView = ({
       className={`group-chat ${settings?.disableAnimations ? 'group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
       style={{
-        '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}cqi`,
-        '--chat-heading-inactive-avatar-size': `${settings?.groupChatInactiveAvatarSize ?? 3.5}cqi`,
-        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}cqi`,
-        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}cqi`,
-        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}cqi`,
-        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}cqi`,
-        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}cqi`
+        '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}dvh`,
+        '--chat-heading-inactive-avatar-size': `${settings?.groupChatInactiveAvatarSize ?? 3.5}dvh`,
+        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}dvh`,
+        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}dvh`,
+        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}dvh`,
+        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}dvh`,
+        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}dvh`
       }}
       data-avatar-ring={settings?.groupChatAvatarRingEnabled !== false}
     >

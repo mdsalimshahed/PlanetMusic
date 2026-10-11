@@ -46,7 +46,7 @@ const GroupChatMessageChain = ({
             key={`turn-${line.index}`}
             data-chat-line-index={line.index}
             style={{
-              '--avatar-slot-width': `${avatarSlotWidth}cqi`
+              '--avatar-slot-width': `${avatarSlotWidth}dvh`
             }}
           >
             <span
@@ -54,7 +54,7 @@ const GroupChatMessageChain = ({
               aria-hidden="true"
               style={{
                 '--avatar-count': avatarCount,
-                '--avatar-slot-width': `${avatarSlotWidth}cqi`
+                '--avatar-slot-width': `${avatarSlotWidth}dvh`
               }}
             >
               {isLastMessage && (
