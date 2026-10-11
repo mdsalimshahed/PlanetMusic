@@ -1,21 +1,59 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getInitials } from '../utils/groupChatUtils.js';
 
-const ArtistPresenceAvatar = ({ artist, artistIndex, isOnline, isDimmed, image }) => {
+const ArtistPresenceAvatar = ({
+  artist,
+  isOnline,
+  isDimmed,
+  image,
+  inactiveScale,
+  disableAnimations
+}) => {
   const [isVisible, setIsVisible] = useState(isOnline);
+  const avatarRef = useRef(null);
+  const previousActiveRef = useRef(isOnline && !isDimmed);
   const isActive = isOnline && !isDimmed;
 
   useEffect(() => {
-    if (isOnline) {
-      const enterFrame = requestAnimationFrame(() => setIsVisible(true));
-      return () => cancelAnimationFrame(enterFrame);
+    if (isOnline) return undefined;
+
+    const exitTimer = setTimeout(() => setIsVisible(false), 300);
+    return () => clearTimeout(exitTimer);
+  }, [isOnline]);
+
+  useLayoutEffect(() => {
+    const wasActive = previousActiveRef.current;
+    previousActiveRef.current = isActive;
+
+    const avatar = avatarRef.current;
+    if (!avatar) return;
+
+    const runningAnimations = avatar.getAnimations();
+    if (wasActive === isActive && !disableAnimations) return;
+
+    const currentTransform = runningAnimations.length
+      ? window.getComputedStyle(avatar).transform
+      : `scale(${wasActive ? 1 : inactiveScale})`;
+    runningAnimations.forEach(animation => animation.cancel());
+
+    if (
+      wasActive === isActive ||
+      disableAnimations ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
     }
 
-    const exitTimer = setTimeout(() => setIsVisible(false), 300 + artistIndex * 85);
-    return () => clearTimeout(exitTimer);
-  }, [artistIndex, isOnline]);
+    avatar.animate(
+      [
+        { transform: currentTransform },
+        { transform: `scale(${isActive ? 1 : inactiveScale})` }
+      ],
+      { duration: 520, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)', fill: 'forwards' }
+    );
+  }, [disableAnimations, inactiveScale, isActive]);
 
-  if (!isVisible) return null;
+  if (!isVisible && !isOnline) return null;
 
   return (
     <span
@@ -25,16 +63,18 @@ const ArtistPresenceAvatar = ({ artist, artistIndex, isOnline, isDimmed, image }
         isActive ? 'is-active' : 'is-inactive',
         isDimmed ? 'is-dimmed' : ''
       ].filter(Boolean).join(' ')}
-      style={{ '--artist-color': artist.color, '--presence-index': artistIndex }}
+      style={{ '--artist-color': artist.color }}
       data-artist-name={artist.name}
       aria-label={`${artist.name}, ${isDimmed ? 'inactive' : isOnline ? 'online' : 'offline'}`}
       aria-hidden={!isOnline}
     >
-      <span className="group-chat-avatar" aria-hidden="true">
-        <span>{getInitials(artist.name)}</span>
-        {image && (
-          <img src={image} alt="" onError={event => { event.currentTarget.hidden = true; }} />
-        )}
+      <span className="group-chat-avatar-motion" aria-hidden="true">
+        <span className="group-chat-avatar" ref={avatarRef}>
+          <span>{getInitials(artist.name)}</span>
+          {image && (
+            <img src={image} alt="" onError={event => { event.currentTarget.hidden = true; }} />
+          )}
+        </span>
       </span>
     </span>
   );

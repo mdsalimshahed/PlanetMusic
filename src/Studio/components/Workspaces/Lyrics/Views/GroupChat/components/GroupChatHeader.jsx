@@ -5,25 +5,40 @@ import { getArtistImage } from '../utils/groupChatUtils.js';
 const GroupChatHeader = ({
   artists,
   onlineArtists,
+  typingArtists,
   lastLineEndByArtist,
   playbackTime,
   imageSources,
-  disableAnimations
+  disableAnimations,
+  inactiveScale
 }) => {
   const participantsRef = useRef(null);
   const previousPositionsRef = useRef(new Map());
+  const isArtistTyping = artist => typingArtists.has(artist.name);
   const isArtistActive = artist => {
     const lastLineEnd = lastLineEndByArtist.get(artist.name);
-    return onlineArtists.has(artist.name) &&
-      !(lastLineEnd != null && playbackTime - lastLineEnd > 5);
+    return onlineArtists.has(artist.name) && (
+      isArtistTyping(artist) ||
+      !(lastLineEnd != null && playbackTime - lastLineEnd > 5)
+    );
   };
-  const activityOrderKey = JSON.stringify(artists.map(artist => [
+  const orderedArtists = [...artists].sort((a, b) => {
+    const activeDifference = Number(isArtistActive(b)) - Number(isArtistActive(a));
+    if (activeDifference) return activeDifference;
+
+    const getInactiveAt = artist => {
+      if (onlineArtists.has(artist.name)) {
+        const lastLineEnd = lastLineEndByArtist.get(artist.name);
+        return lastLineEnd == null ? Number.NEGATIVE_INFINITY : lastLineEnd + 5;
+      }
+      return artist.offlineAt ?? Number.NEGATIVE_INFINITY;
+    };
+    return getInactiveAt(b) - getInactiveAt(a);
+  });
+  const layoutKey = JSON.stringify(orderedArtists.map(artist => [
     artist.name,
-    isArtistActive(artist)
+    onlineArtists.has(artist.name)
   ]));
-  const orderedArtists = artists
-    .map((artist, originalIndex) => ({ artist, originalIndex }))
-    .sort((a, b) => Number(isArtistActive(b.artist)) - Number(isArtistActive(a.artist)));
 
   useLayoutEffect(() => {
     const container = participantsRef.current;
@@ -32,11 +47,14 @@ const GroupChatHeader = ({
     const currentPositions = new Map();
     const avatarElements = new Map();
     container.querySelectorAll('.group-chat-participant').forEach(participant => {
-      const avatar = participant.querySelector('.group-chat-avatar');
+      const motionWrapper = participant.querySelector('.group-chat-avatar-motion');
       const artistName = participant.dataset.artistName;
-      if (avatar && artistName) {
-        currentPositions.set(artistName, avatar.getBoundingClientRect());
-        avatarElements.set(artistName, avatar);
+      if (motionWrapper && artistName) {
+        currentPositions.set(artistName, {
+          left: participant.offsetLeft,
+          top: participant.offsetTop
+        });
+        avatarElements.set(artistName, motionWrapper);
       }
     });
 
@@ -46,12 +64,12 @@ const GroupChatHeader = ({
         const avatar = avatarElements.get(artistName);
         if (!previousPosition || !avatar) return;
         const offsetX = previousPosition.left - position.left;
-        const offsetY = previousPosition.top - position.top;
-        if (Math.abs(offsetX) < 1 && Math.abs(offsetY) < 1) return;
+        if (Math.abs(offsetX) < 1) return;
 
+        avatar.getAnimations().forEach(animation => animation.cancel());
         avatar.animate(
           [
-            { transform: `translate(${offsetX}px, ${offsetY}px)` },
+            { transform: `translateX(${offsetX}px)` },
             { transform: 'translate(0, 0)' }
           ],
           { duration: 560, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
@@ -60,22 +78,27 @@ const GroupChatHeader = ({
     }
 
     previousPositionsRef.current = currentPositions;
-  }, [activityOrderKey, disableAnimations]);
+  }, [layoutKey, disableAnimations]);
 
   return (
     <header className="group-chat-header">
       <div className="group-chat-heading">
         <div className="group-chat-participants" aria-live="polite" ref={participantsRef}>
-          {orderedArtists.map(({ artist, originalIndex }) => {
+          {orderedArtists.map(artist => {
             const lastLineEnd = lastLineEndByArtist.get(artist.name);
             return (
               <ArtistPresenceAvatar
                 key={artist.name}
                 artist={artist}
-                artistIndex={originalIndex}
                 isOnline={onlineArtists.has(artist.name)}
-                isDimmed={lastLineEnd != null && playbackTime - lastLineEnd > 5}
+                isDimmed={
+                  !isArtistTyping(artist) &&
+                  lastLineEnd != null &&
+                  playbackTime - lastLineEnd > 5
+                }
                 image={getArtistImage(artist.name, imageSources)}
+                inactiveScale={inactiveScale}
+                disableAnimations={disableAnimations}
               />
             );
           })}

@@ -23,6 +23,8 @@ const GroupChatLyricsView = ({
   settings,
   showDebug = false
 }) => {
+  const activeAvatarSize = settings?.groupChatActiveAvatarSize ?? 5;
+  const inactiveAvatarSize = settings?.groupChatInactiveAvatarSize ?? 3.5;
   const pendingScrollToLatestRef = useRef(false);
   const pendingScrollBehaviorRef = useRef('auto');
   const chatRef = useRef(null);
@@ -84,14 +86,14 @@ const GroupChatLyricsView = ({
     playbackTime: playback.playbackTime,
     isPlayingCurrentSong
   };
-
   return (
     <section
       className={`group-chat ${settings?.disableAnimations ? 'group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
       style={{
         '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}dvh`,
-        '--chat-heading-inactive-avatar-size': `${settings?.groupChatInactiveAvatarSize ?? 3.5}dvh`,
+        '--chat-heading-inactive-avatar-size': `${inactiveAvatarSize}dvh`,
+        '--chat-heading-inactive-avatar-scale': inactiveAvatarSize / activeAvatarSize,
         '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}dvh`,
         '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}dvh`,
         '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}dvh`,
@@ -103,10 +105,12 @@ const GroupChatLyricsView = ({
       <GroupChatHeader
         artists={timeline.artists}
         onlineArtists={new Set(playback.chatState.artists.map(artist => artist.name))}
+        typingArtists={new Set(playback.chatState.typingArtists)}
         lastLineEndByArtist={lastLineEndByArtist}
         playbackTime={playback.playbackTime}
         imageSources={imageSources}
         disableAnimations={settings?.disableAnimations}
+        inactiveScale={inactiveAvatarSize / activeAvatarSize}
       />
       <div className="group-chat-conversation">
         <div
