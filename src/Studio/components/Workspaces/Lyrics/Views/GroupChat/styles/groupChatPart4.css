@@ -29,7 +29,7 @@
   white-space: nowrap;
   word-break: normal;
   overflow-wrap: normal;
-  text-wrap: nowrap;
+  text-wrap: balance !important;
   text-align: center !important;
 }
 
@@ -47,7 +47,6 @@
 .group-chat-message-text.is-wrap-enabled .chunk-translation {
   max-width: 100% !important;
   white-space: normal !important;
-  text-wrap: balance !important;
 }
 
 .group-chat-message-text.is-wrap-enabled .chunk-translation .trans-word-group.hyphenated-word-group {

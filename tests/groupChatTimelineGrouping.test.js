@@ -76,3 +76,28 @@ test('keeps each artist group on a stable side and treats reordered duos as the 
   );
   assert.equal(messageEvents[0].line.chatSide, messageEvents[3].line.chatSide);
 });
+
+test('switches an artist to the opposite side after a break longer than five seconds', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      { singer: 'Ari', text: 'First line' },
+      { singer: 'Ari', text: 'Second line' },
+      { singer: 'Ari', text: 'Third line' }
+    ],
+    [
+      { start: 1, end: 2 },
+      { start: 7, end: 8 },
+      { start: 14, end: 15 }
+    ],
+    'Fallback'
+  );
+  const groups = groupConsecutiveMessages(chat.events);
+
+  assert.deepEqual(groups.map(group => ({
+    side: group.side,
+    lines: group.events.map(event => event.line.text)
+  })), [
+    { side: 'left', lines: ['First line', 'Second line'] },
+    { side: 'right', lines: ['Third line'] }
+  ]);
+});

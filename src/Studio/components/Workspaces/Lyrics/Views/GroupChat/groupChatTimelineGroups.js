@@ -1,6 +1,7 @@
 export const groupConsecutiveMessages = events => {
   const groups = [];
   const sideByArtistKey = new Map();
+  const latestEventByArtistKey = new Map();
   const mainSideByLineIndex = new Map();
   let nextSide = 'left';
   events.filter(event => event.type === 'message').forEach(event => {
@@ -11,14 +12,24 @@ export const groupConsecutiveMessages = events => {
     let side = event.line.chatSide;
     const previousGroup = groups[groups.length - 1];
     const previousEvent = previousGroup?.events[previousGroup.events.length - 1];
+    const previousArtistEvent = latestEventByArtistKey.get(artistsKey);
+    const artistGap = previousArtistEvent
+      ? event.time - previousArtistEvent.end
+      : 0;
+    const artistReturnedAfterBreak = artistGap > 5;
 
     if (
       previousGroup?.artistsKey === artistsKey &&
+      !artistReturnedAfterBreak &&
       !event.line.isAdlib &&
       !previousEvent?.line.isAdlib
     ) {
       previousGroup.events.push(event);
       mainSideByLineIndex.set(event.line.index, previousGroup.side);
+      latestEventByArtistKey.set(artistsKey, {
+        end: event.line.end ?? event.time,
+        side: previousGroup.side
+      });
       return;
     }
 
@@ -26,6 +37,9 @@ export const groupConsecutiveMessages = events => {
       side = previousGroup
         ? (previousGroup.side === 'left' ? 'right' : 'left')
         : nextSide;
+    } else if (!event.line.isAdlib && artistReturnedAfterBreak) {
+      const previousSide = previousArtistEvent.side;
+      side = previousSide === 'left' ? 'right' : 'left';
     } else if (side) {
       if (!event.line.isAdlib) mainSideByLineIndex.set(event.line.index, side);
     } else if (event.line.isAdlib) {
@@ -47,7 +61,16 @@ export const groupConsecutiveMessages = events => {
       mainSideByLineIndex.set(event.line.index, side);
     }
     nextSide = side === 'left' ? 'right' : 'left';
+    if (artistsKey && !event.line.isAdlib) sideByArtistKey.set(artistsKey, side);
     groups.push({ artistsKey, artists: event.line.artists, events: [event], side });
+    if (artistsKey) {
+      latestEventByArtistKey.set(artistsKey, {
+        end: event.line.end ?? event.time,
+        side: event.line.isAdlib
+          ? (mainSideByLineIndex.get(event.line.sourceIndex) === 'left' ? 'right' : 'left')
+          : side
+      });
+    }
   });
   return groups;
 };
@@ -86,4 +109,3 @@ export const buildGroupChatHistory = events => {
   });
   return history;
 };
-
