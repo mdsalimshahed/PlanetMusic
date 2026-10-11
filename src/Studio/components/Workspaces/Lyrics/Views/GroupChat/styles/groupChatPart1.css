@@ -139,8 +139,17 @@
   flex-direction: column;
   align-items: stretch;
   min-height: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 20px clamp(14px, 4vw, 40px) 28px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.group-chat-history::-webkit-scrollbar {
+  display: none;
 }
 
 .group-chat-history-content {
