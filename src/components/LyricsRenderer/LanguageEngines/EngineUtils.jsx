@@ -119,22 +119,11 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
             ...(isFocused ? { '--word-index': tokenIndex } : {})
           }}
         >
-          {punctuationParts.map((punctuationPart, punctuationIdx) => {
-            const isPunctuation = /^[\p{P}\p{S}]+$/u.test(punctuationPart);
-            return isPunctuation ? (
-              <span
-                key={`${pIdx}-${wordIdx}-${punctuationIdx}`}
-                className="translation-punctuation"
-                style={{
-                  color: '#fbbf24',
-                  WebkitTextFillColor: '#fbbf24',
-                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
-                }}
-              >
-                {punctuationPart}
-              </span>
-            ) : punctuationPart;
-          })}
+          {punctuationParts.map((punctuationPart, punctuationIdx) => (
+            <React.Fragment key={`${pIdx}-${wordIdx}-${punctuationIdx}`}>
+              {punctuationPart}
+            </React.Fragment>
+          ))}
         </span>
       );
     });
@@ -292,6 +281,17 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       flushWord();
       words.push(elements[i]); 
     } else if (isPunctuation(char) && !isInWordApostrophe) {
+      const nextChar = charData[i + 1]?.char || '';
+      const isOpeningPunctuation = ['(', '[', '{', '<', '"', "'", '\u2018', '\u201C', '\u00AB'].includes(char);
+      if (
+        currentWord.length === 0 &&
+        isOpeningPunctuation &&
+        /[\p{L}\p{N}]/u.test(nextChar)
+      ) {
+        addToCurrentWord(elements[i]);
+        continue;
+      }
+
       flushWord();
 
       let previousIndex = words.length - 1;
@@ -329,7 +329,86 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   }
 
   flushWord();
-  return words;
+
+  const getNodeText = (node) => {
+    if (!node) return '';
+    if (typeof node === 'string' || typeof node === 'number') return String(node);
+    if (React.isValidElement(node)) {
+      return React.Children.toArray(node.props?.children).map(child => getNodeText(child)).join('');
+    }
+    if (Array.isArray(node)) return node.map(item => getNodeText(item)).join('');
+    return '';
+  };
+
+  const isWordToken = (node) => {
+    if (!node || !React.isValidElement(node)) return false;
+    const className = node.props?.className || '';
+    return className.includes('lyric-word') && /[\p{L}\p{N}]/u.test(getNodeText(node));
+  };
+
+  const mergeStandalonePunctuation = (items) => {
+    const merged = [...items];
+
+    for (let i = 0; i < merged.length; i++) {
+      const current = merged[i];
+      if (!current || !React.isValidElement(current)) continue;
+
+      const text = getNodeText(current).trim();
+      if (!text || !/^[\p{P}\p{S}]+$/u.test(text)) continue;
+
+      const firstCharacter = Array.from(text)[0];
+      const isOpeningPunctuation = ['(', '[', '{', '<', '"', "'", '\u2018', '\u201C', '\u00AB'].includes(firstCharacter);
+      const isClosingPunctuation = [')', ']', '}', '>', '"', "'", '\u2019', '\u201D', '\u00BB', '.', ',', ';', ':', '!', '?', '\u2026'].includes(firstCharacter);
+
+      const prevWordIndex = i > 0 ? [...Array(i).keys()].reverse().find(index => isWordToken(merged[index])) : -1;
+      const nextWordIndex = i + 1 < merged.length ? [...Array(merged.length - i - 1).keys()].map(offset => i + 1 + offset).find(index => isWordToken(merged[index])) : -1;
+
+      if (isOpeningPunctuation && nextWordIndex !== -1) {
+        const nextNode = merged[nextWordIndex];
+        const nextClassName = nextNode.props?.className || 'lyric-word';
+        merged[nextWordIndex] = (
+          <span key={`merged-next-${nextWordIndex}`} className={nextClassName}>
+            {current}
+            {nextNode}
+          </span>
+        );
+        merged.splice(i, 1);
+        i--;
+        continue;
+      }
+
+      if (prevWordIndex !== -1 && (isClosingPunctuation || !isOpeningPunctuation)) {
+        const prevNode = merged[prevWordIndex];
+        const prevClassName = prevNode.props?.className || 'lyric-word';
+        merged[prevWordIndex] = (
+          <span key={`merged-prev-${prevWordIndex}`} className={prevClassName}>
+            {prevNode}
+            {current}
+          </span>
+        );
+        merged.splice(i, 1);
+        i--;
+        continue;
+      }
+
+      if (nextWordIndex !== -1) {
+        const nextNode = merged[nextWordIndex];
+        const nextClassName = nextNode.props?.className || 'lyric-word';
+        merged[nextWordIndex] = (
+          <span key={`merged-next-${nextWordIndex}`} className={nextClassName}>
+            {current}
+            {nextNode}
+          </span>
+        );
+        merged.splice(i, 1);
+        i--;
+      }
+    }
+
+    return merged;
+  };
+
+  return mergeStandalonePunctuation(words);
 };
 
 export const extractCharsAndSegments = (lineObj, savedNode) => {
