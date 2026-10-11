@@ -117,6 +117,7 @@
   display: flex;
   flex: 0 0 auto;
   align-items: flex-end;
+  transform: translateY(-20%);
 }
 
 .group-chat-message-avatar {
