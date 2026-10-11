@@ -10,7 +10,7 @@
 
 .group-chat-system-message {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   align-self: center;
   gap: 8px;
   max-width: 90%;
