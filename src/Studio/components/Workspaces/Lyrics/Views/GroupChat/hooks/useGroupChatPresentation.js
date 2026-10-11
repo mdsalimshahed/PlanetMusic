@@ -1,21 +1,26 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
+const getTranslateY = element => {
+  const transform = getComputedStyle(element).transform;
+  const matrix = transform.match(/^matrix\((.+)\)$/);
+  if (matrix) return Number(matrix[1].split(',')[5]) || 0;
+  const matrix3d = transform.match(/^matrix3d\((.+)\)$/);
+  if (matrix3d) return Number(matrix3d[1].split(',')[13]) || 0;
+  return 0;
+};
+
 const useGroupChatPresentation = ({
   chatRef,
   activeLineIndices,
   chatState,
-  playbackEnded,
-  isPlaying,
   settings,
-  setExpandedLineIndices,
-  pendingScrollToLatestRef,
-  pendingScrollBehaviorRef
+  setExpandedLineIndices
 }) => {
   const entranceAnimationsRef = useRef([]);
   const seenMessageLineIdsRef = useRef(null);
-  const previousHistoryItemTopsRef = useRef(null);
-  const historyGlideAnimationsRef = useRef(new Map());
-  const scrollbarTookOverRef = useRef(false);
+  const previousHistoryLayoutRef = useRef(null);
+  const previousHistoryMessageCountRef = useRef(null);
+  const historyGlideAnimationRef = useRef(null);
   const activeLineIndicesKey = [...activeLineIndices].map(String).join('\u0000');
   const activeLineIndicesRef = useRef(new Set());
 
@@ -91,129 +96,84 @@ const useGroupChatPresentation = ({
   useLayoutEffect(() => {
     const container = chatRef.current;
     const content = container?.querySelector('.group-chat-history-content');
-    const items = Array.from(content?.querySelectorAll(':scope > .group-chat-history-item') || []);
-    const currentTops = new Map(items.map(item => [
-      item.dataset.historyItemId,
-      item.offsetTop
-    ]));
-    const previousTops = previousHistoryItemTopsRef.current;
-    previousHistoryItemTopsRef.current = currentTops;
-    if (!container) return;
+    if (!container || !content) return;
 
-    if (
-      !previousTops ||
-      settings?.disableAnimations ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    ) return;
+    const messageCount = chatState.messages.length;
+    const previousMessageCount = previousHistoryMessageCountRef.current;
+    if (previousMessageCount != null && messageCount < previousMessageCount) {
+      historyGlideAnimationRef.current?.cancel();
+      historyGlideAnimationRef.current = null;
+      content.style.transform = '';
+      previousHistoryLayoutRef.current = null;
+    }
+    previousHistoryMessageCountRef.current = messageCount;
+    const paddingBottom = Number.parseFloat(getComputedStyle(container).paddingBottom) || 0;
+    if (container.scrollTop) container.scrollTop = 0;
+    const contentHeight = content.offsetHeight;
+    const layoutTop = content.offsetTop;
+    const destinationTop = container.clientHeight - paddingBottom - contentHeight;
+    const destinationTransform = destinationTop - layoutTop;
+    const previousLayout = previousHistoryLayoutRef.current;
 
-    if (container.scrollHeight > container.clientHeight + 1) {
-      scrollbarTookOverRef.current = true;
-      historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
-      historyGlideAnimationsRef.current.clear();
+    if (!previousLayout) {
+      content.style.transform = destinationTransform
+        ? `translateY(${destinationTransform}px)`
+        : '';
+      previousHistoryLayoutRef.current = { layoutTop, contentHeight, destinationTop };
       return;
     }
 
-    if (scrollbarTookOverRef.current) return;
-    const animations = items.flatMap(item => {
-      const itemId = item.dataset.historyItemId;
-      const previousTop = previousTops.get(itemId);
-      const deltaY = previousTop - currentTops.get(itemId);
-      if (previousTop == null || deltaY <= 1) return [];
-      historyGlideAnimationsRef.current.get(itemId)?.cancel();
-      const animation = item.animate(
-        [
-          { transform: `translateY(${deltaY}px)` },
-          { transform: 'translateY(0)' }
-        ],
-        { duration: 420, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
-      );
-      historyGlideAnimationsRef.current.set(itemId, animation);
-      return [{ itemId, animation }];
-    });
+    if (
+      previousLayout.contentHeight === contentHeight &&
+      previousLayout.layoutTop === layoutTop &&
+      previousLayout.destinationTop === destinationTop
+    ) return;
 
-    animations.forEach(({ itemId, animation }) => {
-      animation.onfinish = () => {
-        if (historyGlideAnimationsRef.current.get(itemId) === animation) {
-          historyGlideAnimationsRef.current.delete(itemId);
-        }
-      };
-    });
-  }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
+    const activeAnimation = historyGlideAnimationRef.current;
+    const currentTransform = getTranslateY(content);
+    const previousVisualTop = previousLayout.layoutTop + currentTransform;
+    activeAnimation?.cancel();
+    historyGlideAnimationRef.current = null;
+    const startTransform = previousVisualTop - layoutTop;
+    previousHistoryLayoutRef.current = { layoutTop, contentHeight, destinationTop };
+
+    if (
+      settings?.disableAnimations ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+      Math.abs(destinationTransform - startTransform) <= 1
+    ) {
+      content.style.transform = destinationTransform
+        ? `translateY(${destinationTransform}px)`
+        : '';
+      return;
+    }
+
+    const animation = content.animate(
+      [
+        { transform: `translateY(${startTransform}px)` },
+        { transform: `translateY(${destinationTransform}px)` }
+      ],
+      {
+        duration: 420,
+        easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)',
+        fill: 'forwards'
+      }
+    );
+    historyGlideAnimationRef.current = animation;
+    animation.onfinish = () => {
+      if (historyGlideAnimationRef.current !== animation) return;
+      content.style.transform = destinationTransform
+        ? `translateY(${destinationTransform}px)`
+        : '';
+      animation.cancel();
+      historyGlideAnimationRef.current = null;
+    };
+  });
 
   useEffect(() => () => {
     entranceAnimationsRef.current.forEach(animation => animation.cancel());
-    historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
-    historyGlideAnimationsRef.current.clear();
+    historyGlideAnimationRef.current?.cancel();
   }, []);
-
-  useLayoutEffect(() => {
-    const container = chatRef.current;
-    if (!container) return;
-
-    const reduceMotion = settings?.disableAnimations ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const behavior = reduceMotion ? 'auto' : (
-      pendingScrollToLatestRef.current ? pendingScrollBehaviorRef.current : 'smooth'
-    );
-    const shouldFollowPlayback = isPlaying && activeLineIndicesKey;
-    if (!shouldFollowPlayback && !pendingScrollToLatestRef.current) return;
-
-    const frame = window.requestAnimationFrame(() => {
-      const containerRect = container.getBoundingClientRect();
-      const styles = getComputedStyle(container);
-      const visibleTop = containerRect.top + (parseFloat(styles.paddingTop) || 0);
-      const visibleBottom = containerRect.bottom - (parseFloat(styles.paddingBottom) || 0);
-      const hasScrollbar = container.scrollHeight > container.clientHeight + 1;
-      if (hasScrollbar && !scrollbarTookOverRef.current) {
-        scrollbarTookOverRef.current = true;
-        historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
-        historyGlideAnimationsRef.current.clear();
-      }
-      const activeIndices = new Set(activeLineIndicesKey.split('\u0000'));
-      const activeTurn = shouldFollowPlayback
-        ? [...container.querySelectorAll('[data-chat-line-index]')]
-          .filter(turn => activeIndices.has(turn.dataset.chatLineIndex))
-          .pop()
-        : null;
-      const content = container.querySelector('.group-chat-history-content');
-      const latestItem = content?.lastElementChild;
-      const target = pendingScrollToLatestRef.current ? latestItem : activeTurn;
-      if (!target) return;
-
-      const targetRect = target.getBoundingClientRect();
-      let scrollDelta;
-      if (pendingScrollToLatestRef.current) {
-        scrollDelta = targetRect.bottom + 12 - visibleBottom;
-      } else if (targetRect.bottom > visibleBottom) {
-        scrollDelta = targetRect.bottom + 12 - visibleBottom;
-      } else if (targetRect.top < visibleTop) {
-        scrollDelta = targetRect.top - visibleTop - 12;
-      } else scrollDelta = 0;
-      if (scrollDelta && hasScrollbar) {
-        historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
-        historyGlideAnimationsRef.current.clear();
-        container.scrollTo({
-          top: Math.min(
-            Math.max(0, container.scrollTop + scrollDelta),
-            Math.max(0, container.scrollHeight - container.clientHeight)
-          ),
-          behavior
-        });
-      }
-      pendingScrollToLatestRef.current = false;
-      pendingScrollBehaviorRef.current = 'auto';
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [
-    activeLineIndicesKey,
-    chatState.messages.length,
-    chatRef,
-    isPlaying,
-    playbackEnded,
-    pendingScrollBehaviorRef,
-    pendingScrollToLatestRef,
-    settings?.disableAnimations
-  ]);
 };
 
 export default useGroupChatPresentation;

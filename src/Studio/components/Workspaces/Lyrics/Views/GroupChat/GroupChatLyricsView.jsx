@@ -25,8 +25,6 @@ const GroupChatLyricsView = ({
 }) => {
   const activeAvatarSize = settings?.groupChatActiveAvatarSize ?? 5;
   const inactiveAvatarSize = settings?.groupChatInactiveAvatarSize ?? 3.5;
-  const pendingScrollToLatestRef = useRef(false);
-  const pendingScrollBehaviorRef = useRef('auto');
   const chatRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
   const timeline = useMemo(() => buildGroupChatTimeline(
@@ -39,21 +37,15 @@ const GroupChatLyricsView = ({
     timeline,
     isPlayingCurrentSong,
     lyricsPlaybackOffsetSeconds,
-    setExpandedLineIndices,
-    pendingScrollToLatestRef,
-    pendingScrollBehaviorRef
+    setExpandedLineIndices
   });
   const activeLineIndices = playback.activeLineIndices;
   useGroupChatPresentation({
     chatRef,
     activeLineIndices,
     chatState: playback.chatState,
-    playbackEnded: playback.playbackEnded,
-    isPlaying,
     settings,
-    setExpandedLineIndices,
-    pendingScrollToLatestRef,
-    pendingScrollBehaviorRef
+    setExpandedLineIndices
   });
 
   const history = buildGroupChatHistory(playback.chatState.messages);
