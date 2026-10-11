@@ -1,6 +1,7 @@
 /* --- src/components/Topbar.jsx --- */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import PlanetMusicLogo from './PlanetMusicLogo.jsx';
 import './Topbar.css';
 
 const Topbar = ({ 
@@ -68,15 +69,14 @@ const Topbar = ({
 
   return (
     <header className="topbar">
-      {/* Left: Logo Text Only */}
+      {/* Left: Brand wordmark */}
       <div className="topbar-left" onClick={handleHomeClick} style={{ cursor: 'pointer' }}>
-        <div className="logo-area" title="PlanetMusic">
-          <h2
-            className={`logo-text ${isMusicPlaying && albumAccentColor ? 'is-playing' : ''}`}
-            data-logo-text="PlanetMusic"
-            style={isMusicPlaying && albumAccentColor ? { '--logo-art-accent': albumAccentColor } : undefined}
-          >
-            PlanetMusic
+        <div className="logo-area">
+          <h2 className="logo-text" title="PlanetMusic">
+            <PlanetMusicLogo
+              isPlaying={isMusicPlaying && Boolean(albumAccentColor)}
+              albumAccentColor={albumAccentColor}
+            />
           </h2>
         </div>
       </div>
