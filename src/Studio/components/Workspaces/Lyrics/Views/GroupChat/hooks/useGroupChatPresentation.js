@@ -94,12 +94,32 @@ const useGroupChatPresentation = ({
 
     const reduceMotion = settings?.disableAnimations ||
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    container.scrollTo({
-      top: container.scrollHeight - container.clientHeight,
-      behavior: reduceMotion ? 'auto' : 'smooth'
-    });
+    const behavior = reduceMotion ? 'auto' : pendingScrollBehaviorRef.current;
     pendingScrollToLatestRef.current = false;
     pendingScrollBehaviorRef.current = 'auto';
+
+    const frame = window.requestAnimationFrame(() => {
+      const content = container.querySelector('.group-chat-history-content');
+      const latestItem = content?.lastElementChild;
+      if (!latestItem) return;
+
+      const target = latestItem.querySelector('[data-chat-line-index]:last-of-type') || latestItem;
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const bottomPadding = parseFloat(getComputedStyle(container).paddingBottom) || 0;
+      const visibleBottom = containerRect.bottom - bottomPadding;
+      const scrollDelta = targetRect.bottom + 12 - visibleBottom;
+      if (scrollDelta > 0) {
+        container.scrollTo({
+          top: Math.min(
+            container.scrollTop + scrollDelta,
+            container.scrollHeight - container.clientHeight
+          ),
+          behavior
+        });
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [
     chatState.messages.length,
     chatRef,

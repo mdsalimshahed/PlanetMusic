@@ -18,6 +18,13 @@ const GroupChatMessageChain = ({
 }) => {
   const firstLine = group.events[0].line;
   const color = artistByName.get(group.artists[0])?.color || firstLine.color;
+  const isUncredited = group.artists.length === 0;
+  const avatarCount = group.artists.length;
+  const avatarSize = settings?.groupChatBubbleAvatarSize ?? 4.25;
+  const avatarStep = avatarSize * (1 - 12 / 34);
+  const avatarSlotWidth = isUncredited
+    ? 0
+    : avatarSize + avatarStep * (avatarCount - 1);
 
   return (
     <div
@@ -27,14 +34,9 @@ const GroupChatMessageChain = ({
     >
       {group.events.map((event, eventIndex) => {
         const { line } = event;
-        const isUncredited = group.artists.length === 0;
         const lyricLine = line.lyric ||
           liveParsedLyrics[line.sourceIndex ?? line.index] ||
           { text: line.text };
-        const avatarCount = isUncredited ? 0 : group.artists.length;
-        const avatarSize = settings?.groupChatBubbleAvatarSize ?? 4.25;
-        const avatarStep = avatarSize * (1 - 12 / 34);
-        const avatarSlotWidth = isUncredited ? 0 : avatarSize + avatarStep * (avatarCount - 1);
         const bubbleShape = group.events.length === 1
           ? 'single'
           : (eventIndex === group.events.length - 1 ? 'last' : 'middle');
