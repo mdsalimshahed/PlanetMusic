@@ -137,7 +137,6 @@
   display: flex;
   box-sizing: border-box;
   max-height: var(--chat-bubble-max-height, none);
-  overflow-y: auto;
   min-width: 0;
   max-width: 100%;
   width: fit-content;
@@ -149,8 +148,6 @@
   border-radius: 20px 20px 20px 6px;
   background: transparent;
   box-shadow: none;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
 }
 
 .group-chat-debug-view .group-chat-message {
@@ -160,10 +157,6 @@
 
 .group-chat-debug-view .group-chat-typing-footer {
   border-top: 1px dashed #ff4fd8;
-}
-
-.group-chat-message::-webkit-scrollbar {
-  display: none;
 }
 
 .group-chat-debug-view .group-chat-message-avatar {
