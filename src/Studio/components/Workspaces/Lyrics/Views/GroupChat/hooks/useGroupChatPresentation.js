@@ -5,6 +5,7 @@ const useGroupChatPresentation = ({
   activeLineIndices,
   chatState,
   playbackEnded,
+  isPlaying,
   settings,
   setExpandedLineIndices,
   pendingScrollToLatestRef,
@@ -90,39 +91,59 @@ const useGroupChatPresentation = ({
 
   useLayoutEffect(() => {
     const container = chatRef.current;
-    if (!container || !pendingScrollToLatestRef.current) return;
+    if (!container) return;
 
     const reduceMotion = settings?.disableAnimations ||
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const behavior = reduceMotion ? 'auto' : pendingScrollBehaviorRef.current;
-    pendingScrollToLatestRef.current = false;
-    pendingScrollBehaviorRef.current = 'auto';
+    const behavior = reduceMotion ? 'auto' : (
+      pendingScrollToLatestRef.current ? pendingScrollBehaviorRef.current : 'smooth'
+    );
+    const shouldFollowPlayback = isPlaying && activeLineIndicesKey;
+    if (!shouldFollowPlayback && !pendingScrollToLatestRef.current) return;
 
     const frame = window.requestAnimationFrame(() => {
+      const containerRect = container.getBoundingClientRect();
+      const styles = getComputedStyle(container);
+      const visibleTop = containerRect.top + (parseFloat(styles.paddingTop) || 0);
+      const visibleBottom = containerRect.bottom - (parseFloat(styles.paddingBottom) || 0);
+      const activeIndices = new Set(activeLineIndicesKey.split('\u0000'));
+      const activeTurn = shouldFollowPlayback
+        ? [...container.querySelectorAll('[data-chat-line-index]')]
+          .filter(turn => activeIndices.has(turn.dataset.chatLineIndex))
+          .pop()
+        : null;
       const content = container.querySelector('.group-chat-history-content');
       const latestItem = content?.lastElementChild;
-      if (!latestItem) return;
+      const target = activeTurn || (pendingScrollToLatestRef.current
+        ? latestItem?.querySelector('[data-chat-line-index]:last-of-type') || latestItem
+        : null);
+      if (!target) return;
 
-      const target = latestItem.querySelector('[data-chat-line-index]:last-of-type') || latestItem;
-      const containerRect = container.getBoundingClientRect();
       const targetRect = target.getBoundingClientRect();
-      const bottomPadding = parseFloat(getComputedStyle(container).paddingBottom) || 0;
-      const visibleBottom = containerRect.bottom - bottomPadding;
-      const scrollDelta = targetRect.bottom + 12 - visibleBottom;
-      if (scrollDelta > 0) {
+      let scrollDelta = 0;
+      if (targetRect.bottom > visibleBottom) {
+        scrollDelta = targetRect.bottom + 12 - visibleBottom;
+      } else if (targetRect.top < visibleTop) {
+        scrollDelta = targetRect.top - visibleTop - 12;
+      }
+      if (scrollDelta) {
         container.scrollTo({
           top: Math.min(
-            container.scrollTop + scrollDelta,
-            container.scrollHeight - container.clientHeight
+            Math.max(0, container.scrollTop + scrollDelta),
+            Math.max(0, container.scrollHeight - container.clientHeight)
           ),
           behavior
         });
       }
+      pendingScrollToLatestRef.current = false;
+      pendingScrollBehaviorRef.current = 'auto';
     });
     return () => window.cancelAnimationFrame(frame);
   }, [
+    activeLineIndicesKey,
     chatState.messages.length,
     chatRef,
+    isPlaying,
     playbackEnded,
     pendingScrollBehaviorRef,
     pendingScrollToLatestRef,

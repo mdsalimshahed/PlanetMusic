@@ -47,6 +47,7 @@ const GroupChatLyricsView = ({
     activeLineIndices,
     chatState: playback.chatState,
     playbackEnded: playback.playbackEnded,
+    isPlaying,
     settings,
     setExpandedLineIndices,
     pendingScrollToLatestRef,
