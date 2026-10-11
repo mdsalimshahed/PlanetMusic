@@ -10,7 +10,14 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
-export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayingCurrentSong) => {
+export const renderLine = (
+  lineObj,
+  savedNode,
+  isFocused,
+  masterPalette,
+  isPlayingCurrentSong,
+  { excludeAdlibs = false } = {}
+) => {
   const displayLine = {
     ...lineObj,
     text: toSmartPunctuation(lineObj.text),
@@ -45,11 +52,17 @@ export const renderLine = (lineObj, savedNode, isFocused, masterPalette, isPlayi
     hasSpacingText
   };
 
-  if (!isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
+  if (!isFocused && !excludeAdlibs && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
     return <SplitLine {...commonProps} />;
   }
 
-  return <StandardLine {...commonProps} isFocused={isFocused} />;
+  return (
+    <StandardLine
+      {...commonProps}
+      isFocused={isFocused}
+      excludeAdlibs={excludeAdlibs}
+    />
+  );
 };
 
 export const measureFocusedLineLayout = (wrapper) => {

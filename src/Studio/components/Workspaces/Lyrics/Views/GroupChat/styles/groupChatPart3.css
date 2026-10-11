@@ -41,7 +41,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: fit-content;
   min-width: 0;
   max-width: 100%;
   align-self: auto;
@@ -77,70 +77,185 @@
 .group-chat-message-text {
   display: block;
   width: max-content;
-  max-width: var(--chat-text-wrap-width, 60cqi);
+  max-width: none;
   min-width: 0;
   font-size: clamp(16px, 2.2vw, 21px);
   line-height: 1.5;
   word-break: normal;
   overflow-wrap: normal;
+  text-wrap: nowrap;
+  white-space: pre;
+}
+
+.group-chat-message-text.is-wrap-enabled {
+  width: var(--chat-visible-content-width);
+  max-width: min(var(--chat-wrap-width), 100%);
   text-wrap: wrap;
   white-space: pre-wrap;
 }
 
 .group-chat-message-text .primary-text {
   width: max-content !important;
-  max-width: 100% !important;
+  max-width: none !important;
   align-items: start !important;
   text-align: start !important;
-  text-wrap: wrap !important;
+  flex-wrap: nowrap !important;
+  text-wrap: nowrap !important;
+  white-space: pre !important;
 }
 
 .group-chat .group-chat-message-text > div {
   width: max-content !important;
-  max-width: 100% !important;
+  max-width: none !important;
   align-items: start !important;
   text-align: start !important;
-  text-wrap: wrap !important;
+  flex-wrap: nowrap !important;
+  text-wrap: nowrap !important;
+  white-space: pre !important;
 }
 
 .group-chat-message-text .core-chunks {
   width: max-content !important;
-  max-width: 100% !important;
+  max-width: none !important;
   align-items: start !important;
   text-align: start !important;
-  text-wrap: wrap !important;
+  flex-wrap: nowrap !important;
+  text-wrap: nowrap !important;
+  white-space: pre !important;
 }
 
-.group-chat-message-text .lyric-word,
-.group-chat-message-text .lyric-word-group,
-.group-chat-message-text .trans-word-group {
+.group-chat-message-text .inline-cjk-chunk {
+  width: max-content !important;
+  max-width: none !important;
+}
+
+.group-chat-message-text .lyric-word {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+}
+
+.group-chat-message-text .lyric-word-group {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+}
+
+.group-chat-message-text .lyric-word.hyphenated-word,
+.group-chat-message-text .lyric-word-group.hyphenated-word-group {
   white-space: normal !important;
-  overflow-wrap: break-word !important;
+  max-width: 100% !important;
 }
 
-.group-chat-message-text .lyric-word-group,
-.group-chat-message-text .trans-word-group {
-  display: inline !important;
+.group-chat-message-text.is-wrap-enabled .primary-text,
+.group-chat-message-text.is-wrap-enabled > div,
+.group-chat-message-text.is-wrap-enabled .core-chunks,
+.group-chat-message-text.is-wrap-enabled .inline-cjk-chunk {
+  max-width: 100% !important;
+  text-wrap: wrap !important;
+  white-space: normal !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .main-lyrics-layer {
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .lyric-text-span {
+  white-space: normal !important;
+}
+
+.group-chat-message-text .main-lyrics-flow-wrapper {
+  white-space: pre !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .main-lyrics-flow-wrapper {
+  white-space: normal !important;
+}
+
+.group-chat-message-text.is-measuring-glyphs .main-lyrics-flow-wrapper {
+  white-space: pre !important;
+}
+
+.group-chat-message-text .pronunciation-text {
+  white-space: nowrap !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .pronunciation-text {
+  white-space: normal !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .lyric-word.hyphenated-word,
+.group-chat-message-text.is-wrap-enabled .lyric-word-group.hyphenated-word-group {
+  max-width: 100% !important;
+}
+
+.group-chat-message-text.is-measuring-glyphs,
+.group-chat-message-text.is-measuring-glyphs .primary-text,
+.group-chat-message-text.is-measuring-glyphs > div,
+.group-chat-message-text.is-measuring-glyphs .core-chunks,
+.group-chat-message-text.is-measuring-glyphs .inline-cjk-chunk,
+.group-chat-message-text.is-measuring-glyphs .main-lyrics-layer {
+  width: max-content !important;
+  max-width: none !important;
+  flex-wrap: nowrap !important;
+  text-wrap: nowrap !important;
+  white-space: pre !important;
+}
+
+.group-chat-message-text.is-measuring-glyphs .chunk-translation {
+  display: none !important;
+}
+
+.group-chat-message-text.is-measuring-glyphs .pronunciation-text {
+  width: max-content !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+}
+
+.group-chat-message-text.is-measuring-glyphs .lyric-text-span,
+.group-chat-message-text.is-measuring-glyphs .lyric-word,
+.group-chat-message-text.is-measuring-glyphs .lyric-word-group {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+}
+
+.group-chat-message-text.is-measuring-alignment .core-chunks {
+  transform: none !important;
 }
 
 .group-chat-message-text .trans-word {
-  max-width: 100%;
-  white-space: normal !important;
-  overflow-wrap: anywhere !important;
+  max-width: none;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
   word-break: normal !important;
+}
+
+.group-chat-message-text .trans-word-group {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+}
+
+.group-chat-message-text .trans-word-group.hyphenated-word-group {
+  white-space: normal !important;
+  max-width: 100% !important;
 }
 
 .group-chat-message-text .main-lyrics-layer {
   display: inline-flex !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   justify-content: start !important;
   align-items: start !important;
   width: max-content !important;
-  max-width: 100% !important;
+  max-width: none !important;
   box-sizing: border-box !important;
   text-align: start !important;
-  white-space: normal !important;
+  white-space: pre !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
-  text-wrap: wrap !important;
+  text-wrap: nowrap !important;
+}
+
+.group-chat-turn-right .group-chat-message-text .core-chunks {
+  transform: translateX(var(--chat-glyph-offset, 0px));
 }

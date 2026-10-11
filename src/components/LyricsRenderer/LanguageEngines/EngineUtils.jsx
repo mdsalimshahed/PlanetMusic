@@ -103,7 +103,8 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       return { type: 'space', node: <span key={pIdx} style={{ whiteSpace: 'pre' }}>{part}</span> };
     }
 
-    const wordParts = isFocused ? part.split(/(?<=-)/u) : [part];
+    const canWrapHyphenatedWord = (isFocused || (part.match(/-/gu) || []).length > 4);
+    const wordParts = canWrapHyphenatedWord ? part.split(/(?<=-)/u) : [part];
     const nodes = wordParts.map((wordPart, wordIdx) => {
       const tokenIndex = isFocused ? state.index++ : null;
       const punctuationParts = wordPart.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
@@ -140,6 +141,10 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
 
     return { type: 'token', node: isFocused ? (
       <span key={pIdx} className={`trans-word-group${wordParts.length > 1 ? ' hyphenated-word-group' : ''}`}>
+        {nodes}
+      </span>
+    ) : canWrapHyphenatedWord ? (
+      <span key={pIdx} className="trans-word-group hyphenated-word-group">
         {nodes}
       </span>
     ) : nodes[0] };
@@ -232,12 +237,12 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
   const flushWord = () => {
     if (currentWord.length > 0) {
-      const shouldWrap = hyphenCount > 3;
+      const shouldWrap = hyphenCount > 4;
       const wordKey = currentWordIndex;
       words.push(
         <span
           key={`w-${wordKey}`}
-          className="lyric-word"
+          className={`lyric-word${shouldWrap ? ' hyphenated-word' : ''}`}
           style={
             shouldWrap
               ? {
@@ -301,8 +306,12 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
 
       if (previousWord && punctuationWord) {
         if (space) words.splice(previousIndex + 1, 1);
+        const isHyphenatedWord = previousWord.props?.className?.includes('hyphenated-word');
         words[previousIndex] = (
-          <span key={`wg-${i}`} className="lyric-word-group">
+          <span
+            key={`wg-${i}`}
+            className={`lyric-word-group${isHyphenatedWord ? ' hyphenated-word-group' : ''}`}
+          >
             {previousWord}
             {space}
             {punctuationWord}

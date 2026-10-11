@@ -26,24 +26,32 @@
   margin-top: 0;
   margin-bottom: 6px;
   padding: 0 8px;
-  white-space: normal;
+  white-space: nowrap;
   word-break: normal;
   overflow-wrap: normal;
-  text-wrap: balance;
+  text-wrap: nowrap;
   text-align: center !important;
 }
 
 .group-chat .group-chat-message-text .chunk-translation .trans-word {
   text-align: center !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
   word-break: normal !important;
 }
 
 .group-chat .group-chat-message-text .chunk-translation .trans-word-group {
-  display: inline !important;
-  white-space: normal;
-  max-width: 100%;
+  white-space: nowrap !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .chunk-translation {
+  max-width: 100% !important;
+  white-space: normal !important;
+  text-wrap: balance !important;
+}
+
+.group-chat-message-text.is-wrap-enabled .chunk-translation .trans-word-group.hyphenated-word-group {
+  white-space: normal !important;
 }
 
 .group-chat .group-chat-message-text .chunk-translation.focused-translation {

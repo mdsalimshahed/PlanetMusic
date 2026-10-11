@@ -12,12 +12,17 @@ const StandardLine = ({
   lang,
   translation,
   pronunciation,
-  hasSpacingText
+  hasSpacingText,
+  excludeAdlibs = false
 }) => {
   const isRTL = isRTLLanguage(lineObj.text || '');
 
   let displayChars = chars;
-  if (isFocused && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
+  if (
+    (isFocused || excludeAdlibs) &&
+    savedNode?.isSplit &&
+    savedNode?.adlibs?.length > 0
+  ) {
     displayChars = chars.filter(c => !savedNode.adlibs.some(a => c.cpStart >= a.charStart && c.cpStart < a.charEnd));
   }
 

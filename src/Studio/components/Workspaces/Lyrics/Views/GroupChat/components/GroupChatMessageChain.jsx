@@ -99,6 +99,7 @@ const GroupChatMessageChain = ({
                     savedNode={line.savedNode}
                     masterPalette={masterPalette}
                     isPlayingCurrentSong={isPlayingCurrentSong}
+                    excludeAdlibs={!line.isAdlib}
                   />
                   <time>{getClockTime(event.time, playbackTime)}</time>
                 </button>
