@@ -13,6 +13,9 @@ const useGroupChatPresentation = ({
 }) => {
   const entranceAnimationsRef = useRef([]);
   const seenMessageLineIdsRef = useRef(null);
+  const previousHistoryItemTopsRef = useRef(null);
+  const historyGlideAnimationsRef = useRef(new Map());
+  const scrollbarTookOverRef = useRef(false);
   const activeLineIndicesKey = [...activeLineIndices].map(String).join('\u0000');
   const activeLineIndicesRef = useRef(new Set());
 
@@ -85,8 +88,62 @@ const useGroupChatPresentation = ({
     });
   }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
 
+  useLayoutEffect(() => {
+    const container = chatRef.current;
+    const content = container?.querySelector('.group-chat-history-content');
+    const items = Array.from(content?.querySelectorAll(':scope > .group-chat-history-item') || []);
+    const currentTops = new Map(items.map(item => [
+      item.dataset.historyItemId,
+      item.offsetTop
+    ]));
+    const previousTops = previousHistoryItemTopsRef.current;
+    previousHistoryItemTopsRef.current = currentTops;
+    if (!container) return;
+
+    if (
+      !previousTops ||
+      settings?.disableAnimations ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) return;
+
+    if (container.scrollHeight > container.clientHeight + 1) {
+      scrollbarTookOverRef.current = true;
+      historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
+      historyGlideAnimationsRef.current.clear();
+      return;
+    }
+
+    if (scrollbarTookOverRef.current) return;
+    const animations = items.flatMap(item => {
+      const itemId = item.dataset.historyItemId;
+      const previousTop = previousTops.get(itemId);
+      const deltaY = previousTop - currentTops.get(itemId);
+      if (previousTop == null || deltaY <= 1) return [];
+      historyGlideAnimationsRef.current.get(itemId)?.cancel();
+      const animation = item.animate(
+        [
+          { transform: `translateY(${deltaY}px)` },
+          { transform: 'translateY(0)' }
+        ],
+        { duration: 420, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
+      );
+      historyGlideAnimationsRef.current.set(itemId, animation);
+      return [{ itemId, animation }];
+    });
+
+    animations.forEach(({ itemId, animation }) => {
+      animation.onfinish = () => {
+        if (historyGlideAnimationsRef.current.get(itemId) === animation) {
+          historyGlideAnimationsRef.current.delete(itemId);
+        }
+      };
+    });
+  }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
+
   useEffect(() => () => {
     entranceAnimationsRef.current.forEach(animation => animation.cancel());
+    historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
+    historyGlideAnimationsRef.current.clear();
   }, []);
 
   useLayoutEffect(() => {
@@ -106,6 +163,12 @@ const useGroupChatPresentation = ({
       const styles = getComputedStyle(container);
       const visibleTop = containerRect.top + (parseFloat(styles.paddingTop) || 0);
       const visibleBottom = containerRect.bottom - (parseFloat(styles.paddingBottom) || 0);
+      const hasScrollbar = container.scrollHeight > container.clientHeight + 1;
+      if (hasScrollbar && !scrollbarTookOverRef.current) {
+        scrollbarTookOverRef.current = true;
+        historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
+        historyGlideAnimationsRef.current.clear();
+      }
       const activeIndices = new Set(activeLineIndicesKey.split('\u0000'));
       const activeTurn = shouldFollowPlayback
         ? [...container.querySelectorAll('[data-chat-line-index]')]
@@ -114,19 +177,21 @@ const useGroupChatPresentation = ({
         : null;
       const content = container.querySelector('.group-chat-history-content');
       const latestItem = content?.lastElementChild;
-      const target = activeTurn || (pendingScrollToLatestRef.current
-        ? latestItem?.querySelector('[data-chat-line-index]:last-of-type') || latestItem
-        : null);
+      const target = pendingScrollToLatestRef.current ? latestItem : activeTurn;
       if (!target) return;
 
       const targetRect = target.getBoundingClientRect();
-      let scrollDelta = 0;
-      if (targetRect.bottom > visibleBottom) {
+      let scrollDelta;
+      if (pendingScrollToLatestRef.current) {
+        scrollDelta = targetRect.bottom + 12 - visibleBottom;
+      } else if (targetRect.bottom > visibleBottom) {
         scrollDelta = targetRect.bottom + 12 - visibleBottom;
       } else if (targetRect.top < visibleTop) {
         scrollDelta = targetRect.top - visibleTop - 12;
-      }
-      if (scrollDelta) {
+      } else scrollDelta = 0;
+      if (scrollDelta && hasScrollbar) {
+        historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
+        historyGlideAnimationsRef.current.clear();
         container.scrollTo({
           top: Math.min(
             Math.max(0, container.scrollTop + scrollDelta),

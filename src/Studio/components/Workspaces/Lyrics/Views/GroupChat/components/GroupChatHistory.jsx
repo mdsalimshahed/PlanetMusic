@@ -12,23 +12,30 @@ const GroupChatHistory = ({
         const { event } = item;
         return (
           <div
-            className="group-chat-system-message"
-            key={`${item.type}-${event.artist.name}-${event.time}-${itemIndex}`}
-            role="status"
+            className="group-chat-history-item"
+            key={`${item.type}-${event.artist.name}-${event.time}`}
+            data-history-item-id={`${item.type}-${event.artist.name}-${event.time}`}
           >
-            <span>{event.artist.name} {item.type === 'join' ? 'joined the chat' : 'left the chat'}</span>
-            <time>{getClockTime(event.time, playbackTime)}</time>
+            <div className="group-chat-system-message" role="status">
+              <span>{event.artist.name} {item.type === 'join' ? 'joined the chat' : 'left the chat'}</span>
+              <time>{getClockTime(event.time, playbackTime)}</time>
+            </div>
           </div>
         );
       }
 
       return (
-        <GroupChatMessageChain
-          {...messageProps}
-          group={item}
-          itemIndex={itemIndex}
-          key={`chain-${item.events[0].line.index}-${itemIndex}`}
-        />
+        <div
+          className="group-chat-history-item"
+          key={`chain-${item.events[0].line.index}`}
+          data-history-item-id={`chain-${item.events[0].line.index}`}
+        >
+          <GroupChatMessageChain
+            {...messageProps}
+            group={item}
+            itemIndex={itemIndex}
+          />
+        </div>
       );
     })}
   </div>
