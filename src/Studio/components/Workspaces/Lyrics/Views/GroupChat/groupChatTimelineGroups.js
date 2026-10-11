@@ -48,10 +48,8 @@ export const groupConsecutiveMessages = events => {
       side = mainSide
         ? (mainSide === 'left' ? 'right' : 'left')
         : (stableArtistSide === 'left' ? 'right' : 'left');
-    } else if (previousGroup?.artistsKey === artistsKey && !previousEvent?.line.isAdlib) {
-      previousGroup.events.push(event);
-      mainSideByLineIndex.set(event.line.index, previousGroup.side);
-      return;
+    } else if (previousGroup) {
+      side = previousGroup.side === 'left' ? 'right' : 'left';
     } else {
       side = sideByArtistKey.get(artistsKey);
       if (!side) {

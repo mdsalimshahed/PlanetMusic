@@ -51,7 +51,7 @@ test('groups consecutive lyric lines from the same artist into one chat turn', (
   assert.equal(repeatedGroups[0].events[0].line.savedNode.pronunciation, 'waan');
 });
 
-test('keeps each artist group on a stable side and treats reordered duos as the same group', () => {
+test('alternates sides when artists change and treats reordered duos as the same group', () => {
   const chat = buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'Ari one' },
