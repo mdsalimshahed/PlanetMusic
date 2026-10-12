@@ -208,10 +208,7 @@ const useGroupChatPresentation = ({
     const newTurns = turns.filter(turn =>
       !previousIds?.has(turn.dataset.chatLineIndex)
     );
-    if (
-      settings?.disableAnimations ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    ) return undefined;
+    if (settings?.disableAnimations) return undefined;
 
     const newAnimations = newTurns.flatMap((turn, index) => {
       const bubble = turn.querySelector('.group-chat-message');
