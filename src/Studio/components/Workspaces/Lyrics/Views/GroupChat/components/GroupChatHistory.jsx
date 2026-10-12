@@ -21,6 +21,7 @@ const GroupChatHistory = ({
     const container = containerRef.current;
     if (!container || typeof IntersectionObserver === 'undefined') return undefined;
     const compactionTimers = compactionTimersRef.current;
+    const compactionBuffer = container.clientHeight * 0.3;
     const heightObserver = typeof ResizeObserver === 'undefined'
       ? null
       : new ResizeObserver(entries => {
@@ -64,7 +65,7 @@ const GroupChatHistory = ({
           compactionTimers.delete(id);
           const itemRect = target.getBoundingClientRect();
           const containerRect = container.getBoundingClientRect();
-          const buffer = 240;
+          const buffer = compactionBuffer;
           const remainsOutsideBuffer = itemRect.bottom <= containerRect.top - buffer ||
             itemRect.top >= containerRect.bottom + buffer;
           if (!remainsOutsideBuffer) return;
@@ -82,7 +83,11 @@ const GroupChatHistory = ({
         }, 600);
         compactionTimers.set(id, timer);
       });
-    }, { root: container, rootMargin: '240px 0px', threshold: 0.01 });
+    }, {
+      root: container,
+      rootMargin: `${compactionBuffer}px 0px`,
+      threshold: 0.01
+    });
 
     const observeHistoryItems = node => {
       if (!(node instanceof Element)) return;

@@ -24,7 +24,7 @@ const GroupChatMessageChain = ({
   const avatarStep = avatarSize * (1 - 12 / 34);
   const avatarSlotWidth = isUncredited
     ? 0
-    : avatarSize + avatarStep * (avatarCount - 1);
+    : `calc(${avatarSize + avatarStep * (avatarCount - 1)} * var(--chat-vh-unit, 1vh))`;
 
   return (
     <div
@@ -48,7 +48,7 @@ const GroupChatMessageChain = ({
             key={`turn-${line.index}`}
             data-chat-line-index={line.index}
             style={{
-              '--avatar-slot-width': `${avatarSlotWidth}vh`
+              '--avatar-slot-width': isUncredited ? '0' : avatarSlotWidth
             }}
           >
             <span
@@ -56,7 +56,7 @@ const GroupChatMessageChain = ({
               aria-hidden="true"
               style={{
                 '--avatar-count': avatarCount,
-                '--avatar-slot-width': `${avatarSlotWidth}vh`
+                '--avatar-slot-width': isUncredited ? '0' : avatarSlotWidth
               }}
             >
               {isLastMessage && (

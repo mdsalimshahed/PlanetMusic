@@ -24,19 +24,22 @@
   min-height: 0;
   flex-direction: column;
   container-type: inline-size;
-  transform-origin: top left;
 }
 
 .group-chat-header {
   z-index: 1;
   display: flex;
-  flex: 0 0 calc(var(--chat-heading-active-avatar-size, 5vh) + 2.1vh);
+  flex: 0 0 calc(var(--chat-heading-active-avatar-size) + 2.1 * var(--chat-vh-unit));
   align-items: center;
-  gap: 1.2vw;
-  height: calc(var(--chat-heading-active-avatar-size, 5vh) + 2.1vh);
+  gap: calc(var(--chat-horizontal-unit) * 1.2);
+  height: calc(var(--chat-heading-active-avatar-size) + 2.1 * var(--chat-vh-unit));
   min-height: 0;
-  padding: 1vh clamp(1.4vw, 3vw, 2.8vw);
-  border-bottom: 0.1vh solid rgba(255, 255, 255, 0.08);
+  padding: calc(1 * var(--chat-vh-unit)) clamp(
+    calc(var(--chat-horizontal-unit) * 1.4),
+    calc(var(--chat-horizontal-unit) * 3),
+    calc(var(--chat-horizontal-unit) * 2.8)
+  );
+  border-bottom: calc(0.1 * var(--chat-vh-unit)) solid rgba(255, 255, 255, 0.08);
   background: transparent;
 }
 
@@ -46,7 +49,7 @@
   flex: 1;
   align-items: center;
   justify-content: flex-start;
-  gap: 1.2vw;
+  gap: calc(var(--chat-horizontal-unit) * 1.2);
 }
 
 .group-chat-participants {
@@ -56,25 +59,25 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: flex-start;
-  gap: 0.6vh 1.2vw;
+  gap: calc(0.6 * var(--chat-vh-unit)) calc(var(--chat-horizontal-unit) * 1.2);
   color: rgba(226, 235, 237, 0.72);
-  font-size: 1.1vh;
+  font-size: calc(1.1 * var(--chat-vh-unit));
 }
 
 .group-chat-participant {
   position: relative;
   display: block;
-  width: var(--chat-heading-active-avatar-size, 5vh);
-  height: var(--chat-heading-active-avatar-size, 5vh);
-  flex: 0 0 var(--chat-heading-active-avatar-size, 5vh);
+  width: var(--chat-heading-active-avatar-size);
+  height: var(--chat-heading-active-avatar-size);
+  flex: 0 0 var(--chat-heading-active-avatar-size);
   transition: opacity 300ms ease;
   opacity: 0;
 }
 
 .group-chat-participant.is-inactive {
   margin-inline: calc(
-    (var(--chat-heading-inactive-avatar-size, 3.5vh) -
-      var(--chat-heading-active-avatar-size, 5vh)) / 2
+    (var(--chat-heading-inactive-avatar-size) -
+      var(--chat-heading-active-avatar-size)) / 2
   );
 }
 
@@ -101,7 +104,7 @@
   place-items: center;
   overflow: hidden;
   border: 0;
-  outline: var(--chat-avatar-ring-thickness, 0.12dvh) solid
+  outline: var(--chat-avatar-ring-thickness) solid
     color-mix(in srgb, var(--artist-color, #87909e), transparent 35%);
   border-radius: 50%;
   background: #252a33;
@@ -117,21 +120,21 @@
 }
 
 .group-chat-participant .group-chat-avatar {
-  width: var(--chat-heading-active-avatar-size, 5vh);
-  height: var(--chat-heading-active-avatar-size, 5vh);
-  min-width: var(--chat-heading-active-avatar-size, 5vh);
-  min-height: var(--chat-heading-active-avatar-size, 5vh);
-  max-width: var(--chat-heading-active-avatar-size, 5vh);
-  max-height: var(--chat-heading-active-avatar-size, 5vh);
-  flex: 0 0 var(--chat-heading-active-avatar-size, 5vh);
+  width: var(--chat-heading-active-avatar-size);
+  height: var(--chat-heading-active-avatar-size);
+  min-width: var(--chat-heading-active-avatar-size);
+  min-height: var(--chat-heading-active-avatar-size);
+  max-width: var(--chat-heading-active-avatar-size);
+  max-height: var(--chat-heading-active-avatar-size);
+  flex: 0 0 var(--chat-heading-active-avatar-size);
   border-radius: 50%;
-  font-size: calc(var(--chat-heading-inactive-avatar-size, 3.5dvh) * 0.3);
+  font-size: calc(var(--chat-heading-inactive-avatar-size) * 0.3);
   transform: scale(var(--chat-heading-inactive-avatar-scale, 0.7));
   transform-origin: center bottom;
 }
 
 .group-chat-participant.is-active .group-chat-avatar {
-  font-size: calc(var(--chat-heading-active-avatar-size, 5dvh) * 0.3);
+  font-size: calc(var(--chat-heading-active-avatar-size) * 0.3);
   transform: scale(1);
 }
 
@@ -169,7 +172,11 @@
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 2vh clamp(1.4vw, 4vw, 4vw) 0.8vh;
+  padding: calc(2 * var(--chat-vh-unit)) clamp(
+    calc(var(--chat-horizontal-unit) * 1.4),
+    calc(var(--chat-horizontal-unit) * 4),
+    calc(var(--chat-horizontal-unit) * 4)
+  ) calc(0.8 * var(--chat-vh-unit));
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -185,6 +192,6 @@
   min-height: min-content;
   flex-direction: column;
   align-items: stretch;
-  gap: 1.2vh;
+  gap: calc(1.2 * var(--chat-vh-unit));
   margin-top: auto;
 }

@@ -9,7 +9,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     <SettingsSubheading seed="group-chat-heading">Heading Avatars</SettingsSubheading>
     <SettingSlider
       label="Active Artist Avatar Size"
-      description="Sets the size of active heading avatars relative to the viewport height."
+      description="Sets active heading avatar size relative to the responsive chat design height."
       name="groupChatActiveAvatarSize"
       value={settings.groupChatActiveAvatarSize ?? 5}
       min={2}
@@ -21,7 +21,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Inactive Artist Avatar Size"
-      description="Sets the size of inactive heading avatars relative to the viewport height."
+      description="Sets inactive heading avatar size relative to the responsive chat design height."
       name="groupChatInactiveAvatarSize"
       value={settings.groupChatInactiveAvatarSize ?? 3.5}
       min={1.5}
@@ -35,7 +35,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     <SettingsSubheading seed="group-chat-messages">Messages & Notifications</SettingsSubheading>
     <SettingSlider
       label="Chat Bubble Avatar Size"
-      description="Sets the size of bubble avatars relative to the viewport height."
+      description="Sets bubble avatar size relative to the responsive chat design height."
       name="groupChatBubbleAvatarSize"
       value={settings.groupChatBubbleAvatarSize ?? 4.25}
       min={2}
@@ -47,7 +47,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Chat Bubble Lyric Font Size"
-      description="Sets lyric text size relative to the viewport height."
+      description="Sets lyric text size relative to the responsive chat design height."
       name="groupChatLyricFontSize"
       value={settings.groupChatLyricFontSize ?? 2.2}
       min={1}
@@ -72,7 +72,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     <SettingsSubheading seed="group-chat-typing">Typing Indicator</SettingsSubheading>
     <SettingSlider
       label="Typing Indicator Text Size"
-      description="Sets typing-indicator text size relative to the viewport height."
+      description="Sets typing-indicator text size relative to the responsive chat design height."
       name="groupChatTypingFontSize"
       value={settings.groupChatTypingFontSize ?? 1.1}
       min={0.7}
@@ -84,7 +84,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Typing Indicator Avatar Size"
-      description="Sets typing-indicator avatar size relative to the viewport height. The footer grows to fit."
+      description="Sets typing-indicator avatar size relative to the responsive chat design height. The footer grows to fit."
       name="groupChatTypingAvatarSize"
       value={settings.groupChatTypingAvatarSize ?? 2.4}
       min={1.2}
@@ -96,7 +96,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Artist Name Size"
-      description="Sets artist-name text size relative to the viewport height."
+      description="Sets artist-name text size relative to the responsive chat design height."
       name="groupChatArtistNameSize"
       value={settings.groupChatArtistNameSize ?? 1.25}
       min={0.7}
@@ -108,7 +108,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Timestamp Size"
-      description="Sets timestamp text size relative to the viewport height."
+      description="Sets timestamp text size relative to the responsive chat design height."
       name="groupChatTimestampSize"
       value={settings.groupChatTimestampSize ?? 1.125}
       min={0.6}
@@ -120,7 +120,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Notification Size"
-      description="Sets notification text size relative to the viewport height."
+      description="Sets notification text size relative to the responsive chat design height."
       name="groupChatNotificationSize"
       value={settings.groupChatNotificationSize ?? 1.375}
       min={0.7}
@@ -141,7 +141,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Color Ring Thickness"
-      description="Sets ring thickness relative to the viewport height."
+      description="Sets ring thickness relative to the responsive chat design height."
       name="groupChatAvatarRingThickness"
       value={settings.groupChatAvatarRingThickness ?? 0.12}
       min={0.05}

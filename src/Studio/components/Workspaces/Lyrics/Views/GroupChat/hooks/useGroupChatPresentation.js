@@ -213,9 +213,13 @@ const useGroupChatPresentation = ({
     const newAnimations = newTurns.flatMap((turn, index) => {
       const bubble = turn.querySelector('.group-chat-message');
       if (!bubble) return [];
+      const travel = parseFloat(
+        getComputedStyle(bubble.closest('.group-chat'))
+          .getPropertyValue('--chat-vh-unit')
+      );
       return [bubble.animate(
         [
-          { opacity: 0, transform: 'translate3d(0, 10px, 0)' },
+          { opacity: 0, transform: `translate3d(0, ${travel}px, 0)` },
           { opacity: 1, transform: 'translate3d(0, 0, 0)' }
         ],
         {

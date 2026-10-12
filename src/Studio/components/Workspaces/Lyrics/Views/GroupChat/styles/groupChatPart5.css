@@ -14,7 +14,7 @@
 }
 
 @keyframes group-chat-notification-in {
-  from { opacity: 0; transform: translate3d(0, 0.5vh, 0); }
+  from { opacity: 0; transform: translate3d(0, calc(0.5 * var(--chat-vh-unit)), 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
@@ -24,8 +24,8 @@
     flex: 0 0 auto;
     flex-wrap: nowrap;
     width: 100%;
-    height: calc(var(--chat-heading-active-avatar-size, 5vh) + 1.2vh);
-    padding: 0.4vh;
+    height: calc(var(--chat-heading-active-avatar-size) + 1.2 * var(--chat-vh-unit));
+    padding: calc(0.4 * var(--chat-vh-unit));
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;

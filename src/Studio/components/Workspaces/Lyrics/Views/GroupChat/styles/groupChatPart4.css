@@ -24,8 +24,8 @@
   box-sizing: border-box;
   display: block !important;
   margin-top: 0;
-  margin-bottom: 6px;
-  padding: 0 8px;
+  margin-bottom: calc(0.6 * var(--chat-vh-unit));
+  padding: 0 calc(0.8 * var(--chat-vh-unit));
   white-space: nowrap;
   word-break: normal;
   overflow-wrap: normal;
@@ -91,9 +91,9 @@
   position: static;
   align-self: flex-end;
   display: block;
-  margin-top: 0.3vh;
+  margin-top: calc(0.3 * var(--chat-vh-unit));
   color: rgba(226, 235, 237, 0.46);
-  font-size: var(--chat-timestamp-size, 1.125vh);
+  font-size: var(--chat-timestamp-size);
   text-align: right;
   white-space: nowrap;
 }

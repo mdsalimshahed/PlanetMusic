@@ -59,26 +59,36 @@ const GroupChatLyricsView = ({
     if (!chat || !layout) return undefined;
 
     const updateScale = () => {
-      const { width, height } = chat.getBoundingClientRect();
+      const bounds = chat.getBoundingClientRect();
+      const width = Math.max(
+        0,
+        Math.min(bounds.right, window.innerWidth) - Math.max(bounds.left, 0)
+      );
       const splitRatio = Number.parseFloat(
         getComputedStyle(chat).getPropertyValue('--dyn-modal-split')
       );
       const leftSplit = Number.isFinite(splitRatio) ? splitRatio : 50;
-      const desktopAspectRatio = (16 / 9) * ((100 - leftSplit) / 100);
-      const isMobileCanvas = window.matchMedia('(max-width: 900px)').matches;
-      const scale = isMobileCanvas && width && height
-        ? Math.min(1, width / (height * desktopAspectRatio))
-        : 1;
+      const rightSplit = 100 - leftSplit;
+      const designAspectRatio = (16 / 9) * (rightSplit / 100);
+      const designHeight = width / designAspectRatio;
+      const verticalUnit = designHeight / 100;
+      const horizontalUnit = verticalUnit * (16 / 9);
 
-      layout.style.width = `${100 / scale}%`;
-      layout.style.height = `${100 / scale}%`;
-      layout.style.transform = `scale(${scale})`;
+      layout.style.width = '100%';
+      layout.style.height = '100%';
+      layout.style.transform = 'none';
+      chat.style.setProperty('--chat-vh-unit', `${verticalUnit}px`);
+      chat.style.setProperty('--chat-horizontal-unit', `${horizontalUnit}px`);
     };
 
     const observer = new ResizeObserver(updateScale);
     observer.observe(chat);
+    window.addEventListener('resize', updateScale);
     updateScale();
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateScale);
+    };
   }, []);
 
   const history = buildGroupChatHistory(playback.chatState.messages);
@@ -116,19 +126,19 @@ const GroupChatLyricsView = ({
       className={`group-chat${showDebug ? ' group-chat-debug-view' : ''}${settings?.disableAnimations ? ' group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
       style={{
-        '--chat-heading-active-avatar-size': `${activeAvatarSize}dvh`,
-        '--chat-heading-inactive-avatar-size': `${inactiveAvatarSize}dvh`,
+        '--chat-heading-active-avatar-size': `calc(${activeAvatarSize} * var(--chat-vh-unit, 1vh))`,
+        '--chat-heading-inactive-avatar-size': `calc(${inactiveAvatarSize} * var(--chat-vh-unit, 1vh))`,
         '--chat-heading-inactive-avatar-scale': inactiveAvatarSize / activeAvatarSize,
         '--chat-line-wrap-width': `${lineWrapWidth}cqw`,
-        '--chat-bubble-horizontal-padding': '1.1vw',
-        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}vh`,
-        '--chat-lyric-font-size': `${settings?.groupChatLyricFontSize ?? 2.2}vh`,
-        '--chat-typing-font-size': `${settings?.groupChatTypingFontSize ?? 1.1}vh`,
-        '--chat-typing-avatar-size': `${settings?.groupChatTypingAvatarSize ?? 2.4}vh`,
-        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}vh`,
-        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}vh`,
-        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}vh`,
-        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}vh`
+        '--chat-bubble-horizontal-padding': 'calc(var(--chat-horizontal-unit) * 1.1)',
+        '--chat-bubble-avatar-size': `calc(${settings?.groupChatBubbleAvatarSize ?? 4.25} * var(--chat-vh-unit, 1vh))`,
+        '--chat-lyric-font-size': `calc(${settings?.groupChatLyricFontSize ?? 2.2} * var(--chat-vh-unit, 1vh))`,
+        '--chat-typing-font-size': `calc(${settings?.groupChatTypingFontSize ?? 1.1} * var(--chat-vh-unit, 1vh))`,
+        '--chat-typing-avatar-size': `calc(${settings?.groupChatTypingAvatarSize ?? 2.4} * var(--chat-vh-unit, 1vh))`,
+        '--chat-artist-name-size': `calc(${settings?.groupChatArtistNameSize ?? 1.25} * var(--chat-vh-unit, 1vh))`,
+        '--chat-timestamp-size': `calc(${settings?.groupChatTimestampSize ?? 1.125} * var(--chat-vh-unit, 1vh))`,
+        '--chat-notification-size': `calc(${settings?.groupChatNotificationSize ?? 1.375} * var(--chat-vh-unit, 1vh))`,
+        '--chat-avatar-ring-thickness': `calc(${settings?.groupChatAvatarRingThickness ?? 0.12} * var(--chat-vh-unit, 1vh))`
       }}
       data-avatar-ring={settings?.groupChatAvatarRingEnabled !== false}
     >
