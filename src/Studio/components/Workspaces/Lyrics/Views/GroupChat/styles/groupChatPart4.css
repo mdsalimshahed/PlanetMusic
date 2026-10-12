@@ -145,6 +145,7 @@
 }
 
 .group-chat-typing-names {
+  position: relative;
   display: block;
   flex: 1 1 0;
   min-width: 0;
@@ -169,7 +170,6 @@
   word-break: normal;
   overflow-wrap: normal;
   line-break: normal;
-  animation: group-chat-typing-artist-in 180ms cubic-bezier(0.22, 0.8, 0.2, 1) both;
 }
 
 .group-chat-typing-word {
@@ -186,5 +186,9 @@
 }
 
 .group-chat-typing-name.is-exiting {
-  animation: group-chat-typing-artist-out 180ms cubic-bezier(0.22, 0.8, 0.2, 1) both;
+  position: absolute;
+  max-width: none;
+  margin: 0;
+  z-index: 0;
+  pointer-events: none;
 }
