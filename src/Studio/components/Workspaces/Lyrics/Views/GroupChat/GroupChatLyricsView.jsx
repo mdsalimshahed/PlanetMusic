@@ -25,6 +25,7 @@ const GroupChatLyricsView = ({
 }) => {
   const activeAvatarSize = settings?.groupChatActiveAvatarSize ?? 5;
   const inactiveAvatarSize = settings?.groupChatInactiveAvatarSize ?? 3.5;
+  const lineWrapWidth = settings?.groupChatLineWrapWidth ?? 60;
   const pendingScrollToLatestRef = useRef(false);
   const chatRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
@@ -86,14 +87,19 @@ const GroupChatLyricsView = ({
       className={`group-chat${showDebug ? ' group-chat-debug-view' : ''}${settings?.disableAnimations ? ' group-chat-no-motion' : ''}`}
       aria-label="Lyrics group chat"
       style={{
-        '--chat-heading-active-avatar-size': `${settings?.groupChatActiveAvatarSize ?? 5}dvh`,
+        '--chat-heading-active-avatar-size': `${activeAvatarSize}dvh`,
         '--chat-heading-inactive-avatar-size': `${inactiveAvatarSize}dvh`,
         '--chat-heading-inactive-avatar-scale': inactiveAvatarSize / activeAvatarSize,
-        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}dvh`,
-        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}dvh`,
-        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}dvh`,
-        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}dvh`,
-        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}dvh`
+        '--chat-line-wrap-width': `${lineWrapWidth}cqw`,
+        '--chat-bubble-horizontal-padding': '1.1vw',
+        '--chat-bubble-avatar-size': `${settings?.groupChatBubbleAvatarSize ?? 4.25}vh`,
+        '--chat-lyric-font-size': `${settings?.groupChatLyricFontSize ?? 2.2}vh`,
+        '--chat-typing-font-size': `${settings?.groupChatTypingFontSize ?? 1.1}vh`,
+        '--chat-typing-avatar-size': `${settings?.groupChatTypingAvatarSize ?? 2.4}vh`,
+        '--chat-artist-name-size': `${settings?.groupChatArtistNameSize ?? 1.25}vh`,
+        '--chat-timestamp-size': `${settings?.groupChatTimestampSize ?? 1.125}vh`,
+        '--chat-notification-size': `${settings?.groupChatNotificationSize ?? 1.375}vh`,
+        '--chat-avatar-ring-thickness': `${settings?.groupChatAvatarRingThickness ?? 0.12}vh`
       }}
       data-avatar-ring={settings?.groupChatAvatarRingEnabled !== false}
     >
@@ -119,6 +125,7 @@ const GroupChatLyricsView = ({
             history={history}
             playbackTime={playback.playbackTime}
             messageProps={messageProps}
+            containerRef={chatRef}
           />
         </div>
       </div>

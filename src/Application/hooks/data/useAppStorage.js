@@ -48,6 +48,10 @@ export const useAppStorage = (urlSearchQuery) => {
       else if (parsed.groupChatInactiveAvatarSize > 7) parsed.groupChatInactiveAvatarSize /= 8;
       if (parsed.groupChatBubbleAvatarSize === undefined) parsed.groupChatBubbleAvatarSize = 4.25;
       else if (parsed.groupChatBubbleAvatarSize > 9) parsed.groupChatBubbleAvatarSize /= 8;
+      if (parsed.groupChatLyricFontSize === undefined) parsed.groupChatLyricFontSize = 2.2;
+      if (parsed.groupChatLineWrapWidth === undefined) parsed.groupChatLineWrapWidth = 60;
+      if (parsed.groupChatTypingFontSize === undefined) parsed.groupChatTypingFontSize = 1.1;
+      if (parsed.groupChatTypingAvatarSize === undefined) parsed.groupChatTypingAvatarSize = 2.4;
       if (parsed.groupChatArtistNameSize === undefined) parsed.groupChatArtistNameSize = 1.25;
       else if (parsed.groupChatArtistNameSize > 3) parsed.groupChatArtistNameSize /= 8;
       if (parsed.groupChatTimestampSize === undefined) parsed.groupChatTimestampSize = 1.125;
@@ -95,6 +99,10 @@ export const useAppStorage = (urlSearchQuery) => {
       groupChatActiveAvatarSize: 5,
       groupChatInactiveAvatarSize: 3.5,
       groupChatBubbleAvatarSize: 4.25,
+      groupChatLyricFontSize: 2.2,
+      groupChatLineWrapWidth: 60,
+      groupChatTypingFontSize: 1.1,
+      groupChatTypingAvatarSize: 2.4,
       groupChatArtistNameSize: 1.25,
       groupChatTimestampSize: 1.125,
       groupChatNotificationSize: 1.375,

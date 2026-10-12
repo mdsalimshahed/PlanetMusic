@@ -20,6 +20,12 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
       'cosmosSplitRatio', 'liveSyncLineGap', 'liveSyncFontSize', 'focusedSyncFontSize', 'focusedAdlibFontSize',
       'artistNameFontSize', 'bgPreemptionTime', 'artistTransitionTime', 'bgImageOpacity',
       'modalSplitRatio', 'modalPaddingY', 'modalFontSize', 'eqFadeOutTime',
+      'groupChatActiveAvatarSize', 'groupChatInactiveAvatarSize',
+      'groupChatBubbleAvatarSize', 'groupChatArtistNameSize',
+      'groupChatTimestampSize', 'groupChatNotificationSize',
+      'groupChatAvatarRingThickness',
+      'groupChatLyricFontSize', 'groupChatLineWrapWidth',
+      'groupChatTypingFontSize', 'groupChatTypingAvatarSize',
       'translationOpacity', 'translationFontSize', 'translationTopPadding',
       'transliterationOpacity', 'transliterationFontSize', 'transliterationBottomPadding'
     ];

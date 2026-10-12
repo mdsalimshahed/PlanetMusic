@@ -48,7 +48,7 @@ const GroupChatMessageChain = ({
             key={`turn-${line.index}`}
             data-chat-line-index={line.index}
             style={{
-              '--avatar-slot-width': `${avatarSlotWidth}dvh`
+              '--avatar-slot-width': `${avatarSlotWidth}vh`
             }}
           >
             <span
@@ -56,7 +56,7 @@ const GroupChatMessageChain = ({
               aria-hidden="true"
               style={{
                 '--avatar-count': avatarCount,
-                '--avatar-slot-width': `${avatarSlotWidth}dvh`
+                '--avatar-slot-width': `${avatarSlotWidth}vh`
               }}
             >
               {isLastMessage && (
@@ -75,6 +75,7 @@ const GroupChatMessageChain = ({
                           <img
                             src={image}
                             alt=""
+                            loading="lazy"
                             onError={imageEvent => { imageEvent.currentTarget.hidden = true; }}
                           />
                         )}
@@ -101,6 +102,8 @@ const GroupChatMessageChain = ({
                     savedNode={line.savedNode}
                     masterPalette={masterPalette}
                     isPlayingCurrentSong={isPlayingCurrentSong}
+                    lyricFontSize={settings?.groupChatLyricFontSize ?? 2.2}
+                    lineWrapWidthPercent={settings?.groupChatLineWrapWidth ?? 60}
                     excludeAdlibs={!line.isAdlib}
                   />
                   <time>{getClockTime(event.time, playbackTime)}</time>

@@ -28,21 +28,6 @@ const ArtistPresenceAvatar = ({
   }, [isOnline, isVisible]);
 
   useLayoutEffect(() => {
-    const wasOnline = previousOnlineRef.current;
-    previousOnlineRef.current = isOnline;
-    if (!isOnline || wasOnline || disableAnimations) return;
-
-    const participant = participantRef.current;
-    if (!participant) return;
-
-    const animation = participant.animate(
-      [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 300, easing: 'ease-out' }
-    );
-    animation.onfinish = () => animation.cancel();
-  }, [disableAnimations, isOnline]);
-
-  useLayoutEffect(() => {
     const wasActive = previousActiveRef.current;
     if (!isOnline) return;
     previousActiveRef.current = isActive;
@@ -73,6 +58,21 @@ const ArtistPresenceAvatar = ({
       { duration: 520, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)', fill: 'forwards' }
     );
   }, [disableAnimations, inactiveScale, isActive, isOnline]);
+
+  useLayoutEffect(() => {
+    const wasOnline = previousOnlineRef.current;
+    previousOnlineRef.current = isOnline;
+    if (!isOnline || wasOnline || disableAnimations) return;
+
+    const participant = participantRef.current;
+    if (!participant) return;
+
+    const animation = participant.animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 300, easing: 'ease-out' }
+    );
+    animation.onfinish = () => animation.cancel();
+  }, [disableAnimations, isOnline]);
 
   if (!isVisible && !isOnline) return null;
 

@@ -19,23 +19,24 @@
   --typing-exit-time: calc(var(--typing-exit-ms) * 1ms);
   --typing-enter-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
   --typing-exit-ease: ease-in;
-  /* How far everything travels while fading (up from / down to below). */
   --typing-travel: 8px;
-  --typing-avatar-size: 24px;
-  --typing-avatar-overlap: 6px;
+  --typing-avatar-size: var(--chat-typing-avatar-size, 2.4vh);
+  --typing-avatar-overlap: 0.6vh;
 
   display: flex;
   box-sizing: border-box;
   flex: 1 1 auto;
   width: 100%;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 7px;
+  flex-wrap: nowrap;
+  gap: 0.7vw;
   align-self: stretch;
+  min-height: 0;
   min-width: 0;
   max-width: 100%;
+  overflow: visible;
   color: rgba(228, 237, 239, 0.72);
-  font-size: 11px;
+  font-size: var(--chat-typing-font-size, 1.1vh);
   line-height: 1.4;
 }
 
@@ -65,11 +66,16 @@
 .group-chat-typing-avatar {
   position: relative;
   box-sizing: border-box;
-  flex: 0 0 auto;
+  flex: 0 0 var(--typing-avatar-size);
   width: var(--typing-avatar-size);
   height: var(--typing-avatar-size);
+  min-width: var(--typing-avatar-size);
+  min-height: var(--typing-avatar-size);
+  max-width: var(--typing-avatar-size);
+  max-height: var(--typing-avatar-size);
+  aspect-ratio: 1 / 1;
   margin-right: calc(var(--typing-avatar-overlap) * -1);
-  font-size: 9px;
+  font-size: calc(var(--typing-avatar-size) * 0.375);
   z-index: calc(var(--avatar-count) - var(--avatar-index));
 }
 
@@ -92,13 +98,14 @@
   display: grid;
   place-items: center;
   overflow: hidden;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: #252a33;
   color: #f4f6f8;
   font-weight: 750;
   outline: var(--chat-avatar-ring-thickness, 0.12dvh) solid
     color-mix(in srgb, var(--artist-color, #87909e), transparent 35%);
-  box-shadow: 0 0 0 2px rgba(15, 18, 23, 0.96);
+  box-shadow: 0 0 0 0.2vh rgba(15, 18, 23, 0.96);
 }
 
 .group-chat[data-avatar-ring="false"] .group-chat-typing-avatar-visual {
@@ -118,13 +125,13 @@
 .group-chat-typing-dots {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  height: 16px;
+  gap: 0.3vh;
+  height: 1.6vh;
 }
 
 .group-chat-typing-dots i {
-  width: 4px;
-  height: 4px;
+  width: 0.4vh;
+  height: 0.4vh;
   border-radius: 50%;
   background: #c7d0d8;
   animation: group-chat-typing-dot 1s ease-in-out infinite;
@@ -138,10 +145,11 @@
 .group-chat-typing-names {
   display: flex;
   flex: 1 1 0;
-  flex-wrap: wrap;
   align-items: center;
+  flex-wrap: wrap;
   min-width: 0;
   max-width: 100%;
+  overflow: visible;
 }
 
 .group-chat-typing-name {

@@ -153,16 +153,16 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     },
     setLyricsViewMode: (val) => {
         displayProps.setLyricsViewMode(val);
-        navigate(buildUrl({ viewMode: val }));
+        navigate(buildUrl({ viewMode: val, debug: false }));
     },
     
     // Debug toggles
     showAdlibDebug: urlDebug,
-    setShowAdlibDebug: (val) => navigate(buildUrl({ debug: val })),
+    setShowAdlibDebug: (val) => navigate(buildUrl({ viewMode: 'focused', debug: val })),
     showLiveDebug: urlDebug,
-    setShowLiveDebug: (val) => navigate(buildUrl({ debug: val })),
+    setShowLiveDebug: (val) => navigate(buildUrl({ viewMode: 'live', debug: val })),
     showGroupChatDebug: urlDebug,
-    setShowGroupChatDebug: (val) => navigate(buildUrl({ debug: val })),
+    setShowGroupChatDebug: (val) => navigate(buildUrl({ viewMode: 'group-chat', debug: val })),
     
     // Hijack Save functions so the URL closes cleanly after saving
     saveData: () => {

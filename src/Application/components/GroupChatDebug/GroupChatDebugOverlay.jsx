@@ -42,25 +42,6 @@ const getCombinedTextBounds = (elements, overlayRect) => {
   return { top, left, width: right - left, height: bottom - top };
 };
 
-const getCombinedElementBounds = (elements, overlayRect) => {
-  const bounds = [...elements].map(element => {
-    const rect = element.getBoundingClientRect();
-    return {
-      top: rect.top - overlayRect.top,
-      left: rect.left - overlayRect.left,
-      right: rect.right - overlayRect.left,
-      bottom: rect.bottom - overlayRect.top
-    };
-  }).filter(rect => rect.right > rect.left && rect.bottom > rect.top);
-  if (!bounds.length) return null;
-
-  const top = Math.min(...bounds.map(rect => rect.top));
-  const left = Math.min(...bounds.map(rect => rect.left));
-  const right = Math.max(...bounds.map(rect => rect.right));
-  const bottom = Math.max(...bounds.map(rect => rect.bottom));
-  return { top, left, width: right - left, height: bottom - top };
-};
-
 const GroupChatDebugOverlay = () => {
   const overlayRef = useRef(null);
   const frameRef = useRef(null);
@@ -72,8 +53,22 @@ const GroupChatDebugOverlay = () => {
       if (!overlay) return;
       const overlayRect = overlay.getBoundingClientRect();
       const nextBoxes = [];
+      const turns = [...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])];
+      let activeTurnIndex = -1;
+      turns.forEach((turn, index) => {
+        if (turn.classList.contains('is-chat-active')) activeTurnIndex = index;
+      });
+      const activeTurn = activeTurnIndex >= 0 ? turns[activeTurnIndex] : null;
+      const previousTurn = activeTurnIndex > 0 ? turns[activeTurnIndex - 1] : null;
+      turns.forEach(turn => {
+        turn.classList.toggle('is-chat-debug-active', turn === activeTurn);
+        turn.classList.toggle('is-chat-debug-previous', turn === previousTurn);
+      });
 
-      overlay.parentElement?.querySelectorAll('.group-chat-turn.is-chat-active').forEach((turn, turnIndex) => {
+      turns.filter(turn => (
+        turn.classList.contains('is-chat-debug-active') ||
+        turn.classList.contains('is-chat-debug-previous')
+      )).forEach((turn, turnIndex) => {
         const addTextBox = (element, type, elementIndex = 0) => {
           const bounds = element instanceof Element
             ? getTextBounds(element, overlayRect)

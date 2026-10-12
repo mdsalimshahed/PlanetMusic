@@ -37,6 +37,19 @@
   -webkit-transform: translateZ(0);
 }
 
+.modal-backdrop :is(
+  button,
+  a,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  summary
+):is(:focus, :focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .modal-two-column-layout > .modal-left-col,
 .modal-two-column-layout > .modal-right-col {
   animation: modalSectionEnter 0.36s cubic-bezier(0.2, 0.75, 0.25, 1) both;

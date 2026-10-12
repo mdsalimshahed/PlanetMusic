@@ -15,7 +15,7 @@
 .group-chat .group-chat-message-text .chunk-translation {
   position: relative !important;
   top: auto !important;
-  left: auto !important;
+  left: var(--chat-translation-left-offset, 0px) !important;
   transform: none !important;
   width: var(--chat-translation-reference-width, 100%) !important;
   min-width: 0 !important;
@@ -33,7 +33,13 @@
   text-align: center !important;
 }
 
+.group-chat .group-chat-message-text .chunk-translation,
+.group-chat .group-chat-message-text .chunk-translation * {
+  text-align: center !important;
+}
+
 .group-chat .group-chat-message-text .chunk-translation .trans-word {
+  display: inline-block !important;
   text-align: center !important;
   white-space: nowrap !important;
   overflow-wrap: normal !important;
@@ -41,7 +47,10 @@
 }
 
 .group-chat .group-chat-message-text .chunk-translation .trans-word-group {
+  display: inline-block !important;
   white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
 }
 
 .group-chat-message-text.is-wrap-enabled .chunk-translation {
@@ -65,16 +74,26 @@
 
 .group-chat .pronunciation-text {
   opacity: 1;
-  transform: none;
+  transform: none !important;
+}
+
+.group-chat .group-chat-message-text,
+.group-chat .group-chat-message-text * {
+  transition: none !important;
+}
+
+.group-chat .group-chat-message-text .adlib-node {
+  transform: none !important;
+  will-change: auto !important;
 }
 
 .group-chat-message-line time {
   position: static;
   align-self: flex-end;
   display: block;
-  margin-top: 3px;
+  margin-top: 0.3vh;
   color: rgba(226, 235, 237, 0.46);
-  font-size: var(--chat-timestamp-size, 1.125dvh);
+  font-size: var(--chat-timestamp-size, 1.125vh);
   text-align: right;
   white-space: nowrap;
 }
