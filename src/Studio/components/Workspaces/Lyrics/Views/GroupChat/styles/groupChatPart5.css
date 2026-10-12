@@ -20,6 +20,10 @@
     animation: none !important;
   }
 
+  .group-chat:not(.group-chat-no-motion) .group-chat-typing-dots i {
+    animation: group-chat-typing-dot 1s ease-in-out infinite !important;
+  }
+
   .group-chat-participant.is-offline {
     display: none;
   }
