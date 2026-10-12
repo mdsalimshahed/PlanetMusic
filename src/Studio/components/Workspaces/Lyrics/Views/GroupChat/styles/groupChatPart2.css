@@ -1,7 +1,9 @@
 .group-chat-typing-footer {
   display: flex;
-  flex: 0 0 52px;
+  flex: 0 0 auto;
   align-items: center;
+  width: 100%;
+  min-width: 0;
   min-height: 52px;
   box-sizing: border-box;
   border-top: 0;
@@ -168,4 +170,30 @@
 .group-chat-debug-view .group-chat-artist {
   outline: 1px dashed #66ff8a;
   outline-offset: 2px;
+}
+
+.group-chat-debug-view .group-chat-typing-avatar {
+  overflow: visible;
+}
+
+.group-chat-debug-view .group-chat-typing-avatar::after {
+  position: absolute;
+  inset: -3px;
+  border: 1px dashed var(--artist-color, #a8b4c7);
+  border-radius: 2px;
+  content: '';
+  pointer-events: none;
+}
+
+.group-chat-debug-view .group-chat-typing-avatar.is-exiting::after {
+  content: none;
+}
+
+.group-chat-debug-view .group-chat-typing-name {
+  outline: 1px dashed var(--artist-color, #a8b4c7);
+  outline-offset: 2px;
+}
+
+.group-chat-debug-view .group-chat-typing-name.is-exiting {
+  outline: none;
 }

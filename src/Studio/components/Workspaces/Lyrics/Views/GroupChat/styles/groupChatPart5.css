@@ -1,4 +1,5 @@
 .group-chat-typing-avatars {
+  position: relative;
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -93,10 +94,27 @@
 
 @media (max-width: 600px) {
   .group-chat-header {
-    flex-basis: calc(var(--chat-heading-active-avatar-size, 5dvh) + 21px);
-    height: calc(var(--chat-heading-active-avatar-size, 5dvh) + 21px);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: calc(var(--chat-heading-active-avatar-size, 5dvh) + 32px);
   }
   .group-chat-heading { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .group-chat-participants {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: calc(var(--chat-heading-active-avatar-size, 5dvh) + 12px);
+    padding: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .group-chat-participants::-webkit-scrollbar { display: none; }
   .group-chat-chain { max-width: 100%; }
   .group-chat-history { padding: 14px 14px 8px; }
   .group-chat-typing-footer { padding-right: 14px; padding-left: 14px; }
