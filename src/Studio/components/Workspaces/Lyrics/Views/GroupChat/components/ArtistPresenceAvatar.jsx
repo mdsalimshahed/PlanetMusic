@@ -31,7 +31,6 @@ const ArtistPresenceAvatar = ({
     const wasOnline = previousOnlineRef.current;
     previousOnlineRef.current = isOnline;
     if (!isOnline || wasOnline || disableAnimations) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const participant = participantRef.current;
     if (!participant) return;
@@ -61,8 +60,7 @@ const ArtistPresenceAvatar = ({
 
     if (
       wasActive === isActive ||
-      disableAnimations ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      disableAnimations
     ) {
       return;
     }

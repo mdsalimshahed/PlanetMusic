@@ -267,9 +267,7 @@ const useGroupChatPresentation = ({
       element.getBoundingClientRect().top
     ]));
     if (historyAdded && previousPositions) {
-      const reduceMotion = settings?.disableAnimations ||
-        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-      if (!reduceMotion) {
+      if (!settings?.disableAnimations) {
         targets.forEach(({ id, element }) => {
           const previousTop = previousPositions.get(id);
           const currentTop = currentPositions.get(id);
@@ -337,8 +335,7 @@ const useGroupChatPresentation = ({
             Math.max(0, container.scrollTop + scrollDelta),
             Math.max(0, container.scrollHeight - container.clientHeight)
           ),
-          behavior: settings?.disableAnimations ||
-            window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+          behavior: settings?.disableAnimations
             ? 'auto'
             : 'smooth'
         });

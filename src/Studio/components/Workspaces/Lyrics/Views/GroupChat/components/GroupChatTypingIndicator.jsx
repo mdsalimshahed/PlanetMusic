@@ -194,10 +194,7 @@ const GroupChatTypingIndicator = ({
     if (!pendingTransition || pendingTransition.items !== items) return;
     previousPositionsRef.current = null;
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      rowRef.current?.closest('.group-chat-no-motion')
-    ) return;
+    if (rowRef.current?.closest('.group-chat-no-motion')) return;
 
     avatarsRef.current
       ?.querySelectorAll('.group-chat-typing-avatar:not(.is-exiting)')

@@ -17,7 +17,7 @@ const animateParticipantPositions = (container, previousPositionsRef, disableAni
     }
   });
 
-  if (!disableAnimations && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!disableAnimations) {
     currentPositions.forEach((position, artistName) => {
       const previousPosition = previousPositionsRef.current.get(artistName);
       const avatar = avatarElements.get(artistName);

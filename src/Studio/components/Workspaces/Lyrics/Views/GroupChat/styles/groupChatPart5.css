@@ -13,22 +13,6 @@
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .group-chat *,
-  .group-chat *::before,
-  .group-chat *::after {
-    animation: none !important;
-  }
-
-  .group-chat:not(.group-chat-no-motion) .group-chat-typing-dots i {
-    animation: group-chat-typing-dot 1s ease-in-out infinite !important;
-  }
-
-  .group-chat-participant.is-offline {
-    display: none;
-  }
-}
-
 @keyframes group-chat-notification-in {
   from { opacity: 0; transform: translate3d(0, 5px, 0) scale(0.98); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
