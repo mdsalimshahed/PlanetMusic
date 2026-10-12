@@ -8,9 +8,18 @@
 
 .group-chat-typing-avatars .group-chat-typing-avatar {
   margin-left: -6px;
-  border-width: 1px;
-  box-shadow: 0 0 0 2px rgba(15, 18, 23, 0.96);
   z-index: calc(var(--avatar-count) - var(--avatar-index));
+}
+
+/* A leaving avatar is pulled out of the flow at its exact current spot.
+   It must NOT inherit the cluster's -6px overlap margin (that was the left-edge jump). */
+.group-chat-typing-avatars .group-chat-typing-avatar.is-exiting {
+  position: absolute;
+  left: var(--typing-exit-left, 0);
+  top: var(--typing-exit-top, 0);
+  margin: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .group-chat-typing-avatars .group-chat-typing-avatar:first-child {

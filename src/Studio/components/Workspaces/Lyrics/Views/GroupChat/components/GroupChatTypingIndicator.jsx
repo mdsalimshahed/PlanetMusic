@@ -46,6 +46,8 @@ const GroupChatTypingAvatarCluster = ({
   const avatarsRef = useRef(avatars);
   const namesKeyRef = useRef(namesKey);
   const clusterRef = useRef(null);
+  const dotsRef = useRef(null);
+  const lastDotsOffsetRef = useRef(null);
   const pendingTransitionRef = useRef(null);
   const previousStatesRef = useRef(new Map());
 
@@ -149,6 +151,28 @@ const GroupChatTypingAvatarCluster = ({
     previousStatesRef.current = currentStates;
   }, [avatars]);
 
+  // The typing dots sit right after the avatars, so they slide smoothly
+  // when the cluster grows or shrinks instead of snapping.
+  useLayoutEffect(() => {
+    const dots = dotsRef.current;
+    if (!dots) return;
+    const next = { left: dots.offsetLeft, top: dots.offsetTop };
+    const previous = lastDotsOffsetRef.current;
+    lastDotsOffsetRef.current = next;
+    if (!previous || window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
+    const offsetX = previous.left - next.left;
+    const offsetY = previous.top - next.top;
+    if (Math.abs(offsetX) < 1 && Math.abs(offsetY) < 1) return;
+    dots.getAnimations().forEach(animation => animation.cancel());
+    dots.animate(
+      [
+        { transform: `translate(${offsetX}px, ${offsetY}px)` },
+        { transform: 'translate(0, 0)' }
+      ],
+      { duration: AVATAR_MOVE_DURATION, easing: AVATAR_MOVE_EASING }
+    );
+  }, [avatars]);
+
   useLayoutEffect(() => {
     if (!avatars.some(avatar => avatar.isExiting)) return undefined;
     const exitTimer = setTimeout(() => {
@@ -165,6 +189,7 @@ const GroupChatTypingAvatarCluster = ({
   }, [avatars]);
 
   return (
+    <>
     <span className="group-chat-typing-avatars" aria-hidden="true" ref={clusterRef}>
       {avatars.map(({ name, isExiting, exitLeft, exitTop }, index) => {
         const artist = artistByName.get(name);
@@ -194,6 +219,8 @@ const GroupChatTypingAvatarCluster = ({
         );
       })}
     </span>
+    <span className="group-chat-typing-dots" aria-hidden="true" ref={dotsRef}><i /><i /><i /></span>
+    </>
   );
 };
 
@@ -319,7 +346,6 @@ const GroupChatTypingIndicator = ({
       artistByName={artistByName}
       imageSources={imageSources}
     />
-    <span className="group-chat-typing-dots" aria-hidden="true"><i /><i /><i /></span>
     <GroupChatTypingNames artistNames={artistNames} artistByName={artistByName} />
   </div>
 );

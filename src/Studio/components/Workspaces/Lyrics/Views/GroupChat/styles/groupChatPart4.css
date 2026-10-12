@@ -110,18 +110,19 @@
   pointer-events: none;
 }
 
+/* The avatar element is only an invisible layout "slot" (size, overlap, z-order).
+   Everything you can SEE (background, ring, halo, image) lives on the -visual child,
+   so fading/sliding the visual fades the whole avatar, not just its image. */
 .group-chat-typing-avatar {
+  position: relative;
   box-sizing: border-box;
   width: 24px;
   height: 24px;
   font-size: 9px;
-}
-
-.group-chat-typing-avatar.is-exiting {
-  position: absolute;
-  left: var(--typing-exit-left, 0);
-  top: var(--typing-exit-top, 0);
-  z-index: 1;
+  overflow: visible;
+  outline: none;
+  background: transparent;
+  border-radius: 50%;
 }
 
 .group-chat-typing-avatar-visual {
@@ -130,7 +131,17 @@
   display: grid;
   overflow: hidden;
   place-items: center;
-  border-radius: inherit;
+  border-radius: 50%;
+  background: #252a33;
+  color: #f4f6f8;
+  font-weight: 750;
+  outline: var(--chat-avatar-ring-thickness, 0.12dvh) solid
+    color-mix(in srgb, var(--artist-color, #87909e), transparent 35%);
+  box-shadow: 0 0 0 2px rgba(15, 18, 23, 0.96);
+}
+
+.group-chat[data-avatar-ring="false"] .group-chat-typing-avatar-visual {
+  outline: none;
 }
 
 .group-chat-typing-names {
