@@ -77,17 +77,19 @@ test('alternates sides when artists change and treats reordered duos as the same
   assert.equal(messageEvents[0].line.chatSide, messageEvents[3].line.chatSide);
 });
 
-test('switches an artist to the opposite side after a break longer than five seconds', () => {
+test('switches sides when an artist gap is much longer than their recent gaps', () => {
   const chat = buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'First line' },
       { singer: 'Ari', text: 'Second line' },
-      { singer: 'Ari', text: 'Third line' }
+      { singer: 'Ari', text: 'Third line' },
+      { singer: 'Ari', text: 'Fourth line' }
     ],
     [
-      { start: 1, end: 2 },
-      { start: 7, end: 8 },
-      { start: 14, end: 15 }
+      { start: 1, end: 1.5 },
+      { start: 2, end: 2.5 },
+      { start: 3, end: 3.5 },
+      { start: 6, end: 6.5 }
     ],
     'Fallback'
   );
@@ -97,7 +99,62 @@ test('switches an artist to the opposite side after a break longer than five sec
     side: group.side,
     lines: group.events.map(event => event.line.text)
   })), [
-    { side: 'left', lines: ['First line', 'Second line'] },
-    { side: 'right', lines: ['Third line'] }
+    { side: 'left', lines: ['First line', 'Second line', 'Third line'] },
+    { side: 'right', lines: ['Fourth line'] }
+  ]);
+});
+
+test('adapts the side-switch threshold to an artist with a slower regular pace', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      { singer: 'Ari', text: 'First line' },
+      { singer: 'Ari', text: 'Second line' },
+      { singer: 'Ari', text: 'Third line' },
+      { singer: 'Ari', text: 'Fourth line' },
+      { singer: 'Ari', text: 'Fifth line' }
+    ],
+    [
+      { start: 1, end: 2 },
+      { start: 6, end: 7 },
+      { start: 11, end: 12 },
+      { start: 20, end: 21 },
+      { start: 33, end: 34 }
+    ],
+    'Fallback'
+  );
+  const groups = groupConsecutiveMessages(chat.events);
+
+  assert.deepEqual(groups.map(group => ({
+    side: group.side,
+    lines: group.events.map(event => event.line.text)
+  })), [
+    { side: 'left', lines: ['First line', 'Second line', 'Third line', 'Fourth line'] },
+    { side: 'right', lines: ['Fifth line'] }
+  ]);
+});
+
+test('keeps an artist on their side when they return after another artist speaks', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      { singer: 'Ari', text: 'Ari first' },
+      { singer: 'Bea', text: 'Bea replies' },
+      { singer: 'Ari', text: 'Ari returns' }
+    ],
+    [
+      { start: 1, end: 2 },
+      { start: 2.5, end: 3 },
+      { start: 4, end: 5 }
+    ],
+    'Fallback'
+  );
+  const groups = groupConsecutiveMessages(chat.events);
+
+  assert.deepEqual(groups.map(group => ({
+    side: group.side,
+    lines: group.events.map(event => event.line.text)
+  })), [
+    { side: 'left', lines: ['Ari first'] },
+    { side: 'right', lines: ['Bea replies'] },
+    { side: 'left', lines: ['Ari returns'] }
   ]);
 });

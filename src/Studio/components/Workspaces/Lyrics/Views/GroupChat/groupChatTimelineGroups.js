@@ -1,74 +1,126 @@
-export const groupConsecutiveMessages = events => {
+const RECENT_GAP_SAMPLE_LIMIT = 5;
+const GAP_OUTLIER_MULTIPLIER = 2.5;
+const MIN_ADAPTIVE_GAP_THRESHOLD_SECONDS = 1.5;
+const DEFAULT_GAP_THRESHOLD_SECONDS = 5;
+
+const getMedian = values => {
+  const sortedValues = [...values].sort((first, second) => first - second);
+  const middle = Math.floor(sortedValues.length / 2);
+  return sortedValues.length % 2
+    ? sortedValues[middle]
+    : (sortedValues[middle - 1] + sortedValues[middle]) / 2;
+};
+
+const getGapThreshold = recentGaps => recentGaps.length
+  ? Math.max(
+    MIN_ADAPTIVE_GAP_THRESHOLD_SECONDS,
+    getMedian(recentGaps) * GAP_OUTLIER_MULTIPLIER
+  )
+  : DEFAULT_GAP_THRESHOLD_SECONDS;
+
+const getMainMessageGroups = events => {
   const groups = [];
-  const sideByArtistKey = new Map();
   const latestEventByArtistKey = new Map();
-  const mainSideByLineIndex = new Map();
+  const recentGapsByArtistKey = new Map();
   let nextSide = 'left';
   events.filter(event => event.type === 'message').forEach(event => {
     const artistsKey = event.line.artists
       .map(name => name.trim().toLocaleLowerCase())
       .sort()
       .join('\u0000');
-    let side = event.line.chatSide;
     const previousGroup = groups[groups.length - 1];
-    const previousEvent = previousGroup?.events[previousGroup.events.length - 1];
     const previousArtistEvent = latestEventByArtistKey.get(artistsKey);
     const artistGap = previousArtistEvent
-      ? event.time - previousArtistEvent.end
+      ? Math.max(0, event.time - previousArtistEvent.end)
       : 0;
-    const artistReturnedAfterBreak = artistGap > 5;
+    const recentGaps = recentGapsByArtistKey.get(artistsKey) || [];
+    const artistReturnedAfterBreak = previousArtistEvent &&
+      artistGap > getGapThreshold(recentGaps);
 
     if (
+      artistsKey &&
       previousGroup?.artistsKey === artistsKey &&
-      !artistReturnedAfterBreak &&
-      !event.line.isAdlib &&
-      !previousEvent?.line.isAdlib
+      !artistReturnedAfterBreak
     ) {
       previousGroup.events.push(event);
-      mainSideByLineIndex.set(event.line.index, previousGroup.side);
       latestEventByArtistKey.set(artistsKey, {
         end: event.line.end ?? event.time,
         side: previousGroup.side
       });
+      recentGapsByArtistKey.set(artistsKey, [
+        ...recentGaps,
+        artistGap
+      ].slice(-RECENT_GAP_SAMPLE_LIMIT));
       return;
     }
 
+    let side;
     if (!artistsKey) {
       side = previousGroup
         ? (previousGroup.side === 'left' ? 'right' : 'left')
         : nextSide;
-    } else if (!event.line.isAdlib && artistReturnedAfterBreak) {
-      const previousSide = previousArtistEvent.side;
-      side = previousSide === 'left' ? 'right' : 'left';
-    } else if (side) {
-      if (!event.line.isAdlib) mainSideByLineIndex.set(event.line.index, side);
-    } else if (event.line.isAdlib) {
-      const mainSide = mainSideByLineIndex.get(event.line.sourceIndex);
-      const stableArtistSide = sideByArtistKey.get(artistsKey) || nextSide;
-      side = mainSide
-        ? (mainSide === 'left' ? 'right' : 'left')
-        : (stableArtistSide === 'left' ? 'right' : 'left');
-    } else if (previousGroup) {
+    } else if (previousGroup && previousGroup.artistsKey !== artistsKey) {
       side = previousGroup.side === 'left' ? 'right' : 'left';
+    } else if (previousArtistEvent && artistReturnedAfterBreak) {
+      side = previousArtistEvent.side === 'left' ? 'right' : 'left';
+    } else if (previousArtistEvent) {
+      side = previousArtistEvent.side;
     } else {
-      side = sideByArtistKey.get(artistsKey);
-      if (!side) {
-        side = nextSide;
-        sideByArtistKey.set(artistsKey, side);
-      }
-      mainSideByLineIndex.set(event.line.index, side);
+      side = nextSide;
     }
     nextSide = side === 'left' ? 'right' : 'left';
-    if (artistsKey && !event.line.isAdlib) sideByArtistKey.set(artistsKey, side);
     groups.push({ artistsKey, artists: event.line.artists, events: [event], side });
     if (artistsKey) {
       latestEventByArtistKey.set(artistsKey, {
         end: event.line.end ?? event.time,
-        side: event.line.isAdlib
-          ? (mainSideByLineIndex.get(event.line.sourceIndex) === 'left' ? 'right' : 'left')
-          : side
+        side
       });
+      if (previousArtistEvent) {
+        recentGapsByArtistKey.set(artistsKey, [
+          ...recentGaps,
+          artistGap
+        ].slice(-RECENT_GAP_SAMPLE_LIMIT));
+      }
     }
+  });
+  return groups;
+};
+
+export const groupConsecutiveMessages = events => {
+  const messageEvents = events.filter(event => event.type === 'message');
+  const mainGroups = getMainMessageGroups(
+    messageEvents.filter(event => !event.line.isAdlib)
+  );
+  const mainSideByLineIndex = new Map();
+  mainGroups.forEach(group => {
+    group.events.forEach(event => mainSideByLineIndex.set(event.line.index, group.side));
+  });
+
+  const groups = [];
+  messageEvents.forEach(event => {
+    const { line } = event;
+    const artistsKey = line.artists
+      .map(name => name.trim().toLocaleLowerCase())
+      .sort()
+      .join('\u0000');
+    const previousGroup = groups[groups.length - 1];
+    const sourceMainSide = mainSideByLineIndex.get(line.sourceIndex);
+    const side = line.isAdlib
+      ? ((sourceMainSide || previousGroup?.side || 'left') === 'left' ? 'right' : 'left')
+      : mainSideByLineIndex.get(line.index) || 'left';
+
+    line.chatSide = side;
+    if (
+      !line.isAdlib &&
+      previousGroup?.artistsKey === artistsKey &&
+      previousGroup.side === side &&
+      !previousGroup.events[previousGroup.events.length - 1].line.isAdlib
+    ) {
+      previousGroup.events.push(event);
+      return;
+    }
+
+    groups.push({ artistsKey, artists: line.artists, events: [event], side });
   });
   return groups;
 };

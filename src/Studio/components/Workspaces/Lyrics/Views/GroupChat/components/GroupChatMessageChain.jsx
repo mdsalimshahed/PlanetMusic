@@ -1,6 +1,11 @@
 import React from 'react';
 import GroupChatLyricText from './GroupChatLyricText.jsx';
-import { getArtistImage, getClockTime, getInitials } from '../utils/groupChatUtils.js';
+import {
+  getArtistImage,
+  getClockTime,
+  getInitials,
+  getLyricLayoutKey
+} from '../utils/groupChatUtils.js';
 
 const GroupChatMessageChain = ({
   group,
@@ -14,7 +19,12 @@ const GroupChatMessageChain = ({
   showDebug,
   handleLineClick,
   playbackTime,
-  isPlayingCurrentSong
+  isPlayingCurrentSong,
+  precomputedLayouts,
+  isPremeasurement = false,
+  onLayoutReady,
+  onLineShown,
+  layoutSignature
 }) => {
   const firstLine = group.events[0].line;
   const color = artistByName.get(group.artists[0])?.color || firstLine.color;
@@ -25,6 +35,12 @@ const GroupChatMessageChain = ({
   const avatarSlotWidth = isUncredited
     ? 0
     : `calc(${avatarSize + avatarStep * (avatarCount - 1)} * var(--chat-vh-unit, 1vh))`;
+  const lineIndicesKey = JSON.stringify(group.events.map(event => event.line.index));
+
+  React.useEffect(() => {
+    if (isPremeasurement || !onLineShown) return;
+    JSON.parse(lineIndicesKey).forEach(onLineShown);
+  }, [isPremeasurement, lineIndicesKey, onLineShown]);
 
   return (
     <div
@@ -37,6 +53,15 @@ const GroupChatMessageChain = ({
         const lyricLine = line.lyric ||
           liveParsedLyrics[line.sourceIndex ?? line.index] ||
           { text: line.text };
+        const layoutKey = getLyricLayoutKey(
+          line,
+          lyricLine,
+          settings,
+          group.side,
+          group.artists.length,
+          layoutSignature
+        );
+        const cachedLayout = precomputedLayouts?.get(line.index);
         const bubbleShape = group.events.length === 1
           ? 'single'
           : (eventIndex === group.events.length - 1 ? 'last' : 'middle');
@@ -47,6 +72,8 @@ const GroupChatMessageChain = ({
             className={`group-chat-turn group-chat-turn-${group.side} group-chat-turn-${bubbleShape}${isUncredited ? ' group-chat-turn-uncredited' : ''}${showDebug && activeLineIndices.has(line.index) ? ' is-chat-active' : ''}`}
             key={`turn-${line.index}`}
             data-chat-line-index={line.index}
+            data-chat-line-start={event.time}
+            data-chat-line-end={line.end ?? event.time}
             style={{
               '--avatar-slot-width': isUncredited ? '0' : avatarSlotWidth
             }}
@@ -88,6 +115,9 @@ const GroupChatMessageChain = ({
             <div className="group-chat-bubble-stack">
               <div
                 className="group-chat-message"
+                style={cachedLayout?.key === layoutKey && cachedLayout.enabled
+                  ? { '--chat-measured-bubble-width': `${cachedLayout.bubbleWidth}px` }
+                  : undefined}
               >
                 <button
                   type="button"
@@ -105,6 +135,14 @@ const GroupChatMessageChain = ({
                     lyricFontSize={settings?.groupChatLyricFontSize ?? 2.2}
                     lineWrapWidthPercent={settings?.groupChatLineWrapWidth ?? 60}
                     excludeAdlibs={!line.isAdlib}
+                    precomputedLayout={
+                      !isPremeasurement && cachedLayout?.key === layoutKey
+                        ? cachedLayout
+                        : undefined
+                    }
+                    onLayoutReady={isPremeasurement ? onLayoutReady : undefined}
+                    layoutKey={layoutKey}
+                    lineIndex={line.index}
                   />
                   <time>{getClockTime(event.time, playbackTime)}</time>
                 </button>

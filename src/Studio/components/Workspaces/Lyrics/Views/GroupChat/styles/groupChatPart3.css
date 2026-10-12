@@ -102,7 +102,7 @@
 .group-chat-message-text.is-wrap-enabled {
   width: min(var(--chat-rendered-glyph-width, var(--chat-wrap-width)), var(--chat-wrap-width));
   max-width: min(var(--chat-wrap-width), 100%);
-  text-wrap: balance;
+  text-wrap: wrap;
   white-space: pre-wrap;
 }
 
@@ -185,7 +185,7 @@
   word-break: normal !important;
   overflow-wrap: normal !important;
   line-break: strict !important;
-  text-wrap: balance !important;
+  text-wrap: wrap !important;
 }
 
 .group-chat-message-text.is-wrap-enabled .lyric-word,
@@ -208,7 +208,7 @@
   word-break: normal !important;
   overflow-wrap: normal !important;
   line-break: strict !important;
-  text-wrap: balance !important;
+  text-wrap: wrap !important;
 }
 
 .group-chat-message-text.is-measuring-glyphs .main-lyrics-flow-wrapper {
@@ -225,7 +225,7 @@
   word-break: normal !important;
   overflow-wrap: normal !important;
   line-break: strict !important;
-  text-wrap: balance !important;
+  text-wrap: wrap !important;
   max-width: 100% !important;
   min-width: 0 !important;
   box-sizing: border-box !important;

@@ -1,7 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import './GroupChatDebugOverlay.css';
 
-const getTextBounds = (element, overlayRect) => {
+const getOverlayMetrics = overlay => {
+  const rect = overlay.getBoundingClientRect();
+  return {
+    rect,
+    scaleX: rect.width && overlay.offsetWidth ? rect.width / overlay.offsetWidth : 1,
+    scaleY: rect.height && overlay.offsetHeight ? rect.height / overlay.offsetHeight : 1
+  };
+};
+
+const getLocalRect = (rect, metrics) => ({
+  top: (rect.top - metrics.rect.top) / metrics.scaleY,
+  left: (rect.left - metrics.rect.left) / metrics.scaleX,
+  right: (rect.right - metrics.rect.left) / metrics.scaleX,
+  bottom: (rect.bottom - metrics.rect.top) / metrics.scaleY
+});
+
+const getTextBounds = (element, metrics) => {
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
   const bounds = [];
   let node;
@@ -11,13 +27,7 @@ const getTextBounds = (element, overlayRect) => {
     const range = document.createRange();
     range.selectNodeContents(node);
     for (const rect of range.getClientRects()) {
-      if (!rect.width || !rect.height) continue;
-      bounds.push({
-        top: rect.top - overlayRect.top,
-        left: rect.left - overlayRect.left,
-        right: rect.right - overlayRect.left,
-        bottom: rect.bottom - overlayRect.top
-      });
+      if (rect.width && rect.height) bounds.push(getLocalRect(rect, metrics));
     }
   }
 
@@ -29,9 +39,9 @@ const getTextBounds = (element, overlayRect) => {
   return { top, left, width: right - left, height: bottom - top };
 };
 
-const getCombinedTextBounds = (elements, overlayRect) => {
+const getCombinedTextBounds = (elements, metrics) => {
   const bounds = [...elements]
-    .map(element => getTextBounds(element, overlayRect))
+    .map(element => getTextBounds(element, metrics))
     .filter(Boolean);
   if (!bounds.length) return null;
 
@@ -42,43 +52,83 @@ const getCombinedTextBounds = (elements, overlayRect) => {
   return { top, left, width: right - left, height: bottom - top };
 };
 
-const GroupChatDebugOverlay = () => {
+const getElementBounds = (element, metrics) => {
+  const rect = getLocalRect(element.getBoundingClientRect(), metrics);
+  return {
+    top: rect.top,
+    left: rect.left,
+    width: rect.right - rect.left,
+    height: rect.bottom - rect.top
+  };
+};
+
+const GroupChatDebugOverlay = ({ activeLineIndices }) => {
   const overlayRef = useRef(null);
   const frameRef = useRef(null);
   const [boxes, setBoxes] = useState([]);
+  const [gapLabel, setGapLabel] = useState(null);
+  const activeLineIndicesKey = [...activeLineIndices].map(String).join('\u0000');
 
   useEffect(() => {
     const updateBoxes = () => {
       const overlay = overlayRef.current;
       if (!overlay) return;
-      const overlayRect = overlay.getBoundingClientRect();
+      const metrics = getOverlayMetrics(overlay);
       const nextBoxes = [];
-      const turns = [...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])];
-      let activeTurnIndex = -1;
-      turns.forEach((turn, index) => {
-        if (turn.classList.contains('is-chat-active')) activeTurnIndex = index;
-      });
+      const turns = [
+        ...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])
+      ].filter(turn => !turn.closest('.group-chat-premeasurement'));
+      const activeIndices = new Set(activeLineIndicesKey.split('\u0000'));
+      const activeTurnIndices = turns
+        .map((turn, index) => activeIndices.has(turn.dataset.chatLineIndex) ? index : -1)
+        .filter(index => index >= 0);
+      const activeTurnIndex = activeTurnIndices.at(-1) ?? -1;
       const activeTurn = activeTurnIndex >= 0 ? turns[activeTurnIndex] : null;
-      const previousTurn = activeTurnIndex > 0 ? turns[activeTurnIndex - 1] : null;
+      const previousTurnIndex = activeTurnIndices.length > 1
+        ? activeTurnIndices.at(-2)
+        : activeTurnIndex - 1;
+      const previousTurn = previousTurnIndex >= 0 ? turns[previousTurnIndex] : null;
+
       turns.forEach(turn => {
         turn.classList.toggle('is-chat-debug-active', turn === activeTurn);
         turn.classList.toggle('is-chat-debug-previous', turn === previousTurn);
       });
 
+      const addElementBox = (element, type, id) => {
+        if (!element) return;
+        nextBoxes.push({
+          id,
+          ...getElementBounds(element, metrics),
+          type
+        });
+      };
+
       turns.filter(turn => (
-        turn.classList.contains('is-chat-debug-active') ||
-        turn.classList.contains('is-chat-debug-previous')
+        turn === activeTurn || turn === previousTurn
       )).forEach((turn, turnIndex) => {
+        const artistName = turn.querySelector('.group-chat-artist');
+        if (artistName) {
+          const bounds = getTextBounds(artistName, metrics);
+          if (bounds) {
+            nextBoxes.push({
+              id: `${turnIndex}-artist`,
+              ...bounds,
+              type: 'artist'
+            });
+          }
+        }
+
         const addTextBox = (element, type, elementIndex = 0) => {
           const bounds = element instanceof Element
-            ? getTextBounds(element, overlayRect)
-            : getCombinedTextBounds(element, overlayRect);
-          if (!bounds) return;
-          nextBoxes.push({
-            id: `${turnIndex}-${type}-${elementIndex}`,
-            ...bounds,
-            type
-          });
+            ? getTextBounds(element, metrics)
+            : getCombinedTextBounds(element, metrics);
+          if (bounds) {
+            nextBoxes.push({
+              id: `${turnIndex}-${type}-${elementIndex}`,
+              ...bounds,
+              type
+            });
+          }
         };
 
         const lyricSpans = turn.querySelectorAll('.lyric-text-span');
@@ -90,28 +140,44 @@ const GroupChatDebugOverlay = () => {
           .forEach((element, index) => addTextBox(element, 'pronunciation', index));
 
         const timestamp = turn.querySelector('.group-chat-message-line time');
-        if (timestamp) {
-          const rect = timestamp.getBoundingClientRect();
-          nextBoxes.push({
-            id: `${turnIndex}-timestamp`,
-            top: rect.top - overlayRect.top,
-            left: rect.left - overlayRect.left,
-            width: rect.width,
-            height: rect.height,
-            type: 'timestamp'
-          });
-        }
+        if (timestamp) addElementBox(timestamp, 'timestamp', `${turnIndex}-timestamp`);
       });
 
+      let nextGapLabel = null;
+      if (activeTurn && previousTurn) {
+        const currentStart = Number(activeTurn.dataset.chatLineStart);
+        const previousEnd = Number(previousTurn.dataset.chatLineEnd);
+        if (Number.isFinite(currentStart) && Number.isFinite(previousEnd)) {
+          const gap = currentStart - previousEnd;
+          const previousRect = previousTurn.getBoundingClientRect();
+          const activeRect = activeTurn.getBoundingClientRect();
+          const betweenY = (previousRect.bottom + activeRect.top) / 2;
+          nextGapLabel = {
+            text: gap >= 0
+              ? `Gap: ${gap.toFixed(2)}s`
+              : `Overlap: ${Math.abs(gap).toFixed(2)}s`,
+            left: (metrics.rect.width / metrics.scaleX) / 2,
+            top: Math.max(
+              12,
+              Math.min(
+                metrics.rect.height / metrics.scaleY - 12,
+                (betweenY - metrics.rect.top) / metrics.scaleY
+              )
+            )
+          };
+        }
+      }
+
       setBoxes(nextBoxes);
+      setGapLabel(nextGapLabel);
       frameRef.current = requestAnimationFrame(updateBoxes);
     };
 
     frameRef.current = requestAnimationFrame(updateBoxes);
     return () => {
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     };
-  }, []);
+  }, [activeLineIndicesKey]);
 
   return (
     <div className="group-chat-debug-overlay" ref={overlayRef} aria-hidden="true">
@@ -127,6 +193,14 @@ const GroupChatDebugOverlay = () => {
           }}
         />
       ))}
+      {gapLabel && (
+        <div
+          className="group-chat-debug-gap"
+          style={{ top: `${gapLabel.top}px`, left: `${gapLabel.left}px` }}
+        >
+          {gapLabel.text}
+        </div>
+      )}
     </div>
   );
 };

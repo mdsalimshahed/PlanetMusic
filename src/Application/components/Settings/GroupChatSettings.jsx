@@ -59,7 +59,7 @@ const GroupChatSettings = ({ settings, handleChange, getSliderStyle }) => (
     />
     <SettingSlider
       label="Line Wrap Width"
-      description="Wraps lyric lines when they exceed this percentage of the Group Chat canvas width."
+      description="Sets the maximum lyric line width as a percentage of the Group Chat canvas."
       name="groupChatLineWrapWidth"
       value={settings.groupChatLineWrapWidth ?? 60}
       min={10}

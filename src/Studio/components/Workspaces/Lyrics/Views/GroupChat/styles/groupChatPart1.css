@@ -195,3 +195,29 @@
   gap: calc(1.2 * var(--chat-vh-unit));
   margin-top: auto;
 }
+
+.group-chat-premeasurement {
+  position: absolute;
+  top: 0;
+  left: -100000px;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  visibility: hidden;
+  pointer-events: none;
+  padding: calc(2 * var(--chat-vh-unit)) clamp(
+    calc(var(--chat-horizontal-unit) * 1.4),
+    calc(var(--chat-horizontal-unit) * 4),
+    calc(var(--chat-horizontal-unit) * 4)
+  ) calc(0.8 * var(--chat-vh-unit));
+}
+
+.group-chat-premeasurement .group-chat-history-item {
+  flex: 0 0 auto;
+}
+
+.group-chat-premeasurement .group-chat-message-avatar img {
+  display: none;
+}

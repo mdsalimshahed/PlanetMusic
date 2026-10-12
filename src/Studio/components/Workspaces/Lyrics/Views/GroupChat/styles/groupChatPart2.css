@@ -223,7 +223,7 @@
   overflow: hidden;
   margin-left: calc(var(--chat-bubble-avatar-size) * -0.35);
   font-size: calc(var(--chat-bubble-avatar-size) * 0.32);
-  z-index: calc(var(--avatar-count) - var(--avatar-index));
+  z-index: calc(var(--avatar-index) + 1);
 }
 
 .group-chat-message-avatar:first-child {
@@ -254,6 +254,10 @@
     calc(2.2 * var(--chat-vh-unit)) calc(0.65 * var(--chat-vh-unit));
   background: transparent;
   box-shadow: none;
+}
+
+.group-chat-message:has(.group-chat-message-text.is-wrap-enabled) {
+  width: min(var(--chat-measured-bubble-width, 100%), 100%);
 }
 
 .group-chat-debug-view .group-chat-message {

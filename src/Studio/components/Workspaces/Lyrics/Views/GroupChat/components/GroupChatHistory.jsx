@@ -1,11 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import GroupChatMessageChain from './GroupChatMessageChain.jsx';
-import { getClockTime } from '../utils/groupChatUtils.js';
+import { getClockTime, getLyricLayoutKey } from '../utils/groupChatUtils.js';
 
 const GroupChatHistory = ({
   history,
   playbackTime,
   messageProps,
+  precomputedLayouts,
+  previouslyShownLines,
+  onLineShown,
   containerRef
 }) => {
   const [itemHeights, setItemHeights] = useState(() => new Map());
@@ -140,6 +143,23 @@ const GroupChatHistory = ({
           );
         }
 
+        const isReady = item.events.every(event => {
+          const { line } = event;
+          const lyricLine = line.lyric ||
+            messageProps.liveParsedLyrics[line.sourceIndex ?? line.index] ||
+            { text: line.text };
+          const layout = precomputedLayouts?.get(line.index);
+          return layout?.key === getLyricLayoutKey(
+            line,
+            lyricLine,
+            messageProps.settings,
+            item.side,
+            item.artists.length,
+            messageProps.layoutSignature
+          ) || previouslyShownLines.has(line.index);
+        });
+        if (!isReady) return null;
+
         const id = `chain-${item.events[0].line.index}`;
         const itemHeight = itemHeights.get(id);
         const isCompacted = compactedItems.has(id);
@@ -172,6 +192,8 @@ const GroupChatHistory = ({
                 {...messageProps}
                 group={item}
                 itemIndex={itemIndex}
+                precomputedLayouts={precomputedLayouts}
+                onLineShown={onLineShown}
               />
             )}
           </div>

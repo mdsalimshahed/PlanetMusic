@@ -28,3 +28,21 @@
 .group-chat-debug-box-pronunciation {
   border-color: #f97316;
 }
+
+.group-chat-debug-box-artist {
+  border-color: #66ff8a;
+}
+
+.group-chat-debug-gap {
+  position: absolute;
+  z-index: 2;
+  padding: 3px 6px;
+  border: 1px solid #39e6ff;
+  border-radius: 4px;
+  background: rgba(8, 18, 24, 0.98);
+  color: #d8fbff;
+  font: 600 11px/1.2 var(--font-family, sans-serif);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}

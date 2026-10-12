@@ -81,6 +81,68 @@ test('splits ad-lib-only artists into their own chat bubbles', () => {
   assert.equal(sameArtistGroups.length, 2);
 });
 
+test('omits lyrics and ad-libs without explicit valid start timings', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      { singer: 'Ari', text: 'No timing' },
+      { singer: 'Ari', text: 'Has timing' }
+    ],
+    [
+      {
+        start: '',
+        isSplit: true,
+        adlibs: [{ text: 'also untimed', start: 1 }]
+      },
+      {
+        start: 2,
+        end: 3,
+        isSplit: true,
+        adlibs: [
+          { text: 'null start', start: null },
+          { text: 'missing start' },
+          { text: 'blank start', start: '' },
+          { text: 'boolean start', start: false },
+          { text: 'valid ad-lib', start: 2.5, end: 2.75 }
+        ]
+      }
+    ],
+    'Fallback'
+  );
+  const messages = chat.events.filter(event => event.type === 'message');
+
+  assert.deepEqual(messages.map(event => event.line.text), ['Has timing', 'valid ad-lib']);
+  assert.deepEqual(chat.lines.map(line => line.text), ['Has timing', 'valid ad-lib']);
+});
+
+test('keeps an ad-lib opposite its source lyric even when it starts first', () => {
+  const chat = buildGroupChatTimeline(
+    [{
+      singer: 'Ari',
+      text: 'Lead echo',
+      segments: [{ text: 'Lead echo', artists: ['Ari'] }]
+    }],
+    [{
+      start: 2,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: 'echo',
+        start: 1,
+        end: 1.5,
+        singer: 'Ari',
+        segments: [{ text: 'echo', artists: ['Ari'] }]
+      }]
+    }],
+    'Fallback'
+  );
+  const mainLine = chat.lines.find(line => !line.isAdlib);
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.ok(mainLine);
+  assert.ok(adlib);
+  assert.notEqual(adlib.chatSide, mainLine.chatSide);
+});
+
 test('treats white-marked ad-libs as uncredited without explicit segment attribution', () => {
   const chat = buildGroupChatTimeline(
     [{

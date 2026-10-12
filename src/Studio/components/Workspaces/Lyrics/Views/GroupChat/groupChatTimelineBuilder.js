@@ -3,6 +3,11 @@ import { groupConsecutiveMessages } from './groupChatTimelineGroups.js';
 const PRESENCE_LEAD_SECONDS = 4;
 const PRESENCE_TRAIL_SECONDS = 8.5;
 
+const hasTimestamp = value => (
+  (typeof value === 'number' && Number.isFinite(value)) ||
+  (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value)))
+);
+
 const splitArtists = (singer, fallbackArtist) => {
   const names = (singer || fallbackArtist || '').split(/\s*(?:,|&|\band\b|\+)\s*/i);
   return [...new Set(names.map(name => name.trim()).filter(Boolean))];
@@ -58,10 +63,10 @@ const getSegmentArtists = (segments, excludedRanges = []) => {
 export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette = {}) => {
   const lines = (lyrics || []).flatMap((lyric, index) => {
     const sync = syncData?.[index];
-    if (sync?.start == null || !Number.isFinite(Number(sync.start))) return [];
+    if (!hasTimestamp(sync?.start)) return [];
 
     const start = Number(sync.start);
-    const end = sync.end != null && Number.isFinite(Number(sync.end)) && Number(sync.end) >= start
+    const end = hasTimestamp(sync.end) && Number(sync.end) >= start
       ? Number(sync.end)
       : start;
 
@@ -90,8 +95,9 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
     }];
 
     adlibs.forEach((adlib, adlibIndex) => {
-      const adlibStart = Number.isFinite(Number(adlib.start)) ? Number(adlib.start) : start;
-      const adlibEnd = Number.isFinite(Number(adlib.end)) && Number(adlib.end) >= adlibStart
+      if (!hasTimestamp(adlib.start)) return;
+      const adlibStart = Number(adlib.start);
+      const adlibEnd = hasTimestamp(adlib.end) && Number(adlib.end) >= adlibStart
         ? Number(adlib.end)
         : adlibStart;
       const adlibArtists = getAdlibArtists(adlib, palette);

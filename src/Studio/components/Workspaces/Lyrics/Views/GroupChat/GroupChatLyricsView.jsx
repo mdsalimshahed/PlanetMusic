@@ -1,10 +1,17 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import {
   buildGroupChatHistory,
   buildGroupChatTimeline
 } from '../groupChatTimeline.js';
 import GroupChatHeader from './components/GroupChatHeader.jsx';
 import GroupChatHistory from './components/GroupChatHistory.jsx';
+import GroupChatMessageChain from './components/GroupChatMessageChain.jsx';
 import GroupChatTypingIndicator from './components/GroupChatTypingIndicator.jsx';
 import GroupChatDebugOverlay from '../../../../../../Application/components/GroupChatDebug/GroupChatDebugOverlay.jsx';
 import useGroupChatPlayback from './hooks/useGroupChatPlayback.js';
@@ -30,6 +37,9 @@ const GroupChatLyricsView = ({
   const chatRef = useRef(null);
   const chatLayoutRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
+  const [precomputedLayouts, setPrecomputedLayouts] = useState(() => new Map());
+  const [previouslyShownLines, setPreviouslyShownLines] = useState(() => new Set());
+  const [layoutSignature, setLayoutSignature] = useState('');
   const timeline = useMemo(() => buildGroupChatTimeline(
     liveParsedLyrics,
     selectedSong?.syncData,
@@ -60,10 +70,7 @@ const GroupChatLyricsView = ({
 
     const updateScale = () => {
       const bounds = chat.getBoundingClientRect();
-      const width = Math.max(
-        0,
-        Math.min(bounds.right, window.innerWidth) - Math.max(bounds.left, 0)
-      );
+      const width = bounds.width;
       const splitRatio = Number.parseFloat(
         getComputedStyle(chat).getPropertyValue('--dyn-modal-split')
       );
@@ -73,12 +80,16 @@ const GroupChatLyricsView = ({
       const designHeight = width / designAspectRatio;
       const verticalUnit = designHeight / 100;
       const horizontalUnit = verticalUnit * (16 / 9);
+      const nextSignature = `${width.toFixed(2)}:${verticalUnit.toFixed(4)}:${horizontalUnit.toFixed(4)}`;
 
       layout.style.width = '100%';
       layout.style.height = '100%';
       layout.style.transform = 'none';
       chat.style.setProperty('--chat-vh-unit', `${verticalUnit}px`);
       chat.style.setProperty('--chat-horizontal-unit', `${horizontalUnit}px`);
+      setLayoutSignature(previous => (
+        previous === nextSignature ? previous : nextSignature
+      ));
     };
 
     const observer = new ResizeObserver(updateScale);
@@ -119,8 +130,34 @@ const GroupChatLyricsView = ({
     playbackEnded: playback.playbackEnded,
     handleLineClick,
     playbackTime: playback.playbackTime,
-    isPlayingCurrentSong
+    isPlayingCurrentSong,
+    layoutSignature
   };
+  const handleLayoutReady = useCallback((lineIndex, key, layout) => {
+    setPrecomputedLayouts(previous => {
+      const current = previous.get(lineIndex);
+      if (
+        current?.key === key &&
+        current.enabled === layout.enabled &&
+        current.width === layout.width &&
+        current.renderedGlyphWidth === layout.renderedGlyphWidth &&
+        current.translationReferenceWidth === layout.translationReferenceWidth &&
+        current.translationReferenceOffset === layout.translationReferenceOffset &&
+        current.bubbleWidth === layout.bubbleWidth
+      ) return previous;
+      const next = new Map(previous);
+      next.set(lineIndex, { ...layout, key });
+      return next;
+    });
+  }, []);
+  const handleLineShown = useCallback(lineIndex => {
+    setPreviouslyShownLines(previous => {
+      if (previous.has(lineIndex)) return previous;
+      const next = new Set(previous);
+      next.add(lineIndex);
+      return next;
+    });
+  }, []);
   return (
     <section
       className={`group-chat${showDebug ? ' group-chat-debug-view' : ''}${settings?.disableAnimations ? ' group-chat-no-motion' : ''}`}
@@ -165,9 +202,35 @@ const GroupChatLyricsView = ({
               history={history}
               playbackTime={playback.playbackTime}
               messageProps={messageProps}
+              precomputedLayouts={precomputedLayouts}
+              previouslyShownLines={previouslyShownLines}
+              onLineShown={handleLineShown}
               containerRef={chatRef}
             />
           </div>
+        </div>
+        <div className="group-chat-premeasurement" aria-hidden="true">
+          {timeline.events.map((event, itemIndex) => {
+            if (event.type !== 'message') return null;
+            const group = {
+              side: event.line.chatSide || 'left',
+              artists: event.line.artists,
+              events: [event]
+            };
+            return (
+              <div className="group-chat-history-item" key={event.line.index}>
+                <GroupChatMessageChain
+                  {...messageProps}
+                  group={group}
+                  itemIndex={itemIndex}
+                  showDebug={false}
+                  isPremeasurement
+                  onLayoutReady={handleLayoutReady}
+                  layoutSignature={layoutSignature}
+                />
+              </div>
+            );
+          })}
         </div>
         <div
           className="group-chat-typing-footer"
@@ -182,7 +245,9 @@ const GroupChatLyricsView = ({
             />
           )}
         </div>
-        {showDebug && <GroupChatDebugOverlay />}
+        {showDebug && (
+          <GroupChatDebugOverlay activeLineIndices={activeLineIndices} />
+        )}
       </div>
     </section>
   );

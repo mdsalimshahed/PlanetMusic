@@ -3,6 +3,39 @@ export const getClockTime = (eventTime, playbackTime) => {
   return timestamp.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 };
 
+export const getLyricLayoutKey = (
+  line,
+  lyricLine,
+  settings,
+  side,
+  artistCount,
+  layoutSignature
+) =>
+  JSON.stringify([
+    line.index,
+    line.text,
+    line.translation,
+    line.pronunciation,
+    line.lyric?.text,
+    line.lyric?.translation,
+    line.lyric?.pronunciation,
+    line.lyric?.segments?.map(segment => [
+      segment.text,
+      segment.color,
+      segment.artists
+    ]),
+    line.savedNode?.translation,
+    line.savedNode?.pronunciation,
+    line.isAdlib,
+    side,
+    artistCount,
+    settings?.groupChatLyricFontSize ?? 2.2,
+    settings?.groupChatLineWrapWidth ?? 60,
+    settings?.groupChatBubbleAvatarSize ?? 4.25,
+    settings?.groupChatTimestampSize ?? 1.125,
+    layoutSignature
+  ]);
+
 export const getInitials = name => name
   .split(/\s+/)
   .filter(Boolean)

@@ -74,16 +74,27 @@ const GroupChatLyricText = React.memo(({
   isPlayingCurrentSong,
   lyricFontSize,
   lineWrapWidthPercent,
-  excludeAdlibs = true
+  excludeAdlibs = true,
+  precomputedLayout,
+  onLayoutReady,
+  layoutKey,
+  lineIndex
 }) => {
   const textRef = useRef(null);
-  const [renderedGlyphWidth, setRenderedGlyphWidth] = useState(0);
-  const [translationReferenceWidth, setTranslationReferenceWidth] = useState(0);
-  const [translationReferenceOffset, setTranslationReferenceOffset] = useState(0);
+  const [renderedGlyphWidth, setRenderedGlyphWidth] = useState(
+    () => precomputedLayout?.renderedGlyphWidth || 0
+  );
+  const [translationReferenceWidth, setTranslationReferenceWidth] = useState(
+    () => precomputedLayout?.translationReferenceWidth || 0
+  );
+  const [translationReferenceOffset, setTranslationReferenceOffset] = useState(
+    () => precomputedLayout?.translationReferenceOffset || 0
+  );
   const [wrapLayout, setWrapLayout] = useState({
-    enabled: false,
-    width: 0
+    enabled: precomputedLayout?.enabled || false,
+    width: precomputedLayout?.width || 0
   });
+  const [measuredLayoutKey, setMeasuredLayoutKey] = useState(null);
   const isRTL = isRTLLanguage(line.text || '');
   const stripParentheses = value =>
     typeof value === 'string' ? value.replace(/[()（）]/g, '') : value;
@@ -99,9 +110,20 @@ const GroupChatLyricText = React.memo(({
   } : savedNode;
 
   useLayoutEffect(() => {
+    if (!precomputedLayout) return;
+    setRenderedGlyphWidth(precomputedLayout.renderedGlyphWidth);
+    setTranslationReferenceWidth(precomputedLayout.translationReferenceWidth);
+    setTranslationReferenceOffset(precomputedLayout.translationReferenceOffset);
+    setWrapLayout({
+      enabled: precomputedLayout.enabled,
+      width: precomputedLayout.width
+    });
+  }, [precomputedLayout]);
+
+  useLayoutEffect(() => {
     const element = textRef.current;
     const canvas = element?.closest('.group-chat');
-    if (!element || !canvas) return undefined;
+    if (!element || !canvas || !onLayoutReady) return undefined;
 
     const measureGlyphLayout = () => withStableScroll(element, () => {
       const layoutScale = getLayoutScale(element);
@@ -155,6 +177,7 @@ const GroupChatLyricText = React.memo(({
           ? previous
           : { enabled: shouldWrap, width: wrapWidth }
       ));
+      setMeasuredLayoutKey(layoutKey);
     });
 
     const initialMeasureFrame = window.requestAnimationFrame(measureGlyphLayout);
@@ -174,11 +197,18 @@ const GroupChatLyricText = React.memo(({
       document.fonts.removeEventListener('loadingdone', measureGlyphLayout);
       element.classList.remove('is-measuring-glyphs');
     };
-  }, [line, savedNode, lineWrapWidthPercent, lyricFontSize]);
+  }, [
+    line,
+    savedNode,
+    lineWrapWidthPercent,
+    lyricFontSize,
+    layoutKey,
+    onLayoutReady
+  ]);
 
   useLayoutEffect(() => {
     const element = textRef.current;
-    if (!element) return;
+    if (!element || precomputedLayout) return;
 
     const layoutScale = getLayoutScale(element);
     const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
@@ -186,12 +216,56 @@ const GroupChatLyricText = React.memo(({
     setRenderedGlyphWidth(previous => (
       Math.abs(previous - width) < 1 ? previous : width
     ));
-  }, [wrapLayout.enabled, wrapLayout.width, line, savedNode, lyricFontSize]);
+  }, [
+    wrapLayout.enabled,
+    wrapLayout.width,
+    line,
+    savedNode,
+    lyricFontSize,
+    precomputedLayout
+  ]);
+
+  useLayoutEffect(() => {
+    const element = textRef.current;
+    const message = element?.closest('.group-chat-message');
+    if (!element || !message) return;
+    if (precomputedLayout) return;
+
+    if (!wrapLayout.enabled) {
+      message.style.removeProperty('--chat-measured-bubble-width');
+      return;
+    }
+
+    const layoutScale = getLayoutScale(element);
+    const timestamp = message.querySelector('.group-chat-message-line time');
+    const messageStyles = getComputedStyle(message);
+    const textContentWidth = getMaxTextLineWidth([
+      ...element.querySelectorAll(
+        '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
+      )
+    ]);
+    const contentWidth = Math.max(
+      textContentWidth,
+      timestamp?.getBoundingClientRect().width || 0
+    ) / layoutScale;
+    const horizontalPadding =
+      (parseFloat(messageStyles.paddingLeft) || 0) +
+      (parseFloat(messageStyles.paddingRight) || 0);
+    message.style.setProperty(
+      '--chat-measured-bubble-width',
+      `${Math.ceil(contentWidth + horizontalPadding)}px`
+    );
+  }, [
+    precomputedLayout,
+    renderedGlyphWidth,
+    wrapLayout.enabled,
+    wrapLayout.width
+  ]);
 
   useLayoutEffect(() => {
     const element = textRef.current;
     const translation = element?.querySelector('.chunk-translation');
-    if (!element || !translation) return;
+    if (!element || !translation || precomputedLayout) return;
 
     const anchorBounds = getMaxTextLineBounds([
       ...element.querySelectorAll(
@@ -225,7 +299,37 @@ const GroupChatLyricText = React.memo(({
     wrapLayout.width,
     line,
     savedNode,
-    lyricFontSize
+    lyricFontSize,
+    precomputedLayout
+  ]);
+
+  useLayoutEffect(() => {
+    if (
+      measuredLayoutKey !== layoutKey ||
+      !wrapLayout.width ||
+      !onLayoutReady
+    ) return;
+    const message = textRef.current?.closest('.group-chat-message');
+    onLayoutReady(lineIndex, layoutKey, {
+      enabled: wrapLayout.enabled,
+      width: wrapLayout.width,
+      renderedGlyphWidth,
+      translationReferenceWidth,
+      translationReferenceOffset,
+      bubbleWidth: Number.parseFloat(
+        message?.style.getPropertyValue('--chat-measured-bubble-width')
+      ) || 0
+    });
+  }, [
+    layoutKey,
+    measuredLayoutKey,
+    lineIndex,
+    onLayoutReady,
+    renderedGlyphWidth,
+    translationReferenceOffset,
+    translationReferenceWidth,
+    wrapLayout.enabled,
+    wrapLayout.width
   ]);
 
   const renderClassName = [

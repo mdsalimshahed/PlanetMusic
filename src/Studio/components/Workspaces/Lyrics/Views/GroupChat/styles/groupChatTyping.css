@@ -76,7 +76,7 @@
   aspect-ratio: 1 / 1;
   margin-right: calc(var(--typing-avatar-overlap) * -1);
   font-size: calc(var(--typing-avatar-size) * 0.375);
-  z-index: calc(var(--avatar-count) - var(--avatar-index));
+  z-index: calc(var(--avatar-index) + 1);
 }
 
 /* Let the live avatars close the gap immediately while the departing one fades
@@ -85,7 +85,7 @@
   position: absolute;
   top: 0;
   left: calc(var(--avatar-index) * (var(--typing-avatar-size) - var(--typing-avatar-overlap)));
-  z-index: calc(var(--avatar-count) + 1);
+  z-index: calc(var(--avatar-index) + 1);
   margin-right: 0;
   pointer-events: none;
 }
