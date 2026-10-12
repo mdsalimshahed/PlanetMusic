@@ -6,13 +6,17 @@ const ConsentNotice = () => {
 
   useEffect(() => {
     const consent = localStorage.getItem('planetmusic_site_consent');
-    if (!consent) {
+    if (consent !== 'true' && consent !== 'false') {
       setIsVisible(true);
     }
+
+    const showAdChoice = () => setIsVisible(true);
+    window.addEventListener('planetmusic-open-ad-choice', showAdChoice);
+    return () => window.removeEventListener('planetmusic-open-ad-choice', showAdChoice);
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem('planetmusic_site_consent', 'true');
+  const saveAdChoice = (allowed) => {
+    localStorage.setItem('planetmusic_site_consent', String(allowed));
     window.dispatchEvent(new Event('planetmusic-site-consent-changed'));
     setIsVisible(false);
   };
@@ -20,7 +24,7 @@ const ConsentNotice = () => {
   if (!isVisible) return null;
 
   return (
-    <div style={{
+    <div role="group" aria-label="Advertising choice" style={{
       position: 'fixed',
       bottom: '24px',
       left: '50%',
@@ -41,10 +45,10 @@ const ConsentNotice = () => {
       justifyContent: 'center'
     }}>
       <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.5, textAlign: 'center' }}>
-        We use site data to personalize content, serve targeted sponsorships, and analyze our traffic. By using PlanetMusic, you consent to our terms.
+        Choose whether Google AdSense may load in this browser. Read our <a href="/privacy" style={{ color: '#fff' }}>privacy information</a>.
       </p>
       <button 
-        onClick={handleAccept}
+        onClick={() => saveAdChoice(true)}
         style={{
           background: '#fbbf24',
           color: 'black',
@@ -56,7 +60,22 @@ const ConsentNotice = () => {
           whiteSpace: 'nowrap'
         }}
       >
-        Got it
+        Allow Google ads
+      </button>
+      <button
+        onClick={() => saveAdChoice(false)}
+        style={{
+          background: 'transparent',
+          color: 'white',
+          border: '1px solid rgba(255, 255, 255, 0.35)',
+          padding: '8px 20px',
+          borderRadius: '500px',
+          fontWeight: 700,
+          cursor: 'pointer',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        Continue without ads
       </button>
     </div>
   );

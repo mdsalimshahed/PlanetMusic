@@ -11,6 +11,7 @@ import './Application/components/Core/SampleVault.css';
 
 import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
+import HomeGuide from './Application/components/Core/HomeGuide.jsx';
 import SongModal from './Application/components/Modals/SongModal.jsx';
 import Player from './Studio/components/Player/Player.jsx';
 
@@ -135,6 +136,7 @@ const App = () => {
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
                     pathParts[0] === 'contact' ? 'contact' : 
+                    pathParts[0] === 'vault' ? 'vault' :
                     pathParts[0] === 'ambient' ? 'ambient' :
                     pathParts[0] === 'zen' ? 'zen' : 'main';
                     
@@ -143,6 +145,16 @@ const App = () => {
   // Extract ?q= search parameter from URL for bookmarking
   const queryParams = new URLSearchParams(location.search);
   const urlSearchQuery = queryParams.get('q') || '';
+
+  useEffect(() => {
+    if (location.pathname === '/' && urlSearchQuery) {
+      navigate(`/vault?q=${encodeURIComponent(urlSearchQuery)}`, { replace: true });
+    }
+  }, [location.pathname, urlSearchQuery, navigate]);
+
+  useEffect(() => {
+    if (activeTab === 'vault') searchBoxRef.current?.querySelector('input')?.focus();
+  }, [activeTab]);
 
   // 1. Initialize Base Storage & Memory
   const {
@@ -216,7 +228,7 @@ const App = () => {
   const toggleZenMode = () => {
     if (isZenMode) {
       zenSessionActiveRef.current = false;
-      navigate('/');
+      navigate('/vault');
       return;
     }
 
@@ -302,7 +314,7 @@ const App = () => {
   useEffect(() => {
     if (searchQuery.trim() !== '' && (isAmbientMode || isZenMode)) {
       const qParam = `?q=${encodeURIComponent(searchQuery.trim())}`;
-      navigate(`/${qParam}`);
+      navigate(`/vault${qParam}`);
     }
   }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
@@ -310,7 +322,7 @@ const App = () => {
   const toggleAmbientMode = () => {
     if (isAmbientMode) {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      navigate(`/${qParam}`);
+      navigate(`/vault${qParam}`);
     } else {
       navigate('/ambient');
     }
@@ -320,10 +332,13 @@ const App = () => {
   const handleSetSelectedSong = (song) => {
     if (song) {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      navigate(`/song/${song.trackId}/live${qParam}`);
+      navigate(`/song/${song.trackId}/live${qParam}`, {
+        state: { returnPath: activeTab === 'vault' ? '/vault' : '/' }
+      });
     } else {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      const tabPath = activeTab === 'main' ? `/${qParam}` : `/${activeTab}${qParam}`;
+      const returnPath = location.state?.returnPath || '/';
+      const tabPath = `${returnPath}${qParam}`;
       navigate(tabPath);
     }
     setSelectedSong(song);
@@ -340,6 +355,12 @@ const App = () => {
     setIsExplicitSearch(false);
     navigate('/');
   };
+
+  const renderHomeView = () => (
+    <section className="view-section">
+      <HomeGuide />
+    </section>
+  );
 
   // 2. Deep Linking Engine
   useDeepLink({ urlTrackId, library, searchResults, selectedSong, setSelectedSong });
@@ -587,8 +608,8 @@ const App = () => {
       />
 
       <main className="main-content">
-        {(activeTab === 'main' || activeTab === 'ambient' || isZenMode) && (
-          <div className={`search-container ${activeTab !== 'main' ? 'ambient-search-entry' : ''}`}>
+        {(activeTab === 'vault' || activeTab === 'ambient' || isZenMode) && (
+          <div className={`search-container ${activeTab !== 'vault' ? 'ambient-search-entry' : ''}`}>
             <form ref={searchBoxRef} onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
               <span className="search-box-shine" aria-hidden="true" />
               <svg className="search-box-orbit" viewBox={`0 0 ${searchOrbitSize.width} ${searchOrbitSize.height}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -626,10 +647,11 @@ const App = () => {
           </div>
         )}
 
-        <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'main' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
+        <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'vault' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
           <Routes>
-            <Route path="/" element={renderDashboardView()} />
+            <Route path="/" element={renderHomeView()} />
+            <Route path="/vault" element={renderDashboardView()} />
             <Route path="/ambient" element={renderDashboardView()} />
             <Route path="/zen" element={renderDashboardView()} />
             

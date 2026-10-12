@@ -9,7 +9,7 @@ export const useCosmosSearch = ({
 }) => {
   const [isSearching, setIsSearching] = useState(false);
 
-  const filteredLibrary = activeTab === 'main' && searchQuery.trim() 
+  const filteredLibrary = activeTab === 'vault' && searchQuery.trim()
     ? filterAndSortByTitleMatch(library, searchQuery)
     : library;
 
@@ -135,17 +135,17 @@ export const useCosmosSearch = ({
   };
 
   useEffect(() => {
-    if (activeTab !== 'main') return;
+    if (activeTab !== 'vault') return;
     if (!searchQuery.trim()) {
       setSearchResults([]);
       setIsExplicitSearch(false);
-      if (urlSearchQuery) navigate('/', { replace: true });
+      if (urlSearchQuery) navigate('/vault', { replace: true });
       return;
     }
     setIsExplicitSearch(false);
     
     if (searchQuery.trim() !== urlSearchQuery) {
-      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`, { replace: true });
+      navigate(`/vault?q=${encodeURIComponent(searchQuery.trim())}`, { replace: true });
     }
 
     if (filteredLibrary.length > 0) {
@@ -166,7 +166,7 @@ export const useCosmosSearch = ({
     e.preventDefault();
     if (!searchQuery.trim()) return;
     setIsExplicitSearch(true);
-    navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+    navigate(`/vault?q=${encodeURIComponent(searchQuery.trim())}`);
     performOnlineSearch(searchQuery);
   };
 

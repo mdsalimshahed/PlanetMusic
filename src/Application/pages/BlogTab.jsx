@@ -7,6 +7,7 @@ import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
 import ConfirmModal from '../components/Modals/ConfirmModal.jsx';
 import { renderMarkdown } from '../utils/markdownUtils.jsx';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
+import BlogPostArtwork from './BlogPostArtwork.jsx';
 
 const Icon = ({ name, size = 18 }) => {
   const props = {
@@ -601,6 +602,7 @@ const BlogTab = ({ adsEnabled }) => {
                   <p className="blog-article-byline">By {activePost.isCustom ? (activePost.author || 'You') : 'PlanetMusic'}</p>
                 )}
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
+                {!activePost.heroImage && <BlogPostArtwork post={activePost} className="blog-article-artwork" />}
               </header>
 
               {activePost.tags && activePost.tags.length > 0 && (
@@ -825,6 +827,7 @@ const BlogTab = ({ adsEnabled }) => {
                       <div className="blog-card-wrapper" data-blog-card-id={String(post.id)}>
                           <Link to={`/blog/post/${post.id}`} className="blog-card">
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
+                            {!post.heroImage && <BlogPostArtwork post={post} className="blog-card-artwork" />}
                             <div className="blog-card-top">
                               <span className="blog-category-badge">{post.category}</span>
                               <span className="blog-read-time">{post.readTime}</span>

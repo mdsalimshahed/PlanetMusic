@@ -491,6 +491,164 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.blog-post-artwork {
+  --art-primary: #be91ff;
+  --art-secondary: #f0a0ed;
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background:
+    radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--art-primary) 19%, transparent), transparent 67%),
+    #111014;
+}
+
+.blog-post-artwork::before {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.36) 0.7px, transparent 0.7px);
+  background-size: 24px 24px;
+  content: "";
+  opacity: 0.2;
+  mask-image: linear-gradient(115deg, transparent 8%, #000);
+}
+
+.blog-post-artwork svg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.blog-post-artwork .blog-art-glow {
+  fill: var(--art-primary);
+  opacity: 0.08;
+}
+
+.blog-post-artwork .blog-art-orbit {
+  fill: none;
+  stroke: var(--art-primary);
+  stroke-opacity: 0.16;
+  stroke-width: 1;
+}
+
+.blog-post-artwork .blog-art-orbit-secondary {
+  stroke: var(--art-secondary);
+  stroke-opacity: 0.11;
+}
+
+.blog-post-artwork .blog-art-star {
+  fill: #fff;
+  opacity: 0.65;
+}
+
+.blog-post-artwork .blog-art-detail > path,
+.blog-post-artwork .blog-art-detail > circle,
+.blog-post-artwork .blog-art-detail > rect {
+  fill: rgba(255, 255, 255, 0.025);
+  stroke: rgba(255, 255, 255, 0.62);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.blog-post-artwork .blog-art-detail > path {
+  fill: none;
+}
+
+.blog-post-artwork .blog-art-detail > .blog-art-accent-line,
+.blog-post-artwork .blog-art-detail > .blog-art-accent-stroke {
+  stroke: var(--art-primary);
+}
+
+.blog-post-artwork .blog-art-detail > .blog-art-secondary-line,
+.blog-post-artwork .blog-art-detail > .blog-art-secondary-stroke {
+  stroke: var(--art-secondary);
+}
+
+.blog-post-artwork .blog-art-detail > .blog-art-accent-fill {
+  fill: var(--art-primary);
+  stroke: var(--art-primary);
+}
+
+.blog-post-artwork .blog-art-detail > .blog-art-secondary-fill {
+  fill: var(--art-secondary);
+  stroke: var(--art-secondary);
+}
+
+.blog-post-artwork .blog-art-detail > text {
+  fill: #fff;
+  font-family: inherit;
+  font-size: 37px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.blog-post-artwork[data-art-theme="audio"],
+.blog-post-artwork[data-art-theme="equalizer"],
+.blog-post-artwork[data-art-theme="delay"] {
+  --art-primary: #a58aff;
+  --art-secondary: #7edbff;
+}
+
+.blog-post-artwork[data-art-theme="lyrics"],
+.blog-post-artwork[data-art-theme="sync"],
+.blog-post-artwork[data-art-theme="adlibs"],
+.blog-post-artwork[data-art-theme="group"] {
+  --art-primary: #d08aff;
+  --art-secondary: #ff9ed6;
+}
+
+.blog-post-artwork[data-art-theme="translation"],
+.blog-post-artwork[data-art-theme="language"],
+.blog-post-artwork[data-art-theme="export"] {
+  --art-primary: #f19be2;
+  --art-secondary: #b79cff;
+}
+
+.blog-post-artwork[data-art-theme="backup"],
+.blog-post-artwork[data-art-theme="vault"],
+.blog-post-artwork[data-art-theme="search"] {
+  --art-primary: #a98aff;
+  --art-secondary: #77c8ff;
+}
+
+.blog-post-artwork[data-art-theme="artist"],
+.blog-post-artwork[data-art-theme="layout"],
+.blog-post-artwork[data-art-theme="creator"] {
+  --art-primary: #ff9ccf;
+  --art-secondary: #a991ff;
+}
+
+.blog-post-artwork[data-art-theme="ambient"] {
+  --art-primary: #87d7ff;
+  --art-secondary: #d69bff;
+}
+
+.blog-post-artwork[data-art-theme="mobile"],
+.blog-post-artwork[data-art-theme="support"],
+.blog-post-artwork[data-art-theme="troubleshoot"] {
+  --art-primary: #9be1cc;
+  --art-secondary: #a0adff;
+}
+
+.blog-card-artwork {
+  width: 100%;
+  height: 150px;
+  flex: 0 0 auto;
+  border-radius: calc(var(--dyn-border-radius, 16px) - 6px);
+  margin-bottom: 18px;
+}
+
+.blog-article-artwork {
+  width: 100%;
+  height: clamp(180px, 34vw, 300px);
+  border-radius: var(--dyn-border-radius, 16px);
+  margin-top: 22px;
+}
+
 .blog-card-top {
   display: flex;
   justify-content: space-between;

@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
+import BlogPostArtwork from './BlogPostArtwork.jsx';
 
 const FEEDBACK_FRAME_NAME = 'feedback-submit-frame';
 const DEFAULT_FEEDBACK_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsgSeL4WumbQNVFc9goFRjiEyUtZldk0IOyhwaB2Pnj0lxRtDKZ_k5Govq7qbWNzZg/exec';
@@ -136,10 +137,20 @@ const ContactTab = ({ adsEnabled }) => {
         <div className="contact-main-content">
           
           <div className="contact-hero glass-panel">
-            <h1 className="contact-hero-title" style={{ backgroundImage: getProceduralGradient('contact:heading') }}>Get in Touch</h1>
-            <p className="contact-hero-sub">
-              Have a question, feedback, or a legal inquiry? We’re here to help.
-            </p>
+            <div className="contact-hero-copy">
+              <h1 className="contact-hero-title" style={{ backgroundImage: getProceduralGradient('contact:heading') }}>Get in Touch</h1>
+              <p className="contact-hero-sub">
+                Have a question, feedback, or a legal inquiry? We’re here to help.
+              </p>
+            </div>
+            <BlogPostArtwork
+              post={{
+                id: 'how-to-contact-us-get-support',
+                category: 'Support',
+                title: 'Get in touch'
+              }}
+              className="contact-hero-artwork"
+            />
           </div>
 
           <div className="contact-card-body glass-panel">

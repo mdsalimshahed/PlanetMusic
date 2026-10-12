@@ -95,6 +95,15 @@ const Topbar = ({
             Home
           </Link>
 
+          <Link
+            to="/vault"
+            className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
+            aria-current={activeTab === 'vault' ? 'page' : undefined}
+            style={{ textDecoration: 'none' }}
+          >
+            Vault
+          </Link>
+
           <button
             type="button"
             className={`nav-btn ${isZenMode ? 'active' : ''}`}

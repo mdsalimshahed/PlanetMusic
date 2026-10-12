@@ -1,0 +1,39 @@
+# PlanetMusic
+
+> PlanetMusic is a browser-based workspace for organizing a personal music library, editing and timing lyrics, and keeping translation and transliteration notes.
+
+PlanetMusic is an editing and organization tool, not a licensed music catalog or a music streaming service. It does not require an account or automatically synchronize a library between devices. Saved library data and settings are stored in the current browser; users can export a JSON backup. Locally added audio files are not included in that backup.
+
+Features include:
+
+- A personal Vault for saved tracks and library details.
+- A Sync Workspace for editing lyrics and assigning playback timings.
+- Live, Focused, and Group Chat lyric display modes.
+- A Translation Workspace for original text, translations, and phonetic readings.
+- A browser-based Creator Studio for personal notes and custom articles.
+- Ambient and Zen listening views for tracks available in the user's Vault.
+
+Catalog lookup, translation, lyrics lookup, and playback may use third-party services. Availability and results depend on those services and the selected audio source. Lyrics, translations, transliterations, track metadata, and timing data may be incomplete or inaccurate and should be reviewed by the user.
+
+## Official pages
+
+- [Home](https://planetmusic.pages.dev/): Product overview and getting-started workflow.
+- [Vault](https://planetmusic.pages.dev/vault): Track search and personal library workspace.
+- [Privacy](https://planetmusic.pages.dev/privacy): Browser storage, external services, and advertising choices.
+- [Contact](https://planetmusic.pages.dev/contact): Support and corrections.
+- [Guides](https://planetmusic.pages.dev/blog/dev): Product guides and how-to articles.
+- [Changelog](https://planetmusic.pages.dev/blog/changelog): Development updates.
+- [June 2026 changelog](https://planetmusic.pages.dev/blog/changelog/june-2026)
+- [July 2026 changelog](https://planetmusic.pages.dev/blog/changelog/july-2026)
+- [August 2026 changelog](https://planetmusic.pages.dev/blog/changelog/august-2026)
+- [September 2026 changelog](https://planetmusic.pages.dev/blog/changelog/september-2026)
+- [October 2026 changelog](https://planetmusic.pages.dev/blog/changelog/october-2026)
+- [Sitemap](https://planetmusic.pages.dev/sitemap.xml): Public page URLs.
+
+## Selected guides
+
+- [Search and save songs](https://planetmusic.pages.dev/blog/post/how-to-search-and-save-songs-to-your-vault)
+- [Sync lyrics with music](https://planetmusic.pages.dev/blog/post/how-to-sync-songs-with-music)
+- [Use the Translation Workspace](https://planetmusic.pages.dev/blog/post/complete-guide-to-the-translation-workspace)
+- [Store data and make backups](https://planetmusic.pages.dev/blog/post/data-storage-backups-purge-button)
+- [Understand playback sources](https://planetmusic.pages.dev/blog/post/how-player-audio-streams-custom-links-work)
