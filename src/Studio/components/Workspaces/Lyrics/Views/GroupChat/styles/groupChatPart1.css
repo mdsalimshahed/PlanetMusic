@@ -73,8 +73,7 @@
 }
 
 .group-chat-avatar,
-.group-chat-message-avatar,
-.group-chat-typing-avatar {
+.group-chat-message-avatar {
   position: relative;
   display: grid;
   flex: 0 0 auto;
@@ -110,14 +109,12 @@
 }
 
 .group-chat[data-avatar-ring="false"] .group-chat-avatar,
-.group-chat[data-avatar-ring="false"] .group-chat-message-avatar,
-.group-chat[data-avatar-ring="false"] .group-chat-typing-avatar {
+.group-chat[data-avatar-ring="false"] .group-chat-message-avatar {
   outline: none;
 }
 
 .group-chat-avatar img,
-.group-chat-message-avatar img,
-.group-chat-typing-avatar img {
+.group-chat-message-avatar img {
   position: absolute;
   inset: 0;
   width: 100%;

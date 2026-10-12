@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Group chat typing indicator  ("A, B typing" + avatar cluster)
+
+   ONE animation for everything (row, every avatar, every name):
+     appear    = FADE UP   from below
+     disappear = FADE DOWN to below
+   Nothing slides, grows or shrinks. A leaving artist stays exactly where it is
+   while it fades down, then is removed. A new artist takes its place at once
+   and fades up there.
+
+   All timings, easings and distances live in the variables below (the JS exit
+   timer reads --typing-exit-ms from here too).
+   ========================================================================== */
+
+.group-chat-typing {
+  --typing-enter-ms: 260;
+  --typing-exit-ms: 180;
+  --typing-enter-time: calc(var(--typing-enter-ms) * 1ms);
+  --typing-exit-time: calc(var(--typing-exit-ms) * 1ms);
+  --typing-enter-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --typing-exit-ease: ease-in;
+  /* How far everything travels while fading (up from / down to below). */
+  --typing-travel: 8px;
+  --typing-avatar-size: 24px;
+  --typing-avatar-overlap: 6px;
+
+  display: flex;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-self: stretch;
+  min-width: 0;
+  max-width: 100%;
+  color: rgba(228, 237, 239, 0.72);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ---- whole row (first artist appears / last artist stops) ---------------- */
+
+.group-chat-typing.is-visible {
+  animation: group-chat-typing-enter var(--typing-enter-time) var(--typing-enter-ease) both;
+}
+
+.group-chat-typing.is-exiting {
+  animation: group-chat-typing-exit var(--typing-exit-time) var(--typing-exit-ease) both;
+  pointer-events: none;
+}
+
+/* ---- avatar cluster ------------------------------------------------------- */
+
+.group-chat-typing-avatars {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0 var(--typing-avatar-overlap);
+}
+
+/* The slot only controls layout (size, overlap, stacking). */
+.group-chat-typing-avatar {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: var(--typing-avatar-size);
+  height: var(--typing-avatar-size);
+  margin-right: calc(var(--typing-avatar-overlap) * -1);
+  font-size: 9px;
+  z-index: calc(var(--avatar-count) - var(--avatar-index));
+}
+
+/* Let the live avatars close the gap immediately while the departing one fades
+   from its former cluster position. */
+.group-chat-typing-avatar.is-exiting {
+  position: absolute;
+  top: 0;
+  left: calc(var(--avatar-index) * (var(--typing-avatar-size) - var(--typing-avatar-overlap)));
+  z-index: calc(var(--avatar-count) + 1);
+  margin-right: 0;
+  pointer-events: none;
+}
+
+/* The visual is the circle you actually see; it is what fades. */
+.group-chat-typing-avatar-visual {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #252a33;
+  color: #f4f6f8;
+  font-weight: 750;
+  outline: var(--chat-avatar-ring-thickness, 0.12dvh) solid
+    color-mix(in srgb, var(--artist-color, #87909e), transparent 35%);
+  box-shadow: 0 0 0 2px rgba(15, 18, 23, 0.96);
+}
+
+.group-chat[data-avatar-ring="false"] .group-chat-typing-avatar-visual {
+  outline: none;
+}
+
+.group-chat-typing-avatar-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- dots ------------------------------------------------------------------ */
+
+.group-chat-typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 16px;
+}
+
+.group-chat-typing-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #c7d0d8;
+  animation: group-chat-typing-dot 1s ease-in-out infinite;
+}
+
+.group-chat-typing-dots i:nth-child(2) { animation-delay: 160ms; }
+.group-chat-typing-dots i:nth-child(3) { animation-delay: 320ms; }
+
+/* ---- names ------------------------------------------------------------------ */
+
+.group-chat-typing-names {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.group-chat-typing-name {
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin-right: 0.25em;
+  white-space: nowrap;
+}
+
+.group-chat-typing-label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* ---- the one shared fade, for avatars AND names ---------------------------- */
+
+.group-chat-typing-avatar.is-entering .group-chat-typing-avatar-visual,
+.group-chat-typing-name.is-entering {
+  animation: group-chat-typing-enter var(--typing-enter-time) var(--typing-enter-ease) both;
+}
+
+/* End state is declared too, so with animations disabled a leaving artist is
+   simply hidden instead of stuck on screen until it is removed. */
+.group-chat-typing-avatar.is-exiting .group-chat-typing-avatar-visual,
+.group-chat-typing-name.is-exiting {
+  opacity: 0;
+  transform: translate3d(0, var(--typing-travel), 0);
+  pointer-events: none;
+  animation: group-chat-typing-exit var(--typing-exit-time) var(--typing-exit-ease) both;
+}
+
+/* ---- keyframes -------------------------------------------------------------- */
+
+@keyframes group-chat-typing-enter {
+  from { opacity: 0; transform: translate3d(0, var(--typing-travel, 8px), 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes group-chat-typing-exit {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(0, var(--typing-travel, 8px), 0); }
+}
+
+@keyframes group-chat-typing-dot {
+  0%, 65%, 100% { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.88); }
+  32% { opacity: 1; transform: translate3d(0, -3px, 0) scale(1); }
+}
