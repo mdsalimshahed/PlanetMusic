@@ -92,8 +92,46 @@ const BlogTab = ({ adsEnabled }) => {
                    pathTokens[0] === 'write' ? 'studio' :
                    pathTokens[0] === 'edit' ? 'studio' : 'grid';
 
+  const isChangelog = pathTokens[0] === 'changelog';
+  const changelogMonthSlug = pathTokens[1];
   const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
   const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
+  const [changelogMonths, setChangelogMonths] = useState([]);
+  const [changelogLoadError, setChangelogLoadError] = useState('');
+  const requestedChangelogMonthIndex = changelogMonthSlug
+    ? changelogMonths.findIndex(month => month.label.toLowerCase().replace(' ', '-') === changelogMonthSlug)
+    : Math.max(0, changelogMonths.length - 1);
+  const selectedChangelogMonthIndex = requestedChangelogMonthIndex < 0
+    ? Math.max(0, changelogMonths.length - 1)
+    : requestedChangelogMonthIndex;
+  const selectedChangelogMonth = changelogMonths[selectedChangelogMonthIndex];
+  const selectedMonthCommitCount = selectedChangelogMonth?.entries.reduce((total, entry) => total + (entry.commits || 0), 0) || 0;
+
+  useEffect(() => {
+    if (!isChangelog) return;
+
+    fetch('/changelog.json')
+      .then(response => {
+        if (!response.ok) throw new Error(`Changelog request failed (${response.status})`);
+        return response.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data) || data.length === 0 || data.some(month => !month?.label || !Array.isArray(month.entries))) {
+          throw new Error('The public changelog data has an invalid format.');
+        }
+        setChangelogMonths(data);
+      })
+      .catch(error => {
+        console.error('Could not load the public changelog.', error);
+        setChangelogLoadError('The changelog could not be loaded. Please try again later.');
+      });
+  }, [isChangelog]);
+
+  useEffect(() => {
+    if (isChangelog && changelogMonths.length > 0 && changelogMonthSlug && requestedChangelogMonthIndex < 0) {
+      navigate('/blog/changelog', { replace: true });
+    }
+  }, [isChangelog, changelogMonths.length, changelogMonthSlug, requestedChangelogMonthIndex, navigate]);
 
   useEffect(() => {
     const targetId = location.state?.focusBlogCardId;
@@ -591,9 +629,13 @@ const BlogTab = ({ adsEnabled }) => {
                 <div className="blog-hero-top">
                   <div>
                     <h1 className="blog-hero-title" style={{ backgroundImage: getProceduralGradient('blog:documentation-heading') }}>Documentation & Blogs</h1>
-                    <p className="blog-hero-sub">Explore official system guides or create your own personal articles.</p>
+                    <p className="blog-hero-sub">
+                      {isChangelog
+                        ? 'Browse PlanetMusic’s day-by-day development history. Choose a month to see the work recorded in Git.'
+                        : 'Explore official system guides or create your own personal articles.'}
+                    </p>
                   </div>
-                  <div className="blog-hero-actions">
+                  {!isChangelog && <div className="blog-hero-actions">
                     <button
                       className="blog-icon-btn action"
                       onClick={() => handleOpenStudio()}
@@ -624,17 +666,18 @@ const BlogTab = ({ adsEnabled }) => {
                     >
                       <Icon name="upload" />
                     </button>
-                  </div>
+                  </div>}
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '8px' }}>
                   <button
-                    className={`category-pill ${blogSection === 'dev' ? 'active' : ''}`}
+                    className={`category-pill ${blogSection === 'dev' && !isChangelog ? 'active' : ''}`}
                     style={{ fontSize: '14px', padding: '10px 24px' }}
                     onClick={() => {
                       setSelectedCategory('All');
                       navigate('/blog/dev');
                     }}
+                    aria-current={blogSection === 'dev' && !isChangelog ? 'page' : undefined}
                   >
                     Developer Blogs ({devPosts.length})
                   </button>
@@ -645,12 +688,21 @@ const BlogTab = ({ adsEnabled }) => {
                       setSelectedCategory('All');
                       navigate('/blog/custom');
                     }}
+                    aria-current={blogSection === 'custom' ? 'page' : undefined}
                   >
                     Custom Blogs ({customPosts.length})
                   </button>
+                  <button
+                    className={`category-pill ${isChangelog ? 'active' : ''}`}
+                    style={{ fontSize: '14px', padding: '10px 24px' }}
+                    onClick={() => navigate('/blog/changelog')}
+                    aria-current={isChangelog ? 'page' : undefined}
+                  >
+                    Changelog
+                  </button>
                 </div>
 
-                <div className="blog-controls-row">
+                {!isChangelog && <div className="blog-controls-row">
                   <div className="blog-search-box">
                     <Icon name="search" size={16} />
                     <input
@@ -677,10 +729,96 @@ const BlogTab = ({ adsEnabled }) => {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div>}
               </div>
 
-              {filteredPosts.length > 0 ? (
+              {isChangelog ? (
+                <section className="changelog-panel glass-panel" aria-label="PlanetMusic changelog">
+                  {changelogLoadError ? (
+                    <p className="changelog-note" role="alert">{changelogLoadError}</p>
+                  ) : !selectedChangelogMonth ? (
+                    <p className="changelog-note" role="status">Loading changelog…</p>
+                  ) : (
+                    <>
+                      <div className="changelog-month-selector">
+                        <div className="changelog-month-heading">
+                          <div className="changelog-month-current" aria-live="polite">
+                            <h2
+                              style={{
+                                backgroundImage: getProceduralGradient(`changelog:month:${selectedChangelogMonth.label}`),
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text'
+                              }}
+                            >
+                              {selectedChangelogMonth.label}
+                            </h2>
+                            <p>{selectedChangelogMonth.entries.length} timeline entries · {selectedMonthCommitCount} Git commits</p>
+                          </div>
+                        </div>
+                        <label className="changelog-slider-label" htmlFor="changelog-month-slider">
+                          Browse months
+                        </label>
+                        <input
+                          id="changelog-month-slider"
+                          className="changelog-month-slider"
+                          type="range"
+                          min="0"
+                          max={changelogMonths.length - 1}
+                          step="1"
+                          value={selectedChangelogMonthIndex}
+                          aria-valuetext={selectedChangelogMonth.label}
+                          style={{ '--slider-progress': `${(selectedChangelogMonthIndex / Math.max(1, changelogMonths.length - 1)) * 100}%` }}
+                          onInput={event => {
+                            const month = changelogMonths[Number(event.target.value)];
+                            const monthSlug = month.label.toLowerCase().replace(' ', '-');
+                            navigate(`/blog/changelog/${monthSlug}`, { replace: true });
+                          }}
+                        />
+                        <div className="changelog-month-ticks" aria-hidden="true">
+                          {changelogMonths.map((month, index) => (
+                            <span
+                              className={index === selectedChangelogMonthIndex ? 'active' : ''}
+                              key={month.label}
+                              style={{ left: `${(index / Math.max(1, changelogMonths.length - 1)) * 100}%` }}
+                            >
+                              {month.label.slice(0, 3)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <ol className="changelog-timeline">
+                        {selectedChangelogMonth.entries.map((entry, index, entries) => {
+                          const nextEntry = entries[index + 1];
+                          const hasDateGap = nextEntry
+                            && Date.parse(`${nextEntry.date}T00:00:00Z`) - Date.parse(`${entry.date}T00:00:00Z`) !== 86400000;
+
+                          return (
+                            <li className={`changelog-entry ${hasDateGap ? 'has-date-gap' : ''}`} key={entry.date}>
+                              <time className="changelog-date" dateTime={entry.date}>
+                                {new Intl.DateTimeFormat(undefined, {
+                                  weekday: 'long',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  timeZone: 'UTC'
+                                }).format(new Date(`${entry.date}T12:00:00Z`))}
+                              </time>
+                              <div className="changelog-entry-content">
+                                <p>{entry.summary}</p>
+                                <span className="changelog-commit-count">
+                                  {entry.kind === 'site-update'
+                                    ? 'Site update'
+                                    : `${entry.commits} ${entry.commits === 1 ? 'commit' : 'commits'}`}
+                                </span>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </>
+                  )}
+                </section>
+              ) : filteredPosts.length > 0 ? (
                 <div className="blog-cards-grid">
                   {filteredPosts.map((post, idx) => (
                     <React.Fragment key={post.id}>

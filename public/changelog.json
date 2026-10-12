@@ -1,0 +1,75 @@
+[
+  {
+    "label": "June 2026",
+    "entries": [
+      { "date": "2026-06-08", "commits": 7, "summary": "Created the project and established the first lyrics display, song modal, and repository setup." },
+      { "date": "2026-06-09", "commits": 7, "summary": "Reworked the player and song modal, refined the app layout, and changed the backup import/export flow." },
+      { "date": "2026-06-14", "commits": 1, "summary": "Continued the version 5 lyrics display and song-modal interface work." },
+      { "date": "2026-06-15", "commits": 2, "summary": "Improved artist-name handling and the dynamic background around the song experience." },
+      { "date": "2026-06-16", "commits": 3, "summary": "Built out lyrics utilities and playback/display behavior, with follow-up player and background changes." },
+      { "date": "2026-06-17", "commits": 8, "summary": "Iterated on lyric timing and display behavior, song details, and the first settings controls." },
+      { "date": "2026-06-18", "commits": 3, "summary": "Added transliteration fixes and refined the lyrics view and sync workspace." },
+      { "date": "2026-06-28", "commits": 26, "summary": "Expanded the lyrics display and ad-lib support, with extensive work on song-modal layout and styling." },
+      { "date": "2026-06-29", "commits": 14, "summary": "Improved sync behavior, reduced audio stutter, and worked through mobile layout and performance issues." }
+    ]
+  },
+  {
+    "label": "July 2026",
+    "entries": [
+      { "date": "2026-07-01", "commits": 1, "summary": "Adjusted the sync workspace and song-modal styling." },
+      { "date": "2026-07-29", "commits": 9, "summary": "Overhauled translation and transliteration, added Arabic-script improvements, and refined lyrics and sync displays." },
+      { "date": "2026-07-30", "commits": 12, "summary": "Reworked translation workspace and processing behavior, transliteration, and lyric-line rendering." },
+      { "date": "2026-07-31", "commits": 17, "summary": "Improved focused ad-lib tracking and placement, and added debugging tools for ad-lib layout." }
+    ]
+  },
+  {
+    "label": "August 2026",
+    "entries": [
+      { "date": "2026-08-01", "commits": 9, "summary": "Overhauled the app, settings, navigation, and song-card interface; tested and revised playback optimizations." },
+      { "date": "2026-08-02", "commits": 11, "summary": "Refined song cards and lyric-line rendering, and fixed translation display issues." },
+      { "date": "2026-08-03", "commits": 15, "summary": "Improved split-line lyric rendering and sync behavior, and updated the sample Vault and artist-image manager." },
+      { "date": "2026-08-04", "commits": 12, "summary": "Worked on the player interface, app styling, dynamic backgrounds, and visual controls." },
+      { "date": "2026-08-05", "commits": 16, "summary": "Integrated Deezer playback/source work and refined the player and song details interface." },
+      { "date": "2026-08-06", "commits": 9, "summary": "Updated app navigation and settings, alongside sample-library and layout refinements." },
+      { "date": "2026-08-07", "commits": 12, "summary": "Continued app and lyrics-rendering fixes and worked on the developer blog feature." },
+      { "date": "2026-08-08", "commits": 19, "summary": "Added the public blog article catalogue, improved blog presentation, and continued player, lyrics, and sync refinements." },
+      { "date": "2026-08-09", "commits": 7, "summary": "Added Japanese and Chinese lyric word-spacing work and adjusted lyric glow, shadows, and ad-lib syncing." },
+      { "date": "2026-08-10", "commits": 15, "summary": "Refined sync editing and lyric formatting, including split lines and formatted lyric output." },
+      { "date": "2026-08-11", "commits": 11, "summary": "Improved lyric formatting and translation processing, with updates to the sample Vault." },
+      { "date": "2026-08-12", "commits": 2, "summary": "Curated and refreshed the example Vault data." },
+      { "date": "2026-08-13", "commits": 1, "summary": "Refreshed the example Vault data." },
+      { "date": "2026-08-14", "commits": 7, "summary": "Split the lyrics display into smaller components and fixed translation and ad-lib spacing issues." },
+      { "date": "2026-08-15", "commits": 10, "summary": "Tuned ad-lib timing and placement, lyric rendering, and song-data handling." },
+      { "date": "2026-08-16", "commits": 15, "summary": "Continued fixes to lyric formatting, ad-lib tracking, and sync workspace behavior." },
+      { "date": "2026-08-17", "commits": 8, "summary": "Fixed translation and auto-spacing behavior while refining sync workspace interactions." },
+      { "date": "2026-08-18", "commits": 27, "summary": "Worked extensively on CJK lyric formatting and spacing, translation behavior, and diagnostic overlays." },
+      { "date": "2026-08-19", "commits": 17, "summary": "Improved sync responsiveness and translation spacing, and refined the app background." },
+      { "date": "2026-08-20", "commits": 1, "summary": "Adjusted sync workspace behavior and timing logic." },
+      { "date": "2026-08-22", "commits": 2, "summary": "Refined track-grid presentation and in-feed sponsor placement." }
+    ]
+  },
+  {
+    "label": "September 2026",
+    "entries": [
+      { "date": "2026-09-01", "commits": 1, "summary": "Curated the example Vault data." },
+      { "date": "2026-09-02", "commits": 1, "summary": "Updated the example Vault data." },
+      { "date": "2026-09-18", "commits": 21, "summary": "Improved focused lyrics and equalizer presentation, updated dynamic backgrounds, and fixed lyric-language rendering issues." },
+      { "date": "2026-09-27", "commits": 40, "summary": "Expanded the app experience with blog, contact, and advertising work, plus lyric presentation, artist colors, and ambient background refinements." },
+      { "date": "2026-09-28", "commits": 27, "summary": "Worked on app storage, song data, and performance optimizations, then revised changes to address regressions." },
+      { "date": "2026-09-29", "commits": 7, "summary": "Added audio-delay testing and sync-delay controls, and fixed focused-lyrics playback behavior." }
+    ]
+  },
+  {
+    "label": "October 2026",
+    "entries": [
+      { "date": "2026-10-02", "commits": 7, "summary": "Refined focused lyrics and song-card presentation, then reverted experiments that were not ready to keep." },
+      { "date": "2026-10-03", "commits": 4, "summary": "Fixed a reported bug, addressed a repository security alert, and updated example and legacy Vault data." },
+      { "date": "2026-10-04", "commits": 4, "summary": "Fixed lyric sync editing and timing behavior, with related sample Vault updates." },
+      { "date": "2026-10-09", "commits": 5, "summary": "Enabled Group Chat lyrics and improved timeline behavior and timing for shorter focused-view lines." },
+      { "date": "2026-10-10", "commits": 21, "summary": "Overhauled the blog experience and refined search, song-panel controls, navigation, and lyrics-view mode transitions." },
+      { "date": "2026-10-11", "commits": 24, "summary": "Polished Group Chat presentation, artist avatars, presence, and layout, while fixing reported chat issues." },
+      { "date": "2026-10-12", "commits": 16, "summary": "Continued Group Chat lyric, presentation, and responsive layout refinements, and updated the favicon." },
+      { "date": "2026-10-13", "kind": "site-update", "summary": "Polished the changelog timeline with month-specific URLs, a refined monochrome slider, clearer solid and dashed date connectors, softer date labels, and a simplified layout." }
+    ]
+  }
+]
