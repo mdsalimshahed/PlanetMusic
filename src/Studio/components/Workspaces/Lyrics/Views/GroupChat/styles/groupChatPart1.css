@@ -15,6 +15,18 @@
   font-family: var(--font-family);
 }
 
+.group-chat-layout {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: flex;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  container-type: inline-size;
+  transform-origin: top left;
+}
+
 .group-chat-header {
   z-index: 1;
   display: flex;

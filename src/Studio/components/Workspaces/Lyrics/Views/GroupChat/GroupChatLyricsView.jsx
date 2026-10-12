@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   buildGroupChatHistory,
   buildGroupChatTimeline
@@ -28,6 +28,7 @@ const GroupChatLyricsView = ({
   const lineWrapWidth = settings?.groupChatLineWrapWidth ?? 60;
   const pendingScrollToLatestRef = useRef(false);
   const chatRef = useRef(null);
+  const chatLayoutRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
   const timeline = useMemo(() => buildGroupChatTimeline(
     liveParsedLyrics,
@@ -51,6 +52,34 @@ const GroupChatLyricsView = ({
     setExpandedLineIndices,
     pendingScrollToLatestRef
   });
+
+  useLayoutEffect(() => {
+    const chat = chatLayoutRef.current?.parentElement;
+    const layout = chatLayoutRef.current;
+    if (!chat || !layout) return undefined;
+
+    const updateScale = () => {
+      const { width, height } = chat.getBoundingClientRect();
+      const splitRatio = Number.parseFloat(
+        getComputedStyle(chat).getPropertyValue('--dyn-modal-split')
+      );
+      const leftSplit = Number.isFinite(splitRatio) ? splitRatio : 50;
+      const desktopAspectRatio = (16 / 9) * ((100 - leftSplit) / 100);
+      const isMobileCanvas = window.matchMedia('(max-width: 900px)').matches;
+      const scale = isMobileCanvas && width && height
+        ? Math.min(1, width / (height * desktopAspectRatio))
+        : 1;
+
+      layout.style.width = `${100 / scale}%`;
+      layout.style.height = `${100 / scale}%`;
+      layout.style.transform = `scale(${scale})`;
+    };
+
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(chat);
+    updateScale();
+    return () => observer.disconnect();
+  }, []);
 
   const history = buildGroupChatHistory(playback.chatState.messages);
   const artistByName = new Map(timeline.artists.map(artist => [artist.name, artist]));
@@ -103,46 +132,48 @@ const GroupChatLyricsView = ({
       }}
       data-avatar-ring={settings?.groupChatAvatarRingEnabled !== false}
     >
-      <GroupChatHeader
-        artists={timeline.artists}
-        onlineArtists={new Set(playback.chatState.artists.map(artist => artist.name))}
-        typingArtists={new Set(playback.chatState.typingArtists)}
-        lastLineEndByArtist={lastLineEndByArtist}
-        playbackTime={playback.playbackTime}
-        imageSources={imageSources}
-        disableAnimations={settings?.disableAnimations}
-        inactiveScale={inactiveAvatarSize / activeAvatarSize}
-      />
-      <div className="group-chat-conversation">
-        <div
-          className="group-chat-history"
-          ref={chatRef}
-          role="log"
-          aria-live="polite"
-          aria-relevant="additions"
-        >
-          <GroupChatHistory
-            history={history}
-            playbackTime={playback.playbackTime}
-            messageProps={messageProps}
-            containerRef={chatRef}
-          />
+      <div className="group-chat-layout" ref={chatLayoutRef}>
+        <GroupChatHeader
+          artists={timeline.artists}
+          onlineArtists={new Set(playback.chatState.artists.map(artist => artist.name))}
+          typingArtists={new Set(playback.chatState.typingArtists)}
+          lastLineEndByArtist={lastLineEndByArtist}
+          playbackTime={playback.playbackTime}
+          imageSources={imageSources}
+          disableAnimations={settings?.disableAnimations}
+          inactiveScale={inactiveAvatarSize / activeAvatarSize}
+        />
+        <div className="group-chat-conversation">
+          <div
+            className="group-chat-history"
+            ref={chatRef}
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
+            <GroupChatHistory
+              history={history}
+              playbackTime={playback.playbackTime}
+              messageProps={messageProps}
+              containerRef={chatRef}
+            />
+          </div>
         </div>
+        <div
+          className="group-chat-typing-footer"
+          aria-hidden={!isPlaying || !playback.displayTypingNames}
+        >
+          {isPlaying && playback.displayTypingNames && (
+            <GroupChatTypingIndicator
+              artistNames={playback.displayTypingNames.split(', ')}
+              artistByName={artistByName}
+              imageSources={imageSources}
+              isVisible={playback.typingIndicatorVisible}
+            />
+          )}
+        </div>
+        {showDebug && <GroupChatDebugOverlay />}
       </div>
-      <div
-        className="group-chat-typing-footer"
-        aria-hidden={!isPlaying || !playback.displayTypingNames}
-      >
-        {isPlaying && playback.displayTypingNames && (
-          <GroupChatTypingIndicator
-            artistNames={playback.displayTypingNames.split(', ')}
-            artistByName={artistByName}
-            imageSources={imageSources}
-            isVisible={playback.typingIndicatorVisible}
-          />
-        )}
-      </div>
-      {showDebug && <GroupChatDebugOverlay />}
     </section>
   );
 };

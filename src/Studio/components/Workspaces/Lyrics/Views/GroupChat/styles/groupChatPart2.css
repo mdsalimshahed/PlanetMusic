@@ -23,6 +23,9 @@
 }
 
 .group-chat-system-message {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
   display: flex;
   align-items: center;
   align-self: center;
@@ -117,6 +120,9 @@
 }
 
 .group-chat-turn {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
   display: flex;
   align-items: flex-end;
   gap: 0.7vw;
@@ -221,6 +227,9 @@
 }
 
 .group-chat-message {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
   position: relative;
   isolation: isolate;
   display: flex;

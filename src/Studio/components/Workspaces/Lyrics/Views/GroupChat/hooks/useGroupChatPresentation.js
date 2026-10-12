@@ -313,6 +313,10 @@ const useGroupChatPresentation = ({
 
     const frame = window.requestAnimationFrame(() => {
       const containerRect = container.getBoundingClientRect();
+      const layout = container.closest('.group-chat-layout');
+      const layoutScale = layout?.offsetWidth
+        ? layout.getBoundingClientRect().width / layout.offsetWidth
+        : 1;
       const styles = getComputedStyle(container);
       const visibleTop = containerRect.top + (parseFloat(styles.paddingTop) || 0);
       const visibleBottom = containerRect.bottom - (parseFloat(styles.paddingBottom) || 0);
@@ -325,9 +329,9 @@ const useGroupChatPresentation = ({
       const targetRect = activeTurn.getBoundingClientRect();
       let scrollDelta = 0;
       if (targetRect.bottom > visibleBottom) {
-        scrollDelta = targetRect.bottom + 12 - visibleBottom;
+        scrollDelta = (targetRect.bottom + 12 - visibleBottom) / layoutScale;
       } else if (targetRect.top < visibleTop) {
-        scrollDelta = targetRect.top - visibleTop - 12;
+        scrollDelta = (targetRect.top - visibleTop - 12) / layoutScale;
       }
       if (scrollDelta) {
         container.scrollTo({

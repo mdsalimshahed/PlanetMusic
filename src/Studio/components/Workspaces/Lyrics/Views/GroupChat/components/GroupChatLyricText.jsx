@@ -60,6 +60,13 @@ const getMaxTextLineWidth = (elements) => {
   return bounds ? bounds.right - bounds.left : 0;
 };
 
+const getLayoutScale = element => {
+  const layout = element?.closest('.group-chat-layout');
+  if (!layout?.offsetWidth) return 1;
+  const scale = layout.getBoundingClientRect().width / layout.offsetWidth;
+  return scale > 0 ? scale : 1;
+};
+
 const GroupChatLyricText = React.memo(({
   line,
   savedNode,
@@ -97,6 +104,7 @@ const GroupChatLyricText = React.memo(({
     if (!element || !canvas) return undefined;
 
     const measureGlyphLayout = () => withStableScroll(element, () => {
+      const layoutScale = getLayoutScale(element);
       const turn = element.closest('.group-chat-turn');
       const wasWrapEnabled = element.classList.contains('is-wrap-enabled');
       turn?.classList.add('is-measuring-glyphs');
@@ -112,7 +120,7 @@ const GroupChatLyricText = React.memo(({
         if (wasWrapEnabled) element.classList.add('is-wrap-enabled');
       }
 
-      const canvasWidth = canvas.getBoundingClientRect().width;
+      const canvasWidth = canvas.getBoundingClientRect().width / layoutScale;
       const avatarSlot = turn?.querySelector('.group-chat-avatar-slot');
       const message = element.closest('.group-chat-message');
       const turnStyles = turn ? getComputedStyle(turn) : null;
@@ -120,8 +128,8 @@ const GroupChatLyricText = React.memo(({
       const availableContentWidth = turn
         ? Math.max(
           0,
-          turn.getBoundingClientRect().width -
-            (avatarSlot?.getBoundingClientRect().width || 0) -
+          (turn.getBoundingClientRect().width -
+            (avatarSlot?.getBoundingClientRect().width || 0)) / layoutScale -
             (parseFloat(turnStyles.columnGap) || 0) -
             (parseFloat(messageStyles.paddingLeft) || 0) -
             (parseFloat(messageStyles.paddingRight) || 0)
@@ -131,12 +139,13 @@ const GroupChatLyricText = React.memo(({
         canvasWidth * (lineWrapWidthPercent / 100),
         availableContentWidth
       );
-      const shouldWrap = mainGlyphWidth > wrapWidth;
+      const shouldWrap = mainGlyphWidth / layoutScale > wrapWidth;
       const displayedGlyphWidth = getMaxTextLineWidth([
         ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
       ]);
       const width = Math.ceil(
-        wasWrapEnabled === shouldWrap ? displayedGlyphWidth : mainGlyphWidth
+        (wasWrapEnabled === shouldWrap ? displayedGlyphWidth : mainGlyphWidth) /
+          layoutScale
       );
       setRenderedGlyphWidth(previous => (
         Math.abs(previous - width) < 1 ? previous : width
@@ -170,8 +179,9 @@ const GroupChatLyricText = React.memo(({
     const element = textRef.current;
     if (!element) return;
 
+    const layoutScale = getLayoutScale(element);
     const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
-    const width = Math.ceil(getMaxTextLineWidth(mainGlyphs));
+    const width = Math.ceil(getMaxTextLineWidth(mainGlyphs) / layoutScale);
     setRenderedGlyphWidth(previous => (
       Math.abs(previous - width) < 1 ? previous : width
     ));
@@ -189,12 +199,17 @@ const GroupChatLyricText = React.memo(({
     ]);
     if (!anchorBounds) return;
 
-    const referenceWidth = Math.ceil(anchorBounds.right - anchorBounds.left);
+    const layoutScale = getLayoutScale(element);
+    const referenceWidth = Math.ceil(
+      (anchorBounds.right - anchorBounds.left) / layoutScale
+    );
     const translationStyles = getComputedStyle(translation);
     const currentLeftOffset = parseFloat(translationStyles.left) || 0;
-    const translationBaseLeft = translation.getBoundingClientRect().left - currentLeftOffset;
-    const targetLeft = (anchorBounds.left + anchorBounds.right - referenceWidth) / 2;
-    const offset = targetLeft - translationBaseLeft;
+    const translationBaseLeft =
+      translation.getBoundingClientRect().left - currentLeftOffset * layoutScale;
+    const targetLeft = (anchorBounds.left + anchorBounds.right) / 2 -
+      (referenceWidth * layoutScale) / 2;
+    const offset = (targetLeft - translationBaseLeft) / layoutScale;
     setTranslationReferenceWidth(previous => (
       Math.abs(previous - referenceWidth) < 1 ? previous : referenceWidth
     ));

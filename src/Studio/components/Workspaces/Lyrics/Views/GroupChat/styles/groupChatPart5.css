@@ -19,13 +19,6 @@
 }
 
 @media (max-width: 37.5rem) {
-  .group-chat-header {
-    box-sizing: border-box;
-    flex: 0 0 auto;
-    height: auto;
-    min-height: calc(var(--chat-heading-active-avatar-size, 5vh) + 3.2vh);
-  }
-  .group-chat-heading { align-items: flex-start; flex-direction: column; gap: 0.6vh; }
   .group-chat-participants {
     box-sizing: border-box;
     flex: 0 0 auto;
@@ -42,6 +35,4 @@
   }
   .group-chat-participants::-webkit-scrollbar { display: none; }
   .group-chat-chain { max-width: 100%; }
-  .group-chat-history { padding: 1.4vh 1.4vw 0.8vh; }
-  .group-chat-typing-footer { padding-right: 1.4vw; padding-left: 1.4vw; }
 }

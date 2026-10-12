@@ -153,6 +153,9 @@
 }
 
 .group-chat-typing-name {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
   box-sizing: border-box;
   flex: 0 1 auto;
   min-width: 0;
