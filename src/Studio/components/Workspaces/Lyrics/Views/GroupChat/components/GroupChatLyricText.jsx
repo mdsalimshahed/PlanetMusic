@@ -157,7 +157,7 @@ const GroupChatLyricText = React.memo(({
       ));
     });
 
-    measureGlyphLayout();
+    const initialMeasureFrame = window.requestAnimationFrame(measureGlyphLayout);
     const resizeObserver = new ResizeObserver(measureGlyphLayout);
     resizeObserver.observe(canvas);
     const contentObserver = new MutationObserver(measureGlyphLayout);
@@ -168,6 +168,7 @@ const GroupChatLyricText = React.memo(({
     });
     document.fonts.addEventListener('loadingdone', measureGlyphLayout);
     return () => {
+      window.cancelAnimationFrame(initialMeasureFrame);
       resizeObserver.disconnect();
       contentObserver.disconnect();
       document.fonts.removeEventListener('loadingdone', measureGlyphLayout);
