@@ -101,9 +101,9 @@ const BlogTab = ({ adsEnabled }) => {
   const [changelogLoadError, setChangelogLoadError] = useState('');
   const requestedChangelogMonthIndex = changelogMonthSlug
     ? changelogMonths.findIndex(month => month.label.toLowerCase().replace(' ', '-') === changelogMonthSlug)
-    : Math.max(0, changelogMonths.length - 1);
+    : 0;
   const selectedChangelogMonthIndex = requestedChangelogMonthIndex < 0
-    ? Math.max(0, changelogMonths.length - 1)
+    ? 0
     : requestedChangelogMonthIndex;
   const selectedChangelogMonth = changelogMonths[selectedChangelogMonthIndex];
   const selectedMonthCommitCount = selectedChangelogMonth?.entries.reduce((total, entry) => total + (entry.commits || 0), 0) || 0;
@@ -120,7 +120,10 @@ const BlogTab = ({ adsEnabled }) => {
         if (!Array.isArray(data) || data.length === 0 || data.some(month => !month?.label || !Array.isArray(month.entries))) {
           throw new Error('The public changelog data has an invalid format.');
         }
-        setChangelogMonths(data);
+        setChangelogMonths(data.slice().reverse().map(month => ({
+          ...month,
+          entries: month.entries.slice().reverse()
+        })));
       })
       .catch(error => {
         console.error('Could not load the public changelog.', error);
@@ -790,7 +793,8 @@ const BlogTab = ({ adsEnabled }) => {
                         {selectedChangelogMonth.entries.map((entry, index, entries) => {
                           const nextEntry = entries[index + 1];
                           const hasDateGap = nextEntry
-                            && Date.parse(`${nextEntry.date}T00:00:00Z`) - Date.parse(`${entry.date}T00:00:00Z`) !== 86400000;
+                            && Math.abs(Date.parse(`${nextEntry.date}T00:00:00Z`) - Date.parse(`${entry.date}T00:00:00Z`)) !== 86400000;
+                          const summaryItems = entry.summary.split(/(?<=[.!?])\s+/).filter(Boolean);
 
                           return (
                             <li className={`changelog-entry ${hasDateGap ? 'has-date-gap' : ''}`} key={entry.date}>
@@ -803,7 +807,9 @@ const BlogTab = ({ adsEnabled }) => {
                                 }).format(new Date(`${entry.date}T12:00:00Z`))}
                               </time>
                               <div className="changelog-entry-content">
-                                <p>{entry.summary}</p>
+                                <ul>
+                                  {summaryItems.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}
+                                </ul>
                                 <span className="changelog-commit-count">
                                   {entry.kind === 'site-update'
                                     ? 'Site update'

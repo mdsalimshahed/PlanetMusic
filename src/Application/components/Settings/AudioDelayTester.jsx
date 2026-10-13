@@ -53,6 +53,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
   const [taps, setTaps] = useState([]);
   const [beeps, setBeeps] = useState([]);
   const [lastGraph, setLastGraph] = useState(() => settings?.audioDelayTestGraph || null);
+  const [tapFeedback, setTapFeedback] = useState(false);
   const [customDelayInput, setCustomDelayInput] = useState(() => {
     const graph = settings?.audioDelayTestGraph;
     const initialValue = graph?.customDelayMs ?? graph?.delayMs;
@@ -65,12 +66,15 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
   const beepEventsRef = useRef([]);
   const tapEventsRef = useRef([]);
   const timersRef = useRef(new Set());
+  const tapFeedbackTimerRef = useRef(null);
   const intervalRef = useRef(null);
 
   const stopTest = () => {
     activeRef.current = false;
     timersRef.current.forEach(timer => window.clearTimeout(timer));
     timersRef.current.clear();
+    if (tapFeedbackTimerRef.current !== null) window.clearTimeout(tapFeedbackTimerRef.current);
+    tapFeedbackTimerRef.current = null;
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
     intervalRef.current = null;
     if (contextRef.current) contextRef.current.close().catch(() => {});
@@ -85,6 +89,12 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
     const nextTaps = [...tapEventsRef.current, time];
     tapEventsRef.current = nextTaps;
     setTaps(nextTaps);
+    setTapFeedback(true);
+    if (tapFeedbackTimerRef.current !== null) window.clearTimeout(tapFeedbackTimerRef.current);
+    tapFeedbackTimerRef.current = window.setTimeout(() => {
+      setTapFeedback(false);
+      tapFeedbackTimerRef.current = null;
+    }, 140);
   };
 
   useEffect(() => {
@@ -110,6 +120,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
     setError('');
     setTaps([]);
     setBeeps([]);
+    setTapFeedback(false);
     tapEventsRef.current = [];
     beepEventsRef.current = [];
 
@@ -259,7 +270,7 @@ const AudioDelayTester = ({ settings, setSettings, returnPath }) => {
           <span className="audio-delay-countdown" aria-live="polite">{Math.ceil(remaining / 1000)}s remaining · {taps.length} taps</span>
           <button
             type="button"
-            className="experience-toggle active audio-delay-response-btn"
+            className={`audio-delay-response-btn ${tapFeedback ? 'is-tapped' : ''}`}
             onPointerDown={(event) => { event.preventDefault(); recordTap(); }}
             onClick={(event) => { if (event.detail === 0) recordTap(); }}
           >

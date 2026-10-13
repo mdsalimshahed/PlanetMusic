@@ -80,6 +80,7 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
+  const previousPathnameRef = useRef(location.pathname);
   const searchBoxRef = useRef(null);
   const zenSequenceRef = useRef([]);
   const zenIndexRef = useRef(-1);
@@ -127,7 +128,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    contentScrollAreaRef.current?.scrollTo(0, 0);
+    const previousPathname = previousPathnameRef.current;
+    previousPathnameRef.current = location.pathname;
+    const isChangelogMonthNavigation = previousPathname !== location.pathname
+      && /^\/blog\/changelog(?:\/[^/]+)?$/.test(previousPathname)
+      && /^\/blog\/changelog(?:\/[^/]+)?$/.test(location.pathname);
+
+    if (!isChangelogMonthNavigation) contentScrollAreaRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
 
   // Parse routing variables from URL

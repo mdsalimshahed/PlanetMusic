@@ -294,11 +294,10 @@
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    #050505 0%,
-    #050505 2%,
-    #fff var(--slider-progress, 0%),
+    #151515 0%,
     #151515 var(--slider-progress, 0%),
-    #151515 100%
+    #fff var(--slider-progress, 0%),
+    #fff 100%
   );
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75);
 }
@@ -307,14 +306,20 @@
   height: 10px;
   border: 1px solid #050505;
   border-radius: 999px;
-  background: #151515;
+  background: linear-gradient(
+    90deg,
+    #151515 0%,
+    #151515 var(--slider-progress, 0%),
+    #fff var(--slider-progress, 0%),
+    #fff 100%
+  );
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75);
 }
 
 .blog-tab-container .changelog-month-slider::-moz-range-progress {
   height: 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #050505 0%, #fff 100%);
+  background: transparent;
 }
 
 .blog-tab-container .changelog-month-slider::-webkit-slider-thumb {
@@ -441,11 +446,16 @@
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.18);
 }
 
-.changelog-entry-content p {
+.changelog-entry-content ul {
   margin: 0 0 8px;
+  padding-left: 20px;
   color: var(--text-subdued, rgba(255, 255, 255, 0.68));
   font-size: 14px;
   line-height: 1.7;
+}
+
+.changelog-entry-content li + li {
+  margin-top: 4px;
 }
 
 .changelog-commit-count {

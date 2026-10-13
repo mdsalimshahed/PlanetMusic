@@ -181,11 +181,13 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
   white-space: normal;
 }
 .audio-delay-start-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.28); }
 .audio-delay-response-btn { min-height: 56px; touch-action: manipulation; }
+.audio-delay-response-btn:hover:not(.is-tapped) { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.28); }
+.audio-delay-response-btn.is-tapped { color: #111; background: #fff; border-color: #fff; }
 .audio-delay-actions { display: flex; width: 100%; gap: 8px; margin-top: 8px; }
 .audio-delay-action-btn {
   flex: 1;
