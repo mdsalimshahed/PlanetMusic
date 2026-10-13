@@ -39,6 +39,7 @@ export const getAdsterraUnit = (placement) => units[placement] || null;
 
 export const loadAdsterraUnit = (unit, container) => {
   let script;
+  let adContainer;
   let cancelled = false;
   let finishLoading;
 
@@ -73,7 +74,7 @@ export const loadAdsterraUnit = (unit, container) => {
     };
 
     if (unit.containerId) {
-      const adContainer = document.createElement('div');
+      adContainer = document.createElement('div');
       adContainer.id = unit.containerId;
       adContainer.style.width = '100%';
       if (unit.height) adContainer.style.height = `${unit.height}px`;
@@ -91,6 +92,7 @@ export const loadAdsterraUnit = (unit, container) => {
   return () => {
     cancelled = true;
     script?.remove();
+    adContainer?.remove();
     finishLoading?.();
   };
 };

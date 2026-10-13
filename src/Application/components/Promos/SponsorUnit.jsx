@@ -52,7 +52,7 @@ const SponsorUnit = ({
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [shouldServeAd, resolvedClient, resolvedSlot, adsterraUnit]);
+  }, [shouldServeAd, resolvedClient, resolvedSlot, placement, adsterraUnit]);
 
   if (previewMode) {
     return (
