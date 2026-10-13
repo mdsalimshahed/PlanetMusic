@@ -43,7 +43,7 @@ export const loadAdsterraUnit = (unit, container) => {
   let cancelled = false;
   let finishLoading;
 
-  const load = () => new Promise((resolve, reject) => {
+  const load = (serializeAtOptions = false) => new Promise((resolve, reject) => {
     if (cancelled || !container.isConnected) {
       resolve();
       return;
@@ -60,8 +60,17 @@ export const loadAdsterraUnit = (unit, container) => {
       };
     }
 
+    if (unit.containerId) {
+      document.getElementById(unit.containerId)?.remove();
+      adContainer = document.createElement('div');
+      adContainer.id = unit.containerId;
+      adContainer.style.width = '100%';
+      if (unit.height) adContainer.style.height = `${unit.height}px`;
+      container.append(adContainer);
+    }
+
     script = document.createElement('script');
-    script.async = false;
+    script.async = !serializeAtOptions;
     script.dataset.cfasync = 'false';
     script.src = unit.scriptUrl;
     script.onload = () => {
@@ -73,26 +82,29 @@ export const loadAdsterraUnit = (unit, container) => {
       reject(new Error(`Adsterra script failed to load: ${unit.scriptUrl}`));
     };
 
-    if (unit.containerId) {
-      adContainer = document.createElement('div');
-      adContainer.id = unit.containerId;
-      adContainer.style.width = '100%';
-      if (unit.height) adContainer.style.height = `${unit.height}px`;
-      container.append(script, adContainer);
-    } else {
-      container.append(script);
-    }
+    container.append(script);
   });
 
-  const loadPromise = adsterraLoadQueue.then(load);
-  adsterraLoadQueue = loadPromise.catch((error) => {
+  const reportLoadError = (error) => {
     console.error(error);
-  });
+  };
+  const loadPromise = unit.key
+    ? adsterraLoadQueue.then(() => load(true))
+    : load();
+
+  if (unit.key) {
+    adsterraLoadQueue = loadPromise.catch(reportLoadError);
+  } else {
+    loadPromise.catch(reportLoadError);
+  }
 
   return () => {
     cancelled = true;
     script?.remove();
     adContainer?.remove();
+    if (unit.key && window.atOptions?.key === unit.key) {
+      delete window.atOptions;
+    }
     finishLoading?.();
   };
 };
