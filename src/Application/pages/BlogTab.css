@@ -881,20 +881,21 @@
 }
 
 .blog-article-byline {
-  gap: 10px;
-  font-size: 15px;
+  gap: 0.65em;
+  font-size: clamp(0.8125rem, 3.5vw, 0.9375rem);
   margin: 0 0 24px;
 }
 
 .blog-article-author {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 0.45em;
 }
 
 .blog-article-author-avatar {
-  width: 24px;
-  height: 24px;
+  width: 1.6em;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -1441,9 +1442,6 @@
   .blog-cards-grid {
     grid-template-columns: 1fr;
   }
-  .in-feed-blog-card {
-    display: none !important;
-  }
 }
 
 @media (max-width: 420px) {
@@ -1456,12 +1454,6 @@
   .blog-section-tabs .category-pill {
     padding: 8px 9px;
     font-size: 11px;
-  }
-}
-
-@container blog-cards (max-width: 667px) {
-  .in-feed-blog-card {
-    display: none !important;
   }
 }
 
