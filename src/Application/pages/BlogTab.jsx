@@ -920,8 +920,8 @@ const BlogTab = ({ adsEnabled }) => {
       </div>
       {viewMode === 'grid' && adsEnabled && (
         <SponsorUnit
-          placement="blogFeed"
-          className="glass-panel settings-promo-box dynamic-radius-override"
+          placement="blogFeedBottom"
+          className="glass-panel dashboard-native-banner dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Discover More"
           adSub="Thank you for supporting PlanetMusic"
@@ -930,7 +930,7 @@ const BlogTab = ({ adsEnabled }) => {
       {viewMode === 'reader' && activePost && adsEnabled && (
         <SponsorUnit
           placement="blogPostBottom"
-          className="glass-panel settings-promo-box dynamic-radius-override"
+          className="glass-panel dashboard-native-banner dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsored Feature"
           adSub="Thank you for supporting PlanetMusic"

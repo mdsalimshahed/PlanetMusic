@@ -188,7 +188,7 @@ const PrivacyTab = ({ adsEnabled }) => {
       {adsEnabled && (
         <SponsorUnit 
           placement="privacyBottom"
-          className="glass-panel settings-promo-box dynamic-radius-override" 
+          className="glass-panel dashboard-native-banner dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor / Partner"
           adSub="Thank you for supporting PlanetMusic"
