@@ -586,12 +586,6 @@ const BlogTab = ({ adsEnabled }) => {
               <header className="blog-article-header">
                 <div className="blog-meta-badge-row">
                   <span className="blog-category-badge">{activePost.category}</span>
-                  <span className="blog-meta-dot"> </span>
-                  <span>{activePost.readTime}</span>
-                  {activePost.date && <>
-                    <span className="blog-meta-dot"> </span>
-                    <time>{activePost.date}</time>
-                  </>}
                   {activePost.isCustom && (
                     <>
                       <span className="blog-meta-dot"> </span>
@@ -600,9 +594,27 @@ const BlogTab = ({ adsEnabled }) => {
                   )}
                 </div>
                 <h1 className="blog-article-title" style={{ backgroundImage: getProceduralGradient(`blog:article-title:${activePost.id}`) }}>{renderMarkdown(activePost.title, `blog:article:${activePost.id}:title`)}</h1>
-                <p className="blog-article-summary">{renderMarkdown(activePost.summary, `blog:article:${activePost.id}:summary`)}</p>
-                {(activePost.author || activePost.isCustom) && (
-                  <p className="blog-article-byline">By {activePost.isCustom ? (activePost.author || 'You') : 'PlanetMusic'}</p>
+                {(activePost.author || activePost.isCustom || activePost.date || activePost.readTime) && (
+                  <div className="blog-article-byline">
+                    {(activePost.author || activePost.isCustom) && (
+                      <span className="blog-article-author">
+                        {!activePost.isCustom && <img src="/favicon.svg" alt="" className="blog-article-author-avatar" />}
+                        <span>By {activePost.isCustom ? (activePost.author || 'You') : 'PlanetMusic'}</span>
+                      </span>
+                    )}
+                    {activePost.date && (
+                      <>
+                        {(activePost.author || activePost.isCustom) && <span className="blog-byline-dot" aria-hidden="true">·</span>}
+                        <time>{activePost.date}</time>
+                      </>
+                    )}
+                    {activePost.readTime && (
+                      <>
+                        {(activePost.author || activePost.isCustom || activePost.date) && <span className="blog-byline-dot" aria-hidden="true">·</span>}
+                        <span>{activePost.readTime}</span>
+                      </>
+                    )}
+                  </div>
                 )}
                 {activePost.heroImage && <img src={activePost.heroImage} alt="" className="blog-article-hero-img" />}
                 {!activePost.heroImage && <BlogPostArtwork post={activePost} className="blog-article-artwork" />}

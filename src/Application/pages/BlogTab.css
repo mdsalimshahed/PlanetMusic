@@ -881,7 +881,22 @@
 }
 
 .blog-article-byline {
-  margin: -12px 0 24px;
+  gap: 10px;
+  font-size: 15px;
+  margin: 0 0 24px;
+}
+
+.blog-article-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.blog-article-author-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .blog-article-hero-img {
@@ -897,8 +912,8 @@
 .blog-tags-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin: 24px 0;
 }
 
 .blog-tag {
@@ -906,7 +921,7 @@
   font-weight: 600;
   color: var(--accent, #fbbf24);
   background: rgba(251, 191, 36, 0.1);
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
   border: 1px solid rgba(251, 191, 36, 0.2);
 }
