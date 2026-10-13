@@ -1,6 +1,6 @@
 const wideBottomBanner = {
-  scriptUrl: 'https://bauval.org/21/889574e3da81bc429d87767e99f24e0b',
-  containerId: 'container-889574e3da81bc429d87767e99f24e0b'
+  scriptUrl: 'https://bauval.org/21/910aa18db3b991aa658299010d1e2590',
+  containerId: 'container-910aa18db3b991aa658299010d1e2590'
 };
 
 const sidebarBannerLarge = {

@@ -273,7 +273,7 @@ const ContactTab = ({ adsEnabled }) => {
       {adsEnabled && (
         <SponsorUnit 
           placement="contactBottom"
-          className="glass-panel dashboard-native-banner dynamic-radius-override"
+          className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '0 auto' }}
           adTitle="Sponsor Message"
           adSub="Thank you for supporting PlanetMusic"

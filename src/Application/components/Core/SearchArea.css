@@ -82,7 +82,9 @@
 .search-box-orbit {
   position: absolute;
   z-index: 2;
-  inset: -2px;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
   opacity: 0;
   pointer-events: none;
   overflow: visible;
