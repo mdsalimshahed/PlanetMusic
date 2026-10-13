@@ -200,6 +200,8 @@
 
 .home-guide-faq-list { display: grid; gap: 10px; width: min(100%, 820px); margin: 28px auto 0; }
 .home-guide-faq { text-align: center; }
+.home-guide-faq > .home-guide-kicker { justify-content: center; }
+.home-guide-faq > h2 { margin-right: auto; margin-left: auto; text-align: center; }
 .home-guide-faq-list { text-align: left; }
 .home-guide-faq details { transition: background 0.2s; }
 .home-guide-faq details[open] { background: #211936; border-color: rgba(194, 147, 255, 0.4); }
