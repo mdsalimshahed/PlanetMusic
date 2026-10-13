@@ -1,14 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ABOUT, FAQ, FEATURED_GUIDES, FEATURES, SECTIONS, STEPS } from '../../content/homeContent.js';
+import { ABOUT, FAQ, FEATURED_GUIDES, FEATURES, SECTIONS, SITE, STEPS } from '../../content/homeContent.js';
 import BlogPostArtwork from '../../pages/BlogPostArtwork.jsx';
+import { getProceduralColor } from '../../../utils/proceduralColors.js';
 import './HomeGuide.css';
 
 const DEMO_LINES = [
-  'Find the words that stay',
-  'Let the moment find its way',
-  'Every note becomes a place',
-  'And the chorus takes us home'
+  {
+    text: 'Where the moonlight learns to breathe',
+    artist: 'Mira',
+    artistStyle: 'mira'
+  },
+  {
+    text: '⟁⟟⋇ ⌬⟡⋏⟐ ◈⌁⟁ ⊙⋔⌇'.toUpperCase(),
+    translation: 'Even the smallest star carries the courage\nto outshine the dark.',
+    pronunciation: 'BLEEP BLOOOP BLIM BLAM POOOOP',
+    artist: '⟁⟟⋇',
+    artistStyle: 'alien'
+  },
+  {
+    text: 'Bajo estrellas, vuelvo a ti',
+    translation: 'Beneath the stars, I return to you',
+    artist: 'Sol',
+    artistStyle: 'sol'
+  },
+  {
+    text: 'The tide remembers our names',
+    artist: 'Mira',
+    artistStyle: 'mira'
+  },
+  {
+    text: 'ひかりの先へ走り出す',
+    translation: 'We run toward the light',
+    pronunciation: 'HIKARI NO SAKI E HASHIRIDASU',
+    artist: 'Noa',
+    artistStyle: 'noa'
+  },
+  {
+    text: 'Jusqu’à l’aube, nos cœurs brillent',
+    translation: 'Until dawn, our hearts shine',
+    artist: 'Ren',
+    artistStyle: 'ren'
+  }
 ];
 
 const ABOUT_ART = [
@@ -148,9 +181,73 @@ const FEATURE_ART = [
 
 const HomeGuide = () => {
   const rootRef = useRef(null);
+  const footerRef = useRef(null);
+  const previewVisualRef = useRef(null);
   const [activeSection, setActiveSection] = useState('');
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [demoIndex, setDemoIndex] = useState(1);
-  const [previewWorkspace, setPreviewWorkspace] = useState('sync');
+  const [previewWorkspace, setPreviewWorkspace] = useState('lyrics');
+  const [shownPreviewWorkspace, setShownPreviewWorkspace] = useState('lyrics');
+  const [previewTransitionPhase, setPreviewTransitionPhase] = useState('idle');
+  const [isPreviewPaused, setIsPreviewPaused] = useState(false);
+  const [isPreviewInView, setIsPreviewInView] = useState(false);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(false);
+  const [latestChangelogEntry, setLatestChangelogEntry] = useState(null);
+  const [groupChatMessages, setGroupChatMessages] = useState([]);
+  const [changelogScrollbar, setChangelogScrollbar] = useState({ height: 0, top: 0, value: 0, max: 0, visible: false });
+  const shownPreviewWorkspaceRef = useRef('lyrics');
+  const groupChatMessagesRef = useRef(null);
+  const changelogScrollRef = useRef(null);
+  const changelogScrollbarTrackRef = useRef(null);
+  const changelogScrollbarDragRef = useRef(null);
+  const groupChatSequenceRef = useRef(0);
+  const groupChatMessageIdRef = useRef(0);
+  const isMockPreviewActive = isPreviewInView && isDocumentVisible;
+
+  useEffect(() => {
+    const visual = previewVisualRef.current;
+    if (!visual) return undefined;
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsPreviewInView(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsPreviewInView(entry.isIntersecting && entry.intersectionRatio > 0),
+      { threshold: 0 }
+    );
+    observer.observe(visual);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updateDocumentVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
+    updateDocumentVisibility();
+    document.addEventListener('visibilitychange', updateDocumentVisibility);
+    return () => document.removeEventListener('visibilitychange', updateDocumentVisibility);
+  }, []);
+
+  useEffect(() => {
+    fetch('/changelog.json')
+      .then((response) => {
+        if (!response.ok) throw new Error(`Changelog request failed (${response.status})`);
+        return response.json();
+      })
+      .then((months) => {
+        if (!Array.isArray(months) || months.some((month) => !Array.isArray(month.entries))) {
+          throw new Error('The public changelog data has an invalid format.');
+        }
+        const latestEntry = months
+          .flatMap((month) => month.entries)
+          .filter((entry) => entry?.date && entry?.summary)
+          .sort((first, second) => second.date.localeCompare(first.date))[0];
+        if (!latestEntry) throw new Error('The public changelog contains no dated entries.');
+        setLatestChangelogEntry(latestEntry);
+      })
+      .catch((error) => {
+        console.error('Could not load the latest changelog entry for the homepage preview.', error);
+      });
+  }, []);
 
   // Scroll-spy: highlight the nav pill for the section currently on screen.
   useEffect(() => {
@@ -170,6 +267,63 @@ const HomeGuide = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return undefined;
+    const scrollArea = rootRef.current?.closest('.content-scroll-area') || null;
+    const scrollTarget = scrollArea || window;
+    const updateBackToTopVisibility = () => {
+      if (scrollArea) {
+        const remainingScroll = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight;
+        setShowBackToTop(remainingScroll <= 120);
+        return;
+      }
+      const remainingScroll = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+      setShowBackToTop(remainingScroll <= 120);
+    };
+
+    updateBackToTopVisibility();
+    scrollTarget.addEventListener('scroll', updateBackToTopVisibility, { passive: true });
+    window.addEventListener('resize', updateBackToTopVisibility);
+    return () => {
+      scrollTarget.removeEventListener('scroll', updateBackToTopVisibility);
+      window.removeEventListener('resize', updateBackToTopVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scrollArea = changelogScrollRef.current;
+    const track = changelogScrollbarTrackRef.current;
+    if (!scrollArea || !track) return undefined;
+
+    const updateScrollbar = () => {
+      const trackHeight = track.clientHeight;
+      const maxScroll = Math.max(0, scrollArea.scrollHeight - scrollArea.clientHeight);
+      const thumbHeight = maxScroll > 0
+        ? Math.min(trackHeight, Math.max(28, trackHeight * scrollArea.clientHeight / scrollArea.scrollHeight))
+        : trackHeight;
+      const thumbRange = Math.max(0, trackHeight - thumbHeight);
+      setChangelogScrollbar({
+        height: thumbHeight,
+        top: maxScroll > 0 ? scrollArea.scrollTop / maxScroll * thumbRange : 0,
+        value: scrollArea.scrollTop,
+        max: maxScroll,
+        visible: maxScroll > 0 && trackHeight > 0
+      });
+    };
+
+    updateScrollbar();
+    scrollArea.addEventListener('scroll', updateScrollbar, { passive: true });
+    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateScrollbar);
+    resizeObserver?.observe(scrollArea);
+    if (scrollArea.firstElementChild) resizeObserver?.observe(scrollArea.firstElementChild);
+
+    return () => {
+      scrollArea.removeEventListener('scroll', updateScrollbar);
+      resizeObserver?.disconnect();
+    };
+  }, [latestChangelogEntry, shownPreviewWorkspace]);
+
   // Scroll-reveal for cards.
   useEffect(() => {
     const root = rootRef.current;
@@ -184,10 +338,120 @@ const HomeGuide = () => {
 
   // Looping lyric highlight in the hero preview.
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const timer = setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_LINES.length), 2200);
+    if (!isMockPreviewActive || isPreviewPaused || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_LINES.length), 2000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isMockPreviewActive, isPreviewPaused]);
+
+  useEffect(() => {
+    if (shownPreviewWorkspace !== 'group-chat') {
+      setGroupChatMessages([]);
+      groupChatSequenceRef.current = 0;
+      groupChatMessageIdRef.current = 0;
+      return undefined;
+    }
+    if (!isMockPreviewActive) {
+      return undefined;
+    }
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let spawnTimer;
+    const addMessage = () => {
+      const index = groupChatSequenceRef.current++;
+      setGroupChatMessages((messages) => [
+        ...messages,
+        {
+          id: `group-chat-${groupChatMessageIdRef.current++}`,
+          line: DEMO_LINES[index % DEMO_LINES.length],
+          sequenceIndex: index
+        }
+      ]);
+    };
+    const startMessageChain = () => {
+      addMessage();
+      spawnTimer = window.setInterval(addMessage, 1800);
+    };
+    const handleMotionPreferenceChange = (event) => {
+      window.clearInterval(spawnTimer);
+      if (event.matches) {
+        setGroupChatMessages(DEMO_LINES.map((line, index) => ({
+          id: `group-chat-static-${index}`,
+          line,
+          sequenceIndex: index
+        })));
+      } else {
+        groupChatMessageIdRef.current = 0;
+        groupChatSequenceRef.current = 0;
+        setGroupChatMessages([]);
+        startMessageChain();
+      }
+    };
+
+    if (reducedMotion.matches) {
+      setGroupChatMessages(DEMO_LINES.map((line, index) => ({
+        id: `group-chat-static-${index}`,
+        line,
+        sequenceIndex: index
+      })));
+    } else {
+      setGroupChatMessages([]);
+      startMessageChain();
+    }
+
+    reducedMotion.addEventListener('change', handleMotionPreferenceChange);
+    return () => {
+      window.clearInterval(spawnTimer);
+      reducedMotion.removeEventListener('change', handleMotionPreferenceChange);
+    };
+  }, [isMockPreviewActive, shownPreviewWorkspace]);
+
+  useEffect(() => {
+    const lane = groupChatMessagesRef.current;
+    if (!lane || shownPreviewWorkspace !== 'group-chat' || !isMockPreviewActive) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      lane.scrollTop = lane.scrollHeight;
+    });
+    const pruneMessagesOutsideView = () => {
+      const laneBounds = lane.getBoundingClientRect();
+      const hiddenIds = new Set(
+        [...lane.querySelectorAll('[data-group-message-id]')]
+          .filter((message) => message.getBoundingClientRect().bottom < laneBounds.top)
+          .map((message) => message.dataset.groupMessageId)
+      );
+      if (hiddenIds.size) {
+        setGroupChatMessages((messages) => messages.filter((message) => !hiddenIds.has(message.id)));
+      }
+    };
+    lane.addEventListener('scroll', pruneMessagesOutsideView, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      lane.removeEventListener('scroll', pruneMessagesOutsideView);
+    };
+  }, [groupChatMessages, isMockPreviewActive, shownPreviewWorkspace]);
+
+  useEffect(() => {
+    if (previewWorkspace === shownPreviewWorkspaceRef.current) return undefined;
+    if (!isMockPreviewActive) return undefined;
+
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      shownPreviewWorkspaceRef.current = previewWorkspace;
+      setShownPreviewWorkspace(previewWorkspace);
+      setPreviewTransitionPhase('idle');
+      return undefined;
+    }
+
+    setPreviewTransitionPhase('exiting');
+    const enterTimer = window.setTimeout(() => {
+      shownPreviewWorkspaceRef.current = previewWorkspace;
+      setShownPreviewWorkspace(previewWorkspace);
+      setPreviewTransitionPhase('entering');
+    }, 180);
+    const idleTimer = window.setTimeout(() => setPreviewTransitionPhase('idle'), 580);
+    return () => {
+      window.clearTimeout(enterTimer);
+      window.clearTimeout(idleTimer);
+    };
+  }, [isMockPreviewActive, previewWorkspace]);
 
   const goTo = (id) => (event) => {
     event.preventDefault();
@@ -197,6 +461,58 @@ const HomeGuide = () => {
     target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     setActiveSection(id);
   };
+
+  const scrollToTop = () => {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const scrollArea = rootRef.current?.closest('.content-scroll-area');
+    if (scrollArea) {
+      scrollArea.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+
+  const handleChangelogScrollbarPointerDown = (event) => {
+    if (event.button !== 0 || !changelogScrollRef.current || !changelogScrollbarTrackRef.current) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    changelogScrollbarDragRef.current = {
+      pointerId: event.pointerId,
+      startY: event.clientY,
+      startScrollTop: changelogScrollRef.current.scrollTop
+    };
+  };
+
+  const handleChangelogScrollbarPointerMove = (event) => {
+    const drag = changelogScrollbarDragRef.current;
+    const scrollArea = changelogScrollRef.current;
+    const track = changelogScrollbarTrackRef.current;
+    if (!drag || drag.pointerId !== event.pointerId || !scrollArea || !track) return;
+
+    const thumbRange = track.clientHeight - changelogScrollbar.height;
+    if (thumbRange <= 0) return;
+    const scrollRange = scrollArea.scrollHeight - scrollArea.clientHeight;
+    scrollArea.scrollTop = drag.startScrollTop + (event.clientY - drag.startY) * scrollRange / thumbRange;
+  };
+
+  const handleChangelogScrollbarPointerUp = (event) => {
+    if (changelogScrollbarDragRef.current?.pointerId !== event.pointerId) return;
+    changelogScrollbarDragRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+
+  const changelogChanges = latestChangelogEntry?.summary.split(/(?<=[.!?])\s+/).filter(Boolean) || [];
+  const changelogDate = latestChangelogEntry
+    ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      .format(new Date(`${latestChangelogEntry.date}T00:00:00`))
+    : '';
+  const changelogColumns = changelogChanges.reduce((columns, text, index) => {
+    const estimatedHeight = Math.ceil(text.length / 34) * 14 + 18;
+    const targetColumn = index % columns.length;
+    columns[targetColumn].items.push({ text, index });
+    columns[targetColumn].height += estimatedHeight;
+    return columns;
+  }, [{ height: 0, items: [] }, { height: 0, items: [] }]);
 
   return (
     <div className="home-guide" ref={rootRef}>
@@ -211,11 +527,15 @@ const HomeGuide = () => {
       <header className="home-guide-hero" id="top">
         <div className="home-guide-stars" aria-hidden="true" />
         <div className="home-guide-copy">
-          <h1>Make every song<br /><span>a place you can explore.</span></h1>
+          <h1 className="pm-logo home-guide-title">
+            <span>Listen to </span>
+            <span className="pm-music" data-logo-text="MUSIC">MUSIC</span>
+            <span> of the </span>
+            <span className="pm-planet" data-logo-text="PLANET">PLANET</span>
+          </h1>
           <p className="home-guide-lead">
-            PlanetMusic is a browser-based workspace where you save the songs you love, time their lyrics line by line,
-            and read them next to a translation. Lyrics can be displayed in any language, with dedicated tools for
-            Japanese, Chinese, Korean, Arabic, and Bengali. No account, no install.
+            {SITE.description} Automatic translations and pronunciation readings can be reviewed and edited beside the
+            original lyrics. No account or install required.
           </p>
           <div className="home-guide-actions">
             <Link className="home-guide-primary" to="/vault">Open your Vault <span aria-hidden="true">→</span></Link>
@@ -226,7 +546,18 @@ const HomeGuide = () => {
           </ul>
         </div>
 
-        <div className="home-guide-visual" role="group" aria-label="Interactive preview of PlanetMusic workspaces">
+        <div
+          ref={previewVisualRef}
+          className={`home-guide-visual ${isMockPreviewActive ? '' : 'is-mock-paused'}`}
+          role="group"
+          aria-label="Interactive preview of PlanetMusic workspaces"
+          onPointerEnter={() => setIsPreviewPaused(true)}
+          onPointerLeave={() => setIsPreviewPaused(false)}
+          onFocusCapture={() => setIsPreviewPaused(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setIsPreviewPaused(false);
+          }}
+        >
           <div className="home-guide-planet" aria-hidden="true">
             <div className="home-guide-ring home-guide-ring-a home-guide-ring-back" />
             <div className="home-guide-ring home-guide-ring-b home-guide-ring-back" />
@@ -238,63 +569,226 @@ const HomeGuide = () => {
             <div className="home-guide-ring home-guide-ring-c home-guide-ring-front" />
             <div className="home-guide-ring home-guide-ring-d home-guide-ring-front" />
           </div>
-          <div className="home-guide-player">
-            <div className="home-guide-player-top"><span><i /> WORKSPACE PREVIEW</span><span>A 文</span></div>
-            <div className="home-guide-track">
-              <div className="home-guide-cover" aria-hidden="true" />
-              <div><strong>A song of your own</strong><small>Saved in your Vault</small></div>
-              <div className="home-guide-eq" aria-hidden="true"><b /><b /><b /><b /><b /></div>
-            </div>
-            {previewWorkspace === 'vault' && (
+          <div className={`home-guide-player ${shownPreviewWorkspace === 'vault' ? 'is-vault' : ''} ${shownPreviewWorkspace === 'lyrics' ? 'is-lyrics' : ''} ${shownPreviewWorkspace === 'group-chat' ? 'is-group-chat' : ''} ${shownPreviewWorkspace === 'ambient' ? 'is-ambient' : ''} ${shownPreviewWorkspace === 'changelog' ? 'is-changelog' : ''}`}>
+            <div
+              key={shownPreviewWorkspace}
+              className={`home-guide-preview-stage ${previewTransitionPhase} ${shownPreviewWorkspace === 'vault' ? 'is-vault' : ''} ${shownPreviewWorkspace === 'lyrics' ? 'is-lyrics' : ''} ${shownPreviewWorkspace === 'group-chat' ? 'is-group-chat' : ''} ${shownPreviewWorkspace === 'ambient' ? 'is-ambient' : ''} ${shownPreviewWorkspace === 'changelog' ? 'is-changelog' : ''}`}
+            >
+            {shownPreviewWorkspace === 'vault' && (
               <div className="home-guide-preview-library">
-                <p className="home-guide-preview-label">YOUR LIBRARY <span>3 TRACKS</span></p>
-                {['A song of your own', 'Across the stars', 'A quieter place'].map((title, i) => (
-                  <div className="home-guide-library-row" key={title}>
-                    <span className={`home-guide-library-art art-${i + 1}`} aria-hidden="true" />
-                    <span><strong>{title}</strong><small>{['Recently added', 'Lyrics ready', 'Saved in your Vault'][i]}</small></span>
-                    <b aria-hidden="true">♫</b>
-                  </div>
-                ))}
-              </div>
-            )}
-            {previewWorkspace === 'sync' && (
-              <div className="home-guide-preview-sync">
-                <div className="home-guide-preview-label">SYNC WORKSPACE <span>01:24 / 03:48</span></div>
-                <div className="home-guide-lyrics" aria-hidden="true">
-                  {DEMO_LINES.map((line, i) => (
-                    <p key={line} className={i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}>{line}</p>
+                <div className="home-guide-vault-heading">
+                  <span className="pm-logo home-guide-vault-wordmark" aria-label="Fictional alien-script wordmark">
+                    <span className="pm-planet">⟟⌬⟁</span>
+                    <span className="pm-music">⟐⋏⌇</span>
+                  </span>
+                </div>
+                <div className="home-guide-vault-search" aria-hidden="true">
+                  <b>
+                    <svg viewBox="0 0 20 20" aria-hidden="true">
+                      <circle cx="8.5" cy="8.5" r="5.5" />
+                      <path d="m13 13 4 4" />
+                    </svg>
+                  </b>
+                </div>
+                <div className="home-guide-vault-grid">
+                  {[
+                    ['⟟⌬⟁⟐', '⋏⌇⌁', 'art-1', false],
+                    ['⌬⋇⟡⋏', '⟁⌑⟟', 'art-2', true],
+                    ['⊹◈⌇⟐', '⌁⟡⋔', 'art-3', true],
+                    ['⟡⌁◈⋇', '⌬⋏⌖', 'art-10', false],
+                    ['⟁⌁⊙⌬', '⟐⋏⌑', 'art-4', false],
+                    ['⋇⌬⟐⋏', '◈⌁⌖', 'art-5', false],
+                    ['⌁⟡⋔◈', '⟁⋇⌬', 'art-6', true],
+                    ['⊙⟁⌬⋔', '⟐⌑⋇', 'art-11', true],
+                    ['◈⌖⌁⟐', '⋏⟐⌬', 'art-7', true],
+                    ['⋇⊙⟁⌑', '⌁◈⋔', 'art-8', false],
+                    ['⌬⟐⋇⊹', '⌖⌁⋏', 'art-9', false],
+                    ['⋏⌖⟐⊹', '⌁⌬◈', 'art-12', false]
+                  ].map(([title, artist, artwork, explicit]) => (
+                    <article className="home-guide-vault-card" key={title}>
+                      <div className={`home-guide-vault-art ${artwork}`}>
+                        {explicit && <span className="home-guide-vault-explicit">⌬</span>}
+                        <span className="home-guide-vault-play" aria-hidden="true">
+                          <svg viewBox="0 0 20 20">
+                            <path d="M6 4.5 15 10l-9 5.5z" />
+                          </svg>
+                        </span>
+                        <span className="home-guide-vault-card-info">
+                          <strong>{title}</strong>
+                          <small>{artist}</small>
+                        </span>
+                      </div>
+                    </article>
                   ))}
                 </div>
-                <div className="home-guide-timeline"><span style={{ width: `${((demoIndex + 1) / DEMO_LINES.length) * 100}%` }} /></div>
-                <p className="home-guide-preview-hint">Tap along as each line plays to set its timing.</p>
               </div>
             )}
-            {previewWorkspace === 'translation' && (
-              <div className="home-guide-preview-translation">
-                <div className="home-guide-preview-label">TRANSLATION WORKSPACE <span>ORIGINAL · TRANSLATION</span></div>
-                <div><span>ORIGINAL</span><p>Hikari no naka arukidasu</p><small>ひかりのなか 歩き出す</small></div>
-                <div><span>TRANSLATION</span><p>Walking into the light</p><small>Review and edit each line side by side</small></div>
+            {shownPreviewWorkspace === 'lyrics' && (
+              <div className="home-guide-preview-lyrics" aria-label="Live lyrics preview">
+                <div className="home-guide-lyrics-artists" aria-hidden="true">
+                  <span key={DEMO_LINES[demoIndex].artistStyle} className={`home-guide-group-avatar home-guide-lyrics-avatar group-avatar-${DEMO_LINES[demoIndex].artistStyle}`}>
+                    <img src={`/artist-avatars/${DEMO_LINES[demoIndex].artistStyle}.png`} alt="" />
+                  </span>
+                </div>
+                <span className="home-guide-lyrics-artist-name">{DEMO_LINES[demoIndex].artist}</span>
+                <div className="home-guide-lyrics" aria-hidden="true">
+                  {DEMO_LINES.map((line, i) => (
+                    <div key={line.text} className={`home-guide-lyric-line ${i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}`}>
+                      <div className="home-guide-lyric-anchor">
+                        {i === demoIndex && line.translation && (
+                          <span className="home-guide-lyric-translation">{line.translation.toUpperCase()}</span>
+                        )}
+                        <p>{line.text}</p>
+                        {i === demoIndex && line.pronunciation && (
+                          <small className="home-guide-lyric-pronunciation">{line.pronunciation.toUpperCase()}</small>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-            {previewWorkspace === 'ambient' && (
+            {shownPreviewWorkspace === 'group-chat' && (
+              <div className="home-guide-preview-group-chat" aria-label="Group chat lyrics preview">
+                <div className="home-guide-group-chat-heading">
+                  <div className="home-guide-group-avatars" aria-hidden="true">
+                    {['mira', 'ren', 'sol', 'noa', 'alien'].map((artist) => (
+                      <span className={`group-avatar-${artist}`} key={artist}>
+                        <img src={`/artist-avatars/${artist}.png`} alt="" />
+                      </span>
+                    ))}
+                  </div>
+                  <i aria-hidden="true" />
+                </div>
+                <div className="home-guide-group-chat-messages" ref={groupChatMessagesRef}>
+                  {groupChatMessages.map(({ id, line, sequenceIndex }) => {
+                    const side = sequenceIndex % 2 === 0 ? 'right' : 'left';
+                    return (
+                      <div
+                        className={`home-guide-group-message is-${side}`}
+                        data-group-message-id={id}
+                        key={id}
+                      >
+                        <span className={`home-guide-group-avatar group-avatar-${line.artistStyle}`} aria-hidden="true">
+                          <img src={`/artist-avatars/${line.artistStyle}.png`} alt="" />
+                        </span>
+                        <div className="home-guide-group-message-content">
+                          <div className="home-guide-group-bubble">
+                            {line.translation && <span>{line.translation.toUpperCase()}</span>}
+                            <p>{line.text}</p>
+                            {line.pronunciation && <small>{line.pronunciation.toUpperCase()}</small>}
+                          </div>
+                          <small className="home-guide-group-speaker">{line.artist}</small>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {shownPreviewWorkspace === 'ambient' && (
               <div className="home-guide-preview-ambient">
-                <span>AMBIENT MODE · NOW PLAYING</span>
-                <p>Let the moment<br />find its way</p>
-                <small>Lyrics drift with the music</small>
+                <div className="home-guide-ambient-chat" aria-hidden="true">
+                  {DEMO_LINES.filter((_, index) => index !== 5).map((line, index) => (
+                    <div className={`home-guide-ambient-message ${line.pronunciation ? 'has-pronunciation' : ''} ${index % 2 === 0 ? 'is-left' : 'is-right'}`} key={line.text}>
+                      <span className={`home-guide-group-avatar home-guide-ambient-avatar group-avatar-${line.artistStyle}`}>
+                        <img src={`/artist-avatars/${line.artistStyle}.png`} alt="" />
+                      </span>
+                      <div className="home-guide-ambient-bubble-content">
+                        <span className="home-guide-ambient-artist">{line.artist}</span>
+                        <span className="home-guide-ambient-lyric home-guide-ambient-lyric-original">{line.text}</span>
+                        {line.pronunciation && (
+                          <span className="home-guide-ambient-lyric home-guide-ambient-lyric-pronunciation">{line.pronunciation}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
+            {shownPreviewWorkspace === 'changelog' && (
+              <div className="home-guide-preview-changelog">
+                <div className="home-guide-changelog-heading">
+                  <h2>whats NEW!!!</h2>
+                  {latestChangelogEntry && (
+                    <div className="home-guide-changelog-meta">
+                      <span>{changelogChanges.length} {changelogChanges.length === 1 ? 'change' : 'changes'}</span>
+                      <time dateTime={latestChangelogEntry.date}>{changelogDate}</time>
+                    </div>
+                  )}
+                </div>
+                <div className="home-guide-changelog-scroll-shell">
+                  <div id="home-guide-changelog-content" className="home-guide-changelog-scroll" ref={changelogScrollRef} tabIndex="0" aria-label="Latest PlanetMusic changelog entry">
+                    {latestChangelogEntry ? (
+                      <div className="home-guide-changelog-grid">
+                        {changelogColumns.map((column, columnIndex) => (
+                          <ol key={columnIndex}>
+                            {column.items.map(({ text, index }) => (
+                              <li
+                                data-change-number={index + 1}
+                                key={`${latestChangelogEntry.date}-${index}`}
+                                style={{
+                                  backgroundColor: `color-mix(in srgb, ${getProceduralColor(`changelog:card:${latestChangelogEntry.date}:${index}`)} 24%, transparent)`
+                                }}
+                              >
+                                {text}
+                              </li>
+                            ))}
+                          </ol>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>Loading the latest website changes…</p>
+                    )}
+                  </div>
+                  <div className="home-guide-changelog-scrollbar" ref={changelogScrollbarTrackRef} aria-hidden={!changelogScrollbar.visible}>
+                    <div
+                      className="home-guide-changelog-scrollbar-thumb"
+                      style={{ height: changelogScrollbar.height, transform: `translateY(${changelogScrollbar.top}px)` }}
+                      role="scrollbar"
+                      aria-label="Changelog scroll position"
+                      aria-controls="home-guide-changelog-content"
+                      aria-orientation="vertical"
+                      aria-valuemin="0"
+                      aria-valuemax={Math.round(changelogScrollbar.max)}
+                      aria-valuenow={Math.round(changelogScrollbar.value)}
+                      tabIndex={changelogScrollbar.visible ? 0 : -1}
+                      onPointerDown={handleChangelogScrollbarPointerDown}
+                      onPointerMove={handleChangelogScrollbarPointerMove}
+                      onPointerUp={handleChangelogScrollbarPointerUp}
+                      onPointerCancel={handleChangelogScrollbarPointerUp}
+                      onKeyDown={(event) => {
+                        const scrollArea = changelogScrollRef.current;
+                        if (!scrollArea) return;
+                        if (event.key === 'ArrowDown') scrollArea.scrollTop += 40;
+                        else if (event.key === 'ArrowUp') scrollArea.scrollTop -= 40;
+                        else if (event.key === 'PageDown') scrollArea.scrollTop += scrollArea.clientHeight;
+                        else if (event.key === 'PageUp') scrollArea.scrollTop -= scrollArea.clientHeight;
+                        else if (event.key === 'Home') scrollArea.scrollTop = 0;
+                        else if (event.key === 'End') scrollArea.scrollTop = scrollArea.scrollHeight;
+                        else return;
+                        event.preventDefault();
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+            </div>
           </div>
           <div className="home-guide-preview-tabs" role="group" aria-label="Choose a workspace preview">
             {[
               ['vault', 'Vault'],
-              ['sync', 'Sync'],
-              ['translation', 'Translation'],
-              ['ambient', 'Ambient']
+              ['lyrics', 'Live Scroll'],
+              ['group-chat', 'Group Chat'],
+              ['ambient', 'Ambient'],
+              ['changelog', 'Changelog']
             ].map(([id, label]) => (
               <button
                 key={id}
                 type="button"
                 aria-pressed={previewWorkspace === id}
+                aria-label={`Show ${label} preview`}
                 onClick={() => setPreviewWorkspace(id)}
               >
                 {label}
@@ -389,20 +883,17 @@ const HomeGuide = () => {
         </div>
       </section>
 
-      <section className="home-guide-final" aria-label="Get started">
-        <div>
-          <h2>Bring a track. Make it yours.</h2>
-          <p>Your Vault is private to this browser and ready in seconds.</p>
-        </div>
-        <Link to="/vault">Step into the Vault →</Link>
-      </section>
-
-      <footer className="home-guide-footer">
+      <footer className="home-guide-footer" ref={footerRef}>
         <p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p>
         <nav aria-label="More about PlanetMusic">
           <Link to="/blog/dev">Guides</Link><Link to="/blog/changelog">Changelog</Link><Link to="/privacy">Privacy</Link><Link to="/contact">Contact</Link>
         </nav>
       </footer>
+      {showBackToTop && (
+        <button className="home-guide-back-to-top" type="button" onClick={scrollToTop}>
+          <span aria-hidden="true">↑</span> Back to top
+        </button>
+      )}
     </div>
   );
 };

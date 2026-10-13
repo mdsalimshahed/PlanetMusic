@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { getGraphemes } from '../../../../../components/LyricsRenderer/textUtils.js';
 import { toSmartPunctuation } from '../../../../../utils/smartPunctuation.js';
+import { renderPunctuationColoredText } from '../../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import './PlainLyricsView.css';
 
 const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
@@ -164,7 +165,7 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
                       )}
                     </div>
                     {line.translation && (
-                      <span className="plain-lyric-translation" dir="ltr">{toSmartPunctuation(line.translation)}</span>
+                      <span className="plain-lyric-translation" dir="ltr">{renderPunctuationColoredText(line.translation)}</span>
                     )}
                   </div>
                 ))}

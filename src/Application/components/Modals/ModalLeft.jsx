@@ -123,7 +123,7 @@ const ModalLeft = ({
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
   closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug,
   showGroupChatDebug, setShowGroupChatDebug, settings,
-  triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification
+  triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification, onReturnToVault
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const { setContainerRef: setWorkspaceControlsContainer, setContentRef: setWorkspaceControlsContent } = useMeasuredHeightTransition();
@@ -215,6 +215,10 @@ const ModalLeft = ({
 
   const handleCloseModal = () => {
     handleProtectedAction(() => {
+      if (onReturnToVault) {
+        onReturnToVault();
+        return;
+      }
       if (setSelectedSong) {
         setSelectedSong(null);
       } else {

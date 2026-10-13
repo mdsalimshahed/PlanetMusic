@@ -131,6 +131,10 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     isSyncMode: isSync,
 
     // INTERCEPT SETTERS: Divert internal clicks to push to URL history stack instead
+    onReturnToVault: () => {
+        setSelectedSong(null);
+        navigate('/vault');
+    },
     setIsEditing: (val) => {
         songDataProps.setIsEditing(val);
         handleWorkspaceToggle('edit', val);

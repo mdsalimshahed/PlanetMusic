@@ -90,6 +90,26 @@
   text-align: left;
 }
 
+.contact-form-guidance {
+  margin-bottom: 32px;
+  color: var(--text-subdued);
+  line-height: 1.65;
+}
+
+.contact-form-guidance h2 {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 18px;
+}
+
+.contact-form-guidance p {
+  margin: 0 0 12px;
+}
+
+.contact-form-guidance a {
+  color: var(--accent);
+}
+
 .contact-form {
   display: flex;
   flex-direction: column;

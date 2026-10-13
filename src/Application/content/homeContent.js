@@ -6,7 +6,7 @@ export const SITE = {
   url: 'https://planetmusic.pages.dev',
   tagline: 'A music library and lyrics workspace that runs entirely in your browser.',
   description:
-    'PlanetMusic is a browser-based workspace for organizing a personal music library, timing lyrics to a song, and reading lyrics beside translations and phonetic spellings. No account, no install.'
+    'PlanetMusic is a free webtool for syncing lyrics to songs in any language. Become unburdened by language barriers with English translations and pronunciation guides.'
 };
 
 export const SECTIONS = [
@@ -28,7 +28,7 @@ export const ABOUT = [
   },
   {
     title: 'A way to understand other languages',
-    text: 'Keep the original lyrics next to a translation and a phonetic reading such as Romaji or Pinyin. Japanese and Chinese lyrics can be split into words so highlighting follows the singer.'
+    text: 'Keep original lyrics beside English translations and phonetic pronunciation guides such as Romaji or Pinyin. Automatic translation and pronunciation results can be reviewed and edited; Japanese and Chinese lyrics also have an auto-spacing tool.'
   }
 ];
 
@@ -43,7 +43,7 @@ export const FEATURES = [
   { icon: '⌕', title: 'Search for songs', text: 'Search by song title or artist and browse matching results from connected music sources.', to: '/blog/post/how-to-search-and-save-songs-to-your-vault' },
   { icon: '♪', title: 'Sync Workspace', text: 'Keyboard-driven timing for every line, with separate handling for ad-libs and echoes.', to: '/blog/post/how-to-sync-songs-with-music' },
   { icon: '文', title: 'Translation Workspace', text: 'Original, translation and phonetic reading side by side. Import or export your own .txt translations.', to: '/blog/post/complete-guide-to-the-translation-workspace' },
-  { icon: '▤', title: 'Four lyrics views', text: 'Choose Live, Focused, Group Chat, or Plain Text to read lyrics in the way that suits the moment.', to: '/blog/post/group-chat-lyrics-view' },
+  { icon: '▤', title: 'Four synced lyrics views', text: 'Follow lyrics as music plays in four views: Live scrolls through the song and highlights the current line; Focused centers the active lyric and positions timed ad-libs around it; Group Chat turns timed singer parts into a color-coded conversation; Plain Text shows the lyrics grouped by singer without playback highlighting.', to: '/blog/post/group-chat-lyrics-view' },
   { icon: '◔', title: 'Group Chat view', text: 'Turn a duet or ensemble track into a live group conversation with colors for each artist.', to: '/blog/post/group-chat-lyrics-view' },
   { icon: '✦', title: 'Ambient mode', text: 'Lyrics drift across a background that takes its colors from the album art.', to: '/blog/post/ambient-mode-floating-lyrics' },
   { icon: '◉', title: 'Artist Image Manager', text: 'Give each artist a photo and a color once; it is used everywhere they sing.', to: '/blog/post/image-manager-customizing-artist-profiles' },
@@ -65,7 +65,8 @@ export const FAQ = [
   { q: 'Is it a music streaming service?', a: 'No. PlanetMusic is an editing and organization tool, not a licensed music catalog. Some features use third-party services for search and audio previews.' },
   { q: 'Do I need an account?', a: 'No. There are no accounts or logins. Your Vault and settings are saved in the browser you are using.' },
   { q: 'Where is my data stored, and can I back it up?', a: 'In your browser on your own device. Use Backup in the top bar to export a JSON file and import it later. Audio files you add from your own device are not included in that backup.' },
-  { q: 'Which languages are supported for lyrics?', a: 'Any language can be shown, and there are dedicated tools for Japanese, Chinese, Korean, Arabic and Bengali, including phonetic readings and word spacing for Japanese and Chinese.' },
+  { q: 'Which languages are supported for lyrics?', a: 'You can enter and sync lyrics in any language. Automatic translation targets English, and translation or pronunciation results depend on the connected services and language support. Japanese and Chinese also have an auto-spacing tool.' },
+  { q: 'How can I view synced lyrics while music plays?', a: 'Choose Live to scroll through the song and highlight the current line, Focused to center the active lyric and show timed ad-libs around it, Group Chat to see singer parts as a color-coded conversation, or Plain Text to read lyrics grouped by singer without playback highlighting.' },
   { q: 'Does it work on a phone?', a: 'Yes. The layout adapts to phones and tablets, and Settings includes options to reduce animations on slower devices.' },
   { q: 'How do I get help or report a bug?', a: 'Use the Contact page. The guides also include a troubleshooting article for playback and artwork problems.' }
 ];

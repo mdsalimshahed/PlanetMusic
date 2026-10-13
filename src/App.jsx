@@ -360,6 +360,8 @@ const App = () => {
     setSearchQuery('');
     setSearchResults([]);
     setIsExplicitSearch(false);
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    contentScrollAreaRef.current?.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     navigate('/');
   };
 

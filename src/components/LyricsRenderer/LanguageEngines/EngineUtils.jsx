@@ -88,6 +88,27 @@ export const renderColoredChar = (c, globalIdx, isFocused) => {
   return <span key={globalIdx} style={style}>{c.char}</span>;
 };
 
+export const renderPunctuationColoredText = (text) => {
+  if (!text) return null;
+  return getGraphemes(toSmartPunctuation(text)).map((char, index) => {
+    const isPunctuation = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char) && char.trim() !== '';
+    return isPunctuation ? (
+      <span
+        key={index}
+        style={{
+          color: '#fbbf24',
+          WebkitTextFillColor: '#fbbf24',
+          textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)'
+        }}
+      >
+        {char}
+      </span>
+    ) : (
+      <React.Fragment key={index}>{char}</React.Fragment>
+    );
+  });
+};
+
 export const renderFormattedTranslation = (text, isFocused = false, state = { index: 0 }) => {
   if (!text) return null;
   const parts = toSmartPunctuation(text).split(/(\s+)/u);
@@ -121,7 +142,7 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
         >
           {punctuationParts.map((punctuationPart, punctuationIdx) => (
             <React.Fragment key={`${pIdx}-${wordIdx}-${punctuationIdx}`}>
-              {punctuationPart}
+              {renderPunctuationColoredText(punctuationPart)}
             </React.Fragment>
           ))}
         </span>

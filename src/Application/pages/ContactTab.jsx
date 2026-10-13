@@ -1,5 +1,5 @@
 /* --- src/pages/ContactTab.jsx --- */
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
 import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
@@ -154,6 +154,21 @@ const ContactTab = ({ adsEnabled }) => {
           </div>
 
           <div className="contact-card-body glass-panel">
+            <div className="contact-form-guidance">
+              <h2>Before you send a message</h2>
+              <p>
+                The form lets you send a subject and message. Your name is optional, and there is no separate email field. If you would like a reply, include an email address in your message.
+              </p>
+              <p>
+                Please describe what happened, the steps to reproduce a bug, and the browser, device, or audio source involved. Do not include passwords, Deezer ARL tokens, private audio, or other sensitive information.
+              </p>
+              <p>
+                The form is a feedback channel, not an automatic library recovery service. If a Vault is missing, check that you are using the same browser profile and avoid clearing browser data or using Purge before checking for a backup.
+              </p>
+              <p>
+                <a href="/blog/post/how-to-contact-us-get-support">Read the support guide</a> · <a href="/privacy">Read the Privacy Policy</a>
+              </p>
+            </div>
             <form onSubmit={handleSubmit} className="contact-form">
               
               <div className="contact-form-group">

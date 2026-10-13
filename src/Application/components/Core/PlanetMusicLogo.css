@@ -4,10 +4,20 @@
   initial-value: 0;
 }
 
+@property --logo-gradient-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
 @property --logo-art-accent {
   syntax: "<color>";
   inherits: true;
   initial-value: #ffffff;
+}
+
+.app-layout {
+  animation: logoHueShift 18s linear infinite, logoGradientPhase 7s ease infinite;
 }
 
 .pm-logo {
@@ -21,7 +31,6 @@
   white-space: nowrap;
   user-select: none;
   transition: --logo-art-accent 1.2s ease;
-  animation: logoHueShift 18s linear infinite;
 }
 
 .pm-planet,
@@ -39,7 +48,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: dynamicGradientPulse 7s ease infinite;
+  background-position: var(--logo-gradient-x) 50%;
 }
 
 .pm-planet {
@@ -74,7 +83,7 @@
   -webkit-text-fill-color: transparent;
   opacity: 0;
   content: attr(data-logo-text);
-  animation: dynamicGradientPulse 7s ease infinite;
+  background-position: var(--logo-gradient-x) 50%;
   transition: opacity 1.1s ease;
 }
 
@@ -83,15 +92,13 @@
   opacity: 1;
 }
 
-@keyframes dynamicGradientPulse {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 @keyframes logoHueShift {
   from { --logo-hue: 0; }
   to { --logo-hue: 360; }
+}
+
+.disable-animations.app-layout {
+  animation: none;
 }
 
 .disable-animations .pm-logo,
@@ -107,7 +114,17 @@
   transition: none;
 }
 
+@keyframes logoGradientPhase {
+  0% { --logo-gradient-x: 0%; }
+  50% { --logo-gradient-x: 100%; }
+  100% { --logo-gradient-x: 0%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .app-layout {
+    animation: none;
+  }
+
   .pm-logo,
   .pm-planet,
   .pm-music,
