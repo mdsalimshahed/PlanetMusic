@@ -582,7 +582,7 @@ const App = () => {
       {!isAmbientMode && settings.adsEnabled !== false && (
         <SponsorUnit 
           placement="dashboardBottom"
-          className="glass-panel settings-promo-box dynamic-radius-override" 
+          className="glass-panel dashboard-native-banner dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Discover More"
           adSub="Thank you for supporting PlanetMusic"

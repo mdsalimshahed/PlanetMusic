@@ -37,9 +37,20 @@ const SponsorUnit = ({
     if (adsterraUnit) {
       if (!adRef.current) return;
 
+      if (adsterraUnit.key) {
+        window.atOptions = {
+          key: adsterraUnit.key,
+          format: adsterraUnit.format,
+          height: adsterraUnit.height,
+          width: adsterraUnit.width,
+          params: {}
+        };
+      }
+
       const container = document.createElement('div');
-      container.id = adsterraUnit.containerId;
-      container.style.width = '100%';
+      if (adsterraUnit.containerId) container.id = adsterraUnit.containerId;
+      container.style.width = adsterraUnit.width ? `${adsterraUnit.width}px` : '100%';
+      if (adsterraUnit.height) container.style.height = `${adsterraUnit.height}px`;
       const script = document.createElement('script');
       script.async = true;
       script.dataset.cfasync = 'false';
@@ -49,6 +60,9 @@ const SponsorUnit = ({
       return () => {
         script.remove();
         container.remove();
+        if (adsterraUnit.key && window.atOptions?.key === adsterraUnit.key) {
+          delete window.atOptions;
+        }
       };
     }
 
@@ -83,7 +97,7 @@ const SponsorUnit = ({
     return (
       <div
         ref={adRef}
-        className={className}
+        className={`${className}${adsterraUnit.width === 160 && adsterraUnit.height === 600 ? ' adsterra-sidebar-160x600' : ''}`}
         style={{ display: 'flex', justifyContent: 'center', position: 'relative', overflow: 'hidden', ...style }}
       />
     );

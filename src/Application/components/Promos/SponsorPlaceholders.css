@@ -96,6 +96,13 @@
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
+.dashboard-native-banner {
+  width: 100%;
+  min-height: 180px;
+  margin-bottom: 24px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .page-sidebar-ad-large,
 .page-sidebar-ad-small {
   width: 100%;
@@ -118,4 +125,12 @@
     height: 300px;
     min-height: 300px;
   }
+}
+
+.adsterra-sidebar-160x600 {
+  width: 160px;
+  max-width: 100%;
+  height: 600px;
+  min-height: 600px;
+  flex: 0 0 160px;
 }
