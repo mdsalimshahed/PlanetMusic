@@ -671,10 +671,9 @@ const BlogTab = ({ adsEnabled }) => {
                   </div>}
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '8px' }}>
+                <div className="blog-section-tabs">
                   <button
                     className={`category-pill ${blogSection === 'dev' && !isChangelog ? 'active' : ''}`}
-                    style={{ fontSize: '14px', padding: '10px 24px' }}
                     onClick={() => {
                       setSelectedCategory('All');
                       navigate('/blog/dev');
@@ -685,7 +684,6 @@ const BlogTab = ({ adsEnabled }) => {
                   </button>
                   <button
                     className={`category-pill ${blogSection === 'custom' ? 'active' : ''}`}
-                    style={{ fontSize: '14px', padding: '10px 24px' }}
                     onClick={() => {
                       setSelectedCategory('All');
                       navigate('/blog/custom');
@@ -696,7 +694,6 @@ const BlogTab = ({ adsEnabled }) => {
                   </button>
                   <button
                     className={`category-pill ${isChangelog ? 'active' : ''}`}
-                    style={{ fontSize: '14px', padding: '10px 24px' }}
                     onClick={() => navigate('/blog/changelog')}
                     aria-current={isChangelog ? 'page' : undefined}
                   >
@@ -922,7 +919,7 @@ const BlogTab = ({ adsEnabled }) => {
         <SponsorUnit
           placement="blogFeedBottom"
           className="glass-panel settings-promo-box dynamic-radius-override"
-          style={{ maxWidth: '1400px', margin: '0 auto' }}
+          style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Discover More"
           adSub="Thank you for supporting PlanetMusic"
         />
@@ -931,7 +928,7 @@ const BlogTab = ({ adsEnabled }) => {
         <SponsorUnit
           placement="blogPostBottom"
           className="glass-panel settings-promo-box dynamic-radius-override"
-          style={{ maxWidth: '1400px', margin: '0 auto' }}
+          style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
           adTitle="Sponsored Feature"
           adSub="Thank you for supporting PlanetMusic"
         />
