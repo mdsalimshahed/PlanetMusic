@@ -117,9 +117,9 @@ const PrivacyTab = ({ adsEnabled }) => {
               <p>
                 These queries originate directly from the client's IP address. Consequently, any network-level metadata (such as User-Agent strings and IP addresses) natively transmitted during these cross-origin requests are governed by the privacy jurisdictions of those respective third-party entities.
               </p>
-              <h3>Advertising Telemetry (Google AdSense)</h3>
+              <h3>Third-Party Advertising</h3>
               <p>
-                PlanetMusic utilizes Google AdSense to serve contextually relevant advertisements. AdSense deploys localized browser cookies and web beacons to track non-personally identifiable visit data across the internet to optimize algorithmic ad-bidding. By accepting our cookie banner, the user consent to this specific, isolated telemetry in accordance with the IAB Transparency and Consent Framework (TCF).
+                PlanetMusic may load advertising scripts from providers such as Adsterra or Google AdSense when an ad placement is configured and advertising is enabled. Those providers may receive technical information, such as your IP address and browser details, and may use cookies or similar technologies under their own privacy policies. You can choose whether third-party ads may load in this browser using the advertising choice.
               </p>
             </div>
 

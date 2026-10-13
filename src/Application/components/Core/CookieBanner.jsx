@@ -1,15 +1,8 @@
 /* --- src/components/CookieBanner.jsx --- */
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const CookieBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const consent = localStorage.getItem('planetmusic_cookie_consent');
-    if (!consent) {
-      setIsVisible(true);
-    }
-  }, []);
+  const [isVisible, setIsVisible] = useState(() => !localStorage.getItem('planetmusic_cookie_consent'));
 
   const handleAccept = () => {
     localStorage.setItem('planetmusic_cookie_consent', 'true');
@@ -40,7 +33,7 @@ const CookieBanner = () => {
       justifyContent: 'center'
     }}>
       <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.5, textAlign: 'center' }}>
-        We use cookies to personalize content, serve targeted advertisements (via Google AdSense), and analyze our traffic. By using PlanetMusic, you consent to our use of cookies.
+        Third-party advertising providers may use cookies or similar technologies when ads are enabled. Read our <a href="/privacy" style={{ color: '#fff' }}>privacy information</a>.
       </p>
       <button 
         onClick={handleAccept}

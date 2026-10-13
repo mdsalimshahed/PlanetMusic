@@ -1,6 +1,7 @@
 /* --- src/components/Promos/SponsorUnit.jsx --- */
 import React, { useEffect, useRef } from 'react';
 import { getAdSenseConfig, loadAdSenseScript } from './adsenseConfig.js';
+import { getAdsterraUnit } from './adsterraConfig.js';
 import './SponsorPlaceholders.css';
 
 const SponsorUnit = ({ 
@@ -17,20 +18,39 @@ const SponsorUnit = ({
 }) => {
   const adRef = useRef(null);
   const { client: resolvedClient, slot: resolvedSlot, isValid } = getAdSenseConfig({ client, slot, placement });
+  const adsterraUnit = getAdsterraUnit(placement);
   const [hasConsent, setHasConsent] = React.useState(() => (
-    typeof window !== 'undefined' && localStorage.getItem('planetmusic_site_consent') === 'true'
+    typeof window !== 'undefined' && localStorage.getItem('planetmusic_advertising_consent') === 'true'
   ));
-  const previewMode = testMode || import.meta.env.DEV || !isValid || !hasConsent;
+  const previewMode = testMode || import.meta.env.DEV || (!adsterraUnit && !isValid) || !hasConsent;
   const shouldServeAd = !previewMode;
 
   useEffect(() => {
-    const syncConsent = () => setHasConsent(localStorage.getItem('planetmusic_site_consent') === 'true');
+    const syncConsent = () => setHasConsent(localStorage.getItem('planetmusic_advertising_consent') === 'true');
     window.addEventListener('planetmusic-site-consent-changed', syncConsent);
     return () => window.removeEventListener('planetmusic-site-consent-changed', syncConsent);
   }, []);
 
   useEffect(() => {
     if (!shouldServeAd) return;
+
+    if (adsterraUnit) {
+      if (!adRef.current) return;
+
+      const container = document.createElement('div');
+      container.id = adsterraUnit.containerId;
+      container.style.width = '100%';
+      const script = document.createElement('script');
+      script.async = true;
+      script.dataset.cfasync = 'false';
+      script.src = adsterraUnit.scriptUrl;
+
+      adRef.current.append(script, container);
+      return () => {
+        script.remove();
+        container.remove();
+      };
+    }
 
     loadAdSenseScript(resolvedClient);
     const timer = setTimeout(() => {
@@ -44,7 +64,7 @@ const SponsorUnit = ({
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [shouldServeAd, resolvedClient, resolvedSlot]);
+  }, [shouldServeAd, resolvedClient, resolvedSlot, adsterraUnit]);
 
   if (previewMode) {
     return (
@@ -56,6 +76,16 @@ const SponsorUnit = ({
           <p>{adSub}</p>
         </div>
       </div>
+    );
+  }
+
+  if (adsterraUnit) {
+    return (
+      <div
+        ref={adRef}
+        className={className}
+        style={{ display: 'flex', justifyContent: 'center', position: 'relative', overflow: 'hidden', ...style }}
+      />
     );
   }
 

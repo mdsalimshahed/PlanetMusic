@@ -1,22 +1,20 @@
 /* --- src/components/ConsentNotice.jsx --- */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const ConsentNotice = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    const consent = localStorage.getItem('planetmusic_advertising_consent');
+    return consent !== 'true' && consent !== 'false';
+  });
 
   useEffect(() => {
-    const consent = localStorage.getItem('planetmusic_site_consent');
-    if (consent !== 'true' && consent !== 'false') {
-      setIsVisible(true);
-    }
-
     const showAdChoice = () => setIsVisible(true);
     window.addEventListener('planetmusic-open-ad-choice', showAdChoice);
     return () => window.removeEventListener('planetmusic-open-ad-choice', showAdChoice);
   }, []);
 
   const saveAdChoice = (allowed) => {
-    localStorage.setItem('planetmusic_site_consent', String(allowed));
+    localStorage.setItem('planetmusic_advertising_consent', String(allowed));
     window.dispatchEvent(new Event('planetmusic-site-consent-changed'));
     setIsVisible(false);
   };
@@ -45,7 +43,7 @@ const ConsentNotice = () => {
       justifyContent: 'center'
     }}>
       <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.5, textAlign: 'center' }}>
-        Choose whether Google AdSense may load in this browser. Read our <a href="/privacy" style={{ color: '#fff' }}>privacy information</a>.
+        Choose whether third-party ads may load in this browser. Read our <a href="/privacy" style={{ color: '#fff' }}>privacy information</a>.
       </p>
       <button 
         onClick={() => saveAdChoice(true)}
@@ -60,7 +58,7 @@ const ConsentNotice = () => {
           whiteSpace: 'nowrap'
         }}
       >
-        Allow Google ads
+        Allow ads
       </button>
       <button
         onClick={() => saveAdChoice(false)}

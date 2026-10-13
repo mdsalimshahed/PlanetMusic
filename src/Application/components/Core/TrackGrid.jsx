@@ -8,7 +8,7 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
   return (
     <div className="track-grid">
       {items.map((song, idx) => {
-        // Inject an In-Feed Ad every 6 items
+        // Inject an in-feed ad every 6 items.
         const showAdAfter = (idx + 1) % 6 === 0;
         
         // Calculate the staggered delay (Caps at 1.5s so massive libraries don't take forever to load)
