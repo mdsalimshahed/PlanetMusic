@@ -1,5 +1,5 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
-import React, { useRef, useState, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
 import { isRTLLanguage } from './textUtils.js';
@@ -18,7 +18,7 @@ const SplitLine = ({
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
 
-  const [dynamicRowGaps, setDynamicRowGaps] = useState({});
+  const parentMainRef = useRef(null);
   const parentPronRef = useRef(null);
   const adlibRefs = useRef([]);
 
@@ -77,37 +77,42 @@ const SplitLine = ({
     isAdlib: false
   });
 
-  // Calculate dynamic clearance based on the bottom edge of the parent line's pronunciation block
+  // Keep a wrapped ad-lib's translation below the complete main lyric block.
   useLayoutEffect(() => {
-    const pronNode = parentPronRef.current;
-    const pronRect = pronNode ? pronNode.getBoundingClientRect() : null;
+    const parentMainRect = parentMainRef.current?.getBoundingClientRect();
+    const parentPronRect = parentPronRef.current?.getBoundingClientRect();
 
     const newGaps = {};
-    let clearedPronunciation = false;
+    let clearedAdlibClearance = false;
     adlibRefs.current.forEach((ref, bIdx) => {
       if (!ref) return;
       
       const adlibRect = ref.getBoundingClientRect();
+      const appliedGap = parseFloat(ref.style.marginTop) || 0;
       const transNode = ref.querySelector('.chunk-translation');
-      const clearanceRect = transNode?.getBoundingClientRect() || adlibRect;
-      const overlapsPronunciation = pronRect
-        && clearanceRect.bottom > pronRect.top
-        && clearanceRect.top < pronRect.bottom;
+      const measuredClearanceRect = transNode?.getBoundingClientRect() || adlibRect;
+      const clearanceTop = measuredClearanceRect.top - appliedGap;
+      const clearanceBottom = measuredClearanceRect.bottom - appliedGap;
+      const isOnNewLine = parentMainRect && adlibRect.top - appliedGap >= parentMainRect.bottom - 1;
+      const overlapsPronunciation = parentPronRect
+        && clearanceBottom > parentPronRect.top
+        && clearanceTop < parentPronRect.bottom;
+      const overlapsMainBlock = isOnNewLine && clearanceTop < parentMainRect.bottom;
 
-      if (!clearedPronunciation && overlapsPronunciation) {
-        const clearance = Math.ceil(pronRect.bottom - clearanceRect.top + 4);
+      if (!clearedAdlibClearance && (overlapsPronunciation || overlapsMainBlock)) {
+        const mainBlockBottom = overlapsMainBlock
+          ? parentMainRect.bottom
+          : parentPronRect.bottom;
+        const clearance = Math.max(0, Math.ceil(mainBlockBottom - clearanceTop + 4));
         newGaps[bIdx] = `${clearance}px`;
-        clearedPronunciation = true;
+        clearedAdlibClearance = true;
       } else {
         newGaps[bIdx] = '0px';
       }
     });
 
-    // INFINITE LOOP GUARD: Compare with current state before triggering a re-render
-    setDynamicRowGaps(prevGaps => {
-      const isDifferent = Object.keys(newGaps).some(key => prevGaps[key] !== newGaps[key]) ||
-                          Object.keys(prevGaps).length !== Object.keys(newGaps).length;
-      return isDifferent ? newGaps : prevGaps;
+    adlibRefs.current.forEach((ref, bIdx) => {
+      if (ref) ref.style.marginTop = newGaps[bIdx] || '0px';
     });
   }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX]);
 
@@ -143,8 +148,6 @@ const SplitLine = ({
        isAdlib: true // Flags isolated ad-lib so parens are omitted in engine processing
     });
 
-    const adlibMarginTop = dynamicRowGaps[bIdx] || '0px';
-
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
         <span
@@ -163,8 +166,7 @@ const SplitLine = ({
             boxSizing: 'border-box',
             margin: 0,
             padding: 0,
-            marginInlineStart: '0.25em',
-            marginTop: adlibMarginTop
+            marginInlineStart: '0.25em'
           }}
         >
           {adlibTransJSX ? (
@@ -213,6 +215,7 @@ const SplitLine = ({
       >
         <span
             className="core-chunks"
+            ref={parentMainRef}
             style={{
               position: 'relative',
               display: 'inline-flex',
@@ -248,10 +251,10 @@ const SplitLine = ({
           </span>
           {mainPronunciationJSX && (
             <span
-                  ref={parentPronRef}
-                  className="pronunciation-text"
-                  style={blockPronStyle}
-                  dir="ltr"
+                ref={parentPronRef}
+                className="pronunciation-text"
+                style={blockPronStyle}
+                dir="ltr"
             >
               {mainPronunciationJSX}
             </span>

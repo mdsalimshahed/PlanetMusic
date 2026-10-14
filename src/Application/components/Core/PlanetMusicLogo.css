@@ -16,13 +16,10 @@
   initial-value: #ffffff;
 }
 
-.app-layout {
-  animation: logoHueShift 18s linear infinite, logoGradientPhase 7s ease infinite;
-}
-
 .pm-logo {
   display: inline-flex;
   align-items: baseline;
+  animation: logoHueShift 18s linear infinite, logoGradientPhase 7s ease infinite;
   font-family: "Unbounded", "Syncopate", system-ui, sans-serif;
   font-size: 24px;
   font-kerning: none;
@@ -97,10 +94,6 @@
   to { --logo-hue: 360; }
 }
 
-.disable-animations.app-layout {
-  animation: none;
-}
-
 .disable-animations .pm-logo,
 .disable-animations .pm-planet,
 .disable-animations .pm-music,
@@ -121,10 +114,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app-layout {
-    animation: none;
-  }
-
   .pm-logo,
   .pm-planet,
   .pm-music,

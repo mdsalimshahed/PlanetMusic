@@ -143,7 +143,7 @@ const App = () => {
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
                     pathParts[0] === 'contact' ? 'contact' : 
-                    pathParts[0] === 'vault' ? 'vault' :
+                    pathParts[0] === 'vault' || pathParts[0] === 'song' ? 'vault' :
                     pathParts[0] === 'ambient' ? 'ambient' :
                     pathParts[0] === 'zen' ? 'zen' : 'main';
                     
@@ -340,11 +340,11 @@ const App = () => {
     if (song) {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
       navigate(`/song/${song.trackId}/live${qParam}`, {
-        state: { returnPath: activeTab === 'vault' ? '/vault' : '/' }
+        state: { returnPath: '/vault' }
       });
     } else {
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      const returnPath = location.state?.returnPath || '/';
+      const returnPath = location.state?.returnPath || '/vault';
       const tabPath = `${returnPath}${qParam}`;
       navigate(tabPath);
     }
@@ -602,21 +602,23 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      <Background isModalOpen={!!selectedSong} currentTrack={backgroundTrack} />
-      
-      <Topbar 
-        activeTab={activeTab} 
-        isMusicPlaying={logoPlaybackVisuals.isPlaying}
-        albumAccentColor={logoPlaybackVisuals.albumAccentColor}
-        handleHomeClick={handleHomeClick}
-        handleExport={handleExport}
-        handleImport={handleImport}
-        isZenMode={isZenMode}
-        toggleZenMode={toggleZenMode}
-        handleLoadSample={handleLoadSample}
-      />
+      {!selectedSong && (
+        <>
+          <Background isModalOpen={false} currentTrack={backgroundTrack} />
 
-      <main className="main-content">
+          <Topbar
+            activeTab={activeTab}
+            isMusicPlaying={logoPlaybackVisuals.isPlaying}
+            albumAccentColor={logoPlaybackVisuals.albumAccentColor}
+            handleHomeClick={handleHomeClick}
+            handleExport={handleExport}
+            handleImport={handleImport}
+            isZenMode={isZenMode}
+            toggleZenMode={toggleZenMode}
+            handleLoadSample={handleLoadSample}
+          />
+
+          <main className="main-content">
         {(activeTab === 'vault' || activeTab === 'ambient' || isZenMode) && (
           <div className={`search-container ${activeTab !== 'vault' ? 'ambient-search-entry' : ''}`}>
             <form ref={searchBoxRef} onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
@@ -656,7 +658,7 @@ const App = () => {
           </div>
         )}
 
-        <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'vault' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
+            <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'vault' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
           <Routes>
             <Route path="/" element={renderHomeView()} />
@@ -689,17 +691,19 @@ const App = () => {
               <ContactTab adsEnabled={settings.adsEnabled !== false} />
             } />
 
-            <Route path="/deezer/*" element={<Navigate to="/" replace />} />
+            <Route path="/deezer/*" element={<Navigate to="/vault" replace />} />
           </Routes>
 
           {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}
           <div className="global-footer">
             <p>&copy; {new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
           </div>
-        </div>
-      </main>
+            </div>
+          </main>
 
-      <ConsentNotice />
+          <ConsentNotice />
+        </>
+      )}
 
       <SongModal 
         key={selectedSong ? selectedSong.trackId : 'modal-empty'}
@@ -724,7 +728,7 @@ const App = () => {
         settings={settings}
       />
 
-      {songToRemove && (
+      {!selectedSong && songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
             <h3>Remove Song?</h3>
