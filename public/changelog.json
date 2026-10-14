@@ -70,7 +70,8 @@
       { "date": "2026-10-11", "commits": 24, "summary": "Polished Group Chat bubbles, avatars, presence, and layout; fixed chat issues." },
       { "date": "2026-10-12", "commits": 16, "summary": "Refined Group Chat lyrics and responsive layouts; updated the favicon." },
       { "date": "2026-10-13", "kind": "site-update", "summary": "Refined the changelog timeline, search, and mobile controls. Added SEO metadata, sitemap coverage, and consent-aware ads. Redesigned homepage and blog artwork, workspace previews, and navigation; polished the favicon and FAQ." },
-      { "date": "2026-10-14", "kind": "site-update", "summary": "Improved SEO, homepage copy, artwork, and responsive workspace previews. Refined homepage changelog and navigation. Balanced Focused lyrics and translations within measured glyph bounds; improved Live Lyrics ad-lib clearance. Fixed empty Group Chat messages, fitted bubbles to wrapped content, centered notification text and timestamps, and smoothed equalizer animation across frame rates." }
+      { "date": "2026-10-14", "kind": "site-update", "summary": "Improved SEO, homepage copy, artwork, and responsive workspace previews. Refined homepage changelog and navigation. Balanced Focused lyrics and translations within measured glyph bounds; improved Live Lyrics ad-lib clearance. Fixed empty Group Chat messages, fitted bubbles to wrapped content, centered notification text and timestamps, and smoothed equalizer animation across frame rates." },
+      { "date": "2026-10-15", "kind": "site-update", "summary": "Refined responsive homepage previews and mobile navigation. Kept the Vault mock to 12 cards and hid its scrollbar at every width. Fit Live Scroll artwork to the viewer height and automatically brought active lyrics into view. Added consistent randomized colors per artist and refined Group Chat bubble transparency, translations, and pronunciation." }
     ]
   }
 ]
