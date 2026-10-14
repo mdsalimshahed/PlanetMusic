@@ -359,7 +359,3 @@
   justify-content: flex-start !important;
   text-align: left !important;
 }
-
-.group-chat-turn-right .group-chat-message-text.is-wrap-enabled:not(.group-chat-message-text-rtl) {
-  transform: translateX(var(--chat-glyph-boundary-offset, 0px));
-}

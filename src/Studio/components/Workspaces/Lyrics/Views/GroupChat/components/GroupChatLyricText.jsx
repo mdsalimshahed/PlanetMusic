@@ -268,49 +268,6 @@ const GroupChatLyricText = React.memo(({
 
   useLayoutEffect(() => {
     const element = textRef.current;
-    if (!element) return;
-
-    if (
-      !wrapLayout.enabled ||
-      isRTL ||
-      !element.closest('.group-chat-turn-right')
-    ) {
-      element.style.removeProperty('--chat-glyph-boundary-offset');
-      return;
-    }
-
-    const mainBounds = getTextBoundingBox([
-      ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
-    ]);
-    const timestamp = element
-      .closest('.group-chat-message-line')
-      ?.querySelector('time');
-    if (!mainBounds || !timestamp) {
-      element.style.removeProperty('--chat-glyph-boundary-offset');
-      return;
-    }
-
-    const currentOffset =
-      parseFloat(element.style.getPropertyValue('--chat-glyph-boundary-offset')) || 0;
-    const offset = currentOffset +
-      (timestamp.getBoundingClientRect().right - mainBounds.right) /
-        getLayoutScale(element);
-    if (Number.isFinite(offset)) {
-      element.style.setProperty('--chat-glyph-boundary-offset', `${offset}px`);
-    }
-  }, [
-    isRTL,
-    layoutKey,
-    line,
-    lyricFontSize,
-    renderedGlyphWidth,
-    savedNode,
-    wrapLayout.enabled,
-    wrapLayout.width
-  ]);
-
-  useLayoutEffect(() => {
-    const element = textRef.current;
     const translation = element?.querySelector('.chunk-translation');
     if (!element || !translation || precomputedLayout) return;
 
