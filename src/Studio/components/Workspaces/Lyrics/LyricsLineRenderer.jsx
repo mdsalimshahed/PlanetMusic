@@ -118,6 +118,7 @@ export const measureFocusedLineLayout = (wrapper) => {
 export const LyricLineWrapper = React.memo(({
   lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong
 }) => {
+  const wrapperRef = useRef(null);
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
 
@@ -126,8 +127,87 @@ export const LyricLineWrapper = React.memo(({
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
 
+  useLayoutEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper || viewMode !== 'focused') return undefined;
+
+    const measureMaxLineWidth = element => {
+      if (!element) return 0;
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      const lines = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.textContent.trim()) continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        [...range.getClientRects()].forEach(rect => {
+          if (!rect.width || !rect.height) return;
+          const line = lines.find(candidate => (
+            Math.min(candidate.bottom, rect.bottom) -
+              Math.max(candidate.top, rect.top) >
+            Math.min(candidate.bottom - candidate.top, rect.height) * 0.5
+          ));
+          if (line) {
+            line.left = Math.min(line.left, rect.left);
+            line.right = Math.max(line.right, rect.right);
+            line.top = Math.min(line.top, rect.top);
+            line.bottom = Math.max(line.bottom, rect.bottom);
+          } else {
+            lines.push({
+              left: rect.left,
+              right: rect.right,
+              top: rect.top,
+              bottom: rect.bottom
+            });
+          }
+        });
+      }
+      return lines.reduce(
+        (widest, line) => Math.max(widest, line.right - line.left),
+        0
+      );
+    };
+
+    const updateTranslationWidth = () => {
+      const core = wrapper.querySelector('.core-chunks');
+      const translation = core?.querySelector('.chunk-translation.focused-translation');
+      if (!core || !translation) return;
+
+      const glyphWidth = Math.max(
+        measureMaxLineWidth(core.querySelector('.main-lyrics-layer')),
+        measureMaxLineWidth(core.querySelector('.pronunciation-text'))
+      );
+      if (!glyphWidth) return;
+      const nextWidth = `${Math.floor(glyphWidth)}px`;
+      if (translation.style.width !== nextWidth) {
+        translation.style.width = nextWidth;
+      }
+      if (translation.style.minWidth !== '0px') {
+        translation.style.minWidth = '0px';
+      }
+    };
+
+    updateTranslationWidth();
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(updateTranslationWidth);
+    resizeObserver?.observe(wrapper);
+    wrapper.querySelectorAll('.main-lyrics-layer, .pronunciation-text')
+      .forEach(element => resizeObserver?.observe(element));
+
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) updateTranslationWidth();
+    });
+    return () => {
+      cancelled = true;
+      resizeObserver?.disconnect();
+    };
+  }, [renderedContent, viewMode]);
+
   return (
     <div
+      ref={wrapperRef}
       className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
       data-start={start}
       data-end={end}

@@ -24,7 +24,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     
     const ctx = canvas.getContext('2d', { alpha: true });
     let rafId = null;
-    const pauseDecayFactor = 0.05; 
+    let previousFrameTimestamp = null;
     let idleFrames = 0; 
     const numBars = 40;
     
@@ -46,6 +46,12 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
+      const frameDuration = previousFrameTimestamp === null
+        ? 1000 / 60
+        : Math.min(100, Math.max(0, timestamp - previousFrameTimestamp));
+      previousFrameTimestamp = timestamp;
+      const frameProgress = baseProgress =>
+        1 - Math.pow(1 - baseProgress, frameDuration / (1000 / 60));
       const displayWidth = cw;
       const displayHeight = ch;
       
@@ -99,9 +105,9 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
         // Native FPS INTERPOLATION
         for (let i = 0; i < numBars; i++) {
           if (targetScales[i] > currentScales[i]) {
-            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.45; 
+            currentScales[i] += (targetScales[i] - currentScales[i]) * frameProgress(0.45);
           } else {
-            currentScales[i] += (targetScales[i] - currentScales[i]) * 0.12; 
+            currentScales[i] += (targetScales[i] - currentScales[i]) * frameProgress(0.12);
           }
         }
       } else {
@@ -110,7 +116,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
         let allSettled = true;
         for (let i = 0; i < numBars; i++) {
           if (currentScales[i] > 0.051) {
-            currentScales[i] += (0.05 - currentScales[i]) * pauseDecayFactor;
+            currentScales[i] += (0.05 - currentScales[i]) * frameProgress(0.05);
             allSettled = false;
           } else if (currentScales[i] !== 0.05) {
             currentScales[i] = 0.05;
@@ -138,7 +144,8 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
         const revealProgress = playing
           ? Math.max(0, Math.min(1, (timestamp - deezerStartedAtRef.current - revealStart) / 140))
           : Math.max(0, 1 - Math.max(0, timestamp - pauseStartedAtRef.current - revealStart) / 140);
-        revealRef.current[i] += (revealProgress - revealRef.current[i]) * 0.24;
+        revealRef.current[i] +=
+          (revealProgress - revealRef.current[i]) * frameProgress(0.24);
         const barHeight = currentScales[i] * displayHeight;
         const x = startX + (i * barSpacing);
         const y = displayHeight - barHeight;
@@ -161,6 +168,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
     const startLoop = () => {
       if (!rafId) {
         idleFrames = 0;
+        previousFrameTimestamp = null;
         rafId = requestAnimationFrame(renderEQ);
       }
     };

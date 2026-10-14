@@ -229,7 +229,6 @@ const GroupChatLyricText = React.memo(({
     const element = textRef.current;
     const message = element?.closest('.group-chat-message');
     if (!element || !message) return;
-    if (precomputedLayout) return;
 
     if (!wrapLayout.enabled) {
       message.style.removeProperty('--chat-measured-bubble-width');
@@ -257,8 +256,14 @@ const GroupChatLyricText = React.memo(({
   }, [
     precomputedLayout,
     renderedGlyphWidth,
+    translationReferenceOffset,
+    translationReferenceWidth,
     wrapLayout.enabled,
-    wrapLayout.width
+    wrapLayout.width,
+    line,
+    savedNode,
+    layoutKey,
+    lyricFontSize
   ]);
 
   useLayoutEffect(() => {
@@ -317,16 +322,12 @@ const GroupChatLyricText = React.memo(({
       !wrapLayout.width ||
       !onLayoutReady
     ) return;
-    const message = textRef.current?.closest('.group-chat-message');
     onLayoutReady(lineIndex, layoutKey, {
       enabled: wrapLayout.enabled,
       width: wrapLayout.width,
       renderedGlyphWidth,
       translationReferenceWidth,
-      translationReferenceOffset,
-      bubbleWidth: Number.parseFloat(
-        message?.style.getPropertyValue('--chat-measured-bubble-width')
-      ) || 0
+      translationReferenceOffset
     });
   }, [
     layoutKey,

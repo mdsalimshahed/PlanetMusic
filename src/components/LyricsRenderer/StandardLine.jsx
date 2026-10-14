@@ -1,5 +1,4 @@
 /* --- src/components/LyricsRenderer/StandardLine.jsx --- */
-import React from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { isRTLLanguage } from './textUtils.js';
 
@@ -51,12 +50,14 @@ const StandardLine = ({
     transform: 'none',
     marginTop: 0,
     marginBottom: 'var(--dyn-trans-top-padding, 8px)',
-    width: 0,
-    minWidth: '100%',
+    width: isFocused ? '100%' : 0,
+    minWidth: isFocused ? 0 : '100%',
+    ...(isFocused ? { maxWidth: '100%' } : {}),
     textAlign: 'center',
-    wordBreak: 'break-word',
-    overflowWrap: 'break-word',
-    whiteSpace: 'normal'
+    wordBreak: isFocused ? 'normal' : 'break-word',
+    overflowWrap: isFocused ? 'normal' : 'break-word',
+    whiteSpace: 'normal',
+    ...(isFocused ? { textWrap: 'balance' } : {})
   };
 
   const blockPronStyle = {

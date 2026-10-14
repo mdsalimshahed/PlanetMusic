@@ -113,12 +113,7 @@ const GroupChatMessageChain = ({
               )}
             </span>
             <div className="group-chat-bubble-stack">
-              <div
-                className="group-chat-message"
-                style={cachedLayout?.key === layoutKey && cachedLayout.enabled
-                  ? { '--chat-measured-bubble-width': `${cachedLayout.bubbleWidth}px` }
-                  : undefined}
-              >
+              <div className="group-chat-message">
                 <button
                   type="button"
                   className="group-chat-message-line"

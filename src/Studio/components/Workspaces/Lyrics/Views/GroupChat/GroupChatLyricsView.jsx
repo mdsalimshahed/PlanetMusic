@@ -186,8 +186,7 @@ const GroupChatLyricsView = ({
         current.width === layout.width &&
         current.renderedGlyphWidth === layout.renderedGlyphWidth &&
         current.translationReferenceWidth === layout.translationReferenceWidth &&
-        current.translationReferenceOffset === layout.translationReferenceOffset &&
-        current.bubbleWidth === layout.bubbleWidth
+        current.translationReferenceOffset === layout.translationReferenceOffset
       ) return previous;
       const next = new Map(previous);
       next.set(lineIndex, { ...layout, key });

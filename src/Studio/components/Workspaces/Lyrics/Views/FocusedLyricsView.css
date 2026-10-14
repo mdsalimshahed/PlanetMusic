@@ -31,7 +31,6 @@
   word-break: normal;
   overflow-wrap: normal;
   text-wrap: balance;
-  text-wrap: pretty;
   opacity: 0;
   transform: translate3d(-50%, calc(-50% + 20px), 0);
   visibility: hidden;
@@ -83,7 +82,8 @@
 .focused-line .lyric-word-group,
 .focused-line .trans-word-group {
   white-space: normal !important;
-  overflow-wrap: break-word !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
 }
 
 .focused-line .trans-word {
@@ -98,17 +98,25 @@
 }
 
 .focused-line .main-lyrics-layer {
-  display: inline-flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
+  display: block !important;
+  width: max-content !important;
   max-width: 100% !important;
-  width: auto !important;
+  text-align: center !important;
   box-sizing: border-box !important;
   white-space: normal !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
+  text-wrap: balance !important;
+}
+
+.focused-line .chunk-translation.focused-translation {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  white-space: normal !important;
+  text-wrap: balance !important;
 }
 
 /* Keep hyphenated spellings together; only emergency-wrap an oversized sequence. */
