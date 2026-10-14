@@ -94,15 +94,6 @@ const GroupChatDebugOverlay = ({ activeLineIndices }) => {
         turn.classList.toggle('is-chat-debug-previous', turn === previousTurn);
       });
 
-      const addElementBox = (element, type, id) => {
-        if (!element) return;
-        nextBoxes.push({
-          id,
-          ...getElementBounds(element, metrics),
-          type
-        });
-      };
-
       turns.filter(turn => (
         turn === activeTurn || turn === previousTurn
       )).forEach((turn, turnIndex) => {
@@ -129,6 +120,15 @@ const GroupChatDebugOverlay = ({ activeLineIndices }) => {
               type
             });
           }
+        };
+
+        const addElementBox = (element, type, id) => {
+          if (!element) return;
+          nextBoxes.push({
+            id,
+            ...getElementBounds(element, metrics),
+            type
+          });
         };
 
         const lyricSpans = turn.querySelectorAll('.lyric-text-span');

@@ -60,6 +60,27 @@ const getMaxTextLineWidth = (elements) => {
   return bounds ? bounds.right - bounds.left : 0;
 };
 
+const getTextBoundingBox = elements => {
+  const rects = [];
+  elements.forEach(element => {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (!node.textContent.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      [...range.getClientRects()].forEach(rect => {
+        if (rect.width && rect.height) rects.push(rect);
+      });
+    }
+  });
+  if (!rects.length) return null;
+  return {
+    left: Math.min(...rects.map(rect => rect.left)),
+    right: Math.max(...rects.map(rect => rect.right))
+  };
+};
+
 const getLayoutScale = element => {
   const layout = element?.closest('.group-chat-layout');
   if (!layout?.offsetWidth) return 1;
@@ -133,9 +154,17 @@ const GroupChatLyricText = React.memo(({
       element.classList.remove('is-wrap-enabled');
       element.classList.add('is-measuring-glyphs');
       let mainGlyphWidth;
+      let pronunciationGlyphWidth;
+      let translationGlyphWidth;
       try {
         mainGlyphWidth = element
           .querySelector('.main-lyrics-layer')
+          ?.getBoundingClientRect().width || 0;
+        pronunciationGlyphWidth = getMaxTextLineWidth([
+          ...element.querySelectorAll('.pronunciation-text')
+        ]);
+        translationGlyphWidth = element
+          .querySelector('.chunk-translation')
           ?.getBoundingClientRect().width || 0;
       } finally {
         element.classList.remove('is-measuring-glyphs');
@@ -162,8 +191,10 @@ const GroupChatLyricText = React.memo(({
         canvasWidth * (lineWrapWidthPercent / 100),
         availableContentWidth
       );
-      const shouldWrap = mainGlyphWidth / layoutScale > wrapWidth;
-      const width = Math.ceil(mainGlyphWidth / layoutScale);
+      const glyphWidth = Math.max(mainGlyphWidth, pronunciationGlyphWidth);
+      const shouldWrap = glyphWidth / layoutScale > wrapWidth ||
+        translationGlyphWidth > glyphWidth;
+      const width = Math.ceil(glyphWidth / layoutScale);
       setRenderedGlyphWidth(previous => (
         Math.abs(previous - width) < 1 ? previous : width
       ));
@@ -204,7 +235,6 @@ const GroupChatLyricText = React.memo(({
       message.style.removeProperty('--chat-measured-bubble-width');
       return;
     }
-
     const layoutScale = getLayoutScale(element);
     const timestamp = message.querySelector('.group-chat-message-line time');
     const messageStyles = getComputedStyle(message);
@@ -236,16 +266,25 @@ const GroupChatLyricText = React.memo(({
     const translation = element?.querySelector('.chunk-translation');
     if (!element || !translation || precomputedLayout) return;
 
-    const anchorBounds = getMaxTextLineBounds([
-      ...element.querySelectorAll(
-        '.main-lyrics-layer .lyric-text-span, .pronunciation-text'
-      )
+    const mainBounds = getTextBoundingBox([
+      ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
     ]);
+    const pronunciationBounds = getTextBoundingBox([
+      ...element.querySelectorAll('.pronunciation-text')
+    ]);
+    const mainWidth = mainBounds ? mainBounds.right - mainBounds.left : 0;
+    const pronunciationWidth = pronunciationBounds
+      ? pronunciationBounds.right - pronunciationBounds.left
+      : 0;
+    const anchorBounds = pronunciationWidth > mainWidth
+      ? pronunciationBounds
+      : mainBounds;
     if (!anchorBounds) return;
 
     const layoutScale = getLayoutScale(element);
-    const referenceWidth = Math.ceil(
-      (anchorBounds.right - anchorBounds.left) / layoutScale
+    const referenceWidth = Math.max(
+      1,
+      Math.floor((anchorBounds.right - anchorBounds.left) / layoutScale)
     );
     const translationStyles = getComputedStyle(translation);
     const currentLeftOffset = parseFloat(translationStyles.left) || 0;

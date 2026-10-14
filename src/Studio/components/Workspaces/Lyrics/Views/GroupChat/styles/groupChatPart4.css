@@ -29,7 +29,7 @@
   white-space: nowrap;
   word-break: normal;
   overflow-wrap: normal;
-  text-wrap: wrap !important;
+  text-wrap: balance !important;
   text-align: center !important;
 }
 

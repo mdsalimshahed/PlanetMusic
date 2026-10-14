@@ -60,6 +60,19 @@ const getSegmentArtists = (segments, excludedRanges = []) => {
   return [...artists];
 };
 
+const hasTextOutsideRanges = (text, excludedRanges) => Array.from(text || '')
+  .some((character, index) => (
+    !/\s/u.test(character) &&
+    !excludedRanges.some(range => index >= range.start && index < range.end)
+  ));
+
+const hasRenderableText = item => Boolean(
+  item?.text?.trim() ||
+  item?.translation?.trim() ||
+  item?.pronunciation?.trim() ||
+  item?.segments?.some(segment => segment.text?.trim())
+);
+
 export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette = {}) => {
   const lines = (lyrics || []).flatMap((lyric, index) => {
     const sync = syncData?.[index];
@@ -88,14 +101,23 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
       lyric,
       savedNode: sync
     };
-    const messages = [{
-      type: 'message',
-      time: start,
-      line
-    }];
+    const hasMainContent = hasTextOutsideRanges(lyric.text, adlibRanges) ||
+      hasTextOutsideRanges(
+        (lyric.segments || []).map(segment => segment.text || '').join(''),
+        adlibRanges
+      ) ||
+      [lyric.translation, lyric.pronunciation]
+        .some(value => typeof value === 'string' && value.trim());
+    const messages = hasMainContent
+      ? [{
+        type: 'message',
+        time: start,
+        line
+      }]
+      : [];
 
     adlibs.forEach((adlib, adlibIndex) => {
-      if (!hasTimestamp(adlib.start)) return;
+      if (!hasTimestamp(adlib.start) || !hasRenderableText(adlib)) return;
       const adlibStart = Number(adlib.start);
       const adlibEnd = hasTimestamp(adlib.end) && Number(adlib.end) >= adlibStart
         ? Number(adlib.end)

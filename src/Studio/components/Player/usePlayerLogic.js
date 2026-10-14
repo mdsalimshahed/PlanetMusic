@@ -7,6 +7,8 @@ import { globalClock } from '../../utils/clockEngine.js';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
 
+const YOUTUBE_START_TIMEOUT_MS = 5000;
+
 export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false, isZenMode = false }) => {
   const audioRef = useRef(null);
   const audioSrcRef = useRef(undefined);
@@ -230,7 +232,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setFailedSources(previous => previous.includes('youtube')
         ? previous
         : [...previous, 'youtube']);
-    }, 8000);
+    }, YOUTUBE_START_TIMEOUT_MS);
   };
 
   const scheduleAudioFallback = () => {
@@ -698,7 +700,8 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setAudioSrc(undefined);
           setYtVideoId(extractedYtId);
           setActiveSource('youtube');
-            setBuffering(true);
+          setBuffering(true);
+          if (pendingAutoplayRef.current) scheduleYouTubeFallback();
         } else if (source === 'preview') {
           setYtVideoId(null);
           setBuffering(false);
@@ -885,8 +888,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         videoId: ytVideoId,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
-          autoplay: 0, playsinline: 1, rel: 0, enablejsapi: 1,
-          suggestedQuality: 'small', origin: window.location.origin
+        autoplay: pendingAutoplayRef.current ? 1 : 0,
+        playsinline: 1,
+        rel: 0,
+        enablejsapi: 1,
+        suggestedQuality: 'small',
+        origin: window.location.origin
         },
         events: {
           onReady: (event) => {

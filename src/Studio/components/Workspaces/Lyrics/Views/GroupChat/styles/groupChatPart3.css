@@ -205,6 +205,7 @@
   width: 100% !important;
   max-width: 100% !important;
   white-space: normal !important;
+  text-wrap: balance !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
   line-break: strict !important;
@@ -272,7 +273,15 @@
 }
 
 .group-chat-message-text.is-measuring-glyphs .chunk-translation {
-  display: none !important;
+  display: block !important;
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  transform: none !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  white-space: nowrap !important;
 }
 
 .group-chat-message-text.is-measuring-glyphs .pronunciation-text {

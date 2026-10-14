@@ -77,43 +77,83 @@ const SplitLine = ({
     isAdlib: false
   });
 
-  // Keep a wrapped ad-lib's translation below the complete main lyric block.
   useLayoutEffect(() => {
-    const parentMainRect = parentMainRef.current?.getBoundingClientRect();
-    const parentPronRect = parentPronRef.current?.getBoundingClientRect();
-
-    const newGaps = {};
-    let clearedAdlibClearance = false;
-    adlibRefs.current.forEach((ref, bIdx) => {
-      if (!ref) return;
-      
-      const adlibRect = ref.getBoundingClientRect();
-      const appliedGap = parseFloat(ref.style.marginTop) || 0;
-      const transNode = ref.querySelector('.chunk-translation');
-      const measuredClearanceRect = transNode?.getBoundingClientRect() || adlibRect;
-      const clearanceTop = measuredClearanceRect.top - appliedGap;
-      const clearanceBottom = measuredClearanceRect.bottom - appliedGap;
-      const isOnNewLine = parentMainRect && adlibRect.top - appliedGap >= parentMainRect.bottom - 1;
-      const overlapsPronunciation = parentPronRect
-        && clearanceBottom > parentPronRect.top
-        && clearanceTop < parentPronRect.bottom;
-      const overlapsMainBlock = isOnNewLine && clearanceTop < parentMainRect.bottom;
-
-      if (!clearedAdlibClearance && (overlapsPronunciation || overlapsMainBlock)) {
-        const mainBlockBottom = overlapsMainBlock
-          ? parentMainRect.bottom
-          : parentPronRect.bottom;
-        const clearance = Math.max(0, Math.ceil(mainBlockBottom - clearanceTop + 4));
-        newGaps[bIdx] = `${clearance}px`;
-        clearedAdlibClearance = true;
-      } else {
-        newGaps[bIdx] = '0px';
+    const readTextBounds = elements => elements.flatMap(element => {
+      if (!element) return [];
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      const bounds = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.textContent.trim()) continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        [...range.getClientRects()].forEach(rect => {
+          if (rect.width && rect.height) bounds.push({
+            left: rect.left,
+            right: rect.right,
+            top: rect.top,
+            bottom: rect.bottom
+          });
+        });
       }
+      return bounds;
     });
+    const readElementBounds = element => {
+      if (!element) return [];
+      const rect = element.getBoundingClientRect();
+      return rect.width && rect.height
+        ? [{ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }]
+        : [];
+    };
 
-    adlibRefs.current.forEach((ref, bIdx) => {
-      if (ref) ref.style.marginTop = newGaps[bIdx] || '0px';
-    });
+    const positionAdlibTranslations = () => {
+      const mainObstacles = [
+        ...readElementBounds(parentMainRef.current?.querySelector('.chunk-translation')),
+        ...readTextBounds([
+          parentMainRef.current?.querySelector('.main-lyrics-layer')
+        ]),
+        ...readElementBounds(parentPronRef.current)
+      ];
+      const minimumGap = 1 / Math.max(window.devicePixelRatio || 1, 1);
+
+      adlibRefs.current.forEach(ref => {
+        const translation = ref?.querySelector('.chunk-translation');
+        const translationBounds = translation?.getBoundingClientRect();
+        if (!ref) return;
+        if (!translationBounds?.width || !translationBounds.height) {
+          if (ref.style.marginTop) ref.style.marginTop = '';
+          return;
+        }
+
+        const appliedOffset = parseFloat(ref.style.marginTop) || 0;
+        const unshiftedTop = translationBounds.top - appliedOffset;
+        const translationBoxHeight = translationBounds.height;
+        const unshiftedBottom = unshiftedTop + translationBoxHeight;
+        const requiredOffset = mainObstacles.reduce((offset, obstacle) => {
+          const overlapsHorizontally =
+            translationBounds.left < obstacle.right &&
+            translationBounds.right > obstacle.left;
+          const touchesOrOverlapsVertically =
+            unshiftedTop <= obstacle.bottom &&
+            unshiftedBottom >= obstacle.top;
+          if (!overlapsHorizontally || !touchesOrOverlapsVertically) return offset;
+          return Math.max(offset, obstacle.bottom + minimumGap - unshiftedTop);
+        }, 0);
+        const nextOffset = `${Math.max(0, requiredOffset)}px`;
+        if (ref.style.marginTop !== nextOffset) ref.style.marginTop = nextOffset;
+      });
+    };
+
+    positionAdlibTranslations();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const resizeObserver = new ResizeObserver(positionAdlibTranslations);
+    [
+      parentMainRef.current,
+      parentPronRef.current,
+      ...adlibRefs.current,
+      ...adlibRefs.current.map(ref => ref?.querySelector('.chunk-translation'))
+    ].filter(Boolean).forEach(element => resizeObserver.observe(element));
+    return () => resizeObserver.disconnect();
   }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX]);
 
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
