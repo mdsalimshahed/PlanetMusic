@@ -28,12 +28,8 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       const wordCount = indexedWords.reduce((count, index) => Math.max(count, index + 1), 1);
       const start = parseFloat(node.dataset.start);
       const end = parseFloat(node.dataset.end);
-      const lineDuration = Number.isFinite(start) && Number.isFinite(end) && end > start
-        ? end - start
-        : 0;
-      const animationTiming = getFocusedLyricsAnimationTiming(lineDuration, wordCount);
+      const animationTiming = getFocusedLyricsAnimationTiming();
       const { enterDuration, enterStagger, exitDuration } = animationTiming;
-      const exitStart = lineDuration > 0 ? Math.max(start, end - exitDuration) : NaN;
 
       node.style.setProperty('--total-words', wordCount);
       node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);
@@ -44,7 +40,6 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         node,
         start,
         end,
-        exitStart,
         exitBoundary: end,
         isActive: node.classList.contains('active')
       };
@@ -90,21 +85,17 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       ? candidate.index
       : -1;
 
-    const scheduledExitIndex = newActiveIndex;
-    if (scheduledExitIndex !== -1) {
-        const line = lines[scheduledExitIndex];
-        if (!isNaN(line.exitStart) && time >= line.exitStart && time < line.exitBoundary) {
-            newActiveIndex = -1;
-        }
-    }
-
     const previousActiveIndex = activeLineIndexRef.current;
     if (previousActiveIndex !== newActiveIndex) {
         if (previousActiveIndex !== -1) {
             const previousLine = lines[previousActiveIndex];
-            measureFocusedLineLayout(previousLine.node);
             previousLine.node.classList.remove('active', 'past');
-            previousLine.node.classList.add('exiting');
+            if (isSeek) {
+              previousLine.node.classList.remove('exiting');
+            } else {
+              measureFocusedLineLayout(previousLine.node);
+              previousLine.node.classList.add('exiting');
+            }
             previousLine.isActive = false;
         }
 
@@ -112,7 +103,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
             const activeLine = lines[newActiveIndex];
             activeLine.node.style.setProperty(
               '--focused-enter-elapsed',
-              `${isSeek ? 0 : Math.max(0, time - activeLine.start)}s`
+              `${Math.max(0, time - activeLine.start)}s`
             );
             activeLine.node.classList.add('active');
             activeLine.node.classList.remove('exiting', 'past');
@@ -125,22 +116,12 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       const activeLine = lines[newActiveIndex];
       activeLine.node.classList.remove('active', 'exiting', 'past');
       void activeLine.node.offsetWidth;
-      activeLine.node.style.setProperty('--focused-enter-elapsed', '0s');
+      activeLine.node.style.setProperty(
+        '--focused-enter-elapsed',
+        `${Math.max(0, time - activeLine.start)}s`
+      );
       activeLine.node.classList.add('active');
       activeLine.isActive = true;
-    }
-
-    const isInsideExitWindow = candidate &&
-      Number.isFinite(candidate.exitStart) &&
-      time >= candidate.exitStart &&
-      time < candidate.exitBoundary;
-    if (isSeek && isInsideExitWindow) {
-      const exitLine = lines[candidate.index];
-      measureFocusedLineLayout(exitLine.node);
-      exitLine.node.classList.remove('active', 'exiting', 'past');
-      void exitLine.node.offsetWidth;
-      exitLine.node.classList.add('exiting');
-      exitLine.isActive = false;
     }
 
     const adlibTimeline = adlibTimelineRef.current;
