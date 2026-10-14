@@ -37,6 +37,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: max-content;
   gap: 4px;
   padding: 5px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -89,6 +90,66 @@
 
 .nav-btn.active {
   color: var(--text-base);
+}
+
+.zen-nav-item {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.zen-nav-width-measure {
+  position: absolute;
+  width: max-content;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.zen-nav-item > .nav-btn {
+  box-sizing: border-box;
+  width: 100%;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.zen-nav-item > .zen-nav-width-measure {
+  width: max-content;
+}
+
+.zen-nav-dropdown {
+  position: absolute;
+  z-index: 60;
+  top: 100%;
+  left: 0;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 140ms ease, visibility 140ms ease;
+}
+
+.zen-nav-item:hover .zen-nav-dropdown,
+.zen-nav-item:focus-within .zen-nav-dropdown,
+.zen-nav-item.is-open .zen-nav-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.zen-nav-dropdown-item {
+  width: 100%;
+  justify-content: center;
+  border-radius: 500px;
+  text-decoration: none;
+  margin-top: 0;
+}
+
+.zen-nav-item .nav-btn:hover {
+  transform: none;
 }
 
 .nav-btn:focus-visible,
@@ -218,7 +279,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-selection.is-positioned {
+  .nav-selection.is-positioned,
+  .zen-nav-dropdown {
     transition: none;
   }
 
@@ -263,6 +325,7 @@
     justify-content: center;
     gap: 4px;
     overflow-x: auto;
+    overflow-y: visible;
     scrollbar-width: none;
   }
 
@@ -288,18 +351,35 @@
 }
 
 @media (max-width: 600px) {
+  .topbar { padding: 16px 12px; gap: 12px; }
+
   .nav-menu {
-    margin-inline: auto;
+    flex: 0 1 auto;
+    width: max-content;
+    min-width: 0;
+    max-width: calc(100% - 24px);
+    margin: 0 auto;
     gap: 2px;
     padding: 4px;
+    justify-content: flex-start;
   }
 
   .nav-btn {
-    padding: 8px 7px;
-    font-size: 12px;
+    padding: 8px 5px;
+    font-size: 11px;
   }
 
   .topbar-tools {
-    margin-inline: auto;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin: 0;
+  }
+
+  .zen-nav-dropdown {
+    position: fixed;
+    top: var(--zen-dropdown-top, 0);
+    left: var(--zen-dropdown-left, 0);
+    width: var(--zen-dropdown-width, auto);
   }
 }

@@ -18,7 +18,11 @@ const Topbar = ({
   const backupMenuRef = useRef(null);
   const navRef = useRef(null);
   const selectionRef = useRef(null);
+  const zenNavItemRef = useRef(null);
+  const zenDropdownRef = useRef(null);
+  const zenNavWidthMeasureRef = useRef(null);
   const [isBackupMenuOpen, setIsBackupMenuOpen] = useState(false);
+  const [isZenMenuOpen, setIsZenMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!isBackupMenuOpen) return undefined;
@@ -38,10 +42,55 @@ const Topbar = ({
     };
   }, [isBackupMenuOpen]);
 
+  useEffect(() => {
+    if (!isZenMenuOpen) return undefined;
+
+    const closeOnOutsideClick = (event) => {
+      if (!event.target.closest('.zen-nav-item')) setIsZenMenuOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setIsZenMenuOpen(false);
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isZenMenuOpen]);
+
+  useLayoutEffect(() => {
+    if (!isZenMenuOpen || !window.matchMedia('(max-width: 600px)').matches) return undefined;
+    const navItem = zenNavItemRef.current;
+    const dropdown = zenDropdownRef.current;
+    const nav = navRef.current;
+    if (!navItem || !dropdown || !nav) return undefined;
+
+    const positionDropdown = () => {
+      const bounds = navItem.getBoundingClientRect();
+      dropdown.style.setProperty('--zen-dropdown-top', `${bounds.bottom}px`);
+      dropdown.style.setProperty('--zen-dropdown-left', `${bounds.left}px`);
+      dropdown.style.setProperty('--zen-dropdown-width', `${bounds.width}px`);
+    };
+
+    positionDropdown();
+    window.addEventListener('resize', positionDropdown);
+    window.addEventListener('scroll', positionDropdown, true);
+    nav.addEventListener('scroll', positionDropdown, { passive: true });
+    return () => {
+      window.removeEventListener('resize', positionDropdown);
+      window.removeEventListener('scroll', positionDropdown, true);
+      nav.removeEventListener('scroll', positionDropdown);
+    };
+  }, [isZenMenuOpen]);
+
   useLayoutEffect(() => {
     const nav = navRef.current;
     const selection = selectionRef.current;
-    if (!nav || !selection) return undefined;
+    const zenNavItem = zenNavItemRef.current;
+    const zenNavWidthMeasure = zenNavWidthMeasureRef.current;
+    if (!nav || !selection || !zenNavItem || !zenNavWidthMeasure) return undefined;
 
     const updateSelection = () => {
       const activeLink = nav.querySelector('.nav-btn.active');
@@ -58,10 +107,19 @@ const Topbar = ({
       selection.classList.add('is-positioned');
     };
 
-    updateSelection();
+    const updateZenNavWidth = () => {
+      const width = zenNavWidthMeasure.getBoundingClientRect().width;
+      if (width > 0) zenNavItem.style.width = `${width}px`;
+    };
 
-    const resizeObserver = new ResizeObserver(updateSelection);
+    updateZenNavWidth();
+    updateSelection();
+    const resizeObserver = new ResizeObserver(() => {
+      updateZenNavWidth();
+      updateSelection();
+    });
     resizeObserver.observe(nav);
+    resizeObserver.observe(zenNavWidthMeasure);
     nav.querySelectorAll('.nav-btn').forEach(link => resizeObserver.observe(link));
 
     return () => resizeObserver.disconnect();
@@ -104,15 +162,81 @@ const Topbar = ({
             Vault
           </Link>
 
-          <button
-            type="button"
-            className={`nav-btn ${isZenMode ? 'active' : ''}`}
-            onClick={toggleZenMode}
-            aria-pressed={isZenMode}
-            title={isZenMode ? 'Exit Zen mode' : 'Start Zen mode'}
+          <div
+            ref={zenNavItemRef}
+            className={`zen-nav-item${isZenMenuOpen ? ' is-open' : ''}`}
           >
-            Zen
-          </button>
+            <span
+              ref={zenNavWidthMeasureRef}
+              className="nav-btn zen-nav-width-measure"
+              aria-hidden="true"
+            >
+              Ambient
+            </span>
+            {activeTab !== 'zen' ? (
+              <Link
+                to="/ambient"
+                className={`nav-btn ${activeTab === 'ambient' ? 'active' : ''}`}
+                aria-current={activeTab === 'ambient' ? 'page' : undefined}
+                aria-haspopup="true"
+                aria-expanded={isZenMenuOpen}
+                style={{ textDecoration: 'none' }}
+                onClick={event => {
+                  if (window.matchMedia('(hover: none)').matches && !isZenMenuOpen) {
+                    event.preventDefault();
+                    setIsZenMenuOpen(true);
+                    return;
+                  }
+                  setIsZenMenuOpen(false);
+                }}
+              >
+                Ambient
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className={`nav-btn ${isZenMode ? 'active' : ''}`}
+                onClick={() => {
+                  if (window.matchMedia('(hover: none)').matches && !isZenMenuOpen) {
+                    setIsZenMenuOpen(true);
+                    return;
+                  }
+                  setIsZenMenuOpen(false);
+                  toggleZenMode();
+                }}
+                aria-pressed={isZenMode}
+                aria-haspopup="true"
+                aria-expanded={isZenMenuOpen}
+                title={isZenMode ? 'Exit Zen mode' : 'Start Zen mode'}
+              >
+                Zen
+              </button>
+            )}
+            <div className="zen-nav-dropdown" ref={zenDropdownRef} aria-label="Zen modes">
+              {activeTab === 'zen' ? (
+                <Link
+                  to="/ambient"
+                  className="nav-btn zen-nav-dropdown-item"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setIsZenMenuOpen(false)}
+                >
+                  Ambient
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="nav-btn zen-nav-dropdown-item"
+                  onClick={() => {
+                    setIsZenMenuOpen(false);
+                    toggleZenMode();
+                  }}
+                  title="Start Zen mode"
+                >
+                  Zen
+                </button>
+              )}
+            </div>
+          </div>
           
           <Link
             to="/blog" 

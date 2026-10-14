@@ -182,20 +182,22 @@ const FEATURE_ART = [
 const HomeGuide = () => {
   const rootRef = useRef(null);
   const footerRef = useRef(null);
+  const homeGuideCopyRef = useRef(null);
   const previewVisualRef = useRef(null);
+  const previewPlayerRef = useRef(null);
   const [activeSection, setActiveSection] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [demoIndex, setDemoIndex] = useState(1);
   const [previewWorkspace, setPreviewWorkspace] = useState('lyrics');
   const [shownPreviewWorkspace, setShownPreviewWorkspace] = useState('lyrics');
   const [previewTransitionPhase, setPreviewTransitionPhase] = useState('idle');
-  const [isPreviewPaused, setIsPreviewPaused] = useState(false);
   const [isPreviewInView, setIsPreviewInView] = useState(false);
   const [isDocumentVisible, setIsDocumentVisible] = useState(false);
   const [latestChangelogEntry, setLatestChangelogEntry] = useState(null);
   const [groupChatMessages, setGroupChatMessages] = useState([]);
   const [changelogScrollbar, setChangelogScrollbar] = useState({ height: 0, top: 0, value: 0, max: 0, visible: false });
   const shownPreviewWorkspaceRef = useRef('lyrics');
+  const vaultScrollRef = useRef(null);
   const groupChatMessagesRef = useRef(null);
   const changelogScrollRef = useRef(null);
   const changelogScrollbarTrackRef = useRef(null);
@@ -203,6 +205,26 @@ const HomeGuide = () => {
   const groupChatSequenceRef = useRef(0);
   const groupChatMessageIdRef = useRef(0);
   const isMockPreviewActive = isPreviewInView && isDocumentVisible;
+
+  useEffect(() => {
+    const copy = homeGuideCopyRef.current;
+    const visual = previewVisualRef.current;
+    if (!copy || !visual) return undefined;
+
+    const updateCopyHeight = () => {
+      visual.style.setProperty('--home-guide-copy-height', `${copy.getBoundingClientRect().height}px`);
+    };
+    updateCopyHeight();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateCopyHeight);
+      return () => window.removeEventListener('resize', updateCopyHeight);
+    }
+
+    const resizeObserver = new ResizeObserver(updateCopyHeight);
+    resizeObserver.observe(copy);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   useEffect(() => {
     const visual = previewVisualRef.current;
@@ -338,10 +360,10 @@ const HomeGuide = () => {
 
   // Looping lyric highlight in the hero preview.
   useEffect(() => {
-    if (!isMockPreviewActive || isPreviewPaused || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const timer = setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_LINES.length), 2000);
+    if (!isMockPreviewActive || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_LINES.length), 1600);
     return () => clearInterval(timer);
-  }, [isMockPreviewActive, isPreviewPaused]);
+  }, [isMockPreviewActive]);
 
   useEffect(() => {
     if (shownPreviewWorkspace !== 'group-chat') {
@@ -369,7 +391,7 @@ const HomeGuide = () => {
     };
     const startMessageChain = () => {
       addMessage();
-      spawnTimer = window.setInterval(addMessage, 1800);
+      spawnTimer = window.setInterval(addMessage, 1600);
     };
     const handleMotionPreferenceChange = (event) => {
       window.clearInterval(spawnTimer);
@@ -501,18 +523,43 @@ const HomeGuide = () => {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
+  const handlePreviewPlayerPointerDown = (event) => {
+    if (event.pointerType === 'touch' && ['vault', 'changelog'].includes(shownPreviewWorkspace)) {
+      previewPlayerRef.current?.focus({ preventScroll: true });
+    }
+  };
+
+  const handlePreviewPlayerKeyDown = (event) => {
+    const scrollArea = shownPreviewWorkspace === 'vault'
+      ? vaultScrollRef.current
+      : shownPreviewWorkspace === 'changelog'
+        ? changelogScrollRef.current
+        : null;
+    if (!scrollArea) return;
+
+    if (event.key === 'ArrowDown') scrollArea.scrollTop += 40;
+    else if (event.key === 'ArrowUp') scrollArea.scrollTop -= 40;
+    else if (event.key === 'PageDown') scrollArea.scrollTop += scrollArea.clientHeight;
+    else if (event.key === 'PageUp') scrollArea.scrollTop -= scrollArea.clientHeight;
+    else if (event.key === 'Home') scrollArea.scrollTop = 0;
+    else if (event.key === 'End') scrollArea.scrollTop = scrollArea.scrollHeight;
+    else return;
+    event.preventDefault();
+  };
+
   const changelogChanges = latestChangelogEntry?.summary.split(/(?<=[.!?])\s+/).filter(Boolean) || [];
+  const isMockScrollableView = shownPreviewWorkspace === 'vault' || shownPreviewWorkspace === 'changelog';
   const changelogDate = latestChangelogEntry
     ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       .format(new Date(`${latestChangelogEntry.date}T00:00:00`))
     : '';
-  const changelogColumns = changelogChanges.reduce((columns, text, index) => {
-    const estimatedHeight = Math.ceil(text.length / 34) * 14 + 18;
-    const targetColumn = index % columns.length;
-    columns[targetColumn].items.push({ text, index });
-    columns[targetColumn].height += estimatedHeight;
-    return columns;
-  }, [{ height: 0, items: [] }, { height: 0, items: [] }]);
+  const isChangelogList = changelogChanges.length < 7;
+  const changelogColumns = isChangelogList
+    ? [{ items: changelogChanges.map((text, index) => ({ text, index })) }]
+    : changelogChanges.reduce((columns, text, index) => {
+      columns[index % columns.length].items.push({ text, index });
+      return columns;
+    }, [{ items: [] }, { items: [] }]);
 
   return (
     <div className="home-guide" ref={rootRef}>
@@ -526,7 +573,7 @@ const HomeGuide = () => {
 
       <header className="home-guide-hero" id="top">
         <div className="home-guide-stars" aria-hidden="true" />
-        <div className="home-guide-copy">
+        <div className="home-guide-copy" ref={homeGuideCopyRef}>
           <h1 className="pm-logo home-guide-title">
             <span>Listen to </span>
             <span className="pm-music" data-logo-text="MUSIC">MUSIC</span>
@@ -551,12 +598,6 @@ const HomeGuide = () => {
           className={`home-guide-visual ${isMockPreviewActive ? '' : 'is-mock-paused'}`}
           role="group"
           aria-label="Interactive preview of PlanetMusic workspaces"
-          onPointerEnter={() => setIsPreviewPaused(true)}
-          onPointerLeave={() => setIsPreviewPaused(false)}
-          onFocusCapture={() => setIsPreviewPaused(true)}
-          onBlurCapture={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) setIsPreviewPaused(false);
-          }}
         >
           <div className="home-guide-planet" aria-hidden="true">
             <div className="home-guide-ring home-guide-ring-a home-guide-ring-back" />
@@ -569,60 +610,72 @@ const HomeGuide = () => {
             <div className="home-guide-ring home-guide-ring-c home-guide-ring-front" />
             <div className="home-guide-ring home-guide-ring-d home-guide-ring-front" />
           </div>
-          <div className={`home-guide-player ${shownPreviewWorkspace === 'vault' ? 'is-vault' : ''} ${shownPreviewWorkspace === 'lyrics' ? 'is-lyrics' : ''} ${shownPreviewWorkspace === 'group-chat' ? 'is-group-chat' : ''} ${shownPreviewWorkspace === 'ambient' ? 'is-ambient' : ''} ${shownPreviewWorkspace === 'changelog' ? 'is-changelog' : ''}`}>
+          <div
+            ref={previewPlayerRef}
+            className={`home-guide-player ${shownPreviewWorkspace === 'vault' ? 'is-vault' : ''} ${shownPreviewWorkspace === 'lyrics' ? 'is-lyrics' : ''} ${shownPreviewWorkspace === 'group-chat' ? 'is-group-chat' : ''} ${shownPreviewWorkspace === 'ambient' ? 'is-ambient' : ''} ${shownPreviewWorkspace === 'changelog' ? 'is-changelog' : ''}`}
+            tabIndex={isMockScrollableView ? 0 : -1}
+            aria-label={isMockScrollableView ? `${shownPreviewWorkspace === 'vault' ? 'Vault' : 'Changelog'} mock window. Focus to scroll.` : undefined}
+            onPointerDown={handlePreviewPlayerPointerDown}
+            onKeyDown={handlePreviewPlayerKeyDown}
+          >
             <div
+              ref={shownPreviewWorkspace === 'vault' ? vaultScrollRef : undefined}
               key={shownPreviewWorkspace}
               className={`home-guide-preview-stage ${previewTransitionPhase} ${shownPreviewWorkspace === 'vault' ? 'is-vault' : ''} ${shownPreviewWorkspace === 'lyrics' ? 'is-lyrics' : ''} ${shownPreviewWorkspace === 'group-chat' ? 'is-group-chat' : ''} ${shownPreviewWorkspace === 'ambient' ? 'is-ambient' : ''} ${shownPreviewWorkspace === 'changelog' ? 'is-changelog' : ''}`}
             >
-            {shownPreviewWorkspace === 'vault' && (
-              <div className="home-guide-preview-library">
-                <div className="home-guide-vault-heading">
-                  <span className="pm-logo home-guide-vault-wordmark" aria-label="Fictional alien-script wordmark">
-                    <span className="pm-planet">⟟⌬⟁</span>
-                    <span className="pm-music">⟐⋏⌇</span>
-                  </span>
+              {shownPreviewWorkspace === 'vault' && (
+                <div className="home-guide-preview-library">
+                  <div className="home-guide-vault-heading">
+                    <span className="pm-logo home-guide-vault-wordmark" aria-label="Fictional alien-script wordmark">
+                      <span className="pm-planet">⟟⌬⟁</span>
+                      <span className="pm-music">⟐⋏⌇</span>
+                    </span>
+                  </div>
+                  <div className="home-guide-vault-search" aria-hidden="true">
+                    <b>
+                      <svg viewBox="0 0 20 20" aria-hidden="true">
+                        <circle cx="8.5" cy="8.5" r="5.5" />
+                        <path d="m13 13 4 4" />
+                      </svg>
+                    </b>
+                  </div>
+                  <div className="home-guide-vault-grid">
+                    {[
+                      ['⟟⌬⟁⟐', '⋏⌇⌁', 'art-1', false],
+                      ['⌬⋇⟡⋏', '⟁⌑⟟', 'art-2', true],
+                      ['⊹◈⌇⟐', '⌁⟡⋔', 'art-3', true],
+                      ['⟡⌁◈⋇', '⌬⋏⌖', 'art-10', false],
+                      ['⟁⌁⊙⌬', '⟐⋏⌑', 'art-4', false],
+                      ['⋇⌬⟐⋏', '◈⌁⌖', 'art-5', false],
+                      ['⌁⟡⋔◈', '⟁⋇⌬', 'art-6', true],
+                      ['⊙⟁⌬⋔', '⟐⌑⋇', 'art-11', true],
+                      ['◈⌖⌁⟐', '⋏⟐⌬', 'art-7', true],
+                      ['⋇⊙⟁⌑', '⌁◈⋔', 'art-8', false],
+                      ['⌬⟐⋇⊹', '⌖⌁⋏', 'art-9', false],
+                      ['⋏⌖⟐⊹', '⌁⌬◈', 'art-12', false]
+                    ].map(([title, artist, artwork, explicit], index) => (
+                      <article
+                        className="home-guide-vault-card"
+                        key={title}
+                        style={{ '--preview-stagger-index': index }}
+                      >
+                        <div className={`home-guide-vault-art ${artwork}`}>
+                          {explicit && <span className="home-guide-vault-explicit">⌬</span>}
+                          <span className="home-guide-vault-play" aria-hidden="true">
+                            <svg viewBox="0 0 20 20">
+                              <path d="M6 4.5 15 10l-9 5.5z" />
+                            </svg>
+                          </span>
+                          <span className="home-guide-vault-card-info">
+                            <strong>{title}</strong>
+                            <small>{artist}</small>
+                          </span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-                <div className="home-guide-vault-search" aria-hidden="true">
-                  <b>
-                    <svg viewBox="0 0 20 20" aria-hidden="true">
-                      <circle cx="8.5" cy="8.5" r="5.5" />
-                      <path d="m13 13 4 4" />
-                    </svg>
-                  </b>
-                </div>
-                <div className="home-guide-vault-grid">
-                  {[
-                    ['⟟⌬⟁⟐', '⋏⌇⌁', 'art-1', false],
-                    ['⌬⋇⟡⋏', '⟁⌑⟟', 'art-2', true],
-                    ['⊹◈⌇⟐', '⌁⟡⋔', 'art-3', true],
-                    ['⟡⌁◈⋇', '⌬⋏⌖', 'art-10', false],
-                    ['⟁⌁⊙⌬', '⟐⋏⌑', 'art-4', false],
-                    ['⋇⌬⟐⋏', '◈⌁⌖', 'art-5', false],
-                    ['⌁⟡⋔◈', '⟁⋇⌬', 'art-6', true],
-                    ['⊙⟁⌬⋔', '⟐⌑⋇', 'art-11', true],
-                    ['◈⌖⌁⟐', '⋏⟐⌬', 'art-7', true],
-                    ['⋇⊙⟁⌑', '⌁◈⋔', 'art-8', false],
-                    ['⌬⟐⋇⊹', '⌖⌁⋏', 'art-9', false],
-                    ['⋏⌖⟐⊹', '⌁⌬◈', 'art-12', false]
-                  ].map(([title, artist, artwork, explicit]) => (
-                    <article className="home-guide-vault-card" key={title}>
-                      <div className={`home-guide-vault-art ${artwork}`}>
-                        {explicit && <span className="home-guide-vault-explicit">⌬</span>}
-                        <span className="home-guide-vault-play" aria-hidden="true">
-                          <svg viewBox="0 0 20 20">
-                            <path d="M6 4.5 15 10l-9 5.5z" />
-                          </svg>
-                        </span>
-                        <span className="home-guide-vault-card-info">
-                          <strong>{title}</strong>
-                          <small>{artist}</small>
-                        </span>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            )}
+              )}
             {shownPreviewWorkspace === 'lyrics' && (
               <div className="home-guide-preview-lyrics" aria-label="Live lyrics preview">
                 <div className="home-guide-lyrics-artists" aria-hidden="true">
@@ -635,11 +688,11 @@ const HomeGuide = () => {
                   {DEMO_LINES.map((line, i) => (
                     <div key={line.text} className={`home-guide-lyric-line ${i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}`}>
                       <div className="home-guide-lyric-anchor">
-                        {i === demoIndex && line.translation && (
+                        {line.translation && (
                           <span className="home-guide-lyric-translation">{line.translation.toUpperCase()}</span>
                         )}
                         <p>{line.text}</p>
-                        {i === demoIndex && line.pronunciation && (
+                        {line.pronunciation && (
                           <small className="home-guide-lyric-pronunciation">{line.pronunciation.toUpperCase()}</small>
                         )}
                       </div>
@@ -718,9 +771,9 @@ const HomeGuide = () => {
                   )}
                 </div>
                 <div className="home-guide-changelog-scroll-shell">
-                  <div id="home-guide-changelog-content" className="home-guide-changelog-scroll" ref={changelogScrollRef} tabIndex="0" aria-label="Latest PlanetMusic changelog entry">
+                  <div id="home-guide-changelog-content" className="home-guide-changelog-scroll" ref={changelogScrollRef} tabIndex="-1" aria-label="Latest PlanetMusic changelog entry">
                     {latestChangelogEntry ? (
-                      <div className="home-guide-changelog-grid">
+                      <div className={`home-guide-changelog-grid${isChangelogList ? ' is-list' : ''}`}>
                         {changelogColumns.map((column, columnIndex) => (
                           <ol key={columnIndex}>
                             {column.items.map(({ text, index }) => (
@@ -728,6 +781,7 @@ const HomeGuide = () => {
                                 data-change-number={index + 1}
                                 key={`${latestChangelogEntry.date}-${index}`}
                                 style={{
+                                  '--preview-stagger-index': index,
                                   backgroundColor: `color-mix(in srgb, ${getProceduralColor(`changelog:card:${latestChangelogEntry.date}:${index}`)} 24%, transparent)`
                                 }}
                               >
