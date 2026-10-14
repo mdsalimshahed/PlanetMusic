@@ -100,7 +100,10 @@
 }
 
 .group-chat-message-text.is-wrap-enabled {
-  width: min(var(--chat-rendered-glyph-width, var(--chat-wrap-width)), var(--chat-wrap-width));
+  width: min(
+    var(--chat-wrapped-content-width, var(--chat-rendered-glyph-width, var(--chat-wrap-width))),
+    var(--chat-wrap-width)
+  );
   max-width: min(var(--chat-wrap-width), 100%);
   text-wrap: wrap;
   white-space: pre-wrap;
@@ -178,10 +181,6 @@
   max-width: 100% !important;
   text-wrap: wrap !important;
   white-space: normal !important;
-}
-
-.group-chat-turn-right .group-chat-message-text.is-wrap-enabled {
-  transform: translateX(var(--chat-glyph-boundary-offset, 0px));
 }
 
 .group-chat-message-text.is-wrap-enabled .lyric-text-span {

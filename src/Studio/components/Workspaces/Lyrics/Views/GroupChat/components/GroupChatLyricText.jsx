@@ -115,7 +115,14 @@ const GroupChatLyricText = React.memo(({
     enabled: precomputedLayout?.enabled || false,
     width: precomputedLayout?.width || 0
   });
+  const [wrappedContentLayout, setWrappedContentLayout] = useState({
+    key: null,
+    width: 0
+  });
   const [measuredLayoutKey, setMeasuredLayoutKey] = useState(null);
+  const wrappedContentWidth = wrappedContentLayout.key === layoutKey
+    ? wrappedContentLayout.width
+    : 0;
   const isRTL = isRTLLanguage(line.text || '');
   const stripParentheses = value =>
     typeof value === 'string' ? value.replace(/[()（）]/g, '') : value;
@@ -227,103 +234,56 @@ const GroupChatLyricText = React.memo(({
 
   useLayoutEffect(() => {
     const element = textRef.current;
-    const message = element?.closest('.group-chat-message');
-    if (!element || !message) return;
-
-    if (!wrapLayout.enabled) {
-      message.style.removeProperty('--chat-measured-bubble-width');
-      return;
-    }
-    const layoutScale = getLayoutScale(element);
-    const timestamp = message.querySelector('.group-chat-message-line time');
-    const messageStyles = getComputedStyle(message);
-    const textContentWidth = getMaxTextLineWidth([
-      ...element.querySelectorAll(
-        '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
-      )
-    ]);
-    const contentWidth = Math.max(
-      textContentWidth,
-      timestamp?.getBoundingClientRect().width || 0
-    ) / layoutScale;
-    const horizontalPadding =
-      (parseFloat(messageStyles.paddingLeft) || 0) +
-      (parseFloat(messageStyles.paddingRight) || 0);
-    message.style.setProperty(
-      '--chat-measured-bubble-width',
-      `${Math.ceil(contentWidth + horizontalPadding)}px`
-    );
-  }, [
-    precomputedLayout,
-    renderedGlyphWidth,
-    translationReferenceOffset,
-    translationReferenceWidth,
-    wrapLayout.enabled,
-    wrapLayout.width,
-    line,
-    savedNode,
-    layoutKey,
-    lyricFontSize
-  ]);
-
-  useLayoutEffect(() => {
-    const element = textRef.current;
     if (!element) return undefined;
 
-    const alignGlyphBoundary = () => {
-      if (
-        !wrapLayout.enabled ||
-        !element.closest('.group-chat-turn-right')
-      ) {
-        element.style.removeProperty('--chat-glyph-boundary-offset');
-        return;
-      }
-
-      const mainBounds = getTextBoundingBox([
-        ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
-      ]);
-      const timestamp = element
-        .closest('.group-chat-message-line')
-        ?.querySelector('time');
-      if (!mainBounds || !timestamp) {
-        element.style.removeProperty('--chat-glyph-boundary-offset');
+    const updateWrappedContentWidth = () => {
+      if (!wrapLayout.enabled) {
+        setWrappedContentLayout(previous => (
+          previous.key === layoutKey && previous.width === 0
+            ? previous
+            : { key: layoutKey, width: 0 }
+        ));
         return;
       }
 
       const layoutScale = getLayoutScale(element);
-      const currentOffset =
-        parseFloat(element.style.getPropertyValue('--chat-glyph-boundary-offset')) || 0;
-      const unshiftedRight = mainBounds.right - currentOffset * layoutScale;
-      const offset = (timestamp.getBoundingClientRect().right - unshiftedRight) / layoutScale;
-      if (
-        Number.isFinite(offset) &&
-        Math.abs(offset - currentOffset) > 0.25
-      ) {
-        element.style.setProperty('--chat-glyph-boundary-offset', `${offset}px`);
+      const contentWidth = getMaxTextLineWidth([
+        ...element.querySelectorAll(
+          '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
+        )
+      ]) / layoutScale;
+      if (contentWidth > 0) {
+        const width = Math.ceil(contentWidth);
+        setWrappedContentLayout(previous => (
+          previous.key === layoutKey && previous.width === width
+            ? previous
+            : { key: layoutKey, width }
+        ));
       }
     };
 
-    alignGlyphBoundary();
+    updateWrappedContentWidth();
     const resizeObserver = typeof ResizeObserver === 'undefined'
       ? null
-      : new ResizeObserver(alignGlyphBoundary);
+      : new ResizeObserver(updateWrappedContentWidth);
     [
       element,
       element.querySelector('.main-lyrics-layer'),
-      element.closest('.group-chat-message-line')?.querySelector('time')
+      ...element.querySelectorAll(
+        '.pronunciation-text, .chunk-translation, .live-translation'
+      )
     ].filter(Boolean).forEach(target => resizeObserver?.observe(target));
 
     let cancelled = false;
     document.fonts?.ready.then(() => {
-      if (!cancelled) alignGlyphBoundary();
+      if (!cancelled) updateWrappedContentWidth();
     });
-    window.addEventListener('resize', alignGlyphBoundary);
+    window.addEventListener('resize', updateWrappedContentWidth);
 
     return () => {
       cancelled = true;
       resizeObserver?.disconnect();
-      window.removeEventListener('resize', alignGlyphBoundary);
-      element.style.removeProperty('--chat-glyph-boundary-offset');
+      window.removeEventListener('resize', updateWrappedContentWidth);
     };
   }, [
     layoutKey,
@@ -332,6 +292,94 @@ const GroupChatLyricText = React.memo(({
     savedNode,
     wrapLayout.enabled,
     wrapLayout.width
+  ]);
+
+  useLayoutEffect(() => {
+    const element = textRef.current;
+    const message = element?.closest('.group-chat-message');
+    if (!element || !message) return undefined;
+
+    if (!wrapLayout.enabled) {
+      message.style.removeProperty('--chat-measured-bubble-width');
+      return undefined;
+    }
+
+    if (wrappedContentLayout.key !== layoutKey || !wrappedContentWidth) {
+      message.style.removeProperty('--chat-measured-bubble-width');
+      return undefined;
+    }
+
+    const lineElement = message.querySelector('.group-chat-message-line');
+    const timestamp = lineElement?.querySelector('time');
+    let measureFrame = null;
+    let cancelled = false;
+
+    const measureFinalBubble = () => {
+      measureFrame = null;
+      if (cancelled) return;
+
+      const layoutScale = getLayoutScale(element);
+      const textBounds = getTextBoundingBox([
+        ...element.querySelectorAll(
+          '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
+        )
+      ]);
+      const timestampBounds = timestamp?.getBoundingClientRect();
+      const left = Math.min(
+        textBounds?.left ?? Infinity,
+        timestampBounds?.left ?? Infinity
+      );
+      const right = Math.max(
+        textBounds?.right ?? -Infinity,
+        timestampBounds?.right ?? -Infinity
+      );
+      if (!Number.isFinite(left) || !Number.isFinite(right)) return;
+
+      const messageStyles = getComputedStyle(message);
+      const horizontalPadding =
+        (parseFloat(messageStyles.paddingLeft) || 0) +
+        (parseFloat(messageStyles.paddingRight) || 0);
+      const contentWidth = (right - left) / layoutScale;
+      const bubbleWidth = `${Math.ceil(contentWidth + horizontalPadding)}px`;
+      if (message.style.getPropertyValue('--chat-measured-bubble-width') !== bubbleWidth) {
+        message.style.setProperty('--chat-measured-bubble-width', bubbleWidth);
+      }
+    };
+
+    const scheduleMeasurement = () => {
+      if (cancelled) return;
+      if (measureFrame !== null) window.cancelAnimationFrame(measureFrame);
+      measureFrame = window.requestAnimationFrame(measureFinalBubble);
+    };
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleMeasurement);
+    [element, lineElement, timestamp].filter(Boolean)
+      .forEach(target => resizeObserver?.observe(target));
+    document.fonts?.ready.then(scheduleMeasurement);
+    window.addEventListener('resize', scheduleMeasurement);
+    scheduleMeasurement();
+
+    return () => {
+      cancelled = true;
+      if (measureFrame !== null) window.cancelAnimationFrame(measureFrame);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleMeasurement);
+    };
+  }, [
+    layoutKey,
+    line,
+    lyricFontSize,
+    precomputedLayout,
+    renderedGlyphWidth,
+    savedNode,
+    translationReferenceOffset,
+    translationReferenceWidth,
+    wrapLayout.enabled,
+    wrapLayout.width,
+    wrappedContentLayout.key,
+    wrappedContentWidth
   ]);
 
   useLayoutEffect(() => {
@@ -429,6 +477,9 @@ const GroupChatLyricText = React.memo(({
           : '100%',
         '--chat-translation-left-offset': `${translationReferenceOffset}px`,
         '--chat-wrap-width': `${wrapLayout.width}px`,
+        '--chat-wrapped-content-width': wrappedContentWidth
+          ? `${wrappedContentWidth}px`
+          : undefined,
       }}
     >
       {renderLine(
