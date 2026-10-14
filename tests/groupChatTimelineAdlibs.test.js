@@ -262,6 +262,50 @@ test('preserves explicit attribution for an intentionally white artist', () => {
   assert.deepEqual(chat.artists.map(artist => artist.name), ['Ari', 'Bea']);
 });
 
+test('preserves ad-lib artists on white gradient segments', () => {
+  const chat = buildGroupChatTimeline(
+    [{
+      singer: 'Suzuka, Kanon, Mizyu, Rin',
+      text: 'Lead (echo)',
+      segments: [
+        { text: 'Lead ', artists: ['Suzuka'], color: '#ff0000' },
+        {
+          text: '(echo)',
+          artists: ['Kanon', 'Mizyu', 'Rin'],
+          color: '#ffffff',
+          isGradient: true,
+          gradient: 'linear-gradient(90deg, #86e7f9, #ae86f9)'
+        }
+      ]
+    }],
+    [{
+      start: 1,
+      end: 4,
+      isSplit: true,
+      adlibs: [{
+        text: '(echo)',
+        charStart: 5,
+        charEnd: 11,
+        start: 2,
+        end: 2.5,
+        singer: 'Kanon, Mizyu, Rin',
+        segments: [{
+          text: '(echo)',
+          artists: ['Kanon', 'Mizyu', 'Rin'],
+          color: '#ffffff',
+          isGradient: true,
+          gradient: 'linear-gradient(90deg, #86e7f9, #ae86f9)'
+        }]
+      }]
+    }],
+    'ATARASHII GAKKO!',
+    { Suzuka: '#ff0000', Kanon: '#00ff00', Mizyu: '#0000ff', Rin: '#ff00ff' }
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.deepEqual(adlib.artists, ['Kanon', 'Mizyu', 'Rin']);
+});
+
 test('shows the ad-lib artist typing when their bubble is within the activity window', () => {
   const chat = buildGroupChatTimeline(
     [

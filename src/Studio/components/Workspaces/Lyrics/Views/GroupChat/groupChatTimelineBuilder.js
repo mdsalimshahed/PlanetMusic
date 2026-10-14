@@ -21,13 +21,16 @@ const isWhiteColor = color => {
   return Boolean(rgb && rgb.slice(1).every(channel => Number(channel) === 255));
 };
 
+const isWhiteMarkerSegment = segment =>
+  isWhiteColor(segment.color) && !segment.isGradient && !segment.gradient;
+
 const isWhiteMarkedAdlib = adlib => {
   if (isWhiteColor(adlib.color)) return true;
   const contentSegments = (adlib.segments || []).filter(segment =>
     (segment.text || '').trim()
   );
   return contentSegments.length > 0 &&
-    contentSegments.every(segment => isWhiteColor(segment.color));
+    contentSegments.every(isWhiteMarkerSegment);
 };
 
 const getAdlibArtists = (adlib, palette) => {
@@ -35,7 +38,7 @@ const getAdlibArtists = (adlib, palette) => {
   const whiteMarked = isWhiteMarkedAdlib(adlib);
   return getSegmentArtists(segments.map(segment => ({
     ...segment,
-    artists: whiteMarked || isWhiteColor(segment.color)
+    artists: whiteMarked || isWhiteMarkerSegment(segment)
       ? (segment.artists || []).filter(artist => isWhiteColor(palette[artist]))
       : segment.artists
   })));

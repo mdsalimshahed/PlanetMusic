@@ -381,8 +381,14 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       const isOpeningPunctuation = ['(', '[', '{', '<', '"', "'", '\u2018', '\u201C', '\u00AB'].includes(firstCharacter);
       const isClosingPunctuation = [')', ']', '}', '>', '"', "'", '\u2019', '\u201D', '\u00BB', '.', ',', ';', ':', '!', '?', '\u2026'].includes(firstCharacter);
 
-      const prevWordIndex = i > 0 ? [...Array(i).keys()].reverse().find(index => isWordToken(merged[index])) : -1;
-      const nextWordIndex = i + 1 < merged.length ? [...Array(merged.length - i - 1).keys()].map(offset => i + 1 + offset).find(index => isWordToken(merged[index])) : -1;
+      const prevWordIndex = i > 0
+        ? [...Array(i).keys()].reverse().find(index => isWordToken(merged[index])) ?? -1
+        : -1;
+      const nextWordIndex = i + 1 < merged.length
+        ? [...Array(merged.length - i - 1).keys()]
+          .map(offset => i + 1 + offset)
+          .find(index => isWordToken(merged[index])) ?? -1
+        : -1;
 
       if (isOpeningPunctuation && nextWordIndex !== -1) {
         const nextNode = merged[nextWordIndex];
