@@ -106,7 +106,7 @@ ${FAQ.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('\n')}
 </main>`;
 page({
   path: '/',
-  title: 'Free Lyrics Sync & Translation Tool | PlanetMusic',
+  title: 'PlanetMusic | Lyrics Sync and Translations App',
   description: SITE.description,
   body: homeBody,
   jsonld: { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
