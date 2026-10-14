@@ -5,7 +5,18 @@ import BlogPostArtwork from '../../pages/BlogPostArtwork.jsx';
 import { getProceduralColor } from '../../../utils/proceduralColors.js';
 import './HomeGuide.css';
 
-const DEMO_LINES = [
+const DEMO_LINE_COLORS = ['#ff8f9c', '#ffd166', '#8be9fd', '#c4a1ff', '#9be7a5', '#ffb86c'];
+const shuffledDemoLineColors = [...DEMO_LINE_COLORS];
+
+for (let index = shuffledDemoLineColors.length - 1; index > 0; index -= 1) {
+  const randomIndex = Math.floor(Math.random() * (index + 1));
+  [shuffledDemoLineColors[index], shuffledDemoLineColors[randomIndex]] = [
+    shuffledDemoLineColors[randomIndex],
+    shuffledDemoLineColors[index]
+  ];
+}
+
+const DEMO_LINE_DATA = [
   {
     text: 'Where the moonlight learns to breathe',
     artist: 'Mira',
@@ -43,6 +54,17 @@ const DEMO_LINES = [
     artistStyle: 'ren'
   }
 ];
+const DEMO_ARTIST_STYLES = [...new Set(DEMO_LINE_DATA.map(({ artistStyle }) => artistStyle))];
+const DEMO_ARTIST_COLORS = new Map(
+  DEMO_ARTIST_STYLES.map((artistStyle, index) => [
+    artistStyle,
+    shuffledDemoLineColors[index % shuffledDemoLineColors.length]
+  ])
+);
+const DEMO_LINES = DEMO_LINE_DATA.map((line) => ({
+  ...line,
+  color: DEMO_ARTIST_COLORS.get(line.artistStyle)
+}));
 
 const ABOUT_ART = [
   <svg key="library" viewBox="0 0 320 112" fill="none" aria-hidden="true">
@@ -185,6 +207,7 @@ const HomeGuide = () => {
   const homeGuideCopyRef = useRef(null);
   const previewVisualRef = useRef(null);
   const previewPlayerRef = useRef(null);
+  const lyricsScrollRef = useRef(null);
   const [activeSection, setActiveSection] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [demoIndex, setDemoIndex] = useState(1);
@@ -364,6 +387,34 @@ const HomeGuide = () => {
     const timer = setInterval(() => setDemoIndex((i) => (i + 1) % DEMO_LINES.length), 1600);
     return () => clearInterval(timer);
   }, [isMockPreviewActive]);
+
+  useEffect(() => {
+    if (shownPreviewWorkspace !== 'lyrics') return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      const scrollArea = lyricsScrollRef.current;
+      const activeLine = scrollArea?.querySelector('.home-guide-lyric-line.is-active');
+      if (!scrollArea || !activeLine) return;
+
+      const areaBounds = scrollArea.getBoundingClientRect();
+      const lineBounds = activeLine.getBoundingClientRect();
+      const styles = window.getComputedStyle(scrollArea);
+      const visibleTop = areaBounds.top + parseFloat(styles.paddingTop);
+      const visibleBottom = areaBounds.bottom - parseFloat(styles.paddingBottom);
+      const scrollDelta = lineBounds.top < visibleTop
+        ? lineBounds.top - visibleTop
+        : lineBounds.bottom > visibleBottom
+          ? lineBounds.bottom - visibleBottom
+          : 0;
+
+      if (scrollDelta) {
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        scrollArea.scrollBy({ top: scrollDelta, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [demoIndex, shownPreviewWorkspace]);
 
   useEffect(() => {
     if (shownPreviewWorkspace !== 'group-chat') {
@@ -683,15 +734,20 @@ const HomeGuide = () => {
                     <img src={`/artist-avatars/${DEMO_LINES[demoIndex].artistStyle}.png`} alt="" />
                   </span>
                 </div>
-                <span className="home-guide-lyrics-artist-name">{DEMO_LINES[demoIndex].artist}</span>
-                <div className="home-guide-lyrics" aria-hidden="true">
+                <span
+                  className="home-guide-lyrics-artist-name"
+                  style={{ color: DEMO_LINES[demoIndex].color }}
+                >
+                  {DEMO_LINES[demoIndex].artist}
+                </span>
+                <div className="home-guide-lyrics" ref={lyricsScrollRef} aria-hidden="true">
                   {DEMO_LINES.map((line, i) => (
                     <div key={line.text} className={`home-guide-lyric-line ${i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}`}>
                       <div className="home-guide-lyric-anchor">
                         {line.translation && (
                           <span className="home-guide-lyric-translation">{line.translation.toUpperCase()}</span>
                         )}
-                        <p>{line.text}</p>
+                        <p style={{ color: line.color }}>{line.text}</p>
                         {line.pronunciation && (
                           <small className="home-guide-lyric-pronunciation">{line.pronunciation.toUpperCase()}</small>
                         )}
@@ -728,7 +784,7 @@ const HomeGuide = () => {
                         <div className="home-guide-group-message-content">
                           <div className="home-guide-group-bubble">
                             {line.translation && <span>{line.translation.toUpperCase()}</span>}
-                            <p>{line.text}</p>
+                            <p style={{ color: line.color }}>{line.text}</p>
                             {line.pronunciation && <small>{line.pronunciation.toUpperCase()}</small>}
                           </div>
                           <small className="home-guide-group-speaker">{line.artist}</small>

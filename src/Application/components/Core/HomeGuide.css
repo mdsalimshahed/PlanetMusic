@@ -212,7 +212,7 @@
 .home-guide-preview-lyrics .home-guide-lyrics-avatar img { position: absolute; top: 0; left: 50%; display: block; width: auto; max-width: 100%; height: 100%; object-fit: contain; object-position: center; opacity: 0.24; transform: translateX(-50%); }
 @keyframes hg-artist-art-in { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
 .home-guide-lyrics-artist-name { position: absolute; z-index: 2; right: 2%; bottom: 12px; max-width: 70%; color: rgba(255, 255, 255, 0.94); font-size: 18px; font-weight: 700; line-height: 1.2; text-align: right; overflow-wrap: anywhere; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); }
-.home-guide-lyrics { position: relative; z-index: 1; display: flex; flex: 1; min-width: 0; max-width: 100%; flex-direction: column; justify-content: space-evenly; box-sizing: border-box; gap: 4px; padding: 5% 8% 16%; }
+.home-guide-lyrics { position: relative; z-index: 1; display: flex; flex: 1; min-width: 0; max-width: 100%; flex-direction: column; justify-content: flex-start; box-sizing: border-box; gap: 4px; overflow-x: hidden; overflow-y: hidden; padding: 5% 8% 16%; scroll-behavior: smooth; }
 .home-guide-preview-group-chat { position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; padding: 12px; }
 .home-guide-group-chat-heading { display: flex; flex: none; align-items: center; gap: 9px; min-height: 40px; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .home-guide-group-chat-heading > i { width: 6px; height: 6px; margin-left: auto; border-radius: 50%; background: #69e0b7; box-shadow: 0 0 8px rgba(105, 224, 183, 0.6); }
@@ -232,12 +232,12 @@
 .home-guide-group-avatar.group-avatar-alien,.home-guide-group-avatars .group-avatar-alien { border-color: rgba(174, 255, 192, 0.72); background: radial-gradient(circle at 50% 45%, #498c69, #1d3c39); box-shadow: 0 0 12px rgba(105, 224, 183, 0.35); }
 .home-guide-group-message-content { display: grid; min-width: 0; gap: 2px; }
 .home-guide-group-message.is-right .home-guide-group-message-content { justify-items: end; }
-.home-guide-group-bubble { display: grid; width: fit-content; max-width: 100%; gap: 4px; padding: 8px 11px; border: 1px solid rgba(167, 123, 255, 0.22); border-radius: 12px 12px 12px 4px; color: #f5f0ff; background: rgba(54, 39, 76, 0.72); }
+.home-guide-group-bubble { display: grid; width: fit-content; max-width: 100%; gap: 4px; padding: 8px 11px; border: 0; border-radius: 12px 12px 12px 4px; color: #f5f0ff; background: rgba(0, 0, 0, 0.32); }
 .home-guide-group-bubble > span { color: #d0c4e7; font-size: clamp(9px, 2.4vw, 11px); line-height: 1.2; overflow-wrap: anywhere; white-space: pre-line; }
 .home-guide-group-bubble > p { color: #f5f0ff; font-size: clamp(11px, 3vw, 13px); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .home-guide-group-bubble > small { color: #c4bbd8; font-size: clamp(9px, 2.1vw, 10px); line-height: 1.2; overflow-wrap: anywhere; }
 .home-guide-group-speaker { padding: 0 4px; color: #a99fbd; font-size: 9px; line-height: 1; }
-.home-guide-group-message.is-right .home-guide-group-bubble { border-color: rgba(95, 212, 255, 0.22); border-radius: 10px 10px 3px 10px; background: rgba(31, 62, 79, 0.72); text-align: right; }
+.home-guide-group-message.is-right .home-guide-group-bubble { border-radius: 10px 10px 3px 10px; background: rgba(0, 0, 0, 0.32); text-align: right; }
 .home-guide-preview-ambient { flex: 1; }
 .home-guide-preview-changelog { display: flex; flex: 1; min-height: 0; flex-direction: column; background: transparent; }
 .home-guide-changelog-heading { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 12px; border-bottom: 1px solid rgba(167, 123, 255, 0.24); }
