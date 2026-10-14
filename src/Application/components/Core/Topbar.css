@@ -152,7 +152,10 @@
   transform: none;
 }
 
-.nav-btn:focus-visible,
+.nav-btn:focus-visible {
+  outline: none;
+}
+
 .tool-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;

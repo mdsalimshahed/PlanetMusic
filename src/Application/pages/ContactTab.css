@@ -44,11 +44,12 @@
 }
 
 .contact-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 30px 32px;
+  min-height: 220px;
+  overflow: hidden;
+  padding: 32px;
   border-radius: var(--dyn-border-radius);
   margin-bottom: 32px;
   text-align: left;
@@ -58,7 +59,9 @@
 
 .contact-hero-copy {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  min-width: 0;
+  max-width: 62%;
 }
 
 .contact-hero-title {
@@ -77,9 +80,14 @@
 }
 
 .contact-hero-artwork {
-  width: 100%;
-  height: 180px;
-  border-radius: var(--dyn-border-radius, 16px);
+  position: absolute !important;
+  z-index: 0;
+  inset: 0 0 0 auto;
+  width: 58%;
+  height: 100%;
+  border-radius: inherit;
+  opacity: 0.58;
+  pointer-events: none;
 }
 
 .contact-card-body {
@@ -90,23 +98,11 @@
   text-align: left;
 }
 
-.contact-form-guidance {
-  margin-bottom: 32px;
-  color: var(--text-subdued);
-  line-height: 1.65;
+.contact-hero-links {
+  margin-top: 8px;
 }
 
-.contact-form-guidance h2 {
-  margin: 0 0 12px;
-  color: rgba(255, 255, 255, 0.94);
-  font-size: 18px;
-}
-
-.contact-form-guidance p {
-  margin: 0 0 12px;
-}
-
-.contact-form-guidance a {
+.contact-hero-links a {
   color: var(--accent);
 }
 
@@ -341,13 +337,17 @@
 
 @media (max-width: 600px) {
   .contact-hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    min-height: 185px;
     padding: 24px 20px;
   }
 
+  .contact-hero-copy {
+    max-width: 100%;
+  }
+
   .contact-hero-artwork {
-    height: 145px;
+    opacity: 0.58;
+    width: 72%;
   }
 
   .contact-info-blocks {
