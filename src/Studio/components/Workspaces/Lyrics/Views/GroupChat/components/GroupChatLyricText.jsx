@@ -268,6 +268,74 @@ const GroupChatLyricText = React.memo(({
 
   useLayoutEffect(() => {
     const element = textRef.current;
+    if (!element) return undefined;
+
+    const alignGlyphBoundary = () => {
+      if (
+        !wrapLayout.enabled ||
+        !element.closest('.group-chat-turn-right')
+      ) {
+        element.style.removeProperty('--chat-glyph-boundary-offset');
+        return;
+      }
+
+      const mainBounds = getTextBoundingBox([
+        ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
+      ]);
+      const timestamp = element
+        .closest('.group-chat-message-line')
+        ?.querySelector('time');
+      if (!mainBounds || !timestamp) {
+        element.style.removeProperty('--chat-glyph-boundary-offset');
+        return;
+      }
+
+      const layoutScale = getLayoutScale(element);
+      const currentOffset =
+        parseFloat(element.style.getPropertyValue('--chat-glyph-boundary-offset')) || 0;
+      const unshiftedRight = mainBounds.right - currentOffset * layoutScale;
+      const offset = (timestamp.getBoundingClientRect().right - unshiftedRight) / layoutScale;
+      if (
+        Number.isFinite(offset) &&
+        Math.abs(offset - currentOffset) > 0.25
+      ) {
+        element.style.setProperty('--chat-glyph-boundary-offset', `${offset}px`);
+      }
+    };
+
+    alignGlyphBoundary();
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(alignGlyphBoundary);
+    [
+      element,
+      element.querySelector('.main-lyrics-layer'),
+      element.closest('.group-chat-message-line')?.querySelector('time')
+    ].filter(Boolean).forEach(target => resizeObserver?.observe(target));
+
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) alignGlyphBoundary();
+    });
+    window.addEventListener('resize', alignGlyphBoundary);
+
+    return () => {
+      cancelled = true;
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', alignGlyphBoundary);
+      element.style.removeProperty('--chat-glyph-boundary-offset');
+    };
+  }, [
+    layoutKey,
+    line,
+    renderedGlyphWidth,
+    savedNode,
+    wrapLayout.enabled,
+    wrapLayout.width
+  ]);
+
+  useLayoutEffect(() => {
+    const element = textRef.current;
     const translation = element?.querySelector('.chunk-translation');
     if (!element || !translation || precomputedLayout) return;
 

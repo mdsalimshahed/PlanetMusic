@@ -180,6 +180,10 @@
   white-space: normal !important;
 }
 
+.group-chat-turn-right .group-chat-message-text.is-wrap-enabled {
+  transform: translateX(var(--chat-glyph-boundary-offset, 0px));
+}
+
 .group-chat-message-text.is-wrap-enabled .lyric-text-span {
   white-space: normal !important;
   word-break: normal !important;
