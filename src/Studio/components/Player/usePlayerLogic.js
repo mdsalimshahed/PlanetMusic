@@ -133,6 +133,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
   useEffect(() => {
     const handlePauseGlobal = () => {
+      pendingAutoplayRef.current = false;
       if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.pauseVideo(); } catch (e) {}
       } else if (audioRef.current && !audioRef.current.paused) {
@@ -187,6 +188,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
   const attemptPlay = async () => {
     if (bufferingRef.current) return;
+    pendingAutoplayRef.current = true;
     window.dispatchEvent(new CustomEvent('globalPlayerDidPlay'));
     
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
@@ -402,9 +404,32 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
     if (trackChanged || sourceChanged || isNewPlayAction) {
       const syncLoadRequest = syncLoadRequestRef.current;
+      const isSourceSwitch = !trackChanged && sourceChanged;
+      let switchTime = 0;
+      let shouldResumeSourceSwitch = false;
+      if (isSourceSwitch) {
+        switchTime = pendingSeekRef.current ?? (Number(window.currentAudioTime) || 0);
+        if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
+          try {
+            const playerTime = ytPlayerRef.current.getCurrentTime();
+            if (Number.isFinite(playerTime)) switchTime = playerTime;
+          } catch {
+            switchTime = Number(window.currentAudioTime) || 0;
+          }
+        } else if (!ytVideoId && audioSrc && Number.isFinite(audioRef.current?.currentTime)) {
+          switchTime = audioRef.current.currentTime;
+        }
+        shouldResumeSourceSwitch = window.globalIsAudioPlaying === true || pendingAutoplayRef.current;
+      }
       pendingAutoplayRef.current = syncLoadRequest?.playId === currentTrack.playId
         ? syncLoadRequest.autoplay
-        : !isSyncWorkspaceActive;
+        : isSourceSwitch
+          ? shouldResumeSourceSwitch
+          : !isSyncWorkspaceActive;
+      if (isSourceSwitch) {
+        pendingSeekShouldPlayRef.current = shouldResumeSourceSwitch;
+        setPendingSeekValue(switchTime);
+      }
       const sourceLoadGeneration = ++sourceLoadGenerationRef.current;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -424,10 +449,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setIsPlaying(false);
       setBuffering(true);
       globalClock.pause();
-      globalClock.seek(0);
-      window.currentAudioTime = 0;
-      if (progressBarRef.current) progressBarRef.current.value = 0;
-      if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(0);
+      globalClock.seek(isSourceSwitch ? switchTime : 0);
+      window.currentAudioTime = isSourceSwitch ? switchTime : 0;
+      if (progressBarRef.current) progressBarRef.current.value = isSourceSwitch ? switchTime : 0;
+      if (currentTimeRef.current) {
+        currentTimeRef.current.innerText = formatPlayerTime(isSourceSwitch ? switchTime : 0);
+      }
       
       trackIdRef.current = trackId;
       playIdRef.current = currentTrack.playId;
@@ -464,6 +491,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
           setAudioSrc(undefined);
           setYtVideoId(extractedYtId);
           setActiveSource('youtube');
+          setBuffering(false);
         } else if (source === 'preview') {
           setYtVideoId(null);
           setBuffering(false);
@@ -633,7 +661,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
           autoplay: 0, playsinline: 1, rel: 0, enablejsapi: 1,
-          suggestedQuality: 'highres', origin: window.location.origin
+          suggestedQuality: 'small', origin: window.location.origin
         },
         events: {
           onReady: (event) => {
@@ -644,7 +672,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
-              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('highres');
+              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('small');
               event.target.setVolume((isMuted ? 0 : volume) * 100);
               if (typeof event.target.setPlaybackRate === 'function') {
                 event.target.setPlaybackRate(syncPlaybackRateRef.current);
@@ -684,13 +712,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               emitPlayState(true, false);
               
               if (ytPlayerRef.current) {
-                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('highres');
+                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('small');
                 const dur = ytPlayerRef.current.getDuration();
                 if (dur && !isNaN(dur)) setDuration(dur);
               }
             } else if (event.data === window.YT.PlayerState.PAUSED) {
               setIsPlaying(false); emitPlayState(false, false);
             } else if (event.data === window.YT.PlayerState.ENDED) {
+              pendingAutoplayRef.current = false;
               setIsPlaying(false); emitPlayState(false, true);
               window.dispatchEvent(new CustomEvent('globalTrackEnded', {
                 detail: { trackId: currentTrackIdRef.current }
@@ -1011,6 +1040,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       audioRef.current.pause();
     }
     setCurrentTrack(null);
+    pendingAutoplayRef.current = false;
     setIsPlaying(false);
     setBuffering(false);
     globalClock.pause();
@@ -1023,10 +1053,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
       try {
         if (isPlaying) {
+          pendingAutoplayRef.current = false;
           ytPlayerRef.current.pauseVideo();
           setIsPlaying(false);
           emitPlayState(false, false);
         } else {
+          pendingAutoplayRef.current = true;
           ytLastPerfRef.current = performance.now();
           ytPlayerRef.current.playVideo();
           setIsPlaying(true);
@@ -1035,6 +1067,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       } catch (err) {}
     } else if (audioRef.current) {
       if (isPlaying) {
+        pendingAutoplayRef.current = false;
         audioRef.current.pause();
         setIsPlaying(false);
         emitPlayState(false, false);
@@ -1067,6 +1100,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     };
 
     const pausePlayback = () => {
+      pendingAutoplayRef.current = false;
       if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
         try { ytPlayerRef.current.pauseVideo(); } catch (err) {}
       } else if (audioRef.current && !audioRef.current.paused) {
@@ -1115,6 +1149,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   };
 
   const handleAudioEnded = () => {
+    pendingAutoplayRef.current = false;
     setIsPlaying(false);
     emitPlayState(false, true);
     window.dispatchEvent(new CustomEvent('globalTrackEnded', {
