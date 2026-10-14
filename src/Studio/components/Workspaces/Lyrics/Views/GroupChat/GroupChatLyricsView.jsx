@@ -18,6 +18,8 @@ import useGroupChatPlayback from './hooks/useGroupChatPlayback.js';
 import useGroupChatPresentation from './hooks/useGroupChatPresentation.js';
 import './styles/index.css';
 
+const PREMEASUREMENT_BATCH_SIZE = 24;
+
 const GroupChatLyricsView = ({
   liveParsedLyrics,
   selectedSong,
@@ -40,6 +42,19 @@ const GroupChatLyricsView = ({
   const [precomputedLayouts, setPrecomputedLayouts] = useState(() => new Map());
   const [previouslyShownLines, setPreviouslyShownLines] = useState(() => new Set());
   const [layoutSignature, setLayoutSignature] = useState('');
+  const [premeasurementProgress, setPremeasurementProgress] = useState({
+    layoutKey: null,
+    messageEvents: null,
+    start: 0
+  });
+  const premeasurementProgressRef = useRef({
+    layoutKey: null,
+    messageEvents: null,
+    start: -1,
+    expected: new Set(),
+    completed: new Set(),
+    advanced: false
+  });
   const timeline = useMemo(() => buildGroupChatTimeline(
     liveParsedLyrics,
     selectedSong?.syncData,
@@ -103,6 +118,35 @@ const GroupChatLyricsView = ({
   }, []);
 
   const history = buildGroupChatHistory(playback.chatState.messages);
+  const messageEvents = useMemo(
+    () => timeline.events.filter(event => event.type === 'message'),
+    [timeline.events]
+  );
+  const premeasurementLayoutKey = JSON.stringify([
+    layoutSignature,
+    settings?.groupChatLyricFontSize ?? 2.2,
+    settings?.groupChatLineWrapWidth ?? 60,
+    settings?.groupChatBubbleAvatarSize ?? 4.25,
+    settings?.groupChatTimestampSize ?? 1.125
+  ]);
+  const progressMatchesCurrentLayout = (
+    premeasurementProgress.layoutKey === premeasurementLayoutKey &&
+    premeasurementProgress.messageEvents === messageEvents
+  );
+  const premeasurementBatchStart = progressMatchesCurrentLayout
+    ? premeasurementProgress.start
+    : 0;
+  const premeasurementBatch = useMemo(
+    () => messageEvents.slice(
+      premeasurementBatchStart,
+      premeasurementBatchStart + PREMEASUREMENT_BATCH_SIZE
+    ),
+    [messageEvents, premeasurementBatchStart]
+  );
+  const expectedPremeasurementLines = useMemo(
+    () => new Set(premeasurementBatch.map(event => event.line.index)),
+    [premeasurementBatch]
+  );
   const artistByName = new Map(timeline.artists.map(artist => [artist.name, artist]));
   const imageSources = {
     ...(selectedSong?.artistImages || {}),
@@ -149,7 +193,38 @@ const GroupChatLyricsView = ({
       next.set(lineIndex, { ...layout, key });
       return next;
     });
-  }, []);
+    let batch = premeasurementProgressRef.current;
+    if (
+      batch.layoutKey !== premeasurementLayoutKey ||
+      batch.messageEvents !== messageEvents ||
+      batch.start !== premeasurementBatchStart
+    ) {
+      batch = {
+        layoutKey: premeasurementLayoutKey,
+        messageEvents,
+        start: premeasurementBatchStart,
+        expected: expectedPremeasurementLines,
+        completed: new Set(),
+        advanced: false
+      };
+      premeasurementProgressRef.current = batch;
+    }
+    if (!batch.expected.has(lineIndex) || batch.advanced) return;
+    batch.completed.add(lineIndex);
+    if (batch.completed.size === batch.expected.size) {
+      batch.advanced = true;
+      setPremeasurementProgress({
+        layoutKey: premeasurementLayoutKey,
+        messageEvents,
+        start: batch.start + batch.expected.size
+      });
+    }
+  }, [
+    expectedPremeasurementLines,
+    messageEvents,
+    premeasurementBatchStart,
+    premeasurementLayoutKey
+  ]);
   const handleLineShown = useCallback(lineIndex => {
     setPreviouslyShownLines(previous => {
       if (previous.has(lineIndex)) return previous;
@@ -167,7 +242,7 @@ const GroupChatLyricsView = ({
         '--chat-heading-inactive-avatar-size': `calc(${inactiveAvatarSize} * var(--chat-vh-unit, 1vh))`,
         '--chat-heading-inactive-avatar-scale': inactiveAvatarSize / activeAvatarSize,
         '--chat-line-wrap-width': `${lineWrapWidth}cqw`,
-        '--chat-bubble-horizontal-padding': 'calc(var(--chat-horizontal-unit) * 1.1)',
+        '--chat-bubble-horizontal-padding': 'calc(var(--chat-horizontal-unit) * 0.75)',
         '--chat-bubble-avatar-size': `calc(${settings?.groupChatBubbleAvatarSize ?? 4.25} * var(--chat-vh-unit, 1vh))`,
         '--chat-lyric-font-size': `calc(${settings?.groupChatLyricFontSize ?? 2.2} * var(--chat-vh-unit, 1vh))`,
         '--chat-typing-font-size': `calc(${settings?.groupChatTypingFontSize ?? 1.1} * var(--chat-vh-unit, 1vh))`,
@@ -210,8 +285,7 @@ const GroupChatLyricsView = ({
           </div>
         </div>
         <div className="group-chat-premeasurement" aria-hidden="true">
-          {timeline.events.map((event, itemIndex) => {
-            if (event.type !== 'message') return null;
+          {premeasurementBatch.map((event, itemIndex) => {
             const group = {
               side: event.line.chatSide || 'left',
               artists: event.line.artists,

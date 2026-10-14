@@ -134,8 +134,9 @@ const GroupChatLyricText = React.memo(({
       element.classList.add('is-measuring-glyphs');
       let mainGlyphWidth;
       try {
-        const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
-        mainGlyphWidth = getMaxTextLineWidth(mainGlyphs);
+        mainGlyphWidth = element
+          .querySelector('.main-lyrics-layer')
+          ?.getBoundingClientRect().width || 0;
       } finally {
         element.classList.remove('is-measuring-glyphs');
         turn?.classList.remove('is-measuring-glyphs');
@@ -162,13 +163,7 @@ const GroupChatLyricText = React.memo(({
         availableContentWidth
       );
       const shouldWrap = mainGlyphWidth / layoutScale > wrapWidth;
-      const displayedGlyphWidth = getMaxTextLineWidth([
-        ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
-      ]);
-      const width = Math.ceil(
-        (wasWrapEnabled === shouldWrap ? displayedGlyphWidth : mainGlyphWidth) /
-          layoutScale
-      );
+      const width = Math.ceil(mainGlyphWidth / layoutScale);
       setRenderedGlyphWidth(previous => (
         Math.abs(previous - width) < 1 ? previous : width
       ));
@@ -180,21 +175,14 @@ const GroupChatLyricText = React.memo(({
       setMeasuredLayoutKey(layoutKey);
     });
 
-    const initialMeasureFrame = window.requestAnimationFrame(measureGlyphLayout);
-    const resizeObserver = new ResizeObserver(measureGlyphLayout);
-    resizeObserver.observe(canvas);
-    const contentObserver = new MutationObserver(measureGlyphLayout);
-    contentObserver.observe(element, {
-      childList: true,
-      characterData: true,
-      subtree: true
+    let cancelled = false;
+    let measureFrame = null;
+    document.fonts.ready.then(() => {
+      if (!cancelled) measureFrame = window.requestAnimationFrame(measureGlyphLayout);
     });
-    document.fonts.addEventListener('loadingdone', measureGlyphLayout);
     return () => {
-      window.cancelAnimationFrame(initialMeasureFrame);
-      resizeObserver.disconnect();
-      contentObserver.disconnect();
-      document.fonts.removeEventListener('loadingdone', measureGlyphLayout);
+      cancelled = true;
+      if (measureFrame !== null) window.cancelAnimationFrame(measureFrame);
       element.classList.remove('is-measuring-glyphs');
     };
   }, [
@@ -204,25 +192,6 @@ const GroupChatLyricText = React.memo(({
     lyricFontSize,
     layoutKey,
     onLayoutReady
-  ]);
-
-  useLayoutEffect(() => {
-    const element = textRef.current;
-    if (!element || precomputedLayout) return;
-
-    const layoutScale = getLayoutScale(element);
-    const mainGlyphs = [...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')];
-    const width = Math.ceil(getMaxTextLineWidth(mainGlyphs) / layoutScale);
-    setRenderedGlyphWidth(previous => (
-      Math.abs(previous - width) < 1 ? previous : width
-    ));
-  }, [
-    wrapLayout.enabled,
-    wrapLayout.width,
-    line,
-    savedNode,
-    lyricFontSize,
-    precomputedLayout
   ]);
 
   useLayoutEffect(() => {

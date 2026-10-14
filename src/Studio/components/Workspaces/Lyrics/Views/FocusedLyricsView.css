@@ -37,10 +37,14 @@
   visibility: hidden;
   transition: none;
   pointer-events: none;
+  scrollbar-width: none;
+}
+
+.focused-line.active,
+.focused-line.exiting {
   will-change: opacity, transform;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  scrollbar-width: none;
 }
 
 .focused-line::-webkit-scrollbar {
@@ -220,7 +224,6 @@
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   animation: none;
-  will-change: opacity, transform;
 }
 
 /* Entry uses a word-by-word stagger. */
@@ -229,7 +232,7 @@
 .focused-adlib-line.active .lyric-word,
 .focused-adlib-line.active .trans-word {
   animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s));
+  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s));
 }
 
 .focused-line.exiting .lyric-word,
@@ -240,7 +243,6 @@
   transform: none;
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
-  will-change: opacity, transform;
 }
 
 /* A single-row line exits as one block; wrapped lines keep their row stagger. */
@@ -262,7 +264,6 @@
 .focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .trans-word:not(.hyphenated-word-part) {
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
-  will-change: opacity, transform;
 }
 
 .focused-line.exiting:not(.has-wrapped-content):has(.hyphenated-word-group) .core-chunks {
@@ -276,7 +277,6 @@
   transform: none;
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
-  will-change: opacity, transform;
 }
 
 /* Ad-libs always exit as one complete sentence, never word by word. */
@@ -319,7 +319,7 @@
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both !important;
-  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s)) !important;
+  animation-delay: calc(var(--word-index, 0) * var(--focused-enter-stagger, 0s)) !important;
 }
 
 .focused-line.exiting .chunk-translation .trans-word,
@@ -328,7 +328,6 @@
   transform: none;
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
-  will-change: opacity, transform;
 }
 
 .focused-line .pronunciation-text,
@@ -342,7 +341,7 @@
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   animation: focused-word-enter var(--focused-enter-duration, 0s) cubic-bezier(0.25, 0.8, 0.25, 1) both;
-  animation-delay: calc(var(--focused-enter-stagger, 0s) - var(--focused-enter-elapsed, 0s));
+  animation-delay: var(--focused-enter-stagger, 0s);
 }
 
 .focused-line.exiting .pronunciation-text {
@@ -361,7 +360,6 @@
   transform: none;
   animation: focused-wrapped-line-exit var(--focused-exit-layer-duration, 0s) ease both !important;
   animation-delay: calc(var(--wrapped-line-index, 0) * var(--focused-wrap-exit-stagger, 0s)) !important;
-  will-change: opacity, transform;
 }
 
 .focused-line.exiting.has-wrapped-content .main-lyrics-layer,
@@ -407,9 +405,6 @@
     opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
     transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   pointer-events: none;
-  will-change: opacity, transform;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
   z-index: 101;
 }
 

@@ -14,7 +14,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   const adlibTimelineRef = useRef([]);
   const adlibCursorRef = useRef(0);
   const lastAdlibTimeRef = useRef(null);
-  const lastLyricsTimeRef = useRef(null);
+  const pendingSeekRef = useRef(false);
   const activeLineIndexRef = useRef(-1);
   const syncList = selectedSong?.syncData;
 
@@ -62,13 +62,9 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
 
   }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
 
-  const handleTimeUpdate = useCallback((time) => {
+  const handleTimeUpdate = useCallback((time, isSeek = false) => {
     if (!isPlayingCurrentSong) return;
 
-    const previousTime = lastLyricsTimeRef.current;
-    const isSeek = previousTime !== null && Math.abs(time - previousTime) > 0.35;
-    lastLyricsTimeRef.current = time;
-    
     const lines = cachedLinesRef.current;
     const timedLines = timedLinesRef.current;
     let low = 0;
@@ -101,10 +97,6 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
 
         if (newActiveIndex !== -1) {
             const activeLine = lines[newActiveIndex];
-            activeLine.node.style.setProperty(
-              '--focused-enter-elapsed',
-              `${Math.max(0, time - activeLine.start)}s`
-            );
             activeLine.node.classList.add('active');
             activeLine.node.classList.remove('exiting', 'past');
             activeLine.isActive = true;
@@ -116,10 +108,6 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       const activeLine = lines[newActiveIndex];
       activeLine.node.classList.remove('active', 'exiting', 'past');
       void activeLine.node.offsetWidth;
-      activeLine.node.style.setProperty(
-        '--focused-enter-elapsed',
-        `${Math.max(0, time - activeLine.start)}s`
-      );
       activeLine.node.classList.add('active');
       activeLine.isActive = true;
     }
@@ -145,7 +133,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
             item.isActive = false;
         });
         activeLineIndexRef.current = -1;
-        lastLyricsTimeRef.current = null;
+        pendingSeekRef.current = false;
         cachedAdlibsRef.current.forEach(item => {
             if (item.state !== 'hidden') {
                 item.node.classList.add('adlib-hidden');
@@ -157,12 +145,20 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         lastAdlibTimeRef.current = null;
     };
 
-    const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
+    const handleTimeEvent = (e) => {
+        const isSeek = pendingSeekRef.current;
+        pendingSeekRef.current = false;
+        handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds, isSeek);
+    };
+    const handleTimeSeek = () => {
+        pendingSeekRef.current = true;
+    };
     const handlePlayState = (e) => {
         if (e.detail.isEnded) clearAllActive();
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
+    window.addEventListener('globalTimeSeek', handleTimeSeek);
     window.addEventListener('globalPlayState', handlePlayState);
 
     if (isPlayingCurrentSong) {
@@ -174,6 +170,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
 
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
+        window.removeEventListener('globalTimeSeek', handleTimeSeek);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
     }, [isPlayingCurrentSong, currentTrack, liveParsedLyrics, syncList, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);

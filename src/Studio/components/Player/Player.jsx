@@ -1,5 +1,5 @@
 /* --- src/Studio/components/Player/Player.jsx --- */
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { usePlayerLogic } from './usePlayerLogic.js';
 import PlayerUI from './PlayerUI.jsx';
@@ -60,6 +60,9 @@ const Player = ({ onPlaybackVisualChange, ...props }) => {
         onLoadedMetadata={handlers.handleLoadedMetadata}
         onEnded={handlers.handleAudioEnded}
         onPlay={handlers.handleAudioPlay}
+        onPlaying={handlers.handleAudioPlaying}
+        onWaiting={handlers.handleAudioWaiting}
+        onError={handlers.handleAudioError}
         onPause={handlers.handleAudioPause}
         onContextMenu={handlers.handleAudioContextMenu}
       />

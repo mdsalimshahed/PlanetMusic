@@ -5,7 +5,7 @@ import { getAnimationFrameInterval } from './performance.js';
  * High-Precision Interpolated Clock Engine
  * Bridges YouTube API time update gaps with local performance.now() ticking.
  */
-class ClockEngine {
+export class ClockEngine {
   constructor() {
     this.anchorTime = 0;       // Audio time in seconds reported by player
     this.anchorPerf = 0;       // performance.now() timestamp when anchor was set
@@ -27,6 +27,7 @@ class ClockEngine {
   }
 
   setRate(rate) {
+    if (!Number.isFinite(rate) || rate <= 0) return;
     if (this.isPlaying) {
       // Recalculate anchor at current exact position before rate changes
       this.anchorTime = this.getCurrentTime();
@@ -37,12 +38,14 @@ class ClockEngine {
 
   // Called when YouTube or Audio emits a position update
   updateAnchor(playerTime, forceReset = false) {
+    if (!Number.isFinite(playerTime) || playerTime < 0) return;
     const now = performance.now();
 
     if (!this.isPlaying || forceReset) {
       this.anchorTime = playerTime;
       this.anchorPerf = now;
       this.lastPlayerTime = playerTime;
+      window.currentAudioTime = playerTime;
       return;
     }
 
@@ -70,11 +73,13 @@ class ClockEngine {
     return Math.max(0, this.anchorTime + (elapsed * this.playbackRate));
   }
 
-  start(initialTime = 0) {
+  start(initialTime = this.anchorTime) {
+    const startTime = Number(initialTime);
+    if (!Number.isFinite(startTime) || startTime < 0) return;
     this.cancelScheduledTick();
-    this.anchorTime = initialTime;
+    this.anchorTime = startTime;
     this.anchorPerf = performance.now();
-    this.lastPlayerTime = initialTime;
+    this.lastPlayerTime = startTime;
     this.isPlaying = true;
     this.tick();
   }
@@ -84,15 +89,20 @@ class ClockEngine {
       this.anchorTime = this.getCurrentTime();
       this.anchorPerf = performance.now();
       this.isPlaying = false;
+      if (typeof window !== 'undefined') {
+        window.currentAudioTime = this.anchorTime;
+      }
     }
     this.cancelScheduledTick();
   }
 
   seek(time) {
+    if (!Number.isFinite(time) || time < 0) return;
     this.anchorTime = time;
     this.anchorPerf = performance.now();
     this.lastPlayerTime = time;
     window.currentAudioTime = time;
+    window.dispatchEvent(new CustomEvent('globalTimeSeek', { detail: time }));
     window.dispatchEvent(new CustomEvent(this.eventName, { detail: time }));
   }
 

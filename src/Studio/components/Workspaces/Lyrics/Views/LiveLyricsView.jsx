@@ -4,7 +4,7 @@ import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
-const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
+const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, isPlaying, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
     const initialRevealTrackRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -30,6 +30,10 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         const container = containerRef.current;
         const trackId = selectedSong?.trackId;
         if (!container || trackId == null || initialRevealTrackRef.current === trackId) return;
+        if (isPlayingCurrentSong && isPlaying) {
+            initialRevealTrackRef.current = trackId;
+            return;
+        }
         if (settings?.disableAnimations || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             initialRevealTrackRef.current = trackId;
             return;
@@ -54,7 +58,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             node.addEventListener('animationend', finishReveal);
             node.classList.add('initial-reveal');
         });
-    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations]);
+    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

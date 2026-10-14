@@ -20,6 +20,22 @@ const getHistoryPositions = content => new Map(
   ])
 );
 
+const isVisibleInContainer = (element, container) => {
+  const elementBounds = element.getBoundingClientRect();
+  const containerBounds = container.getBoundingClientRect();
+  const visibleLeft = containerBounds.left + container.clientLeft;
+  const visibleTop = containerBounds.top + container.clientTop;
+  const visibleRight = visibleLeft + container.clientWidth;
+  const visibleBottom = visibleTop + container.clientHeight;
+
+  return elementBounds.width > 0 &&
+    elementBounds.height > 0 &&
+    elementBounds.right > visibleLeft &&
+    elementBounds.left < visibleRight &&
+    elementBounds.bottom > visibleTop &&
+    elementBounds.top < visibleBottom;
+};
+
 // Where scrollTop must be for the LAST message to sit fully above the bottom padding.
 // Uses layout geometry (offsetTop/offsetHeight), NOT scrollHeight, because scrollHeight
 // also counts in-flight transform animations (FLIP glide / entrance) and overshoots.
@@ -200,14 +216,17 @@ const useGroupChatPresentation = ({
   }, [chatRef]);
 
   useLayoutEffect(() => {
-    const turns = Array.from(chatRef.current?.querySelectorAll('[data-chat-line-index]') || []);
+    const container = chatRef.current;
+    const turns = Array.from(container?.querySelectorAll('[data-chat-line-index]') || []);
     const currentIds = new Set(turns.map(turn => turn.dataset.chatLineIndex));
     const previousIds = seenMessageLineIdsRef.current;
     seenMessageLineIdsRef.current = currentIds;
 
-    const newTurns = turns.filter(turn =>
-      !previousIds?.has(turn.dataset.chatLineIndex)
-    );
+    const newTurns = turns.filter(turn => (
+      !previousIds?.has(turn.dataset.chatLineIndex) &&
+      container &&
+      isVisibleInContainer(turn, container)
+    ));
     if (settings?.disableAnimations) return undefined;
 
     const newAnimations = newTurns.flatMap((turn, index) => {
@@ -265,7 +284,8 @@ const useGroupChatPresentation = ({
       pendingScrollToLatestRef.current = false;
     }
 
-    const targets = getHistoryTargets(content);
+    const targets = getHistoryTargets(content)
+      .filter(({ element }) => isVisibleInContainer(element, container));
     const currentPositions = new Map(targets.map(({ id, element }) => [
       id,
       element.getBoundingClientRect().top

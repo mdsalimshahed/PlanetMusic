@@ -44,6 +44,7 @@ const LyricsDisplay = ({
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
+          isPlaying={isPlaying}
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}

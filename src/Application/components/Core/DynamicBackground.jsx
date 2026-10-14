@@ -1,231 +1,230 @@
 /* --- src/components/Core/DynamicBackground.jsx --- */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { preloadArtistImage } from '../../utils/artistImageCache.js';
 import './DynamicBackground.css';
 
-const ARTIST_IMAGE_CACHE_LIMIT = 48;
-const artistImagePreloadCache = new Map();
-
-const preloadArtistImage = (url, priority = 'low') => {
-  if (!url) return Promise.resolve(false);
-
-  const cached = artistImagePreloadCache.get(url);
-  if (cached) {
-    artistImagePreloadCache.delete(url);
-    artistImagePreloadCache.set(url, cached);
-    if (priority === 'high') cached.image.fetchPriority = priority;
-    return cached.promise;
-  }
-
-  const image = new Image();
-  image.decoding = 'async';
-  image.fetchPriority = priority;
-  image.src = url;
-
-  const entry = { image, promise: null };
-  entry.promise = image.decode().then(
-    () => true,
-    () => {
-      if (artistImagePreloadCache.get(url) === entry) {
-        artistImagePreloadCache.delete(url);
-      }
-      return false;
-    }
-  );
-  artistImagePreloadCache.set(url, entry);
-
-  if (artistImagePreloadCache.size > ARTIST_IMAGE_CACHE_LIMIT) {
-    const oldestUrl = artistImagePreloadCache.keys().next().value;
-    artistImagePreloadCache.delete(oldestUrl);
-  }
-
-  return entry.promise;
-};
-
-// A standalone component for each artist layer. 
-// This ensures that when React mounts a new artist, it correctly starts at opacity 0, 
-// waits one frame, and then triggers the CSS crossfade without "popping in".
-const BackgroundLayer = ({ layer, isActive, customData, globalArtistData, singerImages }) => {
-  const [renderedActive, setRenderedActive] = useState(false);
-  const [imageReady, setImageReady] = useState(false);
-
-  const handleImageLoad = async (event) => {
-    const image = event.currentTarget;
-    const layerImages = image.closest('.matrix-watermark-container')?.querySelectorAll('img');
-    if (!layerImages) {
-      await image.decode().catch(() => {});
-      setImageReady(true);
-      return;
-    }
-
-    const images = Array.from(layerImages);
-    if (images.every(layerImage => layerImage.complete)) {
-      await Promise.all(images.map(layerImage => layerImage.decode().catch(() => {})));
-      setImageReady(true);
-    }
-  };
-
-  useEffect(() => {
-    let frameId;
-    if (isActive && imageReady) {
-      // Double rAF ensures the browser paints the 'opacity: 0' state first before 
-      // transitioning to the target opacity, creating a flawless crossfade.
-      frameId = requestAnimationFrame(() => {
-        frameId = requestAnimationFrame(() => {
-          setRenderedActive(true);
-        });
-      });
-    } else {
-      setRenderedActive(false);
-    }
-
-    return () => {
-      if (frameId) cancelAnimationFrame(frameId);
-    };
-  }, [isActive, imageReady]);
-
-  const imgClass = renderedActive ? 'active-watermark' : 'inactive-watermark';
-  const matrixClass = renderedActive ? 'active-matrix' : 'inactive-matrix';
-
+const BackgroundLayer = React.memo(({ layer, className }) => {
   if (!layer.isMulti) {
-    const singerName = layer.names[0];
-    const finalImgUrl = customData.artistImages?.[singerName] ?? globalArtistData?.images?.[singerName] ?? singerImages[singerName];
-
-    if (!finalImgUrl) return null;
+    const image = layer.images[0];
+    if (!image?.url) return null;
 
     return (
-      <img
-          src={finalImgUrl}
+      <div className={`background-slot ${className}`}>
+        <img
+          src={image.url}
           loading="eager"
           decoding="async"
-          onLoad={handleImageLoad}
           alt=""
-          className={`singer-watermark full-screen-watermark ${imgClass}`}
+          className="singer-watermark full-screen-watermark active-watermark"
         />
-    );
-  } else {
-    return (
-      <div
-          className={`matrix-watermark-container ${matrixClass}`}
-        style={{ gridTemplateColumns: `repeat(${layer.cols}, 1fr)` }}
-      >
-        {Array.from({ length: layer.cols * 2 }).map((_, cellIdx) => {
-          const row = Math.floor(cellIdx / layer.cols);
-          const col = cellIdx % layer.cols;
-          const targetArtist = layer.names[(col + row) % layer.names.length];
-          const finalImgUrl = targetArtist ? (customData.artistImages?.[targetArtist] ?? globalArtistData?.images?.[targetArtist] ?? singerImages[targetArtist]) : null;
-
-          return (
-            <div key={`cell-${cellIdx}`} className="matrix-cell">
-              {finalImgUrl && (
-                <img
-                    src={finalImgUrl}
-                    loading="eager"
-                    decoding="async"
-                    onLoad={handleImageLoad}
-                    alt=""
-                    className={`singer-watermark matrix-cell-img ${imgClass}`}
-                  />
-              )}
-            </div>
-          );
-        })}
       </div>
     );
   }
-};
+
+  return (
+    <div
+      className={`matrix-watermark-container background-slot ${className}`}
+      style={{ gridTemplateColumns: `repeat(${layer.cols}, 1fr)` }}
+    >
+      {layer.images.map((image, cellIdx) => (
+        <div key={`cell-${cellIdx}`} className="matrix-cell">
+          {image.url && (
+            <img
+              src={image.url}
+              loading="eager"
+              decoding="async"
+              alt=""
+              className="singer-watermark matrix-cell-img active-watermark"
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+});
 
 const DynamicBackground = ({
-  allPotentialSingers, selectedSong, customData, singerImages, highResArt, 
+  customData, singerImages,
   currentSingerBg, masterPalette, isSingerVisible, settings, globalArtistData,
   liveParsedLyrics
 }) => {
   const opacityVal = settings?.bgImageOpacity ?? 0.25;
 
-  const activeNames = currentSingerBg?.name?.split(/\s*(?:&|,|\band\b)\s*/i)
+  const activeNames = useMemo(() => currentSingerBg?.name
+    ?.split(/\s*(?:&|,|\band\b)\s*/i)
     .filter(Boolean)
-    .map(s => s.trim()) || [];
+    .map(s => s.trim()) || [], [currentSingerBg?.name]);
        
   const activeComboKey = activeNames.join('|');
+  const currentSingerName = currentSingerBg?.name;
   const isMulti = activeNames.length > 1;
+  const uniqueSingerCombos = useMemo(() => {
+    const combos = Array.from(new Set(liveParsedLyrics?.map(line => line.singer).filter(Boolean) || []));
+    if (currentSingerName && !combos.includes(currentSingerName)) combos.push(currentSingerName);
+    return combos;
+  }, [liveParsedLyrics, currentSingerName]);
 
-  // Preload current artists first, then retain likely next images in a shared cache.
-  useEffect(() => {
-    const prioritizedNames = activeComboKey.split('|').filter(Boolean);
-    const candidateNames = [...new Set(allPotentialSingers || [])];
-    const namesToPreload = [...new Set([...candidateNames, ...prioritizedNames])];
-
-    namesToPreload.forEach(singer => {
-      const finalImgUrl = customData.artistImages?.[singer] ?? globalArtistData?.images?.[singer] ?? singerImages[singer];
-      preloadArtistImage(finalImgUrl, prioritizedNames.includes(singer) ? 'high' : 'low');
-    });
-  }, [allPotentialSingers, activeComboKey, customData.artistImages, globalArtistData?.images, singerImages]);
-
-  // --- LAYER STACK GARBAGE COLLECTION ENGINE ---
   const [layers, setLayers] = useState([]);
-  const prevKeyRef = useRef(null);
-  const activeKeyRef = useRef(null);
+  const displayedLayerKeyRef = useRef(null);
+  const transitionGenerationRef = useRef(0);
+  const transitionTimerRef = useRef(null);
+  const transitionFrameIdsRef = useRef([]);
 
   useEffect(() => {
-    const prevKey = prevKeyRef.current;
-    activeKeyRef.current = activeComboKey;
-    prevKeyRef.current = activeComboKey;
+    const prioritizedNames = activeNames;
+    const candidateNames = new Set();
+    uniqueSingerCombos.forEach(combo => {
+      String(combo).split(/\s*(?:&|,|\band\b)\s*/i)
+        .filter(Boolean)
+        .forEach(name => candidateNames.add(name.trim()));
+    });
+    const namesToPreload = new Set([...candidateNames, ...prioritizedNames]);
+    const imageByName = {
+      ...(singerImages || {}),
+      ...(globalArtistData?.images || {}),
+      ...(customData?.artistImages || {})
+    };
+    [...namesToPreload].forEach(name => {
+      const url = imageByName[name];
+      if (url) preloadArtistImage(url, prioritizedNames.includes(name) ? 'high' : 'low');
+    });
+  }, [
+    activeNames,
+    customData?.artistImages,
+    globalArtistData?.images,
+    singerImages,
+    uniqueSingerCombos
+  ]);
 
-    if (!activeComboKey) return;
+  const layer = useMemo(() => {
+    if (!activeNames.length) return null;
+    const cols = Math.max(2, activeNames.length);
+    const images = isMulti
+      ? Array.from({ length: cols * 2 }, (_, cellIdx) => {
+        const row = Math.floor(cellIdx / cols);
+        const col = cellIdx % cols;
+        const name = activeNames[(col + row) % activeNames.length];
+        return {
+          name,
+          url: customData?.artistImages?.[name] ?? globalArtistData?.images?.[name] ?? singerImages?.[name] ?? null
+        };
+      })
+      : [{
+        name: activeNames[0],
+        url: customData?.artistImages?.[activeNames[0]] ??
+          globalArtistData?.images?.[activeNames[0]] ??
+          singerImages?.[activeNames[0]] ??
+          null
+      }];
+    const urls = [...new Set(images.map(image => image.url).filter(Boolean))];
 
-    setLayers(prev => {
-      // If returning to a layer that's already mounted, push it to the top
-      if (prev.some(l => l.key === activeComboKey)) {
-         const filtered = prev.filter(l => l.key !== activeComboKey);
-         const existing = prev.find(l => l.key === activeComboKey);
-         return [...filtered, existing];
+    return {
+      key: `${activeComboKey}::${urls.join('|')}`,
+      names: activeNames,
+      isMulti,
+      cols,
+      images,
+      urls
+    };
+  }, [
+    activeNames,
+    activeComboKey,
+    isMulti,
+    customData?.artistImages,
+    globalArtistData?.images,
+    singerImages
+  ]);
+
+  useEffect(() => {
+    const generation = ++transitionGenerationRef.current;
+    let isCancelled = false;
+    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    transitionFrameIdsRef.current.forEach(cancelAnimationFrame);
+    transitionFrameIdsRef.current = [];
+
+    if (!layer?.urls.length) {
+      if (displayedLayerKeyRef.current) {
+        setLayers(current => current.map(slot => ({ ...slot, status: 'fading' })));
+        transitionTimerRef.current = setTimeout(() => {
+          if (generation !== transitionGenerationRef.current) return;
+          displayedLayerKeyRef.current = null;
+          setLayers([]);
+        }, 850);
       }
-      
-      const newLayer = {
-          key: activeComboKey,
-          names: activeNames,
-          isMulti,
-          cols: Math.max(2, activeNames.length)
-       };
-      return [...prev, newLayer];
+      return () => {
+        isCancelled = true;
+        if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      };
+    }
+
+    Promise.all(layer.urls.map(url => preloadArtistImage(url, 'high'))).then(ready => {
+      if (isCancelled || generation !== transitionGenerationRef.current || ready.some(result => !result)) {
+        if (!isCancelled && ready.some(result => !result)) {
+          console.warn('Artist background image could not be decoded; retaining the current background.');
+        }
+        return;
+      }
+
+      const displayedKey = displayedLayerKeyRef.current;
+      const hasDisplayedLayer = Boolean(displayedKey && displayedKey !== layer.key);
+      setLayers(current => {
+        const outgoing = hasDisplayedLayer
+          ? current.find(slot => slot.layer.key === displayedKey)
+          : null;
+        const next = [];
+        if (outgoing) next.push({ ...outgoing, status: 'visible' });
+        next.push({ layer, status: 'ready' });
+        return next;
+      });
+
+      const startTransition = () => {
+        if (isCancelled || generation !== transitionGenerationRef.current) return;
+        displayedLayerKeyRef.current = layer.key;
+        setLayers(current => current.map(slot => ({
+          ...slot,
+          status: slot.layer.key === layer.key ? 'visible' : 'fading'
+        })));
+        transitionTimerRef.current = setTimeout(() => {
+          if (generation !== transitionGenerationRef.current) return;
+          setLayers(current => current
+            .filter(slot => slot.layer.key === layer.key)
+            .map(slot => ({ ...slot, status: 'visible' })));
+          transitionTimerRef.current = null;
+        }, 850);
+      };
+
+      if (!hasDisplayedLayer) {
+        displayedLayerKeyRef.current = layer.key;
+      }
+
+      transitionFrameIdsRef.current.push(requestAnimationFrame(() => {
+        transitionFrameIdsRef.current.push(requestAnimationFrame(startTransition));
+      }));
     });
 
-    // CRITICAL VRAM FIX: Instead of a global timeout that gets repeatedly cancelled, 
-    // we schedule an independent cleanup specifically for the layer that just deactivated.
-    if (prevKey && prevKey !== activeComboKey) {
-      setTimeout(() => {
-        setLayers(curr => {
-          // Only physically remove the old image node from the DOM if it hasn't 
-          // become the active singer again during the 850ms transition window.
-          if (activeKeyRef.current !== prevKey) {
-            return curr.filter(l => l.key !== prevKey);
-          }
-          return curr;
-        });
-      }, 850);
-    }
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeComboKey]);
-
-  const uniqueSingerCombos = Array.from(new Set(liveParsedLyrics?.map(l => l.singer).filter(Boolean) || []));
-  if (currentSingerBg?.name && !uniqueSingerCombos.includes(currentSingerBg.name)) {
-    uniqueSingerCombos.push(currentSingerBg.name);
-  }
+    return () => {
+      isCancelled = true;
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      transitionFrameIdsRef.current.forEach(cancelAnimationFrame);
+    };
+  }, [
+    layer
+  ]);
 
   return (
     <div className="dynamic-background-contained" style={{ '--bg-opacity': opacityVal }}>
       
-      {/* RENDER ALL ACTIVE AND FADING LAYERS */}
-      {layers.map(layer => (
-        <BackgroundLayer
-            key={layer.key}
-            layer={layer}
-            isActive={isSingerVisible && layer.key === activeComboKey}
-          customData={customData}
-          globalArtistData={globalArtistData}
-          singerImages={singerImages}
-        />
-      ))}
+      {/* Keep at most the visible and transitioning artist layers mounted. */}
+      {layers.map(slot => {
+        const className = !isSingerVisible
+          ? 'ready'
+          : slot.status === 'visible'
+            ? 'visible'
+            : slot.status === 'fading'
+              ? 'fading'
+              : 'ready';
+        return <BackgroundLayer key={slot.layer.key} layer={slot.layer} className={className} />;
+      })}
 
       {/* SINGER NAME CORNER */}
       {uniqueSingerCombos.map(comboName => {

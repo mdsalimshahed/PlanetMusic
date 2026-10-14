@@ -11,6 +11,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   const boundaryCursorRef = useRef(0);
   const lastTimeRef = useRef(null);
   const lastZoneIdRef = useRef(null);
+  const placementFrameRef = useRef(null);
+  const placementQueueRef = useRef([]);
+  const placementContextCacheRef = useRef(new Map());
 
   const adlibsToRender = useMemo(() => {
     const items = [];
@@ -140,7 +143,9 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           activeSingersList: dataItem.activeSingersList,
           activeNames: dataItem.activeNames,
           parentStart: dataItem.parentStart,
-          isActive: node.classList.contains('active')
+          isActive: node.classList.contains('active'),
+          isPositioned: false,
+          isPlacementPending: false
         };
       });
 
@@ -154,7 +159,19 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
   }, [adlibsToRender]);
 
   useEffect(() => {
+    const clearPendingPlacements = () => {
+      placementQueueRef.current.forEach(item => {
+        item.isPlacementPending = false;
+      });
+      placementQueueRef.current = [];
+      if (placementFrameRef.current !== null) {
+        cancelAnimationFrame(placementFrameRef.current);
+        placementFrameRef.current = null;
+      }
+    };
+
     const clearActiveNodes = () => {
+      clearPendingPlacements();
       cachedTrackNodesRef.current.forEach(item => {
         item.node.classList.remove('active', 'exiting', 'past');
         item.isActive = false;
@@ -169,26 +186,38 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       return;
     }
 
-    const activateItem = (item) => {
+    const placeItem = (item) => {
+      if (!item.isActive) return;
       let pos = null;
       const container = containerRef.current?.parentElement;
       if (container) {
-        const containerRect = container.getBoundingClientRect();
-        const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
-        const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
-        const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
-        const cBox = getRelativeRect(lyricsNode, containerRect);
-        if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
-          cBox.top -= 20;
-          cBox.bottom -= 20;
+        const contextKey = String(item.parentStart);
+        let context = placementContextCacheRef.current.get(contextKey);
+        if (!context || context.width !== container.clientWidth || context.height !== container.clientHeight) {
+          const containerRect = container.getBoundingClientRect();
+          const targetStart = item.parentStart !== null ? item.parentStart : 'NaN';
+          const lyricsNode = container.querySelector(`.focused-line[data-start="${targetStart}"]`);
+          const singerNode = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
+          const cBox = getRelativeRect(lyricsNode, containerRect);
+          if (cBox && lyricsNode && !lyricsNode.classList.contains('active')) {
+            cBox.top -= 20;
+            cBox.bottom -= 20;
+          }
+          context = {
+            width: container.clientWidth,
+            height: container.clientHeight,
+            containerRect,
+            cBox,
+            sBox: getRelativeRect(singerNode, containerRect)
+          };
+          placementContextCacheRef.current.set(contextKey, context);
         }
-        const sBox = getRelativeRect(singerNode, containerRect);
 
         pos = generateSafeAdlibPosition(
           item.node,
-          containerRect,
-          cBox,
-          sBox,
+          context.containerRect,
+          context.cBox,
+          context.sBox,
           item.isMulti,
           item.cols,
           item.activeSingersList,
@@ -204,15 +233,56 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
         item.node.style.setProperty('--adlib-scale', pos.scale);
         if (pos.zoneId !== undefined) lastZoneIdRef.current = pos.zoneId;
       }
+      item.isPositioned = true;
+      item.isPlacementPending = false;
       item.node.classList.add('active');
       item.node.classList.remove('exiting', 'past');
+    };
+
+    const processPlacementQueue = () => {
+      placementFrameRef.current = null;
+      const frameStart = performance.now();
+
+      while (placementQueueRef.current.length > 0) {
+        const item = placementQueueRef.current.shift();
+        if (item.isActive && item.isPlacementPending) placeItem(item);
+        if (performance.now() - frameStart >= 4) break;
+      }
+
+      if (placementQueueRef.current.length > 0) {
+        placementFrameRef.current = requestAnimationFrame(processPlacementQueue);
+      }
+    };
+
+    const schedulePlacement = (item) => {
+      if (!item.isPlacementPending) {
+        item.isPlacementPending = true;
+        placementQueueRef.current.push(item);
+      }
+      if (placementFrameRef.current === null) {
+        placementFrameRef.current = requestAnimationFrame(processPlacementQueue);
+      }
+    };
+
+    const activateItem = (item) => {
       item.isActive = true;
+      item.node.classList.remove('exiting', 'past');
+      if (item.isPositioned) {
+        item.node.classList.add('active');
+      } else {
+        schedulePlacement(item);
+      }
     };
 
     const deactivateItem = (item) => {
+      item.isActive = false;
+      if (item.isPlacementPending) {
+        item.isPlacementPending = false;
+        item.node.classList.remove('active', 'exiting', 'past');
+        return;
+      }
       item.node.classList.remove('active');
       item.node.classList.add('exiting');
-      item.isActive = false;
     };
 
     const handleTime = (e) => {
@@ -221,6 +291,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       const events = boundaryEventsRef.current;
 
       if (lastTimeRef.current === null || time < lastTimeRef.current) {
+        clearPendingPlacements();
         nodes.forEach(item => {
           item.node.classList.remove('active', 'exiting', 'past');
           item.isActive = false;
@@ -256,11 +327,22 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
       if (e.detail.isEnded) clearActiveNodes();
     };
 
+    const handleResize = () => {
+      placementContextCacheRef.current.clear();
+      cachedTrackNodesRef.current.forEach(item => {
+        item.isPositioned = false;
+      });
+      lastZoneIdRef.current = null;
+    };
+
     window.addEventListener('globalTimeUpdate', handleTime);
     window.addEventListener('globalPlayState', handlePlayState);
+    window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('globalTimeUpdate', handleTime);
       window.removeEventListener('globalPlayState', handlePlayState);
+      window.removeEventListener('resize', handleResize);
+      clearPendingPlacements();
     };
   }, [isPlayingCurrentSong, lyricsPlaybackOffsetSeconds]);
 

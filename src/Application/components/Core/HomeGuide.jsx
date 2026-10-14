@@ -359,7 +359,7 @@ const HomeGuide = () => {
     const addMessage = () => {
       const index = groupChatSequenceRef.current++;
       setGroupChatMessages((messages) => [
-        ...messages,
+        ...messages.slice(-23),
         {
           id: `group-chat-${groupChatMessageIdRef.current++}`,
           line: DEMO_LINES[index % DEMO_LINES.length],

@@ -1,5 +1,5 @@
 /* --- src/Application/components/Core/Background.jsx --- */
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { fetchSingerImage } from '../../utils/apiUtils.js';
 import { unpackVault } from '../../services/vaultCodec.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
@@ -168,6 +168,8 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   }, []);
 
   const [bubbles, setBubbles] = useState([]);
+  const isModalOpenRef = useRef(isModalOpen);
+  const bubbleGenerationRef = useRef(0);
   
   // Stash dependencies in refs to prevent timer/listener wipeouts
   const poolRef = useRef(pool);
@@ -191,6 +193,17 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     timers.forEach(clearTimeout);
     bubbleModeTimersRef.current.delete(bubbleId);
   };
+
+  useLayoutEffect(() => {
+    isModalOpenRef.current = isModalOpen;
+    bubbleGenerationRef.current += 1;
+    if (isModalOpen) {
+      setBubbles([]);
+      bubbleModeTimersRef.current.forEach(timers => timers.forEach(clearTimeout));
+      bubbleModeTimersRef.current.clear();
+      recentSpawnsRef.current = [];
+    }
+  }, [isModalOpen]);
 
   const scheduleBubbleTimer = (bubbleId, callback, delay) => {
     let timer;
@@ -264,6 +277,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   }, []);
 
   const spawnBubble = (line, artist, photo, isSynced, rawPronunciation = null) => {
+    if (isModalOpenRef.current) return;
     const now = Date.now();
     const viewportWidth = window.innerWidth;
     const bubbleHalfWidth = Math.min(170, Math.max(0, (viewportWidth - 40) / 2));
@@ -370,7 +384,8 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
     };
 
     setBubbles(prev => {
-        if (prev.length >= 24) return [...prev.slice(1), newBubble];
+        if (isModalOpenRef.current) return [];
+        if (prev.length >= 20) return [...prev.slice(-(20 - 1)), newBubble];
         return [...prev, newBubble];
     });
 
@@ -415,11 +430,13 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   useEffect(() => {
     if (isModalOpen) return;
 
+    const generation = bubbleGenerationRef.current;
     const currentTrackIdRef = { current: null };
     const spawnedSyncEventsRef = { current: new Set() };
     const lastTimeRef = { current: null };
 
     const handleTimeUpdate = (e) => {
+        if (isModalOpenRef.current || generation !== bubbleGenerationRef.current) return;
         if (!isPlayingRef.current || !currentTrackRef.current) return;
         
         const track = currentTrackRef.current;
@@ -464,7 +481,12 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
                         if (cleanText.length > 0) {
                             const artistName = (node.singer || track.artistName || 'Unknown').split(',')[0].trim();
                             getArtistPhoto(artistName, track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
-                                spawnBubble(cleanText, artistName, photo, true, node.pronunciation);
+                                if (
+                                  !isModalOpenRef.current &&
+                                  generation === bubbleGenerationRef.current
+                                ) {
+                                  spawnBubble(cleanText, artistName, photo, true, node.pronunciation);
+                                }
                             });
                         }
                     }
@@ -484,7 +506,12 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
                                 if (cleanAdlibText.length > 0) {
                                     const artistName = (adlib.singer || node.singer || track.artistName || 'Unknown').split(',')[0].trim();
                                     getArtistPhoto(artistName, track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
-                                        spawnBubble(cleanAdlibText, artistName, photo, true, adlib.pronunciation);
+                                        if (
+                                          !isModalOpenRef.current &&
+                                          generation === bubbleGenerationRef.current
+                                        ) {
+                                          spawnBubble(cleanAdlibText, artistName, photo, true, adlib.pronunciation);
+                                        }
                                     });
                                 }
                             }
@@ -501,32 +528,42 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
 
   // 3. Ambient Vertical Waterfall Spawn Engine
   useEffect(() => {
-    // If the modal opens, instantly destroy bubbles and stop the timer
-    if (isModalOpen) {
-      setBubbles([]);
-      return; 
-    }
+    if (isModalOpen) return undefined;
 
     let timerId = null;
-
+    let isActive = true;
+    const generation = bubbleGenerationRef.current;
     const scheduleNextSpawn = () => {
-      // Rapid spawn pacing: every 0.6s to 1.4s
+      if (!isActive || timerId !== null) return;
+
       const delay = Math.floor(Math.random() * 800) + 600;
-      
       timerId = setTimeout(() => {
+        timerId = null;
+        if (!isActive) return;
+
         const currentPool = poolRef.current;
         const activeTrack = currentTrackRef.current;
-
-        // FILTER OUT THE CURRENTLY PLAYING SONG:
-        // Exclude all items from poolRef that belong to the active playing song so they don't leak into ambient bubbles.
-        const filteredPool = activeTrack 
+        const filteredPool = activeTrack
           ? currentPool.filter(item => String(item.trackId) !== String(activeTrack.trackId))
           : currentPool;
 
         if (filteredPool.length > 0) {
           const randomItem = filteredPool[Math.floor(Math.random() * filteredPool.length)];
-          getArtistPhoto(randomItem.artist, randomItem.track, profilesRef.current, fetchedImageCacheRef.current).then(photo => {
+          getArtistPhoto(
+            randomItem.artist,
+            randomItem.track,
+            profilesRef.current,
+            fetchedImageCacheRef.current
+          ).then(photo => {
+            if (
+              isActive &&
+              !isModalOpenRef.current &&
+              generation === bubbleGenerationRef.current
+            ) {
               spawnBubble(randomItem.line, randomItem.artist, photo, false, randomItem.pronunciation);
+            }
+          }).catch(error => {
+            console.error('Unable to load an ambient lyric artist image.', error);
           });
         }
         scheduleNextSpawn();
@@ -535,11 +572,17 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
 
     scheduleNextSpawn();
 
-    // Clean up timer when unmounting OR when isModalOpen changes
     return () => {
-      if (timerId) clearTimeout(timerId);
+      isActive = false;
+      if (timerId !== null) clearTimeout(timerId);
+      if (isModalOpenRef.current) {
+        setBubbles([]);
+        bubbleModeTimersRef.current.forEach(timers => timers.forEach(clearTimeout));
+        bubbleModeTimersRef.current.clear();
+        recentSpawnsRef.current = [];
+      }
     };
-  }, [isModalOpen]); 
+  }, [isModalOpen]);
 
   const handleAnimationEnd = (id) => {
     clearBubbleModeTimers(id);
