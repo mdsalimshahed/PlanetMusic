@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolvePlayerSource } from '../src/Studio/components/Player/resolvePlayerSource.js';
+import {
+  resolvePlayerSource,
+  shouldStartYouTubeWhileDeezerLoads
+} from '../src/Studio/components/Player/resolvePlayerSource.js';
+import { isSameTrackSourceForSeek } from '../src/Studio/components/Player/usePlayerGlobalEvents.js';
 
 const track = {
   trackId: 42,
@@ -56,4 +60,28 @@ test('requires a validated Deezer credential before treating it as available', (
   assert.equal(resolvePlayerSource(track, [], false, '  ', true).hasArl, false);
   assert.equal(resolvePlayerSource(track, [], false, 'test-arl', false).hasArl, false);
   assert.equal(resolvePlayerSource(track, [], false, 'test-arl', true).hasArl, true);
+});
+
+test('starts YouTube while uncached Deezer audio loads, including for a forced Deezer source', () => {
+  const source = resolvePlayerSource(
+    { ...track, forceSource: 'deezer' },
+    [],
+    false,
+    'test-arl',
+    true
+  );
+
+  assert.equal(source.intendedSource, 'deezer');
+  assert.equal(shouldStartYouTubeWhileDeezerLoads(source.extractedYtId, []), true);
+  assert.equal(shouldStartYouTubeWhileDeezerLoads(source.extractedYtId, ['youtube']), false);
+  assert.equal(shouldStartYouTubeWhileDeezerLoads(null, []), false);
+});
+
+test('lyric seeks switch sources when the requested source differs on the same track', () => {
+  const currentTrack = { trackId: 42 };
+  const deezerSeekTrack = { ...currentTrack, forceSource: 'deezer' };
+
+  assert.equal(isSameTrackSourceForSeek(currentTrack, deezerSeekTrack, 'youtube'), false);
+  assert.equal(isSameTrackSourceForSeek(currentTrack, deezerSeekTrack, 'deezer'), true);
+  assert.equal(isSameTrackSourceForSeek(currentTrack, { trackId: 42 }, 'youtube'), true);
 });

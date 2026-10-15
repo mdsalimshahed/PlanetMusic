@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { getAudioFile } from '../../../Application/services/db.js';
 import { getCachedDeezerAudioBlob, getDeezerAudioBlob } from '../../../Application/services/deezerAudioCache.js';
-import { resolvePlayerSource } from './resolvePlayerSource.js';
+import {
+  resolvePlayerSource,
+  shouldStartYouTubeWhileDeezerLoads
+} from './resolvePlayerSource.js';
 
 export const usePlayerSourceLifecycle = runtime => {
   const { currentTrack, selectedSong, settings, isSyncWorkspaceActive, isZenMode,
@@ -279,11 +282,15 @@ export const usePlayerSourceLifecycle = runtime => {
               return;
             }
 
-            if (currentTrack.forceSource !== 'deezer' && extractedYtId && !failedSources.includes('youtube')) {
+            if (shouldStartYouTubeWhileDeezerLoads(extractedYtId, failedSources)) {
               activeSourceRef.current = 'youtube';
               setYtVideoId(extractedYtId);
               setActiveSource('youtube');
               setBuffering(false);
+              setDeezerStatus({
+                stage: 'connecting',
+                message: 'Playing on YouTube while Deezer loads'
+              });
 
               const controller = new AbortController();
               abortControllerRef.current = controller;
@@ -292,7 +299,10 @@ export const usePlayerSourceLifecycle = runtime => {
                   sourceLoadGeneration === sourceLoadGenerationRef.current &&
                   !controller.signal.aborted
                 ) {
-                  setDeezerStatus(progress);
+                  setDeezerStatus({
+                    ...progress,
+                    message: `Playing on YouTube while Deezer loads · ${progress.message}`
+                  });
                 }
               };
               getDeezerAudioBlob(
@@ -309,8 +319,14 @@ export const usePlayerSourceLifecycle = runtime => {
                   ) return;
 
                   setDeezerStatus(null);
-                  let switchTime = Number(window.currentAudioTime) || 0;
-                  if (ytPlayerRef.current && typeof ytPlayerRef.current.getCurrentTime === 'function') {
+                  let switchTime = pendingSeekRef.current !== null
+                    ? pendingSeekRef.current
+                    : Number(window.currentAudioTime) || 0;
+                  if (
+                    ytPlaybackConfirmedRef.current &&
+                    ytPlayerRef.current &&
+                    typeof ytPlayerRef.current.getCurrentTime === 'function'
+                  ) {
                     try {
                       const playerTime = ytPlayerRef.current.getCurrentTime();
                       if (Number.isFinite(playerTime)) switchTime = playerTime;

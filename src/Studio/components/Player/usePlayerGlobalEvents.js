@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
 
+export const isSameTrackSourceForSeek = (currentTrack, requestedTrack, activeSource) => Boolean(
+  currentTrack &&
+  requestedTrack &&
+  currentTrack.trackId != null &&
+  requestedTrack.trackId != null &&
+  String(currentTrack.trackId) === String(requestedTrack.trackId) &&
+  (!requestedTrack.forceSource || activeSource === requestedTrack.forceSource)
+);
+
 export const usePlayerGlobalEvents = (runtime, handlers) => {
   const {
     currentTrack, setCurrentTrack, isPlaying, ytVideoId, ytPlayerReady,
@@ -17,12 +26,10 @@ export const usePlayerGlobalEvents = (runtime, handlers) => {
     const handleSeekRequest = (e) => {
       const { time, track } = e.detail;
       
-      const hasSameTrack = Boolean(
-        currentTrack &&
-        track &&
-        currentTrack.trackId != null &&
-        track.trackId != null &&
-        String(currentTrack.trackId) === String(track.trackId)
+      const hasSameTrack = isSameTrackSourceForSeek(
+        currentTrack,
+        track,
+        activeSourceRef.current
       );
 
       if (!hasSameTrack) {

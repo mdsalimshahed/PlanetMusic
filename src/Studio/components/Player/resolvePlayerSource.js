@@ -26,3 +26,7 @@ export const resolvePlayerSource = (track, failedSources, isSyncWorkspaceActive,
 
   return { trackId, dzUrl, extractedYtId, hasArl, intendedSource };
 };
+
+export const shouldStartYouTubeWhileDeezerLoads = (extractedYtId, failedSources) => (
+  Boolean(extractedYtId) && !failedSources.includes('youtube')
+);

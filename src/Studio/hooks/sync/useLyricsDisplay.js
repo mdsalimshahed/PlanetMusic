@@ -133,14 +133,25 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
       isImageManagerOpen ||
       !selectedSong
     ) return;
-         
+
+    const customLinks = { ...selectedSong.customLinks, ...customData };
+    const useDeezerForSeek = Boolean(
+      customLinks.deezer &&
+      settings?.deezerArl?.trim() &&
+      settings?.deezerArlValid === true
+    );
+
     window.dispatchEvent(new CustomEvent('globalSeekRequest', {
         detail: { 
          time,
-         track: selectedSong 
+         track: {
+           ...selectedSong,
+           customLinks,
+           ...(useDeezerForSeek ? { forceSource: 'deezer' } : {})
+         }
        } 
      }));
-  }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong]);
+  }, [isSyncMode, isEditing, isImageManagerOpen, selectedSong, customData, settings]);
 
   useEffect(() => {
     if (!selectedSong) return;
