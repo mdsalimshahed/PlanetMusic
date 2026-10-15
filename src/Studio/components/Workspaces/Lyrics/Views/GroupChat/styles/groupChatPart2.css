@@ -47,6 +47,14 @@
   animation: group-chat-notification-in 340ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
+.group-chat-system-message.is-chat-in-viewport,
+.group-chat-system-message.is-chat-in-viewport > span,
+.group-chat-system-message.is-chat-in-viewport > time {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
 .group-chat-system-message > span,
 .group-chat-system-message time {
   display: block;
@@ -139,7 +147,6 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
-  will-change: transform;
   display: flex;
   align-items: flex-end;
   gap: calc(var(--chat-horizontal-unit) * 0.7);
@@ -273,6 +280,36 @@
   will-change: transform, opacity;
 }
 
+.group-chat-turn.is-chat-in-viewport,
+.group-chat-turn.is-chat-in-viewport .group-chat-bubble-stack,
+.group-chat-turn.is-chat-in-viewport .group-chat-message,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-line,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text,
+.group-chat-turn.is-chat-in-viewport .main-lyrics-layer,
+.group-chat-turn.is-chat-in-viewport .group-chat-avatar-slot,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-avatar,
+.group-chat-turn.is-chat-in-viewport .group-chat-artist,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-line time,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text .lyric-text-span,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text .lyric-word,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text .lyric-word-group,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text .pronunciation-text,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text .chunk-translation {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.group-chat-turn.is-chat-in-viewport,
+.group-chat-turn.is-chat-in-viewport .group-chat-bubble-stack,
+.group-chat-turn.is-chat-in-viewport .group-chat-message,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-line,
+.group-chat-turn.is-chat-in-viewport .group-chat-message-text,
+.group-chat-turn.is-chat-in-viewport .main-lyrics-layer,
+.group-chat-turn.is-chat-in-viewport .group-chat-avatar-slot {
+  transform: translate3d(0, 0, 0);
+}
+
 .group-chat-message.is-entering .group-chat-message-line,
 .group-chat-message.is-entering .group-chat-message-text,
 .group-chat-message.is-entering .main-lyrics-layer,
@@ -328,6 +365,25 @@
 
 .group-chat-debug-view .group-chat-typing-footer {
   border-top: calc(0.1 * var(--chat-vh-unit)) dashed #ff4fd8;
+}
+
+.group-chat-header,
+.group-chat-heading,
+.group-chat-participants,
+.group-chat-participant,
+.group-chat-avatar-motion,
+.group-chat-typing-footer,
+.group-chat-typing-avatars,
+.group-chat-typing-avatar,
+.group-chat-typing-avatar-visual,
+.group-chat-typing-dots,
+.group-chat-typing-dots i,
+.group-chat-typing-names,
+.group-chat-typing-name,
+.group-chat-typing-label {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .group-chat-debug-view .group-chat-typing-avatar {

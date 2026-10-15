@@ -13,12 +13,20 @@ const getHistoryTargets = content => Array.from(content.children).flatMap(item =
     }];
 });
 
-const getHistoryPositions = content => new Map(
-  getHistoryTargets(content).map(({ id, element }) => [
-    id,
-    element.getBoundingClientRect().top
-  ])
+const getHistoryItemHeights = content => new Map(
+  Array.from(content.children)
+    .filter(item => item.dataset.historyItemId)
+    .map(item => [item.dataset.historyItemId, item.offsetHeight])
 );
+
+const getTranslateY = element => {
+  const transform = getComputedStyle(element).transform;
+  if (!transform || transform === 'none') return 0;
+  const values = transform.match(/matrix(3d)?\(([^)]+)\)/);
+  if (!values) return 0;
+  const components = values[2].split(',').map(Number);
+  return values[1] ? (components[13] || 0) : (components[5] || 0);
+};
 
 const isVisibleInContainer = (element, container) => {
   const elementBounds = element.getBoundingClientRect();
@@ -47,6 +55,22 @@ const getBottomScrollTop = (container, content) => {
   );
 };
 
+const getElementBottomScrollTop = (container, content, element) => {
+  const containerRect = container.getBoundingClientRect();
+  const scaleY = container.offsetHeight
+    ? containerRect.height / container.offsetHeight
+    : 1;
+  const paddingBottom = parseFloat(getComputedStyle(container).paddingBottom) || 0;
+  const visibleBottom = containerRect.top +
+    (container.clientTop + container.clientHeight - paddingBottom) * scaleY;
+  const elementBottom = element.getBoundingClientRect().bottom;
+  const maxScrollTop = getBottomScrollTop(container, content);
+  return Math.min(
+    maxScrollTop,
+    Math.max(0, container.scrollTop + (elementBottom - visibleBottom) / scaleY)
+  );
+};
+
 const useGroupChatPresentation = ({
   chatRef,
   activeLineIndices,
@@ -58,8 +82,7 @@ const useGroupChatPresentation = ({
 }) => {
   const entranceAnimationsRef = useRef([]);
   const historyGlideAnimationsRef = useRef(new Map());
-  const historyGlideDeltasRef = useRef(new Map());
-  const previousHistoryPositionsRef = useRef(null);
+  const previousHistoryItemHeightsRef = useRef(null);
   const previousHistoryMessageCountRef = useRef(null);
   const seenMessageLineIdsRef = useRef(null);
   const followsLatestRef = useRef(true);
@@ -78,6 +101,9 @@ const useGroupChatPresentation = ({
     if (!container || typeof IntersectionObserver === 'undefined') return undefined;
 
     const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('is-chat-in-viewport', entry.isIntersecting);
+      });
       const leavingView = entries
         .filter(entry => !entry.isIntersecting)
         .map(entry => entry.target.dataset.chatLineIndex);
@@ -92,7 +118,9 @@ const useGroupChatPresentation = ({
       });
     }, { root: container, threshold: 0.01 });
 
-    container.querySelectorAll('[data-chat-line-index]').forEach(turn => observer.observe(turn));
+    container.querySelectorAll(
+      '[data-chat-line-index], .group-chat-system-message'
+    ).forEach(element => observer.observe(element));
     return () => observer.disconnect();
   }, [chatRef, chatState.messages.length, setExpandedLineIndices]);
 
@@ -137,22 +165,15 @@ const useGroupChatPresentation = ({
         });
       }
     };
-    const updateHistoryPositions = () => {
-      const content = container.querySelector('.group-chat-history-content');
-      if (content) previousHistoryPositionsRef.current = getHistoryPositions(content);
-    };
-
     container.addEventListener('wheel', handleWheel, { passive: true });
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     container.addEventListener('touchmove', handleTouchMove, { passive: true });
     container.addEventListener('keydown', handleKeyDown);
-    container.addEventListener('scroll', updateHistoryPositions, { passive: true });
     return () => {
       container.removeEventListener('wheel', handleWheel);
       container.removeEventListener('touchstart', handleTouchStart);
       container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('keydown', handleKeyDown);
-      container.removeEventListener('scroll', updateHistoryPositions);
     };
   }, [chatRef]);
 
@@ -176,23 +197,6 @@ const useGroupChatPresentation = ({
       if (Math.abs(shift) < 1) return;
       container.scrollTop = target;
       lastScrollTop = container.scrollTop;
-
-      // Old bubbles may be mid-glide from positions computed before this extra shift;
-      // re-aim them so they still start where they visually were (no one-frame jump).
-      historyGlideAnimationsRef.current.forEach((animation, id) => {
-        const deltaY = historyGlideDeltasRef.current.get(id);
-        if (deltaY == null || !animation.effect?.setKeyframes) return;
-        const nextDelta = deltaY + shift;
-        historyGlideDeltasRef.current.set(id, nextDelta);
-        try {
-          animation.effect.setKeyframes([
-            { transform: `translateY(${nextDelta}px)` },
-            { transform: 'translateY(0)' }
-          ]);
-        } catch {
-          /* older browsers: the glide just finishes from its original offset */
-        }
-      });
     };
 
     const handleResize = () => {
@@ -226,8 +230,7 @@ const useGroupChatPresentation = ({
       const seenIds = new Set(previousIds || []);
 
       const newTurns = turns.filter(turn => (
-        !previousIds?.has(turn.dataset.chatLineIndex) &&
-        isVisibleInContainer(turn, container)
+        !previousIds?.has(turn.dataset.chatLineIndex)
       ));
       turns.forEach(turn => seenIds.add(turn.dataset.chatLineIndex));
       seenMessageLineIdsRef.current = seenIds;
@@ -244,6 +247,10 @@ const useGroupChatPresentation = ({
         const frame = window.requestAnimationFrame(() => {
           pendingAnimationFrames.delete(frame);
           if (!bubble.isConnected) {
+            bubble.classList.remove('is-entering');
+            return;
+          }
+          if (!isVisibleInContainer(turn, container)) {
             bubble.classList.remove('is-entering');
             return;
           }
@@ -295,42 +302,87 @@ const useGroupChatPresentation = ({
     const messageCount = chatState.messages.length;
     const previousMessageCount = previousHistoryMessageCountRef.current;
     const historyAdded = previousMessageCount != null && messageCount > previousMessageCount;
-    handledLatestHistoryUpdateRef.current = historyAdded &&
-      pendingScrollToLatestRef.current;
-    if (previousMessageCount != null && messageCount < previousMessageCount) {
-      historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
-      historyGlideAnimationsRef.current.clear();
-      historyGlideDeltasRef.current.clear();
-      previousHistoryPositionsRef.current = null;
-    }
+    const previousItemHeights = previousHistoryItemHeightsRef.current;
+    const addedEvents = historyAdded
+      ? chatState.messages.slice(previousMessageCount)
+      : [];
+    const latestAddedEvent = addedEvents[addedEvents.length - 1];
+    const turns = new Map(
+      Array.from(container.querySelectorAll('[data-chat-line-index]'))
+        .map(turn => [turn.dataset.chatLineIndex, turn])
+    );
+    const historyItems = new Map(
+      Array.from(content.children)
+        .filter(item => item.dataset.historyItemId)
+        .map(item => [item.dataset.historyItemId, item])
+    );
+    const getArrivalTarget = event => {
+      if (event.type === 'message') {
+        const turn = turns.get(String(event.line.index));
+        return turn
+          ? {
+            id: `line-${event.line.index}`,
+            element: turn,
+            item: turn.closest('[data-history-item-id]')
+          }
+          : null;
+      }
+      const itemId = `${event.type}-${event.artist.name}-${event.time}`;
+      const item = historyItems.get(itemId);
+      return item
+        ? { id: `item-${itemId}`, element: item, item }
+        : null;
+    };
+    const addedTargets = addedEvents
+      .map(getArrivalTarget)
+      .filter(Boolean);
+    const latestAddedTarget = addedTargets[addedTargets.length - 1];
+    const shouldAnchorLatest = historyAdded &&
+      (followsLatestRef.current || pendingScrollToLatestRef.current);
+    handledLatestHistoryUpdateRef.current = shouldAnchorLatest;
     previousHistoryMessageCountRef.current = messageCount;
 
-    const previousPositions = previousHistoryPositionsRef.current;
-    if (historyAdded && pendingScrollToLatestRef.current) {
-      container.scrollTop = getBottomScrollTop(container, content);
+    if (shouldAnchorLatest) {
+      container.scrollTop = latestAddedTarget
+        ? getElementBottomScrollTop(container, content, latestAddedTarget.element)
+        : getBottomScrollTop(container, content);
       followsLatestRef.current = true;
       pendingScrollToLatestRef.current = false;
     }
 
-    const targets = getHistoryTargets(content)
-      .filter(({ element }) => isVisibleInContainer(element, container));
-    const currentPositions = new Map(targets.map(({ id, element }) => [
-      id,
-      element.getBoundingClientRect().top
-    ]));
-    if (historyAdded && previousPositions) {
-      if (!settings?.disableAnimations) {
-        targets.forEach(({ id, element }) => {
-          const previousTop = previousPositions.get(id);
-          const currentTop = currentPositions.get(id);
-          if (previousTop == null || currentTop == null) return;
-          const deltaY = previousTop - currentTop;
-          if (Math.abs(deltaY) <= 1) return;
+    const arrivalTargetIds = new Set();
+    let glideDistance = 0;
+    const addedItemIds = new Set();
+    if (historyAdded && previousItemHeights && !settings?.disableAnimations &&
+        followsLatestRef.current) {
+      addedTargets.forEach(target => {
+        arrivalTargetIds.add(target.id);
+        const itemId = target.item?.dataset.historyItemId;
+        if (!itemId || addedItemIds.has(itemId)) return;
+        const itemHeight = target.item.offsetHeight;
+        const previousHeight = previousItemHeights.get(itemId);
+        if (previousHeight == null) {
+          glideDistance += itemHeight +
+            (parseFloat(getComputedStyle(content).rowGap) || 0);
+        } else {
+          glideDistance += Math.max(0, itemHeight - previousHeight);
+        }
+        if (itemId) addedItemIds.add(itemId);
+      });
+    }
 
+    if (glideDistance > 1) {
+      getHistoryTargets(content)
+        .filter(({ id, element }) => (
+          !arrivalTargetIds.has(id) &&
+          isVisibleInContainer(element, container)
+        ))
+        .forEach(({ id, element }) => {
+          const currentOffset = getTranslateY(element);
           historyGlideAnimationsRef.current.get(id)?.cancel();
           const animation = element.animate(
             [
-              { transform: `translateY(${deltaY}px)` },
+              { transform: `translateY(${currentOffset + glideDistance}px)` },
               { transform: 'translateY(0)' }
             ],
             {
@@ -339,17 +391,15 @@ const useGroupChatPresentation = ({
             }
           );
           historyGlideAnimationsRef.current.set(id, animation);
-          historyGlideDeltasRef.current.set(id, deltaY);
           animation.onfinish = () => {
             if (historyGlideAnimationsRef.current.get(id) === animation) {
               historyGlideAnimationsRef.current.delete(id);
-              historyGlideDeltasRef.current.delete(id);
             }
           };
         });
-      }
     }
-    previousHistoryPositionsRef.current = currentPositions;
+
+    previousHistoryItemHeightsRef.current = getHistoryItemHeights(content);
   });
 
   useLayoutEffect(() => {
@@ -404,7 +454,6 @@ const useGroupChatPresentation = ({
     entranceAnimationsRef.current.forEach(animation => animation.cancel());
     historyGlideAnimationsRef.current.forEach(animation => animation.cancel());
     historyGlideAnimationsRef.current.clear();
-    historyGlideDeltasRef.current.clear();
   }, []);
 };
 
