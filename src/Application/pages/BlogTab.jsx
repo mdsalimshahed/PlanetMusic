@@ -823,9 +823,7 @@ const BlogTab = ({ adsEnabled }) => {
                                   {summaryItems.map((item, itemIndex) => <li key={itemIndex}>{item}</li>)}
                                 </ul>
                                 <span className="changelog-commit-count">
-                                  {entry.kind === 'site-update'
-                                    ? 'Site update'
-                                    : `${entry.commits} ${entry.commits === 1 ? 'commit' : 'commits'}`}
+                                  {entry.commits} {entry.commits === 1 ? 'commit' : 'commits'}
                                 </span>
                               </div>
                             </li>
