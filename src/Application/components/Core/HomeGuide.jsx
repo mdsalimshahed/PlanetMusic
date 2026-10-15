@@ -676,8 +676,32 @@ const HomeGuide = () => {
             original lyrics. No account or install required.
           </p>
           <div className="home-guide-actions">
-            <Link className="home-guide-primary" to="/vault">Open your Vault <span aria-hidden="true">→</span></Link>
-            <a className="home-guide-secondary" href="#how" onClick={goTo('how')}>See how it works</a>
+            <Link className="home-guide-action-card is-primary" to="/vault">
+              <span className="home-guide-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 6.5h16v13H4zM7 6.5V4h10v2.5M8 10v6m4-6v6m4-6v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2.5 9v8M21.5 9v8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity=".65" />
+                </svg>
+              </span>
+              <span className="home-guide-action-copy">
+                <strong>Open your Vault</strong>
+                <small>Your music, ready when you are</small>
+              </span>
+              <span className="home-guide-action-orbit" aria-hidden="true" />
+            </Link>
+            <a className="home-guide-action-card is-secondary" href="#how" onClick={goTo('how')}>
+              <span className="home-guide-action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M5 5.5h14v13H5zM8 9h8M8 12h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="m14 16 2 2 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="home-guide-action-copy">
+                <strong>See how it works</strong>
+                <small>Four quick steps, from search to synced lyrics</small>
+              </span>
+              <span className="home-guide-action-steps" aria-hidden="true"><i /><i /><i /><i /></span>
+            </a>
           </div>
           <ul className="home-guide-chips" aria-label="Highlights">
             <li>Private by design</li><li>Works on phone &amp; desktop</li><li>Lyrics in any language</li>
