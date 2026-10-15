@@ -133,9 +133,9 @@ body .dynamic-radius-override {
    PERFORMANCE DIAGNOSTICS (KILL-SWITCH)
    Globally kills all CSS animations, transitions, and removes background fluid drops
    ========================================================================== */
-.disable-animations *:not(.modal-right-col):not(.modal-right-col *),
-.disable-animations *:not(.modal-right-col):not(.modal-right-col *)::before,
-.disable-animations *:not(.modal-right-col):not(.modal-right-col *)::after {
+.disable-animations *:not(.modal-right-col):not(.modal-right-col *):not(.home-guide-visual):not(.home-guide-visual *),
+.disable-animations *:not(.modal-right-col):not(.modal-right-col *):not(.home-guide-visual):not(.home-guide-visual *)::before,
+.disable-animations *:not(.modal-right-col):not(.modal-right-col *):not(.home-guide-visual):not(.home-guide-visual *)::after {
   animation-duration: 0.001ms !important;
   animation-delay: 0s !important;
   transition: none !important;
