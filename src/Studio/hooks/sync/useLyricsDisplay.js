@@ -1,6 +1,7 @@
 /* --- src/hooks/sync/useLyricsDisplay.js --- */
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { parseLyrics } from '../../utils/songHelpers.js';
+import { buildTranslationWorkspaceData } from '../../utils/translationWorkspaceData.js';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
@@ -39,7 +40,24 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   const liveParsedLyrics = useMemo(() => {
     if (!selectedSong) return [];
     return parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
-  }, [customData.lyrics, selectedSong?.artistName, masterPalette]);
+  }, [customData, selectedSong, masterPalette]);
+  const parsedLyricsColorMap = useMemo(() => (
+    customData?.lyrics && selectedSong?.artistName ? liveParsedLyrics : []
+  ), [customData?.lyrics, liveParsedLyrics, selectedSong?.artistName]);
+  const syncWorkspaceLyrics = useMemo(() => (
+    buildTranslationWorkspaceData(
+      selectedSong,
+      customData,
+      masterPalette,
+      parsedLyricsColorMap
+    )
+      .filter(line => !line._meta.isAdlib)
+  ), [
+    customData,
+    masterPalette,
+    parsedLyricsColorMap,
+    selectedSong
+  ]);
 
   useEffect(() => {
     const handlePlayState = (e) => setPlayState(e.detail);
@@ -174,10 +192,10 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
     };
-  }, [bgActiveIndex, liveParsedLyrics, selectedSong?.artistName, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
+  }, [bgActiveIndex, liveParsedLyrics, selectedSong, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
 
   return {
-    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics,
+    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics, syncWorkspaceLyrics,
     isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs, lyricsPlaybackOffsetSeconds,
     currentSingerBg: displaySingerBg, isSingerVisible,
     activePreviewRef, handleLineClick, hasValidSyncData,

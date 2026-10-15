@@ -124,18 +124,6 @@ const GroupChatLyricText = React.memo(({
     ? wrappedContentLayout.width
     : 0;
   const isRTL = isRTLLanguage(line.text || '');
-  const stripParentheses = value =>
-    typeof value === 'string' ? value.replace(/[()（）]/g, '') : value;
-  const displayLine = {
-    ...line,
-    translation: stripParentheses(line.translation),
-    pronunciation: stripParentheses(line.pronunciation)
-  };
-  const displaySavedNode = savedNode ? {
-    ...savedNode,
-    translation: stripParentheses(savedNode.translation),
-    pronunciation: stripParentheses(savedNode.pronunciation)
-  } : savedNode;
 
   useLayoutEffect(() => {
     if (!precomputedLayout) return;
@@ -483,12 +471,12 @@ const GroupChatLyricText = React.memo(({
       }}
     >
       {renderLine(
-        displayLine,
-        displaySavedNode,
+        line,
+        savedNode,
         false,
         masterPalette,
         isPlayingCurrentSong,
-        { excludeAdlibs }
+        { excludeAdlibs, preserveText: true }
       )}
     </span>
   );

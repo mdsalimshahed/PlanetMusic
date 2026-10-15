@@ -16,9 +16,9 @@ export const renderLine = (
   isFocused,
   masterPalette,
   isPlayingCurrentSong,
-  { excludeAdlibs = false } = {}
+  { excludeAdlibs = false, preserveText = false } = {}
 ) => {
-  const displayLine = {
+  const displayLine = preserveText ? lineObj : {
     ...lineObj,
     text: toSmartPunctuation(lineObj.text),
     segments: lineObj.segments?.map(segment => ({
@@ -26,19 +26,27 @@ export const renderLine = (
       text: toSmartPunctuation(segment.text)
     }))
   };
-  const displayNode = savedNode ? {
-    ...savedNode,
-    spacingText: toSmartPunctuation(savedNode.spacingText),
-    translation: toSmartPunctuation(savedNode.translation),
-    pronunciation: normalizeStructuredPunctuation(savedNode.pronunciation),
-    adlibs: savedNode.adlibs?.map(adlib => ({
-      ...adlib,
-      text: toSmartPunctuation(adlib.text),
-      translation: toSmartPunctuation(adlib.translation),
-      pronunciation: normalizeStructuredPunctuation(adlib.pronunciation)
-    }))
-  } : savedNode;
-  const { chars, hasSpacingText } = extractCharsAndSegments(displayLine, displayNode);
+  const displayNode = savedNode
+    ? preserveText
+      ? savedNode
+      : {
+        ...savedNode,
+        spacingText: toSmartPunctuation(savedNode.spacingText),
+        translation: toSmartPunctuation(savedNode.translation),
+        pronunciation: normalizeStructuredPunctuation(savedNode.pronunciation),
+        adlibs: savedNode.adlibs?.map(adlib => ({
+          ...adlib,
+          text: toSmartPunctuation(adlib.text),
+          translation: toSmartPunctuation(adlib.translation),
+          pronunciation: normalizeStructuredPunctuation(adlib.pronunciation)
+        }))
+      }
+    : savedNode;
+  const { chars, hasSpacingText } = extractCharsAndSegments(
+    displayLine,
+    displayNode,
+    { useParsedSegments: preserveText }
+  );
 
   const commonProps = {
     lineObj: displayLine,
@@ -49,7 +57,8 @@ export const renderLine = (
     lang: savedNode?.lang || lineObj.lang || 'auto',
     translation: savedNode?.translation || lineObj.translation,
     pronunciation: savedNode?.pronunciation || lineObj.pronunciation,
-    hasSpacingText
+    hasSpacingText,
+    useTranslationFormatting: preserveText
   };
 
   if (!isFocused && !excludeAdlibs && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
@@ -123,7 +132,14 @@ export const LyricLineWrapper = React.memo(({
   const end = savedNode?.end ?? 'NaN';
 
   const renderedContent = useMemo(() =>
-    renderLine(lineObj, savedNode, viewMode === 'focused', masterPalette, isPlayingCurrentSong),
+    renderLine(
+      lineObj,
+      savedNode,
+      viewMode === 'focused',
+      masterPalette,
+      isPlayingCurrentSong,
+      { preserveText: viewMode === 'live' }
+    ),
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );
 

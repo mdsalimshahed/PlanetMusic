@@ -71,6 +71,7 @@ const ModalRight = (props) => {
                 hasValidSyncData={props.hasValidSyncData}
                 lyricsViewMode={props.lyricsViewMode}
                 liveParsedLyrics={props.liveParsedLyrics}
+                syncWorkspaceLyrics={props.syncWorkspaceLyrics}
                 handleLineClick={props.handleLineClick}
                 selectedSong={props.selectedSong}
                 masterPalette={props.masterPalette}

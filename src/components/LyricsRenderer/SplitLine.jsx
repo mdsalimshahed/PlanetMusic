@@ -3,6 +3,7 @@ import React, { useRef, useLayoutEffect } from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
 import { isRTLLanguage } from './textUtils.js';
+import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 
 const SplitLine = ({
   lineObj,
@@ -13,7 +14,8 @@ const SplitLine = ({
   lang,
   translation,
   pronunciation,
-  hasSpacingText
+  hasSpacingText,
+  useTranslationFormatting = false
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
@@ -287,7 +289,12 @@ const SplitLine = ({
               }}
               dir={isRTL ? 'rtl' : 'ltr'}
           >
-            {alignedMainJSX}
+            {useTranslationFormatting
+              ? renderTranslationOriginalText(lineObj, masterPalette, {
+                savedNode,
+                excludeAdlibs: true
+              })
+              : alignedMainJSX}
           </span>
           {mainPronunciationJSX && (
             <span

@@ -10,7 +10,7 @@ import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
-    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
+    lyricsViewMode, liveParsedLyrics, syncWorkspaceLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
     showGroupChatDebug
 }) => {
@@ -40,7 +40,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <LiveLyricsView 
-          liveParsedLyrics={liveParsedLyrics}
+          liveParsedLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
@@ -63,7 +63,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView
-          liveParsedLyrics={liveParsedLyrics}
+          liveParsedLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           artistImages={{

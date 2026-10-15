@@ -1,6 +1,7 @@
 /* --- src/components/LyricsRenderer/StandardLine.jsx --- */
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { isRTLLanguage } from './textUtils.js';
+import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 
 const StandardLine = ({
   lineObj,
@@ -12,6 +13,7 @@ const StandardLine = ({
   translation,
   pronunciation,
   hasSpacingText,
+  useTranslationFormatting = false,
   excludeAdlibs = false
 }) => {
   const isRTL = isRTLLanguage(lineObj.text || '');
@@ -127,7 +129,12 @@ const StandardLine = ({
             }}
             dir={isRTL ? 'rtl' : 'ltr'} 
           >
-            {mainJSX}
+            {useTranslationFormatting
+              ? renderTranslationOriginalText(lineObj, masterPalette, {
+                savedNode,
+                excludeAdlibs
+              })
+              : mainJSX}
           </span>
 
           {pronunciationJSX && (

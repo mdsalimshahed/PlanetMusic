@@ -438,18 +438,26 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
   return mergeStandalonePunctuation(words);
 };
 
-export const extractCharsAndSegments = (lineObj, savedNode) => {
-  const activeSpacingText = savedNode?.spacingText || lineObj?.spacingText || '';
-  const useSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
-  const activeDisplayText = useSpacingText ? activeSpacingText : (lineObj.text || '');
+export const extractCharsAndSegments = (
+  lineObj,
+  savedNode,
+  { useParsedSegments = false } = {}
+) => {
+  const activeSpacingText = useParsedSegments
+    ? ''
+    : savedNode?.spacingText || lineObj?.spacingText || '';
+  const hasSpacingText = Boolean(activeSpacingText && activeSpacingText.trim());
+  const activeDisplayText = hasSpacingText ? activeSpacingText : (lineObj.text || '');
 
   let chars = [];
   let gIdx = 0;
   let originalCpIdx = 0;
 
-  const segments = lineObj.segments || [{ text: lineObj.text }];
+  const segments = lineObj.segments?.length
+    ? lineObj.segments
+    : [{ text: lineObj.text }];
 
-  if (useSpacingText) {
+  if (hasSpacingText) {
     const spacedGraphemes = getGraphemes(activeDisplayText);
     const origGraphemes = getGraphemes(lineObj.text || '');
     
@@ -460,15 +468,10 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
 
     spacedGraphemes.forEach(char => {
       let currentSeg = segments[segmentPointer] || segments[segments.length - 1] || {};
-      let isOrigChar = false;
-
-      if (origPointer < origGraphemes.length && char === origGraphemes[origPointer]) {
-        isOrigChar = true;
-      } else if (/\s/.test(char) && origPointer < origGraphemes.length && !/\s/.test(origGraphemes[origPointer])) {
-        isOrigChar = false;
-      } else {
-        isOrigChar = !/\s/.test(char);
-      }
+      const isOrigChar = (
+        origPointer < origGraphemes.length &&
+        char === origGraphemes[origPointer]
+      ) || !/\s/.test(char);
 
       const cpLen = Array.from(char).length;
       chars.push({
@@ -511,7 +514,7 @@ export const extractCharsAndSegments = (lineObj, savedNode) => {
   // Force hasSpacingText = true if spaces exist in chars
   const hasSpacesInText = chars.some(c => /\s/.test(c.char));
 
-  return { chars, hasSpacingText: useSpacingText || hasSpacesInText };
+  return { chars, hasSpacingText: hasSpacingText || hasSpacesInText };
 };
 
 export const buildChunkElements = (alignedChunks, masterPalette, isFocused, hasSpacingText, isRTL, isHybridLine, isAdlib = false) => {

@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { parseLyrics } from '../../utils/songHelpers.js';
 import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import { buildTranslationWorkspaceData } from '../../utils/translationWorkspaceData.js';
 
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return '';
@@ -30,98 +31,13 @@ export const useTranslationWorkspaceData = ({
     return parseLyrics(customData.lyrics, selectedSong.artistName, masterPalette);
   }, [customData?.lyrics, selectedSong?.artistName, masterPalette]);
 
-  const loadSourceWorkspaceData = () => {
-    let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
-    if ((!sourceData || sourceData.length === 0) && customData?.lyrics) {
-      sourceData = parseLyrics(customData.lyrics, selectedSong?.artistName, masterPalette).map(l => ({
-        ...l,
-        start: null,
-        end: null,
-        translation: '',
-        pronunciation: null,
-        lang: 'auto',
-        spacingText: ''
-      }));
-    }
-    if (!sourceData) sourceData = [];
-
-    const mapped = [];
-    sourceData.forEach((line, i) => {
-      let mainText = line.text;
-      const parsedLineObj = parsedLyricsColorMap[i] || null;
-      
-      let pron = line.pronunciation || '';
-      let displayPron = pron;
-
-      if (typeof pron === 'string') {
-        if (pron.startsWith('{')) {
-          try {
-            const p = JSON.parse(pron);
-            displayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-          } catch (e) {}
-        } else if (pron.startsWith('[')) {
-          try {
-            const p = JSON.parse(pron);
-            displayPron = p.map(c => c.trans || c.text).join('');
-          } catch (e) {}
-        }
-      }
-
-      const isEn = line.lang === 'en';
-      
-      mapped.push({
-        ...line,
-        rowId: `main-${i}`,
-        segments: parsedLineObj?.segments || line.segments,
-        displayText: mainText || line.text,
-        translation: isEn ? '' : (line.translation || ''),
-        pronunciation: isEn ? '' : pron,
-        displayPron: isEn ? '' : displayPron,
-        lang: line.lang || 'auto',
-        spacingText: line.spacingText || '',
-        _meta: { isAdlib: false, lineIndex: i }
-      });
-
-      if (line.isSplit && line.adlibs) {
-        line.adlibs.forEach((adlib, j) => {
-          let aPron = adlib.pronunciation || '';
-          let aDisplayPron = aPron;
-
-          if (typeof aPron === 'string') {
-            if (aPron.startsWith('{')) {
-              try {
-                const p = JSON.parse(aPron);
-                aDisplayPron = p.full || p.chunks.map(c => c.trans || c.text).join('');
-              } catch (e) {}
-            } else if (aPron.startsWith('[')) {
-              try {
-                const p = JSON.parse(aPron);
-                aDisplayPron = p.map(c => c.trans || c.text).join('');
-              } catch (e) {}
-            }
-          }
-          
-          const isAdlibEn = adlib.lang === 'en';
-          mapped.push({
-            ...adlib,
-            rowId: `adlib-${i}-${j}`,
-            segments: adlib.segments,
-            displayText: adlib.text,
-            translation: isAdlibEn ? '' : (adlib.translation || ''),
-            pronunciation: isAdlibEn ? '' : aPron,
-            displayPron: isAdlibEn ? '' : aDisplayPron,
-            lang: adlib.lang || 'auto',
-            spacingText: adlib.spacingText || '',
-            _meta: { isAdlib: true, lineIndex: i, adlibIndex: j }
-          });
-        });
-      }
-    });
-    return mapped;
-  };
-
   useEffect(() => {
-    const loaded = loadSourceWorkspaceData();
+    const loaded = buildTranslationWorkspaceData(
+      selectedSong,
+      customData,
+      masterPalette,
+      parsedLyricsColorMap
+    );
     setWorkspaceData(loaded);
     setInitialDataSnapshot(JSON.stringify(loaded.map(item => ({ t: item.translation, p: item.displayPron, l: item.lang, s: item.spacingText }))));
     setIsLoading(false);
