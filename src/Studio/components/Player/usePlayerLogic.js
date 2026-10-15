@@ -6,6 +6,7 @@ import { extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock } from '../../utils/clockEngine.js';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
+import { loadYouTubeIframeApi } from './youtubeIframeApi.js';
 
 const YOUTUBE_START_TIMEOUT_MS = 5000;
 
@@ -344,19 +345,9 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   }, []);
 
   useEffect(() => {
-    const hasApiScript = Array.from(document.scripts).some(script =>
-      script.src === 'https://www.youtube.com/iframe_api'
-    );
-    if (!window.YT && !hasApiScript) {
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      if (firstScriptTag && firstScriptTag.parentNode) {
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      } else {
-        document.head.appendChild(tag);
-      }
-    }
+    loadYouTubeIframeApi().catch(error => {
+      console.warn('Could not load the YouTube IFrame API:', error);
+    });
   }, []);
 
   const attemptPlay = async () => {
@@ -603,7 +594,12 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     const sourceChanged = intendedSource !== activeSourceRef.current;
 
     if (trackChanged || sourceChanged || isNewPlayAction) {
-      const syncLoadRequest = syncLoadRequestRef.current;
+      const pendingSyncLoadRequest = syncLoadRequestRef.current;
+      syncLoadRequestRef.current = null;
+      const syncLoadRequest = isSyncWorkspaceActive &&
+        pendingSyncLoadRequest?.playId === currentTrack.playId
+        ? pendingSyncLoadRequest
+        : null;
       const isSourceSwitch = !trackChanged && sourceChanged;
       if (trackChanged) setDuration(0);
       let switchTime = isSourceSwitch ? globalClock.getCurrentTime() : 0;
@@ -627,11 +623,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         }
         shouldResumeSourceSwitch = window.globalIsAudioPlaying === true || pendingAutoplayRef.current;
       }
-      pendingAutoplayRef.current = syncLoadRequest?.playId === currentTrack.playId
-        ? syncLoadRequest.autoplay
-        : isSourceSwitch
-          ? shouldResumeSourceSwitch
-          : !isSyncWorkspaceActive;
+      pendingAutoplayRef.current = isSourceSwitch
+        ? shouldResumeSourceSwitch
+        : isSyncWorkspaceActive
+          ? Boolean(syncLoadRequest?.autoplay)
+          : true;
       if (isSourceSwitch) {
         pendingSeekShouldPlayRef.current = shouldResumeSourceSwitch;
         setPendingSeekValue(switchTime);
@@ -892,23 +888,9 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     if (!ytVideoId) return;
     let playerInstance = null;
     let cancelled = false;
-    let apiReadyTimer = null;
-    let apiReadyAttempts = 0;
-    const initYTPlayer = () => {
-      if (cancelled) return;
-      if (!window.YT || !window.YT.Player) {
-        if (apiReadyAttempts >= 100) {
-          setBuffering(false);
-          triggerFallbackMessage('YouTube player did not become ready. Falling back...');
-          setFailedSources(previous => previous.includes('youtube')
-            ? previous
-            : [...previous, 'youtube']);
-          return;
-        }
-        apiReadyAttempts += 1;
-        apiReadyTimer = setTimeout(initYTPlayer, 100);
-        return;
-      }
+    const playerGeneration = sourceLoadGenerationRef.current;
+    const initYTPlayer = YT => {
+      if (cancelled || playerGeneration !== sourceLoadGenerationRef.current) return;
       const container = document.getElementById('yt-player-container');
       if (!container) {
         triggerFallbackMessage('YouTube player container is unavailable. Falling back...');
@@ -919,18 +901,16 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       }
       
       container.innerHTML = '<div id="yt-player-target" style="width:100%;height:100%;"></div>';
-      const playerGeneration = sourceLoadGenerationRef.current;
+      const autoplayOnLoad = pendingAutoplayRef.current && pendingSeekRef.current === null;
       
-      playerInstance = new window.YT.Player('yt-player-target', {
+      playerInstance = new YT.Player('yt-player-target', {
         videoId: ytVideoId,
-        host: 'https://www.youtube-nocookie.com',
         playerVars: {
-        autoplay: pendingAutoplayRef.current ? 1 : 0,
-        playsinline: 1,
-        rel: 0,
-        enablejsapi: 1,
-        suggestedQuality: 'small',
-        origin: window.location.origin
+          autoplay: autoplayOnLoad ? 1 : 0,
+          playsinline: 1,
+          rel: 0,
+          enablejsapi: 1,
+          origin: window.location.origin
         },
         events: {
           onReady: (event) => {
@@ -941,7 +921,6 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             ytPlayerRef.current = event.target;
             setYtPlayerReady(true);
             try {
-              if (typeof event.target.setPlaybackQuality === 'function') event.target.setPlaybackQuality('small');
               event.target.setVolume((isMuted ? 0 : volume) * 100);
               if (typeof event.target.setPlaybackRate === 'function') {
                 event.target.setPlaybackRate(syncPlaybackRateRef.current);
@@ -956,25 +935,26 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
                 shouldPlay = shouldPlay && pendingSeekShouldPlayRef.current;
                 pendingSeekShouldPlayRef.current = true;
                 setPendingSeekValue(null);
-              }
-              if (shouldPlay) {
-                setBuffering(true);
-                requestYouTubePlay(event.target);
-              } else {
+              } else if (!shouldPlay) {
                 setBuffering(false);
                 event.target.pauseVideo();
                 ytPlaybackConfirmedRef.current = false;
                 setIsPlaying(false);
                 emitPlayState(false, false);
               }
+              if (shouldPlay) {
+                setBuffering(true);
+                if (autoplayOnLoad) scheduleYouTubeFallback();
+                else requestYouTubePlay(event.target);
+              }
             } catch (e) {}
           },
           onStateChange: (event) => {
             if (cancelled || playerGeneration !== sourceLoadGenerationRef.current) {
-              if (event.data === window.YT.PlayerState.PLAYING) event.target.stopVideo();
+              if (event.data === YT.PlayerState.PLAYING) event.target.stopVideo();
               return;
             }
-            if (event.data === window.YT.PlayerState.PLAYING) {
+            if (event.data === YT.PlayerState.PLAYING) {
               ytHasPlayedRef.current = true;
               clearYouTubeSeekBufferTimeout();
               ytSeekWasPlayingRef.current = false;
@@ -1029,11 +1009,10 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               emitPlayState(true, false);
               
               if (ytPlayerRef.current) {
-                if (typeof ytPlayerRef.current.setPlaybackQuality === 'function') ytPlayerRef.current.setPlaybackQuality('small');
                 const dur = ytPlayerRef.current.getDuration();
                 if (dur && !isNaN(dur)) setDuration(dur);
               }
-            } else if (event.data === window.YT.PlayerState.BUFFERING) {
+            } else if (event.data === YT.PlayerState.BUFFERING) {
               if (!pendingAutoplayRef.current) {
                 if (ytPendingSeekRef.current !== null) return;
                 event.target.pauseVideo();
@@ -1053,7 +1032,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               setIsPlaying(false);
               emitPlayState(false, false);
               scheduleYouTubeFallback();
-            } else if (event.data === window.YT.PlayerState.PAUSED) {
+            } else if (event.data === YT.PlayerState.PAUSED) {
               clearYouTubeSeekBufferTimeout();
               ytSeekWasPlayingRef.current = false;
               if (pendingAutoplayRef.current) return;
@@ -1082,7 +1061,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               ytPlaybackConfirmedRef.current = false;
               setBuffering(false);
               setIsPlaying(false); emitPlayState(false, false);
-            } else if (event.data === window.YT.PlayerState.ENDED) {
+            } else if (event.data === YT.PlayerState.ENDED) {
               clearYouTubePlayTimeout();
               ytPlaybackConfirmedRef.current = false;
               pendingAutoplayRef.current = false;
@@ -1113,10 +1092,19 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         }
       });
     };
-    initYTPlayer();
+    loadYouTubeIframeApi()
+      .then(initYTPlayer)
+      .catch(error => {
+        if (cancelled || playerGeneration !== sourceLoadGenerationRef.current) return;
+        console.warn('Could not initialize YouTube playback:', error);
+        setBuffering(false);
+        triggerFallbackMessage('YouTube player did not become ready. Falling back...');
+        setFailedSources(previous => previous.includes('youtube')
+          ? previous
+          : [...previous, 'youtube']);
+      });
     return () => {
       cancelled = true;
-      if (apiReadyTimer !== null) clearTimeout(apiReadyTimer);
       clearYouTubePlayTimeout();
       if (playerInstance && typeof playerInstance.destroy === 'function') {
         try { playerInstance.destroy(); } catch (e) {}
@@ -1252,17 +1240,20 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             ? Boolean(ytPlayerRef.current && ytPlayerReady)
             : Boolean(audioRef.current && audioRef.current.readyState > 0);
           if (bufferingRef.current && !canSeekCurrentSource) {
-            pendingSeekShouldPlayRef.current = pendingAutoplayRef.current;
+            pendingAutoplayRef.current = true;
+            pendingSeekShouldPlayRef.current = true;
             setPendingSeekValue(time);
             return;
           }
+          pendingAutoplayRef.current = true;
+          pendingSeekShouldPlayRef.current = true;
           globalClock.seek(time);
           if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
             seekYouTube(time);
-            if (pendingAutoplayRef.current && !isPlaying) requestYouTubePlay(ytPlayerRef.current);
+            if (!isPlaying) requestYouTubePlay(ytPlayerRef.current);
           } else if (audioRef.current) {
             audioRef.current.currentTime = time;
-            if (pendingAutoplayRef.current && !isPlaying) attemptPlay();
+            if (!isPlaying) attemptPlay();
           }
         }
       }

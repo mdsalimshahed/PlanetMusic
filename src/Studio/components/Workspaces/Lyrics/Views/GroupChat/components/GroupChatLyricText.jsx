@@ -91,6 +91,7 @@ const getLayoutScale = element => {
 const GroupChatLyricText = React.memo(({
   line,
   savedNode,
+  isAdlib = false,
   masterPalette,
   isPlayingCurrentSong,
   lyricFontSize,
@@ -476,7 +477,7 @@ const GroupChatLyricText = React.memo(({
         false,
         masterPalette,
         isPlayingCurrentSong,
-        { excludeAdlibs, focusedMainLyrics: true }
+        { excludeAdlibs, focusedMainLyrics: true, isAdlib }
       )}
     </span>
   );

@@ -118,6 +118,7 @@ const GroupChatMessageChain = ({
                   <GroupChatLyricText
                     line={lyricLine}
                     savedNode={line.savedNode}
+                    isAdlib={line.isAdlib}
                     masterPalette={masterPalette}
                     isPlayingCurrentSong={isPlayingCurrentSong}
                     lyricFontSize={settings?.groupChatLyricFontSize ?? 2.2}

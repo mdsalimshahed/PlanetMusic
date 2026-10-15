@@ -123,11 +123,20 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   ), []);
 
   const handleLineClick = useCallback((startTime) => {
-    if (startTime === null || isSyncMode || isEditing || isImageManagerOpen || !selectedSong) return;
+    const time = Number(startTime);
+    if (
+      startTime == null ||
+      !Number.isFinite(time) ||
+      time < 0 ||
+      isSyncMode ||
+      isEditing ||
+      isImageManagerOpen ||
+      !selectedSong
+    ) return;
          
     window.dispatchEvent(new CustomEvent('globalSeekRequest', {
         detail: { 
-         time: startTime, 
+         time,
          track: selectedSong 
        } 
      }));

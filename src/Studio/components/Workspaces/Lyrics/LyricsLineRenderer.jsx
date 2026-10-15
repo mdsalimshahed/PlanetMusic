@@ -4,6 +4,7 @@ import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../../utils/smartPunctuation.js';
+import { stripPronunciationParentheses } from '../../../../components/LyricsRenderer/textUtils.js';
 import './LyricsLineRenderer.css';
 
 // Re-export formatter utilities from their new centralized locations so the Views don't break
@@ -19,7 +20,8 @@ export const renderLine = (
   {
     excludeAdlibs = false,
     preserveText = false,
-    focusedMainLyrics = false
+    focusedMainLyrics = false,
+    isAdlib = false
   } = {}
 ) => {
   const displayLine = preserveText ? lineObj : {
@@ -59,7 +61,9 @@ export const renderLine = (
     isPlayingCurrentSong,
     chars,
     lang: savedNode?.lang || lineObj.lang || 'auto',
-    translation: savedNode?.translation || lineObj.translation,
+    translation: isAdlib
+      ? stripPronunciationParentheses(savedNode?.translation || lineObj.translation)
+      : savedNode?.translation || lineObj.translation,
     pronunciation: savedNode?.pronunciation || lineObj.pronunciation,
     hasSpacingText,
     useTranslationFormatting: preserveText,
