@@ -602,6 +602,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
             style={{
               left: `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
               top: `${b.spawnTop}px`,
+              '--bubble-travel-distance': `${b.spawnTop}px`,
               animationDuration: `${b.duration}s`
             }}
             onAnimationEnd={(event) => {

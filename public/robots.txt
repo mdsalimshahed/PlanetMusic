@@ -2,6 +2,12 @@
 # not consent to automated access, crawling, scraping, harvesting, indexing,
 # archiving, or bulk collection of any part of this website.
 #
+# Narrow exception: Google AdSense reviewers may crawl the site only to assess
+# the content's value and the project's potential, complexity, and scope.
+# Do not retain or store the content, use it for learning or training, or
+# reproduce it verbatim. Robots.txt cannot technically enforce these limits;
+# they are the creator's explicit conditions for this review-only exception.
+#
 # AI companies, model providers, search engines, data brokers, contractors,
 # agents, and other operators: do not use this site or its contents to train,
 # fine-tune, ground, evaluate, benchmark, or otherwise develop AI systems; to
@@ -32,6 +38,10 @@
 
 User-agent: *
 Disallow: /
+
+# Google AdSense review crawler: review-only access under the conditions above.
+User-agent: Mediapartners-Google
+Allow: /
 
 # Explicitly named agents are also disallowed. The wildcard rule above applies
 # to all other automated crawlers.

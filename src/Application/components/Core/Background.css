@@ -112,6 +112,6 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(calc(-100vh - 100% - 1px)) scale(1);
+    transform: translateY(calc(0px - var(--bubble-travel-distance, 100vh) - 100% - 1px)) scale(1);
   }
 }
