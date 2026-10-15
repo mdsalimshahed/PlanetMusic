@@ -410,7 +410,9 @@
 .home-guide-changelog-heading { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 8px; margin: 0; padding: 12px; border-bottom: 1px solid rgba(167, 123, 255, 0.24); }
 .home-guide-changelog-heading h2 { margin: 0; background: linear-gradient(100deg, #f5e8ff 0%, #c293ff 42%, #5fd4ff 100%); background-clip: text; color: transparent; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: clamp(21px, 5.4vw, 28px); font-weight: 900; line-height: 1; letter-spacing: -0.045em; }
 .home-guide-changelog-meta { display: grid; justify-items: end; gap: 6px; color: #a99fbd; font-size: 9px; text-align: right; }
-.home-guide-changelog-meta > span { padding: 3px 7px; border: 1px solid rgba(95, 212, 255, 0.34); border-radius: 999px; color: #bfeeff; background: #153b4b; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.home-guide-changelog-pills { display: flex; align-items: center; gap: 5px; }
+.home-guide-changelog-pills > span { padding: 3px 7px; border: 1px solid rgba(95, 212, 255, 0.34); border-radius: 999px; color: #bfeeff; background: #153b4b; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.home-guide-changelog-pills > .home-guide-changelog-commit-count { border-color: rgba(194, 147, 255, 0.34); color: #e7d8ff; background: #302342; }
 .home-guide-changelog-meta time { padding: 4px 8px; border: 1px solid rgba(194, 147, 255, 0.34); border-radius: 7px; color: #e7d8ff; background: #302342; font-size: 12px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; }
 .home-guide-changelog-scroll-shell { position: relative; display: flex; flex: 1; min-height: 0; }
 .home-guide-changelog-scroll { flex: 1; min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 10px 22px 12px 12px; background: transparent; scrollbar-width: none; }

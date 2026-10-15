@@ -15,7 +15,8 @@ const StandardLine = ({
   hasSpacingText,
   useTranslationFormatting = false,
   focusedMainLyrics = false,
-  excludeAdlibs = false
+  excludeAdlibs = false,
+  isAdlib = false
 }) => {
   const isRTL = isRTLLanguage(lineObj.text || '');
 
@@ -40,7 +41,7 @@ const StandardLine = ({
     masterPalette,
     originalText: lineObj.text,
     isOnlyPunct,
-    isAdlib: false // Flags this as a main line, instructing RTL to keep parens
+    isAdlib
   });
   const focusedMainJSX = focusedMainLyrics && !isFocused
     ? EngineRouter({
@@ -53,7 +54,7 @@ const StandardLine = ({
       masterPalette,
       originalText: lineObj.text,
       isOnlyPunct,
-      isAdlib: false
+      isAdlib
     }).mainJSX
     : mainJSX;
 

@@ -79,6 +79,7 @@ export const renderLine = (
       {...commonProps}
       isFocused={isFocused}
       excludeAdlibs={excludeAdlibs}
+      isAdlib={isAdlib}
     />
   );
 };

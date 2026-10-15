@@ -901,7 +901,14 @@ const HomeGuide = () => {
                   <h2>whats NEW!!!</h2>
                   {latestChangelogEntry && (
                     <div className="home-guide-changelog-meta">
-                      <span>{changelogChanges.length} {changelogChanges.length === 1 ? 'change' : 'changes'}</span>
+                      <div className="home-guide-changelog-pills">
+                        <span>{changelogChanges.length} {changelogChanges.length === 1 ? 'change' : 'changes'}</span>
+                        {Number.isInteger(latestChangelogEntry.commits) && (
+                          <span className="home-guide-changelog-commit-count">
+                            {latestChangelogEntry.commits} {latestChangelogEntry.commits === 1 ? 'commit' : 'commits'}
+                          </span>
+                        )}
+                      </div>
                       <time dateTime={latestChangelogEntry.date}>{changelogDate}</time>
                     </div>
                   )}
