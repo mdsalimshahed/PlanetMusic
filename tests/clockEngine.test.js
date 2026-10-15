@@ -26,6 +26,37 @@ test('starting a paused clock resumes from its anchored position', () => {
   }
 });
 
+test('uses requestAnimationFrame instead of a low-power frame-rate timer', () => {
+  const previousWindow = globalThis.window;
+  const previousRequestAnimationFrame = globalThis.requestAnimationFrame;
+  const previousCancelAnimationFrame = globalThis.cancelAnimationFrame;
+  let scheduledFrame = null;
+  globalThis.window = {
+    currentAudioTime: 0,
+    dispatchEvent() {}
+  };
+  globalThis.requestAnimationFrame = callback => {
+    scheduledFrame = callback;
+    return 1;
+  };
+  globalThis.cancelAnimationFrame = () => {};
+
+  const clock = new ClockEngine();
+  try {
+    assert.equal(clock.tickInterval, 0);
+    clock.start();
+    assert.equal(typeof scheduledFrame, 'function');
+  } finally {
+    clock.pause();
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousRequestAnimationFrame === undefined) delete globalThis.requestAnimationFrame;
+    else globalThis.requestAnimationFrame = previousRequestAnimationFrame;
+    if (previousCancelAnimationFrame === undefined) delete globalThis.cancelAnimationFrame;
+    else globalThis.cancelAnimationFrame = previousCancelAnimationFrame;
+  }
+});
+
 test('invalid media times and playback rates do not corrupt the clock', () => {
   const previousWindow = globalThis.window;
   globalThis.window = {
