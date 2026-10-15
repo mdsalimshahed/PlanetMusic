@@ -124,7 +124,7 @@ const downloadDeezerAudio = async (deezerUrl, arlToken, signal, onProgress) => {
 
   onProgress?.({
     stage: 'connecting',
-    message: 'Connecting to Deezer...'
+    message: 'Connecting to Deezer'
   });
 
   if (typeof EventSource !== 'undefined') {
