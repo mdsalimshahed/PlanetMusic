@@ -60,6 +60,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const pendingSeekRef = useRef(null);
   const [hoverTime, setHoverTime] = useState(null);
   const [fallbackMessage, setFallbackMessage] = useState('');
+  const [deezerStatus, setDeezerStatus] = useState(null);
   const [failedSources, setFailedSources] = useState([]);
   const [volume, setVolume] = useState(() => {
     const savedVolume = Number(localStorage.getItem('playerVolume'));
@@ -521,6 +522,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setBuffering(false);
       setActiveSource(null);
       setFallbackMessage('');
+      setDeezerStatus(null);
       activeSourceRef.current = null;
       ytPlaybackConfirmedRef.current = false;
       playIdRef.current = null;
@@ -557,6 +559,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setIsPlaying(false);
       setBuffering(false);
       setActiveSource(null);
+      setDeezerStatus(null);
       activeSourceRef.current = null;
       trackIdRef.current = null;
       globalClock.pause();
@@ -628,6 +631,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         setPendingSeekValue(switchTime);
       }
       const sourceLoadGeneration = ++sourceLoadGenerationRef.current;
+      setDeezerStatus(null);
       clearYouTubePlayTimeout();
       clearAudioWaitTimeout();
       ytPendingSeekRef.current = null;
@@ -750,7 +754,20 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
 
               const controller = new AbortController();
               abortControllerRef.current = controller;
-              getDeezerAudioBlob(dzUrl, settings?.deezerArl?.trim() || '', controller.signal)
+              const reportDeezerProgress = progress => {
+                if (
+                  sourceLoadGeneration === sourceLoadGenerationRef.current &&
+                  !controller.signal.aborted
+                ) {
+                  setDeezerStatus(progress);
+                }
+              };
+              getDeezerAudioBlob(
+                dzUrl,
+                settings?.deezerArl?.trim() || '',
+                controller.signal,
+                reportDeezerProgress
+              )
                 .then(blob => {
                   if (
                     sourceLoadGeneration !== sourceLoadGenerationRef.current ||
@@ -758,6 +775,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
                     activeSourceRef.current !== 'youtube'
                   ) return;
 
+                  setDeezerStatus(null);
                   let switchTime = Number(window.currentAudioTime) || 0;
                   if (ytPlayerRef.current && typeof ytPlayerRef.current.getCurrentTime === 'function') {
                     try {
@@ -785,6 +803,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
                 })
                 .catch(error => {
                   if (error.name !== 'AbortError' && sourceLoadGeneration === sourceLoadGenerationRef.current) {
+                    setDeezerStatus(null);
                     triggerFallbackMessage("Deezer stream failed. Continuing with YouTube...");
                   }
                 })
@@ -798,14 +817,24 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             setBuffering(true);
             const controller = new AbortController();
             abortControllerRef.current = controller;
+            const reportDeezerProgress = progress => {
+              if (
+                sourceLoadGeneration === sourceLoadGenerationRef.current &&
+                !controller.signal.aborted
+              ) {
+                setDeezerStatus(progress);
+              }
+            };
             
             try {
               const blob = await getDeezerAudioBlob(
                 dzUrl,
                 settings?.deezerArl?.trim() || '',
-                controller.signal
+                controller.signal,
+                reportDeezerProgress
               );
               if (sourceLoadGeneration !== sourceLoadGenerationRef.current || controller.signal.aborted) return;
+              setDeezerStatus(null);
               const url = URL.createObjectURL(blob);
               deezerObjectUrlRef.current = url;
               if (!controller.signal.aborted) {
@@ -814,6 +843,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
             } catch (e) {
               if (e.name === 'AbortError') return;
               console.error("Deezer buffer error:", e);
+              setDeezerStatus(null);
               triggerFallbackMessage("Deezer stream failed. Falling back...");
               setFailedSources(prev => [...prev, 'deezer']);
             } finally {
@@ -1617,6 +1647,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       accentArtworkUrl,
       hoverTime,
       fallbackMessage,
+      deezerStatus,
       volume,
       isMuted,
       isStacked,

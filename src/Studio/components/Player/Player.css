@@ -281,6 +281,18 @@ body .global-player.glass-panel-heavy.centered-mode {
   gap: 3px;
 }
 
+.player-status-message {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-status-percent {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
 .buffering-dots {
   gap: 2px;
   height: 8px;

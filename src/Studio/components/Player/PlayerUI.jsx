@@ -45,7 +45,15 @@ export const MarqueeText = ({ text, className }) => {
   );
 };
 
-export const PlayerInfo = ({ currentTrack, isPlaying, togglePlay, fallbackMessage, isBuffering, activeSource }) => (
+export const PlayerInfo = ({
+  currentTrack,
+  isPlaying,
+  togglePlay,
+  fallbackMessage,
+  deezerStatus,
+  isBuffering,
+  activeSource
+}) => (
   <div className="player-info">
     <div className="album-art-container" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
       <img
@@ -64,9 +72,23 @@ export const PlayerInfo = ({ currentTrack, isPlaying, togglePlay, fallbackMessag
     <div className="player-text">
       <MarqueeText className="track-title" text={currentTrack.trackName} />
       <MarqueeText className="artist-name" text={currentTrack.artistName} />
-      <p className={`source-text ${isBuffering ? 'is-buffering' : ''}`}>
+      <p className={`source-text ${isBuffering || deezerStatus ? 'is-buffering' : ''}`}>
         {fallbackMessage ? (
           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{fallbackMessage}</span>
+        ) : deezerStatus ? (
+          <span className="buffering-status" role="status" aria-live="polite">
+            <span className="player-status-message">{deezerStatus.message}</span>
+            {typeof deezerStatus.percent === 'number' && (
+              <span className="player-status-percent">{Math.round(deezerStatus.percent)}%</span>
+            )}
+            {isBuffering && (
+              <span className="buffering-dots" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            )}
+          </span>
         ) : isBuffering ? (
           <span className="buffering-status" role="status" aria-live="polite">
             <span>Buffering stream</span>
@@ -190,7 +212,7 @@ export const PlayerProgress = ({
 
 const PlayerUI = ({
   currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, accentColor, openModal,
-  isPlaying, togglePlay, fallbackMessage, isBuffering, activeSource,
+  isPlaying, togglePlay, fallbackMessage, deezerStatus, isBuffering, activeSource,
   volume, isMuted, handleVolumeChange, toggleMute, closePlayer,
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
   progressBarRef, currentTimeRef, isPrecise
@@ -209,6 +231,7 @@ const PlayerUI = ({
           isPlaying={isPlaying}
           togglePlay={togglePlay}
           fallbackMessage={fallbackMessage}
+          deezerStatus={deezerStatus}
           isBuffering={isBuffering}
           activeSource={activeSource}
         />

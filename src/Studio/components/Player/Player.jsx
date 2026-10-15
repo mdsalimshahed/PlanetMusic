@@ -31,6 +31,7 @@ const Player = ({ onPlaybackVisualChange, ...props }) => {
       isPlaying={state.isPlaying}
       togglePlay={handlers.togglePlay}
       fallbackMessage={state.fallbackMessage}
+      deezerStatus={state.deezerStatus}
       isBuffering={state.isBuffering}
       activeSource={state.activeSource}
       volume={state.volume}
