@@ -14,6 +14,12 @@ const ModalRight = (props) => {
   const [isMobileCanvas, setIsMobileCanvas] = useState(false);
   const [isCanvasActive, setIsCanvasActive] = useState(false);
   const isCanvasInactive = isMobileCanvas && !isCanvasActive;
+  const canvasProps = {
+    ...props,
+    settings: props.settings?.disableAnimations
+      ? { ...props.settings, disableAnimations: false }
+      : props.settings
+  };
 
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 900px)');
@@ -50,48 +56,48 @@ const ModalRight = (props) => {
       onClick={isCanvasInactive ? activateCanvas : undefined}
     >
       {props.lyricsViewMode !== 'plain' && !props.isSyncMode && !props.isEditing && !props.isImageManagerOpen && !props.isTranslationManagerOpen && (
-        <DynamicBackground {...props} />
+        <DynamicBackground {...canvasProps} />
       )}
 
       <div className="modal-canvas-content" inert={isCanvasInactive} aria-hidden={isCanvasInactive}>
         {props.isTranslationManagerOpen ? (
-          <TranslationWorkspace {...props} />
+          <TranslationWorkspace {...canvasProps} />
         ) : (
           <>
-            {props.isImageManagerOpen && <ImageManager {...props} />}
+            {props.isImageManagerOpen && <ImageManager {...canvasProps} />}
 
             {/* Main Core Workspaces */}
             {props.isSyncMode && !props.isImageManagerOpen ? (
-              <SyncWorkspace {...props} />
+              <SyncWorkspace {...canvasProps} />
             ) : !props.isImageManagerOpen && (
               <LyricsDisplay
-                isEditing={props.isEditing}
-                customData={props.customData}
-                handleDataChange={props.handleDataChange}
-                hasValidSyncData={props.hasValidSyncData}
-                lyricsViewMode={props.lyricsViewMode}
-                liveParsedLyrics={props.liveParsedLyrics}
-                syncWorkspaceLyrics={props.syncWorkspaceLyrics}
-                handleLineClick={props.handleLineClick}
-                selectedSong={props.selectedSong}
-                masterPalette={props.masterPalette}
-                singerImages={props.singerImages}
-                globalArtistData={props.globalArtistData}
-                currentTrack={props.currentTrack}
-                isPlaying={props.isPlaying}
-                settings={props.settings}
-                lyricsPlaybackOffsetSeconds={props.lyricsPlaybackOffsetSeconds}
-                showGroupChatDebug={props.showGroupChatDebug}
+                isEditing={canvasProps.isEditing}
+                customData={canvasProps.customData}
+                handleDataChange={canvasProps.handleDataChange}
+                hasValidSyncData={canvasProps.hasValidSyncData}
+                lyricsViewMode={canvasProps.lyricsViewMode}
+                liveParsedLyrics={canvasProps.liveParsedLyrics}
+                syncWorkspaceLyrics={canvasProps.syncWorkspaceLyrics}
+                handleLineClick={canvasProps.handleLineClick}
+                selectedSong={canvasProps.selectedSong}
+                masterPalette={canvasProps.masterPalette}
+                singerImages={canvasProps.singerImages}
+                globalArtistData={canvasProps.globalArtistData}
+                currentTrack={canvasProps.currentTrack}
+                isPlaying={canvasProps.isPlaying}
+                settings={canvasProps.settings}
+                lyricsPlaybackOffsetSeconds={canvasProps.lyricsPlaybackOffsetSeconds}
+                showGroupChatDebug={canvasProps.showGroupChatDebug}
               />
             )}
 
             {/* Experimental Debug Layers */}
-            {props.showAdlibDebug && props.lyricsViewMode === 'focused' && !props.isSyncMode && !props.isEditing && (
-              <AdlibDebugOverlay {...props} />
+            {canvasProps.showAdlibDebug && canvasProps.lyricsViewMode === 'focused' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
+              <AdlibDebugOverlay {...canvasProps} />
             )}
 
-            {props.showLiveDebug && props.lyricsViewMode === 'live' && !props.isSyncMode && !props.isEditing && (
-              <LiveDebugOverlay {...props} />
+            {canvasProps.showLiveDebug && canvasProps.lyricsViewMode === 'live' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
+              <LiveDebugOverlay {...canvasProps} />
             )}
           </>
         )}

@@ -675,6 +675,29 @@ const HomeGuide = () => {
             {SITE.description} Automatic translations and pronunciation readings can be reviewed and edited beside the
             original lyrics. No account or install required.
           </p>
+          <ul className="home-guide-chips" aria-label="Highlights">
+            <li>
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="4" y="8" width="12" height="9" rx="2" />
+                <path d="M6.5 8V6a3.5 3.5 0 0 1 7 0v2m-3.5 3v2" />
+              </svg>
+              Private by design
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="2.5" y="4" width="10" height="12" rx="1.5" />
+                <path d="M5 14h5m5-6h2.5A1.5 1.5 0 0 1 19 9.5v6a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 13 15.5v-6A1.5 1.5 0 0 1 14.5 8Z" />
+              </svg>
+              Works on phone &amp; desktop
+            </li>
+            <li>
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="10" r="7.5" />
+                <path d="M2.8 7h14.4M2.8 13h14.4M10 2.5a12 12 0 0 1 0 15m0-15a12 12 0 0 0 0 15" />
+              </svg>
+              Lyrics in any language
+            </li>
+          </ul>
           <div className="home-guide-actions">
             <Link className="home-guide-action-card is-primary" to="/vault">
               <span className="home-guide-vault-graphic" aria-hidden="true">
@@ -697,9 +720,6 @@ const HomeGuide = () => {
               <span className="home-guide-vault-spark home-guide-vault-spark-two" aria-hidden="true">✧</span>
             </Link>
           </div>
-          <ul className="home-guide-chips" aria-label="Highlights">
-            <li>Private by design</li><li>Works on phone &amp; desktop</li><li>Lyrics in any language</li>
-          </ul>
         </div>
 
         <div

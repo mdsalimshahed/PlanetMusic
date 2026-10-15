@@ -2,6 +2,10 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { getProceduralColor, getProceduralGradient } from '../../../utils/proceduralColors.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
+import {
+  cacheArlVerification,
+  getCachedArlVerification
+} from '../../services/deezerArlVerificationCache.js';
 import { packVault, unpackVault } from '../../services/vaultCodec.js';
 
 export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
@@ -77,6 +81,22 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
     const arl = arlValue?.trim() || '';
     if (!arl) return Promise.resolve(null);
 
+    const cachedResult = getCachedArlVerification(arl);
+    if (cachedResult) {
+      setVerifyResult(cachedResult);
+      if (
+        settings.deezerArlValid !== (cachedResult === 'success') ||
+        (cachedResult === 'success' && settings.rememberDeezerArl !== true)
+      ) {
+        setSettings(prev => ({
+          ...prev,
+          deezerArlValid: cachedResult === 'success',
+          rememberDeezerArl: cachedResult === 'success' ? true : prev.rememberDeezerArl
+        }));
+      }
+      return Promise.resolve(cachedResult);
+    }
+
     const existingRequest = verificationRequestRef.current;
     if (existingRequest?.arl === arl) return existingRequest.promise;
     existingRequest?.controller.abort();
@@ -88,6 +108,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
 
     const promise = (async () => {
       let result = null;
+      let isCurrentRequest;
       try {
         const formData = new FormData();
         formData.append('session_id', `test_${Date.now()}`);
@@ -129,28 +150,40 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
         }
       } finally {
         const request = verificationRequestRef.current;
+        isCurrentRequest = request?.id === requestId && !controller.signal.aborted;
         if (request?.id === requestId) {
           verificationRequestRef.current = null;
           setIsVerifying(false);
         }
       }
 
-      if (arlInputRef.current === arl && result) {
+      if (isCurrentRequest && result) {
+        cacheArlVerification(arl, result);
+      }
+
+      if (isCurrentRequest && arlInputRef.current === arl && result) {
         setVerifyResult(result);
-        setSettings(prev => prev.deezerArl?.trim() === arl
-          ? {
+        setSettings(prev => {
+          const isValid = result === 'success';
+          if (
+            prev.deezerArlValid === isValid &&
+            (result !== 'success' || prev.rememberDeezerArl === true)
+          ) return prev;
+          return prev.deezerArl?.trim() === arl
+            ? {
               ...prev,
-              deezerArlValid: result === 'success',
-              rememberDeezerArl: result === 'success' ? true : prev.rememberDeezerArl
+              deezerArlValid: isValid,
+              rememberDeezerArl: isValid ? true : prev.rememberDeezerArl
             }
-          : prev);
+            : prev;
+        });
       }
       return result;
     })();
 
     verificationRequestRef.current = { id: requestId, arl, controller, promise };
     return promise;
-  }, [setSettings]);
+  }, [setSettings, settings.deezerArlValid, settings.rememberDeezerArl]);
 
   useEffect(() => {
     const arl = settings.deezerArl?.trim() || '';

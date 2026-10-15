@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -81,6 +81,7 @@ const App = () => {
   const navigate = useNavigate();
   const contentScrollAreaRef = useRef(null);
   const previousPathnameRef = useRef(location.pathname);
+  const vaultScrollPositionRef = useRef(null);
   const searchBoxRef = useRef(null);
   const zenSequenceRef = useRef([]);
   const zenIndexRef = useRef(-1);
@@ -133,8 +134,12 @@ const App = () => {
     const isChangelogMonthNavigation = previousPathname !== location.pathname
       && /^\/blog\/changelog(?:\/[^/]+)?$/.test(previousPathname)
       && /^\/blog\/changelog(?:\/[^/]+)?$/.test(location.pathname);
+    const isSongModalNavigation = previousPathname.startsWith('/song/')
+      || location.pathname.startsWith('/song/');
 
-    if (!isChangelogMonthNavigation) contentScrollAreaRef.current?.scrollTo(0, 0);
+    if (!isChangelogMonthNavigation && !isSongModalNavigation) {
+      contentScrollAreaRef.current?.scrollTo(0, 0);
+    }
   }, [location.pathname]);
 
   // Parse routing variables from URL
@@ -177,6 +182,16 @@ const App = () => {
   const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
   const [zenMessage, setZenMessage] = useState('');
+
+  useLayoutEffect(() => {
+    const isVaultRoute = location.pathname === '/vault' || location.pathname.startsWith('/vault/');
+    if (selectedSong || !isVaultRoute || vaultScrollPositionRef.current === null) return;
+
+    if (contentScrollAreaRef.current) {
+      contentScrollAreaRef.current.scrollTop = vaultScrollPositionRef.current;
+    }
+    vaultScrollPositionRef.current = null;
+  }, [selectedSong, location.pathname]);
 
   const backgroundTrack = useMemo(() => {
     if (!currentTrack) return null;
@@ -338,6 +353,9 @@ const App = () => {
   // Routing Handlers
   const handleSetSelectedSong = (song) => {
     if (song) {
+      if (!selectedSong && contentScrollAreaRef.current) {
+        vaultScrollPositionRef.current = contentScrollAreaRef.current.scrollTop;
+      }
       const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
       navigate(`/song/${song.trackId}/live${qParam}`, {
         state: { returnPath: '/vault' }
@@ -347,6 +365,7 @@ const App = () => {
       const returnPath = location.state?.returnPath || '/vault';
       const tabPath = `${returnPath}${qParam}`;
       navigate(tabPath);
+      if (!tabPath.startsWith('/vault')) vaultScrollPositionRef.current = null;
     }
     setSelectedSong(song);
   };

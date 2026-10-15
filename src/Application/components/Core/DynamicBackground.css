@@ -135,19 +135,19 @@
 }
 
 /* KILL-SWITCH OVERRIDES */
-.disable-animations .singer-watermark,
-.disable-animations .background-slot,
-.disable-animations .active-watermark,
-.disable-animations .inactive-watermark,
-.disable-animations .matrix-watermark-container,
-.disable-animations .active-matrix,
-.disable-animations .inactive-matrix,
-.disable-animations .singer-name-corner {
+.disable-animations .singer-watermark:not(.modal-right-col *),
+.disable-animations .background-slot:not(.modal-right-col *),
+.disable-animations .active-watermark:not(.modal-right-col *),
+.disable-animations .inactive-watermark:not(.modal-right-col *),
+.disable-animations .matrix-watermark-container:not(.modal-right-col *),
+.disable-animations .active-matrix:not(.modal-right-col *),
+.disable-animations .inactive-matrix:not(.modal-right-col *),
+.disable-animations .singer-name-corner:not(.modal-right-col *) {
     transition: none !important;
     animation: none !important;
 }
 
-.disable-animations .singer-watermark.active-watermark {
+.disable-animations .singer-watermark.active-watermark:not(.modal-right-col *) {
     -webkit-mask-image: none !important;
     mask-image: none !important;
     opacity: calc(var(--bg-opacity, 0.25) * 0.6) !important; 

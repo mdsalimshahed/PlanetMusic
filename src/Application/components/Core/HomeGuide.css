@@ -36,9 +36,10 @@
 .home-guide-nav a.is-active { color: #fff; background: #49366b; box-shadow: inset 0 0 0 1px rgba(167, 123, 255, 0.55); }
 /* ---------- hero ---------- */
 .home-guide-hero {
-  position: relative; display: grid; grid-template-columns: 1.08fr 1fr; align-items: center; gap: 18px;
-  min-height: 560px; overflow: hidden; scroll-margin-top: 80px;
+  position: relative; display: grid; grid-template-columns: 1.08fr 1fr; align-items: end; gap: 18px;
+  min-height: 620px; overflow: hidden; scroll-margin-top: 80px;
   padding: clamp(28px, 5vw, 66px);
+  padding-bottom: clamp(44px, 6vw, 76px);
   border: 1px solid var(--hg-line); border-radius: var(--home-guide-radius);
   background:
     radial-gradient(ellipse at 80% 45%, rgba(120, 57, 230, 0.34), transparent 45%),
@@ -71,10 +72,10 @@
   color: transparent;
 }
 .home-guide-lead { margin-top: 30px; max-width: 500px; color: #cfc7e0; font-size: clamp(15px, 1.4vw, 17px); line-height: 1.7; }
-.home-guide-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 30px; }
+.home-guide-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 16px; }
 .home-guide-action-card {
   position: relative; display: flex; min-width: 0; min-height: 78px; box-sizing: border-box; align-items: center; gap: 12px; overflow: hidden;
-  padding: 13px; border: 1px solid rgba(194, 147, 255, 0.28); border-radius: 16px; color: #fff;
+  padding: 13px; border: 1px solid rgba(194, 147, 255, 0.28); border-radius: 0; color: #fff;
   background: linear-gradient(135deg, rgba(35, 27, 57, 0.96), rgba(19, 18, 34, 0.96));
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s, background 0.22s;
 }
@@ -219,8 +220,35 @@
 }
 .home-guide-vault-spark-one { top: 18px; right: 30px; font-size: 13px; }
 .home-guide-vault-spark-two { right: 143px; bottom: 19px; color: #9deaff; font-size: 11px; }
-.home-guide-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
-.home-guide-chips li { padding: 6px 12px; border: 1px solid var(--hg-line); border-radius: var(--home-guide-radius); color: #b9b0cf; font-size: 12px; background: #171326; }
+.home-guide-chips {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.home-guide-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid var(--hg-line);
+  border-radius: var(--home-guide-radius);
+  color: #c8bfd9;
+  font-size: 12px;
+  background: rgba(23, 19, 38, 0.92);
+}
+.home-guide-chips svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  stroke: #bca0ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
 
 /* hero visual */
 .home-guide-visual { position: relative; z-index: 2; display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; }
@@ -266,7 +294,7 @@
 .home-guide-preview-stage.is-changelog { position: absolute; z-index: 2; inset: 0; overflow: hidden; padding: 0; border-radius: inherit; background: transparent; }
 @keyframes hg-preview-exit { to { opacity: 0; transform: translateX(-24px); } }
 @keyframes hg-preview-enter { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
-.home-guide-preview-tabs { position: relative; z-index: 3; display: flex; flex: none; gap: 5px; width: min(100%, 760px); box-sizing: border-box; margin-top: 10px; padding: 4px; border: 1px solid #302840; border-radius: 20px; background: #100d1b; container-type: inline-size; }
+.home-guide-preview-tabs { position: relative; z-index: 3; display: flex; flex: none; gap: 5px; width: min(100%, 760px); box-sizing: border-box; margin-top: 10px; padding: 4px; border: 0; border-radius: 0; background: transparent; container-type: inline-size; }
 .home-guide-preview-tabs button { flex: 1; min-width: 0; padding: 8px 5px; border: 0; border-radius: 999px; color: #a99fbd; background: transparent; font: inherit; font-size: clamp(8px, 2.5cqw, 12px); font-weight: 700; cursor: pointer; }
 .home-guide-preview-tabs button[aria-pressed="true"] { color: #fff; background: linear-gradient(135deg, #49366b, #304d80); }
 .home-guide-eq { display: flex; align-items: flex-end; gap: 3px; height: 22px; margin-left: auto; }
@@ -526,8 +554,11 @@
   .home-guide-preview-tabs button { padding-inline: 2px; font-size: clamp(7px, 2.6cqw, 11px); white-space: nowrap; }
 }
 @media (min-width: 1200px) and (orientation: landscape) {
-  .home-guide-visual { align-self: center; width: 100%; }
-  .home-guide-hero { padding-block: clamp(52px, 4vw, 64px) 0; }
+  .home-guide-visual { align-self: end; width: 100%; }
+  .home-guide-hero {
+    min-height: 660px;
+    padding-block: clamp(52px, 4vw, 64px) clamp(48px, 5vw, 72px);
+  }
   .home-guide-player, .home-guide-preview-tabs { width: min(100%, 760px, max(280px, calc(100svh - 190px))); }
 }
 @media (max-width: 640px) {
