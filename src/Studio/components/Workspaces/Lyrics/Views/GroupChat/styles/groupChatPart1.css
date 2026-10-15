@@ -66,6 +66,7 @@
 
 .group-chat-participant {
   position: relative;
+  will-change: opacity;
   display: block;
   width: var(--chat-heading-active-avatar-size);
   height: var(--chat-heading-active-avatar-size);
@@ -96,6 +97,10 @@
 
 .group-chat-avatar,
 .group-chat-message-avatar {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   box-sizing: border-box;
   position: relative;
   display: grid;
@@ -145,6 +150,10 @@
 
 .group-chat-avatar img,
 .group-chat-message-avatar img {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   position: absolute;
   inset: 0;
   width: 100%;

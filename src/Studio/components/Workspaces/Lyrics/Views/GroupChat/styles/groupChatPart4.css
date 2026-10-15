@@ -99,6 +99,10 @@
   position: static;
   align-self: flex-end;
   display: block;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   margin-top: calc(0.3 * var(--chat-vh-unit));
   color: rgba(226, 235, 237, 0.46);
   font-size: var(--chat-timestamp-size);

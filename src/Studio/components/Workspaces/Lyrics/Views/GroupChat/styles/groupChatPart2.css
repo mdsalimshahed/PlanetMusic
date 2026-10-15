@@ -29,7 +29,8 @@
 .group-chat-system-message {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   display: flex;
   align-items: baseline;
   align-self: center;
@@ -49,6 +50,10 @@
 .group-chat-system-message > span,
 .group-chat-system-message time {
   display: block;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   line-height: 1.2;
 }
 
@@ -133,7 +138,8 @@
 .group-chat-turn {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
   display: flex;
   align-items: flex-end;
   gap: calc(var(--chat-horizontal-unit) * 0.7);

@@ -25,6 +25,10 @@
 }
 
 .group-chat-artist {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   align-self: flex-start;
   box-sizing: border-box;
   flex: 0 0 auto;

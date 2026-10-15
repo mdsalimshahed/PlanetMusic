@@ -23,6 +23,10 @@
   --typing-avatar-size: var(--chat-typing-avatar-size);
   --typing-avatar-overlap: calc(0.6 * var(--chat-vh-unit));
 
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   display: flex;
   box-sizing: border-box;
   flex: 1 1 auto;
@@ -92,6 +96,10 @@
 
 /* The visual is the circle you actually see; it is what fades. */
 .group-chat-typing-avatar-visual {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
   position: absolute;
   inset: 0;
   box-sizing: border-box;
@@ -130,6 +138,9 @@
 }
 
 .group-chat-typing-dots i {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
   width: calc(0.4 * var(--chat-vh-unit));
   height: calc(0.4 * var(--chat-vh-unit));
   border-radius: 50%;
@@ -156,6 +167,7 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
+  will-change: transform, opacity;
   box-sizing: border-box;
   flex: 0 1 auto;
   min-width: 0;
