@@ -87,6 +87,14 @@
   will-change: auto !important;
 }
 
+.group-chat .group-chat-message-text .main-lyrics-layer,
+.group-chat .group-chat-message-text .adlib-node .primary-text {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity, filter;
+}
+
 .group-chat-message-line time {
   position: static;
   align-self: flex-end;

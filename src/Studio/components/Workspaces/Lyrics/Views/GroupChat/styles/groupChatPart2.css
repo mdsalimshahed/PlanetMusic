@@ -31,7 +31,7 @@
   backface-visibility: hidden;
   transform: translateZ(0);
   display: flex;
-  align-items: center;
+  align-items: baseline;
   align-self: center;
   line-height: 1;
   gap: calc(var(--chat-horizontal-unit) * 0.8);
@@ -48,9 +48,8 @@
 
 .group-chat-system-message > span,
 .group-chat-system-message time {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
+  display: block;
+  line-height: 1.2;
 }
 
 .group-chat-system-message time {
@@ -268,10 +267,19 @@
   will-change: transform, opacity;
 }
 
-.group-chat-message.is-entering .group-chat-message-text {
-  transform: translate3d(0, 0, 0);
+.group-chat-message.is-entering .group-chat-message-line,
+.group-chat-message.is-entering .group-chat-message-text,
+.group-chat-message.is-entering .main-lyrics-layer,
+.group-chat-message.is-entering .adlib-node .primary-text {
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  will-change: transform;
+  will-change: transform, opacity, filter;
+}
+
+.group-chat .group-chat-message-text {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 .group-chat-message:has(.group-chat-message-text.is-wrap-enabled) {
