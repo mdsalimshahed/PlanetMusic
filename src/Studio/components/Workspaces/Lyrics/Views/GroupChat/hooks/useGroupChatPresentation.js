@@ -239,6 +239,7 @@ const useGroupChatPresentation = ({
           getComputedStyle(bubble.closest('.group-chat'))
             .getPropertyValue('--chat-vh-unit')
         );
+        bubble.classList.add('is-entering');
         return [bubble.animate(
           [
             { opacity: 0, transform: `translate3d(0, ${travel}px, 0)` },
@@ -254,8 +255,12 @@ const useGroupChatPresentation = ({
       });
       entranceAnimationsRef.current.push(...newAnimations);
       newAnimations.forEach(animation => {
+        const bubble = animation.effect?.target;
+        const clearCompositingHint = () => bubble?.classList.remove('is-entering');
+        animation.oncancel = clearCompositingHint;
         animation.onfinish = () => {
           animation.cancel();
+          clearCompositingHint();
           entranceAnimationsRef.current = entranceAnimationsRef.current
             .filter(current => current !== animation);
         };

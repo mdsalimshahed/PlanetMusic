@@ -264,6 +264,16 @@
   box-shadow: none;
 }
 
+.group-chat-message.is-entering {
+  will-change: transform, opacity;
+}
+
+.group-chat-message.is-entering .group-chat-message-text {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 .group-chat-message:has(.group-chat-message-text.is-wrap-enabled) {
   width: min(var(--chat-measured-bubble-width, 100%), 100%);
 }
