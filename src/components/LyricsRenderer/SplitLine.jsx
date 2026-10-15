@@ -15,7 +15,8 @@ const SplitLine = ({
   translation,
   pronunciation,
   hasSpacingText,
-  useTranslationFormatting = false
+  useTranslationFormatting = false,
+  focusedMainLyrics = false
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
@@ -78,6 +79,20 @@ const SplitLine = ({
     isOnlyPunct,
     isAdlib: false
   });
+  const focusedMainJSX = focusedMainLyrics
+    ? EngineRouter({
+      chars: mainChars,
+      lang,
+      translation,
+      pronunciation,
+      hasSpacingText,
+      isFocused: true,
+      masterPalette,
+      originalText: lineObj.text,
+      isOnlyPunct,
+      isAdlib: false
+    }).mainJSX
+    : alignedMainJSX;
 
   useLayoutEffect(() => {
     const readTextBounds = elements => elements.flatMap(element => {
@@ -294,7 +309,7 @@ const SplitLine = ({
                 savedNode,
                 excludeAdlibs: true
               })
-              : alignedMainJSX}
+              : focusedMainJSX}
           </span>
           {mainPronunciationJSX && (
             <span

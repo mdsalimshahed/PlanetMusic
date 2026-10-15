@@ -23,7 +23,6 @@ const GroupChatMessageChain = ({
   precomputedLayouts,
   isPremeasurement = false,
   onLayoutReady,
-  onLineShown,
   layoutSignature
 }) => {
   const firstLine = group.events[0].line;
@@ -35,12 +34,6 @@ const GroupChatMessageChain = ({
   const avatarSlotWidth = isUncredited
     ? 0
     : `calc(${avatarSize + avatarStep * (avatarCount - 1)} * var(--chat-vh-unit, 1vh))`;
-  const lineIndicesKey = JSON.stringify(group.events.map(event => event.line.index));
-
-  React.useEffect(() => {
-    if (isPremeasurement || !onLineShown) return;
-    JSON.parse(lineIndicesKey).forEach(onLineShown);
-  }, [isPremeasurement, lineIndicesKey, onLineShown]);
 
   return (
     <div

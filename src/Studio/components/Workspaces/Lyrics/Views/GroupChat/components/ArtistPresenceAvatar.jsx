@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getInitials } from '../utils/groupChatUtils.js';
+import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
 const ArtistPresenceAvatar = ({
   artist,
@@ -69,9 +70,9 @@ const ArtistPresenceAvatar = ({
 
     const animation = participant.animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 300, easing: 'ease-out' }
+      { duration: 300, easing: 'ease-out', fill: 'both' }
     );
-    animation.onfinish = () => animation.cancel();
+    animation.onfinish = () => finishAnimationAtCurrentStyles(animation);
   }, [disableAnimations, isOnline]);
 
   if (!isVisible && !isOnline) return null;

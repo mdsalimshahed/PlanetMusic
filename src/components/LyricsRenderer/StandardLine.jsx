@@ -14,6 +14,7 @@ const StandardLine = ({
   pronunciation,
   hasSpacingText,
   useTranslationFormatting = false,
+  focusedMainLyrics = false,
   excludeAdlibs = false
 }) => {
   const isRTL = isRTLLanguage(lineObj.text || '');
@@ -41,6 +42,20 @@ const StandardLine = ({
     isOnlyPunct,
     isAdlib: false // Flags this as a main line, instructing RTL to keep parens
   });
+  const focusedMainJSX = focusedMainLyrics && !isFocused
+    ? EngineRouter({
+      chars: displayChars,
+      lang,
+      translation,
+      pronunciation,
+      hasSpacingText,
+      isFocused: true,
+      masterPalette,
+      originalText: lineObj.text,
+      isOnlyPunct,
+      isAdlib: false
+    }).mainJSX
+    : mainJSX;
 
   const lineTextAlign = isFocused ? 'center' : 'left';
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
@@ -134,7 +149,7 @@ const StandardLine = ({
                 savedNode,
                 excludeAdlibs
               })
-              : mainJSX}
+              : focusedMainJSX}
           </span>
 
           {pronunciationJSX && (

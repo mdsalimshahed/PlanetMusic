@@ -16,7 +16,11 @@ export const renderLine = (
   isFocused,
   masterPalette,
   isPlayingCurrentSong,
-  { excludeAdlibs = false, preserveText = false } = {}
+  {
+    excludeAdlibs = false,
+    preserveText = false,
+    focusedMainLyrics = false
+  } = {}
 ) => {
   const displayLine = preserveText ? lineObj : {
     ...lineObj,
@@ -58,7 +62,8 @@ export const renderLine = (
     translation: savedNode?.translation || lineObj.translation,
     pronunciation: savedNode?.pronunciation || lineObj.pronunciation,
     hasSpacingText,
-    useTranslationFormatting: preserveText
+    useTranslationFormatting: preserveText,
+    focusedMainLyrics
   };
 
   if (!isFocused && !excludeAdlibs && savedNode?.isSplit && savedNode?.adlibs?.length > 0) {
@@ -138,7 +143,7 @@ export const LyricLineWrapper = React.memo(({
       viewMode === 'focused',
       masterPalette,
       isPlayingCurrentSong,
-      { preserveText: viewMode === 'live' }
+      { focusedMainLyrics: viewMode === 'live' }
     ),
     [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
   );

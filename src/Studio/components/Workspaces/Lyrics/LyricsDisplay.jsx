@@ -40,7 +40,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <LiveLyricsView 
-          liveParsedLyrics={syncWorkspaceLyrics}
+          liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
@@ -63,7 +63,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView
-          liveParsedLyrics={syncWorkspaceLyrics}
+          liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           artistImages={{

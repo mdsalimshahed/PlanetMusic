@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
+import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
 const getHistoryTargets = content => Array.from(content.children).flatMap(item => {
   const turns = Array.from(item.querySelectorAll('[data-chat-line-index]'));
@@ -265,7 +266,7 @@ const useGroupChatPresentation = ({
           const clearCompositingHint = () => bubble.classList.remove('is-entering');
           animation.oncancel = clearCompositingHint;
           animation.onfinish = () => {
-            animation.cancel();
+            finishAnimationAtCurrentStyles(animation);
             clearCompositingHint();
             entranceAnimationsRef.current = entranceAnimationsRef.current
               .filter(current => current !== animation);
@@ -286,7 +287,7 @@ const useGroupChatPresentation = ({
       });
       pendingAnimationFrames.clear();
     };
-  }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
+  }, [chatRef, settings?.disableAnimations]);
 
   useLayoutEffect(() => {
     const container = chatRef.current;
@@ -377,12 +378,14 @@ const useGroupChatPresentation = ({
           ],
           {
             duration: 420,
-            easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)'
+            easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)',
+            fill: 'both'
           }
         );
         historyGlideAnimationsRef.current.set(id, animation);
         animation.onfinish = () => {
           if (historyGlideAnimationsRef.current.get(id) === animation) {
+            finishAnimationAtCurrentStyles(animation);
             historyGlideAnimationsRef.current.delete(id);
           }
         };

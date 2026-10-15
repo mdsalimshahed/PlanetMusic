@@ -14,6 +14,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
   const audioSrcRef = useRef(undefined);
   const ytPlayerRef = useRef(null);
   const ytPlaybackConfirmedRef = useRef(false);
+  const ytHasPlayedRef = useRef(false);
   const ytPendingSeekRef = useRef(null);
   const ytSeekWasPlayingRef = useRef(false);
   const audioPlaybackConfirmedRef = useRef(false);
@@ -226,9 +227,14 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         !pendingAutoplayRef.current ||
         ytPlaybackConfirmedRef.current
       ) return;
-      sourceLoadGenerationRef.current += 1;
-      setIsPlaying(false);
       setBuffering(false);
+      setIsPlaying(false);
+      if (!ytHasPlayedRef.current) {
+        pendingAutoplayRef.current = false;
+        triggerFallbackMessage('Click play to start YouTube playback.');
+        return;
+      }
+      sourceLoadGenerationRef.current += 1;
       triggerFallbackMessage('YouTube did not start in time. Falling back...');
       setFailedSources(previous => previous.includes('youtube')
         ? previous
@@ -631,6 +637,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
         setPendingSeekValue(switchTime);
       }
       const sourceLoadGeneration = ++sourceLoadGenerationRef.current;
+      if (trackChanged || sourceChanged || isNewPlayAction) ytHasPlayedRef.current = false;
       setDeezerStatus(null);
       clearYouTubePlayTimeout();
       clearAudioWaitTimeout();
@@ -968,6 +975,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
               return;
             }
             if (event.data === window.YT.PlayerState.PLAYING) {
+              ytHasPlayedRef.current = true;
               clearYouTubeSeekBufferTimeout();
               ytSeekWasPlayingRef.current = false;
               if (!pendingAutoplayRef.current) {

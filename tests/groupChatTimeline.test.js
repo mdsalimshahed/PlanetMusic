@@ -162,9 +162,18 @@ test('retains the complete message history for scrolling', () => {
     })),
     'Fallback'
   );
-  const state = getGroupChatState(longTimeline, 40);
+  const state = getGroupChatState(longTimeline, 50);
+  const history = buildGroupChatHistory(state.messages);
 
   assert.equal(state.messages.filter(event => event.type === 'message').length, 35);
+  assert.equal(
+    history
+      .filter(item => item.type === 'message-chain')
+      .reduce((count, item) => count + item.events.length, 0),
+    35
+  );
+  assert.equal(history.filter(item => item.type === 'join').length, 1);
+  assert.equal(history.filter(item => item.type === 'leave').length, 1);
 });
 
 test('includes join and leave notices between grouped lyric messages', () => {

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getArtistImage, getInitials } from '../utils/groupChatUtils.js';
+import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
 /*
   Typing indicator ("A, B typing" with an avatar cluster).
@@ -41,10 +42,10 @@ const animateFlip = (element, previousPosition) => {
       { transform: `translate3d(${offsetX}px, ${offsetY}px, 0)` },
       { transform: 'translate3d(0, 0, 0)' }
     ],
-    { duration: AVATAR_MOVE_MS, easing: AVATAR_MOVE_EASING }
+    { duration: AVATAR_MOVE_MS, easing: AVATAR_MOVE_EASING, fill: 'both' }
   );
   animation.id = FLIP_ANIMATION_ID;
-  animation.onfinish = () => animation.cancel();
+  animation.onfinish = () => finishAnimationAtCurrentStyles(animation);
 };
 
 const reconcile = (items, activeNames) => {

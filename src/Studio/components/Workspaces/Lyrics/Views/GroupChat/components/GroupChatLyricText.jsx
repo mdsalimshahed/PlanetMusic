@@ -476,7 +476,7 @@ const GroupChatLyricText = React.memo(({
         false,
         masterPalette,
         isPlayingCurrentSong,
-        { excludeAdlibs, preserveText: true }
+        { excludeAdlibs, focusedMainLyrics: true }
       )}
     </span>
   );

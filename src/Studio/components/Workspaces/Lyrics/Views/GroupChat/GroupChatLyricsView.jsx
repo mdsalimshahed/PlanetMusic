@@ -40,7 +40,6 @@ const GroupChatLyricsView = ({
   const chatLayoutRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
   const [precomputedLayouts, setPrecomputedLayouts] = useState(() => new Map());
-  const [previouslyShownLines, setPreviouslyShownLines] = useState(() => new Set());
   const [layoutSignature, setLayoutSignature] = useState('');
   const [premeasurementProgress, setPremeasurementProgress] = useState({
     layoutKey: null,
@@ -224,14 +223,6 @@ const GroupChatLyricsView = ({
     premeasurementBatchStart,
     premeasurementLayoutKey
   ]);
-  const handleLineShown = useCallback(lineIndex => {
-    setPreviouslyShownLines(previous => {
-      if (previous.has(lineIndex)) return previous;
-      const next = new Set(previous);
-      next.add(lineIndex);
-      return next;
-    });
-  }, []);
   return (
     <section
       className={`group-chat${showDebug ? ' group-chat-debug-view' : ''}${settings?.disableAnimations ? ' group-chat-no-motion' : ''}`}
@@ -277,9 +268,6 @@ const GroupChatLyricsView = ({
               playbackTime={playback.playbackTime}
               messageProps={messageProps}
               precomputedLayouts={precomputedLayouts}
-              previouslyShownLines={previouslyShownLines}
-              onLineShown={handleLineShown}
-              containerRef={chatRef}
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import ArtistPresenceAvatar from './ArtistPresenceAvatar.jsx';
 import { getArtistImage } from '../utils/groupChatUtils.js';
+import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
 const animateParticipantPositions = (container, previousPositionsRef, disableAnimations) => {
   const currentPositions = new Map();
@@ -26,13 +27,18 @@ const animateParticipantPositions = (container, previousPositionsRef, disableAni
       if (Math.abs(offsetX) < 1) return;
 
       avatar.getAnimations().forEach(animation => animation.cancel());
-      avatar.animate(
+      const animation = avatar.animate(
         [
           { transform: `translateX(${offsetX}px)` },
           { transform: 'translate(0, 0)' }
         ],
-        { duration: 560, easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)' }
+        {
+          duration: 560,
+          easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)',
+          fill: 'both'
+        }
       );
+      animation.onfinish = () => finishAnimationAtCurrentStyles(animation);
     });
   }
 
