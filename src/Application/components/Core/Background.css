@@ -50,7 +50,7 @@
   /* Apply the smooth linear upward animation */
   animation-name: floatUpFade;
   animation-timing-function: linear;
-  animation-fill-mode: forwards;
+  animation-fill-mode: both;
 }
 
 .lyric-chat-bubble.player-origin {

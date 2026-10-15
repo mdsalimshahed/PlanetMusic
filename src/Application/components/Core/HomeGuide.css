@@ -413,7 +413,7 @@
   .home-guide-planet { width: 170px; height: 170px; right: -2%; }
   .home-guide-preview-stage.is-vault { padding: 20px; }
   .home-guide-vault-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); aspect-ratio: 3 / 4; }
-  .home-guide-actions { grid-template-columns: minmax(0, 1fr); }
+  .home-guide-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .home-guide-player:is(.is-vault, .is-changelog):focus-within { outline: 1px dashed #fff; outline-offset: -2px; }
   .home-guide-player:is(.is-vault, .is-changelog):not(:focus-within) { touch-action: pan-y; }
   .home-guide-player.is-vault:not(:focus-within) .home-guide-preview-stage.is-vault,

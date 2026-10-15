@@ -15,20 +15,15 @@ const getBubblePronunciation = (pronunciation) => {
   return normalizeTrans(fullTrans || chunkText || String(pronunciation), true);
 };
 
-const getBubbleZoneCrossingTime = (baseY, screenHeight, duration, boundaryY) => {
+const getBubbleZoneCrossingTime = (baseY, duration, boundaryY, endY) => {
   const initialY = baseY + 50;
-  const standardTravel = screenHeight;
 
   if (initialY <= boundaryY) return 0;
-  if (baseY < boundaryY) {
-    return duration * 0.05 * ((initialY - boundaryY) / 50);
-  }
+  if (baseY <= boundaryY) return duration * 0.05 * ((initialY - boundaryY) / 50);
+  if (endY > boundaryY) return null;
 
-  const distance = baseY - boundaryY;
-  if (distance <= standardTravel) {
-    return duration * (0.05 + (distance / standardTravel) * 0.8);
-  }
-  return null;
+  const travelDistance = baseY - endY;
+  return duration * (0.05 + ((baseY - boundaryY) / travelDistance) * 0.95);
 };
 
 // Helper to resolve the correct artist image across all storage scopes, now with Wikipedia API fallback
@@ -181,6 +176,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
   
   // Spatial Anti-Collision Engine Memory
   const recentSpawnsRef = useRef([]);
+  const nextPlayerBubbleSideRef = useRef(-1);
 
   useEffect(() => {
     poolRef.current = pool;
@@ -202,6 +198,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
       bubbleModeTimersRef.current.forEach(timers => timers.forEach(clearTimeout));
       bubbleModeTimersRef.current.clear();
       recentSpawnsRef.current = [];
+      nextPlayerBubbleSideRef.current = -1;
     }
   }, [isModalOpen]);
 
@@ -292,23 +289,34 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
       playerRect && playerRect.width > 0 && playerRect.height > 0 &&
       playerRect.bottom > 0 && playerRect.top < screenHeight
     );
-    const maxHorizontalOffset = spawnBehindPlayer
-      ? Math.min(playerRect.width * 0.5, viewportWidth * 0.25)
-      : 0;
-    const requestedCenterX = spawnBehindPlayer
-      ? playerRect.left + playerRect.width / 2 + (Math.random() - 0.5) * maxHorizontalOffset
-      : null;
+    let requestedCenterX = null;
+    if (spawnBehindPlayer) {
+      const side = nextPlayerBubbleSideRef.current;
+      nextPlayerBubbleSideRef.current *= -1;
+      const sideMin = side < 0 ? 0 : 0.5;
+      const sideMax = side < 0 ? 0.5 : 1;
+      requestedCenterX = playerRect.left + playerRect.width * (
+        sideMin + Math.random() * (sideMax - sideMin)
+      );
+    }
     const playerCenterX = spawnBehindPlayer
       ? (Math.max(minCenterX, Math.min(maxCenterX, requestedCenterX)) / viewportWidth) * 100
       : null;
     const spawnTop = spawnBehindPlayer ? Math.max(0, playerRect.top - 72) : screenHeight;
+    const pronunciationTopBoundary = screenHeight * 0.1;
+    const travelEndTop = -100;
 
     // Scrub bubbles older than 2.5s from memory to free up space
     recentSpawnsRef.current = recentSpawnsRef.current.filter(s => now - s.time < 2500);
 
+    const latestScheduledSpawn = recentSpawnsRef.current.reduce(
+      (latest, spawn) => !latest || spawn.time > latest.time ? spawn : latest,
+      null
+    );
+    const spawnAt = Math.max(now, (latestScheduledSpawn?.time || now) + 280);
+    const spawnDelay = spawnAt - now;
     let spawnX = playerCenterX;
-    // Always assign an independent, fully randomized float duration for dynamic speed variation!
-    const duration = isSynced ? Math.floor(Math.random() * 4) + 8 : Math.floor(Math.random() * 10) + 12;
+    const duration = isSynced ? 8 + Math.random() * 3 : 12 + Math.random() * 10;
 
     if (!spawnBehindPlayer) {
       // Give each bubble its own horizontal lane while keeping every spawn on the bottom edge.
@@ -366,7 +374,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         }
     }
 
-    recentSpawnsRef.current.push({ x: spawnX, time: now, isSynced, duration });
+    recentSpawnsRef.current.push({ x: spawnX, time: spawnAt, isSynced, duration });
 
     const newBubble = {
         id: (isSynced ? 'sync-' : 'amb-') + Date.now() + '-' + Math.random(),
@@ -376,6 +384,9 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         x: spawnX,
         spawnTop,
         spawnBehindPlayer,
+        pronunciationTopBoundary,
+        travelEndTop,
+        spawnDelay,
         duration,
         isSynced,
         pronunciation: getBubblePronunciation(rawPronunciation),
@@ -385,7 +396,6 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
 
     setBubbles(prev => {
         if (isModalOpenRef.current) return [];
-        if (prev.length >= 20) return [...prev.slice(-(20 - 1)), newBubble];
         return [...prev, newBubble];
     });
 
@@ -393,15 +403,14 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
       const screenHeight = Math.max(1, window.innerHeight);
       const baseY = spawnTop;
       const initialY = baseY + 50;
-      const topBoundary = screenHeight * 0.1;
+      const topBoundary = pronunciationTopBoundary;
       const bottomBoundary = screenHeight * 0.8;
       const startsInTopZone = initialY <= topBoundary;
+      const endY = travelEndTop;
 
       if (!startsInTopZone) {
-        const enterDelay = initialY < bottomBoundary
-          ? 0
-          : getBubbleZoneCrossingTime(baseY, screenHeight, duration, bottomBoundary);
-        const exitDelay = getBubbleZoneCrossingTime(baseY, screenHeight, duration, topBoundary);
+        const enterDelay = getBubbleZoneCrossingTime(baseY, duration, bottomBoundary, endY);
+        const exitDelay = getBubbleZoneCrossingTime(baseY, duration, topBoundary, endY);
 
         const scheduleModeChange = (delay, showPronunciation) => {
           if (delay === null) return;
@@ -415,7 +424,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
               showPronunciation ? newBubble.line : newBubble.pronunciation,
               showPronunciation ? newBubble.pronunciation : newBubble.line
             );
-          }, delay * 1000);
+          }, spawnDelay + delay * 1000);
         };
 
         scheduleModeChange(enterDelay, true);
@@ -598,11 +607,14 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
         {bubbles.map((b) => (
           <div
             key={b.id}
-            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''}`}
+            className={`lyric-chat-bubble ${b.isSynced ? 'synced' : ''} ${b.spawnBehindPlayer ? 'player-origin' : ''}`}
             style={{
-              left: `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
+              left: b.spawnBehindPlayer
+                ? `${b.x}%`
+                : `clamp(20px, calc(${b.x}% - 170px), calc(100vw - 360px))`,
               top: `${b.spawnTop}px`,
               '--bubble-travel-distance': `${b.spawnTop}px`,
+              animationDelay: `${b.spawnDelay}ms`,
               animationDuration: `${b.duration}s`
             }}
             onAnimationEnd={(event) => {
