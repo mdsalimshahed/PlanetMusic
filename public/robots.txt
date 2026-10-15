@@ -42,6 +42,7 @@ Disallow: /
 # Google AdSense review crawler: review-only access under the conditions above.
 User-agent: Mediapartners-Google
 Allow: /
+Sitemap: https://planetmusic.pages.dev/sitemap.xml
 
 # Explicitly named agents are also disallowed. The wildcard rule above applies
 # to all other automated crawlers.

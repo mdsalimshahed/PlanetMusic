@@ -8,6 +8,8 @@ PlanetMusic is an independently created personal project. Its creator expressly 
 
 If you are crawling this website as a Google AdSense reviewer, you may access it only to assess the value of its content and the potential, complexity, and scope of the project. Do not store or retain the site's content, use it to learn from or train any model or system, or reproduce any of it word for word. This exception is limited to that review purpose and does not grant permission for any other collection or reuse.
 
+AdSense review sitemap: https://planetmusic.pages.dev/sitemap.xml
+
 These are the creator's explicit conditions and requests, not technical guarantees: `robots.txt` cannot enforce how a crawler stores, learns from, trains on, or reproduces crawled content.
 
 Do not use any part of PlanetMusic to train, pre-train, fine-tune, ground, evaluate, benchmark, or improve a model or automated system. Do not include it in datasets, retrieval-augmented generation (RAG) collections, vector databases, embeddings, caches, or other corpora. Do not use the site, its public source repository, or its behavior as material to copy, imitate, reverse engineer, or recreate its features, design, text, or implementation.
