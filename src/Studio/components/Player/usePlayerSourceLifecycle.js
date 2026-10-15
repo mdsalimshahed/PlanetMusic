@@ -107,7 +107,13 @@ export const usePlayerSourceLifecycle = runtime => {
     }
     const {
       trackId, dzUrl, extractedYtId, hasArl, intendedSource
-    } = resolvePlayerSource(currentTrack, failedSources, isSyncWorkspaceActive, settings?.deezerArl);
+    } = resolvePlayerSource(
+      currentTrack,
+      failedSources,
+      isSyncWorkspaceActive,
+      settings?.deezerArl,
+      settings?.deezerArlValid
+    );
 
     const isNewPlayAction = currentTrack.playId && currentTrack.playId !== playIdRef.current;
     const trackChanged = trackId !== trackIdRef.current;
@@ -384,5 +390,13 @@ export const usePlayerSourceLifecycle = runtime => {
       loadAudio(intendedSource);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, settings?.deezerArl, failedSources, isSyncWorkspaceActive, isZenMode, selectedSong?.trackId]);
+  }, [
+    currentTrack,
+    settings?.deezerArl,
+    settings?.deezerArlValid,
+    failedSources,
+    isSyncWorkspaceActive,
+    isZenMode,
+    selectedSong?.trackId
+  ]);
 };

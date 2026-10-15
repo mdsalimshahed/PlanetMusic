@@ -1,5 +1,5 @@
 /* --- src/hooks/useSettingsLogic.js --- */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { getProceduralColor, getProceduralGradient } from '../../../utils/proceduralColors.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { packVault, unpackVault } from '../../services/vaultCodec.js';
@@ -7,8 +7,13 @@ import { packVault, unpackVault } from '../../services/vaultCodec.js';
 export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [showArl, setShowArl] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [verifyResult, setVerifyResult] = useState(null);
+  const [verifyResult, setVerifyResult] = useState(
+    settings.deezerArlValid === true ? 'success' : null
+  );
   const [showPurgeConfirm, setShowPurgeConfirm] = useState(false);
+  const verificationRequestRef = useRef(null);
+  const verificationSequenceRef = useRef(0);
+  const arlInputRef = useRef(settings.deezerArl?.trim() || '');
 
   const authGradient = useMemo(() => {
     return getProceduralGradient('settings:auth');
@@ -43,6 +48,22 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (dismissSampleMode) dismissSampleMode();
+
+    if (name === 'deezerArl') {
+      const arl = value.trim();
+      arlInputRef.current = arl;
+      verificationRequestRef.current?.controller.abort();
+      verificationRequestRef.current = null;
+      setIsVerifying(false);
+      setVerifyResult(null);
+      setSettings(prev => ({
+        ...prev,
+        deezerArl: value,
+        deezerArlValid: false,
+        rememberDeezerArl: Boolean(arl)
+      }));
+      return;
+    }
     
     setSettings(prev => ({
       ...prev,
@@ -52,56 +73,106 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
     }));
   };
 
-  const handleVerifyArl = async () => {
-    if (!settings.deezerArl) {
-      setVerifyResult('error');
-      return;
-    }
-    
+  const verifyArl = useCallback((arlValue) => {
+    const arl = arlValue?.trim() || '';
+    if (!arl) return Promise.resolve(null);
+
+    const existingRequest = verificationRequestRef.current;
+    if (existingRequest?.arl === arl) return existingRequest.promise;
+    existingRequest?.controller.abort();
+
+    const controller = new AbortController();
+    const requestId = ++verificationSequenceRef.current;
     setIsVerifying(true);
-    setVerifyResult(null);
-    
-    try {
-      const formData = new FormData();
-      formData.append('session_id', `test_${Date.now()}`);
-      formData.append('url', 'https://www.deezer.com/track/3135556');
-      formData.append('arl_token', settings.deezerArl);
-      formData.append('quality', '1');
-      formData.append('action', 'stream');
-      formData.append('local_dir', '');
-      formData.append('obfuscate', 'true');
-      const response = await fetchDeezerApi('/download-deezer', {
-        method: 'POST',
-        body: formData,
-        headers: { Accept: 'application/octet-stream' },
-        cache: 'no-store'
-      });
-      
-      if (response.ok) {
-        if (response.headers.get('content-type')?.includes('application/json')) {
-          const result = await response.json();
-          setVerifyResult(result.success ? 'success' : 'error');
-          return;
-        }
-        // Verification only needs the server response; never consume a full MP3 in settings.
-        const reader = response.body?.getReader();
-        if (reader) {
-          await reader.read();
-          await reader.cancel();
+    setVerifyResult('checking');
+
+    const promise = (async () => {
+      let result = null;
+      try {
+        const formData = new FormData();
+        formData.append('session_id', `test_${Date.now()}`);
+        formData.append('url', 'https://www.deezer.com/track/3135556');
+        formData.append('arl_token', arl);
+        formData.append('quality', '1');
+        formData.append('action', 'stream');
+        formData.append('local_dir', '');
+        formData.append('obfuscate', 'true');
+        const response = await fetchDeezerApi('/download-deezer', {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/octet-stream' },
+          cache: 'no-store',
+          signal: controller.signal
+        });
+
+        if (response.ok) {
+          if (response.headers.get('content-type')?.includes('application/json')) {
+            const verification = await response.json();
+            result = verification.success ? 'success' : 'error';
+          } else {
+            const reader = response.body?.getReader();
+            if (reader) {
+              await reader.read();
+              await reader.cancel();
+            } else {
+              await response.body?.cancel();
+            }
+            result = 'success';
+          }
         } else {
-          await response.body?.cancel();
+          result = 'error';
         }
-        setVerifyResult('success');
-      } else {
-        setVerifyResult('error');
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Verification failed:', error);
+          result = 'error';
+        }
+      } finally {
+        const request = verificationRequestRef.current;
+        if (request?.id === requestId) {
+          verificationRequestRef.current = null;
+          setIsVerifying(false);
+        }
       }
-    } catch (error) {
-      console.error('Verification failed:', error);
-      setVerifyResult('error');
-    } finally {
-      setIsVerifying(false);
-    }
-  };
+
+      if (arlInputRef.current === arl && result) {
+        setVerifyResult(result);
+        setSettings(prev => prev.deezerArl?.trim() === arl
+          ? {
+              ...prev,
+              deezerArlValid: result === 'success',
+              rememberDeezerArl: result === 'success' ? true : prev.rememberDeezerArl
+            }
+          : prev);
+      }
+      return result;
+    })();
+
+    verificationRequestRef.current = { id: requestId, arl, controller, promise };
+    return promise;
+  }, [setSettings]);
+
+  useEffect(() => {
+    const arl = settings.deezerArl?.trim() || '';
+    arlInputRef.current = arl;
+    if (!arl || settings.deezerArlValid === true) return undefined;
+
+    const timeout = setTimeout(() => {
+      verifyArl(arl);
+    }, 350);
+    return () => clearTimeout(timeout);
+  }, [settings.deezerArl, settings.deezerArlValid, verifyArl]);
+
+  useEffect(() => () => {
+    const request = verificationRequestRef.current;
+    verificationRequestRef.current = null;
+    request?.controller.abort();
+  }, []);
+
+  const handleVerifyArl = useCallback(() => verifyArl(settings.deezerArl), [
+    settings.deezerArl,
+    verifyArl
+  ]);
 
   const handlePurgeAllData = () => {
     try {

@@ -64,7 +64,7 @@ const DeezerAuthCard = ({
           <button
             className="verify-arl-btn"
             onClick={handleVerifyArl}
-            disabled={isVerifying || !settings.deezerArl}
+            disabled={isVerifying || !settings.deezerArl?.trim()}
           >
             {isVerifying ? 'Verifying Token...' : 'Verify Token Status'}
           </button>

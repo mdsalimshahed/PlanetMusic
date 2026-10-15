@@ -72,6 +72,7 @@ export const useAppStorage = (urlSearchQuery) => {
       if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
       parsed.rememberDeezerArl = parsed.rememberDeezerArl === true;
       parsed.deezerArl = parsed.rememberDeezerArl ? readRememberedDeezerArl() : '';
+      parsed.deezerArlValid = Boolean(parsed.deezerArl) && parsed.deezerArlValid === true;
       if (!parsed.rememberDeezerArl) updateRememberedDeezerArl('');
       
       delete parsed.persistentMemory; // Cleanup legacy setting if it exists
@@ -113,6 +114,7 @@ export const useAppStorage = (urlSearchQuery) => {
       transliterationColor: '#ffffff',
       transliterationOpacity: 0.8,
       deezerArl: '',
+      deezerArlValid: false,
       rememberDeezerArl: false,
       disableAnimations: false,
       adsEnabled: true

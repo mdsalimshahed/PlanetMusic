@@ -174,7 +174,7 @@ const ModalLeft = ({
   const hasYtLink = Boolean(extractYouTubeId(ytUrl));
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
   const hasLocalFile = Boolean(customData?.hasLocal);
-  const hasArl = Boolean(settings?.deezerArl);
+  const hasArl = Boolean(settings?.deezerArl?.trim()) && settings?.deezerArlValid === true;
 
   useEffect(() => {
     const handleActiveSource = (event) => {
@@ -187,12 +187,6 @@ const ModalLeft = ({
     window.addEventListener('globalActiveSource', handleActiveSource);
     return () => window.removeEventListener('globalActiveSource', handleActiveSource);
   }, [selectedSong?.trackId]);
-
-  useEffect(() => {
-    if (settings?.deezerArl && showDeezerNotice) {
-      setShowDeezerNotice(false);
-    }
-  }, [settings?.deezerArl, showDeezerNotice]);
 
   const handleProtectedAction = (actionCallback) => {
     if (isTranslationManagerOpen) {
@@ -231,8 +225,8 @@ const ModalLeft = ({
   const handleDeezerPlay = () => {
     setShowSpotifyNotice(false);
     if (isSyncMode) {
-      setShowDeezerNotice(!settings?.deezerArl);
-      if (settings?.deezerArl) {
+      setShowDeezerNotice(!hasArl);
+      if (hasArl) {
         setManualSource('deezer');
       } else {
         const fallbackSource = availableSources?.includes('youtube')
@@ -243,9 +237,15 @@ const ModalLeft = ({
       }
       return;
     }
-    if (!settings?.deezerArl) {
+    if (!hasArl) {
       setShowDeezerNotice(true);
-      setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'preview', playId: Date.now() });
+      const fallbackSource = hasYtLink ? 'youtube' : hasLocalFile ? 'local' : null;
+      setCurrentTrack({
+        ...selectedSong,
+        customLinks: customData,
+        ...(fallbackSource ? { forceSource: fallbackSource } : {}),
+        playId: Date.now()
+      });
     } else {
       setShowDeezerNotice(false);
       setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'deezer', playId: Date.now() });
@@ -453,7 +453,7 @@ const ModalLeft = ({
               <strong>Notice:</strong> Currently playing a 30-second preview snippet. To listen to the full song, please click <strong>Edit Info</strong> and add a YouTube/Deezer link or upload a local file (or set a Deezer ARL in Settings).
             </div>
           )}
-          {showDeezerNotice && !settings?.deezerArl && (
+          {showDeezerNotice && !hasArl && (
             <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
               A valid <strong>Deezer ARL token</strong> is required for Deezer streaming. Enter your token in Settings or add a YouTube link.
             </div>
