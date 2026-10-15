@@ -14,6 +14,8 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     const adlibCursorRef = useRef(0);
     const lastAdlibTimeRef = useRef(null);
     const activeLineIndexRef = useRef(-1);
+    const pendingActiveFrameRef = useRef(null);
+    const pendingActiveNodeRef = useRef(null);
     const syncList = selectedSong?.syncData;
     const nextStarts = useMemo(() => {
         const syncData = syncList || [];
@@ -46,18 +48,35 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         });
         if (visibleLines.length === 0) return;
 
-        initialRevealTrackRef.current = trackId;
-        visibleLines.forEach((node, index) => {
-            node.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
-            const finishReveal = (event) => {
-                if (event.target !== node) return;
-                node.classList.remove('initial-reveal');
-                node.style.removeProperty('--initial-reveal-delay');
-                node.removeEventListener('animationend', finishReveal);
-            };
-            node.addEventListener('animationend', finishReveal);
-            node.classList.add('initial-reveal');
+        visibleLines.forEach(node => node.classList.add('is-preparing-reveal'));
+        let revealFrame = null;
+        let cancelled = false;
+        revealFrame = window.requestAnimationFrame(() => {
+            revealFrame = null;
+            if (cancelled) return;
+
+            initialRevealTrackRef.current = trackId;
+            visibleLines.forEach((node, index) => {
+                if (!node.isConnected) return;
+                node.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
+                const finishReveal = (event) => {
+                    if (event.target !== node) return;
+                    node.classList.add('has-revealed');
+                    node.classList.remove('initial-reveal');
+                    node.style.removeProperty('--initial-reveal-delay');
+                    node.removeEventListener('animationend', finishReveal);
+                };
+                node.addEventListener('animationend', finishReveal);
+                node.classList.remove('is-preparing-reveal');
+                node.classList.add('initial-reveal');
+            });
         });
+
+        return () => {
+            cancelled = true;
+            if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
+            visibleLines.forEach(node => node.classList.remove('is-preparing-reveal'));
+        };
     }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying]);
 
   useEffect(() => {
@@ -120,24 +139,47 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
 
     const previousActiveIndex = activeLineIndexRef.current;
     if (previousActiveIndex !== newActiveIndex) {
-        if (previousActiveIndex !== -1) {
-            lines[previousActiveIndex].node.classList.remove('active');
-            lines[previousActiveIndex].isActive = false;
+        if (pendingActiveFrameRef.current !== null) {
+            window.cancelAnimationFrame(pendingActiveFrameRef.current);
+            pendingActiveFrameRef.current = null;
         }
+        pendingActiveNodeRef.current?.classList.remove('is-preparing-active');
+        pendingActiveNodeRef.current = null;
 
         if (newActiveIndex !== -1) {
             const item = lines[newActiveIndex];
-            item.node.classList.add('active');
-            item.isActive = true;
+            pendingActiveNodeRef.current = item.node;
+            item.node.classList.add('is-preparing-active');
+            pendingActiveFrameRef.current = window.requestAnimationFrame(() => {
+                pendingActiveFrameRef.current = null;
+                if (pendingActiveNodeRef.current !== item.node || !item.node.isConnected) return;
 
-            if (containerRef.current) {
-                const offsetTop = item.node.offsetTop;
-                const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
-                containerRef.current.scrollTo({
-                   top: scrollPos,
-                   behavior: settings?.disableAnimations ? 'auto' : 'smooth'
+                lines.forEach(line => {
+                    if (line.isActive && line.node !== item.node) {
+                        line.node.classList.remove('active');
+                        line.isActive = false;
+                    }
                 });
-            }
+                item.node.classList.remove('is-preparing-active');
+                item.node.classList.add('active');
+                item.isActive = true;
+                pendingActiveNodeRef.current = null;
+
+                if (containerRef.current) {
+                    const offsetTop = item.node.offsetTop;
+                    const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
+                    containerRef.current.scrollTo({
+                       top: scrollPos,
+                       behavior: settings?.disableAnimations ? 'auto' : 'smooth'
+                    });
+                }
+            });
+        } else if (previousActiveIndex !== -1) {
+            lines.forEach(line => {
+                if (!line.isActive) return;
+                line.node.classList.remove('active');
+                line.isActive = false;
+            });
         }
         activeLineIndexRef.current = newActiveIndex;
     }
@@ -158,6 +200,12 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
 
   useEffect(() => {
     const clearAllActive = () => {
+        if (pendingActiveFrameRef.current !== null) {
+            window.cancelAnimationFrame(pendingActiveFrameRef.current);
+            pendingActiveFrameRef.current = null;
+        }
+        pendingActiveNodeRef.current?.classList.remove('is-preparing-active');
+        pendingActiveNodeRef.current = null;
         cachedLinesRef.current.forEach(item => {
             if (item.isActive) {
                 item.node.classList.remove('active');
@@ -196,6 +244,12 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
         window.removeEventListener('globalPlayState', handlePlayState);
+        if (pendingActiveFrameRef.current !== null) {
+            window.cancelAnimationFrame(pendingActiveFrameRef.current);
+            pendingActiveFrameRef.current = null;
+        }
+        pendingActiveNodeRef.current?.classList.remove('is-preparing-active');
+        pendingActiveNodeRef.current = null;
     };
     }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations, lyricsPlaybackOffsetSeconds]);
 

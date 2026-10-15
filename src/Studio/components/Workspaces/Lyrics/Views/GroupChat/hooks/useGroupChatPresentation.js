@@ -219,6 +219,7 @@ const useGroupChatPresentation = ({
     const container = chatRef.current;
     if (!container) return undefined;
 
+    const pendingAnimationFrames = new Map();
     const animateNewTurns = () => {
       const turns = Array.from(container.querySelectorAll('[data-chat-line-index]'));
       const previousIds = seenMessageLineIdsRef.current;
@@ -232,45 +233,58 @@ const useGroupChatPresentation = ({
       seenMessageLineIdsRef.current = seenIds;
       if (settings?.disableAnimations) return;
 
-      const newAnimations = newTurns.flatMap((turn, index) => {
+      newTurns.forEach((turn, index) => {
         const bubble = turn.querySelector('.group-chat-message');
-        if (!bubble) return [];
+        if (!bubble) return;
         const travel = parseFloat(
           getComputedStyle(bubble.closest('.group-chat'))
             .getPropertyValue('--chat-vh-unit')
         );
         bubble.classList.add('is-entering');
-        return [bubble.animate(
-          [
-            { opacity: 0, transform: `translate3d(0, ${travel}px, 0)` },
-            { opacity: 1, transform: 'translate3d(0, 0, 0)' }
-          ],
-          {
-            duration: 380,
-            delay: Math.min(index * 70, 420),
-            easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
-            fill: 'both'
+        const frame = window.requestAnimationFrame(() => {
+          pendingAnimationFrames.delete(frame);
+          if (!bubble.isConnected) {
+            bubble.classList.remove('is-entering');
+            return;
           }
-        )];
-      });
-      entranceAnimationsRef.current.push(...newAnimations);
-      newAnimations.forEach(animation => {
-        const bubble = animation.effect?.target;
-        const clearCompositingHint = () => bubble?.classList.remove('is-entering');
-        animation.oncancel = clearCompositingHint;
-        animation.onfinish = () => {
-          animation.cancel();
-          clearCompositingHint();
-          entranceAnimationsRef.current = entranceAnimationsRef.current
-            .filter(current => current !== animation);
-        };
+
+          const animation = bubble.animate(
+            [
+              { opacity: 0, transform: `translate3d(0, ${travel}px, 0)` },
+              { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+            ],
+            {
+              duration: 380,
+              delay: Math.min(index * 70, 420),
+              easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
+              fill: 'both'
+            }
+          );
+          entranceAnimationsRef.current.push(animation);
+          const clearCompositingHint = () => bubble.classList.remove('is-entering');
+          animation.oncancel = clearCompositingHint;
+          animation.onfinish = () => {
+            animation.cancel();
+            clearCompositingHint();
+            entranceAnimationsRef.current = entranceAnimationsRef.current
+              .filter(current => current !== animation);
+          };
+        });
+        pendingAnimationFrames.set(frame, bubble);
       });
     };
 
     animateNewTurns();
     const observer = new MutationObserver(animateNewTurns);
     observer.observe(container, { childList: true, subtree: true });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      pendingAnimationFrames.forEach((bubble, frame) => {
+        window.cancelAnimationFrame(frame);
+        bubble.classList.remove('is-entering');
+      });
+      pendingAnimationFrames.clear();
+    };
   }, [chatRef, chatState.messages.length, settings?.disableAnimations]);
 
   useLayoutEffect(() => {

@@ -65,6 +65,23 @@
     transform 0.18s ease-out;
 }
 
+.preview-line.active,
+.preview-line.initial-reveal,
+.preview-line.has-revealed,
+.preview-line.is-preparing-reveal,
+.preview-line.is-preparing-active {
+  will-change: transform, opacity;
+}
+
+.preview-line.active .main-lyrics-layer,
+.preview-line.active .adlib-node .primary-text,
+.preview-line.is-preparing-active .main-lyrics-layer,
+.preview-line.is-preparing-active .adlib-node .primary-text {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity, filter;
+}
+
 .preview-line.initial-reveal {
   animation: liveLineIntro 260ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
   animation-delay: var(--initial-reveal-delay, 0ms);
