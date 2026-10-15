@@ -182,6 +182,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
     const words = [];
     let currentToken = [];
     let currentText = [];
+    let hyphenCount = 0;
 
     const flushText = (keySuffix) => {
       if (currentText.length === 0) return;
@@ -205,13 +206,14 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
         words.push(currentToken.length === 1 ? currentToken[0] : (
           <span
             key={`focused-group-${keySuffix}`}
-            className={`lyric-word-group${currentToken.length > 1 ? ' hyphenated-word-group' : ''}`}
+            className={`lyric-word-group${currentToken.length > 1 ? ' hyphenated-word-group' : ''}${hyphenCount > 4 ? ' is-long-hyphenated' : ''}`}
           >
             {tokenParts}
           </span>
         ));
       }
       currentToken = [];
+      hyphenCount = 0;
     };
 
     for (let i = 0; i < elements.length; i++) {
@@ -225,6 +227,7 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
         flushToken(i);
         words.push(elements[i]);
       } else if (char === '-') {
+        hyphenCount++;
         currentText.push(elements[i]);
         flushText(`${i}-hyphen`);
       } else {

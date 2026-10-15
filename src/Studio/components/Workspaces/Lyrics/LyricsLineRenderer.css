@@ -154,6 +154,25 @@ rt.pronunciation-text,
   white-space: nowrap;
 }
 
+.preview-line .hyphenated-word-group.is-long-hyphenated,
+.group-chat-message-text.is-wrap-enabled .hyphenated-word-group.is-long-hyphenated {
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  white-space: normal !important;
+}
+
+.group-chat-message-text.is-wrap-enabled:has(.hyphenated-word-group.is-long-hyphenated) {
+  width: min(var(--chat-wrap-width), 100%);
+}
+
+.preview-line .hyphenated-word-group.is-long-hyphenated > .hyphenated-word-part,
+.group-chat-message-text.is-wrap-enabled .hyphenated-word-group.is-long-hyphenated > .hyphenated-word-part {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
 .preview-line.active .live-translation {
   opacity: 1;
   visibility: visible;

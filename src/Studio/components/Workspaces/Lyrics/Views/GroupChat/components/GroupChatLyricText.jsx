@@ -188,7 +188,11 @@ const GroupChatLyricText = React.memo(({
         availableContentWidth
       );
       const glyphWidth = Math.max(mainGlyphWidth, pronunciationGlyphWidth);
-      const shouldWrap = glyphWidth / layoutScale > wrapWidth ||
+      const hasLongHyphenatedWord = Boolean(
+        element.querySelector('.hyphenated-word-group.is-long-hyphenated')
+      );
+      const shouldWrap = hasLongHyphenatedWord ||
+        glyphWidth / layoutScale > wrapWidth ||
         translationGlyphWidth > glyphWidth;
       const width = Math.ceil(glyphWidth / layoutScale);
       setRenderedGlyphWidth(previous => (
