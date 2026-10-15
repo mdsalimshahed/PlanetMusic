@@ -227,6 +227,7 @@ const HomeGuide = () => {
   const changelogScrollbarDragRef = useRef(null);
   const groupChatSequenceRef = useRef(0);
   const groupChatMessageIdRef = useRef(0);
+  const previewTouchStartRef = useRef(null);
   const isMockPreviewActive = isPreviewInView && isDocumentVisible;
 
   useEffect(() => {
@@ -311,6 +312,20 @@ const HomeGuide = () => {
     });
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!activeSection || !window.matchMedia('(max-width: 640px)').matches) return;
+    const nav = rootRef.current?.querySelector('.home-guide-nav');
+    const activeLink = nav?.querySelector(`a[href="#${activeSection}"]`);
+    if (!nav || !activeLink) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const linkLeft = activeLink.getBoundingClientRect().left - nav.getBoundingClientRect().left + nav.scrollLeft;
+    nav.scrollTo({
+      left: linkLeft - (nav.clientWidth - activeLink.clientWidth) / 2,
+      behavior: reduceMotion ? 'auto' : 'smooth'
+    });
+  }, [activeSection]);
 
   useEffect(() => {
     const footer = footerRef.current;
@@ -575,8 +590,33 @@ const HomeGuide = () => {
   };
 
   const handlePreviewPlayerPointerDown = (event) => {
-    if (event.pointerType === 'touch' && ['vault', 'changelog'].includes(shownPreviewWorkspace)) {
-      previewPlayerRef.current?.focus({ preventScroll: true });
+    if (
+      event.pointerType !== 'touch'
+      || !window.matchMedia('(max-width: 640px)').matches
+      || !['vault', 'changelog'].includes(shownPreviewWorkspace)
+    ) return;
+
+    previewTouchStartRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY
+    };
+  };
+
+  const handlePreviewPlayerPointerUp = (event) => {
+    const touchStart = previewTouchStartRef.current;
+    if (!touchStart || touchStart.pointerId !== event.pointerId) return;
+    previewTouchStartRef.current = null;
+
+    const movedX = event.clientX - touchStart.x;
+    const movedY = event.clientY - touchStart.y;
+    if (Math.hypot(movedX, movedY) > 8) return;
+    previewPlayerRef.current?.focus({ preventScroll: true });
+  };
+
+  const handlePreviewPlayerPointerCancel = (event) => {
+    if (previewTouchStartRef.current?.pointerId === event.pointerId) {
+      previewTouchStartRef.current = null;
     }
   };
 
@@ -667,6 +707,8 @@ const HomeGuide = () => {
             tabIndex={isMockScrollableView ? 0 : -1}
             aria-label={isMockScrollableView ? `${shownPreviewWorkspace === 'vault' ? 'Vault' : 'Changelog'} mock window. Focus to scroll.` : undefined}
             onPointerDown={handlePreviewPlayerPointerDown}
+            onPointerUp={handlePreviewPlayerPointerUp}
+            onPointerCancel={handlePreviewPlayerPointerCancel}
             onKeyDown={handlePreviewPlayerKeyDown}
           >
             <div
