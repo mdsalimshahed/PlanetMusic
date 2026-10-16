@@ -24,7 +24,7 @@ export const ABOUT = [
   },
   {
     title: 'A workspace for lyrics',
-    text: 'Paste or write lyrics, then press a key at the start and end of each line to time it to the song. Playback then highlights every line as it is sung, including background vocals.'
+    text: 'We’ve built the most intuitive, easy-to-use syncing workspace for bringing lyrics into time with the music. Our powerful formatting interface makes it easy to shape your lyrics and mark who sings each part, so every voice gets its moment.'
   },
   {
     title: 'A way to understand other languages',
@@ -33,10 +33,11 @@ export const ABOUT = [
 ];
 
 export const STEPS = [
-  { n: '01', title: 'Search the Cosmos', text: 'Type a song or artist. Results bring in artwork and details so you can pick the right track.' },
-  { n: '02', title: 'Save it to your Vault', text: 'One click adds the track to your personal library, stored in this browser.' },
-  { n: '03', title: 'Sync the lyrics', text: 'Open the Sync Workspace and tap the arrow key at the start and end of each line while the song plays.' },
-  { n: '04', title: 'Watch, read, translate', text: 'Pick a lyrics view, add a translation, or let Ambient mode float lines across the screen.' }
+  { n: '01', title: 'Search the Cosmos', text: 'Use the search bar to find any song and save it to your Vault. Then add a link to the song from your favorite platform, whether it is YouTube, Deezer, or Spotify.', to: '/blog/post/how-to-search-and-save-songs-to-your-vault' },
+  { n: '02', title: 'Add the lyrics and credit the artists', text: 'Paste or write your lyrics, then use our powerful formatting interface to tag each line to the artist behind it. Bring every voice to life with artist images by simply pasting an image link into Artist Manager.', to: '/blog/post/formatting-lyrics-singer-tags' },
+  { n: '03', title: 'Sync the lyrics', text: 'Our engine automatically fetches available sync data, and you can fine-tune every line yourself. Press the Down Arrow to lock in a timestamp, or the Up Arrow to remove it.', to: '/blog/post/how-to-sync-songs-with-music' },
+  { n: '04', title: 'Translate in one click', text: 'Translate every line at once with our automated translation engine. Then fine-tune each result in the Translation Workspace until it sounds right to you.', to: '/blog/post/complete-guide-to-the-translation-workspace' },
+  { n: '05', title: 'Enjoy the music', text: 'Sit back and enjoy your lyrics in four different views. Follow every line in Live Scroll, stay with the moment in Focused, watch each voice come alive in Group Chat, or take in the full song in Plain Text.', to: '/blog/post/group-chat-lyrics-view' }
 ];
 
 export const FEATURES = [

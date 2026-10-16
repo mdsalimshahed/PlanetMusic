@@ -70,9 +70,16 @@ const ABOUT_ART = [
   <svg key="library" viewBox="0 0 320 112" fill="none" aria-hidden="true">
     <rect x="68" y="17" width="78" height="78" rx="15" fill="#7548E8" />
     <rect x="77" y="26" width="60" height="60" rx="11" fill="url(#library-art)" />
-    <path d="M105 43v24m0-24 17-4v22" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="99" cy="69" r="6" fill="white" />
-    <circle cx="117" cy="64" r="6" fill="white" />
+    <circle cx="119" cy="48" r="17" fill="#312755" stroke="#F3EFFF" strokeOpacity="0.72" strokeWidth="2" />
+    <circle cx="119" cy="48" r="12" stroke="#C3B3E0" strokeOpacity="0.62" />
+    <circle cx="119" cy="48" r="8" stroke="#C3B3E0" strokeOpacity="0.5" />
+    <circle cx="119" cy="48" r="4" fill="#5FD4FF" />
+    <circle cx="119" cy="48" r="1.5" fill="#211936" />
+    <circle cx="97" cy="61" r="19" fill="#211936" stroke="#F3EFFF" strokeOpacity="0.9" strokeWidth="2" />
+    <circle cx="97" cy="61" r="14" stroke="#C3B3E0" strokeOpacity="0.72" />
+    <circle cx="97" cy="61" r="9" stroke="#C3B3E0" strokeOpacity="0.58" />
+    <circle cx="97" cy="61" r="5" fill="#F09BFF" />
+    <circle cx="97" cy="61" r="1.5" fill="#211936" />
     <rect x="157" y="29" width="94" height="10" rx="5" fill="#E6D9FF" />
     <rect x="157" y="48" width="70" height="7" rx="3.5" fill="#9782BB" />
     <rect x="157" y="66" width="86" height="7" rx="3.5" fill="#554B68" />
@@ -111,17 +118,12 @@ const STEP_ART = [
     <path d="M129 45h22m-11-11v22" stroke="#F3EFFF" strokeWidth="4" strokeLinecap="round" />
     <circle cx="140" cy="45" r="39" stroke="#49366B" strokeWidth="2" strokeDasharray="4 7" />
   </svg>,
-  <svg key="save" viewBox="0 0 320 100" fill="none" aria-hidden="true">
-    <rect x="112" y="15" width="70" height="70" rx="15" fill="url(#step-save)" />
-    <path d="M128 31h38v37h-38z" stroke="white" strokeWidth="3" strokeLinejoin="round" />
-    <path d="M136 31v15l11-6 11 6V31" stroke="white" strokeWidth="3" strokeLinejoin="round" />
-    <path d="m190 51 9 9 19-21" stroke="#5FD4FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-    <defs>
-      <linearGradient id="step-save" x1="112" y1="15" x2="182" y2="85" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#A77BFF" />
-        <stop offset="1" stopColor="#3478E5" />
-      </linearGradient>
-    </defs>
+  <svg key="artists" viewBox="0 0 320 100" fill="none" aria-hidden="true">
+    <path d="M74 28h172M74 50h110M74 72h144" stroke="#49366B" strokeWidth="7" strokeLinecap="round" />
+    <circle cx="55" cy="28" r="11" fill="#A77BFF" />
+    <circle cx="55" cy="50" r="11" fill="#5FD4FF" />
+    <circle cx="55" cy="72" r="11" fill="#F09BFF" />
+    <path d="m223 51 9 9 19-21" stroke="#5FD4FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>,
   <svg key="sync" viewBox="0 0 320 100" fill="none" aria-hidden="true">
     <path d="M64 51h31l10-19 14 39 14-51 16 62 13-42 11 11h83" stroke="#9D7BFF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
@@ -134,6 +136,13 @@ const STEP_ART = [
     <text x="119" y="58" fill="#F3EFFF" fontSize="26" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">言</text>
     <text x="201" y="58" fill="#F3EFFF" fontSize="25" fontWeight="700" textAnchor="middle" fontFamily="system-ui, sans-serif">A</text>
     <path d="M145 50h30m-8-8 8 8-8 8" stroke="#5FD4FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>,
+  <svg key="views" viewBox="0 0 320 100" fill="none" aria-hidden="true">
+    <rect x="73" y="17" width="74" height="66" rx="11" fill="#171326" stroke="#7548E8" strokeWidth="2" />
+    <rect x="173" y="17" width="74" height="66" rx="11" fill="#171326" stroke="#3478E5" strokeWidth="2" />
+    <path d="M88 36h44m-44 12h32m-32 12h38m63-24h44m-44 12h32m-32 12h38" stroke="#A77BFF" strokeWidth="4" strokeLinecap="round" />
+    <circle cx="112" cy="72" r="4" fill="#5FD4FF" />
+    <circle cx="210" cy="72" r="4" fill="#F09BFF" />
   </svg>
 ];
 
@@ -1015,14 +1024,16 @@ const HomeGuide = () => {
 
       <section id="how" className="home-guide-section" aria-labelledby="how-title">
         <p className="home-guide-kicker">How it works</p>
-        <h2 id="how-title">From search to synced lyrics in four steps.</h2>
+        <h2 id="how-title">From search to synced lyrics in five steps.</h2>
         <ol className="home-guide-steps">
           {STEPS.map((s, i) => (
             <li key={s.n} data-reveal style={{ '--i': i }}>
-              <div className="home-guide-step-art">{STEP_ART[i]}</div>
-              <span className="home-guide-step-number">{s.n}</span>
-              <h3>{s.title}</h3>
-              <p>{s.text}</p>
+              <Link className="home-guide-step-link" to={s.to}>
+                <div className="home-guide-step-art">{STEP_ART[i]}</div>
+                <span className="home-guide-step-number">{s.n}</span>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </Link>
             </li>
           ))}
         </ol>
