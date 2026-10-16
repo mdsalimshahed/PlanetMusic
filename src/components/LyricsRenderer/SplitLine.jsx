@@ -244,14 +244,8 @@ const SplitLine = ({
     );
   });
 
-  // Calculate top padding for the overall container if the main parent line has a hovering translation
-  const hasMainTrans = Boolean(mainTranslationJSX);
-  const lineTopPadding = hasMainTrans 
-    ? 'calc((var(--dyn-trans-font-size, 0.55em) * 2.5) + var(--dyn-trans-top-padding, 8px))' 
-    : '0px';
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box', paddingTop: lineTopPadding }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
       <span
           className="primary-text"
           style={{

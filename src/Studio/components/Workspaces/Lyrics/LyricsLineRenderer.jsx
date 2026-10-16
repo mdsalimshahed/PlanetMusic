@@ -155,10 +155,10 @@ export const LyricLineWrapper = React.memo(({
 
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper || viewMode !== 'focused') return undefined;
+    if (!wrapper || (viewMode !== 'focused' && viewMode !== 'live')) return undefined;
 
-    const measureMaxLineWidth = element => {
-      if (!element) return 0;
+    const measureWidestLine = element => {
+      if (!element) return null;
       const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
       const lines = [];
       let node;
@@ -188,42 +188,86 @@ export const LyricLineWrapper = React.memo(({
           }
         });
       }
-      return lines.reduce(
-        (widest, line) => Math.max(widest, line.right - line.left),
-        0
-      );
+      return lines.reduce((widest, line) => (
+        !widest || line.right - line.left > widest.right - widest.left
+          ? line
+          : widest
+      ), null);
     };
 
-    const updateTranslationWidth = () => {
-      const core = wrapper.querySelector('.core-chunks');
-      const translation = core?.querySelector('.chunk-translation.focused-translation');
-      if (!core || !translation) return;
+    const updateTranslationWidths = () => {
+      const translations = wrapper.querySelectorAll(viewMode === 'focused'
+        ? '.chunk-translation.focused-translation'
+        : '.chunk-translation.live-translation');
+      const scaleX = wrapper.offsetWidth
+        ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
+        : 1;
 
-      const glyphWidth = Math.max(
-        measureMaxLineWidth(core.querySelector('.main-lyrics-layer')),
-        measureMaxLineWidth(core.querySelector('.pronunciation-text'))
-      );
-      if (!glyphWidth) return;
-      const nextWidth = `${Math.floor(glyphWidth)}px`;
-      if (translation.style.width !== nextWidth) {
-        translation.style.width = nextWidth;
-      }
-      if (translation.style.minWidth !== '0px') {
-        translation.style.minWidth = '0px';
-      }
+      translations.forEach(translation => {
+        const parent = translation.parentElement;
+        if (!parent) return;
+
+        const glyphLine = measureWidestLine(
+          parent.querySelector('.main-lyrics-layer, .primary-text')
+        );
+        const pronunciationLine = measureWidestLine(
+          parent.querySelector('.pronunciation-text')
+        );
+        const widestLine = !glyphLine ||
+          (pronunciationLine &&
+            pronunciationLine.right - pronunciationLine.left >
+              glyphLine.right - glyphLine.left)
+          ? pronunciationLine
+          : glyphLine;
+        if (!widestLine) return;
+
+        const width = (widestLine.right - widestLine.left) / scaleX;
+        const nextWidth = `${Math.floor(width)}px`;
+        if (translation.style.width !== nextWidth) {
+          translation.style.width = nextWidth;
+        }
+
+        if (viewMode === 'focused') {
+          if (translation.style.minWidth !== '0px') {
+            translation.style.minWidth = '0px';
+          }
+          return;
+        }
+
+        const translationHeight = translation.offsetHeight;
+        const gapValue = parseFloat(
+          getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')
+        );
+        const gap = Number.isFinite(gapValue) ? gapValue : 0;
+        const nextPadding = `${translationHeight + gap}px`;
+        if (parent.style.paddingTop !== nextPadding) {
+          parent.style.paddingTop = nextPadding;
+        }
+
+        const parentLeft = parent.getBoundingClientRect().left;
+        const left = (
+          (widestLine.left + widestLine.right) / 2 - parentLeft
+        ) / scaleX - parent.clientLeft - width / 2;
+        const nextLeft = `${left}px`;
+        if (translation.style.left !== nextLeft) {
+          translation.style.left = nextLeft;
+        }
+      });
     };
 
-    updateTranslationWidth();
+    updateTranslationWidths();
     const resizeObserver = typeof ResizeObserver === 'undefined'
       ? null
-      : new ResizeObserver(updateTranslationWidth);
+      : new ResizeObserver(updateTranslationWidths);
     resizeObserver?.observe(wrapper);
-    wrapper.querySelectorAll('.main-lyrics-layer, .pronunciation-text')
+    wrapper.querySelectorAll(
+      '.main-lyrics-layer, .primary-text, .pronunciation-text, .chunk-translation'
+    )
       .forEach(element => resizeObserver?.observe(element));
 
     let cancelled = false;
     document.fonts?.ready.then(() => {
-      if (!cancelled) updateTranslationWidth();
+      if (!cancelled) updateTranslationWidths();
     });
     return () => {
       cancelled = true;

@@ -181,6 +181,19 @@ rt.pronunciation-text,
     visibility 0s linear 0s;
 }
 
+.preview-line .chunk-translation.live-translation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: none;
+  max-width: none;
+  overflow-wrap: normal;
+  text-wrap: normal;
+  word-break: normal;
+  width: max-content;
+  margin: 0;
+}
+
 .chunk-translation.focused-translation {
   position: relative;
   top: auto;

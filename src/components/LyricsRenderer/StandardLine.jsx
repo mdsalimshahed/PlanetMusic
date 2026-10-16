@@ -61,22 +61,37 @@ const StandardLine = ({
   const lineTextAlign = isFocused ? 'center' : 'left';
   const transClass = isFocused ? 'focused-translation' : 'live-translation';
 
-  const relativeTransStyle = {
-    position: 'relative',
-    top: 'auto',
-    left: 'auto',
-    transform: 'none',
-    marginTop: 0,
-    marginBottom: 'var(--dyn-trans-top-padding, 8px)',
-    width: isFocused ? '100%' : 0,
-    minWidth: isFocused ? 0 : '100%',
-    ...(isFocused ? { maxWidth: '100%' } : {}),
-    textAlign: 'center',
-    wordBreak: isFocused ? 'normal' : 'break-word',
-    overflowWrap: isFocused ? 'normal' : 'break-word',
-    whiteSpace: 'normal',
-    ...(isFocused ? { textWrap: 'balance' } : {})
-  };
+  const relativeTransStyle = isFocused
+    ? {
+      position: 'relative',
+      top: 'auto',
+      left: 'auto',
+      transform: 'none',
+      marginTop: 0,
+      marginBottom: 'var(--dyn-trans-top-padding, 8px)',
+      width: '100%',
+      minWidth: 0,
+      maxWidth: '100%',
+      textAlign: 'center',
+      wordBreak: 'normal',
+      overflowWrap: 'normal',
+      whiteSpace: 'normal',
+      textWrap: 'balance'
+    }
+    : {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      transform: 'none',
+      margin: 0,
+      width: 'max-content',
+      minWidth: 0,
+      maxWidth: 'none',
+      textAlign: 'center',
+      wordBreak: 'normal',
+      overflowWrap: 'normal',
+      whiteSpace: 'normal'
+    };
 
   const blockPronStyle = {
     fontSize: 'var(--dyn-translit-font-size, 0.55em)',
