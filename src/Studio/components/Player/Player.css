@@ -279,13 +279,14 @@ body .global-player.glass-panel-heavy.centered-mode {
 
 .buffering-status {
   gap: 3px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .player-status-message {
+  flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  width: auto;
 }
 
 .player-status-percent {

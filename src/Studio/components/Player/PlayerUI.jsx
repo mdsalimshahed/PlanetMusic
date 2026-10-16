@@ -77,9 +77,10 @@ export const PlayerInfo = ({
           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{fallbackMessage}</span>
         ) : deezerStatus ? (
           <span className="buffering-status" role="status" aria-live="polite">
-            <span className="player-status-message">
-              {deezerStatus.message.replace(/(?:\.{2,}|…)\s*$/, '')}
-            </span>
+            <MarqueeText
+              className="player-status-message"
+              text={deezerStatus.message.replace(/(?:\.{2,}|…)\s*$/, '')}
+            />
             {typeof deezerStatus.percent === 'number' && (
               <span className="player-status-percent">{Math.round(deezerStatus.percent)}%</span>
             )}
