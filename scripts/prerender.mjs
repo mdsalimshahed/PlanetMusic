@@ -4,6 +4,10 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { createServer } from 'vite';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -16,40 +20,6 @@ const template = readFileSync(join(dist, 'index.html'), 'utf8');
 const prerenderedPaths = [];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-// ---- tiny Markdown -> HTML (covers what the guides use: headings, lists, quotes, code, bold, italic, links)
-const inline = (t) =>
-  esc(t)
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, '$1<em>$2</em>')
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|\/[^)\s]*)\)/g, '<a href="$2">$1</a>');
-
-const markdown = (md) => {
-  const out = [];
-  let list = null, para = [], code = null;
-  const flushPara = () => { if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = []; } };
-  const flushList = () => { if (list) { out.push(`</${list}>`); list = null; } };
-  for (const raw of md.split('\n')) {
-    const line = raw.trimEnd();
-    if (line.trim().startsWith('```')) {
-      if (code) { out.push(`<pre><code>${esc(code.join('\n'))}</code></pre>`); code = null; }
-      else { flushPara(); flushList(); code = []; }
-      continue;
-    }
-    if (code) { code.push(raw); continue; }
-    let m;
-    if (!line.trim()) { flushPara(); flushList(); continue; }
-    if (/^-{3,}$/.test(line.trim())) { flushPara(); flushList(); continue; }
-    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { flushPara(); flushList(); const l = Math.max(2, m[1].length); out.push(`<h${l}>${inline(m[2])}</h${l}>`); continue; }
-    if ((m = line.match(/^>\s?(.*)$/))) { flushPara(); flushList(); out.push(`<blockquote>${inline(m[1])}</blockquote>`); continue; }
-    if ((m = line.match(/^\s*[*-]\s+(.*)$/))) { flushPara(); if (list !== 'ul') { flushList(); out.push('<ul>'); list = 'ul'; } out.push(`<li>${inline(m[1])}</li>`); continue; }
-    if ((m = line.match(/^\s*\d+\.\s+(.*)$/))) { flushPara(); if (list !== 'ol') { flushList(); out.push('<ol>'); list = 'ol'; } out.push(`<li>${inline(m[1])}</li>`); continue; }
-    flushList(); para.push(line.trim());
-  }
-  flushPara(); flushList();
-  return out.join('\n');
-};
 
 // ---- shared shell
 const css = `<style>
@@ -65,7 +35,7 @@ const css = `<style>
 const nav = `<nav aria-label="Main"><strong>PlanetMusic</strong><a href="/">Home</a><a href="/vault">Vault</a><a href="/blog/dev">Guides</a><a href="/blog/changelog">Changelog</a><a href="/privacy">Privacy</a><a href="/contact">Contact</a></nav>`;
 const footer = `<footer><p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p><p><a href="/privacy">Privacy</a> · <a href="/contact">Contact</a> · <a href="/blog/dev">All guides</a></p></footer>`;
 
-const page = ({ path, title, description, body, jsonld }) => {
+const page = ({ path, title, description, body, jsonld, useAppStyles = false }) => {
   prerenderedPaths.push(path);
   const url = `${SITE.url}${path}`;
   let html = template
@@ -77,12 +47,45 @@ const page = ({ path, title, description, body, jsonld }) => {
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta\s+name="twitter:description"\s+content=")[\s\S]*?("\s*\/>)/, `$1${esc(description)}$2`)
-    .replace('</head>', `${css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
-    .replace('<div id="root"></div>', `<div id="root"><div class="static">${nav}${body}${footer}</div></div>`);
+    .replace('</head>', `${useAppStyles ? '' : css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
+    .replace('<div id="root"></div>', `<div id="root">${useAppStyles ? body : `<div class="static">${nav}${body}${footer}</div>`}</div>`);
   const file = path === '/' ? join(dist, 'index.html') : join(dist, path.replace(/^\//, ''), 'index.html');
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, html);
 };
+
+const vite = await createServer({
+  root,
+  configFile: join(root, 'vite.config.js'),
+  server: { middlewareMode: true },
+  appType: 'custom',
+  logLevel: 'error'
+});
+let BlogTab;
+let ContactTab;
+try {
+  [{ default: BlogTab }, { default: ContactTab }] = await Promise.all([
+    vite.ssrLoadModule('/src/Application/pages/BlogTab.jsx'),
+    vite.ssrLoadModule('/src/Application/pages/ContactTab.jsx')
+  ]);
+} finally {
+  await vite.close();
+}
+
+const renderAppPage = (path, routePath, Component, props = {}) => renderToString(
+  React.createElement(
+    MemoryRouter,
+    { initialEntries: [path] },
+    React.createElement(
+      Routes,
+      null,
+      React.createElement(Route, {
+        path: routePath,
+        element: React.createElement(Component, props)
+      })
+    )
+  )
+);
 
 // ---- home
 const homeBody = `
@@ -145,16 +148,8 @@ page({
   path: '/contact',
   title: 'Contact PlanetMusic | Feedback and Support',
   description: 'Send PlanetMusic a question, feedback, bug report, correction, or legal inquiry using the contact form.',
-  body: `<main>
-<h1>Get in Touch</h1>
-<p>Have a question, feedback, or a legal inquiry? We’re here to help.</p>
-<h2>Send a message</h2>
-<p>The contact form lets you send a subject and message. Your name is optional, and there is no separate email field. If you would like a reply, include an email address in your message.</p>
-<p>Please describe what happened, the steps to reproduce a bug, and the browser, device, or audio source involved. Do not include passwords, Deezer ARL tokens, private audio, or other sensitive information.</p>
-<p>The form is a feedback channel, not an automatic library recovery service. If a Vault is missing, check that you are using the same browser profile and avoid clearing browser data or using Purge before checking for a backup.</p>
-<p><a href="/blog/post/how-to-contact-us-get-support">Read the support guide</a> · <a href="/privacy">Read the Privacy Policy</a></p>
-<p><strong>Interactive contact form:</strong> Enable JavaScript to submit a message.</p>
-</main>`,
+  body: renderAppPage('/contact', '/contact', ContactTab, { adsEnabled: true }),
+  useAppStyles: true,
   jsonld: { '@context': 'https://schema.org', '@type': 'ContactPage', name: 'Contact PlanetMusic', description: 'Contact PlanetMusic with questions, feedback, bug reports, or legal inquiries.' }
 });
 
@@ -164,69 +159,50 @@ const orderedChangelogMonths = changelogMonths.slice().reverse().map((month) => 
   entries: month.entries.slice().reverse(),
   slug: month.label.toLowerCase().replace(' ', '-')
 }));
+const blogProps = {
+  adsEnabled: true,
+  initialPosts: posts,
+  initialChangelogMonths: orderedChangelogMonths
+};
 page({
   path: '/blog/changelog',
   title: 'PlanetMusic Changelog | Product and Development Updates',
   description: 'Browse dated PlanetMusic product updates and development notes by month.',
-  body: `<main>
-<h1>PlanetMusic changelog</h1>
-<p>Dated product updates and development notes, organized by month.</p>
-<ul>${orderedChangelogMonths.map((month) => {
-    const latestEntry = month.entries[0];
-    const summary = latestEntry ? ` Latest update: ${latestEntry.date} — ${latestEntry.summary}` : '';
-    return `<li><a href="/blog/changelog/${month.slug}">${esc(month.label)}</a> (${month.entries.length} entries).${esc(summary)}</li>`;
-  }).join('')}</ul>
-</main>`,
+  body: renderAppPage('/blog/changelog', '/blog/*', BlogTab, blogProps),
+  useAppStyles: true,
   jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'PlanetMusic Changelog', description: 'Monthly PlanetMusic product and development updates.' }
 });
 
 for (const month of orderedChangelogMonths) {
-  const commitCount = month.entries.reduce((total, entry) => total + (entry.commits || 0), 0);
+  const path = `/blog/changelog/${month.slug}`;
   page({
-    path: `/blog/changelog/${month.slug}`,
+    path,
     title: `${month.label} Changelog | PlanetMusic`,
     description: `PlanetMusic product updates and development notes from ${month.label}, with ${month.entries.length} timeline entries.`,
-    body: `<main>
-<p class="meta"><a href="/blog/changelog">Changelog archive</a></p>
-<h1>PlanetMusic changelog: ${esc(month.label)}</h1>
-<p>${month.entries.length} timeline entries · ${commitCount} Git commits</p>
-<ol>${month.entries.map((entry) => {
-      const date = new Intl.DateTimeFormat('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric',
-        timeZone: 'UTC'
-      }).format(new Date(`${entry.date}T12:00:00Z`));
-      const summaryItems = entry.summary.split(/(?<=[.!?])\s+/).filter(Boolean);
-      const updateLabel = entry.kind === 'site-update'
-        ? 'Site update'
-        : `${entry.commits} ${entry.commits === 1 ? 'commit' : 'commits'}`;
-      return `<li><time datetime="${esc(entry.date)}">${esc(date)}</time><ul>${summaryItems.map((item) => `<li>${esc(item)}</li>`).join('')}</ul><span class="meta">${esc(updateLabel)}</span></li>`;
-    }).join('')}</ol>
-</main>`,
+    body: renderAppPage(path, '/blog/*', BlogTab, blogProps),
+    useAppStyles: true,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${month.label} Changelog | PlanetMusic`, description: `PlanetMusic product updates from ${month.label}.` }
   });
 }
 
 // ---- guide index
-const byCat = posts.reduce((m, p) => ((m[p.category] ||= []).push(p), m), {});
 page({
   path: '/blog/dev',
   title: 'PlanetMusic Guides | How-to articles for the lyrics workspace',
   description: `${posts.length} plain-language guides covering syncing lyrics, translations, the Vault, backups and troubleshooting in PlanetMusic.`,
-  body: `<main><h1>PlanetMusic guides</h1><p>Plain-language how-to articles for every part of the workspace.</p>${Object.entries(byCat)
-    .map(([cat, list]) => `<h2>${esc(cat)}</h2><ul>${list.map((p) => `<li><a href="/blog/post/${p.id}">${esc(p.title)}</a>: ${esc(p.summary)}</li>`).join('')}</ul>`).join('')}</main>`
+  body: renderAppPage('/blog/dev', '/blog/*', BlogTab, blogProps),
+  useAppStyles: true
 });
 
 // ---- every guide
 for (const p of posts) {
-  const related = posts.filter((o) => o.id !== p.id && o.category === p.category).slice(0, 4);
+  const path = `/blog/post/${p.id}`;
   page({
-    path: `/blog/post/${p.id}`,
+    path,
     title: `${p.title} | PlanetMusic`,
     description: p.summary,
-    body: `<main><article><p class="meta"><a href="/blog/dev">Guides</a> / ${esc(p.category)}</p><h1>${esc(p.title)}</h1><p class="meta">${esc(p.date)} · ${esc(p.readTime)}${p.author ? ` · By ${esc(p.author)}` : ''}</p>${markdown(p.content)}${
-      related.length ? `<h2>Related guides</h2><ul>${related.map((r) => `<li><a href="/blog/post/${r.id}">${esc(r.title)}</a></li>`).join('')}</ul>` : ''}</article></main>`,
+    body: renderAppPage(path, '/blog/*', BlogTab, blogProps),
+    useAppStyles: true,
     jsonld: { '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.summary, datePublished: new Date(p.date).toISOString().slice(0, 10), author: { '@type': 'Person', name: p.author || 'PlanetMusic' }, mainEntityOfPage: `${SITE.url}/blog/post/${p.id}` }
   });
 }

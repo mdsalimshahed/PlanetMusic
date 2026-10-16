@@ -81,7 +81,7 @@ const Icon = ({ name, size = 18 }) => {
   }
 };
 
-const BlogTab = ({ adsEnabled }) => {
+const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -97,7 +97,7 @@ const BlogTab = ({ adsEnabled }) => {
   const changelogMonthSlug = pathTokens[1];
   const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
   const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
-  const [changelogMonths, setChangelogMonths] = useState([]);
+  const [changelogMonths, setChangelogMonths] = useState(initialChangelogMonths);
   const [changelogLoadError, setChangelogLoadError] = useState('');
   const requestedChangelogMonthIndex = changelogMonthSlug
     ? changelogMonths.findIndex(month => month.label.toLowerCase().replace(' ', '-') === changelogMonthSlug)
@@ -109,7 +109,7 @@ const BlogTab = ({ adsEnabled }) => {
   const selectedMonthCommitCount = selectedChangelogMonth?.entries.reduce((total, entry) => total + (entry.commits || 0), 0) || 0;
 
   useEffect(() => {
-    if (!isChangelog) return;
+    if (!isChangelog || initialChangelogMonths.length > 0) return;
 
     fetch('/changelog.json')
       .then(response => {
@@ -129,7 +129,7 @@ const BlogTab = ({ adsEnabled }) => {
         console.error('Could not load the public changelog.', error);
         setChangelogLoadError('The changelog could not be loaded. Please try again later.');
       });
-  }, [isChangelog]);
+  }, [isChangelog, initialChangelogMonths.length]);
 
   useEffect(() => {
     if (isChangelog && changelogMonths.length > 0 && changelogMonthSlug && requestedChangelogMonthIndex < 0) {
@@ -152,9 +152,11 @@ const BlogTab = ({ adsEnabled }) => {
     return () => window.cancelAnimationFrame(frameId);
   }, [viewMode, location.pathname, location.state?.focusBlogCardId, navigate]);
 
-  const [devPosts, setDevPosts] = useState([]);
+  const [devPosts, setDevPosts] = useState(initialPosts);
   const [customPosts, setCustomPosts] = useState(() => {
-    const saved = localStorage.getItem('custom_blog_posts_storage');
+    const saved = typeof window === 'undefined'
+      ? null
+      : localStorage.getItem('custom_blog_posts_storage');
     return saved ? JSON.parse(saved) : [];
   });
 
