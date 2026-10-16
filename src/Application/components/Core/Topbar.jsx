@@ -9,7 +9,7 @@ const Topbar = ({
   isMusicPlaying,
   albumAccentColor,
   handleHomeClick, 
-  handleExport, 
+  onOpenExport,
   handleImport,
   isZenMode,
   toggleZenMode
@@ -291,7 +291,7 @@ const Topbar = ({
                   className="backup-menu-item"
                   onClick={() => {
                     setIsBackupMenuOpen(false);
-                    handleExport();
+                    onOpenExport();
                   }}
                 >
                   <span>Export backup</span>

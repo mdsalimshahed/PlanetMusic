@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -13,6 +13,8 @@ import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
 import HomeGuide from './Application/components/Core/HomeGuide.jsx';
 import SongModal from './Application/components/Modals/SongModal.jsx';
+import BackupExportModal from './Application/components/Modals/BackupExportModal.jsx';
+import BackupImportModal from './Application/components/Modals/BackupImportModal.jsx';
 import Player from './Studio/components/Player/Player.jsx';
 
 import SettingsTab from './Application/pages/SettingsTab.jsx';
@@ -90,6 +92,8 @@ const App = () => {
   const zenSessionActiveRef = useRef(false);
   const zenUnavailableTrackIdsRef = useRef(new Set());
   const [searchOrbitSize, setSearchOrbitSize] = useState({ width: 602, height: 52 });
+  const [isBackupExportOpen, setIsBackupExportOpen] = useState(false);
+  const closeBackupExport = useCallback(() => setIsBackupExportOpen(false), []);
   const [searchOrbitGradients, setSearchOrbitGradients] = useState([
     ['#ff4d6d', '#ffd166', '#50c7ff'],
     ['#8aff80', '#b388ff', '#ff8c42']
@@ -413,6 +417,9 @@ const App = () => {
     updateSongInLibrary,
     handleExport,
     handleImport,
+    pendingImport,
+    cancelImport,
+    confirmImport,
     handleLoadSample
   } = useVaultOperations({
     library, setLibrary, settings, setSettings,
@@ -420,6 +427,10 @@ const App = () => {
     selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick,
     isVaultRoute: location.pathname === '/vault' || location.pathname.startsWith('/vault/')
   });
+  const exportSelectedBackup = useCallback((options) => {
+    handleExport(options);
+    setIsBackupExportOpen(false);
+  }, [handleExport]);
 
   // 4. Cosmos Search Engine
   const {
@@ -637,12 +648,29 @@ const App = () => {
             isMusicPlaying={logoPlaybackVisuals.isPlaying}
             albumAccentColor={logoPlaybackVisuals.albumAccentColor}
             handleHomeClick={handleHomeClick}
-            handleExport={handleExport}
+            onOpenExport={() => setIsBackupExportOpen(true)}
             handleImport={handleImport}
             isZenMode={isZenMode}
             toggleZenMode={toggleZenMode}
             handleLoadSample={handleLoadSample}
           />
+          {isBackupExportOpen && (
+            <BackupExportModal
+              songs={library}
+              settings={settings}
+              onClose={closeBackupExport}
+              onExport={exportSelectedBackup}
+            />
+          )}
+          {pendingImport && (
+            <BackupImportModal
+              key={pendingImport.fileName}
+              backup={pendingImport}
+              existingSongs={library}
+              onClose={cancelImport}
+              onImport={confirmImport}
+            />
+          )}
 
           <main className="main-content">
         {(activeTab === 'vault' || activeTab === 'ambient' || isZenMode) && (

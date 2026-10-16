@@ -1,0 +1,49 @@
+.backup-import-dialog {
+  width: min(760px, 100%);
+}
+
+.backup-import-file-name {
+  max-width: 60ch;
+  margin: 7px 0 0;
+  overflow: hidden;
+  color: rgba(232, 225, 247, 0.62);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.backup-import-dialog .backup-export-extras {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.backup-import-dialog .backup-export-option {
+  min-height: 56px;
+}
+
+.backup-import-category {
+  grid-column: 1 / -1;
+  margin: 8px 0 2px;
+  color: rgba(232, 225, 247, 0.78);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.backup-import-category:first-child {
+  margin-top: 2px;
+}
+
+.backup-import-category span {
+  margin-left: 5px;
+  color: rgba(232, 225, 247, 0.5);
+  font-weight: 600;
+}
+
+.backup-import-dialog .backup-export-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.45);
+}
+
+@media (max-width: 560px) {
+  .backup-import-dialog .backup-export-extras { padding: 6px 16px 8px; }
+}

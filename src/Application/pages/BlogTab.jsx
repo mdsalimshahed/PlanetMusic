@@ -241,6 +241,15 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   }, [customPosts]);
 
   useEffect(() => {
+    const syncImportedPosts = () => {
+      const saved = JSON.parse(localStorage.getItem('custom_blog_posts_storage') || '[]');
+      if (Array.isArray(saved)) setCustomPosts(saved);
+    };
+    window.addEventListener('planetmusic-custom-blogs-updated', syncImportedPosts);
+    return () => window.removeEventListener('planetmusic-custom-blogs-updated', syncImportedPosts);
+  }, []);
+
+  useEffect(() => {
     if (viewMode === 'studio' && activeArticleSlug) {
       const postToEdit = editingPost;
       if (postToEdit) {

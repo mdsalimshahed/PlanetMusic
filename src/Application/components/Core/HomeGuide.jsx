@@ -118,6 +118,12 @@ const STEP_ART = [
     <path d="M129 45h22m-11-11v22" stroke="#F3EFFF" strokeWidth="4" strokeLinecap="round" />
     <circle cx="140" cy="45" r="39" stroke="#49366B" strokeWidth="2" strokeDasharray="4 7" />
   </svg>,
+  <svg key="format" viewBox="0 0 320 100" fill="none" aria-hidden="true">
+    <rect x="69" y="14" width="182" height="72" rx="12" fill="#171326" stroke="#49366B" strokeWidth="2" />
+    <path d="M88 34h82m-82 16h56m-56 16h72" stroke="#766A8C" strokeWidth="6" strokeLinecap="round" />
+    <path d="M188 34h42m-24 16h24m-42 16h42" stroke="#D7C2FF" strokeWidth="6" strokeLinecap="round" />
+    <path d="m174 26 8 8-8 8m0 8 8 8-8 8" stroke="#5FD4FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>,
   <svg key="artists" viewBox="0 0 320 100" fill="none" aria-hidden="true">
     <path d="M74 28h172M74 50h110M74 72h144" stroke="#49366B" strokeWidth="7" strokeLinecap="round" />
     <circle cx="55" cy="28" r="11" fill="#A77BFF" />
@@ -173,11 +179,14 @@ const FEATURE_ART = [
     <circle cx="222" cy="48" r="9" fill="#3478E5" />
     <path d="M188 75h53" stroke="#5FD4FF" strokeWidth="5" strokeLinecap="round" />
   </svg>,
-  <svg key="group" viewBox="0 0 320 120" fill="none" aria-hidden="true">
-    <circle cx="113" cy="44" r="17" fill="#A77BFF" />
-    <circle cx="207" cy="44" r="17" fill="#5FD4FF" />
-    <path d="M78 95c2-21 14-32 35-32s33 11 35 32m24 0c2-21 14-32 35-32s33 11 35 32" stroke="#D7C2FF" strokeWidth="7" strokeLinecap="round" />
-    <path d="M141 40h38m-10-10 10 10-10 10" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+  <svg key="delay" viewBox="0 0 320 120" fill="none" aria-hidden="true">
+    <path d="M59 66V54c0-29 22-48 48-48s48 19 48 48v12" stroke="#A77BFF" strokeWidth="8" strokeLinecap="round" />
+    <rect x="51" y="58" width="19" height="37" rx="9" fill="#7548E8" stroke="#D7C2FF" strokeWidth="2" />
+    <rect x="144" y="58" width="19" height="37" rx="9" fill="#3478E5" stroke="#5FD4FF" strokeWidth="2" />
+    <path d="M185 42h79m-79 35h79" stroke="#554B68" strokeWidth="2" strokeLinecap="round" />
+    <path d="M185 42h15l8-10 10 20 11-18 10 8h25" stroke="#D7C2FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M185 77h26l10-13 10 24 11-20 8 9h14" stroke="#5FD4FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M207 101h24m-6-6 6 6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>,
   <svg key="ambient" viewBox="0 0 320 120" fill="none" aria-hidden="true">
     <circle cx="158" cy="61" r="44" fill="#21123D" />
@@ -191,14 +200,17 @@ const FEATURE_ART = [
     <circle cx="144" cy="46" r="31" stroke="#F09BFF" strokeWidth="2" />
     <path d="m201 29 4 10 11 1-8 7 2 11-9-6-10 6 3-11-8-7 11-1 4-10Z" fill="#5FD4FF" />
   </svg>,
-  <svg key="delay" viewBox="0 0 320 120" fill="none" aria-hidden="true">
-    <path d="M59 66V54c0-29 22-48 48-48s48 19 48 48v12" stroke="#A77BFF" strokeWidth="8" strokeLinecap="round" />
-    <rect x="51" y="58" width="19" height="37" rx="9" fill="#7548E8" stroke="#D7C2FF" strokeWidth="2" />
-    <rect x="144" y="58" width="19" height="37" rx="9" fill="#3478E5" stroke="#5FD4FF" strokeWidth="2" />
-    <path d="M185 42h79m-79 35h79" stroke="#554B68" strokeWidth="2" strokeLinecap="round" />
-    <path d="M185 42h15l8-10 10 20 11-18 10 8h25" stroke="#D7C2FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M185 77h26l10-13 10 24 11-20 8 9h14" stroke="#5FD4FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M207 101h24m-6-6 6 6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  <svg key="backup" viewBox="0 0 320 120" fill="none" aria-hidden="true">
+    <rect x="66" y="19" width="150" height="82" rx="12" fill="#171326" stroke="#49366B" strokeWidth="2" />
+    <path d="M91 41h82M91 60h64M91 79h76" stroke="#766A8C" strokeWidth="5" strokeLinecap="round" />
+    <rect x="76" y="32" width="13" height="13" rx="3" fill="#7548E8" />
+    <path d="m79 38 3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="76" y="51" width="13" height="13" rx="3" fill="#7548E8" />
+    <path d="m79 57 3 3 5-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="76" y="70" width="13" height="13" rx="3" fill="#211936" stroke="#8C7CA8" strokeWidth="2" />
+    <path d="M231 40v35m-14-14 14 14 14-14" stroke="#5FD4FF" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M207 89h48" stroke="#A77BFF" strokeWidth="5" strokeLinecap="round" />
+    <path d="M220 97h22" stroke="#554B68" strokeWidth="4" strokeLinecap="round" />
   </svg>,
   <svg key="settings" viewBox="0 0 320 120" fill="none" aria-hidden="true">
     <rect x="64" y="21" width="192" height="78" rx="14" fill="#171326" stroke="#49366B" strokeWidth="2" />
@@ -1024,23 +1036,17 @@ const HomeGuide = () => {
 
       <section id="how" className="home-guide-section" aria-labelledby="how-title">
         <p className="home-guide-kicker">How it works</p>
-        <h2 id="how-title">From search to synced lyrics in five steps.</h2>
+        <h2 id="how-title">From search to synced lyrics in six steps.</h2>
         <ol className="home-guide-steps">
-          {STEPS.map((s, i) => (
-            <li key={s.n} data-reveal style={{ '--i': i }}>
-              <Link className="home-guide-step-link" to={s.to}>
-                <div className="home-guide-step-art">{STEP_ART[i]}</div>
-                <span className="home-guide-step-number">{s.n}</span>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
+          {STEPS.map((step, i) => (
+            <li key={step.n} data-reveal style={{ '--i': i }}>
+              <Link className="home-guide-step-link" to={step.to}>
+                <span className="home-guide-step-art">{STEP_ART[i]}</span>
+                <h3>{step.title}</h3>
               </Link>
             </li>
           ))}
         </ol>
-        <div className="home-guide-inline-cta">
-          <Link to="/vault">Try it in the Vault →</Link>
-          <Link to="/docs/dev-blog/post/how-to-search-and-save-songs-to-your-vault">Read the step-by-step guide</Link>
-        </div>
       </section>
 
       <section id="features" className="home-guide-section" aria-labelledby="features-title">
