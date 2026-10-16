@@ -3,13 +3,7 @@ import LegalDocumentLayout from './LegalDocumentLayout.jsx';
 import './BlogTab.css';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
 
-const termsContent = `## Last updated
-
-October 16, 2026
-
----
-
-## 1. Using PlanetMusic
+const termsContent = `## 1. Using PlanetMusic
 
 By using PlanetMusic, you agree to use the application lawfully and in accordance with these terms. If you do not agree, do not use the application.
 
