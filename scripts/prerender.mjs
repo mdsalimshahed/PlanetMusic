@@ -49,7 +49,9 @@ const page = ({ path, title, description, body, jsonld, useAppStyles = false }) 
     .replace(/(<meta\s+name="twitter:description"\s+content=")[\s\S]*?("\s*\/>)/, `$1${esc(description)}$2`)
     .replace('</head>', `${useAppStyles ? '' : css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${useAppStyles ? body : `<div class="static">${nav}${body}${footer}</div>`}</div>`);
-  const file = path === '/' ? join(dist, 'index.html') : join(dist, path.replace(/^\//, ''), 'index.html');
+  const file = path === '/'
+    ? join(dist, 'index.html')
+    : join(dist, `${path.replace(/^\//, '')}.html`);
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, html);
 };
@@ -63,10 +65,12 @@ const vite = await createServer({
 });
 let BlogTab;
 let ContactTab;
+let PrivacyTab;
 try {
-  [{ default: BlogTab }, { default: ContactTab }] = await Promise.all([
+  [{ default: BlogTab }, { default: ContactTab }, { default: PrivacyTab }] = await Promise.all([
     vite.ssrLoadModule('/src/Application/pages/BlogTab.jsx'),
-    vite.ssrLoadModule('/src/Application/pages/ContactTab.jsx')
+    vite.ssrLoadModule('/src/Application/pages/ContactTab.jsx'),
+    vite.ssrLoadModule('/src/Application/pages/PrivacyTab.jsx')
   ]);
 } finally {
   await vite.close();
@@ -120,26 +124,8 @@ page({
   path: '/privacy',
   title: 'Privacy Policy | PlanetMusic',
   description: 'How PlanetMusic stores Vault data in your browser, connects to third-party services, and handles advertising choices.',
-  body: `<main>
-<h1>Omnilateral Privacy Policy, Master Exculpation &amp; Ephemeral Data Agreement</h1>
-<p>A comprehensive overview of PlanetMusic’s client-side architecture, local data storage, third-party services, advertising, and limitations of liability.</p>
-<p class="meta">Last updated: September 2026</p>
-<h2>1. Local data and browser storage</h2>
-<p>PlanetMusic does not require an account. Your Vault, lyrics, timing coordinates, settings, and other saved workspace data are stored in browser storage on your device, including IndexedDB. PlanetMusic does not operate a central account database for this saved library. You can export a JSON backup using the app’s Backup control. Locally added audio files are not included in that backup.</p>
-<p>Clearing browser data or using the app’s Purge function can permanently remove locally stored information. Export a backup before clearing data if you want to keep your Vault.</p>
-<h2>2. Third-party services and network requests</h2>
-<p>Features such as music metadata search, lyrics lookup, translation, and playback may connect directly from your browser to third-party services, including iTunes Search, LRCLIB, Wikipedia, and Google Translate. Those providers may receive technical request information such as your IP address and browser details. Their own privacy policies govern information they receive.</p>
-<h2>3. Advertising and cookies</h2>
-<p>PlanetMusic may load advertising scripts from providers such as Adsterra or Google AdSense when an ad placement is configured and advertising is enabled. Advertising providers may receive technical information and may use cookies or similar technologies under their own privacy policies. You can manage whether third-party ads may load in this browser using the advertising choice in the app.</p>
-<h2>4. Copyright and external media</h2>
-<p>PlanetMusic is a music editing and metadata workspace, not a licensed music catalog. It does not host or distribute a catalog of copyrighted recordings. Search and playback features can rely on external providers; their availability and terms apply. Do not use the app to bypass DRM, access restrictions, or copyright rules.</p>
-<h2>5. Accuracy and availability</h2>
-<p>The software and information are provided on an “as is” and “as available” basis to the extent permitted by law. Lyrics, translations, transliterations, metadata, playback, and locally stored data may be incomplete, inaccurate, or unavailable. Review your work and keep backups of information you cannot replace.</p>
-<h2>6. Limitation of liability</h2>
-<p>To the maximum extent permitted by applicable law, PlanetMusic’s developers and contributors are not responsible for indirect or consequential loss arising from use of the software, third-party services, or locally stored data. Nothing in this policy limits rights that cannot legally be excluded.</p>
-<h2>7. Copyright notices and questions</h2>
-<p>PlanetMusic does not host user-submitted media on a central server. For questions, corrections, or a legal inquiry, use the <a href="/contact">Contact page</a>. For help protecting a local Vault, see the <a href="/blog/post/data-storage-backups-purge-button">data storage and backup guide</a>.</p>
-</main>`,
+  body: renderAppPage('/privacy', '/privacy', PrivacyTab, { adsEnabled: true }),
+  useAppStyles: true,
   jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Privacy Policy | PlanetMusic', description: 'How PlanetMusic stores browser data and uses third-party services and advertising.' }
 });
 
