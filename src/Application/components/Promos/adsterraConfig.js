@@ -1,3 +1,7 @@
+/*
+ * Adsterra placements are temporarily disabled. Restore this configuration
+ * and the units map below to re-enable them.
+ *
 const wideBottomBanner = {
   scriptUrl: 'https://bauval.org/21/910aa18db3b991aa658299010d1e2590',
   containerId: 'container-910aa18db3b991aa658299010d1e2590'
@@ -32,7 +36,9 @@ const units = {
   contactStickySidebar: sidebarBannerSmall,
   privacyStickySidebar: sidebarBannerSmall
 };
+*/
 
+const units = {};
 let adsterraLoadQueue = Promise.resolve();
 
 export const getAdsterraUnit = (placement) => units[placement] || null;
