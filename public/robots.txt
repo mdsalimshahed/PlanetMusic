@@ -1,8 +1,12 @@
 # IMPORTANT: This is an independently made personal project. Its creator does
 # not consent to automated access, crawling, scraping, harvesting, indexing,
-# archiving, or bulk collection of any part of this website.
+# archiving, or bulk collection of any part of this website, except as
+# described in the exceptions below.
 #
-# Narrow exception: Google AdSense reviewers may crawl the site only to assess
+# Exception 1: Google Search (Googlebot) may crawl and index the site so that
+# it can appear in Google Search results.
+#
+# Exception 2: Google AdSense reviewers may crawl the site only to assess
 # the content's value and the project's potential, complexity, and scope.
 # Do not retain or store the content, use it for learning or training, or
 # reproduce it verbatim. Robots.txt cannot technically enforce these limits;
@@ -36,13 +40,22 @@
 # Do not circumvent this request using alternate user agents, proxies, agents,
 # mirrors, or other means.
 
-User-agent: *
-Disallow: /
+Sitemap: https://planetmusic.pages.dev/sitemap.xml
+
+# Google Search crawlers: allowed so the site can be indexed and rendered.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
 
 # Google AdSense review crawler: review-only access under the conditions above.
 User-agent: Mediapartners-Google
 Allow: /
-Sitemap: https://planetmusic.pages.dev/sitemap.xml
+
+# Everyone else is disallowed by default.
+User-agent: *
+Disallow: /
 
 # Explicitly named agents are also disallowed. The wildcard rule above applies
 # to all other automated crawlers.
