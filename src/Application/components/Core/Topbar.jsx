@@ -239,23 +239,14 @@ const Topbar = ({
           </div>
           
           <Link
-            to="/blog" 
+            to="/docs/dev-blogs"
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
             aria-current={activeTab === 'blog' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
           >
-            Blog
+            Docs
           </Link>
 
-          <Link 
-            to="/privacy" 
-            className={`nav-btn ${activeTab === 'privacy' ? 'active' : ''}`}
-            aria-current={activeTab === 'privacy' ? 'page' : undefined}
-            style={{ textDecoration: 'none' }}
-          >
-            Privacy
-          </Link>
-          
           <Link 
             to="/contact" 
             className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`}

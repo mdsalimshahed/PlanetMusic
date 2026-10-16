@@ -7,9 +7,11 @@ AI crawlers may access these public pages for discovery and summarization. This 
 ## Public pages
 
 - [Home](https://planetmusic.pages.dev/): Product overview and feature information.
-- [Guides](https://planetmusic.pages.dev/blog/dev): How-to articles for using PlanetMusic.
-- [Changelog](https://planetmusic.pages.dev/blog/changelog): Dated product and development updates.
+- [Developer blogs](https://planetmusic.pages.dev/docs/dev-blogs): How-to articles for using PlanetMusic.
+- [Changelog](https://planetmusic.pages.dev/docs/changelog): Dated product and development updates.
 - [Privacy Policy](https://planetmusic.pages.dev/privacy): Browser storage, third-party services, and privacy information.
+- [Terms of Service](https://planetmusic.pages.dev/docs/terms-of-service): Terms and responsibilities for using PlanetMusic.
+- [About Me](https://planetmusic.pages.dev/docs/about-me): Why PlanetMusic was built and an overview of the project.
 - [Contact](https://planetmusic.pages.dev/contact): Contact form and support information.
 - [XML sitemap](https://planetmusic.pages.dev/sitemap.xml): Public page URLs.
 

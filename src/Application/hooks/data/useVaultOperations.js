@@ -1,15 +1,17 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 import { packVault, sanitizeVaultSettings, unpackVault } from '../../services/vaultCodec.js';
 
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
   isSampleVaultActive, setIsSampleVaultActive,
-  selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick
+  selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick,
+  isVaultRoute
 }) => {
   const [songToRemove, setSongToRemove] = useState(null);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
+  const sampleAutoLoadStartedRef = useRef(false);
 
   const dismissSampleMode = () => {
     if (isSampleVaultActive) {
@@ -49,29 +51,36 @@ export const useVaultOperations = ({
   };
 
   useEffect(() => {
-    const autoLoadSampleOnMount = async () => {
+    const autoLoadSampleOnVaultOpen = async () => {
       const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-      if (library.length === 0 && !hasVisitedBefore) {
-        setIsLoadingSample(true);
-        try {
-          const res = await fetch('/PlanetMusic_Backup.json');
-          if (res.ok) {
-            const data = await res.json();
-            applyParsedData(data, false);
-            localStorage.setItem('hasVisitedBefore', 'true');
-            localStorage.setItem('isSampleVaultActive', 'true');
-            setIsSampleVaultActive(true);
-          }
-        } catch (err) {
-          console.warn("Could not auto-load sample vault on mount:", err);
-        } finally {
-          setIsLoadingSample(false);
+      if (!isVaultRoute || library.length > 0 || hasVisitedBefore || sampleAutoLoadStartedRef.current) {
+        return;
+      }
+      sampleAutoLoadStartedRef.current = true;
+      setIsLoadingSample(true);
+      try {
+        const response = await fetch('/PlanetMusic_Backup.json');
+        if (!response.ok) {
+          throw new Error(`Sample backup request failed (${response.status})`);
         }
+        const data = await response.json();
+        const decodedData = unpackVault(data);
+        if (!Array.isArray(decodedData.library)) {
+          throw new Error('The sample backup does not contain a valid song library.');
+        }
+        applyParsedData(data, false);
+        localStorage.setItem('hasVisitedBefore', 'true');
+        localStorage.setItem('isSampleVaultActive', 'true');
+        setIsSampleVaultActive(true);
+      } catch (error) {
+        console.error('Could not automatically load the sample vault.', error);
+      } finally {
+        setIsLoadingSample(false);
       }
     };
-    autoLoadSampleOnMount();
+    autoLoadSampleOnVaultOpen();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isVaultRoute]);
 
   const handleClearSampleVault = () => {
     setLibrary([]);

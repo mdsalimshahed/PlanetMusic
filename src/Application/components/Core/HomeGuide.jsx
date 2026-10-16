@@ -1039,7 +1039,7 @@ const HomeGuide = () => {
         </ol>
         <div className="home-guide-inline-cta">
           <Link to="/vault">Try it in the Vault →</Link>
-          <Link to="/blog/post/how-to-search-and-save-songs-to-your-vault">Read the step-by-step guide</Link>
+          <Link to="/docs/dev-blog/post/how-to-search-and-save-songs-to-your-vault">Read the step-by-step guide</Link>
         </div>
       </section>
 
@@ -1064,11 +1064,11 @@ const HomeGuide = () => {
             <p className="home-guide-kicker">Guides</p>
             <h2 id="guides-title">Learn the workspace.</h2>
           </div>
-          <Link className="home-guide-all" to="/blog/dev">All guides →</Link>
+          <Link className="home-guide-all" to="/docs/dev-blogs">All guides →</Link>
         </div>
         <div className="home-guide-guides">
           {FEATURED_GUIDES.map((g, i) => (
-            <Link key={g.id} to={`/blog/post/${g.id}`} data-reveal style={{ '--i': i }}>
+            <Link key={g.id} to={`/docs/dev-blog/post/${g.id}`} data-reveal style={{ '--i': i }}>
               <BlogPostArtwork post={g} className="home-guide-guide-artwork" />
               <span className="home-guide-guide-meta">{g.category} · {g.readTime}</span>
               <strong>{g.title}</strong>
@@ -1094,7 +1094,7 @@ const HomeGuide = () => {
       <footer className="home-guide-footer" ref={footerRef}>
         <p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p>
         <nav aria-label="More about PlanetMusic">
-          <Link to="/blog/dev">Guides</Link><Link to="/blog/changelog">Changelog</Link><Link to="/privacy">Privacy</Link><Link to="/contact">Contact</Link>
+          <Link to="/docs/dev-blogs">Guides</Link><Link to="/docs/changelog">Changelog</Link><Link to="/privacy">Privacy Policy</Link><Link to="/docs/terms-of-service">Terms of Service</Link><Link to="/contact">Contact</Link><Link to="/docs/about-me">About Me</Link>
         </nav>
       </footer>
       {showBackToTop && (

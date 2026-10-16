@@ -32,8 +32,8 @@ const css = `<style>
 .static .hero-title-logo{background:linear-gradient(120deg,#f06bff,#5fd4ff,#b6ff72);-webkit-background-clip:text;background-clip:text;color:transparent}
 .static .meta{color:#9d93b8;font-size:14px}.static footer{margin-top:40px;padding-top:18px;border-top:1px solid #2b2540;color:#9d93b8;font-size:14px}
 </style>`;
-const nav = `<nav aria-label="Main"><strong>PlanetMusic</strong><a href="/">Home</a><a href="/vault">Vault</a><a href="/blog/dev">Guides</a><a href="/blog/changelog">Changelog</a><a href="/privacy">Privacy</a><a href="/contact">Contact</a></nav>`;
-const footer = `<footer><p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p><p><a href="/privacy">Privacy</a> · <a href="/contact">Contact</a> · <a href="/blog/dev">All guides</a></p></footer>`;
+const nav = `<nav aria-label="Main"><strong>PlanetMusic</strong><a href="/">Home</a><a href="/vault">Vault</a><a href="/docs/dev-blogs">Docs</a><a href="/docs/changelog">Changelog</a><a href="/contact">Contact</a></nav>`;
+const footer = `<footer><p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p><p><a href="/privacy">Privacy Policy</a> · <a href="/docs/terms-of-service">Terms of Service</a> · <a href="/contact">Contact</a> · <a href="/docs/dev-blogs">Docs</a> · <a href="/docs/about-me">About Me</a></p></footer>`;
 
 const page = ({ path, title, description, body, jsonld, useAppStyles = false }) => {
   prerenderedPaths.push(path);
@@ -66,11 +66,15 @@ const vite = await createServer({
 let BlogTab;
 let ContactTab;
 let PrivacyTab;
+let TermsTab;
+let AboutTab;
 try {
-  [{ default: BlogTab }, { default: ContactTab }, { default: PrivacyTab }] = await Promise.all([
+  [{ default: BlogTab }, { default: ContactTab }, { default: PrivacyTab }, { default: TermsTab }, { default: AboutTab }] = await Promise.all([
     vite.ssrLoadModule('/src/Application/pages/BlogTab.jsx'),
     vite.ssrLoadModule('/src/Application/pages/ContactTab.jsx'),
-    vite.ssrLoadModule('/src/Application/pages/PrivacyTab.jsx')
+    vite.ssrLoadModule('/src/Application/pages/PrivacyTab.jsx'),
+    vite.ssrLoadModule('/src/Application/pages/TermsTab.jsx'),
+    vite.ssrLoadModule('/src/Application/pages/AboutTab.jsx')
   ]);
 } finally {
   await vite.close();
@@ -97,7 +101,8 @@ const homeBody = `
 <h1>Listen to <span class="hero-title-logo">MUSIC</span> of the <span class="hero-title-logo">PLANET</span></h1>
 <p>${esc(SITE.description)}</p>
 <p>Automatic translations and pronunciation readings can be reviewed and edited beside the original lyrics. Sync lyric lines to playback, then follow along using Live, Focused, Group Chat, or Plain Text views.</p>
-<p><a href="/vault">Open your Vault</a> · <a href="/blog/dev">Read the guides</a></p>
+<p><a href="/vault">Open your Vault</a> · <a href="/docs/dev-blogs">Read the guides</a></p>
+<p>Learn more: <a href="/docs/terms-of-service">Terms of Service</a> · <a href="/docs/about-me">About Me</a></p>
 <h2>What PlanetMusic is</h2>
 <p>PlanetMusic is not a streaming service. It is a set of tools for people who want to do more with the songs they already listen to: organize them, follow along with the words, and learn what the words mean.</p>
 ${ABOUT.map((a) => `<h3>${esc(a.title)}</h3><p>${esc(a.text)}</p>`).join('\n')}
@@ -106,8 +111,8 @@ ${ABOUT.map((a) => `<h3>${esc(a.title)}</h3><p>${esc(a.text)}</p>`).join('\n')}
 <h2>Features</h2>
 <ul>${FEATURES.map((f) => `<li><a href="${f.to}"><strong>${esc(f.title)}</strong></a>: ${esc(f.text)}</li>`).join('')}</ul>
 <h2>Guides</h2>
-<ul>${FEATURED_GUIDES.map((g) => `<li><a href="/blog/post/${g.id}">${esc(g.title)}</a> (${esc(g.readTime)}): ${esc(g.summary)}</li>`).join('')}</ul>
-<p><a href="/blog/dev">See all ${posts.length} guides</a></p>
+<ul>${FEATURED_GUIDES.map((g) => `<li><a href="/docs/dev-blog/post/${g.id}">${esc(g.title)}</a> (${esc(g.readTime)}): ${esc(g.summary)}</li>`).join('')}</ul>
+<p><a href="/docs/dev-blogs">See all ${posts.length} guides</a></p>
 <h2>Frequently asked questions</h2>
 ${FAQ.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('\n')}
 </main>`;
@@ -122,11 +127,29 @@ page({
 // ---- privacy policy
 page({
   path: '/privacy',
-  title: 'Privacy Policy | PlanetMusic',
+  title: 'Privacy Policy',
   description: 'How PlanetMusic stores Vault data in your browser, connects to third-party services, and handles advertising choices.',
   body: renderAppPage('/privacy', '/privacy', PrivacyTab, { adsEnabled: true }),
   useAppStyles: true,
-  jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Privacy Policy | PlanetMusic', description: 'How PlanetMusic stores browser data and uses third-party services and advertising.' }
+  jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Privacy Policy', description: 'How PlanetMusic stores browser data and uses third-party services and advertising.' }
+});
+
+page({
+  path: '/docs/terms-of-service',
+  title: 'Terms of Service | PlanetMusic',
+  description: 'Terms and responsibilities for using the PlanetMusic browser-based music and lyrics workspace.',
+  body: renderAppPage('/docs/terms-of-service', '/docs/terms-of-service', TermsTab, { adsEnabled: true }),
+  useAppStyles: true,
+  jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Terms of Service | PlanetMusic', description: 'Terms and responsibilities for using PlanetMusic.' }
+});
+
+page({
+  path: '/docs/about-me',
+  title: 'About Me | PlanetMusic',
+  description: 'Why PlanetMusic was built and an overview of the project.',
+  body: renderAppPage('/docs/about-me', '/docs/about-me', AboutTab, { adsEnabled: true }),
+  useAppStyles: true,
+  jsonld: { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About Me | PlanetMusic', description: 'Why PlanetMusic was built and an overview of the project.' }
 });
 
 // ---- contact and support
@@ -151,21 +174,21 @@ const blogProps = {
   initialChangelogMonths: orderedChangelogMonths
 };
 page({
-  path: '/blog/changelog',
+  path: '/docs/changelog',
   title: 'PlanetMusic Changelog | Product and Development Updates',
   description: 'Browse dated PlanetMusic product updates and development notes by month.',
-  body: renderAppPage('/blog/changelog', '/blog/*', BlogTab, blogProps),
+  body: renderAppPage('/docs/changelog', '/docs/*', BlogTab, blogProps),
   useAppStyles: true,
   jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'PlanetMusic Changelog', description: 'Monthly PlanetMusic product and development updates.' }
 });
 
 for (const month of orderedChangelogMonths) {
-  const path = `/blog/changelog/${month.slug}`;
+  const path = `/docs/changelog/${month.slug}`;
   page({
     path,
     title: `${month.label} Changelog | PlanetMusic`,
     description: `PlanetMusic product updates and development notes from ${month.label}, with ${month.entries.length} timeline entries.`,
-    body: renderAppPage(path, '/blog/*', BlogTab, blogProps),
+    body: renderAppPage(path, '/docs/*', BlogTab, blogProps),
     useAppStyles: true,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${month.label} Changelog | PlanetMusic`, description: `PlanetMusic product updates from ${month.label}.` }
   });
@@ -173,23 +196,23 @@ for (const month of orderedChangelogMonths) {
 
 // ---- guide index
 page({
-  path: '/blog/dev',
+  path: '/docs/dev-blogs',
   title: 'PlanetMusic Guides | How-to articles for the lyrics workspace',
   description: `${posts.length} plain-language guides covering syncing lyrics, translations, the Vault, backups and troubleshooting in PlanetMusic.`,
-  body: renderAppPage('/blog/dev', '/blog/*', BlogTab, blogProps),
+  body: renderAppPage('/docs/dev-blogs', '/docs/*', BlogTab, blogProps),
   useAppStyles: true
 });
 
 // ---- every guide
 for (const p of posts) {
-  const path = `/blog/post/${p.id}`;
+  const path = `/docs/dev-blog/post/${p.id}`;
   page({
     path,
     title: `${p.title} | PlanetMusic`,
     description: p.summary,
-    body: renderAppPage(path, '/blog/*', BlogTab, blogProps),
+    body: renderAppPage(path, '/docs/*', BlogTab, blogProps),
     useAppStyles: true,
-    jsonld: { '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.summary, datePublished: new Date(p.date).toISOString().slice(0, 10), author: { '@type': 'Person', name: p.author || 'PlanetMusic' }, mainEntityOfPage: `${SITE.url}/blog/post/${p.id}` }
+    jsonld: { '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.summary, datePublished: new Date(p.date).toISOString().slice(0, 10), author: { '@type': 'Person', name: p.author || 'PlanetMusic' }, mainEntityOfPage: `${SITE.url}${path}` }
   });
 }
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${prerenderedPaths

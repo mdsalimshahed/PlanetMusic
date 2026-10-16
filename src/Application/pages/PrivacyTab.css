@@ -113,6 +113,9 @@
 .privacy-section li {
   margin-bottom: 10px;
 }
+.privacy-section a {
+  color: var(--accent, #fbbf24);
+}
 
 .privacy-highlight-box {
   background: rgba(251, 191, 36, 0.08);

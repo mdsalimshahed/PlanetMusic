@@ -6,6 +6,11 @@ import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
 import ConfirmModal from '../components/Modals/ConfirmModal.jsx';
 import { renderMarkdown } from '../utils/markdownUtils.jsx';
+import {
+  getBlogPostPath,
+  hasDuplicateBlogLinkTitle,
+  slugifyBlogLinkTitle
+} from '../utils/blogRoutes.js';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
 import BlogPostArtwork from './BlogPostArtwork.jsx';
 
@@ -81,6 +86,26 @@ const Icon = ({ name, size = 18 }) => {
   }
 };
 
+const BlogAuthorAvatar = ({ post, className }) => {
+  const placeholder = '/avatar-placeholder.svg';
+  const src = post.isCustom
+    ? post.authorAvatar?.trim() || placeholder
+    : '/favicon.svg';
+
+  return (
+    <img
+      src={src}
+      alt=""
+      className={className}
+      onError={(event) => {
+        if (event.currentTarget.getAttribute('src') !== placeholder) {
+          event.currentTarget.src = placeholder;
+        }
+      }}
+    />
+  );
+};
+
 const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -89,14 +114,19 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const subPath = params['*'] || '';
   const pathTokens = subPath.split('/').filter(Boolean);
 
-  const viewMode = pathTokens[0] === 'post' ? 'reader' :
-                   pathTokens[0] === 'write' ? 'studio' :
-                   pathTokens[0] === 'edit' ? 'studio' : 'grid';
+  const isCustomRoute = ['custom-blog', 'custom', 'edit', 'write'].includes(pathTokens[0]);
+  const isLegacyPostRoute = pathTokens[0] === 'post';
+  const isPostRoute = pathTokens[0] === 'post' || pathTokens[1] === 'post';
+  const isEditRoute = pathTokens[0] === 'edit' || pathTokens[1] === 'edit';
+  const isWriteRoute = pathTokens[0] === 'write' || pathTokens[1] === 'write';
+  const viewMode = isPostRoute ? 'reader' : (isWriteRoute || isEditRoute) ? 'studio' : 'grid';
 
   const isChangelog = pathTokens[0] === 'changelog';
   const changelogMonthSlug = pathTokens[1];
-  const blogSection = pathTokens[0] === 'custom' ? 'custom' : 'dev';
-  const activeArticleId = (pathTokens[0] === 'post' || pathTokens[0] === 'edit') ? pathTokens[1] : null;
+  const blogSection = isCustomRoute ? 'custom' : 'dev';
+  const activeArticleSlug = isPostRoute || isEditRoute
+    ? pathTokens[0] === 'post' || pathTokens[0] === 'edit' ? pathTokens[1] : pathTokens[2]
+    : null;
   const [changelogMonths, setChangelogMonths] = useState(initialChangelogMonths);
   const [changelogLoadError, setChangelogLoadError] = useState('');
   const requestedChangelogMonthIndex = changelogMonthSlug
@@ -133,7 +163,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
 
   useEffect(() => {
     if (isChangelog && changelogMonths.length > 0 && changelogMonthSlug && requestedChangelogMonthIndex < 0) {
-      navigate('/blog/changelog', { replace: true });
+      navigate('/docs/changelog', { replace: true });
     }
   }, [isChangelog, changelogMonths.length, changelogMonthSlug, requestedChangelogMonthIndex, navigate]);
 
@@ -157,12 +187,24 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
     const saved = typeof window === 'undefined'
       ? null
       : localStorage.getItem('custom_blog_posts_storage');
-    return saved ? JSON.parse(saved) : [];
+    return saved
+      ? JSON.parse(saved).map((post) => ({
+        ...post,
+        linkTitle: post.linkTitle || post.title || post.id || ''
+      }))
+      : [];
   });
+  const editingPost = viewMode === 'studio' && activeArticleSlug
+    ? customPosts.find((post) => (
+      slugifyBlogLinkTitle(post.linkTitle || post.title || post.id) === activeArticleSlug
+      || slugifyBlogLinkTitle(post.id) === activeArticleSlug
+    )) || null
+    : null;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [postToDelete, setPostToDelete] = useState(null);
+  const [linkTitleError, setLinkTitleError] = useState('');
   
   const bodyTextareaRef = useRef(null);
   const importFileInputRef = useRef(null);
@@ -170,6 +212,9 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const [formData, setFormData] = useState({
     id: '',
     title: '',
+    linkTitle: '',
+    author: '',
+    authorAvatar: '',
     category: 'Guides',
     readTime: '4 min read',
     summary: '',
@@ -177,6 +222,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
     heroImage: '',
     content: ''
   });
+  const hasDuplicateLinkTitle = hasDuplicateBlogLinkTitle(customPosts, formData.linkTitle, editingPost?.id);
 
   useEffect(() => {
     fetch('/blog_posts.json')
@@ -195,12 +241,15 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   }, [customPosts]);
 
   useEffect(() => {
-    if (viewMode === 'studio' && activeArticleId) {
-      const postToEdit = customPosts.find((p) => p.id === activeArticleId);
+    if (viewMode === 'studio' && activeArticleSlug) {
+      const postToEdit = editingPost;
       if (postToEdit) {
         setFormData({
           id: postToEdit.id,
           title: postToEdit.title || '',
+          linkTitle: postToEdit.linkTitle || postToEdit.title || postToEdit.id || '',
+          author: postToEdit.author || '',
+          authorAvatar: postToEdit.authorAvatar || '',
           category: postToEdit.category || 'Guides',
           readTime: postToEdit.readTime || '4 min read',
           summary: postToEdit.summary || '',
@@ -209,10 +258,13 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
           content: postToEdit.content || ''
         });
       }
-    } else if (viewMode === 'studio' && !activeArticleId) {
+    } else if (viewMode === 'studio' && !activeArticleSlug) {
       setFormData({
         id: '',
         title: '',
+        linkTitle: '',
+        author: '',
+        authorAvatar: '',
         category: 'Guides',
         readTime: '4 min read',
         summary: '',
@@ -221,15 +273,26 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
         content: ''
       });
     }
-  }, [viewMode, activeArticleId, customPosts]);
+  }, [viewMode, activeArticleSlug, customPosts, editingPost]);
 
   const currentFeed = blogSection === 'dev' ? devPosts : customPosts;
-  const allPosts = [...devPosts, ...customPosts];
-
   const activePost = useMemo(() => {
-    if (viewMode !== 'reader' || !activeArticleId) return null;
-    return allPosts.find((p) => p.id === activeArticleId) || null;
-  }, [viewMode, activeArticleId, devPosts, customPosts]);
+    if (viewMode !== 'reader' || !activeArticleSlug) return null;
+    if (blogSection === 'custom') {
+      return customPosts.find((post) => (
+        slugifyBlogLinkTitle(post.linkTitle || post.title || post.id) === activeArticleSlug
+        || slugifyBlogLinkTitle(post.id) === activeArticleSlug
+      )) || null;
+    }
+    return devPosts.find((post) => slugifyBlogLinkTitle(post.id) === activeArticleSlug)
+      || (isLegacyPostRoute
+        ? customPosts.find((post) => (
+          slugifyBlogLinkTitle(post.linkTitle || post.title || post.id) === activeArticleSlug
+          || slugifyBlogLinkTitle(post.id) === activeArticleSlug
+        ))
+        : null)
+      || null;
+  }, [viewMode, activeArticleSlug, blogSection, devPosts, customPosts, isLegacyPostRoute]);
 
   const categories = useMemo(() => {
     const list = new Set(currentFeed.map((p) => p.category).filter(Boolean));
@@ -259,18 +322,19 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'linkTitle') setLinkTitleError('');
   };
 
   const handleOpenStudio = (postToEdit = null) => {
     if (postToEdit) {
-      navigate(`/blog/edit/${postToEdit.id}`);
+      navigate(`/docs/custom-blog/edit/${slugifyBlogLinkTitle(postToEdit.linkTitle || postToEdit.title || postToEdit.id)}`);
     } else {
-      navigate('/blog/write');
+      navigate('/docs/custom-blog/write');
     }
   };
 
   const handleCloseStudio = () => {
-    navigate(blogSection === 'custom' ? '/blog/custom' : '/blog/dev');
+    navigate(blogSection === 'custom' ? '/docs/custom-blog' : '/docs/dev-blogs');
   };
 
   const handleDeletePost = (e, postId) => {
@@ -283,17 +347,30 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const confirmDeletePost = () => {
     if (!postToDelete) return;
     setCustomPosts((posts) => posts.filter((post) => post.id !== postToDelete.id));
-    if (activeArticleId === postToDelete.id) navigate('/blog/custom');
+    if (activePost?.id === postToDelete.id) navigate('/docs/custom-blog');
     setPostToDelete(null);
   };
 
   const handleSaveArticle = (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.content) return alert('Title and Content required');
+    if (!formData.title || !formData.linkTitle || !formData.content) return alert('Title, link title, and content required');
 
-    const genId =
-      formData.id.trim() ||
-      formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const linkSlug = slugifyBlogLinkTitle(formData.linkTitle);
+    if (!linkSlug) {
+      setLinkTitleError('Enter a link title containing at least one letter or number.');
+      return;
+    }
+    if (hasDuplicateBlogLinkTitle(customPosts, linkSlug, editingPost?.id)) {
+      setLinkTitleError('That link title is already used by another custom blog.');
+      return;
+    }
+    setLinkTitleError('');
+
+    const genId = editingPost?.id || formData.id.trim() || (
+      customPosts.some((post) => post.id === linkSlug)
+        ? `${linkSlug}-${Date.now()}`
+        : linkSlug
+    );
 
     const tagsArr = formData.tags
       .split(',')
@@ -303,19 +380,26 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
     const articleObj = {
       ...formData,
       id: genId,
+      linkTitle: linkSlug,
+      author: formData.author.trim(),
+      authorAvatar: formData.authorAvatar.trim(),
       category: formData.category.trim() || 'General',
       isCustom: true,
-      date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      date: editingPost?.date || new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }),
       tags: tagsArr.length > 0 ? tagsArr : ['Personal']
     };
 
-    if (activeArticleId) {
-      setCustomPosts((prev) => prev.map((p) => (p.id === activeArticleId ? articleObj : p)));
+    if (editingPost) {
+      setCustomPosts((prev) => prev.map((p) => (p.id === editingPost.id ? articleObj : p)));
     } else {
-      setCustomPosts((prev) => [articleObj, ...prev.filter((p) => p.id !== genId)]);
+      setCustomPosts((prev) => [articleObj, ...prev]);
     }
 
-    navigate('/blog/custom');
+    navigate('/docs/custom-blog');
   };
 
   const handleExportCurrent = () => {
@@ -335,7 +419,11 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
         id: genId || 'article-draft',
         category: formData.category.trim() || 'General',
         isCustom: true,
-        date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        date: new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
         tags: tagsArr
       }
     ];
@@ -373,17 +461,24 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
       try {
         const imported = JSON.parse(event.target.result);
         if (Array.isArray(imported)) {
-          const formattedImport = imported.map((p) => ({ ...p, isCustom: true }));
-          setCustomPosts((prev) => {
-            const merged = [...prev];
-            formattedImport.forEach((item) => {
-              const idx = merged.findIndex((m) => m.id === item.id);
-              if (idx >= 0) merged[idx] = item;
-              else merged.push(item);
-            });
-            return merged;
+          const formattedImport = imported.map((post) => ({
+            ...post,
+            linkTitle: post.linkTitle || post.title || post.id || '',
+            isCustom: true
+          }));
+          const merged = [...customPosts];
+          formattedImport.forEach((item) => {
+            const idx = merged.findIndex((post) => post.id === item.id);
+            if (idx >= 0) merged[idx] = item;
+            else merged.push(item);
           });
-          navigate('/blog/custom');
+          const slugs = merged.map((post) => slugifyBlogLinkTitle(post.linkTitle || post.title || post.id));
+          if (slugs.some((slug, index) => !slug || slugs.indexOf(slug) !== index)) {
+            alert('Import cancelled: each custom blog must have a unique link title.');
+            return;
+          }
+          setCustomPosts(merged);
+          navigate('/docs/custom-blog');
           alert(`Successfully imported ${formattedImport.length} custom articles!`);
         } else {
           alert('Invalid blog JSON format.');
@@ -429,7 +524,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
           {viewMode === 'studio' ? (
             <div className="blog-studio-card glass-panel">
               <div className="blog-studio-header">
-                <h2>{activeArticleId ? 'Edit Custom Article' : 'New Custom Article Workspace'}</h2>
+                <h2>{editingPost ? 'Edit Custom Article' : 'New Custom Article Workspace'}</h2>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                   <button
                     className="blog-icon-btn"
@@ -481,6 +576,61 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                           <option key={cat} value={cat} />
                         ))}
                       </datalist>
+                    </div>
+                  </div>
+
+                  <div className="blog-form-group">
+                    <label htmlFor="custom-blog-link-title">Link title</label>
+                    <input
+                      id="custom-blog-link-title"
+                      type="text"
+                      name="linkTitle"
+                      className="blog-input"
+                      placeholder="e.g., my-guide-to-lyrics"
+                      value={formData.linkTitle}
+                      onChange={handleFormChange}
+                      required
+                      aria-invalid={Boolean(linkTitleError || hasDuplicateLinkTitle)}
+                      aria-describedby={`custom-blog-link-title-help${linkTitleError || hasDuplicateLinkTitle ? ' custom-blog-link-title-warning' : ''}`}
+                    />
+                    <p id="custom-blog-link-title-help" className="setting-desc">
+                      Article URL: /docs/custom-blog/post/{slugifyBlogLinkTitle(formData.linkTitle) || 'your-link-title'}
+                    </p>
+                    {(linkTitleError || hasDuplicateLinkTitle) && (
+                      <div id="custom-blog-link-title-warning" className="blog-link-title-warning" role="alert">
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                          <path d="M12 3 22 20H2L12 3Z" />
+                          <path d="M12 9v5m0 3h.01" />
+                        </svg>
+                        <span>{linkTitleError || 'That link title is already used by another custom blog.'}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="blog-form-row">
+                    <div className="blog-form-group flex-1">
+                      <label htmlFor="custom-blog-author">Author name</label>
+                      <input
+                        id="custom-blog-author"
+                        type="text"
+                        name="author"
+                        className="blog-input"
+                        placeholder="Your name"
+                        value={formData.author}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                    <div className="blog-form-group flex-2">
+                      <label htmlFor="custom-blog-author-avatar">Author avatar image URL</label>
+                      <input
+                        id="custom-blog-author-avatar"
+                        type="url"
+                        name="authorAvatar"
+                        className="blog-input"
+                        placeholder="https://example.com/avatar.png"
+                        value={formData.authorAvatar}
+                        onChange={handleFormChange}
+                      />
                     </div>
                   </div>
 
@@ -559,7 +709,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
 
                   <div className="blog-studio-actions">
                     <button type="submit" className="blog-submit-btn">
-                      {activeArticleId ? 'Update Article' : 'Save Custom Article'}
+                      {editingPost ? 'Update Article' : 'Save Custom Article'}
                     </button>
                   </div>
                 </form>
@@ -580,7 +730,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
             <div className="blog-reader-view glass-panel">
               <button 
                 className="blog-back-btn" 
-                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev', { state: { focusBlogCardId: activePost.id } })}
+                onClick={() => navigate(activePost.isCustom ? '/docs/custom-blog' : '/docs/dev-blogs', { state: { focusBlogCardId: activePost.id } })}
               >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
@@ -600,7 +750,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                   <div className="blog-article-byline">
                     {(activePost.author || activePost.isCustom) && (
                       <span className="blog-article-author">
-                        {!activePost.isCustom && <img src="/favicon.svg" alt="" className="blog-article-author-avatar" />}
+                        <BlogAuthorAvatar post={activePost} className="blog-article-author-avatar" />
                         <span>By {activePost.isCustom ? (activePost.author || 'You') : 'PlanetMusic'}</span>
                       </span>
                     )}
@@ -636,7 +786,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
 
               <button 
                 className="blog-back-btn bottom-back" 
-                onClick={() => navigate(activePost.isCustom ? '/blog/custom' : '/blog/dev', { state: { focusBlogCardId: activePost.id } })}
+                onClick={() => navigate(activePost.isCustom ? '/docs/custom-blog' : '/docs/dev-blogs', { state: { focusBlogCardId: activePost.id } })}
               >
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
@@ -693,7 +843,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                     className={`category-pill ${blogSection === 'dev' && !isChangelog ? 'active' : ''}`}
                     onClick={() => {
                       setSelectedCategory('All');
-                      navigate('/blog/dev');
+                      navigate('/docs/dev-blogs');
                     }}
                     aria-current={blogSection === 'dev' && !isChangelog ? 'page' : undefined}
                   >
@@ -703,7 +853,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                     className={`category-pill ${blogSection === 'custom' ? 'active' : ''}`}
                     onClick={() => {
                       setSelectedCategory('All');
-                      navigate('/blog/custom');
+                      navigate('/docs/custom-blog');
                     }}
                     aria-current={blogSection === 'custom' ? 'page' : undefined}
                   >
@@ -711,10 +861,31 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                   </button>
                   <button
                     className={`category-pill ${isChangelog ? 'active' : ''}`}
-                    onClick={() => navigate('/blog/changelog')}
+                    onClick={() => navigate('/docs/changelog')}
                     aria-current={isChangelog ? 'page' : undefined}
                   >
                     Changelog
+                  </button>
+                  <button
+                    className={`category-pill ${location.pathname === '/privacy' ? 'active' : ''}`}
+                    onClick={() => navigate('/privacy')}
+                    aria-current={location.pathname === '/privacy' ? 'page' : undefined}
+                  >
+                    Privacy
+                  </button>
+                  <button
+                    className={`category-pill ${location.pathname === '/docs/terms-of-service' ? 'active' : ''}`}
+                    onClick={() => navigate('/docs/terms-of-service')}
+                    aria-current={location.pathname === '/docs/terms-of-service' ? 'page' : undefined}
+                  >
+                    Terms of Service
+                  </button>
+                  <button
+                    className={`category-pill ${location.pathname === '/docs/about-me' ? 'active' : ''}`}
+                    onClick={() => navigate('/docs/about-me')}
+                    aria-current={location.pathname === '/docs/about-me' ? 'page' : undefined}
+                  >
+                    About Me
                   </button>
                 </div>
 
@@ -788,7 +959,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                           onInput={event => {
                             const month = changelogMonths[Number(event.target.value)];
                             const monthSlug = month.label.toLowerCase().replace(' ', '-');
-                            navigate(`/blog/changelog/${monthSlug}`, { replace: true });
+                            navigate(`/docs/changelog/${monthSlug}`, { replace: true });
                           }}
                         />
                         <div className="changelog-month-ticks" aria-hidden="true">
@@ -840,7 +1011,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                   {filteredPosts.map((post, idx) => (
                     <React.Fragment key={post.id}>
                       <div className="blog-card-wrapper" data-blog-card-id={String(post.id)}>
-                          <Link to={`/blog/post/${post.id}`} className="blog-card">
+                          <Link to={getBlogPostPath(post)} className="blog-card">
                             {post.heroImage && <img src={post.heroImage} alt="" className="blog-card-thumb" />}
                             {!post.heroImage && <BlogPostArtwork post={post} className="blog-card-artwork" />}
                             <div className="blog-card-top">
@@ -861,8 +1032,13 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                             <p className="blog-card-summary">{post.summary}</p>
                             {(post.author || post.date || post.isCustom) && (
                               <div className="blog-card-byline">
-                              {(post.author || post.isCustom) && <span>By {post.isCustom ? (post.author || 'You') : 'PlanetMusic'}</span>}
-                              {post.author && post.date && <span className="blog-byline-dot" aria-hidden="true">·</span>}
+                              {(post.author || post.isCustom) && (
+                                <span className="blog-card-author">
+                                  <BlogAuthorAvatar post={post} className="blog-card-author-avatar" />
+                                  <span>By {post.isCustom ? (post.author || 'You') : 'PlanetMusic'}</span>
+                                </span>
+                              )}
+                              {(post.author || post.isCustom) && post.date && <span className="blog-byline-dot" aria-hidden="true">·</span>}
                               {post.date && <time>{post.date}</time>}
                             </div>
                             )}

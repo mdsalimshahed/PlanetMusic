@@ -586,6 +586,9 @@
   .home-guide-player, .home-guide-preview-tabs { width: min(100%, 760px, max(280px, calc(100svh - 190px))); }
 }
 @media (max-width: 640px) {
+  .home-guide-footer { justify-content: center; text-align: center; }
+  .home-guide-footer p { max-width: 100%; padding-left: 0; border-left: 0; }
+  .home-guide-footer nav { width: 100%; justify-content: center; }
   .home-guide-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .home-guide-player { max-height: none; aspect-ratio: 1; }
   .home-guide-nav { top: 6px; margin-top: 8px; margin-bottom: -52px; }

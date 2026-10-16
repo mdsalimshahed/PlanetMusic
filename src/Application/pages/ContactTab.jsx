@@ -143,7 +143,7 @@ const ContactTab = ({ adsEnabled }) => {
                 Have a question, feedback, or a legal inquiry? We’re here to help.
               </p>
               <p className="contact-hero-sub contact-hero-links">
-                For more information: <a href="/blog/post/how-to-contact-us-get-support">Read the support guide</a> · <a href="/privacy">Read the Privacy Policy</a>
+                For more information: <a href="/docs/dev-blog/post/how-to-contact-us-get-support">Read the support guide</a> · <a href="/privacy">Read the Privacy Policy</a>
               </p>
             </div>
             <BlogPostArtwork

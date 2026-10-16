@@ -1,7 +1,7 @@
 /* --- src/pages/PrivacyTab.jsx --- */
 import React from 'react';
 import './PrivacyTab.css';
-import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import LegalDocumentLayout from './LegalDocumentLayout.jsx';
 import { getProceduralColor, getProceduralGradient } from '../../utils/proceduralColors.js';
 
 const PrivacyContentColors = ({ children }) => {
@@ -38,14 +38,10 @@ const PrivacyContentColors = ({ children }) => {
 
 const PrivacyTab = ({ adsEnabled }) => {
   return (
-    <section className="view-section privacy-tab-container">
-      <div className="privacy-layout-wrapper">
-         
-        {/* --- MAIN CONTENT AREA --- */}
-        <div className="privacy-main-content">
+    <LegalDocumentLayout adsEnabled={adsEnabled}>
           {/* HERO SECTION */}
           <div className="privacy-hero glass-panel">
-            <h1 className="privacy-hero-title" style={{ backgroundImage: getProceduralGradient('privacy:hero-heading') }}>Omnilateral Privacy Policy, Master Exculpation & Ephemeral Data Agreement</h1>
+            <h1 className="privacy-hero-title" style={{ backgroundImage: getProceduralGradient('privacy:hero-heading') }}>Privacy Policy</h1>
             <p className="privacy-hero-sub">
               A comprehensive legal framework detailing our stateless client-side architecture, absolute data sovereignty, strict DRM compliance, and total limitation of liability across all global jurisdictions.
             </p>
@@ -161,40 +157,7 @@ const PrivacyTab = ({ adsEnabled }) => {
               </>
             </PrivacyContentColors>
           </div>
-        </div>
-
-        {/* --- DEDICATED SIDEBAR AREA --- */}
-        <aside className="privacy-sidebar">
-          {adsEnabled && (
-            <>
-              <SponsorUnit 
-                placement="privacySidebar"
-                className="glass-panel dynamic-radius-override page-sidebar-ad-large"
-                adTitle="Sponsor"
-                adSub="Sidebar Advertisement Space"
-              />
-              <SponsorUnit 
-                placement="privacyStickySidebar"
-                className="glass-panel dynamic-radius-override page-sidebar-ad-small"
-                adTitle="Discover More"
-                adSub="Sticky Sidebar Ad"
-              />
-            </>
-          )}
-        </aside>
-      </div>
-
-      {/* BOTTOM SPONSOR AD (Same format as Settings page) */}
-      {adsEnabled && (
-        <SponsorUnit 
-          placement="privacyBottom"
-          className="glass-panel settings-promo-box dynamic-radius-override"
-          style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Sponsor / Partner"
-          adSub="Thank you for supporting PlanetMusic"
-        />
-      )}
-    </section>
+    </LegalDocumentLayout>
   );
 };
 

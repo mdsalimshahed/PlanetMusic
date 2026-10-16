@@ -121,6 +121,11 @@
 .blog-section-tabs .category-pill {
   padding: 10px 24px;
   font-size: 14px;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.blog-section-tabs .category-pill:hover {
+  transform: none;
 }
 
 .blog-controls-row {
@@ -211,7 +216,7 @@
   background: var(--accent, #fbbf24);
   color: #000000;
   border-color: var(--accent, #fbbf24);
-  font-weight: 700;
+  font-weight: 600;
   box-shadow: 0 4px 16px rgba(251, 191, 36, 0.35);
 }
 
@@ -732,6 +737,20 @@
   margin: -8px 0 16px;
 }
 
+.blog-card-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-card-author-avatar {
+  width: 1.6em;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .blog-byline-dot {
   opacity: 0.55;
 }
@@ -1108,6 +1127,32 @@
   color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.8px;
+}
+
+.blog-link-title-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid rgba(251, 191, 36, 0.38);
+  border-radius: 10px;
+  background: rgba(120, 75, 12, 0.24);
+  color: #ffe2a1;
+  font-size: 13px;
+  line-height: 1.45;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.blog-link-title-warning svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .blog-input, .blog-textarea, .blog-select {

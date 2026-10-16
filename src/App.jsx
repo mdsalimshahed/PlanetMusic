@@ -19,9 +19,10 @@ import SettingsTab from './Application/pages/SettingsTab.jsx';
 import BlogTab from './Application/pages/BlogTab.jsx';
 import PrivacyTab from './Application/pages/PrivacyTab.jsx';
 import ContactTab from './Application/pages/ContactTab.jsx';
+import TermsTab from './Application/pages/TermsTab.jsx';
+import AboutTab from './Application/pages/AboutTab.jsx';
 
 import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
-import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
 import { extractYouTubeId } from './Studio/utils/songHelpers.js';
 
@@ -132,21 +133,26 @@ const App = () => {
     const previousPathname = previousPathnameRef.current;
     previousPathnameRef.current = location.pathname;
     const isChangelogMonthNavigation = previousPathname !== location.pathname
-      && /^\/blog\/changelog(?:\/[^/]+)?$/.test(previousPathname)
-      && /^\/blog\/changelog(?:\/[^/]+)?$/.test(location.pathname);
+      && /^\/docs\/changelog(?:\/[^/]+)?$/.test(previousPathname)
+      && /^\/docs\/changelog(?:\/[^/]+)?$/.test(location.pathname);
+    const isBlogSectionNavigation = previousPathname !== location.pathname
+      && /^\/docs\/(?:dev-blogs|custom-blog|changelog(?:\/[^/]+)?)$/.test(previousPathname)
+      && /^\/docs\/(?:dev-blogs|custom-blog|changelog(?:\/[^/]+)?)$/.test(location.pathname);
     const isSongModalNavigation = previousPathname.startsWith('/song/')
       || location.pathname.startsWith('/song/');
 
-    if (!isChangelogMonthNavigation && !isSongModalNavigation) {
+    if (!isChangelogMonthNavigation && !isBlogSectionNavigation && !isSongModalNavigation) {
       contentScrollAreaRef.current?.scrollTo(0, 0);
     }
   }, [location.pathname]);
 
   // Parse routing variables from URL
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const activeTab = pathParts[0] === 'blog' ? 'blog' : 
+  const activeTab = pathParts[0] === 'docs' ? 'blog' :
                     pathParts[0] === 'settings' ? 'settings' : 
                     pathParts[0] === 'privacy' ? 'privacy' : 
+                    pathParts[0] === 'terms' || pathParts[1] === 'terms-of-service' ? 'terms' :
+                    pathParts[0] === 'about' || pathParts[1] === 'about-me' ? 'about' :
                     pathParts[0] === 'contact' ? 'contact' : 
                     pathParts[0] === 'vault' || pathParts[0] === 'song' ? 'vault' :
                     pathParts[0] === 'ambient' ? 'ambient' :
@@ -411,7 +417,8 @@ const App = () => {
   } = useVaultOperations({
     library, setLibrary, settings, setSettings,
     isSampleVaultActive, setIsSampleVaultActive,
-    selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick
+    selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick,
+    isVaultRoute: location.pathname === '/vault' || location.pathname.startsWith('/vault/')
   });
 
   // 4. Cosmos Search Engine
@@ -687,8 +694,9 @@ const App = () => {
             
             <Route path="/song/*" element={null} />
             
-            {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES (/blog/dev, /blog/custom, /blog/post/:id, /blog/write, etc.) */}
-            <Route path="/blog/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
+            {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES */}
+            <Route path="/docs/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
+            <Route path="/blog/*" element={<Navigate to={location.pathname.replace(/^\/blog/, '/docs')} replace />} />
             
             <Route path="/settings" element={
               <SettingsTab 
@@ -706,6 +714,16 @@ const App = () => {
               <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
             } />
 
+            <Route path="/docs/terms-of-service" element={
+              <TermsTab adsEnabled={settings.adsEnabled !== false} />
+            } />
+            <Route path="/terms" element={<Navigate to="/docs/terms-of-service" replace />} />
+
+            <Route path="/docs/about-me" element={
+              <AboutTab adsEnabled={settings.adsEnabled !== false} />
+            } />
+            <Route path="/about" element={<Navigate to="/docs/about-me" replace />} />
+
             <Route path="/contact" element={
               <ContactTab adsEnabled={settings.adsEnabled !== false} />
             } />
@@ -720,7 +738,6 @@ const App = () => {
             </div>
           </main>
 
-          <ConsentNotice />
         </>
       )}
 

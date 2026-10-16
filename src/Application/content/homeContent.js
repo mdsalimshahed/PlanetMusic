@@ -33,23 +33,23 @@ export const ABOUT = [
 ];
 
 export const STEPS = [
-  { n: '01', title: 'Search the Cosmos', text: 'Use the search bar to find any song and save it to your Vault. Then add a link to the song from your favorite platform, whether it is YouTube, Deezer, or Spotify.', to: '/blog/post/how-to-search-and-save-songs-to-your-vault' },
-  { n: '02', title: 'Add the lyrics and credit the artists', text: 'Paste or write your lyrics, then use our powerful formatting interface to tag each line to the artist behind it. Bring every voice to life with artist images by simply pasting an image link into Artist Manager.', to: '/blog/post/formatting-lyrics-singer-tags' },
-  { n: '03', title: 'Sync the lyrics', text: 'Our engine automatically fetches available sync data, and you can fine-tune every line yourself. Press the Down Arrow to lock in a timestamp, or the Up Arrow to remove it.', to: '/blog/post/how-to-sync-songs-with-music' },
-  { n: '04', title: 'Translate in one click', text: 'Translate every line at once with our automated translation engine. Then fine-tune each result in the Translation Workspace until it sounds right to you.', to: '/blog/post/complete-guide-to-the-translation-workspace' },
-  { n: '05', title: 'Enjoy the music', text: 'Sit back and enjoy your lyrics in four different views. Follow every line in Live Scroll, stay with the moment in Focused, watch each voice come alive in Group Chat, or take in the full song in Plain Text.', to: '/blog/post/group-chat-lyrics-view' }
+  { n: '01', title: 'Search the Cosmos', text: 'Use the search bar to find any song and save it to your Vault. Then add a link to the song from your favorite platform, whether it is YouTube, Deezer, or Spotify.', to: '/docs/dev-blog/post/how-to-search-and-save-songs-to-your-vault' },
+  { n: '02', title: 'Add the lyrics and credit the artists', text: 'Paste or write your lyrics, then use our powerful formatting interface to tag each line to the artist behind it. Bring every voice to life with artist images by simply pasting an image link into Artist Manager.', to: '/docs/dev-blog/post/formatting-lyrics-singer-tags' },
+  { n: '03', title: 'Sync the lyrics', text: 'Our engine automatically fetches available sync data, and you can fine-tune every line yourself. Press the Down Arrow to lock in a timestamp, or the Up Arrow to remove it.', to: '/docs/dev-blog/post/how-to-sync-songs-with-music' },
+  { n: '04', title: 'Translate in one click', text: 'Translate every line at once with our automated translation engine. Then fine-tune each result in the Translation Workspace until it sounds right to you.', to: '/docs/dev-blog/post/complete-guide-to-the-translation-workspace' },
+  { n: '05', title: 'Enjoy the music', text: 'Sit back and enjoy your lyrics in four different views. Follow every line in Live Scroll, stay with the moment in Focused, watch each voice come alive in Group Chat, or take in the full song in Plain Text.', to: '/docs/dev-blog/post/group-chat-lyrics-view' }
 ];
 
 export const FEATURES = [
-  { icon: '⌕', title: 'Search for songs', text: 'Search by song title or artist and browse matching results from connected music sources.', to: '/blog/post/how-to-search-and-save-songs-to-your-vault' },
-  { icon: '♪', title: 'Sync Workspace', text: 'Keyboard-driven timing for every line, with separate handling for ad-libs and echoes.', to: '/blog/post/how-to-sync-songs-with-music' },
-  { icon: '文', title: 'Translation Workspace', text: 'Original, translation and phonetic reading side by side. Import or export your own .txt translations.', to: '/blog/post/complete-guide-to-the-translation-workspace' },
-  { icon: '▤', title: 'Four synced lyrics views', text: 'Follow lyrics as music plays in four views: Live scrolls through the song and highlights the current line; Focused centers the active lyric and positions timed ad-libs around it; Group Chat turns timed singer parts into a color-coded conversation; Plain Text shows the lyrics grouped by singer without playback highlighting.', to: '/blog/post/group-chat-lyrics-view' },
-  { icon: '◔', title: 'Group Chat view', text: 'Turn a duet or ensemble track into a live group conversation with colors for each artist.', to: '/blog/post/group-chat-lyrics-view' },
-  { icon: '✦', title: 'Ambient mode', text: 'Lyrics drift across a background that takes its colors from the album art.', to: '/blog/post/ambient-mode-floating-lyrics' },
-  { icon: '◉', title: 'Artist Image Manager', text: 'Give each artist a photo and a color once; it is used everywhere they sing.', to: '/blog/post/image-manager-customizing-artist-profiles' },
-  { icon: '⌁', title: 'Audio delay test', text: 'Measure Bluetooth lag and shift the lyrics so they land with what you hear.', to: '/blog/post/audio-delay-test-bluetooth-sync' },
-  { icon: '⚙', title: 'Customize your workspace', text: 'Use the Settings tab to adjust typography, background opacity, and layout proportions to suit how you read and listen.', to: '/blog/post/personalizing-viewing-experience-layout' }
+  { icon: '⌕', title: 'Search for songs', text: 'Search by song title or artist and browse matching results from connected music sources.', to: '/docs/dev-blog/post/how-to-search-and-save-songs-to-your-vault' },
+  { icon: '♪', title: 'Sync Workspace', text: 'Keyboard-driven timing for every line, with separate handling for ad-libs and echoes.', to: '/docs/dev-blog/post/how-to-sync-songs-with-music' },
+  { icon: '文', title: 'Translation Workspace', text: 'Original, translation and phonetic reading side by side. Import or export your own .txt translations.', to: '/docs/dev-blog/post/complete-guide-to-the-translation-workspace' },
+  { icon: '▤', title: 'Four synced lyrics views', text: 'Follow lyrics as music plays in four views: Live scrolls through the song and highlights the current line; Focused centers the active lyric and positions timed ad-libs around it; Group Chat turns timed singer parts into a color-coded conversation; Plain Text shows the lyrics grouped by singer without playback highlighting.', to: '/docs/dev-blog/post/group-chat-lyrics-view' },
+  { icon: '◔', title: 'Group Chat view', text: 'Turn a duet or ensemble track into a live group conversation with colors for each artist.', to: '/docs/dev-blog/post/group-chat-lyrics-view' },
+  { icon: '✦', title: 'Ambient mode', text: 'Lyrics drift across a background that takes its colors from the album art.', to: '/docs/dev-blog/post/ambient-mode-floating-lyrics' },
+  { icon: '◉', title: 'Artist Image Manager', text: 'Give each artist a photo and a color once; it is used everywhere they sing.', to: '/docs/dev-blog/post/image-manager-customizing-artist-profiles' },
+  { icon: '⌁', title: 'Audio delay test', text: 'Measure Bluetooth lag and shift the lyrics so they land with what you hear.', to: '/docs/dev-blog/post/audio-delay-test-bluetooth-sync' },
+  { icon: '⚙', title: 'Customize your workspace', text: 'Use the Settings tab to adjust typography, background opacity, and layout proportions to suit how you read and listen.', to: '/docs/dev-blog/post/personalizing-viewing-experience-layout' }
 ];
 
 export const FEATURED_GUIDES = [
