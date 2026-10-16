@@ -53,6 +53,10 @@ Allow: /
 User-agent: Mediapartners-Google
 Allow: /
 
+# Claude review crawler: review-only access under the conditions above.
+User-agent: Claude-User
+Allow: /
+
 # Everyone else is disallowed by default.
 User-agent: *
 Disallow: /
