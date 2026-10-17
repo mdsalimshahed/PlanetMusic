@@ -342,7 +342,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     attemptPlay
   };
 
-  usePlayerArtwork({ currentTrack, setAccentColor, setAccentArtworkUrl });
+  usePlayerArtwork({ currentTrack, isPlaying, isBuffering, setAccentColor, setAccentArtworkUrl });
 
   usePlayerSourceLifecycle(playerRuntime);
 

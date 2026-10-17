@@ -4,6 +4,79 @@ import { extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './SongCard.css';
 
+const ACCENT_CACHE_LIMIT = 500;
+const accentRGBCache = new Map();
+
+const getArtworkAccentRGB = (artworkUrl) => {
+  const cachedResult = accentRGBCache.get(artworkUrl);
+  if (cachedResult) {
+    accentRGBCache.delete(artworkUrl);
+    accentRGBCache.set(artworkUrl, cachedResult);
+    return cachedResult;
+  }
+
+  const result = new Promise((resolve) => {
+    const image = new Image();
+    image.crossOrigin = 'Anonymous';
+
+    const cleanup = () => {
+      image.onload = null;
+      image.onerror = null;
+      image.src = '';
+    };
+
+    image.onload = () => {
+      const processColors = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d', { willReadFrequently: true });
+          canvas.width = 3;
+          canvas.height = 3;
+          context.drawImage(image, 0, 0, 3, 3);
+
+          const data = context.getImageData(0, 0, 3, 3).data;
+          let red = 0;
+          let green = 0;
+          let blue = 0;
+          const pixelCount = data.length / 4;
+
+          for (let index = 0; index < data.length; index += 4) {
+            red += data[index];
+            green += data[index + 1];
+            blue += data[index + 2];
+          }
+
+          resolve(`${Math.floor(red / pixelCount)}, ${Math.floor(green / pixelCount)}, ${Math.floor(blue / pixelCount)}`);
+        } catch {
+          resolve('20, 20, 30');
+        } finally {
+          cleanup();
+        }
+      };
+
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(processColors, { timeout: 3000 });
+      } else {
+        setTimeout(processColors, 200);
+      }
+    };
+
+    image.onerror = () => {
+      cleanup();
+      resolve('20, 20, 30');
+    };
+
+    image.src = artworkUrl;
+  });
+
+  accentRGBCache.set(artworkUrl, result);
+  if (accentRGBCache.size > ACCENT_CACHE_LIMIT) {
+    const oldestArtworkUrl = accentRGBCache.keys().next().value;
+    accentRGBCache.delete(oldestArtworkUrl);
+  }
+  return result;
+};
+
 const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
@@ -15,69 +88,17 @@ const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }
 
   useEffect(() => {
     if (!highResArt) return;
-    
+
     let isMounted = true;
-    let img = new Image();
-    img.crossOrigin = 'Anonymous';
+    if (window.innerWidth <= 600) {
+      setAccentRGB('20, 20, 30');
+      return undefined;
+    }
 
-    img.onload = () => {
-      // Skip canvas color math on narrow/mobile viewports to preserve RAM and battery
-      if (window.innerWidth <= 600) {
-        if (isMounted) setAccentRGB('20, 20, 30');
-        return;
-      }
+    getArtworkAccentRGB(highResArt).then(accent => {
+      if (isMounted) setAccentRGB(accent);
+    });
 
-      const processColors = () => {
-        if (!isMounted) return;
-        try {
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d', { willReadFrequently: true });
-          
-          canvas.width = 3; 
-          canvas.height = 3;
-          context.drawImage(img, 0, 0, 3, 3);
-          
-          const data = context.getImageData(0, 0, 3, 3).data;
-          let r = 0, g = 0, b = 0;
-          const pixelCount = data.length / 4;
-
-          for (let i = 0; i < data.length; i += 4) {
-            r += data[i];
-            g += data[i + 1];
-            b += data[i + 2];
-          }
-
-          r = Math.floor(r / pixelCount);
-          g = Math.floor(g / pixelCount);
-          b = Math.floor(b / pixelCount);
-
-          setAccentRGB(`${r}, ${g}, ${b}`);
-        } catch {
-          // Fallback on CORS error
-          setAccentRGB('20, 20, 30');
-        } finally {
-          img.onload = null;
-          img.onerror = null;
-          img.src = '';
-          img = null;
-        }
-      };
-
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(processColors, { timeout: 3000 });
-      } else {
-        setTimeout(processColors, Math.random() * 400 + 200);
-      }
-    };
-
-    img.onerror = () => {
-      img.onload = null;
-      img.onerror = null;
-      img.src = '';
-      img = null;
-    };
-
-    img.src = highResArt;
     return () => {
       isMounted = false;
     };
