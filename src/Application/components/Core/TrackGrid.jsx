@@ -18,11 +18,46 @@ const getRandomGridEntries = (items, columnCount, itemSequence) => {
     return seed / 0x100000000;
   };
 
-  const entries = items.slice(0, columnCount).map((song, index) => ({
+  const entries = (columnCount === 2 ? [] : items.slice(0, columnCount)).map((song, index) => ({
     type: 'track',
     song,
     index
   }));
+  if (columnCount === 2) {
+    let songIndex = 0;
+    let adIndex = 0;
+
+    while (songIndex < items.length) {
+      const blockEnd = Math.min(songIndex + 6, items.length);
+      while (songIndex < blockEnd) {
+        entries.push({
+          type: 'track',
+          song: items[songIndex],
+          index: songIndex
+        });
+        songIndex += 1;
+      }
+
+      if (songIndex < items.length) {
+        const adEntry = { type: 'ad', key: `vault-promo-${adIndex}` };
+        adIndex += 1;
+        const trackEntry = {
+          type: 'track',
+          song: items[songIndex],
+          index: songIndex
+        };
+        songIndex += 1;
+        if (nextRandom() < 0.5) {
+          entries.push(adEntry, trackEntry);
+        } else {
+          entries.push(trackEntry, adEntry);
+        }
+      }
+    }
+
+    return entries;
+  }
+
   let songIndex = entries.length;
   let adIndex = 0;
   const songsPerRow = Math.max(1, columnCount - 1);

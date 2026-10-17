@@ -1,5 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import selfPromoItems from './selfPromoItems.js';
+import selfPromoFeatures from './selfPromoFeatures.js';
 import './SelfPromoCard.css';
 
 const ROTATION_INTERVAL_MS = 7000;
@@ -317,6 +318,187 @@ const PromoArtworkGallery = ({ visuals }) => (
   </span>
 );
 
+const getFeatureGraphic = (feature) => {
+  const text = feature.toLowerCase();
+  if (/caption|spoken|subtitle|word/.test(text)) return 'captions';
+  if (/chapter|section|topic/.test(text)) return 'chapters';
+  if (/jump|find|moment|navigate|revisit/.test(text)) return 'bookmark';
+  if (/complete|finish/.test(text)) return 'completion';
+  if (/ongoing|status|progress|active/.test(text)) return 'progress';
+  if (/activity|frequency|routine/.test(text)) return 'activity';
+  if (/compare|graph|trend|stat|pattern|total/.test(text)) return 'stats';
+  if (/hour|duration|session|date|time/.test(text)) return 'hours';
+  if (/game|play|title/.test(text)) return 'games';
+  if (/history|record|library|group|organize/.test(text)) return 'library';
+  if (/edit|select|description|refine|update/.test(text)) return 'edit';
+  if (/video|player|link|playback/.test(text)) return 'youtube';
+  if (/save|store/.test(text)) return 'progress';
+  if (/keyboard|shortcut/.test(text)) return 'keyboard';
+  if (/export|download/.test(text)) return 'export';
+  return 'spark';
+};
+
+const getCompactSquareFeatureText = (text) => {
+  if (/caption|spoken|subtitle|word/i.test(text)) return 'Captions';
+  if (/chapter|section|topic/i.test(text)) return 'Chapters';
+  if (/bookmark|moment|revisit|jump/i.test(text)) return 'Bookmarks';
+  if (/complete|finish|progress|status/i.test(text)) return 'Game log';
+  if (/graph|compare|stat|total|pattern/i.test(text)) return 'Playtime';
+  if (/hour|duration|session|stream|activity/i.test(text)) return 'Sessions';
+  if (/game|play|title/i.test(text)) return 'Game log';
+  if (/export|download/i.test(text)) return 'SRT export';
+  return text.split(/\s+/)[0];
+};
+
+const PromoFeatureGraphic = ({ type }) => (
+  <svg className={`self-promo-feature-graphic is-${type}`} viewBox="0 0 24 24" aria-hidden="true">
+    {type === 'captions' && (
+      <>
+        <rect x="3" y="4" width="18" height="16" rx="3" />
+        <path d="M7 10h10M7 14h7" />
+      </>
+    )}
+    {type === 'youtube' && (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="4" />
+        <path d="m10 9 5 3-5 3V9Z" />
+      </>
+    )}
+    {type === 'chapters' && (
+      <>
+        <path d="M5 5h14M5 12h14M5 19h14" />
+        <circle className="self-promo-feature-fill" cx="3" cy="5" r="1" />
+        <circle className="self-promo-feature-fill" cx="3" cy="12" r="1" />
+        <circle className="self-promo-feature-fill" cx="3" cy="19" r="1" />
+      </>
+    )}
+    {type === 'bookmark' && <path d="M7 4h10v17l-5-3-5 3V4Zm3 5h4" />}
+    {type === 'edit' && (
+      <>
+        <path d="m4 16-.8 4.8L8 20l11-11-4-4L4 16Z" />
+        <path d="m13.5 6.5 4 4" />
+      </>
+    )}
+    {type === 'games' && (
+      <>
+        <path d="M7 8h10a4 4 0 0 1 3.8 5l-1 3a2 2 0 0 1-3.2 1l-2.1-1.6h-5L7.4 17a2 2 0 0 1-3.2-1l-1-3A4 4 0 0 1 7 8Z" />
+        <path d="M7 11v4m-2-2h4m7-1h.01M18 14h.01" />
+      </>
+    )}
+    {type === 'hours' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </>
+    )}
+    {type === 'timecode' && (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M7 8v8m4-5v5m4-8v8m4-5v5" />
+      </>
+    )}
+    {type === 'timeline' && (
+      <>
+        <path d="M4 7h16M4 17h16" />
+        <circle cx="7" cy="7" r="2" />
+        <circle cx="16" cy="17" r="2" />
+      </>
+    )}
+    {type === 'stats' && (
+      <>
+        <path d="M4 20V5m0 15h17" />
+        <path d="M7 16v-4m5 4V8m5 8V5" />
+        <path d="m6 10 5-4 4 1 5-4" />
+      </>
+    )}
+    {type === 'progress' && (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8 12 2.5 2.5L16 9" />
+      </>
+    )}
+    {type === 'completion' && (
+      <>
+        <path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z" />
+        <path d="m8.5 12 2.2 2.2 4.8-5" />
+      </>
+    )}
+    {type === 'library' && (
+      <>
+        <path d="M4 5h6l2 2h8v12H4V5Z" />
+        <path d="M7 11h10m-10 4h7" />
+      </>
+    )}
+    {type === 'activity' && (
+      <>
+        <rect x="4" y="4" width="5" height="5" rx="1" />
+        <rect x="11" y="4" width="5" height="5" rx="1" />
+        <rect x="4" y="11" width="5" height="5" rx="1" />
+        <rect x="11" y="11" width="5" height="5" rx="1" />
+        <rect className="self-promo-feature-fill" x="18" y="11" width="3" height="5" rx="1" />
+      </>
+    )}
+    {type === 'keyboard' && (
+      <>
+        <rect x="3" y="6" width="18" height="12" rx="2" />
+        <path d="M7 10h.01M11 10h.01M15 10h.01M7 14h.01m4 0h6" />
+      </>
+    )}
+    {type === 'export' && (
+      <>
+        <path d="M12 15V3m-4 4 4-4 4 4" />
+        <path d="M5 12v8h14v-8" />
+      </>
+    )}
+    {type === 'spark' && (
+      <>
+        <path d="m12 2 2.3 7.7L22 12l-7.7 2.3L12 22l-2.3-7.7L2 12l7.7-2.3L12 2Z" />
+        <circle cx="19" cy="5" r="1" />
+      </>
+    )}
+  </svg>
+);
+
+const getFeatureCount = (format, placement, width, { isCompact, isTiny, isTall, isExpanded, isNarrow }) => {
+  if (format === 'square') return isTiny || width < 280 ? 1 : width < 360 ? 2 : 3;
+  if (format === 'feed') {
+    if (placement === 'blogFeed') return 1;
+    if (isCompact) return 1;
+    return width < 520 ? 3 : 5;
+  }
+  if (format === 'sidebar') return isTall ? 7 : isCompact ? 1 : 5;
+  if (format === 'inline') {
+    if (isCompact || isNarrow) return 1;
+    if (width < 500) return 3;
+    if (width < 760) return 5;
+    return isExpanded ? 8 : 6;
+  }
+  if (format === 'banner') return isCompact ? 1 : width < 1250 ? 6 : 9;
+  return isCompact ? 1 : width < 520 ? 3 : 5;
+};
+
+const getFeatures = (promo, campaignIndex, featureCount) => {
+  const campaignFeatures = promo.campaigns[campaignIndex].features;
+  const startIndex = campaignIndex % campaignFeatures.length;
+  const selected = Array.from(campaignFeatures, (_, index) => (
+    campaignFeatures[(startIndex + index) % campaignFeatures.length]
+  )).slice(0, featureCount).map((text) => ({
+    text,
+    graphic: getFeatureGraphic(text)
+  }));
+  const seen = new Set(selected.map(({ text }) => text.toLowerCase()));
+  const catalog = selfPromoFeatures[promo.id] ?? [];
+
+  for (let offset = 0; offset < catalog.length && selected.length < featureCount; offset += 1) {
+    const feature = catalog[(campaignIndex * 3 + offset) % catalog.length];
+    if (seen.has(feature.text.toLowerCase())) continue;
+    seen.add(feature.text.toLowerCase());
+    selected.push(feature);
+  }
+
+  return selected;
+};
+
 const PromoBannerArtwork = ({ visual }) => (
   <span className={`self-promo-banner-art self-promo-banner-art-${visual}`} aria-hidden="true">
     {visual === 'captions' ? (
@@ -374,6 +556,17 @@ const PromoBannerArtwork = ({ visual }) => (
   </span>
 );
 
+const PromoBannerArtworkGallery = ({ visual, supportingVisuals }) => (
+  <span className="self-promo-banner-gallery" aria-hidden="true">
+    <PromoBannerArtwork visual={visual} />
+    <span className="self-promo-banner-supporting-art">
+      {supportingVisuals.map((supportingVisual) => (
+        <PromoArtwork key={supportingVisual} visual={supportingVisual} />
+      ))}
+    </span>
+  </span>
+);
+
 const SelfPromoCard = ({ placement = 'default', format = 'square', className = '', style }) => {
   const instanceId = useId();
   const cardRef = useRef(null);
@@ -382,50 +575,72 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
   const [isTall, setIsTall] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isNarrow, setIsNarrow] = useState(false);
+  const [cardWidth, setCardWidth] = useState(0);
+  const [featureScale, setFeatureScale] = useState(1);
   const [creative, setCreative] = useState(() => getInitialCreative(placement, format, instanceId));
   const currentCreative = useRef(creative);
   const promo = selfPromoItems[creative.promoIndex];
   const campaign = promo.campaigns[creative.messageIndex];
+  const featureCount = getFeatureCount(format, placement, cardWidth, {
+    isCompact,
+    isTiny,
+    isTall,
+    isExpanded,
+    isNarrow
+  });
+  const features = getFeatures(promo, creative.messageIndex, featureCount);
   const artworkSet = promo.artworkSets?.[creative.messageIndex] ?? [promo.visual];
+  const squareArtworkCount = cardWidth < 280 ? 1 : 2;
+  const showBannerArtworkGallery = cardWidth >= 1050 || isTall;
+  const compactLayout = format === 'square' ? cardWidth < 220 : isCompact;
+  const tinyLayout = format === 'square' ? cardWidth < 155 : isTiny;
 
   useLayoutEffect(() => {
     const card = cardRef.current;
-    if (!card || typeof ResizeObserver === 'undefined') return undefined;
-    let resizeFrame;
+    if (!card) return undefined;
 
+    const updateLayoutState = (width, height) => {
+      const roundedWidth = Math.round(width);
+      setCardWidth((current) => (current === roundedWidth ? current : roundedWidth));
+      setIsTiny((current) => {
+        const tiny = format === 'square' && width < 155;
+        return current === tiny ? current : tiny;
+      });
+      const tall = format === 'feed'
+        ? height >= 360 && height > width * 0.7
+        : height >= 420 && height > width * 1.1;
+      setIsTall((current) => (current === tall ? current : tall));
+      const expanded = (format === 'inline' && width >= 360 && height >= 240) ||
+        (format === 'feed' && height >= 500);
+      setIsExpanded((current) => (current === expanded ? current : expanded));
+      const narrow = format === 'inline' && width < 310 && height >= 240;
+      setIsNarrow((current) => (current === narrow ? current : narrow));
+      const compact = format === 'sidebar'
+        ? width < 380 || height < 440
+        : format === 'banner'
+          ? width < 760
+          : format === 'feed'
+            ? width < 440 || height < 320
+            : format === 'inline'
+              ? width < 420 || height < 260
+              : format === 'square' && width < 220;
+      setIsCompact((current) => (current === Boolean(compact) ? current : Boolean(compact)));
+    };
+
+    const initialRect = card.getBoundingClientRect();
+    updateLayoutState(initialRect.width, initialRect.height);
+    if (typeof ResizeObserver === 'undefined') return undefined;
+
+    let resizeFrame;
     const observer = new ResizeObserver(([entry]) => {
       const borderBox = Array.isArray(entry.borderBoxSize)
         ? entry.borderBoxSize[0]
         : entry.borderBoxSize;
-      const width = format === 'square'
-        ? borderBox?.inlineSize ?? card.getBoundingClientRect().width
-        : entry.contentRect.width;
-      const height = entry.contentRect.height;
+      const rect = card.getBoundingClientRect();
+      const width = borderBox?.inlineSize > 0 ? borderBox.inlineSize : rect.width;
       window.cancelAnimationFrame(resizeFrame);
       resizeFrame = window.requestAnimationFrame(() => {
-        setIsTiny((current) => {
-          const tiny = format === 'square' && width < 155;
-          return current === tiny ? current : tiny;
-        });
-        const tall = format === 'feed'
-          ? height >= 360 && height > width * 0.7
-          : height >= 420 && height > width * 1.1;
-        setIsTall((current) => (current === tall ? current : tall));
-        const expanded = (format === 'inline' && width >= 360 && height >= 240) ||
-          (format === 'feed' && height >= 500);
-        setIsExpanded((current) => (current === expanded ? current : expanded));
-        const narrow = format === 'inline' && width < 310 && height >= 240;
-        setIsNarrow((current) => (current === narrow ? current : narrow));
-        const compact = format === 'sidebar'
-          ? width < 380 || height < 440
-          : format === 'banner'
-            ? width < 760
-            : format === 'feed'
-              ? width < 440 || height < 320
-              : format === 'inline'
-                ? width < 420 || height < 260
-                : format === 'square' && width < 220;
-        setIsCompact((current) => (current === Boolean(compact) ? current : Boolean(compact)));
+        updateLayoutState(width, rect.height);
       });
     });
 
@@ -435,6 +650,44 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
       window.cancelAnimationFrame(resizeFrame);
     };
   }, [format]);
+
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    const featureNodes = card?.querySelectorAll('.self-promo-highlight');
+    if (!card || !featureNodes?.length) {
+      setFeatureScale(1);
+      return;
+    }
+
+    const context = document.createElement('canvas').getContext('2d');
+    if (!context) throw new Error('Could not measure promo feature text.');
+
+    const firstFeatureStyle = window.getComputedStyle(featureNodes[0]);
+    const baseFontSize = Number.parseFloat(firstFeatureStyle.fontSize);
+    context.font = `${firstFeatureStyle.fontStyle} ${firstFeatureStyle.fontWeight} ${baseFontSize}px ${firstFeatureStyle.fontFamily}`;
+
+    const widestGlyphBounds = [...featureNodes].reduce((widest, feature) => {
+      const text = [...feature.childNodes]
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent.trim())
+        .join(' ');
+      const metrics = context.measureText(text);
+      const glyphWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+      return Math.max(widest, glyphWidth, metrics.width);
+    }, 0);
+
+    const copyWidth = card.querySelector('.self-promo-copy')?.getBoundingClientRect().width ?? card.getBoundingClientRect().width;
+    const targetGlyphWidth = copyWidth * 0.74;
+    const maxScale = format === 'square' ? 1.7 : format === 'banner' ? 1.3 : 1.35;
+    const measuredScale = widestGlyphBounds > 0
+      ? Math.min(maxScale, targetGlyphWidth / widestGlyphBounds)
+      : 1;
+    const nextScale = format === 'square'
+      ? 1
+      : Math.round(Math.max(1, measuredScale) * 100) / 100;
+
+    setFeatureScale((current) => (Math.abs(current - nextScale) < 0.02 ? current : nextScale));
+  }, [cardWidth, creative.messageIndex, creative.promoIndex, featureCount, format, isExpanded, isTall]);
 
   useLayoutEffect(() => {
     const isAlreadyVisible = [...activeCreatives.entries()].some(
@@ -481,36 +734,43 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
       rel="noopener noreferrer"
       aria-label={`${promo.name}: ${campaign.topic}. ${campaign.headline} ${campaign.detail} ${campaign.features.join('. ')} ${campaign.action}`}
       data-promo-format={format}
-      data-compact={isCompact || undefined}
-      data-tiny={isTiny || undefined}
+      data-placement={placement}
+      data-compact={compactLayout || undefined}
+      data-tiny={tinyLayout || undefined}
       data-tall={isTall || undefined}
       data-expanded={isExpanded || undefined}
       data-narrow={isNarrow || undefined}
-      style={{ '--self-promo-accent': promo.accent, ...style }}
+      style={{
+        '--self-promo-accent': promo.accent,
+        '--self-promo-feature-scale': featureScale,
+        ...style
+      }}
     >
       <span className="self-promo-brand">{promo.name}</span>
       <span className="self-promo-badge">Self-Promo</span>
-      {format === 'banner' && <PromoBannerArtwork visual={promo.visual} />}
+      {format === 'banner' && (
+        showBannerArtworkGallery
+          ? <PromoBannerArtworkGallery visual={promo.visual} supportingVisuals={artworkSet.slice(1, 3)} />
+          : <PromoBannerArtwork visual={promo.visual} />
+      )}
       {format !== 'inline' && format !== 'banner' && (
         <>
           <PromoArtwork visual={format === 'feed' || format === 'square' ? artworkSet[0] : promo.visual} />
-          {(format === 'feed' || format === 'square') && (
-            <PromoArtworkGallery visuals={format === 'square' ? artworkSet.slice(0, 2) : artworkSet} />
+          {(format === 'feed' || format === 'square' || (format === 'sidebar' && isTall)) && (
+            <PromoArtworkGallery
+              visuals={format === 'square' ? artworkSet.slice(0, squareArtworkCount) : artworkSet.slice(0, 3)}
+            />
           )}
         </>
       )}
       <span key={`${promo.id}-${creative.messageIndex}`} className="self-promo-copy">
         {format === 'inline' && <PromoArtwork visual={promo.visual} />}
-        <span className="self-promo-label">{campaign.topic}</span>
         <span className="self-promo-title">{campaign.headline}</span>
-        <span className="self-promo-description">{campaign.detail}</span>
         <span className="self-promo-highlights">
-          {campaign.features.map((highlight) => (
-            <span className="self-promo-highlight" key={highlight}>
-              <svg viewBox="0 0 16 16" aria-hidden="true">
-                <path d="m3.5 8.2 3 3 6-6.4" />
-              </svg>
-              {highlight}
+          {features.map(({ text, graphic }) => (
+            <span className="self-promo-highlight" key={text}>
+              <PromoFeatureGraphic type={graphic} />
+              {format === 'square' && cardWidth < 180 ? getCompactSquareFeatureText(text) : text}
             </span>
           ))}
         </span>
