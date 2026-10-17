@@ -1,0 +1,62 @@
+@media (max-width: 600px) {
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: auto;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 42px 14px 16px;
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] > .self-promo-copy {
+    display: grid;
+    width: 100%;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(64px, 25%) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 12px;
+    padding: 0;
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] .self-promo-art {
+    float: none;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] .self-promo-title {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-size: clamp(18px, 5.5cqw, 24px);
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] .self-promo-highlights {
+    display: flex;
+    width: 100%;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0;
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] .self-promo-highlight {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .self-promo-card.settings-infeed-ad[data-placement^="settingsFeed"][data-promo-format="inline"] > .self-promo-action {
+    position: static;
+    grid-column: auto;
+    grid-row: auto;
+    align-self: flex-start;
+  }
+}
