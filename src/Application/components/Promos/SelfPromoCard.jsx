@@ -398,7 +398,7 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
       window.cancelAnimationFrame(resizeFrame);
       resizeFrame = window.requestAnimationFrame(() => {
         setIsTiny((current) => {
-          const tiny = format === 'square' && (width < 155 || height < 155);
+          const tiny = format === 'square' && width < 155;
           return current === tiny ? current : tiny;
         });
         const tall = format === 'feed'
@@ -418,7 +418,7 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
               ? width < 440 || height < 320
               : format === 'inline'
                 ? width < 420 || height < 260
-                : format === 'square' && (width < 220 || height < 220);
+                : format === 'square' && width < 220;
         setIsCompact((current) => (current === Boolean(compact) ? current : Boolean(compact)));
       });
     });
