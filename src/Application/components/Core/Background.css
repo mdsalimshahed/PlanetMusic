@@ -26,6 +26,10 @@
   opacity: 0.32;
 }
 
+.lyric-bubbles-container.readable-mode {
+  opacity: 0.55;
+}
+
 /* CHAT BUBBLE STYLING */
 .lyric-chat-bubble {
   position: absolute;

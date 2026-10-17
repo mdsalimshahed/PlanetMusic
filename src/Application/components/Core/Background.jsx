@@ -84,7 +84,7 @@ const getArtistPhoto = async (artistName, track = null, profilesMap = new Map(),
   return '';
 };
 
-const Background = ({ isModalOpen = false, currentTrack = null }) => {
+const Background = ({ isModalOpen = false, currentTrack = null, isReadableMode = false }) => {
   
   // 1. Hyper-targeted Vault JSON Scanner (Extracts cleanly separated main lines & ad-libs)
   const { pool, profiles } = useMemo(() => {
@@ -603,7 +603,7 @@ const Background = ({ isModalOpen = false, currentTrack = null }) => {
       <div className="ambient-vignette" />
 
       {/* Floating Lyric Chat Bubbles Canvas */}
-      <div className="lyric-bubbles-container">
+      <div className={`lyric-bubbles-container ${isReadableMode ? 'readable-mode' : ''}`}>
         {bubbles.map((b) => (
           <div
             key={b.id}

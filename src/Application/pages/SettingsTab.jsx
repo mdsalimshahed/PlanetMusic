@@ -55,8 +55,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, ret
             <SelfPromoCard
               placement="settingsFeedOne"
               format="inline"
-              className="glass-panel dynamic-radius-override" 
-              style={{ minHeight: '280px' }}
+              className="glass-panel dynamic-radius-override settings-infeed-ad"
             />
           </div>
         )}
@@ -80,8 +79,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, ret
             <SelfPromoCard
               placement="settingsFeedTwo"
               format="inline"
-              className="glass-panel dynamic-radius-override" 
-              style={{ minHeight: '350px' }}
+              className="glass-panel dynamic-radius-override settings-infeed-ad"
             />
           </div>
         )}

@@ -632,7 +632,11 @@ const App = () => {
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
       {!selectedSong && (
         <>
-          <Background isModalOpen={false} currentTrack={backgroundTrack} />
+          <Background
+            isModalOpen={false}
+            currentTrack={backgroundTrack}
+            isReadableMode={activeTab === 'vault' || activeTab === 'ambient'}
+          />
 
           <Topbar
             activeTab={activeTab}
