@@ -579,8 +579,20 @@
 }
 
 .self-promo-card[data-promo-format="square"] .self-promo-action {
-  width: 100%;
-  box-sizing: border-box;
+  align-self: flex-start;
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 10px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="square"] .self-promo-action span {
+  display: none;
 }
 
 .self-promo-card[data-promo-format="square"][data-compact="true"] {
@@ -611,13 +623,6 @@
   -webkit-line-clamp: 2;
 }
 
-.self-promo-card[data-promo-format="square"][data-compact="true"] .self-promo-action {
-  min-height: 30px;
-  gap: 5px;
-  padding: 3px 10px;
-  font-size: 10px;
-}
-
 .self-promo-card[data-promo-format="square"][data-tiny="true"] {
   gap: 5px;
   padding: 7px;
@@ -634,13 +639,6 @@
 .self-promo-card[data-promo-format="square"][data-tiny="true"] .self-promo-title {
   font-size: 11px;
   line-height: 1.1;
-}
-
-.self-promo-card[data-promo-format="square"][data-tiny="true"] .self-promo-action {
-  min-height: 22px;
-  gap: 3px;
-  padding: 2px 6px;
-  font-size: 8px;
 }
 
 .self-promo-card[data-promo-format="square"][data-tiny="true"] .self-promo-brand {
