@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import selfPromoItems from './selfPromoItems.js';
 import selfPromoFeatures from './selfPromoFeatures.js';
 import './SelfPromoCard.css';
@@ -8,11 +8,35 @@ const promoFormats = ['square', 'feed', 'sidebar', 'inline', 'banner'];
 const sessionOffsets = Object.fromEntries(
   promoFormats.map((format) => [format, getRandomIndex(6)])
 );
+const promoProductOffset = getRandomIndex(selfPromoItems.length);
 const activeCreatives = new Map();
+let promoRotationPhase = 0;
+let promoRotationTimer;
+const promoRotationSubscribers = new Set();
 
 function getRandomIndex(length) {
   return Math.floor(Math.random() * length);
 }
+
+const subscribeToPromoRotation = (subscriber) => {
+  promoRotationSubscribers.add(subscriber);
+  if (!promoRotationTimer) {
+    promoRotationTimer = window.setInterval(() => {
+      promoRotationPhase = (promoRotationPhase + 1) % selfPromoItems.length;
+      promoRotationSubscribers.forEach((notify) => notify());
+    }, ROTATION_INTERVAL_MS);
+  }
+
+  return () => {
+    promoRotationSubscribers.delete(subscriber);
+    if (promoRotationSubscribers.size === 0) {
+      window.clearInterval(promoRotationTimer);
+      promoRotationTimer = undefined;
+    }
+  };
+};
+
+const getPromoRotationPhase = () => promoRotationPhase;
 
 const placementOrder = {
   square: { trackGrid: 0 },
@@ -62,21 +86,33 @@ const getInitialCreative = (placement, format, instanceId) => {
   return creativeOptions[position];
 };
 
-const rotateCreative = (current, instanceId) => {
+const getSlotPromoIndex = (cardElement, rotationPhase = promoRotationPhase) => {
+  const visibleCards = [...document.querySelectorAll('.self-promo-card')]
+    .filter((card) => {
+      const style = window.getComputedStyle(card);
+      return style.display !== 'none' && style.visibility !== 'hidden' && card.getClientRects().length > 0;
+    });
+  const slotIndex = visibleCards.indexOf(cardElement);
+  if (slotIndex < 0) return promoProductOffset;
+  return (slotIndex + promoProductOffset + rotationPhase) % selfPromoItems.length;
+};
+
+const chooseCreative = (promoIndex, instanceId) => {
   const options = getCreativeOptions();
   const occupied = new Set(
     [...activeCreatives.entries()]
       .filter(([id]) => id !== instanceId)
       .map(([, creative]) => `${creative.promoIndex}:${creative.messageIndex}`)
   );
-  const available = options.filter((option) => (
+  const productOptions = options.filter((option) => option.promoIndex === promoIndex);
+  if (productOptions.length === 0) {
+    throw new Error(`No promo campaigns found for product index ${promoIndex}.`);
+  }
+  const available = productOptions.filter((option) => (
     !occupied.has(`${option.promoIndex}:${option.messageIndex}`)
   ));
-  const otherProduct = available.filter((option) => option.promoIndex !== current.promoIndex);
-  const candidates = otherProduct.length > 0 ? otherProduct : available;
-  const next = candidates.length > 0
-    ? candidates[getRandomIndex(candidates.length)]
-    : options[getRandomIndex(options.length)];
+  const candidates = available.length > 0 ? available : productOptions;
+  const next = candidates[getRandomIndex(candidates.length)];
 
   activeCreatives.set(instanceId, next);
   return next;
@@ -570,6 +606,11 @@ const PromoBannerArtworkGallery = ({ visual, supportingVisuals }) => (
 const SelfPromoCard = ({ placement = 'default', format = 'square', className = '', style }) => {
   const instanceId = useId();
   const cardRef = useRef(null);
+  const rotationPhase = useSyncExternalStore(
+    subscribeToPromoRotation,
+    getPromoRotationPhase,
+    getPromoRotationPhase
+  );
   const [isCompact, setIsCompact] = useState(false);
   const [isTiny, setIsTiny] = useState(false);
   const [isTall, setIsTall] = useState(false);
@@ -690,40 +731,19 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
   }, [cardWidth, creative.messageIndex, creative.promoIndex, featureCount, format, isExpanded, isTall]);
 
   useLayoutEffect(() => {
-    const isAlreadyVisible = [...activeCreatives.entries()].some(
-      ([id, activeCreative]) => id !== instanceId &&
-        activeCreative.promoIndex === currentCreative.current.promoIndex &&
-        activeCreative.messageIndex === currentCreative.current.messageIndex
-    );
-    if (isAlreadyVisible) {
-      currentCreative.current = rotateCreative(currentCreative.current, instanceId);
-      setCreative(currentCreative.current);
-    } else {
-      activeCreatives.set(instanceId, currentCreative.current);
+    const nextCreative = chooseCreative(getSlotPromoIndex(cardRef.current, rotationPhase), instanceId);
+    if (
+      nextCreative.promoIndex !== currentCreative.current.promoIndex ||
+      nextCreative.messageIndex !== currentCreative.current.messageIndex
+    ) {
+      currentCreative.current = nextCreative;
+      setCreative(nextCreative);
     }
 
     return () => {
       activeCreatives.delete(instanceId);
     };
-  }, [instanceId]);
-
-  useEffect(() => {
-    let timer;
-    let isActive = true;
-    const rotate = () => {
-      if (!isActive) return;
-      const nextCreative = rotateCreative(currentCreative.current, instanceId);
-      currentCreative.current = nextCreative;
-      setCreative(nextCreative);
-      timer = window.setTimeout(rotate, ROTATION_INTERVAL_MS + Math.random() * 5000);
-    };
-
-    timer = window.setTimeout(rotate, 1200 + Math.random() * 4800);
-    return () => {
-      isActive = false;
-      window.clearTimeout(timer);
-    };
-  }, [format, instanceId, placement]);
+  }, [instanceId, rotationPhase]);
 
   return (
     <a
