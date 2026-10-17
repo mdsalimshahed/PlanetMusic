@@ -271,13 +271,6 @@
     width: min(100%, 480px);
   }
 
-  #mobile-player-slot {
-    order: 3;
-    width: 100%;
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
-
   .modal-two-column-layout > .modal-right-col {
     order: 4;
   }

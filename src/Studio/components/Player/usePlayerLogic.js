@@ -13,7 +13,7 @@ import { usePlayerGlobalEvents } from './usePlayerGlobalEvents.js';
 const YOUTUBE_START_TIMEOUT_MS = 5000;
 
 export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false, isZenMode = false }) => {
-  const playerState = usePlayerState({ currentTrack, selectedSong, isSyncWorkspaceActive });
+  const playerState = usePlayerState({ currentTrack, isSyncWorkspaceActive });
   const {
     audioRef, audioSrcRef, ytPlayerRef, ytPlaybackConfirmedRef, ytPendingSeekRef,
     ytSeekWasPlayingRef, ytPlayTimeoutRef, ytSeekBufferTimeoutRef,
@@ -25,7 +25,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
     setIsBuffering, duration, audioSrc, ytVideoId, ytPlayerReady, activeSource,
     accentColor, setAccentColor, accentArtworkUrl, setAccentArtworkUrl,
     hoverTime, fallbackMessage, setFallbackMessage, deezerStatus, volume,
-    isMuted, isStacked, slotNode
+    isMuted, slotNode
   } = playerState;
   const MAX_CACHE_SIZE = 5;
 
@@ -378,7 +378,6 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       deezerStatus,
       volume,
       isMuted,
-      isStacked,
       slotNode,
       isSyncWorkspaceActive
     },

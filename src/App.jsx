@@ -762,7 +762,7 @@ const App = () => {
         </>
       )}
 
-      <SongModal 
+      <SongModal
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}

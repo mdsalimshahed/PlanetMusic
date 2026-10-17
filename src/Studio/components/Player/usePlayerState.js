@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
 
-export const usePlayerState = ({ currentTrack, selectedSong, isSyncWorkspaceActive }) => {
+export const usePlayerState = ({ currentTrack, isSyncWorkspaceActive }) => {
   const audioRef = useRef(null);
   const audioSrcRef = useRef(undefined);
   const ytPlayerRef = useRef(null);
@@ -62,7 +62,6 @@ export const usePlayerState = ({ currentTrack, selectedSong, isSyncWorkspaceActi
       ? savedMuteState === 'true'
       : savedVolume !== null && Number(savedVolume) === 0;
   });
-  const [isStacked, setIsStacked] = useState(window.innerWidth <= 900);
   const [slotNode, setSlotNode] = useState(null);
 
   const formatPlayerTime = isSyncWorkspaceActive ? formatPreciseTime : formatTime;
@@ -80,21 +79,13 @@ export const usePlayerState = ({ currentTrack, selectedSong, isSyncWorkspaceActi
   }, [audioSrc]);
 
   useEffect(() => {
-    const handleResize = () => setIsStacked(window.innerWidth <= 900);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
     if (isSyncWorkspaceActive) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSlotNode(document.getElementById('sync-player-slot'));
-    } else if (selectedSong && isStacked) {
-      setSlotNode(document.getElementById('mobile-player-slot'));
     } else {
       setSlotNode(null);
     }
-  }, [selectedSong, isStacked, isSyncWorkspaceActive]);
+  }, [isSyncWorkspaceActive]);
 
   return {
     audioRef,
@@ -162,7 +153,6 @@ export const usePlayerState = ({ currentTrack, selectedSong, isSyncWorkspaceActi
     setVolume,
     isMuted,
     setIsMuted,
-    isStacked,
     slotNode,
     setSlotNode,
     formatPlayerTime

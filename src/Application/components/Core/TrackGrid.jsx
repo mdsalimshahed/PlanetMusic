@@ -132,13 +132,15 @@ const TrackGrid = memo(({ items, library, setSelectedSong, setCurrentTrack, adsE
 
   return (
     <div className="track-grid" ref={gridRef}>
-      {gridEntries.map((entry) => {
+      {gridEntries.map((entry, gridIndex) => {
+        const staggerDelay = Math.min(gridIndex * 0.05, 1.5);
         if (entry.type === 'ad') {
           return adsEnabled ? (
             <InFeedSponsor
               key={entry.key}
               placement="trackGrid"
               wrapperClass="track-grid-item dynamic-radius-override"
+              wrapperStyle={{ animationDelay: `${staggerDelay}s` }}
             />
           ) : null;
         }
@@ -147,6 +149,7 @@ const TrackGrid = memo(({ items, library, setSelectedSong, setCurrentTrack, adsE
           <div
             key={`${entry.song.trackId}-${entry.index}`}
             className="track-grid-item"
+            style={{ animationDelay: `${staggerDelay}s` }}
           >
             <SongCard
               song={entry.song}

@@ -1,52 +1,108 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
+const estimateLineHeight = (line, syncNode) => {
+  const text = `${line?.text || ''}${syncNode?.translation || ''}${syncNode?.pronunciation || ''}`;
+  const estimatedWrappedRows = Math.max(1, Math.ceil(text.length / 32));
+  const extraAdlibRows = syncNode?.adlibs?.length ? 1 : 0;
+  return (estimatedWrappedRows + extraAdlibRows) * 46;
+};
+
+const VirtualLiveLyricLine = memo(({
+  line,
+  lineIndex,
+  syncNode,
+  nextStart,
+  root,
+  isActive,
+  onVisibilityChange,
+  ...lineProps
+}) => {
+  const itemRef = useRef(null);
+  const visibilityRef = useRef(false);
+  const [isVisible, setIsVisible] = useState(() => typeof IntersectionObserver === 'undefined');
+  const [measuredHeight, setMeasuredHeight] = useState(() => estimateLineHeight(line, syncNode));
+
+  useLayoutEffect(() => {
+    itemRef.current?.querySelector('.lyric-line-wrapper')?.classList.toggle('active', isActive);
+  }, [isActive, isVisible]);
+
+  useEffect(() => {
+    const item = itemRef.current;
+    if (!item) return undefined;
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.some(entry => entry.isIntersecting);
+      if (visibilityRef.current === visible) return;
+      visibilityRef.current = visible;
+      setIsVisible(visible);
+      onVisibilityChange();
+    }, { root, rootMargin: '500px 0px' });
+    observer.observe(item);
+    return () => observer.disconnect();
+  }, [root, onVisibilityChange]);
+
+  useEffect(() => {
+    if (!isVisible && !isActive) return undefined;
+    const item = itemRef.current;
+    const lineNode = item?.querySelector('.lyric-line-wrapper');
+    if (!lineNode || typeof ResizeObserver === 'undefined') return undefined;
+
+    const observer = new ResizeObserver(entries => {
+      const height = entries[0]?.contentRect.height;
+      if (height > 0) {
+        setMeasuredHeight(current => Math.abs(current - height) > 1 ? height : current);
+      }
+    });
+    observer.observe(lineNode);
+    return () => observer.disconnect();
+  }, [isVisible, isActive]);
+
+  return (
+    <div
+      className="live-lyric-virtual-item"
+      data-live-line-index={lineIndex}
+      ref={itemRef}
+      style={{ minHeight: `${measuredHeight}px` }}
+    >
+      {(isVisible || isActive) && (
+        <LyricLineWrapper
+          {...lineProps}
+          lineObj={line}
+          savedNode={syncNode}
+          nextStart={nextStart}
+        />
+      )}
+    </div>
+  );
+});
+
 const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, isPlaying, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
-  const [renderProgress, setRenderProgress] = useState({
-    trackId: selectedSong?.trackId,
-    count: 20
-  });
+  const [activeLineIndex, setActiveLineIndex] = useState(-1);
+  const [visibleLineVersion, setVisibleLineVersion] = useState(0);
   const containerRef = useRef(null);
+  const [containerNode, setContainerNode] = useState(null);
+  const setContainer = useCallback(node => {
+    containerRef.current = node;
+    setContainerNode(node);
+  }, []);
     const initialRevealTrackRef = useRef(null);
   const cachedLinesRef = useRef([]);
-    const timedLinesRef = useRef([]);
-  const cachedAdlibsRef = useRef([]);
+    const cachedAdlibsRef = useRef([]);
     const adlibTimelineRef = useRef([]);
     const adlibCursorRef = useRef(0);
     const lastAdlibTimeRef = useRef(null);
     const activeLineIndexRef = useRef(-1);
     const pendingActiveFrameRef = useRef(null);
     const pendingActiveNodeRef = useRef(null);
+    const previousSelectedTrackIdRef = useRef(
+      selectedSong?.trackId == null ? null : String(selectedSong.trackId)
+    );
     const syncList = selectedSong?.syncData;
-    const renderedLineCount = renderProgress.trackId === selectedSong?.trackId
-      ? Math.min(renderProgress.count, liveParsedLyrics.length)
-      : Math.min(20, liveParsedLyrics.length);
-      useEffect(() => {
-        let frame = null;
-        let cancelled = false;
-        const trackId = selectedSong?.trackId;
-          let count = renderProgress.trackId === trackId
-            ? Math.min(renderProgress.count, liveParsedLyrics.length)
-            : Math.min(20, liveParsedLyrics.length);
-
-          const renderNextBatch = () => {
-            if (cancelled) return;
-          count = Math.min(count + 20, liveParsedLyrics.length);
-          setRenderProgress({ trackId, count });
-          if (count < liveParsedLyrics.length) frame = window.requestAnimationFrame(renderNextBatch);
-        };
-
-        if (count < liveParsedLyrics.length) {
-          frame = window.requestAnimationFrame(renderNextBatch);
-        }
-        return () => {
-          cancelled = true;
-          if (frame !== null) window.cancelAnimationFrame(frame);
-        };
-      }, [liveParsedLyrics.length, selectedSong?.trackId, renderProgress]);
     const nextStarts = useMemo(() => {
         const syncData = syncList || [];
         const result = Array(syncData.length).fill('NaN');
@@ -57,6 +113,19 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         }
         return result;
     }, [syncList]);
+    const onVisibilityChange = useCallback(() => {
+      setVisibleLineVersion(version => version + 1);
+    }, []);
+
+    const timedLines = useMemo(() => (syncList || [])
+      .map((line, index) => ({
+        index,
+        start: parseFloat(line?.start),
+        end: parseFloat(line?.end),
+        nextStart: parseFloat(nextStarts[index])
+      }))
+      .filter(line => !isNaN(line.start))
+      .sort((first, second) => first.start - second.start), [syncList, nextStarts]);
 
     useLayoutEffect(() => {
         const container = containerRef.current;
@@ -107,13 +176,11 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
             visibleLines.forEach(node => node.classList.remove('is-preparing-reveal'));
         };
-    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying]);
+    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying, visibleLineVersion]);
 
   const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;
     
-    const lines = cachedLinesRef.current;
-    const timedLines = timedLinesRef.current;
     let low = 0;
     let high = timedLines.length;
     while (low < high) {
@@ -135,6 +202,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
 
     const previousActiveIndex = activeLineIndexRef.current;
     if (previousActiveIndex !== newActiveIndex) {
+        setActiveLineIndex(newActiveIndex);
         if (pendingActiveFrameRef.current !== null) {
             window.cancelAnimationFrame(pendingActiveFrameRef.current);
             pendingActiveFrameRef.current = null;
@@ -143,27 +211,38 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         pendingActiveNodeRef.current = null;
 
         if (newActiveIndex !== -1) {
-            const item = lines[newActiveIndex];
-            pendingActiveNodeRef.current = item.node;
-            item.node.classList.add('is-preparing-active');
+            const item = cachedLinesRef.current.find(line => line.index === newActiveIndex);
+            const node = item?.node;
+            if (node) {
+              pendingActiveNodeRef.current = node;
+              node.classList.add('is-preparing-active');
+            }
             pendingActiveFrameRef.current = window.requestAnimationFrame(() => {
                 pendingActiveFrameRef.current = null;
-                if (pendingActiveNodeRef.current !== item.node || !item.node.isConnected) return;
+                if (activeLineIndexRef.current !== newActiveIndex) return;
 
-                lines.forEach(line => {
-                    if (line.isActive && line.node !== item.node) {
+                cachedLinesRef.current.forEach(line => {
+                    if (line.index !== newActiveIndex && line.isActive) {
                         line.node.classList.remove('active');
                         line.isActive = false;
                     }
                 });
-                item.node.classList.remove('is-preparing-active');
-                item.node.classList.add('active');
-                item.isActive = true;
+                const activeNode = containerRef.current?.querySelector(
+                  `[data-live-line-index="${newActiveIndex}"] .lyric-line-wrapper`
+                );
+                activeNode?.classList.remove('is-preparing-active');
+                activeNode?.classList.add('active');
+                const activeItem = cachedLinesRef.current.find(line => line.index === newActiveIndex);
+                if (activeItem) activeItem.isActive = true;
                 pendingActiveNodeRef.current = null;
 
                 if (containerRef.current) {
-                    const offsetTop = item.node.offsetTop;
-                    const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (item.node.clientHeight / 2);
+                    const target = containerRef.current.querySelector(
+                      `[data-live-line-index="${newActiveIndex}"]`
+                    );
+                    if (!target) return;
+                    const offsetTop = target.offsetTop;
+                    const scrollPos = offsetTop - (containerRef.current.clientHeight / 2) + (target.clientHeight / 2);
                     containerRef.current.scrollTo({
                        top: scrollPos,
                        behavior: settings?.disableAnimations ? 'auto' : 'smooth'
@@ -171,7 +250,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
                 }
             });
         } else if (previousActiveIndex !== -1) {
-            lines.forEach(line => {
+            cachedLinesRef.current.forEach(line => {
                 if (!line.isActive) return;
                 line.node.classList.remove('active');
                 line.isActive = false;
@@ -183,32 +262,31 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     const adlibTimeline = adlibTimelineRef.current;
     const lastAdlibTime = lastAdlibTimeRef.current;
     if (lastAdlibTime === null || time < lastAdlibTime) {
-        cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(item, time));
+        cachedAdlibsRef.current.forEach(item => {
+          if (item.node.isConnected) updateAdlibStateAtTime(item, time);
+        });
         adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
     } else {
         while (adlibCursorRef.current < adlibTimeline.length && adlibTimeline[adlibCursorRef.current].time <= time) {
-            updateAdlibStateAtTime(adlibTimeline[adlibCursorRef.current].item, time);
+            const item = adlibTimeline[adlibCursorRef.current].item;
+            if (item.node.isConnected) updateAdlibStateAtTime(item, time);
             adlibCursorRef.current++;
         }
     }
     lastAdlibTimeRef.current = time;
-  }, [isPlayingCurrentSong, settings?.disableAnimations]);
+  }, [isPlayingCurrentSong, settings?.disableAnimations, timedLines]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (containerRef.current) {
         cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
             node,
+            index: parseInt(node.closest('[data-live-line-index]')?.dataset.liveLineIndex, 10),
             start: parseFloat(node.dataset.start),
             end: parseFloat(node.dataset.end),
             nextStart: parseFloat(node.dataset.nextStart),
             isActive: node.classList.contains('active')
         }));
-        timedLinesRef.current = cachedLinesRef.current
-          .map((line, index) => ({ ...line, index }))
-          .filter(line => !isNaN(line.start))
-          .sort((first, second) => first.start - second.start);
-        activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
 
         cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
           node,
@@ -226,10 +304,10 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
       }
     }, 50);
     return () => clearTimeout(timer);
-  }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds, renderedLineCount, isPlayingCurrentSong, handleTimeUpdate]);
+  }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds, visibleLineVersion, activeLineIndex, isPlayingCurrentSong, handleTimeUpdate]);
 
   useEffect(() => {
-    const clearAllActive = () => {
+    const clearActiveLines = () => {
         if (pendingActiveFrameRef.current !== null) {
             window.cancelAnimationFrame(pendingActiveFrameRef.current);
             pendingActiveFrameRef.current = null;
@@ -243,8 +321,13 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             }
         });
         activeLineIndexRef.current = -1;
+        setActiveLineIndex(-1);
+    };
+
+    const clearAllActive = () => {
+        clearActiveLines();
         cachedAdlibsRef.current.forEach(item => {
-            if (item.state !== 'hidden') {
+            if (item.node.isConnected && item.state !== 'hidden') {
                 item.node.classList.add('adlib-hidden');
                 item.node.classList.remove('adlib-active', 'adlib-visible');
                 item.state = 'hidden';
@@ -257,17 +340,21 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
-            clearAllActive();
+            clearActiveLines();
         }
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
     window.addEventListener('globalPlayState', handlePlayState);
 
+    const selectedTrackId = selectedSong?.trackId == null ? null : String(selectedSong.trackId);
+    const selectedTrackChanged = previousSelectedTrackIdRef.current !== selectedTrackId;
+    previousSelectedTrackIdRef.current = selectedTrackId;
+
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
-    } else {
+    } else if (currentTrack || selectedTrackChanged) {
         clearAllActive();
     }
 
@@ -281,28 +368,30 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         pendingActiveNodeRef.current?.classList.remove('is-preparing-active');
         pendingActiveNodeRef.current = null;
     };
-    }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
+    }, [isPlayingCurrentSong, currentTrack, selectedSong?.trackId, settings?.disableAnimations, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
 
   return (
     <div
       className="live-lyrics-preview"
-      ref={containerRef}
+      ref={setContainer}
       style={{ '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px` }}
     >
-      {liveParsedLyrics.slice(0, renderedLineCount).map((line, i) => {
-        return (
-            <LyricLineWrapper
-              key={i}
-              lineObj={line}
-              savedNode={syncList?.[i]}
-              nextStart={nextStarts[i]}
-              viewMode="live"
-              handleLineClick={handleLineClick}
-              masterPalette={masterPalette}
-              isPlayingCurrentSong={isPlayingCurrentSong}
-            />
-        )
-      })}
+      {liveParsedLyrics.map((line, index) => (
+        <VirtualLiveLyricLine
+          key={`${selectedSong?.trackId ?? 'track'}-${index}`}
+          line={line}
+          lineIndex={index}
+          syncNode={syncList?.[index]}
+          nextStart={nextStarts[index]}
+          root={containerNode}
+          isActive={activeLineIndex === index}
+          onVisibilityChange={onVisibilityChange}
+          viewMode="live"
+          handleLineClick={handleLineClick}
+          masterPalette={masterPalette}
+          isPlayingCurrentSong={isPlayingCurrentSong}
+        />
+      ))}
     </div>
   );
 };

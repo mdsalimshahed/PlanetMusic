@@ -671,7 +671,6 @@ const ModalLeft = ({
           </div>
           </div>
         </div>
-        <div id="mobile-player-slot"></div>
         <div ref={setVaultActionsContainer} className="workspace-controls glass-panel-light bottom-actions measured-height-panel">
           <div ref={setVaultActionsContent} className="measured-height-content">
           <div className="links-header"><label>Vault Actions</label></div>
