@@ -11,8 +11,6 @@
 .track-grid-item {
   width: 100%;
   min-width: 0;
-  opacity: 0; /* Start hidden for the animation */
-  animation: gridPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 @keyframes gridPopIn {

@@ -1,5 +1,5 @@
 /* --- src/hooks/data/useVaultOperations.js --- */
-import { useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { normalizeSongLyrics } from '../../../utils/smartPunctuation.js';
 import { packVault, sanitizeVaultSettings, unpackVault } from '../../services/vaultCodec.js';
 import { slugifyBlogLinkTitle } from '../../utils/blogRoutes.js';
@@ -15,13 +15,13 @@ export const useVaultOperations = ({
   const [pendingImport, setPendingImport] = useState(null);
   const sampleAutoLoadStartedRef = useRef(false);
 
-  const dismissSampleMode = () => {
+  const dismissSampleMode = useCallback(() => {
     if (isSampleVaultActive) {
       setIsSampleVaultActive(false);
       localStorage.setItem('isSampleVaultActive', 'false');
       localStorage.setItem('hasVisitedBefore', 'true');
     }
-  };
+  }, [isSampleVaultActive, setIsSampleVaultActive]);
 
   const handleSetSettings = (newSettingsAction) => {
     dismissSampleMode();
@@ -99,7 +99,7 @@ export const useVaultOperations = ({
     dismissSampleMode();
   };
 
-  const toggleLibrary = (e, song) => {
+  const toggleLibrary = useCallback((e, song) => {
     if (e) e.stopPropagation();
     dismissSampleMode();
     const isSaved = library.some((s) => s.trackId === song.trackId);
@@ -109,7 +109,7 @@ export const useVaultOperations = ({
     } else {
       setLibrary([...library, song]);
     }
-  };
+  }, [dismissSampleMode, library, setLibrary]);
 
   const confirmRemove = () => {
     if (songToRemove) {

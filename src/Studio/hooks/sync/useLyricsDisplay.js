@@ -1,10 +1,11 @@
 /* --- src/hooks/sync/useLyricsDisplay.js --- */
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { parseLyrics } from '../../utils/songHelpers.js';
-import { buildTranslationWorkspaceData } from '../../utils/translationWorkspaceData.js';
 
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
+  const [parsedLyrics, setParsedLyrics] = useState({ trackId: null, lines: [] });
+  const parserWorkerRef = useRef(null);
+  const parserRequestIdRef = useRef(0);
   const [isHeadphoneDelayEnabled, setIsHeadphoneDelayEnabled] = useState(() => localStorage.getItem('lyricsHeadphoneDelayEnabled') === 'true');
   const [playState, setPlayState] = useState({
       isPlaying: typeof window !== 'undefined' ? !!window.globalIsAudioPlaying : false,
@@ -37,27 +38,51 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
     localStorage.setItem('lyricsHeadphoneDelayEnabled', String(next));
   };
 
-  const liveParsedLyrics = useMemo(() => {
-    if (!selectedSong) return [];
-    return parseLyrics(customData.lyrics || '', selectedSong.artistName, masterPalette);
-  }, [customData, selectedSong, masterPalette]);
-  const parsedLyricsColorMap = useMemo(() => (
-    customData?.lyrics && selectedSong?.artistName ? liveParsedLyrics : []
-  ), [customData?.lyrics, liveParsedLyrics, selectedSong?.artistName]);
-  const syncWorkspaceLyrics = useMemo(() => (
-    buildTranslationWorkspaceData(
-      selectedSong,
-      customData,
-      masterPalette,
-      parsedLyricsColorMap
-    )
-      .filter(line => !line._meta.isAdlib)
-  ), [
-    customData,
-    masterPalette,
-    parsedLyricsColorMap,
-    selectedSong
-  ]);
+  const trackId = selectedSong?.trackId ?? null;
+  const liveParsedLyrics = useMemo(
+    () => parsedLyrics.trackId === trackId ? parsedLyrics.lines : [],
+    [parsedLyrics, trackId]
+  );
+
+  useEffect(() => {
+    const worker = new Worker(
+      new URL('../../workers/lyricsParser.worker.js', import.meta.url),
+      { type: 'module' }
+    );
+    parserWorkerRef.current = worker;
+
+    worker.onmessage = ({ data }) => {
+      if (data.requestId !== parserRequestIdRef.current) return;
+      setParsedLyrics({ trackId: data.trackId, lines: data.lyrics });
+    };
+    worker.onerror = (error) => {
+      console.error('Lyrics parsing worker failed.', error);
+      parserWorkerRef.current = null;
+    };
+
+    return () => {
+      worker.terminate();
+      parserWorkerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const worker = parserWorkerRef.current;
+    if (!worker || !selectedSong) {
+      setParsedLyrics({ trackId, lines: [] });
+      return;
+    }
+
+    const requestId = ++parserRequestIdRef.current;
+    setParsedLyrics({ trackId, lines: [] });
+    worker.postMessage({
+      requestId,
+      trackId,
+      rawLyrics: customData.lyrics || '',
+      artistName: selectedSong.artistName,
+      masterPalette
+    });
+  }, [trackId, customData.lyrics, selectedSong, masterPalette]);
 
   useEffect(() => {
     const handlePlayState = (e) => setPlayState(e.detail);
@@ -167,13 +192,15 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
          
     if (!hasValidSyncData) {
       const isPlayingCurrentSong = currentTrack && selectedSong && String(currentTrack.trackId) === String(selectedSong.trackId);
-      if (isPlayingCurrentSong && !playState.isEnded) {
-        setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
-        setIsSingerVisible(true);
-      } else {
-        setIsSingerVisible(false);
-      }
-      return;
+      const frame = window.requestAnimationFrame(() => {
+        if (isPlayingCurrentSong && !playState.isEnded) {
+          setDisplaySingerBg({ name: selectedSong.artistName, color: '#fff' });
+          setIsSingerVisible(true);
+        } else {
+          setIsSingerVisible(false);
+        }
+      });
+      return () => window.cancelAnimationFrame(frame);
     }
     const activeBgLineObj = liveParsedLyrics[bgActiveIndex];
          
@@ -192,12 +219,13 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
           }, settings?.disableAnimations ? 0 : transitionTiming);
                    
         } else {
-          setIsSingerVisible(true);
+          if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+          transitionTimerRef.current = setTimeout(() => setIsSingerVisible(true), 0);
         }
       } else {
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-        setIsSingerVisible(false);
+        silenceTimerRef.current = setTimeout(() => setIsSingerVisible(false), 0);
       }
     } else {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
@@ -215,7 +243,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
   }, [bgActiveIndex, liveParsedLyrics, selectedSong, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
 
   return {
-    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics, syncWorkspaceLyrics,
+    lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics,
     isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs, lyricsPlaybackOffsetSeconds,
     currentSingerBg: displaySingerBg, isSingerVisible,
     activePreviewRef, handleLineClick, hasValidSyncData,

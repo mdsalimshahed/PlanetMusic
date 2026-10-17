@@ -1,6 +1,6 @@
 /* --- src/Application/components/Core/TrackGrid.jsx --- */
 import './TrackGrid.css';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { memo, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import SongCard from './SongCard.jsx';
 import InFeedSponsor from '../Promos/InFeedSponsor.jsx';
 
@@ -97,10 +97,17 @@ const getRandomGridEntries = (items, columnCount, itemSequence) => {
   return entries;
 };
 
-const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack, adsEnabled }) => {
+const TrackGrid = memo(({ items, library, setSelectedSong, setCurrentTrack, adsEnabled }) => {
   const gridRef = useRef(null);
   const [columnCount, setColumnCount] = useState(0);
-  const itemSequence = items.map((song) => song.trackId).join('\u001f');
+  const itemSequence = useMemo(
+    () => items.map((song) => song.trackId).join('\u001f'),
+    [items]
+  );
+  const savedTrackIds = useMemo(
+    () => new Set(library.map((song) => song.trackId)),
+    [library]
+  );
 
   useLayoutEffect(() => {
     const grid = gridRef.current;
@@ -125,15 +132,13 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
 
   return (
     <div className="track-grid" ref={gridRef}>
-      {gridEntries.map((entry, gridIndex) => {
-        const staggerDelay = Math.min(gridIndex * 0.05, 1.5);
+      {gridEntries.map((entry) => {
         if (entry.type === 'ad') {
           return adsEnabled ? (
             <InFeedSponsor
               key={entry.key}
               placement="trackGrid"
               wrapperClass="track-grid-item dynamic-radius-override"
-              wrapperStyle={{ animationDelay: `${staggerDelay}s` }}
             />
           ) : null;
         }
@@ -142,12 +147,10 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
           <div
             key={`${entry.song.trackId}-${entry.index}`}
             className="track-grid-item"
-            style={{ animationDelay: `${staggerDelay}s` }}
           >
             <SongCard
               song={entry.song}
-              isSaved={library.some((savedSong) => savedSong.trackId === entry.song.trackId)}
-              toggleLibrary={toggleLibrary}
+              isSaved={savedTrackIds.has(entry.song.trackId)}
               setSelectedSong={setSelectedSong}
               setCurrentTrack={setCurrentTrack}
             />
@@ -156,6 +159,6 @@ const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentT
       })}
     </div>
   );
-};
+});
 
 export default TrackGrid;

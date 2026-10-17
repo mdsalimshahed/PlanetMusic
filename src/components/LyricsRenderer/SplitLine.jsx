@@ -5,6 +5,16 @@ import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
 import { isRTLLanguage } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 
+const getTransformTranslateY = element => {
+  const transform = getComputedStyle(element).transform;
+  const matrix = transform.match(/^matrix(3d)?\((.+)\)$/);
+  if (!matrix) return 0;
+
+  const values = matrix[2].split(',').map(Number);
+  const translateY = values[matrix[1] ? 13 : 5];
+  return Number.isFinite(translateY) ? translateY : 0;
+};
+
 const SplitLine = ({
   lineObj,
   savedNode,
@@ -167,10 +177,11 @@ const SplitLine = ({
           const previousOffset = parseFloat(
             adlibGlyphs.style.getPropertyValue('--live-adlib-glyph-offset-y')
           ) || 0;
+          const adlibTransformY = getTransformTranslateY(ref);
           const glyphBounds = readTextBounds([adlibGlyphs], true).map(bound => ({
             ...bound,
-            top: bound.top - previousOffset,
-            bottom: bound.bottom - previousOffset
+            top: bound.top - previousOffset - adlibTransformY,
+            bottom: bound.bottom - previousOffset - adlibTransformY
           }));
           const glyphRows = groupTextRows(glyphBounds);
           const glyphRow = glyphRows.length === 1 ? glyphRows[0] : null;
@@ -218,16 +229,28 @@ const SplitLine = ({
     };
 
     positionAdlibTranslations();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const resizeObserver = new ResizeObserver(positionAdlibTranslations);
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(positionAdlibTranslations);
     [
       parentMainRef.current,
       parentPronRef.current,
       ...adlibRefs.current,
       ...adlibRefs.current.map(ref => ref?.querySelector('.chunk-translation'))
-    ].filter(Boolean).forEach(element => resizeObserver.observe(element));
-    return () => resizeObserver.disconnect();
-  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX, focusedMainLyrics]);
+    ].filter(Boolean).forEach(element => resizeObserver?.observe(element));
+
+    const mutationObserver = typeof MutationObserver === 'undefined'
+      ? null
+      : new MutationObserver(positionAdlibTranslations);
+    const lineWrapper = parentMainRef.current?.closest('.lyric-line-wrapper');
+    [lineWrapper, ...adlibRefs.current].filter(Boolean).forEach(element => {
+      mutationObserver?.observe(element, { attributes: true, attributeFilter: ['class'] });
+    });
+    return () => {
+      resizeObserver?.disconnect();
+      mutationObserver?.disconnect();
+    };
+  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX, focusedMainLyrics, isPlayingCurrentSong]);
 
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;

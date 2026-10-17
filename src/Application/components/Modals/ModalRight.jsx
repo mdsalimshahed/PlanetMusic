@@ -77,7 +77,6 @@ const ModalRight = (props) => {
                 hasValidSyncData={canvasProps.hasValidSyncData}
                 lyricsViewMode={canvasProps.lyricsViewMode}
                 liveParsedLyrics={canvasProps.liveParsedLyrics}
-                syncWorkspaceLyrics={canvasProps.syncWorkspaceLyrics}
                 handleLineClick={canvasProps.handleLineClick}
                 selectedSong={canvasProps.selectedSong}
                 masterPalette={canvasProps.masterPalette}

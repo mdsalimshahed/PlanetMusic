@@ -11,6 +11,7 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
+  const previousTrackIdRef = useRef(selectedSong?.trackId);
   const translationCancelHandlerRef = useRef(null);
   const registerTranslationCancelHandler = useCallback(handler => {
     translationCancelHandlerRef.current = handler;
@@ -18,6 +19,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const closeTranslationWorkspace = useCallback(onClosed => {
     translationCancelHandlerRef.current?.(onClosed);
   }, []);
+  useEffect(() => {
+    if (previousTrackIdRef.current === selectedSong?.trackId) return;
+    previousTrackIdRef.current = selectedSong?.trackId;
+    setNotification({ show: false, message: '', progress: null });
+  }, [selectedSong?.trackId]);
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
@@ -33,15 +39,11 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
   const effectiveSong = useMemo(() => {
     if (!selectedSong) return null;
     
-    let activeData = selectedSong.syncData;
     const hasManual = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
     const hasAuto = selectedSong.autoSyncData && selectedSong.autoSyncData.some(l => l.start !== null);
-    
-    if (syncProps.isSyncMode) {
-      activeData = syncProps.isShowingAutoSync && hasAuto ? selectedSong.autoSyncData : selectedSong.syncData;
-    } else {
-      activeData = hasManual ? selectedSong.syncData : (hasAuto ? selectedSong.autoSyncData : selectedSong.syncData);
-    }
+    const activeData = syncProps.isSyncMode
+      ? syncProps.isShowingAutoSync && hasAuto ? selectedSong.autoSyncData : selectedSong.syncData
+      : hasManual ? selectedSong.syncData : hasAuto ? selectedSong.autoSyncData : selectedSong.syncData;
     
     return {
       ...selectedSong,
@@ -53,8 +55,6 @@ const SongModal = ({ selectedSong, setSelectedSong, isSaved, toggleLibrary, upda
     effectiveSong, songDataProps.customData, songDataProps.masterPalette, 
     syncProps.isSyncMode, songDataProps.isEditing, songDataProps.isImageManagerOpen, currentTrack, settings
   );
-
-  displayProps.isSyncMode = syncProps.isSyncMode;
 
   // ------------------------------------------------------------------
   // 1. URL -> STATE: The URL is the absolute single source of truth

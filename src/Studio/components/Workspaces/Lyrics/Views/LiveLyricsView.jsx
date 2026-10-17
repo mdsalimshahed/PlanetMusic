@@ -1,10 +1,14 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
 const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, isPlaying, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
+  const [renderProgress, setRenderProgress] = useState({
+    trackId: selectedSong?.trackId,
+    count: 20
+  });
   const containerRef = useRef(null);
     const initialRevealTrackRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -17,6 +21,32 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     const pendingActiveFrameRef = useRef(null);
     const pendingActiveNodeRef = useRef(null);
     const syncList = selectedSong?.syncData;
+    const renderedLineCount = renderProgress.trackId === selectedSong?.trackId
+      ? Math.min(renderProgress.count, liveParsedLyrics.length)
+      : Math.min(20, liveParsedLyrics.length);
+      useEffect(() => {
+        let frame = null;
+        let cancelled = false;
+        const trackId = selectedSong?.trackId;
+          let count = renderProgress.trackId === trackId
+            ? Math.min(renderProgress.count, liveParsedLyrics.length)
+            : Math.min(20, liveParsedLyrics.length);
+
+          const renderNextBatch = () => {
+            if (cancelled) return;
+          count = Math.min(count + 20, liveParsedLyrics.length);
+          setRenderProgress({ trackId, count });
+          if (count < liveParsedLyrics.length) frame = window.requestAnimationFrame(renderNextBatch);
+        };
+
+        if (count < liveParsedLyrics.length) {
+          frame = window.requestAnimationFrame(renderNextBatch);
+        }
+        return () => {
+          cancelled = true;
+          if (frame !== null) window.cancelAnimationFrame(frame);
+        };
+      }, [liveParsedLyrics.length, selectedSong?.trackId, renderProgress]);
     const nextStarts = useMemo(() => {
         const syncData = syncList || [];
         const result = Array(syncData.length).fill('NaN');
@@ -79,41 +109,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         };
     }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (containerRef.current) {
-        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
-            node,
-            start: parseFloat(node.dataset.start),
-            end: parseFloat(node.dataset.end),
-            nextStart: parseFloat(node.dataset.nextStart),
-            isActive: node.classList.contains('active')
-        }));
-                timedLinesRef.current = cachedLinesRef.current
-                    .map((line, index) => ({ ...line, index }))
-                    .filter(line => !isNaN(line.start))
-                    .sort((first, second) => first.start - second.start);
-                activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
-        
-        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
-            node,
-            start: parseFloat(node.dataset.start),
-            end: parseFloat(node.dataset.end),
-            state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
-        }));
-        adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
-        adlibCursorRef.current = 0;
-        lastAdlibTimeRef.current = null;
-
-        if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
-            handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
-        }
-      }
-    }, 50);
-    return () => clearTimeout(timer);
-    }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
-
-  const handleTimeUpdate = (time) => {
+  const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;
     
     const lines = cachedLinesRef.current;
@@ -196,7 +192,41 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         }
     }
     lastAdlibTimeRef.current = time;
-  };
+  }, [isPlayingCurrentSong, settings?.disableAnimations]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => ({
+            node,
+            start: parseFloat(node.dataset.start),
+            end: parseFloat(node.dataset.end),
+            nextStart: parseFloat(node.dataset.nextStart),
+            isActive: node.classList.contains('active')
+        }));
+        timedLinesRef.current = cachedLinesRef.current
+          .map((line, index) => ({ ...line, index }))
+          .filter(line => !isNaN(line.start))
+          .sort((first, second) => first.start - second.start);
+        activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
+
+        cachedAdlibsRef.current = Array.from(containerRef.current.querySelectorAll('.adlib-node')).map(node => ({
+          node,
+          start: parseFloat(node.dataset.start),
+          end: parseFloat(node.dataset.end),
+          state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
+        }));
+        adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
+        adlibCursorRef.current = 0;
+        lastAdlibTimeRef.current = null;
+
+        if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
+          handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
+        }
+      }
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds, renderedLineCount, isPlayingCurrentSong, handleTimeUpdate]);
 
   useEffect(() => {
     const clearAllActive = () => {
@@ -251,7 +281,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
         pendingActiveNodeRef.current?.classList.remove('is-preparing-active');
         pendingActiveNodeRef.current = null;
     };
-    }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations, lyricsPlaybackOffsetSeconds]);
+    }, [isPlayingCurrentSong, currentTrack, settings?.disableAnimations, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
 
   return (
     <div
@@ -259,7 +289,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px` }}
     >
-      {liveParsedLyrics.map((line, i) => {
+      {liveParsedLyrics.slice(0, renderedLineCount).map((line, i) => {
         return (
             <LyricLineWrapper
               key={i}

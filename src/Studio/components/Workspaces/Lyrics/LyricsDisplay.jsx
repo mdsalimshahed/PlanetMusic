@@ -10,7 +10,7 @@ import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
-    lyricsViewMode, liveParsedLyrics, syncWorkspaceLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
+    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
     showGroupChatDebug
 }) => {

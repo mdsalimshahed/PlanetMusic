@@ -4,7 +4,7 @@ import { extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import './SongCard.css';
 
-const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTrack }) => {
+const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }) => {
   const [accentRGB, setAccentRGB] = useState('0, 0, 0');
   const highResArt = song.artworkUrl100?.replace('100x100', '300x300');
   const ytUrl = song.customLinks?.yt || song.yt || '';
@@ -52,7 +52,7 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
           b = Math.floor(b / pixelCount);
 
           setAccentRGB(`${r}, ${g}, ${b}`);
-        } catch (e) {
+        } catch {
           // Fallback on CORS error
           setAccentRGB('20, 20, 30');
         } finally {
@@ -145,6 +145,6 @@ const SongCard = ({ song, isSaved, toggleLibrary, setSelectedSong, setCurrentTra
       </div>
     </div>
   );
-};
+});
 
 export default SongCard;

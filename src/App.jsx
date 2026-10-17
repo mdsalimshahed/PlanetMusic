@@ -191,6 +191,10 @@ const App = () => {
 
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const songSelectionContextRef = useRef({ selectedSong, searchQuery, location, navigate });
+  useLayoutEffect(() => {
+    songSelectionContextRef.current = { selectedSong, searchQuery, location, navigate };
+  }, [selectedSong, searchQuery, location, navigate]);
   const [logoPlaybackVisuals, setLogoPlaybackVisuals] = useState({ isPlaying: false, albumAccentColor: null });
   const [isExplicitSearch, setIsExplicitSearch] = useState(false);
   const [zenMessage, setZenMessage] = useState('');
@@ -353,24 +357,25 @@ const App = () => {
   }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
   // Routing Handlers
-  const handleSetSelectedSong = (song) => {
+  const handleSetSelectedSong = useCallback((song) => {
+    const { selectedSong: currentSelectedSong, searchQuery: currentSearchQuery, location: currentLocation, navigate: currentNavigate } = songSelectionContextRef.current;
     if (song) {
-      if (!selectedSong && contentScrollAreaRef.current) {
+      if (!currentSelectedSong && contentScrollAreaRef.current) {
         vaultScrollPositionRef.current = contentScrollAreaRef.current.scrollTop;
       }
-      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      navigate(`/song/${song.trackId}/live${qParam}`, {
+      const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
+      currentNavigate(`/song/${song.trackId}/live${qParam}`, {
         state: { returnPath: '/vault' }
       });
     } else {
-      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      const returnPath = location.state?.returnPath || '/vault';
+      const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
+      const returnPath = currentLocation.state?.returnPath || '/vault';
       const tabPath = `${returnPath}${qParam}`;
-      navigate(tabPath);
+      currentNavigate(tabPath);
       if (!tabPath.startsWith('/vault')) vaultScrollPositionRef.current = null;
     }
     setSelectedSong(song);
-  };
+  }, []);
 
   // Direct State Update Handler (No Navigation / Route Interruption)
   const updateSelectedSongDirect = (song) => {
@@ -522,7 +527,6 @@ const App = () => {
           <TrackGrid 
             items={library} 
             library={library} 
-            toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
             adsEnabled={ADS_ENABLED}
@@ -551,7 +555,6 @@ const App = () => {
                 <TrackGrid 
                   items={filteredLibrary} 
                   library={library} 
-                  toggleLibrary={toggleLibrary} 
                   setSelectedSong={handleSetSelectedSong} 
                   setCurrentTrack={setCurrentTrack}
                   adsEnabled={ADS_ENABLED}
@@ -573,7 +576,6 @@ const App = () => {
                 <TrackGrid 
                   items={uniqueOnlineResults} 
                   library={library} 
-                  toggleLibrary={toggleLibrary} 
                   setSelectedSong={handleSetSelectedSong} 
                   setCurrentTrack={setCurrentTrack}
                   adsEnabled={ADS_ENABLED}
@@ -589,7 +591,6 @@ const App = () => {
           <TrackGrid 
             items={filteredLibrary} 
             library={library} 
-            toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
             adsEnabled={ADS_ENABLED}
@@ -598,7 +599,6 @@ const App = () => {
           <TrackGrid 
             items={searchResults} 
             library={library} 
-            toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
             adsEnabled={ADS_ENABLED}
@@ -763,7 +763,6 @@ const App = () => {
       )}
 
       <SongModal 
-        key={selectedSong ? selectedSong.trackId : 'modal-empty'}
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
