@@ -617,7 +617,7 @@ const App = () => {
       )}
 
       {/* BOTTOM SPONSOR AD (Main Dashboard) */}
-      {!isAmbientMode && ADS_ENABLED && (
+      {!isAmbientMode && !isZenMode && ADS_ENABLED && (
         <SelfPromoCard
           placement="dashboardBottom"
           format="banner"
@@ -635,7 +635,7 @@ const App = () => {
           <Background
             isModalOpen={false}
             currentTrack={backgroundTrack}
-            isReadableMode={activeTab === 'vault' || activeTab === 'ambient'}
+            isReadableMode={activeTab === 'vault' || activeTab === 'ambient' || activeTab === 'zen'}
           />
 
           <Topbar
