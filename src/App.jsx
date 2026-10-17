@@ -774,7 +774,6 @@ const App = () => {
       />
       
       <Player
-        key={isSyncWorkspaceActive ? `sync-player-${urlTrackId}` : 'global-player'}
         currentTrack={playerTrack}
         onPlaybackVisualChange={setLogoPlaybackVisuals}
         setCurrentTrack={setCurrentTrack}

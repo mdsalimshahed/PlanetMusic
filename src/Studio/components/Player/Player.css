@@ -47,9 +47,14 @@ body .global-player.glass-panel-heavy.centered-mode {
 }
 
 .global-player.sync-docked {
-  animation: none !important;
-  transition: none !important;
+  animation: syncDockPlayerIn 0.24s ease-out both !important;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, width 0.3s ease, opacity 0.24s ease;
   margin-top: 0;
+}
+
+@keyframes syncDockPlayerIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .global-player.sync-docked .close-player {
