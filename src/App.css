@@ -116,7 +116,7 @@ body .info-block,
 body .settings-card, 
 body .sample-vault-banner, 
 body .confirm-dialog {
-    border-radius: var(--dyn-border-radius, 16px) !important;
+    border-radius: var(--dyn-border-radius, 0px) !important;
 }
 
 /* Aggressively clip AdSense iframes and sponsor wrappers so they don't bleed out */
@@ -126,7 +126,7 @@ body .promo-box-container,
 body ins.adsbygoogle,  
 body iframe, 
 body .dynamic-radius-override {
-    border-radius: var(--dyn-border-radius, 16px) !important;
+    border-radius: var(--dyn-border-radius, 0px) !important;
 }
 
 /* ==========================================================================

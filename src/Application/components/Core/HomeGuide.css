@@ -1,5 +1,5 @@
 .home-guide {
-  --home-guide-radius: var(--dyn-border-radius, 20px);
+  --home-guide-radius: var(--dyn-border-radius, 0px);
   --hg-violet: #a77bff;
   --hg-pink: #f09bff;
   --hg-cyan: #5fd4ff;

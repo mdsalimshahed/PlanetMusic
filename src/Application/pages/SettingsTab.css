@@ -356,7 +356,7 @@
 
 .settings-card {
   padding: 28px;
-  border-radius: var(--dyn-border-radius, 16px);
+  border-radius: var(--dyn-border-radius, 0px);
   background: rgba(17, 17, 17, 0.94) !important;
   border: 1px solid rgba(255, 255, 255, 0.16) !important;
   display: flex;

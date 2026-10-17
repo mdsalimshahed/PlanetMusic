@@ -85,7 +85,7 @@ export const useAppStorage = (urlSearchQuery) => {
       cardWidth: 12,
       cardPadding: 16,
       cardGap: 28,
-      isRounded: true,
+      isRounded: false,
       borderRadius: 16,
       bgImageOpacity: 0.25,
       cosmosSplitRatio: 60,
