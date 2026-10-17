@@ -1,5 +1,5 @@
 /* --- src/components/SettingsTab.jsx --- */
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import './SettingsTab.css';
 import { useSettingsLogic } from '../hooks/core/useSettingsLogic.js';
 
@@ -11,7 +11,7 @@ import TranslationSettings from '../components/Settings/TranslationSettings.jsx'
 import PurgeCard from '../components/Settings/PurgeCard.jsx';
 import AudioDelayTester from '../components/Settings/AudioDelayTester.jsx';
 import SettingsCardHeading from '../components/Settings/SettingsCardHeading.jsx';
-import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import SelfPromoCard from '../components/Promos/SelfPromoCard.jsx';
 
 const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isAmbientMode, toggleAmbientMode, returnPath }) => {
   const settingsGridRef = useRef(null);
@@ -133,12 +133,11 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
         {/* IN-FEED SPONSOR AD 1 */}
         {adsEnabled !== false && (
           <div data-settings-motion-key="sponsor-feed-one" style={{ breakInside: 'avoid', marginBottom: '24px' }}>
-            <SponsorUnit 
+            <SelfPromoCard
               placement="settingsFeedOne"
+              format="inline"
               className="glass-panel dynamic-radius-override" 
-              style={{ minHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              adTitle="Partner Content" 
-              adSub="Advertisement space" 
+              style={{ minHeight: '280px' }}
             />
           </div>
         )}
@@ -159,12 +158,11 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
         {/* IN-FEED SPONSOR AD 2 */}
         {adsEnabled !== false && (
           <div data-settings-motion-key="sponsor-feed-two" style={{ breakInside: 'avoid', marginBottom: '24px' }}>
-            <SponsorUnit 
+            <SelfPromoCard
               placement="settingsFeedTwo"
+              format="inline"
               className="glass-panel dynamic-radius-override" 
-              style={{ minHeight: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              adTitle="Discover More" 
-              adSub="Sponsored Content" 
+              style={{ minHeight: '350px' }}
             />
           </div>
         )}
@@ -178,11 +176,10 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
 
         {adsEnabled !== false && (
           <div data-settings-motion-key="sponsor-feed-three" className="settings-sponsor-placement">
-            <SponsorUnit
+            <SelfPromoCard
               placement="settingsFeedThree"
+              format="inline"
               className="glass-panel dynamic-radius-override settings-infeed-ad"
-              adTitle="Discover More"
-              adSub="Sponsored Content"
             />
           </div>
         )}
@@ -220,11 +217,10 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
 
         {adsEnabled !== false && (
           <div data-settings-motion-key="sponsor-feed-four" className="settings-sponsor-placement">
-            <SponsorUnit
+            <SelfPromoCard
               placement="settingsFeedFour"
+              format="inline"
               className="glass-panel dynamic-radius-override settings-infeed-ad"
-              adTitle="Partner Content"
-              adSub="Advertisement space"
             />
           </div>
         )}
@@ -240,12 +236,11 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, isA
 
       {/* BOTTOM SPONSOR AD */}
       {adsEnabled !== false && (
-        <SponsorUnit 
+        <SelfPromoCard
           placement="settingsBottom"
+          format="banner"
           className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Sponsor Message"
-          adSub="Thank you for supporting PlanetMusic"
         />
       )}
     </section>

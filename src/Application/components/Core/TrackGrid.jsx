@@ -1,43 +1,122 @@
 /* --- src/Application/components/Core/TrackGrid.jsx --- */
 import './TrackGrid.css';
-import React from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import SongCard from './SongCard.jsx';
 import InFeedSponsor from '../Promos/InFeedSponsor.jsx';
 
+const adPlacementSessionSeed = Math.floor(Math.random() * 0x100000000);
+
+const getRandomGridEntries = (items, columnCount, itemSequence) => {
+  if (columnCount === 0) return [];
+  let seed = adPlacementSessionSeed;
+  for (let index = 0; index < itemSequence.length; index += 1) {
+    seed = Math.imul(seed ^ itemSequence.charCodeAt(index), 16777619) >>> 0;
+  }
+
+  const nextRandom = () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 0x100000000;
+  };
+
+  const entries = items.slice(0, columnCount).map((song, index) => ({
+    type: 'track',
+    song,
+    index
+  }));
+  let songIndex = entries.length;
+  let adIndex = 0;
+  const songsPerRow = Math.max(1, columnCount - 1);
+  const usedAdColumns = new Set();
+  let previousAdColumn = null;
+
+  while (songIndex < items.length) {
+    const rowSongCount = Math.min(songsPerRow, items.length - songIndex);
+    const possibleColumns = Array.from({ length: rowSongCount + 1 }, (_, index) => index);
+    let availableColumns = possibleColumns.filter((column) => (
+      !usedAdColumns.has(column) && column !== previousAdColumn
+    ));
+    if (availableColumns.length === 0) {
+      usedAdColumns.clear();
+      availableColumns = possibleColumns.filter((column) => column !== previousAdColumn);
+    }
+    const adColumn = availableColumns[Math.floor(nextRandom() * availableColumns.length)];
+    usedAdColumns.add(adColumn);
+    previousAdColumn = adColumn;
+
+    for (let column = 0; column <= rowSongCount; column += 1) {
+      if (column === adColumn) {
+        entries.push({ type: 'ad', key: `vault-promo-${adIndex}` });
+        adIndex += 1;
+      }
+      if (column < rowSongCount) {
+        entries.push({
+          type: 'track',
+          song: items[songIndex],
+          index: songIndex
+        });
+        songIndex += 1;
+      }
+    }
+  }
+
+  return entries;
+};
+
 const TrackGrid = ({ items, library, toggleLibrary, setSelectedSong, setCurrentTrack, adsEnabled }) => {
+  const gridRef = useRef(null);
+  const [columnCount, setColumnCount] = useState(0);
+  const itemSequence = items.map((song) => song.trackId).join('\u001f');
+
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return undefined;
+
+    const updateColumnCount = () => {
+      const columns = getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length;
+      setColumnCount((current) => (current === columns ? current : columns));
+    };
+
+    updateColumnCount();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(updateColumnCount);
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, []);
+
+  const gridEntries = useMemo(
+    () => getRandomGridEntries(items, columnCount, itemSequence),
+    [columnCount, itemSequence, items]
+  );
+
   return (
-    <div className="track-grid">
-      {items.map((song, idx) => {
-        // Inject an in-feed ad every 6 items.
-        const showAdAfter = (idx + 1) % 6 === 0;
-        
-        // Calculate the staggered delay (Caps at 1.5s so massive libraries don't take forever to load)
-        const staggerDelay = Math.min(idx * 0.05, 1.5);
+    <div className="track-grid" ref={gridRef}>
+      {gridEntries.map((entry, gridIndex) => {
+        const staggerDelay = Math.min(gridIndex * 0.05, 1.5);
+        if (entry.type === 'ad') {
+          return adsEnabled ? (
+            <InFeedSponsor
+              key={entry.key}
+              placement="trackGrid"
+              wrapperClass="track-grid-item dynamic-radius-override"
+              wrapperStyle={{ animationDelay: `${staggerDelay}s` }}
+            />
+          ) : null;
+        }
 
         return (
-          <React.Fragment key={`${song.trackId}-${idx}`}>
-            <div 
-              className="track-grid-item"
-              style={{ animationDelay: `${staggerDelay}s` }}
-            >
-              <SongCard 
-                song={song} 
-                isSaved={library.some((s) => s.trackId === song.trackId)}
-                toggleLibrary={toggleLibrary}
-                setSelectedSong={setSelectedSong}
-                setCurrentTrack={setCurrentTrack}
-              />
-            </div>
-            
-            {/* INJECT IN-FEED AD IF ENABLED */}
-            {adsEnabled && showAdAfter && (
-              <InFeedSponsor 
-                placement="trackGrid"
-                wrapperClass="track-grid-item dynamic-radius-override" 
-                wrapperStyle={{ animationDelay: `${staggerDelay + 0.02}s` }} 
-              />
-            )}
-          </React.Fragment>
+          <div
+            key={`${entry.song.trackId}-${entry.index}`}
+            className="track-grid-item"
+            style={{ animationDelay: `${staggerDelay}s` }}
+          >
+            <SongCard
+              song={entry.song}
+              isSaved={library.some((savedSong) => savedSong.trackId === entry.song.trackId)}
+              toggleLibrary={toggleLibrary}
+              setSelectedSong={setSelectedSong}
+              setCurrentTrack={setCurrentTrack}
+            />
+          </div>
         );
       })}
     </div>

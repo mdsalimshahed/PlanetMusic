@@ -24,7 +24,7 @@ import ContactTab from './Application/pages/ContactTab.jsx';
 import TermsTab from './Application/pages/TermsTab.jsx';
 import AboutTab from './Application/pages/AboutTab.jsx';
 
-import SponsorUnit from './Application/components/Promos/SponsorUnit.jsx';
+import SelfPromoCard from './Application/components/Promos/SelfPromoCard.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
 import { extractYouTubeId } from './Studio/utils/songHelpers.js';
 
@@ -396,7 +396,7 @@ const App = () => {
 
   const renderHomeView = () => (
     <section className="view-section">
-      <HomeGuide />
+      <HomeGuide isPlayerActive={logoPlaybackVisuals.isPlaying} />
     </section>
   );
 
@@ -626,12 +626,11 @@ const App = () => {
 
       {/* BOTTOM SPONSOR AD (Main Dashboard) */}
       {!isAmbientMode && settings.adsEnabled !== false && (
-        <SponsorUnit 
+        <SelfPromoCard
           placement="dashboardBottom"
+          format="banner"
           className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Discover More"
-          adSub="Thank you for supporting PlanetMusic"
         />
       )}
     </section>

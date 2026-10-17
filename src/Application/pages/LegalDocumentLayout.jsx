@@ -1,4 +1,4 @@
-import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import SelfPromoCard from '../components/Promos/SelfPromoCard.jsx';
 import './PrivacyTab.css';
 
 const LegalDocumentLayout = ({ adsEnabled, children }) => (
@@ -8,29 +8,26 @@ const LegalDocumentLayout = ({ adsEnabled, children }) => (
       <aside className="privacy-sidebar">
         {adsEnabled && (
           <>
-            <SponsorUnit
+            <SelfPromoCard
               placement="privacySidebar"
+              format="sidebar"
               className="glass-panel dynamic-radius-override page-sidebar-ad-large"
-              adTitle="Sponsor"
-              adSub="Sidebar Advertisement Space"
             />
-            <SponsorUnit
+            <SelfPromoCard
               placement="privacyStickySidebar"
+              format="sidebar"
               className="glass-panel dynamic-radius-override page-sidebar-ad-small"
-              adTitle="Discover More"
-              adSub="Sticky Sidebar Ad"
             />
           </>
         )}
       </aside>
     </div>
     {adsEnabled && (
-      <SponsorUnit
+      <SelfPromoCard
         placement="privacyBottom"
+        format="banner"
         className="glass-panel settings-promo-box dynamic-radius-override"
         style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-        adTitle="Sponsor / Partner"
-        adSub="Thank you for supporting PlanetMusic"
       />
     )}
   </section>

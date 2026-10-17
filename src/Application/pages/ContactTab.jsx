@@ -1,7 +1,7 @@
 /* --- src/pages/ContactTab.jsx --- */
 import { useEffect, useRef, useState } from 'react';
 import './ContactTab.css';
-import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import SelfPromoCard from '../components/Promos/SelfPromoCard.jsx';
 import { getProceduralGradient } from '../../utils/proceduralColors.js';
 import BlogPostArtwork from './BlogPostArtwork.jsx';
 
@@ -254,17 +254,15 @@ const ContactTab = ({ adsEnabled }) => {
         <aside className="contact-sidebar">
           {adsEnabled && (
             <>
-              <SponsorUnit 
+              <SelfPromoCard
                 placement="contactSidebar"
+                format="sidebar"
                 className="glass-panel dynamic-radius-override page-sidebar-ad-large"
-                adTitle="Sponsor"
-                adSub="Sidebar Advertisement Space"
               />
-              <SponsorUnit 
+              <SelfPromoCard
                 placement="contactStickySidebar"
+                format="sidebar"
                 className="glass-panel dynamic-radius-override page-sidebar-ad-small"
-                adTitle="Discover More"
-                adSub="Sticky Sidebar Ad"
               />
             </>
           )}
@@ -274,12 +272,11 @@ const ContactTab = ({ adsEnabled }) => {
 
       {/* BOTTOM SPONSOR AD (Matches Settings Page Format) */}
       {adsEnabled && (
-        <SponsorUnit 
+        <SelfPromoCard
           placement="contactBottom"
+          format="banner"
           className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Sponsor Message"
-          adSub="Thank you for supporting PlanetMusic"
         />
       )}
     </section>

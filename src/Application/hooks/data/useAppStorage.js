@@ -69,7 +69,7 @@ export const useAppStorage = (urlSearchQuery) => {
       // New Performance Setting
       if (parsed.disableAnimations === undefined) parsed.disableAnimations = false;
       
-      if (parsed.adsEnabled === undefined) parsed.adsEnabled = false;
+      if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
       parsed.rememberDeezerArl = parsed.rememberDeezerArl === true;
       parsed.deezerArl = parsed.rememberDeezerArl ? readRememberedDeezerArl() : '';
       parsed.deezerArlValid = Boolean(parsed.deezerArl) && parsed.deezerArlValid === true;
@@ -117,7 +117,7 @@ export const useAppStorage = (urlSearchQuery) => {
       deezerArlValid: false,
       rememberDeezerArl: false,
       disableAnimations: false,
-      adsEnabled: false
+      adsEnabled: true
     };
   });
 

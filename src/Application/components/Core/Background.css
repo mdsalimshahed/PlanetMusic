@@ -23,6 +23,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
+  opacity: 0.32;
 }
 
 /* CHAT BUBBLE STYLING */

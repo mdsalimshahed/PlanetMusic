@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import './BlogTab.css';
-import SponsorUnit from '../components/Promos/SponsorUnit.jsx';
+import SelfPromoCard from '../components/Promos/SelfPromoCard.jsx';
 import InFeedSponsor from '../components/Promos/InFeedSponsor.jsx';
 import ConfirmModal from '../components/Modals/ConfirmModal.jsx';
 import { renderMarkdown } from '../utils/markdownUtils.jsx';
@@ -1073,6 +1073,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                       {adsEnabled && (idx + 1) % 4 === 0 && idx < filteredPosts.length - 1 && (
                         <InFeedSponsor
                           placement="blogFeed"
+                          format="feed"
                           adClass="in-feed-blog-ad"
                           wrapperClass="blog-card dynamic-radius-override in-feed-blog-card"
                         />
@@ -1102,38 +1103,34 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
         <aside className={`blog-sidebar ${viewMode === 'studio' ? 'studio-bottom' : ''}`}>
           {adsEnabled && (
             <>
-              <SponsorUnit
+              <SelfPromoCard
                 placement="blogSidebar"
+                format="sidebar"
                 className={`glass-panel dynamic-radius-override page-sidebar-ad-large blog-sidebar-sponsor-large${viewMode === 'studio' ? ' studio-sidebar-ad' : ''}`}
-                adTitle="Sponsor"
-                adSub="Sidebar Advertisement Space"
               />
-              <SponsorUnit
+              <SelfPromoCard
                 placement="blogStickySidebar"
+                format="sidebar"
                 className={`glass-panel dynamic-radius-override page-sidebar-ad-small blog-sidebar-sponsor-small${viewMode === 'studio' ? ' studio-sidebar-ad' : ''}`}
-                adTitle="Discover More"
-                adSub="Sticky Sidebar Ad"
               />
             </>
           )}
         </aside>
       </div>
       {viewMode === 'grid' && adsEnabled && (
-        <SponsorUnit
+        <SelfPromoCard
           placement="blogFeedBottom"
+          format="banner"
           className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Discover More"
-          adSub="Thank you for supporting PlanetMusic"
         />
       )}
       {viewMode === 'reader' && activePost && adsEnabled && (
-        <SponsorUnit
+        <SelfPromoCard
           placement="blogPostBottom"
+          format="banner"
           className="glass-panel settings-promo-box dynamic-radius-override"
           style={{ maxWidth: '1400px', margin: '32px auto 0 auto' }}
-          adTitle="Sponsored Feature"
-          adSub="Thank you for supporting PlanetMusic"
         />
       )}
     </section>

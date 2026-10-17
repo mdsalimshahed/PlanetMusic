@@ -1,18 +1,24 @@
 /* --- src/Application/components/Promos/InFeedSponsor.jsx --- */
-import React from 'react';
-import SponsorUnit from './SponsorUnit.jsx';
+import SelfPromoCard from './SelfPromoCard.jsx';
 
-const InFeedSponsor = ({ placement = 'trackGrid', testMode = false, wrapperClass = "track-grid-item", adClass = "in-feed-promo-box", wrapperStyle = {} }) => {
+const InFeedSponsor = ({ placement = 'trackGrid', format = 'square', wrapperClass = "track-grid-item", adClass = "in-feed-promo-box", wrapperStyle = {} }) => {
   return (
-    <div className={wrapperClass} style={{ minWidth: 0, display: 'flex', padding: 0, overflow: 'hidden', ...wrapperStyle }}>
-      <SponsorUnit 
+    <div
+      className={wrapperClass}
+      style={{
+        minWidth: 0,
+        display: 'flex',
+        padding: 0,
+        overflow: 'visible',
+        ...(format === 'square' ? { aspectRatio: '1 / 1' } : {}),
+        ...wrapperStyle
+      }}
+    >
+      <SelfPromoCard
         placement={placement}
-        testMode={testMode}
+        format={format}
         className={adClass}
-        format="fluid"
-        adTitle="Discover More"
-        adSub="Sponsored Content"
-        style={{ width: '100%', height: '100%', borderRadius: 'inherit', border: 'none', background: 'transparent' }}
+        style={{ width: '100%', borderRadius: 'inherit' }}
       />
     </div>
   );

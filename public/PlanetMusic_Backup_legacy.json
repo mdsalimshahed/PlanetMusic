@@ -89802,7 +89802,7 @@
     "transliterationColor": "#d6d6d6",
     "transliterationOpacity": 0.9,
     "disableAnimations": false,
-    "adsEnabled": false,
+    "adsEnabled": true,
     "liveSyncLineGap": 0,
     "translationTopPadding": 4,
     "transliterationBottomPadding": 5,
