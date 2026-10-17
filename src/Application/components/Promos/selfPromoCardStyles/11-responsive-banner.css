@@ -1,0 +1,218 @@
+@media (max-width: 600px) {
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] {
+    grid-template-columns: minmax(72px, 26cqw) minmax(0, 1fr);
+    gap: clamp(7px, 2.5cqw, 12px);
+    padding: clamp(14px, 4cqw, 20px);
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-art,
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-art {
+    width: 100%;
+    max-width: 112px;
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-copy {
+    gap: clamp(5px, 1.8cqw, 8px);
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-title {
+    font-size: clamp(15px, 5cqw, 21px);
+    line-height: 1.12;
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-description {
+    font-size: clamp(11px, 3.4cqw, 14px);
+    line-height: 1.3;
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlights {
+    gap: clamp(3px, 1.5cqw, 6px);
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight {
+    gap: 4px;
+    padding: clamp(4px, 2cqw, 6px);
+    font-size: clamp(9px, 3cqw, 12px);
+  }
+
+  .self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-action {
+    font-size: clamp(10px, 3.5cqw, 13px);
+  }
+}
+
+.self-promo-card[data-promo-format="banner"],
+.self-promo-card[data-promo-format="banner"][data-compact="true"] {
+  grid-template-columns: minmax(0, 36%) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: stretch;
+  column-gap: calc(3.5 * var(--self-promo-h-unit));
+  row-gap: calc(1.2 * var(--self-promo-vh-unit));
+  padding: calc(8 * var(--self-promo-vh-unit))
+    calc(3.25 * var(--self-promo-h-unit))
+    calc(4 * var(--self-promo-vh-unit));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-brand,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-brand {
+  position: absolute;
+  top: clamp(5px, 1cqw, 12px);
+  left: clamp(10px, 2cqw, 20px);
+  grid-column: auto;
+  grid-row: auto;
+  max-width: min(80%, calc(100% - 100px));
+  padding: 0;
+  font-size: clamp(14px, 1.4cqw, 20px);
+  line-height: 1.15;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-badge,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-badge {
+  top: clamp(8px, 1.5cqw, 16px);
+  right: clamp(10px, 2cqw, 20px);
+  padding: clamp(4px, 0.45cqw, 6px) clamp(8px, 0.7cqw, 10px);
+  font-size: clamp(12px, 1cqw, 15px);
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-gallery,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-gallery {
+  width: min(100%, calc(34 * var(--self-promo-h-unit)));
+  height: auto;
+  max-height: 100%;
+  aspect-ratio: 460 / 190;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  gap: calc(0.6 * var(--self-promo-h-unit));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-supporting-art,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-supporting-art {
+  gap: calc(0.6 * var(--self-promo-h-unit));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-copy,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-copy {
+  grid-column: 2;
+  grid-row: 1;
+  align-items: flex-start;
+  justify-content: center;
+  gap: calc(1.8 * var(--self-promo-vh-unit));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-title,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-title {
+  font-size: calc(2 * var(--self-promo-h-unit));
+  line-height: 1.18;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-highlights,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlights {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(calc(3.6 * var(--self-promo-h-unit)), auto);
+  gap: calc(0.8 * var(--self-promo-vh-unit));
+  margin: calc(1.8 * var(--self-promo-vh-unit)) 0 0;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-highlight,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight {
+  min-height: 0;
+  gap: calc(0.5 * var(--self-promo-h-unit));
+  padding: calc(0.35 * var(--self-promo-h-unit))
+    calc(0.55 * var(--self-promo-h-unit));
+  font-size: calc(0.92 * var(--self-promo-h-unit));
+  line-height: 1.15;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-feature-graphic,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-feature-graphic {
+  width: calc(0.95 * var(--self-promo-h-unit));
+  height: calc(0.95 * var(--self-promo-h-unit));
+}
+
+.self-promo-card[data-promo-format="banner"] > .self-promo-action,
+.self-promo-card[data-promo-format="banner"][data-compact="true"] > .self-promo-action {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: end;
+  font-size: var(--self-promo-h-unit);
+  text-align: left;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] {
+  padding-top: max(
+    calc(8 * var(--self-promo-vh-unit)),
+    clamp(36px, 3.2cqw, 58px)
+  );
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-gallery,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-gallery {
+  position: relative;
+  display: block;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 78%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  transform-origin: top left;
+  z-index: 1;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item > .self-promo-banner-art,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item > .self-promo-banner-art {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  max-width: none;
+  max-height: 100%;
+  aspect-ratio: auto;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item > .self-promo-art,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item > .self-promo-art {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  max-height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  margin: 0;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item[data-rotates="true"],
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item[data-rotates="true"] {
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item[data-artwork-index="1"][data-rotates="true"],
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item[data-artwork-index="1"][data-rotates="true"] {
+  animation-name: self-promo-banner-focus-one;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item[data-artwork-index="2"][data-rotates="true"],
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item[data-artwork-index="2"][data-rotates="true"] {
+  animation-name: self-promo-banner-focus-two;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item[data-artwork-index="0"][data-rotates="true"],
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item[data-artwork-index="0"][data-rotates="true"] {
+  animation-name: self-promo-banner-focus-zero;
+}

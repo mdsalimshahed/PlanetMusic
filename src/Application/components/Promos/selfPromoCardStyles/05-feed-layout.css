@@ -1,0 +1,146 @@
+.self-promo-card[data-promo-format="feed"] {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  justify-content: stretch;
+  gap: 10px 14px;
+  min-height: 0;
+  padding: 20px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="feed"] .self-promo-art {
+  grid-column: 1;
+  grid-row: 1;
+  width: 74px;
+}
+
+.self-promo-card[data-promo-format="feed"] .self-promo-copy {
+  grid-column: 2;
+  grid-row: 1;
+  align-items: flex-start;
+}
+
+.self-promo-card[data-promo-format="feed"] .self-promo-action {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px 20px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] > .self-promo-art {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] > .self-promo-gallery {
+  display: flex;
+  width: 100%;
+  margin: 18px 0 0;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] > .self-promo-copy {
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: 6px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] .self-promo-label {
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] .self-promo-title {
+  font-size: clamp(20px, 4.5vw, 26px);
+  line-height: 1.12;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] .self-promo-description {
+  -webkit-line-clamp: 2;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-self: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] .self-promo-highlight {
+  min-height: 27px;
+  padding: 4px 8px;
+  font-size: calc(12px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"] > .self-promo-action {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] {
+  gap: 14px;
+  padding: 24px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] > .self-promo-art {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] > .self-promo-gallery {
+  display: flex;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] > .self-promo-copy {
+  gap: 10px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] .self-promo-label {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] .self-promo-title {
+  font-size: clamp(23px, 5vw, 30px);
+  line-height: 1.15;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] .self-promo-description {
+  display: block;
+  overflow: visible;
+  font-size: 16px;
+  line-height: 1.5;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] .self-promo-highlights {
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] .self-promo-highlight {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: calc(14px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="feed"][data-tall="true"][data-expanded="true"] > .self-promo-action {
+  font-size: calc(14px * var(--self-promo-feature-scale, 1));
+}
+

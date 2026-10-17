@@ -1,0 +1,73 @@
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  align-items: stretch;
+  justify-items: center;
+  gap: calc(2.2 * var(--self-promo-vh-unit));
+  padding: calc(10 * var(--self-promo-vh-unit))
+    calc(5 * var(--self-promo-h-unit))
+    calc(6 * var(--self-promo-vh-unit));
+  text-align: center;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-banner-gallery {
+  width: min(90%, calc(90 * var(--self-promo-h-unit)));
+  height: auto;
+  max-height: none;
+  aspect-ratio: 460 / 190;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-copy {
+  grid-column: 1;
+  grid-row: 2;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(2 * var(--self-promo-vh-unit));
+  text-align: center;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-title {
+  font-size: calc(4 * var(--self-promo-vh-unit));
+  line-height: 1.15;
+  text-align: center;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-highlights {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(calc(7 * var(--self-promo-vh-unit)), auto);
+  gap: calc(1.5 * var(--self-promo-vh-unit))
+    calc(1.5 * var(--self-promo-h-unit));
+  margin: 0;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-highlight {
+  min-width: 0;
+  align-items: center;
+  gap: calc(1 * var(--self-promo-h-unit));
+  padding: calc(1.2 * var(--self-promo-vh-unit))
+    calc(1.5 * var(--self-promo-h-unit));
+  font-size: calc(2.7 * var(--self-promo-vh-unit));
+  line-height: 1.2;
+  text-align: left;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] .self-promo-feature-graphic {
+  width: calc(3 * var(--self-promo-vh-unit));
+  height: calc(3 * var(--self-promo-vh-unit));
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"] > .self-promo-action {
+  position: static;
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: start;
+  align-self: end;
+  width: 100%;
+  font-size: calc(3 * var(--self-promo-vh-unit));
+  text-align: left;
+}

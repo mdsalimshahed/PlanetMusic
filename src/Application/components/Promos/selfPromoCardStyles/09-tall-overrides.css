@@ -1,0 +1,219 @@
+@media (prefers-reduced-motion: reduce) {
+  .self-promo-card,
+  .self-promo-copy,
+  .self-promo-action span {
+    animation: none;
+    transition: none;
+  }
+
+  .self-promo-card:hover {
+    transform: none;
+  }
+}
+
+@keyframes self-promo-enter {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-gallery {
+  display: grid;
+  width: min(100%, 460px);
+  height: min(100%, 190px);
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-columns: minmax(0, 3.6fr) minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  align-self: center;
+  justify-self: center;
+  gap: 8px;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--self-promo-accent) 12%, transparent));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-gallery > .self-promo-banner-art {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-supporting-art {
+  display: grid;
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-supporting-art .self-promo-art {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  align-self: center;
+  aspect-ratio: 180 / 118;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-banner-gallery {
+  width: min(100%, 360px);
+  height: auto;
+  aspect-ratio: 1.1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1.9fr) minmax(0, 1fr);
+  flex: 0 0 auto;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-banner-gallery > .self-promo-banner-art {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-banner-supporting-art {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 48px 22px 48px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-art {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-gallery {
+  display: flex;
+  width: 100%;
+  flex: 0 0 auto;
+  margin: 2px 0 0;
+  gap: 8px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-gallery .self-promo-art {
+  width: calc((100% - 16px) / 3);
+  max-width: 116px;
+  flex: 1 1 0;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-copy {
+  display: flex;
+  width: 100%;
+  flex: 0 0 auto;
+  align-items: stretch;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-title {
+  display: block;
+  overflow: visible;
+  font-size: clamp(25px, 8cqw, 36px);
+  line-height: 1.12;
+  text-align: left;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlights {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlight {
+  min-height: 38px;
+  padding: 7px 11px;
+  font-size: 14px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-action {
+  position: absolute;
+  right: auto;
+  bottom: 18px;
+  left: 22px;
+  align-self: auto;
+  font-size: 14px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3cqw, 20px);
+  padding: 54px 28px 32px;
+  text-align: center;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-art {
+  display: block;
+  width: min(72%, 240px);
+  max-width: 240px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-gallery {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-copy {
+  display: flex;
+  width: 100%;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] .self-promo-title {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  font-size: clamp(28px, 8cqw, 42px);
+  line-height: 1.12;
+  text-align: center;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  justify-content: center;
+  margin: 0;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] .self-promo-highlight {
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-action {
+  position: static;
+  align-self: center;
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+}
+

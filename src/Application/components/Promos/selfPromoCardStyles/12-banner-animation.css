@@ -1,0 +1,119 @@
+@media (prefers-reduced-motion: reduce) {
+  .settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-item[data-rotates="true"],
+  .settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-item[data-rotates="true"],
+  .settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-title,
+  .settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-title,
+  .settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-highlight,
+  .settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight {
+    animation: none;
+  }
+
+  .self-promo-card[data-flip-stage] {
+    transform: none;
+    transition: none;
+  }
+
+  .settings-promo-box.self-promo-card[data-promo-format="banner"][data-flip-stage] {
+    transform: none;
+    transition: none;
+  }
+}
+
+@keyframes self-promo-banner-copy-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes self-promo-banner-focus-zero {
+  0%, 25% {
+    top: 0;
+    left: 0;
+    width: 78%;
+    height: 100%;
+    z-index: 2;
+  }
+  33.333%, 58.333% {
+    top: 51%;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  66.666%, 91.666% {
+    top: 0;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  100% {
+    top: 0;
+    left: 0;
+    width: 78%;
+    height: 100%;
+    z-index: 2;
+  }
+}
+
+@keyframes self-promo-banner-focus-one {
+  0%, 25% {
+    top: 0;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  33.333%, 58.333% {
+    top: 0;
+    left: 0;
+    width: 78%;
+    height: 100%;
+    z-index: 2;
+  }
+  66.666%, 91.666% {
+    top: 51%;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  100% {
+    top: 0;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+}
+
+@keyframes self-promo-banner-focus-two {
+  0%, 25% {
+    top: 51%;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  33.333%, 58.333% {
+    top: 0;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+  66.666%, 91.666% {
+    top: 0;
+    left: 0;
+    width: 78%;
+    height: 100%;
+    z-index: 2;
+  }
+  100% {
+    top: 51%;
+    left: 81%;
+    width: 19%;
+    height: 49%;
+    z-index: 1;
+  }
+}
+

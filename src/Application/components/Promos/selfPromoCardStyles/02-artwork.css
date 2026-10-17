@@ -1,0 +1,236 @@
+.art-frame {
+  fill: color-mix(in srgb, var(--self-promo-accent) 9%, #111827);
+  stroke: none;
+}
+
+.art-control {
+  fill: color-mix(in srgb, var(--self-promo-accent) 62%, #fff);
+  opacity: 0.78;
+}
+
+.art-play {
+  fill: color-mix(in srgb, var(--self-promo-accent) 36%, #fff);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--self-promo-accent) 55%, transparent));
+}
+
+.art-wave {
+  fill: none;
+  stroke: color-mix(in srgb, var(--self-promo-accent) 62%, #fff);
+  stroke-linecap: round;
+  stroke-width: 2;
+  opacity: 0.8;
+}
+
+.art-caption {
+  fill: color-mix(in srgb, var(--self-promo-accent) 62%, #fff);
+  opacity: 0.74;
+}
+
+.art-chapter-track {
+  fill: color-mix(in srgb, var(--self-promo-accent) 12%, #172238);
+}
+
+.art-chapter {
+  fill: color-mix(in srgb, var(--self-promo-accent) 46%, #fff);
+}
+
+.art-chapter-one {
+  fill: color-mix(in srgb, var(--self-promo-accent) 74%, #fff);
+}
+
+.art-chapter-two {
+  fill: color-mix(in srgb, var(--self-promo-accent) 54%, #fff);
+}
+
+.art-chapter-three {
+  fill: color-mix(in srgb, var(--self-promo-accent) 38%, #fff);
+}
+
+.art-chapter-marker {
+  fill: #fff;
+  stroke: #101827;
+  stroke-width: 1.5;
+}
+
+.self-promo-banner-art {
+  display: block;
+  width: min(32%, 360px);
+  height: auto;
+  flex: 0 1 360px;
+  aspect-ratio: 360 / 190;
+  color: var(--self-promo-accent);
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--self-promo-accent) 12%, transparent));
+}
+
+.self-promo-banner-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.banner-art-frame {
+  fill: color-mix(in srgb, var(--self-promo-accent) 8%, #10182a);
+  stroke: color-mix(in srgb, var(--self-promo-accent) 38%, transparent);
+  stroke-width: 1.5;
+}
+
+.banner-art-panel {
+  fill: color-mix(in srgb, var(--self-promo-accent) 8%, #131c30);
+  stroke: color-mix(in srgb, var(--self-promo-accent) 22%, transparent);
+  stroke-width: 1;
+}
+
+.banner-art-control {
+  fill: color-mix(in srgb, var(--self-promo-accent) 70%, #fff);
+}
+
+.banner-art-play {
+  fill: color-mix(in srgb, var(--self-promo-accent) 35%, #18243a);
+  stroke: color-mix(in srgb, var(--self-promo-accent) 74%, #fff);
+  stroke-width: 1.5;
+}
+
+.banner-art-play-triangle {
+  fill: #fff;
+}
+
+.banner-art-caption,
+.banner-art-stat-strong {
+  fill: color-mix(in srgb, var(--self-promo-accent) 85%, #fff);
+}
+
+.banner-art-chapter-active,
+.banner-art-row {
+  fill: color-mix(in srgb, var(--self-promo-accent) 15%, #172238);
+  stroke: color-mix(in srgb, var(--self-promo-accent) 22%, transparent);
+  stroke-width: 1;
+}
+
+.banner-art-chapter {
+  fill: color-mix(in srgb, var(--self-promo-accent) 7%, #172238);
+}
+
+.banner-art-line,
+.banner-art-stat {
+  fill: color-mix(in srgb, var(--self-promo-accent) 55%, #dce7ff);
+  opacity: 0.8;
+}
+
+.banner-art-line-wide {
+  fill: color-mix(in srgb, var(--self-promo-accent) 85%, #fff);
+}
+
+.banner-art-timeline {
+  fill: color-mix(in srgb, var(--self-promo-accent) 8%, #111b2d);
+  stroke: color-mix(in srgb, var(--self-promo-accent) 22%, transparent);
+  stroke-width: 1;
+}
+
+.banner-art-segment-one {
+  fill: color-mix(in srgb, var(--self-promo-accent) 80%, #fff);
+}
+
+.banner-art-segment-two {
+  fill: color-mix(in srgb, var(--self-promo-accent) 58%, #fff);
+}
+
+.banner-art-segment-three {
+  fill: color-mix(in srgb, var(--self-promo-accent) 37%, #fff);
+}
+
+.banner-art-marker,
+.banner-art-dot {
+  fill: #fff;
+  stroke: color-mix(in srgb, var(--self-promo-accent) 70%, #10182a);
+  stroke-width: 1.5;
+}
+
+.banner-art-gridline {
+  fill: none;
+  stroke: color-mix(in srgb, var(--self-promo-accent) 20%, #fff);
+  stroke-width: 1;
+  opacity: 0.48;
+}
+
+.banner-art-bar {
+  fill: color-mix(in srgb, var(--self-promo-accent) 34%, #26344d);
+}
+
+.banner-art-bar-two {
+  fill: color-mix(in srgb, var(--self-promo-accent) 48%, #26344d);
+}
+
+.banner-art-bar-three {
+  fill: color-mix(in srgb, var(--self-promo-accent) 63%, #26344d);
+}
+
+.banner-art-bar-four {
+  fill: color-mix(in srgb, var(--self-promo-accent) 82%, #26344d);
+}
+
+.art-axis {
+  fill: none;
+  stroke: color-mix(in srgb, var(--self-promo-accent) 36%, #fff);
+  stroke-linecap: round;
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.art-bar {
+  fill: color-mix(in srgb, var(--self-promo-accent) 30%, #25304a);
+}
+
+.art-bar-two {
+  fill: color-mix(in srgb, var(--self-promo-accent) 44%, #25304a);
+}
+
+.art-bar-three {
+  fill: color-mix(in srgb, var(--self-promo-accent) 60%, #25304a);
+}
+
+.art-bar-four {
+  fill: color-mix(in srgb, var(--self-promo-accent) 78%, #25304a);
+}
+
+.art-trend {
+  fill: none;
+  stroke: color-mix(in srgb, var(--self-promo-accent) 72%, #fff);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+.art-point {
+  fill: #fff;
+  stroke: var(--self-promo-accent);
+  stroke-width: 2;
+}
+
+.art-key-label {
+  fill: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.art-game-dot,
+.art-heat {
+  fill: color-mix(in srgb, var(--self-promo-accent) 48%, #111827);
+}
+
+.art-game-dot-2,
+.art-heat-2 {
+  fill: color-mix(in srgb, var(--self-promo-accent) 68%, #fff);
+}
+
+.art-game-dot-3,
+.art-heat-3 {
+  fill: color-mix(in srgb, var(--self-promo-accent) 32%, #111827);
+}
+
+.art-game-dot-4,
+.art-heat-4 {
+  fill: color-mix(in srgb, var(--self-promo-accent) 82%, #fff);
+}
+

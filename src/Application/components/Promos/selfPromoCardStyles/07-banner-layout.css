@@ -1,0 +1,307 @@
+.self-promo-card[data-promo-format="banner"] {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.56fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(16px, 3vw, 36px);
+  padding: clamp(22px, 4vw, 44px);
+  text-align: left;
+  background:
+    radial-gradient(ellipse at 14% 50%, color-mix(in srgb, var(--self-promo-accent) 20%, transparent), transparent 45%),
+    linear-gradient(110deg, #151b30, #090d19);
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-brand {
+  position: relative;
+  top: auto;
+  left: auto;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  max-width: 100%;
+  padding-right: 90px;
+  overflow: visible;
+  font-size: 14px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-label {
+  display: none;
+}
+
+.glass-panel.self-promo-card[data-promo-format="banner"] {
+  background:
+    radial-gradient(ellipse at 14% 50%, color-mix(in srgb, var(--self-promo-accent) 20%, transparent), transparent 45%),
+    linear-gradient(110deg, #151b30, #090d19) !important;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-banner-art {
+  grid-column: 1;
+  grid-row: 2;
+  width: min(100%, 360px);
+  max-height: 100%;
+  justify-self: center;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-copy {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-title {
+  font-size: clamp(22px, 3vw, 36px);
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-description {
+  font-size: 16px;
+  -webkit-line-clamp: 2;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-highlights {
+  display: grid;
+  width: min(100%, 900px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(54px, auto);
+  align-items: stretch;
+  justify-content: stretch;
+  justify-items: stretch;
+  align-self: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-highlight {
+  width: 100%;
+  height: 100%;
+  min-height: 54px;
+  box-sizing: border-box;
+  justify-self: stretch;
+  align-self: stretch;
+  padding: 8px 10px;
+  font-size: calc(14px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="banner"] .self-promo-action {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+  font-size: calc(14px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] {
+  display: grid;
+  grid-template-columns: clamp(76px, 26cqw, 150px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: center;
+  align-items: center;
+  gap: clamp(8px, 2cqw, 14px);
+  padding: clamp(16px, 4cqw, 24px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-art {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  max-width: 150px;
+  flex: 0 0 auto;
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-art {
+  grid-column: 1;
+  grid-row: 2;
+  width: 100%;
+  max-width: 150px;
+  flex: 0 0 auto;
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-copy {
+  grid-column: 2;
+  grid-row: 2;
+  gap: clamp(5px, 1.5cqw, 9px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-label {
+  display: block;
+  font-size: clamp(9px, 2.4cqw, 12px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-title {
+  font-size: clamp(16px, 4.8cqw, 27px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-description {
+  font-size: clamp(11px, 2.8cqw, 15px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: clamp(3px, 1cqw, 6px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight {
+  min-height: 0;
+  gap: 5px;
+  padding: 5px 6px;
+  border-radius: 7px;
+  font-size: calc(clamp(9px, 2cqw, 12px) * var(--self-promo-feature-scale, 1));
+  line-height: 1.2;
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-feature-graphic {
+  width: calc(12px * var(--self-promo-feature-scale, 1));
+  height: calc(12px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-action {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+  font-size: clamp(10px, 2.6cqw, 14px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px;
+  text-align: center;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-brand {
+  align-self: flex-start;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-art {
+  width: min(100%, 180px);
+  flex: 0 0 auto;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-banner-art {
+  width: min(100%, 330px);
+  max-height: none;
+  flex: 0 0 auto;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-copy {
+  width: 100%;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8px;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-label {
+  white-space: normal;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-title,
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-description {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-title {
+  font-size: clamp(24px, 5vw, 34px);
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-description {
+  font-size: 16px;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-label {
+  font-size: 13px;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-highlights {
+  display: grid;
+  width: min(100%, 900px);
+  max-width: min(100%, 900px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(54px, auto);
+  align-items: stretch;
+  justify-content: stretch;
+  justify-items: stretch;
+  gap: 7px;
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-highlight {
+  width: 100%;
+  height: 100%;
+  min-height: 54px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: calc(15px * var(--self-promo-feature-scale, 1));
+}
+
+.self-promo-card[data-promo-format="banner"][data-tall="true"] .self-promo-action {
+  font-size: 12px;
+}
+
+.settings-promo-box.self-promo-card {
+  width: 100%;
+  min-height: 0;
+  margin-top: 56px !important;
+  margin-bottom: 24px !important;
+}
+
+.settings-infeed-ad.self-promo-card {
+  min-height: 0;
+}
+
+.in-feed-blog-ad.self-promo-card {
+  min-height: 0;
+}
+
+.page-sidebar-ad-large.self-promo-card,
+.page-sidebar-ad-small.self-promo-card {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.page-sidebar-ad-large.self-promo-card {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+
+.page-sidebar-ad-small.self-promo-card {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+
+.self-promo-card[data-promo-format="banner"] {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+
+.self-promo-card[data-promo-format="feed"] {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+
+.self-promo-card[data-promo-format="inline"][data-placement^="settingsFeed"] {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+
+.in-feed-blog-ad.self-promo-card {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--self-promo-aspect-ratio);
+}
+

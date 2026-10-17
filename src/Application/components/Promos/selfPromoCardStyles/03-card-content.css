@@ -1,0 +1,147 @@
+.self-promo-copy {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  backface-visibility: hidden;
+  will-change: opacity;
+  animation: self-promo-enter 320ms ease both;
+}
+
+.self-promo-label {
+  max-width: 100%;
+  overflow: hidden;
+  color: color-mix(in srgb, var(--self-promo-accent) 78%, #fff);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+.self-promo-title {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  color: #fff;
+  font-size: clamp(16px, 2vw, 23px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.self-promo-description {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  color: rgba(240, 243, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.self-promo-highlights {
+  display: flex;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.self-promo-highlight {
+  display: inline-flex;
+  align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--self-promo-accent) 22%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--self-promo-accent) 6%, transparent);
+  color: rgba(240, 243, 255, 0.88);
+  font-size: calc(14px * var(--self-promo-feature-scale, 1));
+  font-weight: 650;
+  line-height: 1.3;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.self-promo-feature-graphic {
+  width: calc(16px * var(--self-promo-feature-scale, 1));
+  height: calc(16px * var(--self-promo-feature-scale, 1));
+  flex: 0 0 auto;
+  fill: none;
+  stroke: var(--self-promo-accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.self-promo-feature-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.self-promo-action {
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--self-promo-accent);
+  font-size: calc(13px * var(--self-promo-feature-scale, 1));
+  font-weight: 750;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.self-promo-action span {
+  flex: 0 0 auto;
+  transition: transform 180ms ease;
+}
+
+.self-promo-card:hover .self-promo-action span {
+  transform: translate(2px, -2px);
+}
+
+.self-promo-pagination {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+.self-promo-pagination span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.self-promo-pagination span.active {
+  background: var(--self-promo-accent);
+  box-shadow: 0 0 7px var(--self-promo-accent);
+}
+

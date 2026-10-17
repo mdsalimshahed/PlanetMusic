@@ -1,0 +1,336 @@
+.self-promo-card[data-promo-format="sidebar"] {
+  gap: 16px;
+  padding: 24px;
+}
+
+.self-promo-card[data-promo-format="sidebar"] .self-promo-art {
+  width: min(100%, 150px);
+}
+
+.self-promo-card[data-promo-format="sidebar"] .self-promo-title {
+  font-size: clamp(20px, 2.2vw, 28px);
+}
+
+.self-promo-card[data-promo-format="sidebar"] .self-promo-description {
+  font-size: 13px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] {
+  gap: 9px;
+  padding: 12px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-art {
+  width: min(100%, 78px);
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-copy {
+  gap: 4px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-title {
+  font-size: 18px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-description {
+  font-size: 13px;
+  -webkit-line-clamp: 2;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-action {
+  font-size: 10px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-art {
+  width: min(100%, 174px);
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-copy {
+  width: 100%;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-title,
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-description {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-compact="true"][data-tall="true"] .self-promo-description {
+  font-size: 13px;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 5px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-label {
+  white-space: normal;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-title {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.12;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-description {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlight {
+  padding: 9px 11px;
+  font-size: 15px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlights {
+  gap: 9px;
+}
+
+.self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-action {
+  font-size: 14px;
+}
+
+.self-promo-card[data-promo-format="inline"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 8px;
+  min-height: 0;
+  padding: 16px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="inline"] > .self-promo-copy {
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: stretch;
+  overflow: hidden;
+  padding-top: 22px;
+  padding-bottom: 4px;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-copy > .self-promo-art {
+  float: right;
+  width: min(34%, 126px);
+  height: auto;
+  margin: 0 0 10px 14px;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-label {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-title,
+.self-promo-card[data-promo-format="inline"] .self-promo-description {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-title {
+  font-size: 26px;
+  line-height: 1.12;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-description {
+  margin-top: 7px;
+  color: rgba(240, 243, 255, 0.9);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-highlights {
+  clear: both;
+  width: fit-content;
+  max-width: 100%;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-highlight {
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 8px;
+  color: #f6f7ff;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.self-promo-card[data-promo-format="inline"] .self-promo-action {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  font-size: 14px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  padding: 12px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] > .self-promo-copy {
+  padding-top: 22px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-art {
+  width: min(34%, 126px);
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-title {
+  font-size: 26px;
+  line-height: 1.12;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-description {
+  display: -webkit-box;
+  font-size: 16px;
+  line-height: 1.35;
+  -webkit-line-clamp: 3;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlight {
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlight svg {
+  width: 14px;
+  height: 14px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-action {
+  font-size: 14px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 7px;
+  padding: 16px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-art {
+  width: min(34%, 126px);
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-copy {
+  display: block;
+  gap: 5px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-title,
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-description {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-title {
+  font-size: clamp(26px, 2vw, 30px);
+  line-height: 1.12;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-description {
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-highlights {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-highlight {
+  gap: 8px;
+  min-height: 34px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-highlight svg {
+  width: 13px;
+  height: 13px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-expanded="true"] .self-promo-action {
+  font-size: 15px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: stretch;
+  gap: 5px;
+  padding: 10px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-art {
+  float: right;
+  width: min(30%, 78px);
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-copy {
+  display: block;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-label {
+  display: none;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-title {
+  font-size: 23px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-description {
+  font-size: 15px;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-highlights {
+  clear: both;
+  justify-items: stretch;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-highlight {
+  font-size: 13px;
+  text-align: left;
+}
+
+.self-promo-card[data-promo-format="inline"][data-narrow="true"] .self-promo-action {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+}
+

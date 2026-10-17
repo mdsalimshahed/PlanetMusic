@@ -1,0 +1,203 @@
+@media (max-width: 600px) {
+  .self-promo-card[data-promo-format="square"] {
+    gap: clamp(3px, 2.5cqw, 7px);
+    padding: 14px 8px 22px;
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-brand {
+    top: 5%;
+    left: 6%;
+    max-width: calc(100% - 34%);
+    font-size: clamp(9px, 6cqw, 12px);
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-badge {
+    top: 4%;
+    right: 4%;
+    padding: clamp(2px, 2cqw, 4px) clamp(4px, 3cqw, 6px);
+    font-size: clamp(8px, 4.5cqw, 10px);
+  }
+
+  .self-promo-card[data-promo-format="square"] > .self-promo-gallery {
+    width: 100%;
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-gallery .self-promo-art {
+    width: min(100%, 46cqw);
+    max-width: none;
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-label {
+    font-size: clamp(8px, 5.5cqw, 11px);
+    line-height: 1.15;
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-highlights {
+    gap: clamp(3px, 2.5cqw, 6px);
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-highlight {
+    gap: clamp(4px, 3cqw, 7px);
+    padding: clamp(4px, 4cqw, 7px) clamp(6px, 5cqw, 9px);
+    font-size: clamp(10px, 7cqw, 14px);
+    line-height: 1.2;
+  }
+
+  .self-promo-card[data-promo-format="square"] .self-promo-feature-graphic {
+    width: clamp(12px, 9cqw, 16px);
+    height: clamp(12px, 9cqw, 16px);
+  }
+
+  .self-promo-card[data-promo-format="square"] > .self-promo-action {
+    bottom: 5%;
+    left: 6%;
+    font-size: clamp(9px, 5.5cqw, 12px);
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] {
+    gap: clamp(8px, 4cqw, 16px);
+    padding: clamp(38px, 12cqw, 50px) clamp(16px, 7cqw, 26px) clamp(18px, 7cqw, 28px);
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-art {
+    width: min(72cqw, 220px);
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-copy {
+    gap: clamp(8px, 4cqw, 14px);
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] .self-promo-title {
+    font-size: clamp(22px, 8cqw, 32px);
+    line-height: 1.12;
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] .self-promo-highlight {
+    min-height: 0;
+    padding: clamp(7px, 3cqw, 10px) clamp(9px, 4cqw, 14px);
+    font-size: clamp(12px, 4cqw, 15px);
+  }
+
+  .self-promo-card[data-promo-format="feed"][data-placement="blogFeed"] > .self-promo-action {
+    font-size: clamp(12px, 4cqw, 15px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] {
+    gap: clamp(8px, 3cqw, 14px);
+    padding: clamp(12px, 5cqw, 20px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-art {
+    width: clamp(68px, 27cqw, 100px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-title {
+    font-size: clamp(17px, 6cqw, 24px);
+    line-height: 1.12;
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-description {
+    font-size: clamp(12px, 4cqw, 15px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-highlights {
+    gap: clamp(4px, 2.5cqw, 8px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-highlight {
+    gap: clamp(5px, 2.5cqw, 8px);
+    padding: clamp(5px, 3cqw, 8px) clamp(7px, 4cqw, 11px);
+    font-size: clamp(11px, 3.8cqw, 14px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"] .self-promo-action {
+    font-size: clamp(10px, 3.5cqw, 13px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"][data-tall="true"] {
+    gap: clamp(8px, 3cqw, 14px);
+    padding: clamp(34px, 10cqw, 46px) clamp(14px, 6cqw, 22px) clamp(44px, 12cqw, 58px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-title {
+    font-size: clamp(21px, 8cqw, 30px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"][data-tall="true"] .self-promo-highlight {
+    min-height: 0;
+    padding: clamp(5px, 3cqw, 8px) clamp(7px, 4cqw, 11px);
+    font-size: clamp(11px, 3.8cqw, 14px);
+  }
+
+  .self-promo-card[data-promo-format="sidebar"][data-tall="true"] > .self-promo-action {
+    bottom: clamp(12px, 5cqw, 18px);
+    left: clamp(14px, 6cqw, 22px);
+    font-size: clamp(11px, 4cqw, 14px);
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] {
+    gap: clamp(6px, 2.5cqw, 10px);
+    padding: clamp(12px, 4cqw, 16px);
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] > .self-promo-copy {
+    display: grid;
+    grid-template-columns: minmax(76px, 30cqw) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    align-content: stretch;
+    align-items: start;
+    column-gap: clamp(10px, 3cqw, 16px);
+    row-gap: clamp(8px, 2.5cqw, 12px);
+    padding-top: clamp(20px, 7cqw, 26px);
+    padding-bottom: 4px;
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-art {
+    float: none;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    width: 100%;
+    max-width: 112px;
+    margin: 0;
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-title {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    font-size: clamp(18px, 6cqw, 24px);
+    line-height: 1.12;
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlights {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-self: end;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlight {
+    width: 100%;
+    min-height: clamp(38px, 12cqw, 46px);
+    gap: clamp(6px, 2.5cqw, 9px);
+    padding: clamp(6px, 3cqw, 10px);
+    font-size: clamp(12px, 4cqw, 14px);
+    line-height: 1.25;
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-highlight svg {
+    width: clamp(13px, 4.5cqw, 16px);
+    height: clamp(13px, 4.5cqw, 16px);
+  }
+
+  .self-promo-card[data-promo-format="inline"][data-compact="true"] .self-promo-action {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    justify-self: start;
+    font-size: clamp(11px, 3.8cqw, 14px);
+  }
+
+}

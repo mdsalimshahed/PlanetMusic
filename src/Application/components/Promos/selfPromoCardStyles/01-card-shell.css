@@ -1,0 +1,175 @@
+.self-promo-card {
+  --self-promo-accent: #70e1fd;
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: hidden;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--self-promo-accent) 40%, transparent);
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 50% 8%, color-mix(in srgb, var(--self-promo-accent) 18%, transparent), transparent 55%),
+    linear-gradient(145deg, #151b30, #090d19);
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.glass-panel.self-promo-card {
+  border: 1px solid color-mix(in srgb, var(--self-promo-accent) 40%, transparent) !important;
+  background:
+    radial-gradient(ellipse at 50% 8%, color-mix(in srgb, var(--self-promo-accent) 18%, transparent), transparent 55%),
+    linear-gradient(145deg, #151b30, #090d19) !important;
+}
+
+.self-promo-card:hover,
+.glass-panel.self-promo-card:hover {
+  border-color: var(--self-promo-accent) !important;
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--self-promo-accent) 14%, transparent);
+  color: #fff;
+  text-decoration: none;
+  transform: none;
+}
+
+.self-promo-card:focus-visible {
+  outline: 2px solid var(--self-promo-accent);
+  outline-offset: 3px;
+}
+
+.self-promo-card[data-flip-stage="out"] {
+  transform: rotateY(90deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform 260ms ease;
+}
+
+.self-promo-card[data-flip-stage="in"] {
+  transform: rotateY(-90deg);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: none;
+}
+
+.self-promo-card[data-flip-stage="idle"] {
+  backface-visibility: hidden;
+  transition: transform 260ms ease;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-flip-stage="out"] {
+  transform: rotateX(90deg);
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-flip-stage="in"] {
+  transform: rotateX(-90deg);
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"][data-flip-stage="out"] {
+  transform: rotateY(90deg);
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-stacked-banner="true"][data-flip-stage="in"] {
+  transform: rotateY(-90deg);
+}
+
+.self-promo-brand {
+  position: absolute;
+  z-index: 2;
+  top: 13px;
+  left: 15px;
+  max-width: calc(100% - 30px);
+  overflow: hidden;
+  color: color-mix(in srgb, var(--self-promo-accent) 76%, #fff);
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.self-promo-badge {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  padding: 5px 8px;
+  border: 1px solid color-mix(in srgb, var(--self-promo-accent) 48%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--self-promo-accent) 82%, #fff);
+  background: rgba(7, 11, 22, 0.88);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.045em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.self-promo-art {
+  display: block;
+  width: min(100%, 132px);
+  height: auto;
+  flex: 0 1 auto;
+  aspect-ratio: 180 / 118;
+  color: var(--self-promo-accent);
+}
+
+.self-promo-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.self-promo-gallery {
+  display: none;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.self-promo-gallery .self-promo-art {
+  width: auto;
+  max-width: 140px;
+  min-width: 0;
+  flex: 1 1 0;
+  margin: 0;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-copy,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-copy {
+  animation: none;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-title,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-title {
+  animation: self-promo-banner-copy-in 520ms ease both;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-highlight,
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight {
+  animation: self-promo-banner-copy-in 520ms ease both;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-highlight:nth-child(2),
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-highlight:nth-child(3),
+.settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-highlight:nth-child(3) {
+  animation-delay: 160ms;
+}
+
