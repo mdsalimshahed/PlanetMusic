@@ -394,7 +394,13 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
     let resizeFrame;
 
     const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
+      const borderBox = Array.isArray(entry.borderBoxSize)
+        ? entry.borderBoxSize[0]
+        : entry.borderBoxSize;
+      const width = format === 'square'
+        ? borderBox?.inlineSize ?? card.getBoundingClientRect().width
+        : entry.contentRect.width;
+      const height = entry.contentRect.height;
       window.cancelAnimationFrame(resizeFrame);
       resizeFrame = window.requestAnimationFrame(() => {
         setIsTiny((current) => {
