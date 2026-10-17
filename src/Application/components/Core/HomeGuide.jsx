@@ -229,6 +229,8 @@ const HomeGuide = ({ isPlayerActive = false }) => {
   const previewVisualRef = useRef(null);
   const previewPlayerRef = useRef(null);
   const lyricsScrollRef = useRef(null);
+  const lyricsTrackRef = useRef(null);
+  const lyricsTrackOffsetRef = useRef(0);
   const [activeSection, setActiveSection] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [demoIndex, setDemoIndex] = useState(1);
@@ -426,11 +428,23 @@ const HomeGuide = ({ isPlayerActive = false }) => {
 
   useEffect(() => {
     if (shownPreviewWorkspace !== 'lyrics') return undefined;
+    lyricsTrackOffsetRef.current = 0;
+    const frame = window.requestAnimationFrame(() => {
+      if (lyricsTrackRef.current) {
+        lyricsTrackRef.current.style.transform = 'translate3d(0, 0, 0)';
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [shownPreviewWorkspace]);
+
+  useEffect(() => {
+    if (shownPreviewWorkspace !== 'lyrics') return undefined;
 
     const frame = window.requestAnimationFrame(() => {
       const scrollArea = lyricsScrollRef.current;
+      const lyricsTrack = lyricsTrackRef.current;
       const activeLine = scrollArea?.querySelector('.home-guide-lyric-line.is-active');
-      if (!scrollArea || !activeLine) return;
+      if (!scrollArea || !lyricsTrack || !activeLine) return;
 
       const areaBounds = scrollArea.getBoundingClientRect();
       const lineBounds = activeLine.getBoundingClientRect();
@@ -444,8 +458,8 @@ const HomeGuide = ({ isPlayerActive = false }) => {
           : 0;
 
       if (scrollDelta) {
-        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-        scrollArea.scrollBy({ top: scrollDelta, behavior: reduceMotion ? 'auto' : 'smooth' });
+        lyricsTrackOffsetRef.current -= scrollDelta;
+        lyricsTrack.style.transform = `translate3d(0, ${lyricsTrackOffsetRef.current}px, 0)`;
       }
     });
 
@@ -842,19 +856,21 @@ const HomeGuide = ({ isPlayerActive = false }) => {
                   {DEMO_LINES[demoIndex].artist}
                 </span>
                 <div className="home-guide-lyrics" ref={lyricsScrollRef} aria-hidden="true">
-                  {DEMO_LINES.map((line, i) => (
-                    <div key={line.text} className={`home-guide-lyric-line ${i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}`}>
-                      <div className="home-guide-lyric-anchor">
-                        {line.translation && (
-                          <span className="home-guide-lyric-translation">{line.translation.toUpperCase()}</span>
-                        )}
-                        <p style={{ color: line.color }}>{line.text}</p>
-                        {line.pronunciation && (
-                          <small className="home-guide-lyric-pronunciation">{line.pronunciation.toUpperCase()}</small>
-                        )}
+                  <div className="home-guide-lyrics-track" ref={lyricsTrackRef}>
+                    {DEMO_LINES.map((line, i) => (
+                      <div key={line.text} className={`home-guide-lyric-line ${i === demoIndex ? 'is-active' : i < demoIndex ? 'is-past' : ''}`}>
+                        <div className="home-guide-lyric-anchor">
+                          {line.translation && (
+                            <span className="home-guide-lyric-translation">{line.translation.toUpperCase()}</span>
+                          )}
+                          <p style={{ color: line.color }}>{line.text}</p>
+                          {line.pronunciation && (
+                            <small className="home-guide-lyric-pronunciation">{line.pronunciation.toUpperCase()}</small>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

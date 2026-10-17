@@ -307,7 +307,8 @@
 @keyframes hg-eq { to { transform: scaleY(0.35); } }
 .home-guide-eq b { transform-origin: bottom; }
 .home-guide-lyrics { display: grid; flex: 1; min-width: 0; max-width: 100%; box-sizing: border-box; align-content: center; gap: 4px; padding: 8px 4px; }
-.home-guide-lyric-line { min-width: 0; max-width: 100%; opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); transform-origin: left center; transition: opacity 0.5s ease, transform 0.18s ease-out; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.home-guide-lyrics-track { min-width: 0; transform: translate3d(0, 0, 0); transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.home-guide-lyric-line { min-width: 0; max-width: 100%; opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); transform-origin: left center; transition: opacity 0.5s ease, transform 0.18s ease-out; will-change: transform, opacity; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .home-guide-lyric-line.is-active { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 .home-guide-lyric-anchor { width: 100%; max-width: 100%; box-sizing: border-box; }
 .home-guide-lyric-translation { display: block; width: 100%; max-width: 100%; box-sizing: border-box; margin-bottom: 2px; color: rgba(208, 196, 231, 0.82); font-size: clamp(10px, 2.8vw, 13px); line-height: 1.2; text-align: left; white-space: pre-line; overflow-wrap: anywhere; visibility: hidden; opacity: 0; transition: opacity 0.4s ease, visibility 0s linear 0.4s; }
