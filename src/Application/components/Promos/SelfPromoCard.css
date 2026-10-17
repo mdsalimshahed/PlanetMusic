@@ -2409,6 +2409,13 @@
   text-align: left;
 }
 
+.settings-promo-box.self-promo-card[data-promo-format="banner"] {
+  padding-top: max(
+    calc(8 * var(--self-promo-vh-unit)),
+    clamp(36px, 3.2cqw, 58px)
+  );
+}
+
 .settings-promo-box.self-promo-card[data-promo-format="banner"] .self-promo-banner-gallery,
 .settings-promo-box.self-promo-card[data-promo-format="banner"][data-compact="true"] .self-promo-banner-gallery {
   position: relative;
