@@ -113,6 +113,10 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
+.preview-line .adlib-node > .primary-text {
+  translate: 0 var(--live-adlib-glyph-offset-y, 0px);
+}
+
 .preview-line.active .main-lyrics-layer,
 .preview-line.active .adlib-node .primary-text {
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));

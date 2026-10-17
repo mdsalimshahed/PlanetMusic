@@ -95,13 +95,16 @@ const SplitLine = ({
     : alignedMainJSX;
 
   useLayoutEffect(() => {
-    const readTextBounds = elements => elements.flatMap(element => {
+    const readTextBounds = (elements, excludePronunciation = false) => elements.flatMap(element => {
       if (!element) return [];
       const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
       const bounds = [];
       let node;
       while ((node = walker.nextNode())) {
-        if (!node.textContent.trim()) continue;
+        if (
+          !node.textContent.trim() ||
+          (excludePronunciation && node.parentElement?.closest('.pronunciation-text'))
+        ) continue;
         const range = document.createRange();
         range.selectNodeContents(node);
         [...range.getClientRects()].forEach(rect => {
@@ -115,6 +118,22 @@ const SplitLine = ({
       }
       return bounds;
     });
+    const groupTextRows = bounds => bounds.reduce((rows, bound) => {
+      const row = rows.find(candidate => (
+        Math.min(candidate.bottom, bound.bottom) -
+          Math.max(candidate.top, bound.top) >
+        Math.min(candidate.bottom - candidate.top, bound.bottom - bound.top) * 0.5
+      ));
+      if (row) {
+        row.left = Math.min(row.left, bound.left);
+        row.right = Math.max(row.right, bound.right);
+        row.top = Math.min(row.top, bound.top);
+        row.bottom = Math.max(row.bottom, bound.bottom);
+      } else {
+        rows.push({ ...bound });
+      }
+      return rows;
+    }, []);
     const readElementBounds = element => {
       if (!element) return [];
       const rect = element.getBoundingClientRect();
@@ -124,6 +143,10 @@ const SplitLine = ({
     };
 
     const positionAdlibTranslations = () => {
+      const mainGlyphRows = groupTextRows(readTextBounds([
+        parentMainRef.current?.querySelector('.main-lyrics-layer')
+      ], true));
+      const mainGlyphRow = mainGlyphRows.length === 1 ? mainGlyphRows[0] : null;
       const mainObstacles = [
         ...readElementBounds(parentMainRef.current?.querySelector('.chunk-translation')),
         ...readTextBounds([
@@ -137,6 +160,39 @@ const SplitLine = ({
         const translation = ref?.querySelector('.chunk-translation');
         const translationBounds = translation?.getBoundingClientRect();
         if (!ref) return;
+        const adlibGlyphs = ref.querySelector('.primary-text');
+        if (!focusedMainLyrics || !mainGlyphRow || !adlibGlyphs) {
+          adlibGlyphs?.style.removeProperty('--live-adlib-glyph-offset-y');
+        } else {
+          const previousOffset = parseFloat(
+            adlibGlyphs.style.getPropertyValue('--live-adlib-glyph-offset-y')
+          ) || 0;
+          const glyphBounds = readTextBounds([adlibGlyphs], true).map(bound => ({
+            ...bound,
+            top: bound.top - previousOffset,
+            bottom: bound.bottom - previousOffset
+          }));
+          const glyphRows = groupTextRows(glyphBounds);
+          const glyphRow = glyphRows.length === 1 ? glyphRows[0] : null;
+          const isBesideMainGlyph = glyphRow && (
+            Math.min(mainGlyphRow.bottom, glyphRow.bottom) -
+              Math.max(mainGlyphRow.top, glyphRow.top) >
+            Math.min(
+              mainGlyphRow.bottom - mainGlyphRow.top,
+              glyphRow.bottom - glyphRow.top
+            ) * 0.5
+          );
+          if (isBesideMainGlyph) {
+            const offset = mainGlyphRow.bottom - glyphRow.bottom;
+            adlibGlyphs.style.setProperty(
+              '--live-adlib-glyph-offset-y',
+              `${offset}px`
+            );
+          } else {
+            adlibGlyphs.style.removeProperty('--live-adlib-glyph-offset-y');
+          }
+        }
+
         if (!translationBounds?.width || !translationBounds.height) {
           if (ref.style.marginTop) ref.style.marginTop = '';
           return;
@@ -171,7 +227,7 @@ const SplitLine = ({
       ...adlibRefs.current.map(ref => ref?.querySelector('.chunk-translation'))
     ].filter(Boolean).forEach(element => resizeObserver.observe(element));
     return () => resizeObserver.disconnect();
-  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX]);
+  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX, focusedMainLyrics]);
 
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
