@@ -69,7 +69,7 @@ export const useAppStorage = (urlSearchQuery) => {
       // New Performance Setting
       if (parsed.disableAnimations === undefined) parsed.disableAnimations = false;
       
-      if (parsed.adsEnabled === undefined) parsed.adsEnabled = true;
+      parsed.adsEnabled = true;
       parsed.rememberDeezerArl = parsed.rememberDeezerArl === true;
       parsed.deezerArl = parsed.rememberDeezerArl ? readRememberedDeezerArl() : '';
       parsed.deezerArlValid = Boolean(parsed.deezerArl) && parsed.deezerArlValid === true;
@@ -151,6 +151,7 @@ export const useAppStorage = (urlSearchQuery) => {
   // Persistent Memory engine - ALWAYS ON
   useEffect(() => {
     const persistedSettings = sanitizeVaultSettings(settings);
+    persistedSettings.adsEnabled = true;
     delete persistedSettings.deezerArl;
     updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
     localStorage.setItem('appSettings', JSON.stringify(persistedSettings));

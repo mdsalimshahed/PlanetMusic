@@ -34,6 +34,8 @@ import { useVaultOperations } from './Application/hooks/data/useVaultOperations.
 import { useCosmosSearch } from './Application/hooks/core/useCosmosSearch.js';
 import { useDeepLink } from './Application/hooks/core/useDeepLink.js';
 
+const ADS_ENABLED = true;
+
 const shuffleZenPool = (songs, previousSequence = [], previousLastTrackId) => {
   const previousIds = previousSequence.map(song => String(song.trackId));
   const samePool = songs.length === previousIds.length &&
@@ -350,16 +352,6 @@ const App = () => {
     }
   }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
-  // Toggle handler for Ambient View button
-  const toggleAmbientMode = () => {
-    if (isAmbientMode) {
-      const qParam = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
-      navigate(`/vault${qParam}`);
-    } else {
-      navigate('/ambient');
-    }
-  };
-
   // Routing Handlers
   const handleSetSelectedSong = (song) => {
     if (song) {
@@ -533,7 +525,7 @@ const App = () => {
             toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
-            adsEnabled={settings.adsEnabled !== false}
+            adsEnabled={ADS_ENABLED}
           />
         ) : (
           <div className="empty-message glass-panel">
@@ -562,7 +554,7 @@ const App = () => {
                   toggleLibrary={toggleLibrary} 
                   setSelectedSong={handleSetSelectedSong} 
                   setCurrentTrack={setCurrentTrack}
-                  adsEnabled={settings.adsEnabled !== false}
+                  adsEnabled={ADS_ENABLED}
                 />
               ) : (
                 <div className="column-empty-box">No matches in your Vault</div>
@@ -584,7 +576,7 @@ const App = () => {
                   toggleLibrary={toggleLibrary} 
                   setSelectedSong={handleSetSelectedSong} 
                   setCurrentTrack={setCurrentTrack}
-                  adsEnabled={settings.adsEnabled !== false}
+                  adsEnabled={ADS_ENABLED}
                 />
               ) : (
                 <div className="column-empty-box">No online matches found</div>
@@ -600,7 +592,7 @@ const App = () => {
             toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
-            adsEnabled={settings.adsEnabled !== false}
+            adsEnabled={ADS_ENABLED}
           />
         ) : searchResults.length > 0 ? (
           <TrackGrid 
@@ -609,7 +601,7 @@ const App = () => {
             toggleLibrary={toggleLibrary} 
             setSelectedSong={handleSetSelectedSong} 
             setCurrentTrack={setCurrentTrack}
-            adsEnabled={settings.adsEnabled !== false}
+            adsEnabled={ADS_ENABLED}
           />
         ) : isSearching ? (
           <div className="empty-message glass-panel">
@@ -625,7 +617,7 @@ const App = () => {
       )}
 
       {/* BOTTOM SPONSOR AD (Main Dashboard) */}
-      {!isAmbientMode && settings.adsEnabled !== false && (
+      {!isAmbientMode && ADS_ENABLED && (
         <SelfPromoCard
           placement="dashboardBottom"
           format="banner"
@@ -722,7 +714,7 @@ const App = () => {
             <Route path="/song/*" element={null} />
             
             {/* WILDCARD ROUTE FOR BLOG TAB SUB-ROUTES */}
-            <Route path="/docs/*" element={<BlogTab adsEnabled={settings.adsEnabled !== false} />} />
+            <Route path="/docs/*" element={<BlogTab adsEnabled={ADS_ENABLED} />} />
             <Route path="/blog/*" element={<Navigate to={location.pathname.replace(/^\/blog/, '/docs')} replace />} />
             
             <Route path="/settings" element={
@@ -730,29 +722,27 @@ const App = () => {
                 settings={settings} 
                 setSettings={handleSetSettings} 
                 dismissSampleMode={dismissSampleMode}
-                adsEnabled={settings.adsEnabled !== false}
-                isAmbientMode={isAmbientMode}
-                toggleAmbientMode={toggleAmbientMode}
+                adsEnabled={ADS_ENABLED}
                 returnPath={location.state?.returnPath}
               />
             } />
             
             <Route path="/privacy" element={
-              <PrivacyTab adsEnabled={settings.adsEnabled !== false} />
+              <PrivacyTab adsEnabled={ADS_ENABLED} />
             } />
 
             <Route path="/docs/terms-of-service" element={
-              <TermsTab adsEnabled={settings.adsEnabled !== false} />
+              <TermsTab adsEnabled={ADS_ENABLED} />
             } />
             <Route path="/terms" element={<Navigate to="/docs/terms-of-service" replace />} />
 
             <Route path="/docs/about-me" element={
-              <AboutTab adsEnabled={settings.adsEnabled !== false} />
+              <AboutTab adsEnabled={ADS_ENABLED} />
             } />
             <Route path="/about" element={<Navigate to="/docs/about-me" replace />} />
 
             <Route path="/contact" element={
-              <ContactTab adsEnabled={settings.adsEnabled !== false} />
+              <ContactTab adsEnabled={ADS_ENABLED} />
             } />
 
             <Route path="/deezer/*" element={<Navigate to="/vault" replace />} />
