@@ -133,8 +133,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             return bounds.height > 0 && bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom;
         });
         if (visibleLines.length === 0) return;
-        const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
-        const revealLines = mountedLines.slice(0, lastVisibleLineIndex + 4);
+        const revealLines = visibleLines;
 
         revealLines.forEach(node => node.classList.add('is-preparing-reveal'));
         let revealFrame = null;

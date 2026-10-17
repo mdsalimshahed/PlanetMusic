@@ -5,7 +5,7 @@ import { buildChunkElements, renderFormattedTranslation, getDisplayTranslation }
 
 const isLatinText = (text) => /^[\p{Script=Latin}\d\s]*$/u.test(String(text || '').replace(/[\p{P}\p{S}]+/gu, ''));
 
-const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
+const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib, includeFocusedMain = false }) => {
     const { parsedChunks, fullTrans } = parsePronunciation(pronunciation);
     let alignedChunks = [];
 
@@ -180,6 +180,9 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     const isHybridLine = hasInlinePronunciation && hasVisibleNonPronunciation;
 
     const mainJSX = buildChunkElements(alignedChunks, masterPalette, isFocused, true, false, isHybridLine, isAdlib);
+    const focusedMainJSX = includeFocusedMain
+        ? buildChunkElements(alignedChunks, masterPalette, true, true, false, isHybridLine, isAdlib)
+        : undefined;
 
     let displayPronString = null;
     if (!hasInlinePronunciation && pronunciation && !pronunciation.startsWith('{') && !pronunciation.startsWith('[')) {
@@ -199,7 +202,7 @@ const CJKEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     const transJSX = displayTrans ? renderFormattedTranslation(displayTrans, isFocused, { index: 0 }, isAdlib) : null;
     const pronJSX = displayPronString ? renderFormattedTranslation(displayPronString, isFocused, { index: 0 }, isAdlib) : null;
 
-    return { mainJSX, translationJSX: transJSX, pronunciationJSX: pronJSX };
+    return { mainJSX, focusedMainJSX, translationJSX: transJSX, pronunciationJSX: pronJSX };
 };
 
 export default CJKEngine;

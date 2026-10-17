@@ -77,7 +77,7 @@ const SplitLine = ({
   while(mainChars.length > 0 && /\s/.test(mainChars[mainChars.length - 1].char)) mainChars.pop();
 
   const isOnlyPunct = mainChars.length > 0 && mainChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
-  const { mainJSX: alignedMainJSX, translationJSX: mainTranslationJSX, pronunciationJSX: mainPronunciationJSX } = EngineRouter({
+  const { mainJSX: alignedMainJSX, focusedMainJSX: engineFocusedMainJSX, translationJSX: mainTranslationJSX, pronunciationJSX: mainPronunciationJSX } = EngineRouter({
     chars: mainChars,
     lang,
     translation,
@@ -87,10 +87,11 @@ const SplitLine = ({
     masterPalette,
     originalText: lineObj.text,
     isOnlyPunct,
-    isAdlib: false
+    isAdlib: false,
+    includeFocusedMain: focusedMainLyrics
   });
   const focusedMainJSX = focusedMainLyrics
-    ? EngineRouter({
+    ? engineFocusedMainJSX || EngineRouter({
       chars: mainChars,
       lang,
       translation,

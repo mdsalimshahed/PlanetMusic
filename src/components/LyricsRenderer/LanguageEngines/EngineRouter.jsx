@@ -5,7 +5,7 @@ import RTLEngine from './RTLEngine.jsx';
 import DefaultEngine from './DefaultEngine.jsx';
 import { isRTLLanguage, isCJ, isBengaliLanguage } from '../textUtils.js';
 
-const EngineRouter = ({ chars, lang, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib }) => {
+const EngineRouter = ({ chars, lang, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib, includeFocusedMain = false }) => {
     const cleanLang = (lang || 'auto').toLowerCase().trim();
     const textStr = originalText || '';
     const isCJKText = cleanLang === 'ja' || cleanLang.startsWith('zh') || cleanLang === 'ko' || (cleanLang === 'auto' && textStr.split('').some(isCJ));
@@ -13,7 +13,7 @@ const EngineRouter = ({ chars, lang, translation, pronunciation, hasSpacingText,
     const isBengaliText = cleanLang === 'bn' || (cleanLang === 'auto' && isBengaliLanguage(textStr));
 
     if (isCJKText) {
-        return CJKEngine({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib });
+        return CJKEngine({ chars, translation, pronunciation, hasSpacingText, isFocused, masterPalette, originalText, isOnlyPunct, isAdlib, includeFocusedMain });
     }
         
     if (isRTLText) {

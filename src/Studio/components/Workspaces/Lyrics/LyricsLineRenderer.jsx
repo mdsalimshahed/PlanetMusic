@@ -256,21 +256,60 @@ export const LyricLineWrapper = React.memo(({
     };
 
     updateTranslationWidths();
+    let updateFrame = null;
+    const scheduleTranslationWidthUpdate = () => {
+      if (updateFrame !== null) return;
+      updateFrame = window.requestAnimationFrame(() => {
+        updateFrame = null;
+        updateTranslationWidths();
+      });
+    };
+    const getTypographySignature = () => {
+      const style = getComputedStyle(wrapper);
+      return [
+        style.fontFamily,
+        style.fontSize,
+        style.fontWeight,
+        style.letterSpacing,
+        style.lineHeight,
+        style.wordSpacing
+      ].join('|');
+    };
+    const observedWidths = new WeakMap();
+    let previousTypography = getTypographySignature();
     const resizeObserver = typeof ResizeObserver === 'undefined'
       ? null
-      : new ResizeObserver(updateTranslationWidths);
-    resizeObserver?.observe(wrapper);
-    wrapper.querySelectorAll(
-      '.main-lyrics-layer, .primary-text, .pronunciation-text, .chunk-translation'
-    )
-      .forEach(element => resizeObserver?.observe(element));
+      : new ResizeObserver(entries => {
+        let contentWidthChanged = false;
+        entries.forEach(entry => {
+          const width = entry.contentRect.width;
+          const previousWidth = observedWidths.get(entry.target);
+          observedWidths.set(entry.target, width);
+          if (previousWidth === undefined || Math.abs(width - previousWidth) > 0.5) {
+            contentWidthChanged = true;
+          }
+        });
+        const typography = getTypographySignature();
+        const layoutChanged = contentWidthChanged || typography !== previousTypography;
+        previousTypography = typography;
+        if (layoutChanged) scheduleTranslationWidthUpdate();
+      });
+    const layoutInputs = [
+      wrapper,
+      ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
+    ];
+    layoutInputs.forEach(element => {
+      observedWidths.set(element, element.getBoundingClientRect().width);
+      resizeObserver?.observe(element);
+    });
 
     let cancelled = false;
     document.fonts?.ready.then(() => {
-      if (!cancelled) updateTranslationWidths();
+      if (!cancelled) scheduleTranslationWidthUpdate();
     });
     return () => {
       cancelled = true;
+      if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
       resizeObserver?.disconnect();
     };
   }, [renderedContent, viewMode]);

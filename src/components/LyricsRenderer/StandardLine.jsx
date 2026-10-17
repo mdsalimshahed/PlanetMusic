@@ -31,7 +31,7 @@ const StandardLine = ({
 
   const isOnlyPunct = displayChars.length > 0 && displayChars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char));
 
-  const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
+  const { mainJSX, focusedMainJSX: engineFocusedMainJSX, translationJSX, pronunciationJSX } = EngineRouter({
     chars: displayChars,
     lang,
     translation,
@@ -41,10 +41,11 @@ const StandardLine = ({
     masterPalette,
     originalText: lineObj.text,
     isOnlyPunct,
-    isAdlib
+    isAdlib,
+    includeFocusedMain: focusedMainLyrics
   });
   const focusedMainJSX = focusedMainLyrics && !isFocused
-    ? EngineRouter({
+    ? engineFocusedMainJSX || EngineRouter({
       chars: displayChars,
       lang,
       translation,
