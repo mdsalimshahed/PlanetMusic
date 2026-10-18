@@ -191,6 +191,7 @@ const App = () => {
 
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [songModalReadyTrackId, setSongModalReadyTrackId] = useState(null);
   const songSelectionContextRef = useRef({ selectedSong, searchQuery, location, navigate });
   useLayoutEffect(() => {
     songSelectionContextRef.current = { selectedSong, searchQuery, location, navigate };
@@ -359,6 +360,7 @@ const App = () => {
   // Routing Handlers
   const handleSetSelectedSong = useCallback((song) => {
     const { selectedSong: currentSelectedSong, searchQuery: currentSearchQuery, location: currentLocation, navigate: currentNavigate } = songSelectionContextRef.current;
+    setSongModalReadyTrackId(null);
     if (song) {
       if (!currentSelectedSong && contentScrollAreaRef.current) {
         vaultScrollPositionRef.current = contentScrollAreaRef.current.scrollTop;
@@ -375,10 +377,11 @@ const App = () => {
       if (!tabPath.startsWith('/vault')) vaultScrollPositionRef.current = null;
     }
     setSelectedSong(song);
-  }, []);
+  }, [setSongModalReadyTrackId]);
 
   // Direct State Update Handler (No Navigation / Route Interruption)
   const updateSelectedSongDirect = (song) => {
+    setSongModalReadyTrackId(null);
     setSelectedSong(song);
   };
 
@@ -764,6 +767,7 @@ const App = () => {
 
       <SongModal
         selectedSong={selectedSong}
+        onModalReady={setSongModalReadyTrackId}
         setSelectedSong={handleSetSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
         toggleLibrary={toggleLibrary}
@@ -780,6 +784,10 @@ const App = () => {
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}
         isSyncWorkspaceActive={isSyncWorkspaceActive}
+        isSongModalReady={Boolean(
+          selectedSong &&
+          String(songModalReadyTrackId) === String(selectedSong.trackId)
+        )}
         settings={settings}
       />
 

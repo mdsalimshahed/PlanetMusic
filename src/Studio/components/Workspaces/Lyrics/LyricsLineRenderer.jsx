@@ -11,6 +11,41 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
+const pendingTranslationMeasurements = new Set();
+const pendingTranslationFinalizations = new Set();
+let translationMeasurementFrame = null;
+let translationFinalizationFrame = null;
+
+const scheduleTranslationMeasurement = measure => {
+  pendingTranslationMeasurements.add(measure);
+  if (translationMeasurementFrame !== null) return;
+
+  translationMeasurementFrame = window.requestAnimationFrame(() => {
+    translationMeasurementFrame = null;
+    const measurements = Array.from(pendingTranslationMeasurements);
+    pendingTranslationMeasurements.clear();
+    measurements
+      .map(measurement => measurement())
+      .filter(Boolean)
+      .forEach(write => write());
+  });
+};
+
+const scheduleTranslationFinalization = measure => {
+  pendingTranslationFinalizations.add(measure);
+  if (translationFinalizationFrame !== null) return;
+
+  translationFinalizationFrame = window.requestAnimationFrame(() => {
+    translationFinalizationFrame = null;
+    const measurements = Array.from(pendingTranslationFinalizations);
+    pendingTranslationFinalizations.clear();
+    measurements
+      .map(measurement => measurement())
+      .filter(Boolean)
+      .forEach(write => write());
+  });
+};
+
 export const renderLine = (
   lineObj,
   savedNode,
@@ -195,13 +230,15 @@ export const LyricLineWrapper = React.memo(({
       ), null);
     };
 
-    const updateTranslationWidths = () => {
+    const measureTranslationWidths = () => {
+      if (cancelled || !wrapper.isConnected) return null;
       const translations = wrapper.querySelectorAll(viewMode === 'focused'
         ? '.chunk-translation.focused-translation'
         : '.chunk-translation.live-translation');
       const scaleX = wrapper.offsetWidth
         ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
         : 1;
+      const updates = [];
 
       translations.forEach(translation => {
         const parent = translation.parentElement;
@@ -222,93 +259,148 @@ export const LyricLineWrapper = React.memo(({
         if (!widestLine) return;
 
         const width = (widestLine.right - widestLine.left) / scaleX;
-        const nextWidth = `${Math.floor(width)}px`;
-        if (translation.style.width !== nextWidth) {
-          translation.style.width = nextWidth;
-        }
+        updates.push({
+          translation,
+          parent,
+          width,
+          nextWidth: `${Math.floor(width)}px`,
+          center: (widestLine.left + widestLine.right) / 2,
+          gap: viewMode === 'live'
+            ? parseFloat(getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')) || 0
+            : 0
+        });
+      });
 
-        if (viewMode === 'focused') {
-          if (translation.style.minWidth !== '0px') {
+      return () => {
+        if (cancelled) return;
+        updates.forEach(({ translation, nextWidth }) => {
+          if (translation.style.width !== nextWidth) {
+            translation.style.width = nextWidth;
+          }
+          if (viewMode === 'focused' && translation.style.minWidth !== '0px') {
             translation.style.minWidth = '0px';
           }
-          return;
-        }
+        });
 
-        const translationHeight = translation.offsetHeight;
-        const gapValue = parseFloat(
-          getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')
-        );
-        const gap = Number.isFinite(gapValue) ? gapValue : 0;
-        const nextPadding = `${translationHeight + gap}px`;
-        if (parent.style.paddingTop !== nextPadding) {
-          parent.style.paddingTop = nextPadding;
-        }
+        if (viewMode !== 'live' || updates.length === 0) return;
+        scheduleTranslationFinalization(() => {
+          if (cancelled) return null;
+          const finalized = updates
+            .filter(({ translation, parent }) => translation.isConnected && parent.isConnected)
+            .map(({ translation, parent, width, center, gap }) => ({
+              translation,
+              parent,
+              width,
+              center,
+              gap,
+              height: translation.offsetHeight,
+              parentLeft: parent.getBoundingClientRect().left,
+              parentClientLeft: parent.clientLeft
+            }));
 
-        const parentLeft = parent.getBoundingClientRect().left;
-        const left = (
-          (widestLine.left + widestLine.right) / 2 - parentLeft
-        ) / scaleX - parent.clientLeft - width / 2;
-        const nextLeft = `${left}px`;
-        if (translation.style.left !== nextLeft) {
-          translation.style.left = nextLeft;
-        }
-      });
+          return () => finalized.forEach(({
+            translation,
+            parent,
+            width,
+            center,
+            gap,
+            height,
+            parentLeft,
+            parentClientLeft
+          }) => {
+            const nextPadding = `${height + gap}px`;
+            if (parent.style.paddingTop !== nextPadding) {
+              parent.style.paddingTop = nextPadding;
+            }
+
+            const left = (center - parentLeft) / scaleX - parentClientLeft - width / 2;
+            const nextLeft = `${left}px`;
+            if (translation.style.left !== nextLeft) {
+              translation.style.left = nextLeft;
+            }
+          });
+        });
+      };
     };
 
-    updateTranslationWidths();
+    let cancelled = false;
+    let layoutStarted = false;
     let updateFrame = null;
+    let intersectionObserver = null;
+    let resizeObserver = null;
+    const startLayoutTracking = () => {
+      if (cancelled || layoutStarted) return;
+      layoutStarted = true;
+      scheduleTranslationMeasurement(measureTranslationWidths);
+
+      const getTypographySignature = () => {
+        const style = getComputedStyle(wrapper);
+        return [
+          style.fontFamily,
+          style.fontSize,
+          style.fontWeight,
+          style.letterSpacing,
+          style.lineHeight,
+          style.wordSpacing
+        ].join('|');
+      };
+      const observedWidths = new WeakMap();
+      let previousTypography = getTypographySignature();
+      resizeObserver = typeof ResizeObserver === 'undefined'
+        ? null
+        : new ResizeObserver(entries => {
+          let contentWidthChanged = false;
+          entries.forEach(entry => {
+            const width = entry.contentRect.width;
+            const previousWidth = observedWidths.get(entry.target);
+            observedWidths.set(entry.target, width);
+            if (previousWidth === undefined || Math.abs(width - previousWidth) > 0.5) {
+              contentWidthChanged = true;
+            }
+          });
+          const typography = getTypographySignature();
+          const layoutChanged = contentWidthChanged || typography !== previousTypography;
+          previousTypography = typography;
+          if (layoutChanged) scheduleTranslationWidthUpdate();
+        });
+      const layoutInputs = [
+        wrapper,
+        ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
+      ];
+      layoutInputs.forEach(element => {
+        observedWidths.set(element, element.getBoundingClientRect().width);
+        resizeObserver?.observe(element);
+      });
+
+      document.fonts?.ready.then(() => {
+        if (!cancelled) scheduleTranslationWidthUpdate();
+      });
+    };
     const scheduleTranslationWidthUpdate = () => {
       if (updateFrame !== null) return;
       updateFrame = window.requestAnimationFrame(() => {
         updateFrame = null;
-        updateTranslationWidths();
+        scheduleTranslationMeasurement(measureTranslationWidths);
       });
     };
-    const getTypographySignature = () => {
-      const style = getComputedStyle(wrapper);
-      return [
-        style.fontFamily,
-        style.fontSize,
-        style.fontWeight,
-        style.letterSpacing,
-        style.lineHeight,
-        style.wordSpacing
-      ].join('|');
-    };
-    const observedWidths = new WeakMap();
-    let previousTypography = getTypographySignature();
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(entries => {
-        let contentWidthChanged = false;
-        entries.forEach(entry => {
-          const width = entry.contentRect.width;
-          const previousWidth = observedWidths.get(entry.target);
-          observedWidths.set(entry.target, width);
-          if (previousWidth === undefined || Math.abs(width - previousWidth) > 0.5) {
-            contentWidthChanged = true;
-          }
-        });
-        const typography = getTypographySignature();
-        const layoutChanged = contentWidthChanged || typography !== previousTypography;
-        previousTypography = typography;
-        if (layoutChanged) scheduleTranslationWidthUpdate();
-      });
-    const layoutInputs = [
-      wrapper,
-      ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
-    ];
-    layoutInputs.forEach(element => {
-      observedWidths.set(element, element.getBoundingClientRect().width);
-      resizeObserver?.observe(element);
-    });
 
-    let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (!cancelled) scheduleTranslationWidthUpdate();
-    });
+    if (viewMode === 'live' && typeof IntersectionObserver !== 'undefined') {
+      intersectionObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          intersectionObserver?.disconnect();
+          startLayoutTracking();
+        }
+      }, {
+        rootMargin: '120px 0px'
+      });
+      intersectionObserver.observe(wrapper);
+    } else {
+      startLayoutTracking();
+    }
+
     return () => {
       cancelled = true;
+      intersectionObserver?.disconnect();
       if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
       resizeObserver?.disconnect();
     };

@@ -4,6 +4,8 @@ import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './LiveLyricsView.css';
 
+const LIVE_LYRIC_RENDER_BATCH_SIZE = 2;
+
 const getInitialViewportLineCount = (container, lines, syncData) => {
   const containerStyle = getComputedStyle(container);
   const paddingTop = parseFloat(containerStyle.paddingTop) || 0;
@@ -62,8 +64,9 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     trackId: null,
     count: 0
   });
+  const renderProgressRef = useRef(renderProgress);
   const containerRef = useRef(null);
-    const initialRevealTrackRef = useRef(null);
+  const revealedLinesRef = useRef(new WeakSet());
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -81,6 +84,9 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
       ? Math.min(renderProgress.count, liveParsedLyrics.length)
       : 0;
     useLayoutEffect(() => {
+      renderProgressRef.current = renderProgress;
+    }, [renderProgress]);
+    useLayoutEffect(() => {
       const container = containerRef.current;
       const trackId = selectedSong?.trackId;
       if (!container || trackId == null || liveParsedLyrics.length === 0) return;
@@ -88,19 +94,38 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
 
       setRenderProgress({
         trackId,
-        count: getInitialViewportLineCount(container, liveParsedLyrics, syncList)
+        count: Math.min(
+          getInitialViewportLineCount(container, liveParsedLyrics, syncList),
+          LIVE_LYRIC_RENDER_BATCH_SIZE
+        )
       });
     }, [liveParsedLyrics, selectedSong?.trackId, syncList, renderProgress.trackId]);
 
     useEffect(() => {
       const trackId = selectedSong?.trackId;
       if (trackId == null || liveParsedLyrics.length === 0) return undefined;
-      const timer = window.setTimeout(() => {
-        setRenderProgress(current => current.trackId === trackId
-          ? { trackId, count: liveParsedLyrics.length }
-          : current);
-      }, 500);
-      return () => window.clearTimeout(timer);
+      let frame = null;
+      const appendNextBatch = () => {
+        const current = renderProgressRef.current;
+        if (current.trackId !== trackId || current.count >= liveParsedLyrics.length) return;
+
+        const nextProgress = {
+          trackId,
+          count: Math.min(
+            current.count + LIVE_LYRIC_RENDER_BATCH_SIZE,
+            liveParsedLyrics.length
+          )
+        };
+        renderProgressRef.current = nextProgress;
+        setRenderProgress(nextProgress);
+        if (nextProgress.count < liveParsedLyrics.length) {
+          frame = window.requestAnimationFrame(appendNextBatch);
+        }
+      };
+      frame = window.requestAnimationFrame(appendNextBatch);
+      return () => {
+        if (frame !== null) window.cancelAnimationFrame(frame);
+      };
     }, [liveParsedLyrics.length, selectedSong?.trackId]);
     const nextStarts = useMemo(() => {
         const syncData = syncList || [];
@@ -116,24 +141,29 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
     useLayoutEffect(() => {
         const container = containerRef.current;
         const trackId = selectedSong?.trackId;
-        if (!container || trackId == null || initialRevealTrackRef.current === trackId) return;
-        if (isPlayingCurrentSong && isPlaying) {
-            initialRevealTrackRef.current = trackId;
-            return;
-        }
-        if (settings?.disableAnimations || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            initialRevealTrackRef.current = trackId;
-            return;
-        }
+        if (!container || trackId == null) return;
 
         const containerBounds = container.getBoundingClientRect();
         const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
         const visibleLines = mountedLines.filter(node => {
             const bounds = node.getBoundingClientRect();
-            return bounds.height > 0 && bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom;
+            return bounds.height > 0 &&
+                bounds.bottom > containerBounds.top &&
+                bounds.top < containerBounds.bottom &&
+                bounds.bottom > 0 &&
+                bounds.top < window.innerHeight;
         });
         if (visibleLines.length === 0) return;
-        const revealLines = visibleLines;
+        const revealLines = visibleLines.filter(node => !revealedLinesRef.current.has(node));
+        if (revealLines.length === 0) return;
+        if (
+            (isPlayingCurrentSong && isPlaying) ||
+            settings?.disableAnimations ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+            revealLines.forEach(node => revealedLinesRef.current.add(node));
+            return;
+        }
 
         revealLines.forEach(node => node.classList.add('is-preparing-reveal'));
         let revealFrame = null;
@@ -142,9 +172,9 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             revealFrame = null;
             if (cancelled) return;
 
-            initialRevealTrackRef.current = trackId;
             revealLines.forEach((node, index) => {
                 if (!node.isConnected) return;
+                revealedLinesRef.current.add(node);
                 node.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
                 const finishReveal = (event) => {
                     if (event.target !== node) return;

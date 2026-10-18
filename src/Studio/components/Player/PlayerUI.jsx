@@ -214,7 +214,7 @@ export const PlayerProgress = ({
 };
 
 const PlayerUI = ({
-  currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, accentColor, openModal,
+  currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, isSongModalReady, accentColor, openModal,
   isPlaying, togglePlay, fallbackMessage, deezerStatus, isBuffering, activeSource,
   volume, isMuted, handleVolumeChange, toggleMute, closePlayer,
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
@@ -224,7 +224,7 @@ const PlayerUI = ({
 
   return (
     <div
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
+      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong || (!isSongModalReady && !isSyncWorkspaceActive) ? 'centered-mode' : ''}`}
       onClick={isSyncWorkspaceActive ? undefined : openModal}
       style={{ '--player-accent': accentColor, cursor: isSyncWorkspaceActive ? 'default' : 'pointer' }}
     >

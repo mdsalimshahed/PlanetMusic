@@ -5,7 +5,7 @@ import { usePlayerLogic } from './usePlayerLogic.js';
 import PlayerUI from './PlayerUI.jsx';
 import './Player.css';
 
-const Player = ({ onPlaybackVisualChange, ...props }) => {
+const Player = ({ onPlaybackVisualChange, isSongModalReady, ...props }) => {
   const { refs, state, handlers } = usePlayerLogic(props);
   const playerTrack = state.isSyncWorkspaceActive &&
     String(state.currentTrack?.trackId) !== String(state.selectedSong?.trackId)
@@ -25,6 +25,7 @@ const Player = ({ onPlaybackVisualChange, ...props }) => {
     <PlayerUI
       currentTrack={playerTrack}
       selectedSong={state.selectedSong}
+      isSongModalReady={isSongModalReady}
       slotNode={state.slotNode}
       isSyncWorkspaceActive={state.isSyncWorkspaceActive}
       accentColor={state.accentColor}
