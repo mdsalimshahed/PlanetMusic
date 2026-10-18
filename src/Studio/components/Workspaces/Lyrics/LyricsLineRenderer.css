@@ -194,6 +194,10 @@ rt.pronunciation-text,
   margin: 0;
 }
 
+.preview-line .adlib-node .chunk-translation.live-translation {
+  max-width: 100%;
+}
+
 .chunk-translation.focused-translation {
   position: relative;
   top: auto;

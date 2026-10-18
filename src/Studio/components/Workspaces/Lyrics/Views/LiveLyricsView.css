@@ -87,9 +87,18 @@
   animation-delay: var(--initial-reveal-delay, 0ms);
 }
 
+.preview-line.active.initial-reveal {
+  animation-name: liveActiveLineIntro;
+}
+
 @keyframes liveLineIntro {
   from { opacity: 0; transform: translate3d(18px, 0, 0) scale(0.95); }
   to { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); }
+}
+
+@keyframes liveActiveLineIntro {
+  from { opacity: 0; transform: translate3d(18px, 0, 0) scale(0.95); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {

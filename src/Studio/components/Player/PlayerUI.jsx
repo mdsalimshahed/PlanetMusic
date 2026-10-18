@@ -1,5 +1,5 @@
 /* --- src/Studio/components/Player/PlayerUI.jsx --- */
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 
@@ -214,7 +214,7 @@ export const PlayerProgress = ({
 };
 
 const PlayerUI = ({
-  currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, isSongModalReady, accentColor, openModal,
+  currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, accentColor, openModal,
   isPlaying, togglePlay, fallbackMessage, deezerStatus, isBuffering, activeSource,
   volume, isMuted, handleVolumeChange, toggleMute, closePlayer,
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
@@ -224,7 +224,7 @@ const PlayerUI = ({
 
   return (
     <div
-      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong || (!isSongModalReady && !isSyncWorkspaceActive) ? 'centered-mode' : ''}`}
+      className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
       onClick={isSyncWorkspaceActive ? undefined : openModal}
       style={{ '--player-accent': accentColor, cursor: isSyncWorkspaceActive ? 'default' : 'pointer' }}
     >

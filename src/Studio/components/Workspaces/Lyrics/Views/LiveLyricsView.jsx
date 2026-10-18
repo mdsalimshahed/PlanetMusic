@@ -59,7 +59,7 @@ const getInitialViewportLineCount = (container, lines, syncData) => {
   return Math.min(lines.length, visibleLineCount + 3);
 };
 
-const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, isPlaying, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
+const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, settings, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const [renderProgress, setRenderProgress] = useState({
     trackId: null,
     count: 0
@@ -154,10 +154,13 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
                 bounds.top < window.innerHeight;
         });
         if (visibleLines.length === 0) return;
-        const revealLines = visibleLines.filter(node => !revealedLinesRef.current.has(node));
+        const firstVisibleLineIndex = mountedLines.indexOf(visibleLines[0]);
+        const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
+        const revealLines = mountedLines
+            .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
+            .filter(node => !revealedLinesRef.current.has(node));
         if (revealLines.length === 0) return;
         if (
-            (isPlayingCurrentSong && isPlaying) ||
             settings?.disableAnimations ||
             window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ) {
@@ -172,10 +175,12 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             revealFrame = null;
             if (cancelled) return;
 
-            revealLines.forEach((node, index) => {
+            revealLines.forEach(node => {
                 if (!node.isConnected) return;
                 revealedLinesRef.current.add(node);
-                node.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
+                const lineIndex = mountedLines.indexOf(node);
+                const staggerIndex = Math.max(0, lineIndex - firstVisibleLineIndex);
+                node.style.setProperty('--initial-reveal-delay', `${staggerIndex * 55}ms`);
                 const finishReveal = (event) => {
                     if (event.target !== node) return;
                     node.classList.add('has-revealed');
@@ -194,7 +199,7 @@ const LiveLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayi
             if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
             revealLines.forEach(node => node.classList.remove('is-preparing-reveal'));
         };
-    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, isPlayingCurrentSong, isPlaying, renderedLineCount]);
+    }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations, renderedLineCount]);
 
   const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;

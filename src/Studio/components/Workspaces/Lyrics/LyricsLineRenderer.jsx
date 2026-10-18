@@ -282,10 +282,13 @@ export const LyricLineWrapper = React.memo(({
           }
         });
 
-        if (viewMode !== 'live' || updates.length === 0) return;
+        const liveTranslationUpdates = updates.filter(
+          ({ parent }) => !parent.classList.contains('adlib-node')
+        );
+        if (viewMode !== 'live' || liveTranslationUpdates.length === 0) return;
         scheduleTranslationFinalization(() => {
           if (cancelled) return null;
-          const finalized = updates
+          const finalized = liveTranslationUpdates
             .filter(({ translation, parent }) => translation.isConnected && parent.isConnected)
             .map(({ translation, parent, width, center, gap }) => ({
               translation,

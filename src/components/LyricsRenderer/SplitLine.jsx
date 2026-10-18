@@ -154,24 +154,84 @@ const SplitLine = ({
     };
 
     const positionAdlibTranslations = () => {
+      const sizeTranslation = (translation, parent, textElements, isAdlib = false) => {
+        if (!translation || !parent) return;
+        const rows = textElements.flatMap(({ element, excludePronunciation }) =>
+          groupTextRows(readTextBounds([element], excludePronunciation))
+        );
+        const widestLine = rows.reduce((widest, row) => (
+          !widest || row.right - row.left > widest.right - widest.left ? row : widest
+        ), null);
+        if (!widestLine) return;
+
+        const scaleX = parent.offsetWidth
+          ? parent.getBoundingClientRect().width / parent.offsetWidth
+          : 1;
+        const width = (widestLine.right - widestLine.left) / scaleX;
+        const nextWidth = `${Math.floor(width)}px`;
+        if (translation.style.width !== nextWidth) {
+          translation.style.width = nextWidth;
+        }
+
+        const parentBounds = parent.getBoundingClientRect();
+        const left = (
+          (widestLine.left + widestLine.right) / 2 - parentBounds.left
+        ) / scaleX - parent.clientLeft - width / 2;
+        const nextLeft = `${left}px`;
+        if (translation.style.left !== nextLeft) {
+          translation.style.left = nextLeft;
+        }
+
+        const gapValue = parseFloat(
+          getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')
+        );
+        const gap = Number.isFinite(gapValue) ? gapValue : 0;
+        const nextPadding = `${translation.offsetHeight + gap}px`;
+        if (isAdlib) {
+          if (parent.style.getPropertyValue('--adlib-translation-clearance') !== nextPadding) {
+            parent.style.setProperty('--adlib-translation-clearance', nextPadding);
+          }
+        } else if (parent.style.paddingTop !== nextPadding) {
+          parent.style.paddingTop = nextPadding;
+        }
+      };
+
+      const mainParent = parentMainRef.current;
+      const mainGlyphs = mainParent?.querySelector('.main-lyrics-layer');
+      sizeTranslation(
+        mainParent?.querySelector('.chunk-translation'),
+        mainParent,
+        [
+          { element: mainGlyphs, excludePronunciation: true },
+          { element: parentPronRef.current, excludePronunciation: false }
+        ]
+      );
       const mainGlyphRows = groupTextRows(readTextBounds([
-        parentMainRef.current?.querySelector('.main-lyrics-layer')
+        mainGlyphs
       ], true));
       const mainGlyphRow = mainGlyphRows.length === 1 ? mainGlyphRows[0] : null;
       const mainObstacles = [
-        ...readElementBounds(parentMainRef.current?.querySelector('.chunk-translation')),
-        ...readTextBounds([
-          parentMainRef.current?.querySelector('.main-lyrics-layer')
-        ]),
+        ...readElementBounds(mainParent?.querySelector('.chunk-translation')),
+        ...readTextBounds([mainGlyphs]),
         ...readElementBounds(parentPronRef.current)
       ];
       const minimumGap = 1 / Math.max(window.devicePixelRatio || 1, 1);
 
       adlibRefs.current.forEach(ref => {
-        const translation = ref?.querySelector('.chunk-translation');
-        const translationBounds = translation?.getBoundingClientRect();
         if (!ref) return;
+        const translation = ref.querySelector('.chunk-translation');
         const adlibGlyphs = ref.querySelector('.primary-text');
+        sizeTranslation(
+          translation,
+          ref,
+          [
+            { element: adlibGlyphs, excludePronunciation: true },
+            { element: ref.querySelector('.pronunciation-text'), excludePronunciation: false }
+          ],
+          true
+        );
+
+        const translationBounds = translation?.getBoundingClientRect();
         if (!focusedMainLyrics || !mainGlyphRow || !adlibGlyphs) {
           adlibGlyphs?.style.removeProperty('--live-adlib-glyph-offset-y');
         } else {
@@ -206,11 +266,13 @@ const SplitLine = ({
         }
 
         if (!translationBounds?.width || !translationBounds.height) {
-          if (ref.style.marginTop) ref.style.marginTop = '';
+          ref.style.removeProperty('--adlib-clearance-offset');
           return;
         }
 
-        const appliedOffset = parseFloat(ref.style.marginTop) || 0;
+        const appliedOffset = parseFloat(
+          ref.style.getPropertyValue('--adlib-clearance-offset')
+        ) || 0;
         const unshiftedTop = translationBounds.top - appliedOffset;
         const translationBoxHeight = translationBounds.height;
         const unshiftedBottom = unshiftedTop + translationBoxHeight;
@@ -225,7 +287,9 @@ const SplitLine = ({
           return Math.max(offset, obstacle.bottom + minimumGap - unshiftedTop);
         }, 0);
         const nextOffset = `${Math.max(0, requiredOffset)}px`;
-        if (ref.style.marginTop !== nextOffset) ref.style.marginTop = nextOffset;
+        if (ref.style.getPropertyValue('--adlib-clearance-offset') !== nextOffset) {
+          ref.style.setProperty('--adlib-clearance-offset', nextOffset);
+        }
       });
     };
 
@@ -301,8 +365,9 @@ const SplitLine = ({
             position: 'relative',
             maxWidth: '100%',
             boxSizing: 'border-box',
-            margin: 0,
+            marginTop: 'var(--adlib-clearance-offset, 0px)',
             padding: 0,
+            paddingTop: 'var(--adlib-translation-clearance, 0px)',
             marginInlineStart: '0.25em'
           }}
         >
