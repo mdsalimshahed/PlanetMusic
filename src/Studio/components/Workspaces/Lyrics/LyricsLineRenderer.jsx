@@ -250,6 +250,7 @@ export const LyricLineWrapper = React.memo(({
           adlib.classList.remove('is-adlib-wrapped');
           adlib.classList.remove('is-adlib-new-row');
           adlib.classList.remove('is-adlib-inline-after-wrapped-main');
+          adlib.classList.remove('is-english-adlib-on-foreign-line');
           adlib.style.removeProperty('--live-adlib-glyph-offset-y');
           adlib.style.removeProperty('--live-adlib-inline-x');
           adlib.style.removeProperty('--live-adlib-inline-y');
@@ -268,15 +269,43 @@ export const LyricLineWrapper = React.memo(({
         const splitLineBounds = splitLine?.getBoundingClientRect();
         const direction = mainGlyphs ? getComputedStyle(mainGlyphs).direction : 'ltr';
         const lastMainRow = mainGlyphRows[mainGlyphRows.length - 1];
+        let hasForeignPronunciation = false;
+        let hasOnlyPronouncedForeignGlyphs = Boolean(mainGlyphs);
+        if (mainGlyphs) {
+          const walker = document.createTreeWalker(mainGlyphs, NodeFilter.SHOW_TEXT, {
+            acceptNode: textNode => (
+              textNode.parentElement?.closest('.pronunciation-text')
+                ? NodeFilter.FILTER_REJECT
+                : NodeFilter.FILTER_ACCEPT
+            )
+          });
+          let textNode;
+          while ((textNode = walker.nextNode())) {
+            const meaningfulText = textNode.textContent.replace(/[^\p{L}\p{N}]/gu, '');
+            if (!meaningfulText) continue;
+            const foreignChunk = textNode.parentElement?.closest('.inline-cjk-chunk');
+            if (!foreignChunk?.querySelector('.pronunciation-text')) {
+              hasOnlyPronouncedForeignGlyphs = false;
+              break;
+            }
+            hasForeignPronunciation = true;
+          }
+        }
+        const isFullyPronouncedForeignLine =
+          hasOnlyPronouncedForeignGlyphs && hasForeignPronunciation;
         const adlibMeasurements = Array.from(adlibNodes, adlib => {
           const glyphs = adlib.querySelector(':scope > .primary-text');
+          const glyphText = glyphs?.textContent || '';
+          const isEnglishAdlib = /\p{Script=Latin}/u.test(glyphText) &&
+            /^[\p{Script=Latin}\p{N}\p{P}\p{S}\s]*$/u.test(glyphText);
           return {
             adlib,
             glyphRows: getGlyphRows(glyphs),
             bounds: adlib.getBoundingClientRect(),
             hasSecondary: Boolean(
               adlib.querySelector('.adlib-live-translation, .pronunciation-text')
-            )
+            ),
+            needsForeignLineOffset: isFullyPronouncedForeignLine && isEnglishAdlib
           };
         });
         let previousGlyphRows = mainGlyphRows;
@@ -284,7 +313,17 @@ export const LyricLineWrapper = React.memo(({
           ? lastMainRow?.left
           : lastMainRow?.right;
 
-        adlibMeasurements.forEach(({ adlib, glyphRows: adlibGlyphRows, bounds, hasSecondary }) => {
+        adlibMeasurements.forEach(({
+          adlib,
+          glyphRows: adlibGlyphRows,
+          bounds,
+          hasSecondary,
+          needsForeignLineOffset
+        }) => {
+          adlib.classList.toggle(
+            'is-english-adlib-on-foreign-line',
+            needsForeignLineOffset && !hasSecondary
+          );
           adlib.classList.toggle(
             'has-secondary',
             hasSecondary
