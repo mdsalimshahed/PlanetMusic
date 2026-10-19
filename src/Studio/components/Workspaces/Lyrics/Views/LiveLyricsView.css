@@ -1,14 +1,16 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.css --- */
 .live-lyrics-preview {
-  flex-grow: 1;
+  flex: 1 1 0;
+  min-height: 0;
   container-type: inline-size;
   overflow-y: auto;
   overflow-x: hidden;
+  overflow-anchor: none;
+  scroll-behavior: auto;
   display: flex;
   flex-direction: column;
   gap: var(--dyn-live-sync-gap, 16px);
   padding: 120px 20px clamp(40px, 8vw, 80px) 20px;
-  scroll-behavior: smooth;
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,
@@ -27,8 +29,18 @@
   -ms-overflow-style: none;
 }
 
+.live-lyrics-preview.is-layout-pending {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
 .live-lyrics-preview::-webkit-scrollbar {
   display: none;
+}
+
+.preview-line.is-preparing-reveal,
+.preview-line.is-preparing-reveal * {
+  visibility: hidden !important;
 }
 
 .preview-line {
@@ -68,18 +80,8 @@
 .preview-line.active,
 .preview-line.initial-reveal,
 .preview-line.has-revealed,
-.preview-line.is-preparing-reveal,
-.preview-line.is-preparing-active {
+.preview-line.is-preparing-reveal {
   will-change: transform, opacity;
-}
-
-.preview-line.active .main-lyrics-layer,
-.preview-line.active .adlib-node .primary-text,
-.preview-line.is-preparing-active .main-lyrics-layer,
-.preview-line.is-preparing-active .adlib-node .primary-text {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform, opacity, filter;
 }
 
 .preview-line.initial-reveal {
@@ -101,20 +103,17 @@
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .preview-line.initial-reveal {
-    animation: none;
-  }
+.preview-line.active .main-lyrics-layer,
+.preview-line.active .adlib-node .primary-text {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity, filter;
 }
 
 /* Soft dark drop-shadow behind main text */
 .preview-line .main-lyrics-layer,
 .preview-line .adlib-node .primary-text {
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
-}
-
-.preview-line .adlib-node > .primary-text {
-  translate: 0 var(--live-adlib-glyph-offset-y, 0px);
 }
 
 .preview-line.active .main-lyrics-layer,
@@ -129,5 +128,11 @@
       5.5cqw,
       var(--dyn-live-sync-font-size, 34px)
     );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-line.initial-reveal {
+    animation: none;
   }
 }

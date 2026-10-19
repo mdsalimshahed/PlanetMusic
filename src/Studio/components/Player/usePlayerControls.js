@@ -265,7 +265,7 @@ export const usePlayerControls = runtime => {
       if (selectedSong && String(selectedSong.trackId) === String(currentTrack.trackId)) {
         return; 
       }
-      setSelectedSong(currentTrack);
+      setSelectedSong(currentTrack, { skipLiveEntrance: true });
     }
   };
 

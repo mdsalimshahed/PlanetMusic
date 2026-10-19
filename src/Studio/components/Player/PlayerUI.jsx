@@ -1,5 +1,5 @@
 /* --- src/Studio/components/Player/PlayerUI.jsx --- */
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 
@@ -220,10 +220,65 @@ const PlayerUI = ({
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
   progressBarRef, currentTimeRef, isPrecise
 }) => {
+  const playerRef = useRef(null);
+  const previousBoundsRef = useRef(null);
+  const entranceAnimationRef = useRef(null);
+  const hasSelectedSong = Boolean(selectedSong);
+
+  useLayoutEffect(() => {
+    const player = playerRef.current;
+    if (!player) return undefined;
+
+    if (
+      hasSelectedSong &&
+      previousBoundsRef.current &&
+      typeof player.animate === 'function' &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const first = previousBoundsRef.current;
+      previousBoundsRef.current = null;
+
+      player.classList.add('is-modal-transitioning');
+      const last = player.getBoundingClientRect();
+      if (last.width > 0 && last.height > 0) {
+        const animation = player.animate([
+          {
+            transform: `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${first.width / last.width}, ${first.height / last.height})`
+          },
+          { transform: 'translate(0, 0) scale(1)' }
+        ], {
+          duration: 500,
+          easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)'
+        });
+        entranceAnimationRef.current = animation;
+        animation.onfinish = () => {
+          player.classList.remove('is-modal-transitioning');
+          entranceAnimationRef.current = null;
+        };
+        animation.oncancel = () => {
+          player.classList.remove('is-modal-transitioning');
+          entranceAnimationRef.current = null;
+        };
+      } else {
+        player.classList.remove('is-modal-transitioning');
+      }
+    }
+
+    return () => {
+      previousBoundsRef.current = player.getBoundingClientRect();
+      if (entranceAnimationRef.current) {
+        entranceAnimationRef.current.cancel();
+        entranceAnimationRef.current = null;
+        player.classList.remove('is-modal-transitioning');
+      }
+    };
+  }, [hasSelectedSong]);
+
   if (!currentTrack) return null;
 
   return (
     <div
+      ref={playerRef}
       className={`global-player glass-panel-heavy ${slotNode ? 'stacked' : ''} ${isSyncWorkspaceActive ? 'sync-docked' : ''} ${!selectedSong ? 'centered-mode' : ''}`}
       onClick={isSyncWorkspaceActive ? undefined : openModal}
       style={{ '--player-accent': accentColor, cursor: isSyncWorkspaceActive ? 'default' : 'pointer' }}

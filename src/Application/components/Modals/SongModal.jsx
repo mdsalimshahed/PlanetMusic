@@ -11,12 +11,29 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
+  const selectedTrackId = selectedSong?.trackId;
+  const previousTrackIdRef = useRef(selectedTrackId);
+  const markModalReady = useCallback(trackId => {
+    onModalReady?.(trackId);
+  }, [onModalReady]);
   useEffect(() => {
-    if (!selectedSong || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const frame = window.requestAnimationFrame(() => onModalReady?.(selectedSong.trackId));
+    const previousTrackId = previousTrackIdRef.current;
+    previousTrackIdRef.current = selectedTrackId;
+    if (
+      selectedTrackId == null ||
+      previousTrackId == null ||
+      String(previousTrackId) === String(selectedTrackId)
+    ) return undefined;
+
+    const frame = window.requestAnimationFrame(() => markModalReady(selectedTrackId));
     return () => window.cancelAnimationFrame(frame);
-  }, [selectedSong, onModalReady]);
-  const previousTrackIdRef = useRef(selectedSong?.trackId);
+  }, [selectedTrackId, markModalReady]);
+  useEffect(() => {
+    if (selectedTrackId == null || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const frame = window.requestAnimationFrame(() => markModalReady(selectedTrackId));
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedTrackId, markModalReady]);
+  const previousTrackIdForNotificationRef = useRef(selectedSong?.trackId);
   const translationCancelHandlerRef = useRef(null);
   const registerTranslationCancelHandler = useCallback(handler => {
     translationCancelHandlerRef.current = handler;
@@ -25,8 +42,8 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
     translationCancelHandlerRef.current?.(onClosed);
   }, []);
   useEffect(() => {
-    if (previousTrackIdRef.current === selectedSong?.trackId) return;
-    previousTrackIdRef.current = selectedSong?.trackId;
+    if (previousTrackIdForNotificationRef.current === selectedSong?.trackId) return;
+    previousTrackIdForNotificationRef.current = selectedSong?.trackId;
     setNotification({ show: false, message: '', progress: null });
   }, [selectedSong?.trackId]);
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
@@ -162,7 +179,12 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
     },
     setLyricsViewMode: (val) => {
         displayProps.setLyricsViewMode(val);
-        navigate(buildUrl({ viewMode: val, debug: false }));
+        navigate(buildUrl({ viewMode: val, debug: false }), {
+          state: {
+            ...location.state,
+            skipLiveEntrance: val === 'live' && urlViewMode !== 'live'
+          }
+        });
     },
     
     // Debug toggles
@@ -200,7 +222,7 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
             event.target === event.currentTarget &&
             event.animationName === 'modalWindowEnter'
           ) {
-            onModalReady?.(selectedSong.trackId);
+            markModalReady(selectedSong.trackId);
           }
         }}
       >
@@ -221,6 +243,9 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
             <ModalLeft {...sharedProps} />
             <ModalRight 
               {...sharedProps} 
+              shouldAnimateLiveEntrance={
+                urlViewMode === 'live' && !location.state?.skipLiveEntrance
+              }
               activeLineRef={syncProps.activeLineRef}
               activePreviewRef={displayProps.activePreviewRef}
             />

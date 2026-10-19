@@ -46,6 +46,11 @@ body .global-player.glass-panel-heavy.centered-mode {
   z-index: 10;
 }
 
+.global-player.is-modal-transitioning {
+  transition: none !important;
+  transform-origin: top left;
+}
+
 .global-player.sync-docked {
   animation: syncDockPlayerIn 0.24s ease-out both !important;
   transition: box-shadow 0.4s ease, border-color 0.4s ease, width 0.3s ease, opacity 0.24s ease;

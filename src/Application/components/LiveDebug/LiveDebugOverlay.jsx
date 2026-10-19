@@ -1,10 +1,17 @@
 /* --- src/components/LiveDebug/LiveDebugOverlay.jsx --- */
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './LiveDebugOverlay.css';
 
-const getLineTextBoundsList = (element, overlayRect) => {
+const getLineTextBoundsList = (element, overlayRect, excludePronunciation = false) => {
   const lineGroups = [];
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+    acceptNode: textNode => (
+      excludePronunciation &&
+      textNode.parentElement?.closest('.pronunciation-text')
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT
+    )
+  });
   let node;
 
   while ((node = walker.nextNode())) {
@@ -88,14 +95,13 @@ const LiveDebugOverlay = () => {
         const lineRect = lineNode.getBoundingClientRect();
         if (lineRect.bottom < 0 || lineRect.top > overlayRect.bottom) return;
 
-        // Primary main lyrics bounding box (Yellow border and fill encapsulating the entire main parent line)
-        const mainLyricSpans = Array.from(lineNode.querySelectorAll('.lyric-text-span'));
-        if (mainLyricSpans.length > 0) {
+        const addGlyphBox = (glyphSpans, id) => {
+          if (glyphSpans.length === 0) return;
           let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
           let hasValidMain = false;
 
-          mainLyricSpans.forEach(spanNode => {
-            const lineBoundsList = getLineTextBoundsList(spanNode, overlayRect);
+          glyphSpans.forEach(spanNode => {
+            const lineBoundsList = getLineTextBoundsList(spanNode, overlayRect, true);
             lineBoundsList.forEach(bounds => {
               hasValidMain = true;
               minTop = Math.min(minTop, bounds.top);
@@ -107,7 +113,7 @@ const LiveDebugOverlay = () => {
 
           if (hasValidMain) {
             newBoxes.push({
-              id: `primary-full-line-${index}`,
+              id,
               top: minTop,
               left: minLeft,
               width: maxRight - minLeft,
@@ -116,7 +122,18 @@ const LiveDebugOverlay = () => {
               fillColor: 'rgba(250, 204, 21, 0.15)'
             });
           }
-        }
+        };
+
+        addGlyphBox(
+          Array.from(lineNode.querySelectorAll('.main-lyrics-layer .lyric-text-span')),
+          `primary-full-line-${index}`
+        );
+        lineNode.querySelectorAll('.adlib-node').forEach((adlibNode, adlibIdx) => {
+          addGlyphBox(
+            Array.from(adlibNode.querySelectorAll('.lyric-text-span')),
+            `adlib-glyph-${index}-${adlibIdx}`
+          );
+        });
 
         // Gradient Mask Layer bounding box (Orange shaded box covering the full line whenever a gradient mask is applied)
         const gradientLayers = Array.from(lineNode.querySelectorAll('.segment-mask-span[style*="backgroundImage"], .segment-mask-span[style*="background-image"]'));
@@ -146,47 +163,17 @@ const LiveDebugOverlay = () => {
           });
         });
 
-        // Full Encapsulating Pronunciation Block Bounding Box (GREEN border and fill)
         const pronElements = Array.from(lineNode.querySelectorAll('.pronunciation-text'));
 
-        if (pronElements.length > 0) {
-          // Calculate an overarching green bounding box that encapsulates all pronunciation chunks in the line
-          let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
-          let hasValidPron = false;
-
-          pronElements.forEach(pronEl => {
-            const lineBoundsList = getLineTextBoundsList(pronEl, overlayRect);
-            lineBoundsList.forEach(bounds => {
-              hasValidPron = true;
-              minTop = Math.min(minTop, bounds.top);
-              minLeft = Math.min(minLeft, bounds.left);
-              maxRight = Math.max(maxRight, bounds.left + bounds.width);
-              maxBottom = Math.max(maxBottom, bounds.top + bounds.height);
-            });
-          });
-
-          if (hasValidPron) {
-            newBoxes.push({
-              id: `full-pron-block-${index}`,
-              top: minTop,
-              left: minLeft,
-              width: maxRight - minLeft,
-              height: maxBottom - minTop,
-              color: '#4ade80',
-              fillColor: 'rgba(74, 222, 128, 0.15)'
-            });
-          }
-        }
-
-        // Individual Pronunciation Chunks Bounding Box (PINK border and fill)
+        // Individual pronunciation bounding boxes (purple)
         pronElements.forEach((pronChunk, pIdx) => {
           const lineBoundsList = getLineTextBoundsList(pronChunk, overlayRect);
           lineBoundsList.forEach((bounds, bIdx) => {
             newBoxes.push({
               id: `pron-chunk-${index}-${pIdx}-line-${bIdx}`,
               ...bounds,
-              color: '#f15bb5',
-              fillColor: 'rgba(241, 91, 181, 0.12)'
+              color: '#c084fc',
+              fillColor: 'rgba(192, 132, 252, 0.12)'
             });
           });
         });

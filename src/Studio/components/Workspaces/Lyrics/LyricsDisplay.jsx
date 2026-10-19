@@ -12,7 +12,7 @@ const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
-    showGroupChatDebug
+    showGroupChatDebug, shouldAnimateLiveEntrance, onLiveEntranceAnimationComplete
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const [activeSource, setActiveSource] = useState(() => {
@@ -44,11 +44,12 @@ const LyricsDisplay = ({
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
-          isPlaying={isPlaying}
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+          shouldAnimateEntrance={shouldAnimateLiveEntrance}
+          onEntranceAnimationComplete={onLiveEntranceAnimationComplete}
         />
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (
         <FocusedLyricsView 

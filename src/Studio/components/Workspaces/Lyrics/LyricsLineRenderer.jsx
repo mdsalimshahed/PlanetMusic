@@ -11,41 +11,6 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
-const pendingTranslationMeasurements = new Set();
-const pendingTranslationFinalizations = new Set();
-let translationMeasurementFrame = null;
-let translationFinalizationFrame = null;
-
-const scheduleTranslationMeasurement = measure => {
-  pendingTranslationMeasurements.add(measure);
-  if (translationMeasurementFrame !== null) return;
-
-  translationMeasurementFrame = window.requestAnimationFrame(() => {
-    translationMeasurementFrame = null;
-    const measurements = Array.from(pendingTranslationMeasurements);
-    pendingTranslationMeasurements.clear();
-    measurements
-      .map(measurement => measurement())
-      .filter(Boolean)
-      .forEach(write => write());
-  });
-};
-
-const scheduleTranslationFinalization = measure => {
-  pendingTranslationFinalizations.add(measure);
-  if (translationFinalizationFrame !== null) return;
-
-  translationFinalizationFrame = window.requestAnimationFrame(() => {
-    translationFinalizationFrame = null;
-    const measurements = Array.from(pendingTranslationFinalizations);
-    pendingTranslationFinalizations.clear();
-    measurements
-      .map(measurement => measurement())
-      .filter(Boolean)
-      .forEach(write => write());
-  });
-};
-
 export const renderLine = (
   lineObj,
   savedNode,
@@ -170,7 +135,15 @@ export const measureFocusedLineLayout = (wrapper) => {
 };
 
 export const LyricLineWrapper = React.memo(({
-  lineObj, savedNode, nextStart, viewMode, handleLineClick, masterPalette, isPlayingCurrentSong
+  lineObj,
+  savedNode,
+  nextStart,
+  viewMode,
+  handleLineClick,
+  masterPalette,
+  isPlayingCurrentSong,
+  lineIndex,
+  onLiveLayoutReady
 }) => {
   const wrapperRef = useRef(null);
   const start = savedNode?.start ?? 'NaN';
@@ -193,28 +166,67 @@ export const LyricLineWrapper = React.memo(({
     if (!wrapper || (viewMode !== 'focused' && viewMode !== 'live')) return undefined;
 
     const measureWidestLine = element => {
-      if (!element) return null;
-      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      if (!element || !element.textContent.trim()) return null;
+      const range = document.createRange();
+      range.selectNodeContents(element);
       const lines = [];
-      let node;
-      while ((node = walker.nextNode())) {
-        if (!node.textContent.trim()) continue;
+      [...range.getClientRects()].forEach(rect => {
+        if (!rect.width || !rect.height) return;
+        const line = lines.find(candidate => (
+          Math.min(candidate.bottom, rect.bottom) -
+            Math.max(candidate.top, rect.top) >
+          Math.min(candidate.bottom - candidate.top, rect.height) * 0.5
+        ));
+        if (line) {
+          line.left = Math.min(line.left, rect.left);
+          line.right = Math.max(line.right, rect.right);
+          line.top = Math.min(line.top, rect.top);
+          line.bottom = Math.max(line.bottom, rect.bottom);
+        } else {
+          lines.push({
+            left: rect.left,
+            right: rect.right,
+            top: rect.top,
+            bottom: rect.bottom
+          });
+        }
+      });
+      return lines.reduce((widest, line) => (
+        !widest || line.right - line.left > widest.right - widest.left
+          ? line
+          : widest
+      ), null);
+    };
+
+    const getGlyphRows = element => {
+      if (!element) return [];
+      const rows = [];
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+        acceptNode: textNode => (
+          textNode.parentElement?.closest('.pronunciation-text')
+            ? NodeFilter.FILTER_REJECT
+            : NodeFilter.FILTER_ACCEPT
+        )
+      });
+      let textNode;
+      while ((textNode = walker.nextNode())) {
+        if (!textNode.textContent.trim()) continue;
         const range = document.createRange();
-        range.selectNodeContents(node);
+        range.selectNodeContents(textNode);
         [...range.getClientRects()].forEach(rect => {
           if (!rect.width || !rect.height) return;
-          const line = lines.find(candidate => (
+          const row = rows.find(candidate => (
             Math.min(candidate.bottom, rect.bottom) -
               Math.max(candidate.top, rect.top) >
             Math.min(candidate.bottom - candidate.top, rect.height) * 0.5
           ));
-          if (line) {
-            line.left = Math.min(line.left, rect.left);
-            line.right = Math.max(line.right, rect.right);
-            line.top = Math.min(line.top, rect.top);
-            line.bottom = Math.max(line.bottom, rect.bottom);
+          if (row) {
+            row.left = Math.min(row.left, rect.left);
+            row.right = Math.max(row.right, rect.right);
+            row.top = Math.min(row.top, rect.top);
+            row.bottom = Math.max(row.bottom, rect.bottom);
           } else {
-            lines.push({
+            rows.push({
               left: rect.left,
               right: rect.right,
               top: rect.top,
@@ -223,22 +235,160 @@ export const LyricLineWrapper = React.memo(({
           }
         });
       }
-      return lines.reduce((widest, line) => (
-        !widest || line.right - line.left > widest.right - widest.left
-          ? line
-          : widest
-      ), null);
+      return rows.sort((first, second) => first.top - second.top);
     };
 
-    const measureTranslationWidths = () => {
-      if (cancelled || !wrapper.isConnected) return null;
-      const translations = wrapper.querySelectorAll(viewMode === 'focused'
-        ? '.chunk-translation.focused-translation'
-        : '.chunk-translation.live-translation');
+    if (viewMode === 'live') {
+      let cancelled = false;
+      let updateFrame = null;
+      let resizeObserver = null;
+      let initialLayoutReady = false;
+      const measureLiveTranslations = () => {
+        if (cancelled || !wrapper.isConnected) return;
+        const adlibNodes = wrapper.querySelectorAll('.live-split-line > .adlib-node');
+        adlibNodes.forEach(adlib => {
+          adlib.classList.remove('is-adlib-wrapped');
+          adlib.classList.remove('is-adlib-new-row');
+          adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+        });
+
+        const scaleX = wrapper.offsetWidth
+          ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
+          : 1;
+        const mainGlyphs = wrapper.querySelector('.core-chunks > .main-lyrics-layer');
+        const mainGlyphRows = getGlyphRows(mainGlyphs);
+        const splitLine = wrapper.querySelector('.live-split-line');
+        splitLine?.classList.toggle('is-main-wrapped', mainGlyphRows.length > 1);
+        let previousGlyphRows = mainGlyphRows;
+
+        adlibNodes.forEach(adlib => {
+          adlib.classList.toggle(
+            'has-secondary',
+            Boolean(adlib.querySelector('.adlib-live-translation, .pronunciation-text'))
+          );
+
+          const adlibGlyphs = adlib.querySelector(':scope > .primary-text');
+          const adlibGlyphRows = getGlyphRows(adlibGlyphs);
+          const previousRow = previousGlyphRows[previousGlyphRows.length - 1];
+          const firstAdlibRow = adlibGlyphRows[0];
+          const direction = getComputedStyle(mainGlyphs).direction;
+          const rowsOverlap = previousRow && firstAdlibRow &&
+            firstAdlibRow.top < previousRow.bottom &&
+            firstAdlibRow.bottom > previousRow.top;
+          const isAfterPreviousRow = previousRow && firstAdlibRow && (
+            direction === 'rtl'
+              ? firstAdlibRow.right <= previousRow.left
+              : firstAdlibRow.left >= previousRow.right
+          );
+          const isInlineWithPreviousRow = rowsOverlap && isAfterPreviousRow;
+          const mustMoveToOwnRow = adlib.classList.contains('has-secondary') &&
+            (mainGlyphRows.length > 1 || !isInlineWithPreviousRow);
+          adlib.classList.toggle('is-adlib-wrapped', mustMoveToOwnRow);
+          adlib.classList.toggle(
+            'is-adlib-new-row',
+            !isInlineWithPreviousRow || mustMoveToOwnRow
+          );
+
+          if (!isInlineWithPreviousRow || mustMoveToOwnRow) {
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+            previousGlyphRows = adlibGlyphRows;
+            return;
+          }
+
+          const previousOffset = parseFloat(
+            adlib.style.getPropertyValue('--live-adlib-glyph-offset-y')
+          ) || 0;
+          const adlibGlyphBottom = adlibGlyphRows.reduce(
+            (bottom, row) => Math.max(bottom, row.bottom),
+            -Infinity
+          ) - previousOffset * scaleX;
+
+          if (Number.isFinite(adlibGlyphBottom) && previousRow) {
+            adlib.style.setProperty(
+              '--live-adlib-glyph-offset-y',
+              `${(previousRow.bottom - adlibGlyphBottom) / scaleX}px`
+            );
+          }
+          previousGlyphRows = adlibGlyphRows;
+        });
+
+        wrapper.querySelectorAll('.chunk-translation.live-translation').forEach(translation => {
+          const parent = translation.parentElement;
+          const isWrappedAdlibTranslation = translation.classList.contains('adlib-live-translation') &&
+            parent?.classList.contains('is-adlib-wrapped');
+          const glyphs = translation.classList.contains('main-live-translation')
+            ? wrapper.querySelector('.core-chunks > .main-lyrics-layer')
+            : parent?.querySelector(':scope > .primary-text');
+          if (!parent || !glyphs) return;
+
+          const widestLine = measureWidestLine(glyphs);
+          if (!widestLine) return;
+
+          const width = (widestLine.right - widestLine.left) / scaleX;
+          if (isWrappedAdlibTranslation) {
+            translation.style.width = `${Math.max(1, Math.floor(width))}px`;
+            translation.style.removeProperty('--live-translation-offset-x');
+            translation.style.removeProperty('--live-translation-offset-y');
+            return;
+          }
+
+          const parentBounds = parent.getBoundingClientRect();
+          const center = (widestLine.left + widestLine.right) / 2;
+          const offset = translation.classList.contains('main-live-translation')
+            ? (center - parentBounds.left) / scaleX - width / 2
+            : (center - parentBounds.left) / scaleX - parent.offsetWidth / 2;
+          translation.style.width = `${Math.max(1, Math.floor(width))}px`;
+          translation.style.setProperty('--live-translation-offset-y', '0px');
+          translation.style.setProperty('--live-translation-offset-x', `${offset}px`);
+          const translationBounds = translation.getBoundingClientRect();
+          const desiredGap = (parseFloat(getComputedStyle(translation).marginBottom) || 0) * scaleX;
+          const verticalOffset = glyphs.getBoundingClientRect().top -
+            translationBounds.bottom - desiredGap;
+          translation.style.setProperty('--live-translation-offset-y', `${verticalOffset / scaleX}px`);
+        });
+
+        if (!initialLayoutReady) {
+          initialLayoutReady = true;
+          onLiveLayoutReady?.(lineIndex);
+        }
+      };
+      const scheduleTranslationUpdate = () => {
+        if (updateFrame !== null) return;
+        updateFrame = window.requestAnimationFrame(() => {
+          updateFrame = null;
+          measureLiveTranslations();
+        });
+      };
+
+      resizeObserver = typeof ResizeObserver === 'undefined'
+        ? null
+        : new ResizeObserver(scheduleTranslationUpdate);
+      [wrapper, ...wrapper.querySelectorAll('.main-lyrics-layer, .primary-text')]
+        .forEach(element => resizeObserver?.observe(element));
+
+      if (document.fonts?.status === 'loaded') {
+        measureLiveTranslations();
+      } else if (document.fonts) {
+        document.fonts.ready.then(() => {
+          if (!cancelled) scheduleTranslationUpdate();
+        });
+      } else {
+        measureLiveTranslations();
+      }
+
+      return () => {
+        cancelled = true;
+        if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
+        resizeObserver?.disconnect();
+      };
+    }
+
+    const measureFocusedTranslationWidths = () => {
+      if (cancelled || !wrapper.isConnected) return;
+      const translations = wrapper.querySelectorAll('.chunk-translation.focused-translation');
       const scaleX = wrapper.offsetWidth
         ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
         : 1;
-      const updates = [];
 
       translations.forEach(translation => {
         const parent = translation.parentElement;
@@ -259,155 +409,39 @@ export const LyricLineWrapper = React.memo(({
         if (!widestLine) return;
 
         const width = (widestLine.right - widestLine.left) / scaleX;
-        updates.push({
-          translation,
-          parent,
-          width,
-          nextWidth: `${Math.floor(width)}px`,
-          center: (widestLine.left + widestLine.right) / 2,
-          gap: viewMode === 'live'
-            ? parseFloat(getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')) || 0
-            : 0
-        });
+        translation.style.width = `${Math.floor(width)}px`;
+        translation.style.minWidth = '0px';
       });
-
-      return () => {
-        if (cancelled) return;
-        updates.forEach(({ translation, nextWidth }) => {
-          if (translation.style.width !== nextWidth) {
-            translation.style.width = nextWidth;
-          }
-          if (viewMode === 'focused' && translation.style.minWidth !== '0px') {
-            translation.style.minWidth = '0px';
-          }
-        });
-
-        const liveTranslationUpdates = updates.filter(
-          ({ parent }) => !parent.classList.contains('adlib-node')
-        );
-        if (viewMode !== 'live' || liveTranslationUpdates.length === 0) return;
-        scheduleTranslationFinalization(() => {
-          if (cancelled) return null;
-          const finalized = liveTranslationUpdates
-            .filter(({ translation, parent }) => translation.isConnected && parent.isConnected)
-            .map(({ translation, parent, width, center, gap }) => ({
-              translation,
-              parent,
-              width,
-              center,
-              gap,
-              height: translation.offsetHeight,
-              parentLeft: parent.getBoundingClientRect().left,
-              parentClientLeft: parent.clientLeft
-            }));
-
-          return () => finalized.forEach(({
-            translation,
-            parent,
-            width,
-            center,
-            gap,
-            height,
-            parentLeft,
-            parentClientLeft
-          }) => {
-            const nextPadding = `${height + gap}px`;
-            if (parent.style.paddingTop !== nextPadding) {
-              parent.style.paddingTop = nextPadding;
-            }
-
-            const left = (center - parentLeft) / scaleX - parentClientLeft - width / 2;
-            const nextLeft = `${left}px`;
-            if (translation.style.left !== nextLeft) {
-              translation.style.left = nextLeft;
-            }
-          });
-        });
-      };
     };
 
     let cancelled = false;
-    let layoutStarted = false;
     let updateFrame = null;
-    let intersectionObserver = null;
     let resizeObserver = null;
-    const startLayoutTracking = () => {
-      if (cancelled || layoutStarted) return;
-      layoutStarted = true;
-      scheduleTranslationMeasurement(measureTranslationWidths);
-
-      const getTypographySignature = () => {
-        const style = getComputedStyle(wrapper);
-        return [
-          style.fontFamily,
-          style.fontSize,
-          style.fontWeight,
-          style.letterSpacing,
-          style.lineHeight,
-          style.wordSpacing
-        ].join('|');
-      };
-      const observedWidths = new WeakMap();
-      let previousTypography = getTypographySignature();
-      resizeObserver = typeof ResizeObserver === 'undefined'
-        ? null
-        : new ResizeObserver(entries => {
-          let contentWidthChanged = false;
-          entries.forEach(entry => {
-            const width = entry.contentRect.width;
-            const previousWidth = observedWidths.get(entry.target);
-            observedWidths.set(entry.target, width);
-            if (previousWidth === undefined || Math.abs(width - previousWidth) > 0.5) {
-              contentWidthChanged = true;
-            }
-          });
-          const typography = getTypographySignature();
-          const layoutChanged = contentWidthChanged || typography !== previousTypography;
-          previousTypography = typography;
-          if (layoutChanged) scheduleTranslationWidthUpdate();
-        });
-      const layoutInputs = [
-        wrapper,
-        ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
-      ];
-      layoutInputs.forEach(element => {
-        observedWidths.set(element, element.getBoundingClientRect().width);
-        resizeObserver?.observe(element);
-      });
-
-      document.fonts?.ready.then(() => {
-        if (!cancelled) scheduleTranslationWidthUpdate();
-      });
-    };
     const scheduleTranslationWidthUpdate = () => {
       if (updateFrame !== null) return;
       updateFrame = window.requestAnimationFrame(() => {
         updateFrame = null;
-        scheduleTranslationMeasurement(measureTranslationWidths);
+        measureFocusedTranslationWidths();
       });
     };
-
-    if (viewMode === 'live' && typeof IntersectionObserver !== 'undefined') {
-      intersectionObserver = new IntersectionObserver(entries => {
-        if (entries.some(entry => entry.isIntersecting)) {
-          intersectionObserver?.disconnect();
-          startLayoutTracking();
-        }
-      }, {
-        rootMargin: '120px 0px'
-      });
-      intersectionObserver.observe(wrapper);
-    } else {
-      startLayoutTracking();
-    }
+    measureFocusedTranslationWidths();
+    resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleTranslationWidthUpdate);
+    [
+      wrapper,
+      ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
+    ].forEach(element => resizeObserver?.observe(element));
+    document.fonts?.ready.then(() => {
+      if (!cancelled) scheduleTranslationWidthUpdate();
+    });
 
     return () => {
       cancelled = true;
-      intersectionObserver?.disconnect();
       if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
       resizeObserver?.disconnect();
     };
-  }, [renderedContent, viewMode]);
+  }, [lineIndex, onLiveLayoutReady, renderedContent, viewMode]);
 
   return (
     <div

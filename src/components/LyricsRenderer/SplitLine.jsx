@@ -1,19 +1,9 @@
 /* --- src/components/LyricsRenderer/SplitLine.jsx --- */
-import React, { useRef, useLayoutEffect } from 'react';
+import React from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
 import { isRTLLanguage } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
-
-const getTransformTranslateY = element => {
-  const transform = getComputedStyle(element).transform;
-  const matrix = transform.match(/^matrix(3d)?\((.+)\)$/);
-  if (!matrix) return 0;
-
-  const values = matrix[2].split(',').map(Number);
-  const translateY = values[matrix[1] ? 13 : 5];
-  return Number.isFinite(translateY) ? translateY : 0;
-};
 
 const SplitLine = ({
   lineObj,
@@ -30,10 +20,6 @@ const SplitLine = ({
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
-
-  const parentMainRef = useRef(null);
-  const parentPronRef = useRef(null);
-  const adlibRefs = useRef([]);
 
   // Uniform pronunciation block styling (Used for both main parent and adlib blocks)
   const blockPronStyle = {
@@ -105,218 +91,6 @@ const SplitLine = ({
     }).mainJSX
     : alignedMainJSX;
 
-  useLayoutEffect(() => {
-    const readTextBounds = (elements, excludePronunciation = false) => elements.flatMap(element => {
-      if (!element) return [];
-      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-      const bounds = [];
-      let node;
-      while ((node = walker.nextNode())) {
-        if (
-          !node.textContent.trim() ||
-          (excludePronunciation && node.parentElement?.closest('.pronunciation-text'))
-        ) continue;
-        const range = document.createRange();
-        range.selectNodeContents(node);
-        [...range.getClientRects()].forEach(rect => {
-          if (rect.width && rect.height) bounds.push({
-            left: rect.left,
-            right: rect.right,
-            top: rect.top,
-            bottom: rect.bottom
-          });
-        });
-      }
-      return bounds;
-    });
-    const groupTextRows = bounds => bounds.reduce((rows, bound) => {
-      const row = rows.find(candidate => (
-        Math.min(candidate.bottom, bound.bottom) -
-          Math.max(candidate.top, bound.top) >
-        Math.min(candidate.bottom - candidate.top, bound.bottom - bound.top) * 0.5
-      ));
-      if (row) {
-        row.left = Math.min(row.left, bound.left);
-        row.right = Math.max(row.right, bound.right);
-        row.top = Math.min(row.top, bound.top);
-        row.bottom = Math.max(row.bottom, bound.bottom);
-      } else {
-        rows.push({ ...bound });
-      }
-      return rows;
-    }, []);
-    const readElementBounds = element => {
-      if (!element) return [];
-      const rect = element.getBoundingClientRect();
-      return rect.width && rect.height
-        ? [{ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }]
-        : [];
-    };
-
-    const positionAdlibTranslations = () => {
-      const sizeTranslation = (translation, parent, textElements, isAdlib = false) => {
-        if (!translation || !parent) return;
-        const rows = textElements.flatMap(({ element, excludePronunciation }) =>
-          groupTextRows(readTextBounds([element], excludePronunciation))
-        );
-        const widestLine = rows.reduce((widest, row) => (
-          !widest || row.right - row.left > widest.right - widest.left ? row : widest
-        ), null);
-        if (!widestLine) return;
-
-        const scaleX = parent.offsetWidth
-          ? parent.getBoundingClientRect().width / parent.offsetWidth
-          : 1;
-        const width = (widestLine.right - widestLine.left) / scaleX;
-        const nextWidth = `${Math.floor(width)}px`;
-        if (translation.style.width !== nextWidth) {
-          translation.style.width = nextWidth;
-        }
-
-        const parentBounds = parent.getBoundingClientRect();
-        const left = (
-          (widestLine.left + widestLine.right) / 2 - parentBounds.left
-        ) / scaleX - parent.clientLeft - width / 2;
-        const nextLeft = `${left}px`;
-        if (translation.style.left !== nextLeft) {
-          translation.style.left = nextLeft;
-        }
-
-        const gapValue = parseFloat(
-          getComputedStyle(translation).getPropertyValue('--dyn-trans-top-padding')
-        );
-        const gap = Number.isFinite(gapValue) ? gapValue : 0;
-        const nextPadding = `${translation.offsetHeight + gap}px`;
-        if (isAdlib) {
-          if (parent.style.getPropertyValue('--adlib-translation-clearance') !== nextPadding) {
-            parent.style.setProperty('--adlib-translation-clearance', nextPadding);
-          }
-        } else if (parent.style.paddingTop !== nextPadding) {
-          parent.style.paddingTop = nextPadding;
-        }
-      };
-
-      const mainParent = parentMainRef.current;
-      const mainGlyphs = mainParent?.querySelector('.main-lyrics-layer');
-      sizeTranslation(
-        mainParent?.querySelector('.chunk-translation'),
-        mainParent,
-        [
-          { element: mainGlyphs, excludePronunciation: true },
-          { element: parentPronRef.current, excludePronunciation: false }
-        ]
-      );
-      const mainGlyphRows = groupTextRows(readTextBounds([
-        mainGlyphs
-      ], true));
-      const mainGlyphRow = mainGlyphRows.length === 1 ? mainGlyphRows[0] : null;
-      const mainObstacles = [
-        ...readElementBounds(mainParent?.querySelector('.chunk-translation')),
-        ...readTextBounds([mainGlyphs]),
-        ...readElementBounds(parentPronRef.current)
-      ];
-      const minimumGap = 1 / Math.max(window.devicePixelRatio || 1, 1);
-
-      adlibRefs.current.forEach(ref => {
-        if (!ref) return;
-        const translation = ref.querySelector('.chunk-translation');
-        const adlibGlyphs = ref.querySelector('.primary-text');
-        sizeTranslation(
-          translation,
-          ref,
-          [
-            { element: adlibGlyphs, excludePronunciation: true },
-            { element: ref.querySelector('.pronunciation-text'), excludePronunciation: false }
-          ],
-          true
-        );
-
-        const translationBounds = translation?.getBoundingClientRect();
-        if (!focusedMainLyrics || !mainGlyphRow || !adlibGlyphs) {
-          adlibGlyphs?.style.removeProperty('--live-adlib-glyph-offset-y');
-        } else {
-          const previousOffset = parseFloat(
-            adlibGlyphs.style.getPropertyValue('--live-adlib-glyph-offset-y')
-          ) || 0;
-          const adlibTransformY = getTransformTranslateY(ref);
-          const glyphBounds = readTextBounds([adlibGlyphs], true).map(bound => ({
-            ...bound,
-            top: bound.top - previousOffset - adlibTransformY,
-            bottom: bound.bottom - previousOffset - adlibTransformY
-          }));
-          const glyphRows = groupTextRows(glyphBounds);
-          const glyphRow = glyphRows.length === 1 ? glyphRows[0] : null;
-          const isBesideMainGlyph = glyphRow && (
-            Math.min(mainGlyphRow.bottom, glyphRow.bottom) -
-              Math.max(mainGlyphRow.top, glyphRow.top) >
-            Math.min(
-              mainGlyphRow.bottom - mainGlyphRow.top,
-              glyphRow.bottom - glyphRow.top
-            ) * 0.5
-          );
-          if (isBesideMainGlyph) {
-            const offset = mainGlyphRow.bottom - glyphRow.bottom;
-            adlibGlyphs.style.setProperty(
-              '--live-adlib-glyph-offset-y',
-              `${offset}px`
-            );
-          } else {
-            adlibGlyphs.style.removeProperty('--live-adlib-glyph-offset-y');
-          }
-        }
-
-        if (!translationBounds?.width || !translationBounds.height) {
-          ref.style.removeProperty('--adlib-clearance-offset');
-          return;
-        }
-
-        const appliedOffset = parseFloat(
-          ref.style.getPropertyValue('--adlib-clearance-offset')
-        ) || 0;
-        const unshiftedTop = translationBounds.top - appliedOffset;
-        const translationBoxHeight = translationBounds.height;
-        const unshiftedBottom = unshiftedTop + translationBoxHeight;
-        const requiredOffset = mainObstacles.reduce((offset, obstacle) => {
-          const overlapsHorizontally =
-            translationBounds.left < obstacle.right &&
-            translationBounds.right > obstacle.left;
-          const touchesOrOverlapsVertically =
-            unshiftedTop <= obstacle.bottom &&
-            unshiftedBottom >= obstacle.top;
-          if (!overlapsHorizontally || !touchesOrOverlapsVertically) return offset;
-          return Math.max(offset, obstacle.bottom + minimumGap - unshiftedTop);
-        }, 0);
-        const nextOffset = `${Math.max(0, requiredOffset)}px`;
-        if (ref.style.getPropertyValue('--adlib-clearance-offset') !== nextOffset) {
-          ref.style.setProperty('--adlib-clearance-offset', nextOffset);
-        }
-      });
-    };
-
-    positionAdlibTranslations();
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(positionAdlibTranslations);
-    [
-      parentMainRef.current,
-      parentPronRef.current,
-      ...adlibRefs.current,
-      ...adlibRefs.current.map(ref => ref?.querySelector('.chunk-translation'))
-    ].filter(Boolean).forEach(element => resizeObserver?.observe(element));
-
-    const mutationObserver = typeof MutationObserver === 'undefined'
-      ? null
-      : new MutationObserver(positionAdlibTranslations);
-    const lineWrapper = parentMainRef.current?.closest('.lyric-line-wrapper');
-    [lineWrapper, ...adlibRefs.current].filter(Boolean).forEach(element => {
-      mutationObserver?.observe(element, { attributes: true, attributeFilter: ['class'] });
-    });
-    return () => {
-      resizeObserver?.disconnect();
-      mutationObserver?.disconnect();
-    };
-  }, [savedNode?.adlibs, mainPronunciationJSX, mainTranslationJSX, focusedMainLyrics, isPlayingCurrentSong]);
-
   const renderedAdlibElements = savedNode?.adlibs?.map((adlib, bIdx) => {
     const start = adlib.start;
     const end = adlib.end !== null ? adlib.end : (start !== null ? start + 5 : null);
@@ -352,8 +126,7 @@ const SplitLine = ({
     return (
       <React.Fragment key={`simple-adlib-${bIdx}`}>
         <span
-          ref={el => adlibRefs.current[bIdx] = el}
-          className={`adlib-container adlib-node ${initialClass}`}
+          className={`adlib-container adlib-node ${initialClass}${adlibTransJSX || adlibPronJSX ? ' has-secondary' : ''}`}
           data-start={start !== null ? start : 'NaN'}
           data-end={end !== null ? end : 'NaN'}
           style={{
@@ -363,22 +136,22 @@ const SplitLine = ({
             alignItems: 'center',
             verticalAlign: 'middle',
             position: 'relative',
+            width: 'fit-content',
             maxWidth: '100%',
+            minWidth: 0,
             boxSizing: 'border-box',
-            marginTop: 'var(--adlib-clearance-offset, 0px)',
             padding: 0,
-            paddingTop: 'var(--adlib-translation-clearance, 0px)',
             marginInlineStart: '0.25em'
           }}
         >
-          {adlibTransJSX ? (
-            <span className="chunk-translation live-translation" dir="ltr">
-              {adlibTransJSX}
-            </span>
-          ) : null}
           <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto">
             {adlibMainJSX}
           </span>
+          {adlibTransJSX ? (
+            <span className="chunk-translation live-translation adlib-live-translation" dir="ltr">
+              {adlibTransJSX}
+            </span>
+          ) : null}
           {adlibPronJSX ? (
             <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
               {adlibPronJSX}
@@ -391,8 +164,13 @@ const SplitLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+      {mainTranslationJSX ? (
+        <span className="chunk-translation live-translation main-live-translation" dir="ltr">
+          {mainTranslationJSX}
+        </span>
+      ) : null}
       <span
-          className="primary-text"
+          className={`primary-text${focusedMainLyrics ? ' live-split-line' : ''}`}
           style={{
             display: 'inline-flex',
             flexDirection: 'row',
@@ -411,7 +189,6 @@ const SplitLine = ({
       >
         <span
             className="core-chunks"
-            ref={parentMainRef}
             style={{
               position: 'relative',
               display: 'inline-flex',
@@ -420,18 +197,13 @@ const SplitLine = ({
               alignItems: 'center',
               verticalAlign: 'middle',
               margin: '0',
-              width: 'auto',
+              width: 'fit-content',
               maxWidth: '100%',
+              minWidth: 0,
               textAlign: 'left',
               boxSizing: 'border-box'
             }}
         >
-          {mainTranslationJSX ? (
-            <span className="chunk-translation live-translation" dir="ltr">
-              {mainTranslationJSX}
-            </span>
-          ) : null}
-          
           <span
               className="main-lyrics-layer"
               style={{
@@ -452,7 +224,6 @@ const SplitLine = ({
           </span>
           {mainPronunciationJSX && (
             <span
-                ref={parentPronRef}
                 className="pronunciation-text"
                 style={blockPronStyle}
                 dir="ltr"

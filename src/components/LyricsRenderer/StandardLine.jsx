@@ -79,6 +79,24 @@ const StandardLine = ({
       whiteSpace: 'normal',
       textWrap: 'balance'
     }
+    : focusedMainLyrics
+    ? {
+      position: 'relative',
+      top: 'auto',
+      left: 'auto',
+      transform: 'translate(var(--live-translation-offset-x, 0px), var(--live-translation-offset-y, 0px))',
+      display: 'block',
+      margin: '0 0 var(--dyn-trans-top-padding, 8px)',
+      width: 'max-content',
+      minWidth: 0,
+      maxWidth: '100%',
+      textAlign: 'center',
+      wordBreak: 'normal',
+      overflowWrap: 'normal',
+      whiteSpace: 'normal',
+      textWrap: 'normal',
+      boxSizing: 'border-box'
+    }
     : {
       position: 'absolute',
       top: 0,
@@ -109,6 +127,36 @@ const StandardLine = ({
     wordSpacing: '4px',
     lineHeight: '1.4'
   };
+  const translationElement = translationJSX ? (
+    <span
+      className={`chunk-translation ${transClass}${focusedMainLyrics ? ' main-live-translation' : ''}`}
+      dir="ltr"
+      style={relativeTransStyle}
+    >
+      {translationJSX}
+    </span>
+  ) : null;
+  const mainLyricsElement = (
+    <span
+      className="main-lyrics-layer"
+      style={{
+        display: 'inline',
+        width: 'auto',
+        maxWidth: '100%',
+        textAlign: lineTextAlign,
+        textWrap: isFocused ? 'balance' : 'normal',
+        boxSizing: 'border-box'
+      }}
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      {useTranslationFormatting
+        ? renderTranslationOriginalText(lineObj, masterPalette, {
+          savedNode,
+          excludeAdlibs
+        })
+        : focusedMainJSX}
+    </span>
+  );
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: isFocused ? 'center' : 'flex-start', textAlign: lineTextAlign, width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
@@ -126,6 +174,7 @@ const StandardLine = ({
         textWrap: isFocused ? 'balance' : 'normal', 
         boxSizing: 'border-box' 
       }}>
+        {focusedMainLyrics && translationElement}
         <span
           className="core-chunks"
           style={{
@@ -143,31 +192,12 @@ const StandardLine = ({
             boxSizing: 'border-box'
           }}
         >
-          {translationJSX ? (
-            <span className={`chunk-translation ${transClass}`} dir="ltr" style={relativeTransStyle}>
-              {translationJSX}
-            </span>
-          ) : null}
-
-          <span
-            className="main-lyrics-layer"
-            style={{
-              display: 'inline', 
-              width: 'auto',
-              maxWidth: '100%',
-              textAlign: lineTextAlign,
-              textWrap: isFocused ? 'balance' : 'normal',
-              boxSizing: 'border-box'
-            }}
-            dir={isRTL ? 'rtl' : 'ltr'} 
-          >
-            {useTranslationFormatting
-              ? renderTranslationOriginalText(lineObj, masterPalette, {
-                savedNode,
-                excludeAdlibs
-              })
-              : focusedMainJSX}
-          </span>
+          {!focusedMainLyrics && (
+            <>
+              {translationElement}
+            </>
+          )}
+          {mainLyricsElement}
 
           {pronunciationJSX && (
             <span className="pronunciation-text" style={blockPronStyle} dir="ltr">
