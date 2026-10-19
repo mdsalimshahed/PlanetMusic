@@ -215,6 +215,14 @@ rt.pronunciation-text,
   translate: 0 var(--live-adlib-glyph-offset-y, 0px);
 }
 
+.preview-line .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main {
+  position: absolute !important;
+  left: var(--live-adlib-inline-x);
+  top: var(--live-adlib-inline-y);
+  margin-inline-start: 0 !important;
+  translate: none;
+}
+
 .preview-line .live-split-line > .adlib-node.is-adlib-wrapped.has-secondary {
   flex: 0 0 100%;
   align-self: flex-start;
