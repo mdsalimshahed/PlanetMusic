@@ -340,6 +340,10 @@ export const LyricLineWrapper = React.memo(({
         }
         coreChunks?.classList.remove('is-main-shifted-for-pronounced-foreign-adlib');
         coreChunks?.style.removeProperty('--live-main-foreign-adlib-offset-y');
+        coreChunks?.classList.remove('is-main-shifted-for-foreign-adlib-baseline');
+        coreChunks?.style.removeProperty('--live-main-foreign-adlib-baseline-offset-y');
+        wrapper.classList.remove('has-main-shift-for-foreign-adlib');
+        wrapper.style.removeProperty('--live-main-foreign-adlib-following-row-offset-y');
         splitLine?.classList.remove('is-main-shifted-for-pronounced-foreign-adlib');
         splitLine?.style.removeProperty('--live-main-foreign-adlib-offset-y');
         splitLine?.style.removeProperty('--live-adlib-neighbor-clearance');
@@ -440,6 +444,8 @@ export const LyricLineWrapper = React.memo(({
           }
         }
         const mainIsForeignOnly = mainHasForeignText && !mainHasNonForeignText;
+        const mainIsNonForeignOnly = !mainGlyphs?.querySelector('.pronunciation-text') &&
+          mainHasNonForeignText;
         const adlibMeasurements = Array.from(adlibNodes, adlib => {
           return {
             adlib,
@@ -662,6 +668,7 @@ export const LyricLineWrapper = React.memo(({
           : undefined;
         rowBottom = mainBoxBounds?.bottom;
         rowBaseline = mainGlyphRows[mainGlyphRows.length - 1]?.bottom;
+        let shiftMainForForeignAdlibBaseline = false;
         adlibMeasurements.forEach(({ adlib }) => {
           if (
             !splitLineBounds ||
@@ -704,6 +711,13 @@ export const LyricLineWrapper = React.memo(({
               mainIsForeignOnly &&
               !adlibHasPronunciation
           );
+          if (
+            fitsBesidePreviousBox &&
+            mainIsNonForeignOnly &&
+            adlibHasPronunciation
+          ) {
+            shiftMainForForeignAdlibBaseline = true;
+          }
           if (adlibMainBounds) {
             rowBaseline = adlibMainBounds.bottom + targetTop - adlibBoxBounds.top;
           }
@@ -867,6 +881,18 @@ export const LyricLineWrapper = React.memo(({
           splitLine?.style.setProperty(
             '--live-adlib-neighbor-clearance',
             `${neighborBottomClearance / window.innerHeight * 100}vh`
+          );
+        }
+        if (shiftMainForForeignAdlibBaseline) {
+          coreChunks?.classList.add('is-main-shifted-for-foreign-adlib-baseline');
+          coreChunks?.style.setProperty(
+            '--live-main-foreign-adlib-baseline-offset-y',
+            'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)'
+          );
+          wrapper.classList.add('has-main-shift-for-foreign-adlib');
+          wrapper.style.setProperty(
+            '--live-main-foreign-adlib-following-row-offset-y',
+            'calc((var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2)'
           );
         }
 

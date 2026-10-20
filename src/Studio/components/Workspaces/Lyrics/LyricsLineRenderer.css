@@ -223,6 +223,14 @@ rt.pronunciation-text,
   translate: 0 var(--live-main-foreign-adlib-offset-y, 0vh);
 }
 
+.preview-line .live-split-line > .core-chunks.is-main-shifted-for-foreign-adlib-baseline {
+  translate: 0 var(--live-main-foreign-adlib-baseline-offset-y);
+}
+
+.preview-line.has-main-shift-for-foreign-adlib {
+  margin-block-end: var(--live-main-foreign-adlib-following-row-offset-y);
+}
+
 .preview-line .live-split-line {
   padding-block-end: calc(
     var(--live-main-foreign-adlib-offset-y, 0vh) +
