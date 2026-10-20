@@ -240,7 +240,9 @@ const SplitLine = ({
           )}
         </span>
         
-        {renderedAdlibElements}
+        {focusedMainLyrics && autoLiveLayout ? (
+          <span className="live-adlib-group">{renderedAdlibElements}</span>
+        ) : renderedAdlibElements}
       </span>
     </div>
   );

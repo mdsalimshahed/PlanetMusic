@@ -16,8 +16,8 @@
   row-gap: 0;
 }
 
-.live-scroll-preview .live-split-line > .adlib-node,
-.live-scroll-preview .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main {
+.live-scroll-preview .live-split-line .adlib-node,
+.live-scroll-preview .live-split-line .adlib-node.is-adlib-inline-after-wrapped-main {
   position: relative !important;
   inset: auto !important;
   flex: 0 1 auto;
@@ -26,7 +26,7 @@
   translate: none !important;
 }
 
-.live-scroll-preview .live-split-line > .adlib-node.is-adlib-wrapped {
+.live-scroll-preview .live-split-line .adlib-node.is-adlib-wrapped {
   flex-basis: 100%;
   margin: 0 !important;
 }

@@ -448,9 +448,12 @@ export const LyricLineWrapper = React.memo(({
       ].filter(Boolean);
       const measureLiveTranslations = () => {
         if (cancelled || !wrapper.isConnected) return;
-        const adlibNodes = wrapper.querySelectorAll('.live-split-line > .adlib-node');
+        const adlibNodes = wrapper.querySelectorAll(
+          '.live-split-line > .live-adlib-group > .adlib-node, .live-split-line > .adlib-node'
+        );
         const coreChunks = wrapper.querySelector('.core-chunks');
         const splitLine = wrapper.querySelector('.live-split-line');
+        const adlibGroup = wrapper.querySelector('.live-adlib-group');
         const mainTranslation = wrapper.querySelector('.main-live-translation');
 
         if (adlibNodes.length === 0 && !mainTranslation) return;
@@ -465,6 +468,7 @@ export const LyricLineWrapper = React.memo(({
         splitLine?.style.removeProperty('--live-adlib-neighbor-clearance');
         wrapper.classList.remove('has-inline-adlib-neighbor-clearance');
         wrapper.style.removeProperty('--live-adlib-neighbor-clearance-start');
+        adlibGroup?.classList.remove('has-adlib-row');
         adlibNodes.forEach(adlib => {
           adlib.classList.remove('is-adlib-wrapped');
           adlib.classList.remove('is-english-adlib-on-foreign-line');
@@ -666,6 +670,8 @@ export const LyricLineWrapper = React.memo(({
           const fits = Boolean(
             mainBounds &&
             !adlib.classList.contains('is-adlib-wrapped') &&
+            adlibBounds.top < mainBounds.bottom - 1 &&
+            adlibBounds.bottom > mainBounds.top + 1 &&
             (isRTL
               ? adlibBounds.right <= mainBounds.left + 1
               : adlibBounds.left >= mainBounds.right - 1)
@@ -673,6 +679,13 @@ export const LyricLineWrapper = React.memo(({
           inlineBesideMainByAdlib.set(adlib, fits);
           return fits;
         };
+        if (
+          hasMainLyrics &&
+          adlibMeasurements.some(({ adlib }) => !fitsBesideMain(adlib))
+        ) {
+          adlibGroup?.classList.add('has-adlib-row');
+          inlineBesideMainByAdlib.clear();
+        }
         adlibMeasurements.forEach(({ adlib }) => {
           const primaryText = adlib.querySelector(':scope > .primary-text');
           const adlibRows = getGlyphRows(primaryText);

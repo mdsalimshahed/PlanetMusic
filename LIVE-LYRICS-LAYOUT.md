@@ -221,6 +221,9 @@ pronunciation, before deciding placement.
   correct the ad-lib's vertical offset so it aligns to the last main-glyph row;
   pronunciation and translation rows are not used as that baseline. The inline
   clearance is `min(0.72vw, 1.5vh)`.
+- If any ad-lib wraps below the main text, naturally or through collision
+  handling, all ad-libs flow together on that row. They wrap only when their
+  combined width requires it; later ad-libs are not left beside the main lyric.
 - An ad-lib's secondary translation is sized to the widest row of its primary
   glyphs. It stays inside the ad-lib container's normal flow so the containing
   lyric line includes its height. If that translation would overlap a main
