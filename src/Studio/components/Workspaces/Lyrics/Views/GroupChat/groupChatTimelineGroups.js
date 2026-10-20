@@ -109,8 +109,17 @@ export const groupConsecutiveMessages = events => {
     const continuesAdlibChain = line.isAdlib &&
       previousLine?.isAdlib &&
       previousGroup.artistsKey === artistsKey;
+    const followsSameArtistAdlib = !line.isAdlib &&
+      previousLine?.isAdlib &&
+      previousGroup.artistsKey === artistsKey;
+    const changesArtist = previousGroup &&
+      previousGroup.artistsKey !== artistsKey;
     const side = continuesAdlibChain
       ? previousGroup.side
+      : followsSameArtistAdlib
+        ? (previousGroup.side === 'left' ? 'right' : 'left')
+        : changesArtist
+          ? (previousGroup.side === 'left' ? 'right' : 'left')
       : line.isAdlib
         ? ((sourceMainSide || previousGroup?.side || 'left') === 'left' ? 'right' : 'left')
         : mainSideByLineIndex.get(line.index) || 'left';

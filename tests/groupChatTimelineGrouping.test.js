@@ -218,3 +218,81 @@ test('chains consecutive ad-libs from matching artist clusters', () => {
   ]);
   assert.deepEqual(adlibChain.artists, ['Echo', 'Harmony']);
 });
+
+test('places a following ad-lib artist lyric on the opposite side', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'Ari lead',
+        segments: [{ text: 'Ari lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Echo',
+        text: 'Echo answer',
+        segments: [{ text: 'Echo answer', artists: ['Echo'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'Echo ad-lib',
+          start: 2,
+          end: 2.5,
+          segments: [{ text: 'Echo ad-lib', artists: ['Echo'] }]
+        }]
+      },
+      { start: 3, end: 4 }
+    ],
+    'Fallback'
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+  const followingLine = chat.lines.find(line => line.text === 'Echo answer');
+
+  assert.ok(adlib);
+  assert.ok(followingLine);
+  assert.deepEqual(adlib.artists, ['Echo']);
+  assert.deepEqual(followingLine.artists, ['Echo']);
+  assert.notEqual(adlib.chatSide, followingLine.chatSide);
+});
+
+test('switches sides when an ad-lib changes the consecutive artist', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'Ari lead',
+        segments: [{ text: 'Ari lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Jisoo',
+        text: 'Jisoo reply',
+        segments: [{ text: 'Jisoo reply', artists: ['Jisoo'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'Lisa ad-lib',
+          start: 2,
+          end: 2.5,
+          segments: [{ text: 'Lisa ad-lib', artists: ['Lisa'] }]
+        }]
+      },
+      { start: 3, end: 4 }
+    ],
+    'Fallback'
+  );
+  const adlib = chat.lines.find(line => line.isAdlib);
+  const followingLine = chat.lines.find(line => line.text === 'Jisoo reply');
+
+  assert.ok(adlib);
+  assert.ok(followingLine);
+  assert.notEqual(adlib.chatSide, followingLine.chatSide);
+});
