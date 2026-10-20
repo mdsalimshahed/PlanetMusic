@@ -51,6 +51,7 @@ const LiveLyricsView = ({
 }) => {
   const containerRef = useRef(null);
   const activeLineResizeObserverRef = useRef(null);
+  const revealedLinesRef = useRef(new WeakSet());
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -196,6 +197,69 @@ const LiveLyricsView = ({
       activeLineResizeObserverRef.current = null;
     };
   }, [liveParsedLyrics]);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container || selectedSong?.trackId == null) return undefined;
+
+    const containerBounds = container.getBoundingClientRect();
+    const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
+    const visibleLines = mountedLines.filter(line => {
+      const bounds = line.getBoundingClientRect();
+      return bounds.height > 0 &&
+        bounds.bottom > containerBounds.top &&
+        bounds.top < containerBounds.bottom &&
+        bounds.bottom > 0 &&
+        bounds.top < window.innerHeight;
+    });
+    if (visibleLines.length === 0) return undefined;
+
+    const firstVisibleLineIndex = mountedLines.indexOf(visibleLines[0]);
+    const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
+    const revealLines = mountedLines
+      .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
+      .filter(line => !revealedLinesRef.current.has(line));
+    if (revealLines.length === 0) return undefined;
+    if (
+      settings?.disableAnimations ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      revealLines.forEach(line => revealedLinesRef.current.add(line));
+      return undefined;
+    }
+
+    revealLines.forEach(line => line.classList.add('is-preparing-reveal'));
+    let revealFrame = null;
+    let cancelled = false;
+    revealFrame = window.requestAnimationFrame(() => {
+      revealFrame = null;
+      if (cancelled) return;
+
+      revealLines.forEach(line => {
+        if (!line.isConnected) return;
+        revealedLinesRef.current.add(line);
+        const lineIndex = mountedLines.indexOf(line);
+        const staggerIndex = Math.max(0, lineIndex - firstVisibleLineIndex);
+        line.style.setProperty('--initial-reveal-delay', `${staggerIndex * 55}ms`);
+        const finishReveal = event => {
+          if (event.target !== line) return;
+          line.classList.add('has-revealed');
+          line.classList.remove('initial-reveal');
+          line.style.removeProperty('--initial-reveal-delay');
+          line.removeEventListener('animationend', finishReveal);
+        };
+        line.addEventListener('animationend', finishReveal);
+        line.classList.remove('is-preparing-reveal');
+        line.classList.add('initial-reveal');
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
+      revealLines.forEach(line => line.classList.remove('is-preparing-reveal'));
+    };
+  }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations]);
 
   useEffect(() => {
     return () => {

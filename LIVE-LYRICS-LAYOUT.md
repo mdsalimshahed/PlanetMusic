@@ -138,6 +138,19 @@ override the minimum.
 - The active line's main lyrics and primary ad-lib text receive a soft dark
   drop shadow.
 
+### Entrance reveal
+
+- When a song is opened, currently visible lyric lines and up to three following
+  mounted lines receive a one-time staggered CSS keyframe reveal.
+- Each line fades in while moving `18px` from the right to its resting position
+  over `260ms`; lines start `55ms` apart. Active lines finish at full opacity
+  and scale `1`, while inactive lines finish at opacity `0.4` and scale `0.95`.
+- `will-change: transform, opacity` is applied only while a line is being
+  prepared, revealed, or retained as revealed, hinting that the browser may
+  optimize those properties for animation.
+- The reveal is skipped when Live animations are disabled or reduced motion is
+  requested. Each mounted line is revealed at most once.
+
 ## 4. Playback-driven scrolling
 
 - When the active line changes, the view scrolls it toward the vertical center
