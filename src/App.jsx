@@ -362,7 +362,7 @@ const App = () => {
   }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
   // Routing Handlers
-  const handleSetSelectedSong = useCallback((song, options = {}) => {
+  const handleSetSelectedSong = useCallback(song => {
     const { selectedSong: currentSelectedSong, searchQuery: currentSearchQuery, location: currentLocation, navigate: currentNavigate } = songSelectionContextRef.current;
     setSongModalReadyTrackId(null);
     if (song) {
@@ -372,8 +372,7 @@ const App = () => {
       const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
       currentNavigate(`/song/${song.trackId}/live${qParam}`, {
         state: {
-          returnPath: '/vault',
-          skipLiveEntrance: options.skipLiveEntrance === true
+          returnPath: '/vault'
         }
       });
     } else {

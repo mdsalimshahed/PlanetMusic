@@ -10,9 +10,9 @@ import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
-    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, isSongModalReady, masterPalette, currentTrack,
+    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
-    showGroupChatDebug, shouldAnimateLiveEntrance, onLiveEntranceAnimationComplete
+    showGroupChatDebug
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const [activeSource, setActiveSource] = useState(() => {
@@ -59,10 +59,7 @@ const LyricsDisplay = ({
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}
-          isSongModalReady={isSongModalReady}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
-          shouldAnimateEntrance={shouldAnimateLiveEntrance}
-          onEntranceAnimationComplete={onLiveEntranceAnimationComplete}
         />
       ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView

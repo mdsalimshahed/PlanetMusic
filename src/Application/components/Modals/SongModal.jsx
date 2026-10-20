@@ -181,10 +181,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     setLyricsViewMode: (val) => {
         displayProps.setLyricsViewMode(val);
         navigate(buildUrl({ viewMode: val, debug: false }), {
-          state: {
-            ...location.state,
-            skipLiveEntrance: val === 'live' && urlViewMode !== 'live'
-          }
+          state: location.state
         });
     },
     
@@ -245,9 +242,6 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
             <div id="song-modal-player-slot" className="song-modal-player-slot" />
             <ModalRight 
               {...sharedProps} 
-              shouldAnimateLiveEntrance={
-                urlViewMode === 'live' && !location.state?.skipLiveEntrance
-              }
               activeLineRef={syncProps.activeLineRef}
               activePreviewRef={displayProps.activePreviewRef}
             />

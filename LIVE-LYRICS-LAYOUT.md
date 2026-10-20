@@ -14,14 +14,13 @@ the label.
 - `src/Studio/components/Workspaces/Lyrics/LyricsDisplay.jsx` selects Live mode
   when synced data is available and `lyricsViewMode === 'live'`.
 - `src/Studio/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx` owns the
-  scroll region, playback-time tracking, active-line centering, layout readiness,
-  and optional entrance reveal. Its CSS grid places intact lyric-line wrappers
-  in source order.
+  scroll region, playback-time tracking, and active-line centering. Its CSS grid
+  places intact lyric-line wrappers in source order.
 - `src/Studio/components/Workspaces/Lyrics/Views/LiveLyricsView.css` defines the
-  scroll region, lyric-line typography, active/inactive states, and motion.
+  scroll region, lyric-line typography, active/inactive states, and ad-lib
+  motion.
 - `src/Studio/components/Workspaces/Lyrics/LyricsLineRenderer.jsx` measures and
-  positions translated text and split ad-libs, guards against collisions, and
-  caches measured layouts.
+  positions translated text and split ad-libs and guards against collisions.
 - `src/Studio/components/Workspaces/Lyrics/LyricsLineRenderer.css` contains
   Live-specific translation, transliteration, and split-ad-lib layout rules.
 - `src/components/LyricsRenderer/StandardLine.jsx` and
@@ -72,10 +71,7 @@ height:
   Hiding it does not disable scrolling.
 - The view and related lyrics containers use `position: relative` and
   `z-index: 10` from the shared lyrics-display stylesheet.
-- While the layout is pending, the region has `opacity: 0 !important` and
-  `pointer-events: none`; it is also marked `aria-hidden`. It becomes available
-  only after the required layout measurements finish and the song modal is
-  ready.
+- Lyric lines remain visible while layout measurements run.
 
 ### Space between lines
 
@@ -138,14 +134,11 @@ override the minimum.
   opaque.
 - Opacity transitions take `0.5s`; scale transitions take `0.18s` with
   ease-out timing.
-- The transform origin is the left center. Lines use backface-visibility
-  safeguards for the transformed rendering.
-- The active line's main lyrics and primary ad-lib text are prepared for
-  transform/opacity/filter changes and receive a soft dark drop shadow.
-- Entrance reveals use a 260ms animation: lines enter from 18px to the right at
-  scale `0.95`; an already active line ends at scale `1` and full opacity.
+- The transform origin is the left center.
+- The active line's main lyrics and primary ad-lib text receive a soft dark
+  drop shadow.
 
-## 4. Playback-driven scrolling and readiness
+## 4. Playback-driven scrolling
 
 - When the active line changes, the view scrolls it toward the vertical center
   of the visible lyrics region. Initial centering is also requested when
@@ -156,17 +149,7 @@ override the minimum.
   scrollable content bounds.
 - When reduced motion is requested by the operating system, centering assigns
   `scrollTop` immediately. Otherwise, it uses smooth scrolling.
-- Layout readiness is tracked per rendered line. When playing the selected
-  song, every line must finish its layout measurement before the view is
-  revealed. When not playing, the initially visible lines and their immediate
-  neighbors (or all lines, if necessary) are sufficient.
-- If an entrance reveal was requested, it waits for the layout and any pending
-  centering to finish. Visible lines are briefly hidden during preparation and
-  then revealed in order, staggered by `55ms` per line. A fallback completes the
-  reveal if animation events do not arrive.
-- The entrance reveal and active-ad-lib entrance animations are disabled under
-  `prefers-reduced-motion: reduce`. In that case, the entrance completion
-  callback is still notified.
+- Layout measurements do not gate list visibility or active-line centering.
 
 ## 5. Translation placement and appearance
 
@@ -258,30 +241,19 @@ pronunciation, before deciding placement.
   collision decisions; dynamic collision clearances are passed to CSS as
   custom properties, and CSS applies the resulting row wrapping and spacing.
 - Active ad-libs animate upward from `12px` and fade in over `320ms`. The
-  animation applies only after layout is no longer pending and is removed for
-  reduced-motion preferences.
+  animation is removed for reduced-motion preferences.
 
-## 8. Layout measurement, resizing, and caching
+## 8. Layout measurement and resizing
 
 - The browser's grid layout places intact line containers and wraps their
   content from the current font and column width. DOM text ranges are used only
   for translation sizing and the documented ad-lib collision decisions, not to
   calculate line-container positions.
-- Measurements are queued instead of synchronously repeated for every change.
-  Resize observers remeasure when a line's width changes by at least `0.5px`.
-- Font loading and font changes invalidate or refresh measurements. The Live
-  view also observes modal readiness and incorporates viewport dimensions and
-  relevant typography settings into its layout-cache signature.
-- Cached line layout is associated with the line data, sync record, line index,
-  palette/layout signature, and current rendered measurements. A stale or
-  mismatched cache is not reused.
-- Cached measurements are invalidated when observed width or font metrics
-  change. The signature also changes with track, lyrics/sync data, palette,
-  viewport dimensions, live font size, line gap, translation spacing,
-  transliteration size/spacing, and modal split ratio.
-- While a line is being measured, previous computed layout classes and inline
-  offsets are cleared first, so a resize or setting change is recomputed from
-  the unadjusted line structure.
+- Live layout measurements run directly and are repeated when line width
+  changes by at least `0.5px` or after fonts finish loading.
+- Live mode recomputes its measured layout instead of restoring cached
+  measurements. Previous computed layout classes and inline offsets are
+  cleared before remeasurement.
 
 ## 9. Settings reference
 
@@ -297,7 +269,7 @@ pronunciation, before deciding placement.
 | `transliterationColor` | Pronunciation text color | Fallback `#ffffff` |
 | `transliterationOpacity` | Pronunciation transparency | Fallback `0.8` |
 | `transliterationBottomPadding` | Split-line pronunciation spacing and baseline clearance | Slider labels `vh`; implementation supplies `px`; app fallback `4px` |
-| `modalSplitRatio` | Indirectly changes the available lyrics column width; included in layout-cache signature | Slider `20`–`80`; saved default `50` |
+| `modalSplitRatio` | Indirectly changes the available lyrics column width | Slider `20`–`80`; saved default `50` |
 
 ## 10. Scope and known implementation distinctions
 

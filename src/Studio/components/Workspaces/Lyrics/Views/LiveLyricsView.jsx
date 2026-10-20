@@ -1,23 +1,9 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import { buildTimedLineData, findActiveLineIndex, getCenteredScrollTop } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
-
-const liveLayoutCacheIdentities = new WeakMap();
-let nextLiveLayoutCacheIdentity = 0;
-
-const getLiveLayoutCacheIdentity = value => {
-  if (value === null || (typeof value !== 'object' && typeof value !== 'function')) {
-    return String(value);
-  }
-  if (!liveLayoutCacheIdentities.has(value)) {
-    nextLiveLayoutCacheIdentity++;
-    liveLayoutCacheIdentities.set(value, nextLiveLayoutCacheIdentity);
-  }
-  return liveLayoutCacheIdentities.get(value);
-};
 
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
@@ -40,10 +26,7 @@ const LiveLyricsView = ({
   handleLineClick,
   settings,
   currentTrack,
-  isSongModalReady = true,
-  lyricsPlaybackOffsetSeconds = 0,
-  shouldAnimateEntrance = false,
-  onEntranceAnimationComplete
+  lyricsPlaybackOffsetSeconds = 0
 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
@@ -55,38 +38,10 @@ const LiveLyricsView = ({
     const pendingCenterTargetRef = useRef(null);
     const activeLineIndexRef = useRef(-1);
     const needsInitialCenterRef = useRef(true);
-    const layoutReadyRef = useRef(false);
     const previousSelectedTrackIdRef = useRef(
       selectedSong?.trackId == null ? null : String(selectedSong.trackId)
     );
     const syncList = selectedSong?.syncData;
-  const [readyLayoutSource, setReadyLayoutSource] = useState(null);
-  const layoutSource = useMemo(() => ({
-    lyrics: liveParsedLyrics,
-    syncData: syncList,
-    readyLines: new Set(),
-    initialLines: new Set()
-  }), [liveParsedLyrics, syncList]);
-  const liveLayoutCacheSignature = [
-    selectedSong?.trackId,
-    getLiveLayoutCacheIdentity(liveParsedLyrics),
-    getLiveLayoutCacheIdentity(syncList),
-    getLiveLayoutCacheIdentity(masterPalette),
-    window.innerWidth,
-    window.innerHeight,
-    settings?.liveSyncFontSize,
-    settings?.liveSyncLineGap,
-    settings?.translationTopPadding,
-    settings?.transliterationFontSize,
-    settings?.transliterationBottomPadding,
-    settings?.modalSplitRatio
-  ].join('|');
-  const allLinesLayoutReady = layoutSource.readyLines.size >= liveParsedLyrics.length;
-  const isLayoutReady = isSongModalReady &&
-    (liveParsedLyrics.length === 0 || (
-      readyLayoutSource === layoutSource &&
-      (!isPlayingCurrentSong || allLinesLayoutReady)
-    ));
       const nextStarts = useMemo(() => {
         const syncData = syncList || [];
         const result = Array(syncData.length).fill('NaN');
@@ -131,22 +86,6 @@ const LiveLyricsView = ({
     needsInitialCenterRef.current = false;
   }, []);
 
-  const reportLineLayoutReady = useCallback(lineIndex => {
-    if (layoutSource.readyLines.has(lineIndex)) return;
-    layoutSource.readyLines.add(lineIndex);
-    const allLinesReady = layoutSource.readyLines.size >= layoutSource.lyrics.length;
-    const initialLinesReady = layoutSource.initialLines.size > 0 &&
-      Array.from(layoutSource.initialLines).every(index =>
-        layoutSource.readyLines.has(index)
-      );
-    if (isPlayingCurrentSong ? !allLinesReady : !initialLinesReady && !allLinesReady) return;
-
-    if (!layoutReadyRef.current) setReadyLayoutSource(layoutSource);
-    layoutReadyRef.current = true;
-    const activeLine = cachedLinesRef.current[activeLineIndexRef.current];
-    if (activeLine) centerActiveLine(activeLine.node);
-  }, [centerActiveLine, isPlayingCurrentSong, layoutSource]);
-
   const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;
     
@@ -170,7 +109,7 @@ const LiveLyricsView = ({
     }
 
     const activeLine = lines[newActiveIndex];
-    if (activeLine && (activeLineChanged || needsInitialCenterRef.current) && layoutReadyRef.current) {
+    if (activeLine && (activeLineChanged || needsInitialCenterRef.current)) {
       centerActiveLine(activeLine.node);
     }
 
@@ -189,7 +128,6 @@ const LiveLyricsView = ({
   }, [centerActiveLine, isPlayingCurrentSong]);
 
   useLayoutEffect(() => {
-    layoutReadyRef.current = isLayoutReady;
     const container = containerRef.current;
     if (!container) return;
 
@@ -224,165 +162,16 @@ const LiveLyricsView = ({
         item.state = 'visible';
       });
     }
-    layoutSource.initialLines.clear();
-    if (activeLineIndexRef.current >= 0) {
-      for (
-        let index = Math.max(0, activeLineIndexRef.current - 1);
-        index <= Math.min(
-          cachedLinesRef.current.length - 1,
-          activeLineIndexRef.current + 1
-        );
-        index++
-      ) {
-        layoutSource.initialLines.add(index);
-      }
-    } else {
-      const containerBounds = container.getBoundingClientRect();
-      cachedLinesRef.current.forEach((line, index) => {
-        const bounds = line.node.getBoundingClientRect();
-        if (bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom) {
-          layoutSource.initialLines.add(index);
-          if (index > 0) layoutSource.initialLines.add(index - 1);
-          if (index + 1 < cachedLinesRef.current.length) {
-            layoutSource.initialLines.add(index + 1);
-          }
-        }
-      });
-    }
-    if (layoutSource.initialLines.size === 0 && cachedLinesRef.current.length > 0) {
-      layoutSource.initialLines.add(0);
-    }
-    if (isLayoutReady && !isPlayingCurrentSong) {
+    if (!isPlayingCurrentSong) {
       needsInitialCenterRef.current = true;
     }
   }, [
     handleTimeUpdate,
     isPlayingCurrentSong,
-    layoutSource,
     liveParsedLyrics,
     lyricsPlaybackOffsetSeconds,
     selectedSong?.syncData,
-    timedLineData,
-    isLayoutReady
-  ]);
-
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container || !shouldAnimateEntrance || !isLayoutReady) return undefined;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      onEntranceAnimationComplete?.(selectedSong?.trackId);
-      return undefined;
-    }
-
-    let revealTimeout = null;
-    let fallbackTimeout = null;
-    let revealFrame = null;
-    let revealed = false;
-    let cancelled = false;
-    let preparedLines = new Set();
-    const getVisibleLines = () => {
-      const bounds = container.getBoundingClientRect();
-      return new Set(Array.from(container.querySelectorAll('.lyric-line-wrapper'))
-        .filter(line => {
-          const lineBounds = line.getBoundingClientRect();
-          return lineBounds.height > 0 &&
-            lineBounds.bottom > bounds.top &&
-            lineBounds.top < bounds.bottom;
-        }));
-    };
-    const prepareVisibleLines = () => {
-      const visibleLines = getVisibleLines();
-      preparedLines.forEach(line => {
-        if (!visibleLines.has(line)) line.classList.remove('is-preparing-reveal');
-      });
-      visibleLines.forEach(line => line.classList.add('is-preparing-reveal'));
-      preparedLines = visibleLines;
-    };
-    const clearRevealTimeout = () => {
-      if (revealTimeout !== null) {
-        window.clearTimeout(revealTimeout);
-        revealTimeout = null;
-      }
-    };
-    const finishReveal = line => {
-      line.classList.add('has-revealed');
-      line.classList.remove('initial-reveal', 'is-preparing-reveal');
-      line.style.removeProperty('--initial-reveal-delay');
-      line.removeEventListener('animationend', handleAnimationEnd);
-    };
-    const handleAnimationEnd = event => {
-      if (event.target !== event.currentTarget) return;
-      finishReveal(event.currentTarget);
-      if (!container.querySelector('.initial-reveal')) {
-        if (fallbackTimeout !== null) window.clearTimeout(fallbackTimeout);
-        fallbackTimeout = null;
-        onEntranceAnimationComplete?.(selectedSong?.trackId);
-      }
-    };
-    const revealVisibleLines = () => {
-      if (revealed) return;
-      clearRevealTimeout();
-      const pendingTarget = pendingCenterTargetRef.current;
-      if (pendingTarget && Math.abs(container.scrollTop - pendingTarget.top) > 1) {
-        revealTimeout = window.setTimeout(revealVisibleLines, 100);
-        return;
-      }
-
-      const visibleLines = Array.from(getVisibleLines());
-
-      if (visibleLines.length === 0) {
-        revealTimeout = window.setTimeout(revealVisibleLines, 100);
-        return;
-      }
-
-      revealed = true;
-      container.removeEventListener('scroll', scheduleReveal);
-      container.removeEventListener('scrollend', revealVisibleLines);
-      prepareVisibleLines();
-      revealFrame = window.requestAnimationFrame(() => {
-        revealFrame = null;
-        if (cancelled) return;
-        visibleLines.forEach((line, index) => {
-          if (!line.isConnected) return;
-          line.style.setProperty('--initial-reveal-delay', `${index * 55}ms`);
-          line.addEventListener('animationend', handleAnimationEnd);
-          line.classList.remove('is-preparing-reveal');
-          line.classList.add('initial-reveal');
-        });
-        fallbackTimeout = window.setTimeout(() => {
-          visibleLines.forEach(finishReveal);
-          onEntranceAnimationComplete?.(selectedSong?.trackId);
-        }, 260 + Math.max(0, visibleLines.length - 1) * 55 + 100);
-      });
-    };
-    const scheduleReveal = () => {
-      prepareVisibleLines();
-      clearRevealTimeout();
-      revealVisibleLines();
-    };
-
-    prepareVisibleLines();
-    container.addEventListener('scroll', scheduleReveal, { passive: true });
-    container.addEventListener('scrollend', revealVisibleLines);
-    revealVisibleLines();
-
-    return () => {
-      cancelled = true;
-      clearRevealTimeout();
-      if (fallbackTimeout !== null) window.clearTimeout(fallbackTimeout);
-      if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
-      container.removeEventListener('scroll', scheduleReveal);
-      container.removeEventListener('scrollend', revealVisibleLines);
-      container.querySelectorAll('.initial-reveal')
-        .forEach(finishReveal);
-      preparedLines.forEach(line => line.classList.remove('is-preparing-reveal'));
-    };
-  }, [
-    liveParsedLyrics,
-    onEntranceAnimationComplete,
-    isLayoutReady,
-    selectedSong?.trackId,
-    shouldAnimateEntrance
+    timedLineData
   ]);
 
   useEffect(() => {
@@ -439,9 +228,8 @@ const LiveLyricsView = ({
 
   return (
     <div
-      className={`live-lyrics-preview${isLayoutReady ? '' : ' is-layout-pending'}`}
+      className="live-lyrics-preview"
       ref={containerRef}
-      aria-hidden={!isLayoutReady}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >
       {liveParsedLyrics.map((line, i) => {
@@ -455,10 +243,6 @@ const LiveLyricsView = ({
               handleLineClick={handleLineClick}
               masterPalette={masterPalette}
               isPlayingCurrentSong={false}
-              lineIndex={i}
-              isSongModalReady={isSongModalReady}
-              liveLayoutCacheSignature={liveLayoutCacheSignature}
-              onLiveLayoutReady={reportLineLayoutReady}
             />
         )
       })}

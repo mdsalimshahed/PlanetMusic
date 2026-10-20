@@ -84,12 +84,9 @@ const ModalRight = (props) => {
                 globalArtistData={canvasProps.globalArtistData}
                 currentTrack={canvasProps.currentTrack}
                 isPlaying={canvasProps.isPlaying}
-                isSongModalReady={canvasProps.isSongModalReady}
                 settings={canvasProps.settings}
                 lyricsPlaybackOffsetSeconds={canvasProps.lyricsPlaybackOffsetSeconds}
                 showGroupChatDebug={canvasProps.showGroupChatDebug}
-                shouldAnimateLiveEntrance={props.shouldAnimateLiveEntrance}
-                onLiveEntranceAnimationComplete={props.onLiveEntranceAnimationComplete}
               />
             )}
 
