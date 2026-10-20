@@ -13,10 +13,11 @@ export { renderFormattedTranslation } from '../../../../components/LyricsRendere
 
 const LIVE_LAYOUT_BATCH_SIZE = 2;
 const LIVE_LAYOUT_FRAME_BUDGET_MS = 5;
-const pendingLiveLayoutMeasurements = new Set();
+const pendingLiveLayoutMeasurements = [];
 const liveLayoutResizeMeasurements = new Set();
 let liveLayoutMeasurementFrame = null;
 let liveLayoutResizeListenerAttached = false;
+let liveLayoutMeasurementsPrioritized = false;
 
 const handleLiveLayoutResize = () => {
   liveLayoutResizeMeasurements.forEach(schedule => schedule());
@@ -40,27 +41,56 @@ const registerLiveLayoutResizeMeasurement = schedule => {
 
 const flushLiveLayoutMeasurements = () => {
   liveLayoutMeasurementFrame = null;
-  const batch = Array.from(pendingLiveLayoutMeasurements)
-    .slice(0, LIVE_LAYOUT_BATCH_SIZE);
-  const deadline = performance.now() + LIVE_LAYOUT_FRAME_BUDGET_MS;
-  batch.forEach((measure, index) => {
-    if (index > 0 && performance.now() >= deadline) {
-      pendingLiveLayoutMeasurements.add(measure);
-      return;
-    }
-    pendingLiveLayoutMeasurements.delete(measure);
-    measure();
-  });
+  if (!liveLayoutMeasurementsPrioritized) {
+    pendingLiveLayoutMeasurements.forEach(entry => {
+      const container = entry.wrapper.closest('.live-lyrics-preview');
+      const lineBounds = entry.wrapper.getBoundingClientRect();
+      const containerBounds = container?.getBoundingClientRect();
+      const isVisible = containerBounds &&
+        lineBounds.bottom > containerBounds.top &&
+        lineBounds.top < containerBounds.bottom;
+      entry.priority = entry.wrapper.classList.contains('active')
+        ? 0
+        : isVisible ? 1 : 2;
+      entry.distance = isVisible && containerBounds
+        ? Math.abs(
+          (lineBounds.top + lineBounds.bottom) / 2 -
+          (containerBounds.top + containerBounds.bottom) / 2
+        )
+        : 0;
+    });
+    pendingLiveLayoutMeasurements.sort((first, second) =>
+      first.priority - second.priority || first.distance - second.distance
+    );
+    liveLayoutMeasurementsPrioritized = true;
+  }
 
-  if (pendingLiveLayoutMeasurements.size > 0) {
+  const deadline = performance.now() + LIVE_LAYOUT_FRAME_BUDGET_MS;
+  let measuredCount = 0;
+  while (
+    pendingLiveLayoutMeasurements.length > 0 &&
+    measuredCount < LIVE_LAYOUT_BATCH_SIZE
+  ) {
+    if (measuredCount > 0 && performance.now() >= deadline) break;
+    const { measure } = pendingLiveLayoutMeasurements.shift();
+    measure();
+    measuredCount++;
+  }
+
+  if (pendingLiveLayoutMeasurements.length > 0) {
     liveLayoutMeasurementFrame = window.requestAnimationFrame(
       flushLiveLayoutMeasurements
     );
+  } else {
+    liveLayoutMeasurementsPrioritized = false;
   }
 };
 
-const queueLiveLayoutMeasurement = measure => {
-  pendingLiveLayoutMeasurements.add(measure);
+const queueLiveLayoutMeasurement = (measure, wrapper) => {
+  if (pendingLiveLayoutMeasurements.length === 0) {
+    liveLayoutMeasurementsPrioritized = false;
+  }
+  pendingLiveLayoutMeasurements.push({ measure, wrapper });
   if (liveLayoutMeasurementFrame === null) {
     liveLayoutMeasurementFrame = window.requestAnimationFrame(
       flushLiveLayoutMeasurements
@@ -907,7 +937,7 @@ export const LyricLineWrapper = React.memo(({
           if (cancelled) return;
           measureLiveTranslations();
         };
-        queueLiveLayoutMeasurement(queuedMeasurement);
+        queueLiveLayoutMeasurement(queuedMeasurement, wrapper);
       };
 
       const unregisterResizeMeasurement = registerLiveLayoutResizeMeasurement(
@@ -934,7 +964,15 @@ export const LyricLineWrapper = React.memo(({
         resizeObserver?.disconnect();
         unregisterResizeMeasurement();
         if (queuedMeasurement) {
-          pendingLiveLayoutMeasurements.delete(queuedMeasurement);
+          const measurementIndex = pendingLiveLayoutMeasurements.findIndex(
+            entry => entry.measure === queuedMeasurement
+          );
+          if (measurementIndex !== -1) {
+            pendingLiveLayoutMeasurements.splice(measurementIndex, 1);
+            if (pendingLiveLayoutMeasurements.length === 0) {
+              liveLayoutMeasurementsPrioritized = false;
+            }
+          }
         }
       };
     }
