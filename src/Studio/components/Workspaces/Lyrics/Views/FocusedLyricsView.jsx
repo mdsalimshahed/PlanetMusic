@@ -36,6 +36,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
       node.style.setProperty('--focused-enter-stagger', `${enterStagger}s`);
       node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
       node.style.setProperty('--focused-exit-layer-duration', `${animationTiming.exitLayerDuration}s`);
+      measureFocusedLineLayout(node);
       return {
         node,
         start,
@@ -89,7 +90,6 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
             if (isSeek) {
               previousLine.node.classList.remove('exiting');
             } else {
-              measureFocusedLineLayout(previousLine.node);
               previousLine.node.classList.add('exiting');
             }
             previousLine.isActive = false;

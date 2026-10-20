@@ -1,5 +1,5 @@
 /* --- src/components/LiveDebug/LiveDebugOverlay.jsx --- */
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import './LiveDebugOverlay.css';
 
 const getLineTextBoundsList = (element, overlayRect, excludePronunciation = false) => {
@@ -252,25 +252,110 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
   return boxes;
 };
 
+const haveBoxesChanged = (previous, next) => (
+  previous.length !== next.length ||
+  next.some((box, index) => {
+    const oldBox = previous[index];
+    return !oldBox ||
+      oldBox.id !== box.id ||
+      oldBox.top !== box.top ||
+      oldBox.left !== box.left ||
+      oldBox.width !== box.width ||
+      oldBox.height !== box.height ||
+      oldBox.color !== box.color ||
+      oldBox.fillColor !== box.fillColor;
+  })
+);
+
 const LiveDebugOverlay = () => {
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
+  const resizeObserverRef = useRef(null);
+  const observedLineRef = useRef(null);
   const [boxes, setBoxes] = useState([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const trackLiveLyrics = () => {
+      rafRef.current = null;
       if (!overlayRef.current) return;
       const overlayRect = overlayRef.current.getBoundingClientRect();
-      const activeLineNode = document.querySelector('.preview-line.active');
+      const activeLineNode = document.querySelector(
+        '.live-lyrics-preview .preview-line.active'
+      );
       const targetNodes = activeLineNode ? [activeLineNode] : [];
+      if (observedLineRef.current !== activeLineNode) {
+        if (observedLineRef.current) {
+          resizeObserverRef.current?.unobserve(observedLineRef.current);
+        }
+        observedLineRef.current = activeLineNode;
+        if (activeLineNode) resizeObserverRef.current?.observe(activeLineNode);
+      }
 
-      setBoxes(buildBoxesForLines(targetNodes, overlayRect));
-      rafRef.current = requestAnimationFrame(trackLiveLyrics);
+      const nextBoxes = buildBoxesForLines(targetNodes, overlayRect);
+      setBoxes(previous => (
+        haveBoxesChanged(previous, nextBoxes) ? nextBoxes : previous
+      ));
     };
 
-    rafRef.current = requestAnimationFrame(trackLiveLyrics);
+    const scheduleTrack = () => {
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(trackLiveLyrics);
+    };
+    const observedLines = new Set();
+    const observeLine = line => {
+      if (observedLines.has(line)) return;
+      observedLines.add(line);
+      mutationObserver.observe(line, { attributes: true, attributeFilter: ['class'] });
+    };
+    const lineContainer = overlayRef.current?.parentElement;
+    const handleLineChanges = mutations => {
+      let shouldTrack = false;
+      mutations.forEach(mutation => {
+        if (mutation.type === 'attributes') {
+          shouldTrack = true;
+          return;
+        }
+        mutation.addedNodes.forEach(node => {
+          if (!(node instanceof Element)) return;
+          if (node.matches('.preview-line')) observeLine(node);
+          node.querySelectorAll('.preview-line').forEach(observeLine);
+          shouldTrack = true;
+        });
+        if (mutation.removedNodes.length > 0) shouldTrack = true;
+      });
+      if (shouldTrack) scheduleTrack();
+    };
+    const handleTransition = event => {
+      if (event.target instanceof Element && event.target.closest('.preview-line.active')) {
+        scheduleTrack();
+      }
+    };
+    const mutationObserver = new MutationObserver(handleLineChanges);
+    document.querySelectorAll('.live-lyrics-preview .preview-line').forEach(observeLine);
+    if (lineContainer) {
+      mutationObserver.observe(lineContainer, { childList: true, subtree: true });
+    }
+    resizeObserverRef.current = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleTrack);
+    if (overlayRef.current) resizeObserverRef.current?.observe(overlayRef.current);
+
+    window.addEventListener('resize', scheduleTrack);
+    window.addEventListener('scroll', scheduleTrack, true);
+    document.addEventListener('transitionrun', handleTransition, true);
+    document.addEventListener('transitionend', handleTransition, true);
+    trackLiveLyrics();
+
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      mutationObserver.disconnect();
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
+      observedLineRef.current = null;
+      window.removeEventListener('resize', scheduleTrack);
+      window.removeEventListener('scroll', scheduleTrack, true);
+      document.removeEventListener('transitionrun', handleTransition, true);
+      document.removeEventListener('transitionend', handleTransition, true);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 

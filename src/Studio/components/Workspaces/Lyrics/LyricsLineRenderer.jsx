@@ -11,6 +11,41 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
+const LIVE_LAYOUT_BATCH_SIZE = 2;
+const LIVE_LAYOUT_FRAME_BUDGET_MS = 5;
+const pendingLiveLayoutMeasurements = new Set();
+let liveLayoutMeasurementFrame = null;
+
+const flushLiveLayoutMeasurements = () => {
+  liveLayoutMeasurementFrame = null;
+  const batch = Array.from(pendingLiveLayoutMeasurements)
+    .slice(0, LIVE_LAYOUT_BATCH_SIZE);
+  const deadline = performance.now() + LIVE_LAYOUT_FRAME_BUDGET_MS;
+  batch.forEach((measure, index) => {
+    if (index > 0 && performance.now() >= deadline) {
+      pendingLiveLayoutMeasurements.add(measure);
+      return;
+    }
+    pendingLiveLayoutMeasurements.delete(measure);
+    measure();
+  });
+
+  if (pendingLiveLayoutMeasurements.size > 0) {
+    liveLayoutMeasurementFrame = window.requestAnimationFrame(
+      flushLiveLayoutMeasurements
+    );
+  }
+};
+
+const queueLiveLayoutMeasurement = measure => {
+  pendingLiveLayoutMeasurements.add(measure);
+  if (liveLayoutMeasurementFrame === null) {
+    liveLayoutMeasurementFrame = window.requestAnimationFrame(
+      flushLiveLayoutMeasurements
+    );
+  }
+};
+
 export const renderLine = (
   lineObj,
   savedNode,
@@ -149,6 +184,7 @@ export const LyricLineWrapper = React.memo(({
   const wrapperRef = useRef(null);
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
+  const renderPlaybackState = viewMode === 'live' ? false : isPlayingCurrentSong;
 
   const renderedContent = useMemo(() =>
     renderLine(
@@ -156,10 +192,10 @@ export const LyricLineWrapper = React.memo(({
       savedNode,
       viewMode === 'focused',
       masterPalette,
-      isPlayingCurrentSong,
+      renderPlaybackState,
       { focusedMainLyrics: viewMode === 'live' }
     ),
-    [lineObj, savedNode, viewMode, masterPalette, isPlayingCurrentSong]
+    [lineObj, savedNode, viewMode, masterPalette, renderPlaybackState]
   );
 
   useLayoutEffect(() => {
@@ -256,10 +292,8 @@ export const LyricLineWrapper = React.memo(({
 
     if (viewMode === 'live') {
       let cancelled = false;
-      let updateFrame = null;
-      let resizeObserver = null;
-      let initialLayoutReady = false;
-      let previousInitialLayoutSignature = null;
+      let queuedMeasurement = null;
+      let measurementQueued = false;
       const previousSibling = wrapper.previousElementSibling;
       const nextSibling = wrapper.nextElementSibling;
       const previousLineWrapper = previousSibling?.classList.contains('lyric-line-wrapper')
@@ -274,6 +308,12 @@ export const LyricLineWrapper = React.memo(({
         const adlibNodes = wrapper.querySelectorAll('.live-split-line > .adlib-node');
         const coreChunks = wrapper.querySelector('.core-chunks');
         const splitLine = wrapper.querySelector('.live-split-line');
+        const mainTranslation = wrapper.querySelector('.main-live-translation');
+
+        if (adlibNodes.length === 0 && !mainTranslation) {
+          onLiveLayoutReady?.(lineIndex);
+          return;
+        }
         coreChunks?.classList.remove('is-main-shifted-for-pronounced-foreign-adlib');
         coreChunks?.style.removeProperty('--live-main-foreign-adlib-offset-y');
         splitLine?.classList.remove('is-main-shifted-for-pronounced-foreign-adlib');
@@ -293,6 +333,46 @@ export const LyricLineWrapper = React.memo(({
           translation?.style.removeProperty('--live-translation-offset-x');
           translation?.style.removeProperty('--live-translation-offset-y');
         });
+
+        if (adlibNodes.length === 0) {
+          const scaleX = wrapper.offsetWidth
+            ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
+            : 1;
+          const scaleY = wrapper.offsetHeight
+            ? wrapper.getBoundingClientRect().height / wrapper.offsetHeight
+            : 1;
+          const translation = mainTranslation;
+          const glyphs = wrapper.querySelector('.core-chunks > .main-lyrics-layer');
+          if (translation && glyphs) {
+            const widestLine = measureWidestLine(glyphs);
+            if (widestLine) {
+              const width = (widestLine.right - widestLine.left) / scaleX;
+              const parentBounds = translation.parentElement.getBoundingClientRect();
+              const center = (widestLine.left + widestLine.right) / 2;
+              translation.style.width = `${Math.max(1, Math.floor(width))}px`;
+              translation.style.setProperty(
+                '--live-translation-offset-x',
+                `${(center - parentBounds.left) / scaleX - width / 2}px`
+              );
+              translation.style.setProperty('--live-translation-offset-y', '0px');
+              const translationBounds = translation.getBoundingClientRect();
+              const desiredGap = (
+                parseFloat(getComputedStyle(translation).marginBottom) || 0
+              ) * scaleY;
+              translation.style.setProperty(
+                '--live-translation-offset-y',
+                `${(
+                  glyphs.getBoundingClientRect().top -
+                  translationBounds.bottom -
+                  desiredGap
+                ) / scaleY}px`
+              );
+            }
+          }
+
+          onLiveLayoutReady?.(lineIndex);
+          return;
+        }
 
         const scaleX = wrapper.offsetWidth
           ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
@@ -414,22 +494,34 @@ export const LyricLineWrapper = React.memo(({
           '.core-chunks > .pronunciation-text',
           '.adlib-node > .pronunciation-text'
         ].join(', ');
-        const getLyricContentRects = (line, excludedAdlib = null) => Array.from(
-          line.querySelectorAll(lyricContentSelector)
-        ).filter(element => !excludedAdlib?.contains(element))
-          .flatMap(element => (
-            element.matches('.pronunciation-text')
-              ? getTextRects(element)
-              : getGlyphRows(element)
-          ));
+        const staticContentRectsByLine = new Map();
+        const getStaticContentRects = line => {
+          if (!staticContentRectsByLine.has(line)) {
+            const rects = Array.from(line.querySelectorAll(lyricContentSelector))
+              .filter(element => !element.closest('.adlib-node'))
+              .flatMap(element => (
+                element.matches('.pronunciation-text')
+                  ? getTextRects(element)
+                  : getGlyphRows(element)
+              ));
+            staticContentRectsByLine.set(line, rects);
+          }
+          return staticContentRectsByLine.get(line);
+        };
+        const getOccupiedContentRects = (line, excludedAdlib = null) => [
+          ...getStaticContentRects(line),
+          ...Array.from(line.querySelectorAll('.adlib-node'))
+            .filter(adlib => adlib !== excludedAdlib)
+            .flatMap(getAdlibStructureRects)
+        ];
         const hasAdlibStructureCollision = (adlib, clearance = 3) => {
           const structureBounds = getStructureBounds(getAdlibStructureRects(adlib));
           if (!Number.isFinite(structureBounds.left)) return false;
           const adlibRects = [structureBounds];
           const occupiedRects = [
-            ...getLyricContentRects(wrapper, adlib),
+            ...getOccupiedContentRects(wrapper, adlib),
             ...neighboringLineWrappers
-              .flatMap(line => getLyricContentRects(line))
+              .flatMap(line => getOccupiedContentRects(line))
           ];
 
           return adlibRects.some(rect => occupiedRects.some(other => (
@@ -855,7 +947,7 @@ export const LyricLineWrapper = React.memo(({
             );
           }
           [wrapper, ...neighboringLineWrappers].forEach(line => {
-            const occupiedRects = getLyricContentRects(
+            const occupiedRects = getOccupiedContentRects(
               line,
               line === wrapper ? adlib : null
             );
@@ -902,75 +994,30 @@ export const LyricLineWrapper = React.memo(({
           );
         }
 
-        if (!initialLayoutReady) {
-          const layoutSignature = [
-            wrapper.offsetWidth,
-            wrapper.offsetHeight,
-            coreChunks?.classList.contains(
-              'is-main-shifted-for-pronounced-foreign-adlib'
-            ),
-            coreChunks?.style.getPropertyValue('--live-main-foreign-adlib-offset-y'),
-            splitLine?.style.getPropertyValue('--live-adlib-neighbor-clearance'),
-            ...Array.from(wrapper.querySelectorAll(
-              '.live-split-line > .adlib-node, .chunk-translation.live-translation'
-            ), element => [
-              element.classList.contains('is-adlib-wrapped'),
-              element.classList.contains('is-adlib-new-row'),
-              element.classList.contains('is-adlib-inline-after-wrapped-main'),
-              element.style.width,
-              element.style.getPropertyValue('--live-adlib-glyph-offset-y'),
-              element.style.getPropertyValue('--live-adlib-inline-x'),
-              element.style.getPropertyValue('--live-adlib-inline-y'),
-              element.style.getPropertyValue('--live-adlib-collision-gap'),
-              element.style.getPropertyValue('--live-adlib-neighbor-clearance-start'),
-              element.style.getPropertyValue('--live-translation-offset-x'),
-              element.style.getPropertyValue('--live-translation-offset-y')
-            ].join(','))
-          ].join('|');
-
-          if (layoutSignature === previousInitialLayoutSignature) {
-            initialLayoutReady = true;
-            onLiveLayoutReady?.(lineIndex);
-          } else {
-            previousInitialLayoutSignature = layoutSignature;
-            scheduleTranslationUpdate();
-          }
-        }
+        onLiveLayoutReady?.(lineIndex);
       };
-      const scheduleTranslationUpdate = () => {
-        if (updateFrame !== null) return;
-        updateFrame = window.requestAnimationFrame(() => {
-          updateFrame = null;
+      const queueInitialLayoutMeasurement = () => {
+        if (measurementQueued || cancelled) return;
+        measurementQueued = true;
+        queuedMeasurement = () => {
+          queuedMeasurement = null;
+          if (cancelled) return;
           measureLiveTranslations();
-        });
+        };
+        queueLiveLayoutMeasurement(queuedMeasurement);
       };
 
-      resizeObserver = typeof ResizeObserver === 'undefined'
-        ? null
-        : new ResizeObserver(scheduleTranslationUpdate);
-      [
-        wrapper,
-        ...wrapper.querySelectorAll('.main-lyrics-layer, .primary-text'),
-        ...neighboringLineWrappers.flatMap(line => [
-          line,
-          ...line.querySelectorAll(
-            '.main-lyrics-layer, .primary-text, .chunk-translation.live-translation, .pronunciation-text'
-          )
-        ])
-      ]
-        .forEach(element => resizeObserver?.observe(element));
-
-      measureLiveTranslations();
-      if (document.fonts?.status !== 'loaded') {
-        document.fonts?.ready.then(() => {
-          if (!cancelled) scheduleTranslationUpdate();
-        });
+      if (!document.fonts || document.fonts.status === 'loaded') {
+        queueInitialLayoutMeasurement();
+      } else {
+        document.fonts.ready.then(queueInitialLayoutMeasurement);
       }
 
       return () => {
         cancelled = true;
-        if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
-        resizeObserver?.disconnect();
+        if (queuedMeasurement) {
+          pendingLiveLayoutMeasurements.delete(queuedMeasurement);
+        }
       };
     }
 
@@ -1006,31 +1053,16 @@ export const LyricLineWrapper = React.memo(({
     };
 
     let cancelled = false;
-    let updateFrame = null;
-    let resizeObserver = null;
-    const scheduleTranslationWidthUpdate = () => {
-      if (updateFrame !== null) return;
-      updateFrame = window.requestAnimationFrame(() => {
-        updateFrame = null;
-        measureFocusedTranslationWidths();
+    if (!document.fonts || document.fonts.status === 'loaded') {
+      measureFocusedTranslationWidths();
+    } else {
+      document.fonts.ready.then(() => {
+        if (!cancelled) measureFocusedTranslationWidths();
       });
-    };
-    measureFocusedTranslationWidths();
-    resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(scheduleTranslationWidthUpdate);
-    [
-      wrapper,
-      ...wrapper.querySelectorAll('.core-chunks, .pronunciation-text')
-    ].forEach(element => resizeObserver?.observe(element));
-    document.fonts?.ready.then(() => {
-      if (!cancelled) scheduleTranslationWidthUpdate();
-    });
+    }
 
     return () => {
       cancelled = true;
-      if (updateFrame !== null) window.cancelAnimationFrame(updateFrame);
-      resizeObserver?.disconnect();
     };
   }, [isSongModalReady, lineIndex, onLiveLayoutReady, renderedContent, viewMode]);
 

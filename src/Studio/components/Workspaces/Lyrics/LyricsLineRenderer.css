@@ -102,7 +102,7 @@ rt.pronunciation-text,
 
 .chunk-translation.adlib-node.adlib-hidden {
   opacity: 0 !important;
-  transform: translate(-50%, calc(-100% + 8px)) !important;
+  transform: translate(-50%, -100%) !important;
   filter: grayscale(100%) !important;
 }
 
@@ -323,29 +323,25 @@ rt.pronunciation-text,
   display: inline-block;
   transition:
     opacity 0.3s ease,
-    transform 0.3s ease,
     filter 0.3s ease !important;
-  will-change: opacity, transform, filter;
+  will-change: opacity, filter;
   backface-visibility: hidden;
 }
 
 .adlib-node.adlib-hidden,
 .adlib-node.adlib-hidden .pronunciation-text {
   opacity: 0 !important;
-  transform: translate3d(0, 8px, 0) !important;
   filter: grayscale(100%) !important;
 }
 
 .adlib-node.adlib-visible,
 .adlib-node.adlib-visible .pronunciation-text {
   opacity: 0.6 !important;
-  transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
 }
 
 .adlib-node.adlib-active,
 .adlib-node.adlib-active .pronunciation-text {
   opacity: 1 !important;
-  transform: translate3d(0, 0, 0) !important;
   filter: grayscale(0%) !important;
 }

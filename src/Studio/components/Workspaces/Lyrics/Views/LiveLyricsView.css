@@ -71,7 +71,7 @@
 
 .preview-line.active {
   opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: translate3d(0, 0, 0) scale(0.95);
   transition:
     opacity 0.5s ease,
     transform 0.18s ease-out;

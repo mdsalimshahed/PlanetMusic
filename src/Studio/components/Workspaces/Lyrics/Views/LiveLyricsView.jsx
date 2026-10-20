@@ -101,13 +101,12 @@ const LiveLyricsView = ({
   const reportLineLayoutReady = useCallback(lineIndex => {
     if (layoutSource.readyLines.has(lineIndex)) return;
     layoutSource.readyLines.add(lineIndex);
+    if (layoutSource.readyLines.size < layoutSource.lyrics.length) return;
 
     if (!layoutReadyRef.current) setReadyLayoutSource(layoutSource);
     layoutReadyRef.current = true;
-    if (lineIndex === activeLineIndexRef.current) {
-      const activeLine = cachedLinesRef.current[lineIndex];
-      if (activeLine) centerActiveLine(activeLine.node);
-    }
+    const activeLine = cachedLinesRef.current[activeLineIndexRef.current];
+    if (activeLine) centerActiveLine(activeLine.node);
   }, [centerActiveLine, layoutSource]);
 
   const handleTimeUpdate = useCallback((time) => {
@@ -180,6 +179,12 @@ const LiveLyricsView = ({
 
     if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
       handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
+    } else if (!isPlayingCurrentSong) {
+      cachedAdlibsRef.current.forEach(item => {
+        item.node.classList.add('adlib-visible');
+        item.node.classList.remove('adlib-hidden', 'adlib-active');
+        item.state = 'visible';
+      });
     }
     if (isLayoutReady && !isPlayingCurrentSong) {
       needsInitialCenterRef.current = true;
@@ -386,7 +391,7 @@ const LiveLyricsView = ({
               viewMode="live"
               handleLineClick={handleLineClick}
               masterPalette={masterPalette}
-              isPlayingCurrentSong={isPlayingCurrentSong}
+              isPlayingCurrentSong={false}
               lineIndex={i}
               isSongModalReady={isSongModalReady}
               onLiveLayoutReady={reportLineLayoutReady}
