@@ -11,11 +11,11 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
-const LIVE_LAYOUT_BATCH_SIZE = 2;
-const LIVE_LAYOUT_FRAME_BUDGET_MS = 5;
+const LIVE_LAYOUT_IDLE_BUDGET_MS = 5;
 const pendingLiveLayoutMeasurements = [];
 const liveLayoutResizeMeasurements = new Set();
-let liveLayoutMeasurementFrame = null;
+let liveLayoutMeasurementIdleCallback = null;
+let liveLayoutMeasurementTimeout = null;
 let liveLayoutResizeListenerAttached = false;
 let liveLayoutMeasurementsPrioritized = false;
 
@@ -39,8 +39,38 @@ const registerLiveLayoutResizeMeasurement = schedule => {
   };
 };
 
-const flushLiveLayoutMeasurements = () => {
-  liveLayoutMeasurementFrame = null;
+const cancelLiveLayoutMeasurementFlush = () => {
+  if (liveLayoutMeasurementIdleCallback !== null) {
+    window.cancelIdleCallback?.(liveLayoutMeasurementIdleCallback);
+    liveLayoutMeasurementIdleCallback = null;
+  }
+  if (liveLayoutMeasurementTimeout !== null) {
+    window.clearTimeout(liveLayoutMeasurementTimeout);
+    liveLayoutMeasurementTimeout = null;
+  }
+};
+
+const scheduleLiveLayoutMeasurementFlush = () => {
+  if (
+    liveLayoutMeasurementIdleCallback !== null ||
+    liveLayoutMeasurementTimeout !== null
+  ) return;
+
+  if (typeof window.requestIdleCallback === 'function') {
+    liveLayoutMeasurementIdleCallback = window.requestIdleCallback(
+      flushLiveLayoutMeasurements
+    );
+  } else {
+    liveLayoutMeasurementTimeout = window.setTimeout(() => {
+      liveLayoutMeasurementTimeout = null;
+      flushLiveLayoutMeasurements({ timeRemaining: () => 8 });
+    }, 32);
+  }
+};
+
+function flushLiveLayoutMeasurements(deadline) {
+  liveLayoutMeasurementIdleCallback = null;
+  liveLayoutMeasurementTimeout = null;
   if (!liveLayoutMeasurementsPrioritized) {
     pendingLiveLayoutMeasurements.forEach(entry => {
       const container = entry.wrapper.closest('.live-lyrics-preview');
@@ -65,37 +95,27 @@ const flushLiveLayoutMeasurements = () => {
     liveLayoutMeasurementsPrioritized = true;
   }
 
-  const deadline = performance.now() + LIVE_LAYOUT_FRAME_BUDGET_MS;
-  let measuredCount = 0;
-  while (
+  if (
     pendingLiveLayoutMeasurements.length > 0 &&
-    measuredCount < LIVE_LAYOUT_BATCH_SIZE
+    deadline.timeRemaining() >= LIVE_LAYOUT_IDLE_BUDGET_MS
   ) {
-    if (measuredCount > 0 && performance.now() >= deadline) break;
     const { measure } = pendingLiveLayoutMeasurements.shift();
     measure();
-    measuredCount++;
   }
 
   if (pendingLiveLayoutMeasurements.length > 0) {
-    liveLayoutMeasurementFrame = window.requestAnimationFrame(
-      flushLiveLayoutMeasurements
-    );
+    scheduleLiveLayoutMeasurementFlush();
   } else {
     liveLayoutMeasurementsPrioritized = false;
   }
-};
+}
 
 const queueLiveLayoutMeasurement = (measure, wrapper) => {
   if (pendingLiveLayoutMeasurements.length === 0) {
     liveLayoutMeasurementsPrioritized = false;
   }
   pendingLiveLayoutMeasurements.push({ measure, wrapper });
-  if (liveLayoutMeasurementFrame === null) {
-    liveLayoutMeasurementFrame = window.requestAnimationFrame(
-      flushLiveLayoutMeasurements
-    );
-  }
+  scheduleLiveLayoutMeasurementFlush();
 };
 
 export const renderLine = (
@@ -545,6 +565,8 @@ export const LyricLineWrapper = React.memo(({
           '.adlib-node > .pronunciation-text'
         ].join(', ');
         const staticContentRectsByLine = new Map();
+        const occupiedContentByLine = new Map();
+        const finalAdlibRectsByNode = new Map();
         const getStaticContentRects = line => {
           if (!staticContentRectsByLine.has(line)) {
             const rects = Array.from(line.querySelectorAll(lyricContentSelector))
@@ -558,14 +580,30 @@ export const LyricLineWrapper = React.memo(({
           }
           return staticContentRectsByLine.get(line);
         };
-        const getOccupiedContentRects = (line, excludedAdlib = null) => [
-          ...getStaticContentRects(line),
-          ...Array.from(line.querySelectorAll('.adlib-node'))
-            .filter(adlib => adlib !== excludedAdlib)
-            .flatMap(getAdlibStructureRects)
-        ];
+        const getFinalAdlibRects = adlib => {
+          if (!finalAdlibRectsByNode.has(adlib)) {
+            finalAdlibRectsByNode.set(adlib, getAdlibStructureRects(adlib));
+          }
+          return finalAdlibRectsByNode.get(adlib);
+        };
+        const getOccupiedContentItems = line => {
+          if (!occupiedContentByLine.has(line)) {
+            const items = [{
+              adlib: null,
+              rects: getStaticContentRects(line)
+            }];
+            line.querySelectorAll('.adlib-node').forEach(adlib => {
+              items.push({
+                adlib,
+                rects: getFinalAdlibRects(adlib)
+              });
+            });
+            occupiedContentByLine.set(line, items);
+          }
+          return occupiedContentByLine.get(line);
+        };
         const mainBoxBounds = getBoundsForRects([
-          ...getGlyphRows(mainGlyphs),
+          ...mainGlyphRows,
           ...Array.from(
             coreChunks?.querySelectorAll('.pronunciation-text') || []
           ).flatMap(getTextRects)
@@ -848,10 +886,10 @@ export const LyricLineWrapper = React.memo(({
           window.innerWidth * 0.005,
           window.innerHeight * 0.0025
         );
+        const splitLineBottom = splitLine?.getBoundingClientRect().bottom;
         adlibMeasurements.forEach(({ adlib }) => {
-          const adlibRects = getAdlibStructureRects(adlib);
+          const adlibRects = getFinalAdlibRects(adlib);
           let neighborStartClearance = 0;
-          const splitLineBottom = splitLine?.getBoundingClientRect().bottom;
           if (splitLineBottom !== undefined) {
             neighborBottomClearance = Math.max(
               neighborBottomClearance,
@@ -861,30 +899,29 @@ export const LyricLineWrapper = React.memo(({
             );
           }
           [wrapper, ...neighboringLineWrappers].forEach(line => {
-            const occupiedRects = getOccupiedContentRects(
-              line,
-              line === wrapper ? adlib : null
-            );
-            occupiedRects.forEach(occupiedRect => {
-              adlibRects.forEach(adlibRect => {
-                const intersects =
-                  adlibRect.left < occupiedRect.right + collisionClearance &&
-                  adlibRect.right > occupiedRect.left - collisionClearance &&
-                  adlibRect.top < occupiedRect.bottom + collisionClearance &&
-                  adlibRect.bottom > occupiedRect.top - collisionClearance;
-                if (!intersects) return;
+            getOccupiedContentItems(line).forEach(({ adlib: occupiedAdlib, rects }) => {
+              if (line === wrapper && occupiedAdlib === adlib) return;
+              rects.forEach(occupiedRect => {
+                adlibRects.forEach(adlibRect => {
+                  const intersects =
+                    adlibRect.left < occupiedRect.right + collisionClearance &&
+                    adlibRect.right > occupiedRect.left - collisionClearance &&
+                    adlibRect.top < occupiedRect.bottom + collisionClearance &&
+                    adlibRect.bottom > occupiedRect.top - collisionClearance;
+                  if (!intersects) return;
 
-                if (line === wrapper || line === previousLineWrapper) {
-                  neighborStartClearance = Math.max(
-                    neighborStartClearance,
-                    occupiedRect.bottom + collisionClearance - adlibRect.top
-                  );
-                } else {
-                  neighborBottomClearance = Math.max(
-                    neighborBottomClearance,
-                    adlibRect.bottom + collisionClearance - occupiedRect.top
-                  );
-                }
+                  if (line === wrapper || line === previousLineWrapper) {
+                    neighborStartClearance = Math.max(
+                      neighborStartClearance,
+                      occupiedRect.bottom + collisionClearance - adlibRect.top
+                    );
+                  } else {
+                    neighborBottomClearance = Math.max(
+                      neighborBottomClearance,
+                      adlibRect.bottom + collisionClearance - occupiedRect.top
+                    );
+                  }
+                });
               });
             });
           });
@@ -905,6 +942,11 @@ export const LyricLineWrapper = React.memo(({
                 neighborStartClearance / window.innerHeight * 100
               )}vh`
             );
+            staticContentRectsByLine.delete(wrapper);
+            occupiedContentByLine.delete(wrapper);
+            wrapper.querySelectorAll('.adlib-node').forEach(node => {
+              finalAdlibRectsByNode.delete(node);
+            });
           }
         });
         if (neighborBottomClearance > 0) {
@@ -971,6 +1013,7 @@ export const LyricLineWrapper = React.memo(({
             pendingLiveLayoutMeasurements.splice(measurementIndex, 1);
             if (pendingLiveLayoutMeasurements.length === 0) {
               liveLayoutMeasurementsPrioritized = false;
+              cancelLiveLayoutMeasurementFlush();
             }
           }
         }
