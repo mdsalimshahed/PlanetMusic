@@ -420,6 +420,7 @@ const LiveLyricsView = ({
               masterPalette={masterPalette}
               isPlayingCurrentSong={false}
               lineIndex={i}
+              isSongModalReady={isSongModalReady}
               onLiveLayoutReady={reportLineLayoutReady}
             />
         )

@@ -230,6 +230,7 @@ export const LyricLineWrapper = React.memo(({
   masterPalette,
   isPlayingCurrentSong,
   lineIndex,
+  isSongModalReady = true,
   onLiveLayoutReady
 }) => {
   const wrapperRef = useRef(null);
@@ -252,6 +253,7 @@ export const LyricLineWrapper = React.memo(({
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper || (viewMode !== 'focused' && viewMode !== 'live')) return undefined;
+    if (viewMode === 'live' && !isSongModalReady) return undefined;
 
     const measureWidestLine = element => {
       if (!element || !element.textContent.trim()) return null;
@@ -1018,7 +1020,7 @@ export const LyricLineWrapper = React.memo(({
     return () => {
       cancelled = true;
     };
-  }, [lineIndex, onLiveLayoutReady, renderedContent, viewMode]);
+  }, [isSongModalReady, lineIndex, onLiveLayoutReady, renderedContent, viewMode]);
 
   return (
     <div
