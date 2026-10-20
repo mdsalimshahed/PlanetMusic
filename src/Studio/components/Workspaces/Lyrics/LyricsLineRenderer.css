@@ -203,12 +203,17 @@ rt.pronunciation-text,
 }
 
 .live-layout-auto .chunk-translation.live-translation {
-  position: absolute;
+  position: relative;
   top: auto;
-  bottom: calc(100% + var(--dyn-trans-top-padding, 8px));
-  left: 50%;
+  right: auto;
+  bottom: auto;
+  left: auto;
   margin: 0;
-  transform: translateX(-50%);
+  transform: none;
+}
+
+.live-layout-auto .core-chunks > .main-live-translation {
+  margin-bottom: var(--dyn-trans-top-padding, 8px);
 }
 
 .preview-line .adlib-node .chunk-translation.live-translation {
@@ -237,12 +242,15 @@ rt.pronunciation-text,
 }
 
 .live-layout-auto .live-split-line > .adlib-node > .adlib-live-translation {
-  position: absolute;
+  position: relative;
   top: auto;
-  bottom: calc(100% + var(--dyn-trans-top-padding, 8px));
-  left: 50%;
-  margin: 0;
-  transform: translateX(-50%);
+  right: auto;
+  bottom: auto;
+  left: auto;
+  order: -1;
+  align-self: center;
+  margin: 0 0 var(--dyn-trans-top-padding, 8px);
+  transform: none;
 }
 
 .preview-line .live-split-line > .core-chunks.is-main-shifted-for-pronounced-foreign-adlib {

@@ -82,12 +82,12 @@ const StandardLine = ({
     }
     : autoLiveLayout
     ? {
-      position: 'absolute',
+      position: 'relative',
       top: 'auto',
-      left: 0,
+      left: 'auto',
       transform: 'none',
       display: 'block',
-      margin: 0,
+      margin: '0 0 var(--dyn-trans-top-padding, 8px)',
       width: 'max-content',
       minWidth: 0,
       maxWidth: '100%',

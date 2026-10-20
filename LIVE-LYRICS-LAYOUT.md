@@ -15,7 +15,8 @@ the label.
   when synced data is available and `lyricsViewMode === 'live'`.
 - `src/Studio/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx` owns the
   scroll region, playback-time tracking, active-line centering, layout readiness,
-  and optional entrance reveal.
+  and optional entrance reveal. Its CSS grid places intact lyric-line wrappers
+  in source order.
 - `src/Studio/components/Workspaces/Lyrics/Views/LiveLyricsView.css` defines the
   scroll region, lyric-line typography, active/inactive states, and motion.
 - `src/Studio/components/Workspaces/Lyrics/LyricsLineRenderer.jsx` measures and
@@ -78,7 +79,7 @@ height:
 
 ### Space between lines
 
-The flex gap between lyric wrappers is computed as:
+The grid row gap between lyric wrappers is computed as:
 
 ```text
 min(setting × 1vw, setting × 0.125vh)
@@ -86,7 +87,13 @@ min(setting × 1vw, setting × 0.125vh)
 
 The `Live Line Gap` setting defaults to `16` when absent and has a slider range
 of `0`–`60`. The setting is a unitless multiplier used in the formula, not a
-literal pixel gap. A zero value removes the flex gap.
+literal pixel gap. A zero value removes the row gap.
+
+Each `.lyric-line-wrapper` is one grid item. The browser places these intact
+line containers in source order and derives their vertical positions from their
+rendered heights and the row gap; JavaScript does not position the line
+containers or their wrapped text rows. Layout inside each line container stays
+with its existing renderer and CSS.
 
 ## 3. Lyric line box and typography
 
@@ -163,16 +170,17 @@ override the minimum.
 
 ## 5. Translation placement and appearance
 
-Live translations are rendered as part of each lyric line but are not part of
-the normal text flow above it:
+Live translations are rendered as part of each lyric line:
 
 - Inactive `.live-translation` text starts at zero opacity and hidden
   visibility. It becomes visible on an active line, with a `0.4s` opacity
   transition.
-- The main translation is placed above the main lyric. Its width is measured
-  from the widest rendered glyph row. The browser's intrinsic flex layout
-  centers it within the main text's layout box and places it above the lyric;
-  its bottom margin supplies the configured translation gap.
+- The main translation is placed above the main lyric in the line container's
+  normal flow. This lets the browser include its height when sizing and placing
+  the complete lyric-line container. Its width is measured from the widest
+  rendered glyph row. The browser's intrinsic flex layout centers it within
+  the main text's layout box; its bottom margin supplies the configured
+  translation gap.
 - Translations use the configured translation color and opacity, bold weight
   `800`, uppercase text, `0.5px` letter spacing, centered alignment, and line
   height `1.2`. They ignore pointer events.
@@ -184,8 +192,7 @@ the normal text flow above it:
 - `Translation Spacing (Top)` defaults to `8`. Although its settings control
   displays `vh`, `src/App.jsx` currently passes this value into the CSS variable
   with a `px` suffix. In Live mode the rendered translation's bottom margin
-  consumes this variable, and the measurement code positions the translation
-  using that margin.
+  consumes this variable.
 - A translation with no measurable glyph row is not given a computed alignment
   offset; the renderer's base styles apply.
 
@@ -229,8 +236,10 @@ pronunciation, before deciding placement.
   the appropriate edge when necessary. The inline clearance is
   `min(0.72vw, 1.5vh)`.
 - An ad-lib's secondary translation is sized to the widest row of its primary
-  glyphs. If that translation would overlap a main glyph row, the ad-lib is
-  moved to its own row and a dynamic collision gap is calculated.
+  glyphs. It stays inside the ad-lib container's normal flow so the containing
+  lyric line includes its height. If that translation would overlap a main
+  glyph row, the ad-lib is moved to its own row and a dynamic collision gap is
+  calculated.
 - Wrapped ad-libs with translations put that translation before the ad-lib
   primary text. Wrapped content is constrained to the available width.
 - The algorithm checks measured ad-lib text against the current line's main
@@ -254,10 +263,10 @@ pronunciation, before deciding placement.
 
 ## 8. Layout measurement, resizing, and caching
 
-- DOM text ranges are used to determine rendered glyph rows and widest lines
-  for translation sizing and collision decisions; the browser's flex layout
-  calculates final positions and wrapping from the current font and column
-  width rather than estimating from character counts.
+- The browser's grid layout places intact line containers and wraps their
+  content from the current font and column width. DOM text ranges are used only
+  for translation sizing and the documented ad-lib collision decisions, not to
+  calculate line-container positions.
 - Measurements are queued instead of synchronously repeated for every change.
   Resize observers remeasure when a line's width changes by at least `0.5px`.
 - Font loading and font changes invalidate or refresh measurements. The Live
@@ -278,7 +287,7 @@ pronunciation, before deciding placement.
 
 | Setting | Live layout use | Control range / fallback |
 | --- | --- | --- |
-| `liveSyncLineGap` | Unitless multiplier in the viewport-relative flex-gap formula | Slider `0`–`60`; fallback `16` |
+| `liveSyncLineGap` | Unitless multiplier in the viewport-relative grid row-gap formula | Slider `0`–`60`; fallback `16` |
 | `liveSyncFontSize` | Upper bound for responsive lyric font size, supplied as `vh` | Slider `2`–`10vh`, step `0.5vh`; saved default `4.5vh` |
 | `translationFontSize` | Translation font size relative to the lyric | Slider `0.3`–`1.5em`; fallback `0.55em` |
 | `translationColor` | Translation text color | Fallback `#ffffff` |

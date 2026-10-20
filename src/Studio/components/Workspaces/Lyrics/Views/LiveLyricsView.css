@@ -7,8 +7,9 @@
   overflow-x: hidden;
   overflow-anchor: none;
   scroll-behavior: auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
   gap: min(
     calc(var(--dyn-live-sync-gap, 16) * 1vw),
     calc(var(--dyn-live-sync-gap, 16) * 0.125vh)
