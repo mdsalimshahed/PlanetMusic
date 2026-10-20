@@ -207,7 +207,7 @@ rt.pronunciation-text,
 }
 
 .preview-line .live-split-line {
-  column-gap: 12px;
+  column-gap: 0.375em;
   align-items: baseline !important;
 }
 
@@ -226,7 +226,7 @@ rt.pronunciation-text,
 .preview-line .live-split-line {
   padding-block-end: calc(
     var(--live-main-foreign-adlib-offset-y, 0vh) +
-    var(--live-adlib-neighbor-clearance, 0px)
+    var(--live-adlib-neighbor-clearance, 0vh)
   ) !important;
 }
 
@@ -257,7 +257,7 @@ rt.pronunciation-text,
   width: 100%;
   margin-block-start: calc(
     var(--live-adlib-collision-gap, 0vh) +
-    var(--live-adlib-neighbor-clearance-start, 0px)
+    var(--live-adlib-neighbor-clearance-start, 0vh)
   ) !important;
 }
 

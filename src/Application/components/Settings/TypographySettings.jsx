@@ -10,8 +10,8 @@ const TypographySettings = ({ settings, handleChange, getSliderStyle }) => (
       <SettingsSubheading seed="typography-live">Live Scrolling View</SettingsSubheading>
       <SettingSlider
         label="Live Line Gap"
-        description="Adjusts the vertical space between lyric lines in Live View."
-        name="liveSyncLineGap" value={settings.liveSyncLineGap ?? 16} min={0} max={60} unit="vh"
+        description="Adjusts the viewport-relative vertical space between lyric lines in Live View."
+        name="liveSyncLineGap" value={settings.liveSyncLineGap ?? 16} min={0} max={60}
         handleChange={handleChange} getSliderStyle={getSliderStyle}
       />
       <SettingSlider

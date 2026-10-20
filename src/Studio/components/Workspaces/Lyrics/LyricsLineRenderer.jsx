@@ -376,9 +376,12 @@ export const LyricLineWrapper = React.memo(({
               translation.style.width = `${Math.max(1, Math.floor(width))}px`;
               translation.style.setProperty(
                 '--live-translation-offset-x',
-                `${(center - parentBounds.left) / scaleX - width / 2}px`
+                `${(
+                  ((center - parentBounds.left) / scaleX - width / 2) /
+                  window.innerWidth
+                ) * 100}vw`
               );
-              translation.style.setProperty('--live-translation-offset-y', '0px');
+              translation.style.setProperty('--live-translation-offset-y', '0vh');
               const translationBounds = translation.getBoundingClientRect();
               const desiredGap = (
                 parseFloat(getComputedStyle(translation).marginBottom) || 0
@@ -389,7 +392,7 @@ export const LyricLineWrapper = React.memo(({
                   glyphs.getBoundingClientRect().top -
                   translationBounds.bottom -
                   desiredGap
-                ) / scaleY}px`
+                ) / scaleY / window.innerHeight * 100}vh`
               );
             }
           }
@@ -405,57 +408,16 @@ export const LyricLineWrapper = React.memo(({
           ? wrapper.getBoundingClientRect().height / wrapper.offsetHeight
           : 1;
         const mainGlyphs = wrapper.querySelector('.core-chunks > .main-lyrics-layer');
-        const mainHasPronunciation = Boolean(
-          coreChunks?.querySelector('.pronunciation-text')
-        );
         let mainGlyphRows = getGlyphRows(mainGlyphs);
         splitLine?.classList.toggle('is-main-wrapped', mainGlyphRows.length > 1);
         let splitLineBounds = splitLine?.getBoundingClientRect();
         const direction = mainGlyphs ? getComputedStyle(mainGlyphs).direction : 'ltr';
-        let lastMainRow = mainGlyphRows[mainGlyphRows.length - 1];
-        let hasForeignPronunciation = false;
-        let hasOnlyPronouncedForeignGlyphs = Boolean(mainGlyphs);
-        if (mainGlyphs) {
-          const walker = document.createTreeWalker(mainGlyphs, NodeFilter.SHOW_TEXT, {
-            acceptNode: textNode => (
-              textNode.parentElement?.closest('.pronunciation-text')
-                ? NodeFilter.FILTER_REJECT
-                : NodeFilter.FILTER_ACCEPT
-            )
-          });
-          let textNode;
-          while ((textNode = walker.nextNode())) {
-            const meaningfulText = textNode.textContent.replace(/[^\p{L}\p{N}]/gu, '');
-            if (!meaningfulText) continue;
-            const foreignChunk = textNode.parentElement?.closest('.inline-cjk-chunk');
-            if (!foreignChunk?.querySelector('.pronunciation-text')) {
-              hasOnlyPronouncedForeignGlyphs = false;
-              break;
-            }
-            hasForeignPronunciation = true;
-          }
-        }
-        const isFullyPronouncedForeignLine =
-          hasOnlyPronouncedForeignGlyphs && hasForeignPronunciation;
         const adlibMeasurements = Array.from(adlibNodes, adlib => {
-          const glyphs = adlib.querySelector(':scope > .primary-text');
-          const glyphText = glyphs?.textContent || '';
-          const meaningfulGlyphText = glyphText.replace(/[^\p{L}\p{N}]/gu, '');
-          const isForeignScript = meaningfulGlyphText.length > 0 &&
-            !/^\p{Script=Latin}+$/u.test(meaningfulGlyphText);
-          const isEnglishAdlib = /\p{Script=Latin}/u.test(glyphText) &&
-            /^[\p{Script=Latin}\p{N}\p{P}\p{S}\s]*$/u.test(glyphText);
           return {
             adlib,
-            glyphRows: getGlyphRows(glyphs),
-            bounds: adlib.getBoundingClientRect(),
             hasSecondary: Boolean(
               adlib.querySelector('.adlib-live-translation, .pronunciation-text')
-            ),
-            needsForeignLineOffset: isFullyPronouncedForeignLine && isEnglishAdlib,
-            needsMainLineOffset: !mainHasPronunciation &&
-              isForeignScript &&
-              Boolean(adlib.querySelector('.pronunciation-text'))
+            )
           };
         });
         const getAdlibStructureRects = adlib => {
@@ -499,7 +461,7 @@ export const LyricLineWrapper = React.memo(({
             });
           });
         };
-        const getStructureBounds = rects => rects.reduce((bounds, rect) => ({
+        const getBoundsForRects = rects => rects.reduce((bounds, rect) => ({
           left: Math.min(bounds.left, rect.left),
           right: Math.max(bounds.right, rect.right),
           top: Math.min(bounds.top, rect.top),
@@ -538,319 +500,74 @@ export const LyricLineWrapper = React.memo(({
             .filter(adlib => adlib !== excludedAdlib)
             .flatMap(getAdlibStructureRects)
         ];
-        const hasAdlibStructureCollision = (adlib, clearance = 3) => {
-          const structureBounds = getStructureBounds(getAdlibStructureRects(adlib));
-          if (!Number.isFinite(structureBounds.left)) return false;
-          const adlibRects = [structureBounds];
-          const occupiedRects = [
-            ...getOccupiedContentRects(wrapper, adlib),
-            ...neighboringLineWrappers
-              .flatMap(line => getOccupiedContentRects(line))
-          ];
-
-          return adlibRects.some(rect => occupiedRects.some(other => (
-            rect.left < other.right + clearance &&
-            rect.right > other.left - clearance &&
-            rect.top < other.bottom + clearance &&
-            rect.bottom > other.top - clearance
-          )));
-        };
-        const pronouncedForeignAdlib = adlibMeasurements.find(item => (
-          item.needsMainLineOffset && item.glyphRows.length > 0
-        ));
-        const firstMainGlyphRow = mainGlyphRows[0];
-        const pronouncedForeignAdlibRow = pronouncedForeignAdlib?.glyphRows[0];
-        const adlibPronunciation = pronouncedForeignAdlib?.adlib.querySelector('.pronunciation-text');
-        if (
-          pronouncedForeignAdlibRow &&
-          firstMainGlyphRow &&
-          adlibPronunciation &&
-          coreChunks &&
-          window.innerHeight > 0
-        ) {
-          const pronunciationStyle = getComputedStyle(adlibPronunciation);
-          const desiredShift = (
-            parseFloat(pronunciationStyle.fontSize) +
-            parseFloat(pronunciationStyle.marginTop)
-          ) / 2;
-          coreChunks.classList.add('is-main-shifted-for-pronounced-foreign-adlib');
-          splitLine?.classList.add('is-main-shifted-for-pronounced-foreign-adlib');
-          splitLine?.style.setProperty(
-            '--live-main-foreign-adlib-offset-y',
-            `${(desiredShift / scaleY / window.innerHeight) * 100}vh`
-          );
-          coreChunks.style.setProperty(
-            '--live-main-foreign-adlib-offset-y',
-            `${(desiredShift / scaleY / window.innerHeight) * 100}vh`
-          );
-          mainGlyphRows = getGlyphRows(mainGlyphs);
-          lastMainRow = mainGlyphRows[mainGlyphRows.length - 1];
-          splitLineBounds = splitLine?.getBoundingClientRect();
-        }
-        let previousGlyphRows = mainGlyphRows;
-        const mainPronunciationRects = Array.from(
-          coreChunks?.querySelectorAll('.pronunciation-text') || []
-        ).flatMap(getTextRects);
-        const mainTranslationRects = getTextRects(
-          wrapper.querySelector('.main-live-translation')
-        );
-        const lastMainRowInlineEdge = direction === 'rtl'
-          ? Math.min(
-            lastMainRow?.left ?? Infinity,
-            ...mainPronunciationRects.map(rect => rect.left),
-            ...mainTranslationRects.map(rect => rect.left)
-          )
-          : Math.max(
-            lastMainRow?.right ?? -Infinity,
-            ...mainPronunciationRects.map(rect => rect.right),
-            ...mainTranslationRects.map(rect => rect.right)
-          );
-        let wrappedMainInlineCursor = direction === 'rtl'
-          ? (Number.isFinite(lastMainRowInlineEdge) ? lastMainRowInlineEdge : undefined)
-          : (Number.isFinite(lastMainRowInlineEdge) ? lastMainRowInlineEdge : undefined);
-        let mainPartInlineCursor = lastMainRow
-          ? (direction === 'rtl' ? lastMainRow.left : lastMainRow.right)
+        const mainBoxBounds = getBoundsForRects([
+          ...getGlyphRows(mainGlyphs),
+          ...Array.from(
+            coreChunks?.querySelectorAll('.pronunciation-text') || []
+          ).flatMap(getTextRects)
+        ]);
+        let rowCursor = mainBoxBounds
+          ? direction === 'rtl' ? mainBoxBounds.left : mainBoxBounds.right
           : undefined;
-        let wrappedAdlibInlineAnchor;
+        let rowBottom = mainBoxBounds?.bottom;
+        const inlineGap = Math.min(
+          window.innerWidth * 0.012,
+          window.innerHeight * 0.025
+        ) * scaleX;
+        const currentLineBounds = wrapper.getBoundingClientRect();
+        const previousLineBounds = previousLineWrapper?.getBoundingClientRect();
+        const normalLineGap = previousLineBounds
+          ? Math.max(0, currentLineBounds.top - previousLineBounds.bottom)
+          : 0;
 
-        adlibMeasurements.forEach(({
-          adlib,
-          glyphRows: adlibGlyphRows,
-          bounds,
-          hasSecondary,
-          needsForeignLineOffset
-        }, adlibIndex) => {
-          const previousAdlib = adlibMeasurements[adlibIndex - 1]?.adlib;
-          if (previousAdlib) {
-            const previousStructureBounds = getStructureBounds(
-              getAdlibStructureRects(previousAdlib)
-            );
-            const previousGlyphRow = getGlyphRows(
-              previousAdlib.querySelector(':scope > .primary-text')
-            )[0];
-            if (previousGlyphRow && Number.isFinite(previousStructureBounds.left)) {
-              wrappedAdlibInlineAnchor = {
-                cursor: direction === 'rtl'
-                  ? previousStructureBounds.left
-                  : previousStructureBounds.right,
-                glyphRow: previousGlyphRow
-              };
-            }
+        adlibMeasurements.forEach(({ adlib, hasSecondary }) => {
+          adlib.classList.toggle('has-secondary', hasSecondary);
+          if (!splitLineBounds || rowCursor === undefined || rowBottom === undefined) return;
+
+          adlib.classList.remove('is-adlib-new-row', 'is-adlib-wrapped');
+          adlib.classList.add('is-adlib-inline-after-wrapped-main');
+          const adlibNodeBounds = adlib.getBoundingClientRect();
+          const adlibBoxBounds = getBoundsForRects(getAdlibStructureRects(adlib));
+          const adlibWidth = adlibBoxBounds.right - adlibBoxBounds.left;
+          const adlibHeight = adlibBoxBounds.bottom - adlibBoxBounds.top;
+          let targetLeft = direction === 'rtl'
+            ? rowCursor - inlineGap - adlibWidth
+            : rowCursor + inlineGap;
+          let targetTop = rowBottom - adlibHeight;
+          const fitsBesidePreviousBox = direction === 'rtl'
+            ? targetLeft >= splitLineBounds.left
+            : targetLeft + adlibWidth <= splitLineBounds.right;
+
+          if (!fitsBesidePreviousBox) {
+            targetLeft = direction === 'rtl'
+              ? splitLineBounds.right - adlibWidth
+              : splitLineBounds.left;
+            targetTop = rowBottom + normalLineGap;
+            rowBottom = targetTop + adlibHeight;
           }
 
-          adlib.classList.toggle(
-            'is-english-adlib-on-foreign-line',
-            needsForeignLineOffset && !hasSecondary
-          );
-          adlib.classList.toggle(
-            'has-secondary',
-            hasSecondary
-          );
-
-          const mainWrappedInlineCandidate = lastMainRow &&
-            splitLineBounds &&
-            adlibGlyphRows.length > 0 &&
-            (wrappedAdlibInlineAnchor !== undefined ||
-              (hasSecondary
-                ? wrappedMainInlineCursor !== undefined
-                : mainPartInlineCursor !== undefined));
-          let adlibStructureCollision = false;
-          if (mainWrappedInlineCandidate) {
-            const structureBounds = getStructureBounds(
-              getAdlibStructureRects(adlib)
-            );
-            const startsAfterPreviousAdlib = wrappedAdlibInlineAnchor !== undefined;
-            const inlineCursor = startsAfterPreviousAdlib
-              ? wrappedAdlibInlineAnchor.cursor
-              : hasSecondary
-                ? wrappedMainInlineCursor
-                : mainPartInlineCursor;
-            const inlineGap = 12 * scaleX;
-            const inlineLeft = direction === 'rtl'
-              ? inlineCursor - inlineGap -
-                (structureBounds.right - structureBounds.left)
-              : inlineCursor + inlineGap;
-            const inlineRight = inlineLeft +
-              (structureBounds.right - structureBounds.left);
-            const fitsBesideLastContent = direction === 'rtl'
-              ? inlineLeft >= splitLineBounds.left
-              : inlineRight <= splitLineBounds.right;
-
-            if (fitsBesideLastContent) {
-              const glyphRow = adlibGlyphRows[0];
-              adlib.classList.remove('is-adlib-new-row', 'is-adlib-wrapped');
-              adlib.classList.add('is-adlib-inline-after-wrapped-main');
-              const positionedAdlibBounds = adlib.getBoundingClientRect();
-              const positionedStructureBounds = getStructureBounds(
-                getAdlibStructureRects(adlib)
-              );
-              const structureOffsetLeft =
-                positionedStructureBounds.left - positionedAdlibBounds.left;
-              const structureOffsetRight =
-                positionedStructureBounds.right - positionedAdlibBounds.left;
-              const nodeLeft = direction === 'rtl'
-                ? inlineRight - structureOffsetRight
-                : inlineLeft - structureOffsetLeft;
-              adlib.style.removeProperty('--live-adlib-glyph-offset-y');
-              adlib.style.setProperty(
-                '--live-adlib-inline-x',
-                `${(nodeLeft - splitLineBounds.left) / scaleX}px`
-              );
-              const inlineAnchorRow = startsAfterPreviousAdlib
-                ? wrappedAdlibInlineAnchor.glyphRow
-                : lastMainRow;
-              let inlineTop = (
-                inlineAnchorRow.bottom - (glyphRow.bottom - glyphRow.top) -
-                (glyphRow.top - bounds.top) - splitLineBounds.top
-              ) / scaleY;
-              adlib.style.setProperty('--live-adlib-inline-y', `${inlineTop}px`);
-              const positionedGlyphRow = getGlyphRows(
-                adlib.querySelector(':scope > .primary-text')
-              )[0];
-              if (positionedGlyphRow) {
-                const animationOffsetY = new DOMMatrixReadOnly(
-                  getComputedStyle(adlib).transform
-                ).m42;
-                const alignGlyphBottom = startsAfterPreviousAdlib || !hasSecondary;
-                const alignedEdge = alignGlyphBottom
-                  ? positionedGlyphRow.bottom - animationOffsetY
-                  : positionedGlyphRow.top - animationOffsetY;
-                const targetEdge = startsAfterPreviousAdlib
-                  ? wrappedAdlibInlineAnchor.glyphRow.bottom
-                  : hasSecondary
-                  ? lastMainRow.top
-                  : lastMainRow.bottom;
-                const verticalCorrection = (targetEdge - alignedEdge) / scaleY;
-                inlineTop += verticalCorrection;
-                adlib.style.setProperty('--live-adlib-inline-y', `${inlineTop}px`);
-              }
-              adlibStructureCollision = hasAdlibStructureCollision(adlib, 0);
-              if (!adlibStructureCollision) {
-                const positionedAdlibGlyphRow = getGlyphRows(
-                  adlib.querySelector(':scope > .primary-text')
-                )[0];
-                wrappedAdlibInlineAnchor = {
-                  cursor: direction === 'rtl' ? inlineLeft : inlineRight,
-                  glyphRow: positionedAdlibGlyphRow
-                };
-                if (!startsAfterPreviousAdlib && hasSecondary) {
-                  wrappedMainInlineCursor = direction === 'rtl'
-                    ? inlineLeft
-                    : inlineRight;
-                } else if (!startsAfterPreviousAdlib) {
-                  mainPartInlineCursor = direction === 'rtl'
-                    ? inlineLeft
-                    : inlineRight;
-                }
-                return;
-              }
-            }
-            adlib.classList.remove('is-adlib-inline-after-wrapped-main');
-            adlib.style.removeProperty('--live-adlib-inline-x');
-            adlib.style.removeProperty('--live-adlib-inline-y');
-            if (startsAfterPreviousAdlib) {
-              wrappedAdlibInlineAnchor = undefined;
-            } else if (hasSecondary) {
-              wrappedMainInlineCursor = undefined;
-            } else {
-              mainPartInlineCursor = undefined;
-            }
-          } else {
-            adlib.classList.remove('is-adlib-inline-after-wrapped-main');
-            adlib.style.removeProperty('--live-adlib-inline-x');
-            adlib.style.removeProperty('--live-adlib-inline-y');
-          }
-
-          if (
-            !adlibStructureCollision &&
-            !adlib.classList.contains('is-adlib-inline-after-wrapped-main')
-          ) {
-            adlibStructureCollision = hasAdlibStructureCollision(adlib);
-          }
-
-          const previousRow = previousGlyphRows[previousGlyphRows.length - 1];
-          const firstAdlibRow = adlibGlyphRows[0];
-          const rowsOverlap = previousRow && firstAdlibRow &&
-            firstAdlibRow.top < previousRow.bottom &&
-            firstAdlibRow.bottom > previousRow.top;
-          const isAfterPreviousRow = previousRow && firstAdlibRow && (
-            direction === 'rtl'
-              ? firstAdlibRow.right <= previousRow.left
-              : firstAdlibRow.left >= previousRow.right
-          );
-          const isInlineWithPreviousRow = rowsOverlap && isAfterPreviousRow;
-          const isPositionedInline = adlib.classList.contains(
-            'is-adlib-inline-after-wrapped-main'
-          );
-          const mustMoveToOwnRow = !isPositionedInline && (
-            adlibStructureCollision ||
-            (
-              adlib.classList.contains('has-secondary') &&
+          adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+          adlib.style.setProperty(
+            '--live-adlib-inline-x',
+            `${(
               (
-                mainGlyphRows.length > 1 ||
-                !isInlineWithPreviousRow
-              )
-            )
+                adlibNodeBounds.left + targetLeft - adlibBoxBounds.left -
+                splitLineBounds.left
+              ) / scaleX /
+              window.innerWidth
+            ) * 100}vw`
           );
-          adlib.classList.toggle('is-adlib-wrapped', mustMoveToOwnRow);
-          adlib.classList.toggle(
-            'is-adlib-new-row',
-            !isPositionedInline &&
-              (!isInlineWithPreviousRow || mustMoveToOwnRow)
+          adlib.style.setProperty(
+            '--live-adlib-inline-y',
+            `${(
+              (
+                adlibNodeBounds.top + targetTop - adlibBoxBounds.top -
+                splitLineBounds.top
+              ) / scaleY /
+              window.innerHeight
+            ) * 100}vh`
           );
-
-          {
-            const rowGlyph = getGlyphRows(
-              adlib.querySelector(':scope > .primary-text')
-            )[0];
-            const rowStructureBounds = getStructureBounds(
-              getAdlibStructureRects(adlib)
-            );
-            if (rowGlyph && Number.isFinite(rowStructureBounds.left)) {
-              wrappedAdlibInlineAnchor = {
-                cursor: direction === 'rtl'
-                  ? rowStructureBounds.left
-                  : rowStructureBounds.right,
-                glyphRow: rowGlyph
-              };
-            }
-          }
-
-          if (!isInlineWithPreviousRow || mustMoveToOwnRow || isPositionedInline) {
-            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
-            previousGlyphRows = adlibGlyphRows;
-            return;
-          }
-
-          const previousOffset = parseFloat(
-            adlib.style.getPropertyValue('--live-adlib-glyph-offset-y')
-          ) || 0;
-          const adlibGlyphBottom = adlibGlyphRows.reduce(
-            (bottom, row) => Math.max(bottom, row.bottom),
-            -Infinity
-          ) - previousOffset * scaleX;
-
-          if (Number.isFinite(adlibGlyphBottom) && previousRow) {
-            adlib.style.setProperty(
-              '--live-adlib-glyph-offset-y',
-              `${(previousRow.bottom - adlibGlyphBottom) / scaleX}px`
-            );
-          }
-          const positionedGlyphRow = getGlyphRows(
-            adlib.querySelector(':scope > .primary-text')
-          )[0];
-          const positionedStructureBounds = getStructureBounds(
-            getAdlibStructureRects(adlib)
-          );
-          if (positionedGlyphRow && Number.isFinite(positionedStructureBounds.left)) {
-            wrappedAdlibInlineAnchor = {
-              cursor: direction === 'rtl'
-                ? positionedStructureBounds.left
-                : positionedStructureBounds.right,
-              glyphRow: positionedGlyphRow
-            };
-          }
-          previousGlyphRows = adlibGlyphRows;
+          rowCursor = direction === 'rtl' ? targetLeft : targetLeft + adlibWidth;
         });
 
         wrapper.querySelectorAll('.chunk-translation.live-translation').forEach(translation => {
@@ -879,16 +596,77 @@ export const LyricLineWrapper = React.memo(({
             ? (center - parentBounds.left) / scaleX - width / 2
             : (center - parentBounds.left) / scaleX - parent.offsetWidth / 2;
           translation.style.width = `${Math.max(1, Math.floor(width))}px`;
-          translation.style.setProperty('--live-translation-offset-y', '0px');
-          translation.style.setProperty('--live-translation-offset-x', `${offset}px`);
+          translation.style.setProperty('--live-translation-offset-y', '0vh');
+          translation.style.setProperty(
+            '--live-translation-offset-x',
+            `${offset / window.innerWidth * 100}vw`
+          );
           const translationBounds = translation.getBoundingClientRect();
           const desiredGap = (parseFloat(getComputedStyle(translation).marginBottom) || 0) * scaleY;
           const verticalOffset = glyphs.getBoundingClientRect().top -
             translationBounds.bottom - desiredGap;
-          translation.style.setProperty('--live-translation-offset-y', `${verticalOffset / scaleY}px`);
+          translation.style.setProperty(
+            '--live-translation-offset-y',
+            `${verticalOffset / scaleY / window.innerHeight * 100}vh`
+          );
+        });
+
+        rowCursor = mainBoxBounds
+          ? direction === 'rtl' ? mainBoxBounds.left : mainBoxBounds.right
+          : undefined;
+        rowBottom = mainBoxBounds?.bottom;
+        adlibMeasurements.forEach(({ adlib }) => {
+          if (
+            !splitLineBounds ||
+            rowCursor === undefined ||
+            rowBottom === undefined ||
+            !adlib.classList.contains('is-adlib-inline-after-wrapped-main')
+          ) return;
+
+          const adlibNodeBounds = adlib.getBoundingClientRect();
+          const adlibBoxBounds = getBoundsForRects(getAdlibStructureRects(adlib));
+          if (!Number.isFinite(adlibBoxBounds.left)) return;
+          const adlibWidth = adlibBoxBounds.right - adlibBoxBounds.left;
+          const adlibHeight = adlibBoxBounds.bottom - adlibBoxBounds.top;
+          let targetLeft = direction === 'rtl'
+            ? rowCursor - inlineGap - adlibWidth
+            : rowCursor + inlineGap;
+          let targetTop = rowBottom - adlibHeight;
+          const fitsBesidePreviousBox = direction === 'rtl'
+            ? targetLeft >= splitLineBounds.left
+            : targetLeft + adlibWidth <= splitLineBounds.right;
+
+          if (!fitsBesidePreviousBox) {
+            targetLeft = direction === 'rtl'
+              ? splitLineBounds.right - adlibWidth
+              : splitLineBounds.left;
+            targetTop = rowBottom + normalLineGap;
+            rowBottom = targetTop + adlibHeight;
+          }
+
+          adlib.style.setProperty(
+            '--live-adlib-inline-x',
+            `${(
+              (
+                adlibNodeBounds.left + targetLeft - adlibBoxBounds.left -
+                splitLineBounds.left
+              ) / scaleX / window.innerWidth
+            ) * 100}vw`
+          );
+          adlib.style.setProperty(
+            '--live-adlib-inline-y',
+            `${(
+              (
+                adlibNodeBounds.top + targetTop - adlibBoxBounds.top -
+                splitLineBounds.top
+              ) / scaleY / window.innerHeight
+            ) * 100}vh`
+          );
+          rowCursor = direction === 'rtl' ? targetLeft : targetLeft + adlibWidth;
         });
 
         adlibMeasurements.forEach(({ adlib }) => {
+          if (adlib.classList.contains('is-adlib-inline-after-wrapped-main')) return;
           const translation = adlib.querySelector(':scope > .adlib-live-translation');
           if (!translation || mainGlyphRows.length === 0) return;
 
@@ -920,7 +698,8 @@ export const LyricLineWrapper = React.memo(({
 
           if (
             overlappingRows.length > 0 &&
-            !adlib.classList.contains('is-adlib-wrapped')
+            !adlib.classList.contains('is-adlib-wrapped') &&
+            !adlib.classList.contains('is-adlib-inline-after-wrapped-main')
           ) {
             adlib.classList.remove('is-adlib-inline-after-wrapped-main');
             adlib.classList.add('is-adlib-wrapped', 'is-adlib-new-row');
@@ -957,6 +736,10 @@ export const LyricLineWrapper = React.memo(({
         });
 
         let neighborBottomClearance = 0;
+        const collisionClearance = Math.min(
+          window.innerWidth * 0.005,
+          window.innerHeight * 0.0025
+        );
         adlibMeasurements.forEach(({ adlib }) => {
           const adlibRects = getAdlibStructureRects(adlib);
           let neighborStartClearance = 0;
@@ -964,7 +747,9 @@ export const LyricLineWrapper = React.memo(({
           if (splitLineBottom !== undefined) {
             neighborBottomClearance = Math.max(
               neighborBottomClearance,
-              ...adlibRects.map(rect => rect.bottom + 3 - splitLineBottom)
+              ...adlibRects.map(
+                rect => rect.bottom + collisionClearance - splitLineBottom
+              )
             );
           }
           [wrapper, ...neighboringLineWrappers].forEach(line => {
@@ -974,28 +759,32 @@ export const LyricLineWrapper = React.memo(({
             );
             occupiedRects.forEach(occupiedRect => {
               adlibRects.forEach(adlibRect => {
-                const intersects = adlibRect.left < occupiedRect.right + 1 &&
-                  adlibRect.right > occupiedRect.left - 1 &&
-                  adlibRect.top < occupiedRect.bottom + 1 &&
-                  adlibRect.bottom > occupiedRect.top - 1;
+                const intersects =
+                  adlibRect.left < occupiedRect.right + collisionClearance &&
+                  adlibRect.right > occupiedRect.left - collisionClearance &&
+                  adlibRect.top < occupiedRect.bottom + collisionClearance &&
+                  adlibRect.bottom > occupiedRect.top - collisionClearance;
                 if (!intersects) return;
 
                 if (line === wrapper || line === previousLineWrapper) {
                   neighborStartClearance = Math.max(
                     neighborStartClearance,
-                    occupiedRect.bottom + 1 - adlibRect.top
+                    occupiedRect.bottom + collisionClearance - adlibRect.top
                   );
                 } else {
                   neighborBottomClearance = Math.max(
                     neighborBottomClearance,
-                    adlibRect.bottom + 1 - occupiedRect.top
+                    adlibRect.bottom + collisionClearance - occupiedRect.top
                   );
                 }
               });
             });
           });
 
-          if (neighborStartClearance > 0) {
+          if (
+            neighborStartClearance > 0 &&
+            !adlib.classList.contains('is-adlib-inline-after-wrapped-main')
+          ) {
             adlib.classList.remove('is-adlib-inline-after-wrapped-main');
             adlib.classList.add('is-adlib-wrapped', 'is-adlib-new-row');
             adlib.style.removeProperty('--live-adlib-inline-x');
@@ -1004,14 +793,16 @@ export const LyricLineWrapper = React.memo(({
             adlib.style.removeProperty('--live-translation-offset-y');
             adlib.style.setProperty(
               '--live-adlib-neighbor-clearance-start',
-              `${Math.ceil(neighborStartClearance)}px`
+              `${(
+                neighborStartClearance / window.innerHeight * 100
+              )}vh`
             );
           }
         });
         if (neighborBottomClearance > 0) {
           splitLine?.style.setProperty(
             '--live-adlib-neighbor-clearance',
-            `${Math.ceil(neighborBottomClearance)}px`
+            `${neighborBottomClearance / window.innerHeight * 100}vh`
           );
         }
 

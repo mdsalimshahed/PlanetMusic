@@ -476,7 +476,7 @@ const App = () => {
     '--dyn-artist-name-font-size': `${settings.artistNameFontSize ?? 3.5}vh`,
     '--dyn-modal-split': settings.modalSplitRatio,
     '--dyn-modal-padding-y': `${settings.modalPaddingY}vh`,
-    '--dyn-live-sync-gap': `${settings.liveSyncLineGap ?? 16}px`,
+    '--dyn-live-sync-gap': settings.liveSyncLineGap ?? 16,
     '--dyn-trans-color': settings.translationColor ?? '#ffffff',
     '--dyn-trans-opacity': settings.translationOpacity ?? 0.9,
     '--dyn-trans-top-padding': `${settings.translationTopPadding ?? 8}px`,

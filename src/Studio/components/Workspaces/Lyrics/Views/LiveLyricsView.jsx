@@ -375,7 +375,7 @@ const LiveLyricsView = ({
       className={`live-lyrics-preview${isLayoutReady ? '' : ' is-layout-pending'}`}
       ref={containerRef}
       aria-hidden={!isLayoutReady}
-      style={{ '--dyn-live-sync-gap': `${settings?.liveSyncLineGap ?? 16}px` }}
+      style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >
       {liveParsedLyrics.map((line, i) => {
         return (
