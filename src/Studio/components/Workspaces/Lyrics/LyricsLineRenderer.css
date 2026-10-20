@@ -207,7 +207,12 @@ rt.pronunciation-text,
 }
 
 .preview-line .live-split-line {
+  column-gap: 12px;
   align-items: baseline !important;
+}
+
+.preview-line .live-split-line > .adlib-node {
+  margin-inline-start: 0 !important;
 }
 
 .preview-line .live-split-line > .core-chunks {

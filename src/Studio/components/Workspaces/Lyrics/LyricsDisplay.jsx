@@ -92,7 +92,6 @@ const LyricsDisplay = ({
         isPlaying={isPlaying} 
         isPlayingCurrentSong={isPlayingCurrentSong} 
         activeSource={activeSource}
-        disableAnimations={settings?.disableAnimations} 
         isEditing={isEditing} 
       />
     </>

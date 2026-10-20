@@ -202,10 +202,7 @@ const LiveLyricsView = ({
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container || !shouldAnimateEntrance || !isLayoutReady) return undefined;
-    if (
-      settings?.disableAnimations ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       onEntranceAnimationComplete?.(selectedSong?.trackId);
       return undefined;
     }
@@ -318,7 +315,6 @@ const LiveLyricsView = ({
     onEntranceAnimationComplete,
     isLayoutReady,
     selectedSong?.trackId,
-    settings?.disableAnimations,
     shouldAnimateEntrance
   ]);
 

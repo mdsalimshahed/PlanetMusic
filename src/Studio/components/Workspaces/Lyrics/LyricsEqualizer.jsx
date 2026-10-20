@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import './LyricsEqualizer.css';
 
-const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disableAnimations, isEditing }) => {
+const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, isEditing }) => {
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
   const revealRef = useRef(Array(40).fill(0));
@@ -18,7 +18,7 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
   }, [activeSource, isPlaying, isPlayingCurrentSong]);
 
   useEffect(() => {
-    if (disableAnimations || isEditing) return;
+    if (isEditing) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -203,9 +203,9 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, disabl
       resizeObserver.disconnect();
       window.removeEventListener('globalPlayState', handleGlobalPlayState);
     };
-  }, [activeSource, disableAnimations, isEditing, isPlayingCurrentSong]);
+  }, [activeSource, isEditing, isPlayingCurrentSong]);
 
-  if (disableAnimations || isEditing) return null;
+  if (isEditing) return null;
 
   return (
     <div className={`lyrics-equalizer ${supportsEqualizer ? 'source-supported' : 'source-fading-out'}`}>

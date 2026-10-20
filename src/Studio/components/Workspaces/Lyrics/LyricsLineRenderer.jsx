@@ -14,7 +14,29 @@ export { renderFormattedTranslation } from '../../../../components/LyricsRendere
 const LIVE_LAYOUT_BATCH_SIZE = 2;
 const LIVE_LAYOUT_FRAME_BUDGET_MS = 5;
 const pendingLiveLayoutMeasurements = new Set();
+const liveLayoutResizeMeasurements = new Set();
 let liveLayoutMeasurementFrame = null;
+let liveLayoutResizeListenerAttached = false;
+
+const handleLiveLayoutResize = () => {
+  liveLayoutResizeMeasurements.forEach(schedule => schedule());
+};
+
+const registerLiveLayoutResizeMeasurement = schedule => {
+  liveLayoutResizeMeasurements.add(schedule);
+  if (!liveLayoutResizeListenerAttached) {
+    window.addEventListener('resize', handleLiveLayoutResize);
+    liveLayoutResizeListenerAttached = true;
+  }
+
+  return () => {
+    liveLayoutResizeMeasurements.delete(schedule);
+    if (liveLayoutResizeMeasurements.size === 0 && liveLayoutResizeListenerAttached) {
+      window.removeEventListener('resize', handleLiveLayoutResize);
+      liveLayoutResizeListenerAttached = false;
+    }
+  };
+};
 
 const flushLiveLayoutMeasurements = () => {
   liveLayoutMeasurementFrame = null;
@@ -294,6 +316,8 @@ export const LyricLineWrapper = React.memo(({
       let cancelled = false;
       let queuedMeasurement = null;
       let measurementQueued = false;
+      let observedWidth = wrapper.getBoundingClientRect().width;
+      let resizeObserver = null;
       const previousSibling = wrapper.previousElementSibling;
       const nextSibling = wrapper.nextElementSibling;
       const previousLineWrapper = previousSibling?.classList.contains('lyric-line-wrapper')
@@ -641,10 +665,7 @@ export const LyricLineWrapper = React.memo(({
               : hasSecondary
                 ? wrappedMainInlineCursor
                 : mainPartInlineCursor;
-            const inlineGap = Math.max(
-              parseFloat(getComputedStyle(adlib).marginInlineStart) * scaleX || 0,
-              8 * scaleX
-            );
+            const inlineGap = 12 * scaleX;
             const inlineLeft = direction === 'rtl'
               ? inlineCursor - inlineGap -
                 (structureBounds.right - structureBounds.left)
@@ -1001,11 +1022,25 @@ export const LyricLineWrapper = React.memo(({
         measurementQueued = true;
         queuedMeasurement = () => {
           queuedMeasurement = null;
+          measurementQueued = false;
           if (cancelled) return;
           measureLiveTranslations();
         };
         queueLiveLayoutMeasurement(queuedMeasurement);
       };
+
+      const unregisterResizeMeasurement = registerLiveLayoutResizeMeasurement(
+        queueInitialLayoutMeasurement
+      );
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(entries => {
+          const width = entries[0]?.contentRect.width;
+          if (width === undefined || Math.abs(width - observedWidth) < 0.5) return;
+          observedWidth = width;
+          queueInitialLayoutMeasurement();
+        });
+        resizeObserver.observe(wrapper);
+      }
 
       if (!document.fonts || document.fonts.status === 'loaded') {
         queueInitialLayoutMeasurement();
@@ -1015,6 +1050,8 @@ export const LyricLineWrapper = React.memo(({
 
       return () => {
         cancelled = true;
+        resizeObserver?.disconnect();
+        unregisterResizeMeasurement();
         if (queuedMeasurement) {
           pendingLiveLayoutMeasurements.delete(queuedMeasurement);
         }
