@@ -53,6 +53,26 @@ const LiveLyricsView = ({
     readyLines: new Set(),
     initialLines: new Set()
   }), [liveParsedLyrics, syncList]);
+  const liveLayoutCacheKey = useMemo(() => [
+    selectedSong?.trackId,
+    window.innerWidth,
+    window.innerHeight,
+    settings?.liveSyncFontSize,
+    settings?.liveSyncLineGap,
+    settings?.translationTopPadding,
+    settings?.transliterationFontSize,
+    settings?.transliterationBottomPadding,
+    settings?.modalSplitRatio,
+    getComputedStyle(document.documentElement).getPropertyValue('--font-family')
+  ].join('|'), [
+    selectedSong?.trackId,
+    settings?.liveSyncFontSize,
+    settings?.liveSyncLineGap,
+    settings?.translationTopPadding,
+    settings?.transliterationFontSize,
+    settings?.transliterationBottomPadding,
+    settings?.modalSplitRatio
+  ]);
   const isLayoutReady = isSongModalReady &&
     (liveParsedLyrics.length === 0 || readyLayoutSource === layoutSource);
       const nextStarts = useMemo(() => {
@@ -195,12 +215,6 @@ const LiveLyricsView = ({
     layoutSource.initialLines.clear();
     if (activeLineIndexRef.current >= 0) {
       layoutSource.initialLines.add(activeLineIndexRef.current);
-      if (activeLineIndexRef.current > 0) {
-        layoutSource.initialLines.add(activeLineIndexRef.current - 1);
-      }
-      if (activeLineIndexRef.current + 1 < cachedLinesRef.current.length) {
-        layoutSource.initialLines.add(activeLineIndexRef.current + 1);
-      }
     } else {
       const containerBounds = container.getBoundingClientRect();
       cachedLinesRef.current.forEach((line, index) => {
@@ -422,6 +436,7 @@ const LiveLyricsView = ({
               isPlayingCurrentSong={false}
               lineIndex={i}
               isSongModalReady={isSongModalReady}
+              liveLayoutCacheKey={liveLayoutCacheKey}
               onLiveLayoutReady={reportLineLayoutReady}
             />
         )

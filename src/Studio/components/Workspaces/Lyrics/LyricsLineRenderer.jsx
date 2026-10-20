@@ -18,6 +18,82 @@ let liveLayoutMeasurementIdleCallback = null;
 let liveLayoutMeasurementTimeout = null;
 let liveLayoutResizeListenerAttached = false;
 let liveLayoutMeasurementsPrioritized = false;
+const liveLineLayoutCache = new WeakMap();
+const LIVE_LAYOUT_CLASS_NAMES = [
+  'has-main-shift-for-foreign-adlib',
+  'is-main-shifted-for-pronounced-foreign-adlib',
+  'is-main-shifted-for-foreign-adlib-baseline',
+  'is-main-wrapped',
+  'has-secondary',
+  'is-adlib-wrapped',
+  'is-adlib-new-row',
+  'is-adlib-inline-after-wrapped-main',
+  'is-english-adlib-on-foreign-line',
+  'is-nonforeign-adlib-on-foreign-main'
+];
+const LIVE_LAYOUT_STYLE_PROPERTIES = [
+  'width',
+  '--live-main-foreign-adlib-offset-y',
+  '--live-main-foreign-adlib-baseline-offset-y',
+  '--live-main-foreign-adlib-following-row-offset-y',
+  '--live-adlib-neighbor-clearance',
+  '--live-adlib-glyph-offset-y',
+  '--live-adlib-inline-x',
+  '--live-adlib-inline-y',
+  '--live-adlib-neighbor-clearance-start',
+  '--live-adlib-collision-gap',
+  '--live-translation-offset-x',
+  '--live-translation-offset-y'
+];
+
+const getLiveLayoutCacheTargets = wrapper => [
+  wrapper,
+  ...wrapper.querySelectorAll([
+    '.core-chunks',
+    '.live-split-line',
+    '.adlib-node',
+    '.chunk-translation.live-translation'
+  ].join(', '))
+];
+
+const applyCachedLiveLayout = (wrapper, cacheEntry) => {
+  if (wrapper.clientWidth !== cacheEntry.width) return false;
+  const targets = getLiveLayoutCacheTargets(wrapper);
+  if (targets.length !== cacheEntry.targets.length) return false;
+
+  targets.forEach((target, index) => {
+    const cachedTarget = cacheEntry.targets[index];
+    LIVE_LAYOUT_CLASS_NAMES.forEach(className => {
+      target.classList.toggle(className, cachedTarget.classes.includes(className));
+    });
+    LIVE_LAYOUT_STYLE_PROPERTIES.forEach(property => {
+      const value = cachedTarget.styles[property];
+      if (value) target.style.setProperty(property, value);
+      else target.style.removeProperty(property);
+    });
+  });
+  return true;
+};
+
+const cacheLiveLayout = (wrapper, lineObj, savedNode, lineIndex, cacheKey) => {
+  if (document.fonts && document.fonts.status !== 'loaded') return;
+  liveLineLayoutCache.set(lineObj, {
+    savedNode,
+    lineIndex,
+    cacheKey,
+    width: wrapper.clientWidth,
+    targets: getLiveLayoutCacheTargets(wrapper).map(target => ({
+      classes: LIVE_LAYOUT_CLASS_NAMES.filter(className =>
+        target.classList.contains(className)
+      ),
+      styles: Object.fromEntries(
+        LIVE_LAYOUT_STYLE_PROPERTIES
+          .map(property => [property, target.style.getPropertyValue(property)])
+          .filter(([, value]) => value)
+      )
+    }))
+  });
+};
 
 const handleLiveLayoutResize = () => {
   liveLayoutResizeMeasurements.forEach(schedule => schedule());
@@ -253,6 +329,7 @@ export const LyricLineWrapper = React.memo(({
   isPlayingCurrentSong,
   lineIndex,
   isSongModalReady = true,
+  liveLayoutCacheKey,
   onLiveLayoutReady
 }) => {
   const wrapperRef = useRef(null);
@@ -365,6 +442,17 @@ export const LyricLineWrapper = React.memo(({
     };
 
     if (viewMode === 'live') {
+      const cachedLayout = liveLineLayoutCache.get(lineObj);
+      if (
+        cachedLayout?.savedNode === savedNode &&
+        cachedLayout.lineIndex === lineIndex &&
+        cachedLayout.cacheKey === liveLayoutCacheKey &&
+        applyCachedLiveLayout(wrapper, cachedLayout)
+      ) {
+        queueMicrotask(() => onLiveLayoutReady?.(lineIndex));
+        return undefined;
+      }
+
       let cancelled = false;
       let queuedMeasurement = null;
       let measurementQueued = false;
@@ -454,6 +542,13 @@ export const LyricLineWrapper = React.memo(({
             }
           }
 
+          cacheLiveLayout(
+            wrapper,
+            lineObj,
+            savedNode,
+            lineIndex,
+            liveLayoutCacheKey
+          );
           onLiveLayoutReady?.(lineIndex);
           return;
         }
@@ -970,6 +1065,13 @@ export const LyricLineWrapper = React.memo(({
           );
         }
 
+        cacheLiveLayout(
+          wrapper,
+          lineObj,
+          savedNode,
+          lineIndex,
+          liveLayoutCacheKey
+        );
         onLiveLayoutReady?.(lineIndex);
       };
       const queueInitialLayoutMeasurement = () => {
@@ -997,10 +1099,11 @@ export const LyricLineWrapper = React.memo(({
         resizeObserver.observe(wrapper);
       }
 
-      if (!document.fonts || document.fonts.status === 'loaded') {
-        queueInitialLayoutMeasurement();
-      } else {
-        document.fonts.ready.then(queueInitialLayoutMeasurement);
+      queueInitialLayoutMeasurement();
+      if (document.fonts?.status !== 'loaded') {
+        document.fonts?.ready.then(() => {
+          if (!cancelled) queueInitialLayoutMeasurement();
+        });
       }
 
       return () => {
@@ -1065,7 +1168,16 @@ export const LyricLineWrapper = React.memo(({
     return () => {
       cancelled = true;
     };
-  }, [isSongModalReady, lineIndex, onLiveLayoutReady, renderedContent, viewMode]);
+  }, [
+    isSongModalReady,
+    lineIndex,
+    liveLayoutCacheKey,
+    lineObj,
+    onLiveLayoutReady,
+    renderedContent,
+    savedNode,
+    viewMode
+  ]);
 
   return (
     <div
