@@ -15,6 +15,9 @@ const LyricsDisplay = ({
     showGroupChatDebug, shouldAnimateLiveEntrance, onLiveEntranceAnimationComplete
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
+  const isLiveLyricsActive = !isEditing &&
+    hasValidSyncData &&
+    lyricsViewMode === 'live';
   const [activeSource, setActiveSource] = useState(() => {
     const source = window.globalActiveSource;
     return source?.trackId === selectedSong?.trackId ? source.source : null;
@@ -37,20 +40,6 @@ const LyricsDisplay = ({
           handleDataChange={handleDataChange}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
-        />
-      ) : hasValidSyncData && lyricsViewMode === 'live' ? (
-        <LiveLyricsView 
-          liveParsedLyrics={liveParsedLyrics}
-          selectedSong={selectedSong}
-          masterPalette={masterPalette}
-          isPlayingCurrentSong={isPlayingCurrentSong}
-          handleLineClick={handleLineClick}
-          settings={settings}
-          currentTrack={currentTrack}
-          lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
-          shouldAnimateEntrance={shouldAnimateLiveEntrance}
-          isSongModalReady={isSongModalReady}
-          onEntranceAnimationComplete={onLiveEntranceAnimationComplete}
         />
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (
         <FocusedLyricsView 
@@ -80,12 +69,34 @@ const LyricsDisplay = ({
           settings={settings}
           showDebug={showGroupChatDebug}
         />
-      ) : (
+      ) : hasValidSyncData && lyricsViewMode === 'live' ? null : (
         <PlainLyricsView 
           liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
         />
+      )}
+
+      {!isEditing && hasValidSyncData && (
+        <div
+          className={`live-lyrics-cache${isLiveLyricsActive ? ' is-active' : ''}`}
+          aria-hidden={!isLiveLyricsActive}
+          inert={!isLiveLyricsActive}
+        >
+          <LiveLyricsView
+            liveParsedLyrics={liveParsedLyrics}
+            selectedSong={selectedSong}
+            masterPalette={masterPalette}
+            isPlayingCurrentSong={isPlayingCurrentSong}
+            handleLineClick={handleLineClick}
+            settings={settings}
+            currentTrack={currentTrack}
+            lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+            shouldAnimateEntrance={shouldAnimateLiveEntrance}
+            isSongModalReady={isSongModalReady}
+            onEntranceAnimationComplete={onLiveEntranceAnimationComplete}
+          />
+        </div>
       )}
       
       <LyricsEqualizer 
