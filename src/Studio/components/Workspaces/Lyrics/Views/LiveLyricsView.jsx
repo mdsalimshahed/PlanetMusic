@@ -193,17 +193,6 @@ const LiveLyricsView = ({
       });
     }
     layoutSource.initialLines.clear();
-    const containerBounds = container.getBoundingClientRect();
-    cachedLinesRef.current.forEach((line, index) => {
-      const bounds = line.node.getBoundingClientRect();
-      if (bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom) {
-        layoutSource.initialLines.add(index);
-        if (index > 0) layoutSource.initialLines.add(index - 1);
-        if (index + 1 < cachedLinesRef.current.length) {
-          layoutSource.initialLines.add(index + 1);
-        }
-      }
-    });
     if (activeLineIndexRef.current >= 0) {
       layoutSource.initialLines.add(activeLineIndexRef.current);
       if (activeLineIndexRef.current > 0) {
@@ -212,6 +201,18 @@ const LiveLyricsView = ({
       if (activeLineIndexRef.current + 1 < cachedLinesRef.current.length) {
         layoutSource.initialLines.add(activeLineIndexRef.current + 1);
       }
+    } else {
+      const containerBounds = container.getBoundingClientRect();
+      cachedLinesRef.current.forEach((line, index) => {
+        const bounds = line.node.getBoundingClientRect();
+        if (bounds.bottom > containerBounds.top && bounds.top < containerBounds.bottom) {
+          layoutSource.initialLines.add(index);
+          if (index > 0) layoutSource.initialLines.add(index - 1);
+          if (index + 1 < cachedLinesRef.current.length) {
+            layoutSource.initialLines.add(index + 1);
+          }
+        }
+      });
     }
     if (layoutSource.initialLines.size === 0 && cachedLinesRef.current.length > 0) {
       layoutSource.initialLines.add(0);

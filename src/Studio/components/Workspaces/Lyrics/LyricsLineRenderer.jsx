@@ -58,12 +58,13 @@ const scheduleLiveLayoutMeasurementFlush = () => {
 
   if (typeof window.requestIdleCallback === 'function') {
     liveLayoutMeasurementIdleCallback = window.requestIdleCallback(
-      flushLiveLayoutMeasurements
+      flushLiveLayoutMeasurements,
+      { timeout: 100 }
     );
   } else {
     liveLayoutMeasurementTimeout = window.setTimeout(() => {
       liveLayoutMeasurementTimeout = null;
-      flushLiveLayoutMeasurements({ timeRemaining: () => 8 });
+      flushLiveLayoutMeasurements({ didTimeout: true, timeRemaining: () => 0 });
     }, 32);
   }
 };
@@ -97,7 +98,8 @@ function flushLiveLayoutMeasurements(deadline) {
 
   if (
     pendingLiveLayoutMeasurements.length > 0 &&
-    deadline.timeRemaining() >= LIVE_LAYOUT_IDLE_BUDGET_MS
+    (deadline.didTimeout ||
+      deadline.timeRemaining() >= LIVE_LAYOUT_IDLE_BUDGET_MS)
   ) {
     const { measure } = pendingLiveLayoutMeasurements.shift();
     measure();
