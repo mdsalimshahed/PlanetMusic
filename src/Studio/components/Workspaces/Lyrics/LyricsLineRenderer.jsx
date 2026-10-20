@@ -417,7 +417,7 @@ export const LyricLineWrapper = React.memo(({
                 const pronunciationFontSize = parseFloat(
                   getComputedStyle(adlibPronunciation).fontSize
                 ) || 0;
-                const upwardOffset = pronunciationFontSize / 2;
+                const upwardOffset = pronunciationFontSize * 0.75;
                 const animationOffsetY = new DOMMatrixReadOnly(
                   getComputedStyle(adlib).transform
                 ).m42;
