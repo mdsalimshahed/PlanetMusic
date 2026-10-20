@@ -77,19 +77,23 @@ test('alternates sides when artists change and treats reordered duos as the same
   assert.equal(messageEvents[0].line.chatSide, messageEvents[3].line.chatSide);
 });
 
-test('keeps consecutive same-artist lines together across long gaps', () => {
+test('switches sides for statistical same-artist gap outliers', () => {
   const chat = buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'First line' },
       { singer: 'Ari', text: 'Second line' },
       { singer: 'Ari', text: 'Third line' },
-      { singer: 'Ari', text: 'Fourth line' }
+      { singer: 'Ari', text: 'Fourth line' },
+      { singer: 'Ari', text: 'Fifth line' },
+      { singer: 'Ari', text: 'Sixth line' }
     ],
     [
-      { start: 1, end: 1.5 },
-      { start: 2, end: 2.5 },
-      { start: 3, end: 3.5 },
-      { start: 6, end: 6.5 }
+      { start: 1, end: 1.1 },
+      { start: 1.3, end: 1.4 },
+      { start: 1.6, end: 1.7 },
+      { start: 1.9, end: 2 },
+      { start: 2.2, end: 2.3 },
+      { start: 5.3, end: 5.4 }
     ],
     'Fallback'
   );
@@ -101,47 +105,51 @@ test('keeps consecutive same-artist lines together across long gaps', () => {
   })), [
     {
       side: 'left',
-      lines: ['First line', 'Second line', 'Third line', 'Fourth line']
+      lines: ['First line', 'Second line', 'Third line', 'Fourth line', 'Fifth line']
+    },
+    {
+      side: 'right',
+      lines: ['Sixth line']
     }
   ]);
 });
 
-test('does not use timing gaps to switch same-artist sides', () => {
-  const buildChat = finalStart => buildGroupChatTimeline(
+test('does not use timing outliers for multi-artist songs', () => {
+  const chat = buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'First line' },
       { singer: 'Ari', text: 'Second line' },
       { singer: 'Ari', text: 'Third line' },
-      { singer: 'Ari', text: 'Fourth line' }
+      { singer: 'Ari', text: 'Fourth line' },
+      { singer: 'Ari', text: 'Fifth line' },
+      { singer: 'Ari', text: 'Sixth line' },
+      { singer: 'Bea', text: 'Bea line' }
     ],
     [
-      { start: 1, end: 1.5 },
-      { start: 2, end: 2.5 },
-      { start: 3, end: 3.5 },
-      { start: finalStart, end: finalStart + 0.5 }
+      { start: 1, end: 1.1 },
+      { start: 1.3, end: 1.4 },
+      { start: 1.6, end: 1.7 },
+      { start: 1.9, end: 2 },
+      { start: 2.2, end: 2.3 },
+      { start: 5.3, end: 5.4 },
+      { start: 5.6, end: 5.7 }
     ],
     'Fallback'
   );
-  const gapUnderOneSecond = groupConsecutiveMessages(buildChat(5.99).events);
-  const gapOverOneSecond = groupConsecutiveMessages(buildChat(100).events);
-  const expectedLines = [
-    'First line',
-    'Second line',
-    'Third line',
-    'Fourth line'
-  ];
+  const groups = groupConsecutiveMessages(chat.events);
 
-  assert.deepEqual(gapUnderOneSecond.map(group => ({
+  assert.deepEqual(groups.map(group => ({
     side: group.side,
     lines: group.events.map(event => event.line.text)
   })), [
-    { side: 'left', lines: expectedLines }
-  ]);
-  assert.deepEqual(gapOverOneSecond.map(group => ({
-    side: group.side,
-    lines: group.events.map(event => event.line.text)
-  })), [
-    { side: 'left', lines: expectedLines }
+    {
+      side: 'left',
+      lines: [
+        'First line', 'Second line', 'Third line',
+        'Fourth line', 'Fifth line', 'Sixth line'
+      ]
+    },
+    { side: 'right', lines: ['Bea line'] }
   ]);
 });
 

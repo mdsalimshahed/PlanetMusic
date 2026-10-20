@@ -1,5 +1,44 @@
+const getUpperGapOutlierFence = gaps => {
+  if (gaps.length < 4) return null;
+
+  const sortedGaps = [...gaps].sort((first, second) => first - second);
+  const getQuantile = fraction => {
+    const position = (sortedGaps.length - 1) * fraction;
+    const lowerIndex = Math.floor(position);
+    const upperIndex = Math.ceil(position);
+    const weight = position - lowerIndex;
+    return sortedGaps[lowerIndex] * (1 - weight) +
+      sortedGaps[upperIndex] * weight;
+  };
+  const firstQuartile = getQuantile(0.25);
+  const thirdQuartile = getQuantile(0.75);
+  const interquartileRange = thirdQuartile - firstQuartile;
+
+  return thirdQuartile + 1.5 * interquartileRange;
+};
+
 export const groupConsecutiveMessages = events => {
   const messageEvents = events.filter(event => event.type === 'message');
+  const artistNames = new Set(
+    messageEvents.flatMap(event => event.line.artists.map(name =>
+      name.trim().toLocaleLowerCase()
+    )).filter(Boolean)
+  );
+  const oneArtistSong = artistNames.size === 1;
+  const bubbleGaps = messageEvents.slice(1).map((event, index) => {
+    const previousEvent = messageEvents[index];
+    const previousEnd = previousEvent.line.end ?? previousEvent.time;
+    return Math.max(0, event.time - previousEnd);
+  });
+  const gapOutlierFence = oneArtistSong
+    ? getUpperGapOutlierFence(bubbleGaps)
+    : null;
+  const gapOutlierByEvent = new Map(
+    messageEvents.slice(1).map((event, index) => [
+      event,
+      gapOutlierFence !== null && bubbleGaps[index] > gapOutlierFence
+    ])
+  );
   const groups = [];
   let previousSide;
   let previousWasAdlib = false;
@@ -12,8 +51,12 @@ export const groupConsecutiveMessages = events => {
       .join('\u0000');
     const previousGroup = groups[groups.length - 1];
     const previousLine = previousGroup?.events[previousGroup.events.length - 1].line;
+    const sameArtistGapSwitch = gapOutlierByEvent.get(event) &&
+      previousSide &&
+      previousArtistsKey === artistsKey;
     const switchesSide = line.isAdlib ||
       previousWasAdlib ||
+      sameArtistGapSwitch ||
       (previousSide && previousArtistsKey !== artistsKey);
     const side = switchesSide
       ? (previousSide === 'left' ? 'right' : 'left')
