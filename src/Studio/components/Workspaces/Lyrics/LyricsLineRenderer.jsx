@@ -11,6 +11,68 @@ import './LyricsLineRenderer.css';
 export { normalizeTrans } from '../../../../components/LyricsRenderer/textUtils.js';
 export { renderFormattedTranslation } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 
+const measureWidestLine = element => {
+  if (!element || !element.textContent.trim()) return null;
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  const lines = [];
+  [...range.getClientRects()].forEach(rect => {
+    if (!rect.width || !rect.height) return;
+    const line = lines.find(candidate => (
+      Math.min(candidate.bottom, rect.bottom) -
+        Math.max(candidate.top, rect.top) >
+      Math.min(candidate.bottom - candidate.top, rect.height) * 0.5
+    ));
+    if (line) {
+      line.left = Math.min(line.left, rect.left);
+      line.right = Math.max(line.right, rect.right);
+      line.top = Math.min(line.top, rect.top);
+      line.bottom = Math.max(line.bottom, rect.bottom);
+    } else {
+      lines.push({
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom
+      });
+    }
+  });
+  return lines.reduce((widest, line) => (
+    !widest || line.right - line.left > widest.right - widest.left
+      ? line
+      : widest
+  ), null);
+};
+
+export const measureFocusedTranslationWidths = wrapper => {
+  if (!wrapper) return;
+  const scaleX = wrapper.offsetWidth
+    ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
+    : 1;
+  wrapper.querySelectorAll('.chunk-translation.focused-translation').forEach(translation => {
+    const parent = translation.parentElement;
+    if (!parent) return;
+
+    const glyphLine = measureWidestLine(
+      parent.querySelector('.main-lyrics-layer, .primary-text')
+    );
+    const pronunciationLine = measureWidestLine(
+      parent.querySelector('.pronunciation-text')
+    );
+    const widestLine = !glyphLine ||
+      (pronunciationLine &&
+        pronunciationLine.right - pronunciationLine.left >
+          glyphLine.right - glyphLine.left)
+      ? pronunciationLine
+      : glyphLine;
+    if (!widestLine) return;
+
+    const width = (widestLine.right - widestLine.left) / scaleX;
+    translation.style.width = `${Math.floor(width)}px`;
+    translation.style.minWidth = '0px';
+  });
+};
+
 const LIVE_LAYOUT_IDLE_BUDGET_MS = 5;
 const pendingLiveLayoutMeasurements = [];
 const liveLayoutResizeMeasurements = new Set();
@@ -240,8 +302,9 @@ export const measureFocusedLineLayout = (wrapper) => {
   });
 
   wrapper.style.setProperty('--wrapped-line-count', rowCount);
-  const exitDuration = parseFloat(wrapper.style.getPropertyValue('--focused-exit-duration')) || 0;
-  const exitLayerDuration = parseFloat(wrapper.style.getPropertyValue('--focused-exit-layer-duration')) || 0;
+  const style = getComputedStyle(wrapper);
+  const exitDuration = parseFloat(style.getPropertyValue('--focused-exit-duration')) || 0;
+  const exitLayerDuration = parseFloat(style.getPropertyValue('--focused-exit-layer-duration')) || 0;
   wrapper.style.setProperty(
     '--focused-wrap-exit-stagger',
     `${rowCount > 0 ? Math.max(0, exitDuration - exitLayerDuration) / rowCount : 0}s`
@@ -280,40 +343,7 @@ export const LyricLineWrapper = React.memo(({
 
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper || (viewMode !== 'focused' && !isLiveRender)) return undefined;
-
-    const measureWidestLine = element => {
-      if (!element || !element.textContent.trim()) return null;
-      const range = document.createRange();
-      range.selectNodeContents(element);
-      const lines = [];
-      [...range.getClientRects()].forEach(rect => {
-        if (!rect.width || !rect.height) return;
-        const line = lines.find(candidate => (
-          Math.min(candidate.bottom, rect.bottom) -
-            Math.max(candidate.top, rect.top) >
-          Math.min(candidate.bottom - candidate.top, rect.height) * 0.5
-        ));
-        if (line) {
-          line.left = Math.min(line.left, rect.left);
-          line.right = Math.max(line.right, rect.right);
-          line.top = Math.min(line.top, rect.top);
-          line.bottom = Math.max(line.bottom, rect.bottom);
-        } else {
-          lines.push({
-            left: rect.left,
-            right: rect.right,
-            top: rect.top,
-            bottom: rect.bottom
-          });
-        }
-      });
-      return lines.reduce((widest, line) => (
-        !widest || line.right - line.left > widest.right - widest.left
-          ? line
-          : widest
-      ), null);
-    };
+    if (!wrapper || !isLiveRender) return undefined;
 
     const getGlyphRows = element => {
       if (!element) return [];
@@ -816,49 +846,6 @@ export const LyricLineWrapper = React.memo(({
       };
     }
 
-    const measureFocusedTranslationWidths = () => {
-      if (cancelled || !wrapper.isConnected) return;
-      const translations = wrapper.querySelectorAll('.chunk-translation.focused-translation');
-      const scaleX = wrapper.offsetWidth
-        ? wrapper.getBoundingClientRect().width / wrapper.offsetWidth
-        : 1;
-
-      translations.forEach(translation => {
-        const parent = translation.parentElement;
-        if (!parent) return;
-
-        const glyphLine = measureWidestLine(
-          parent.querySelector('.main-lyrics-layer, .primary-text')
-        );
-        const pronunciationLine = measureWidestLine(
-          parent.querySelector('.pronunciation-text')
-        );
-        const widestLine = !glyphLine ||
-          (pronunciationLine &&
-            pronunciationLine.right - pronunciationLine.left >
-              glyphLine.right - glyphLine.left)
-          ? pronunciationLine
-          : glyphLine;
-        if (!widestLine) return;
-
-        const width = (widestLine.right - widestLine.left) / scaleX;
-        translation.style.width = `${Math.floor(width)}px`;
-        translation.style.minWidth = '0px';
-      });
-    };
-
-    let cancelled = false;
-    if (!document.fonts || document.fonts.status === 'loaded') {
-      measureFocusedTranslationWidths();
-    } else {
-      document.fonts.ready.then(() => {
-        if (!cancelled) measureFocusedTranslationWidths();
-      });
-    }
-
-    return () => {
-      cancelled = true;
-    };
   }, [
     lineObj,
     renderedContent,

@@ -1,6 +1,10 @@
 /* --- src/components/Workspaces/Lyrics/Views/FocusedLyricsView.jsx --- */
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { LyricLineWrapper, measureFocusedLineLayout } from '../LyricsLineRenderer.jsx';
+import {
+  LyricLineWrapper,
+  measureFocusedLineLayout,
+  measureFocusedTranslationWidths
+} from '../LyricsLineRenderer.jsx';
 import { getFocusedLyricsAnimationTiming } from '../focusedLyricsTiming.js';
 import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
@@ -19,24 +23,21 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
   const syncList = selectedSong?.syncData;
 
   useLayoutEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    cachedLinesRef.current = Array.from(containerRef.current.querySelectorAll('.lyric-line-wrapper')).map(node => {
-      const indexedWords = Array.from(node.querySelectorAll('.lyric-word, .trans-word'))
-        .map(word => parseFloat(word.style.getPropertyValue('--word-index')))
-        .filter(Number.isFinite);
-      const wordCount = indexedWords.reduce((count, index) => Math.max(count, index + 1), 1);
+    const animationTiming = getFocusedLyricsAnimationTiming();
+    container.style.setProperty('--focused-enter-duration', `${animationTiming.enterDuration}s`);
+    container.style.setProperty('--focused-enter-stagger', `${animationTiming.enterStagger}s`);
+    container.style.setProperty('--focused-exit-duration', `${animationTiming.exitDuration}s`);
+    container.style.setProperty(
+      '--focused-exit-layer-duration',
+      `${animationTiming.exitLayerDuration}s`
+    );
+
+    cachedLinesRef.current = Array.from(container.querySelectorAll('.lyric-line-wrapper')).map(node => {
       const start = parseFloat(node.dataset.start);
       const end = parseFloat(node.dataset.end);
-      const animationTiming = getFocusedLyricsAnimationTiming();
-      const { enterDuration, enterStagger, exitDuration } = animationTiming;
-
-      node.style.setProperty('--total-words', wordCount);
-      node.style.setProperty('--focused-enter-duration', `${enterDuration}s`);
-      node.style.setProperty('--focused-enter-stagger', `${enterStagger}s`);
-      node.style.setProperty('--focused-exit-duration', `${exitDuration}s`);
-      node.style.setProperty('--focused-exit-layer-duration', `${animationTiming.exitLayerDuration}s`);
-      measureFocusedLineLayout(node);
       return {
         node,
         start,
@@ -86,6 +87,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     if (previousActiveIndex !== newActiveIndex) {
         if (previousActiveIndex !== -1) {
             const previousLine = lines[previousActiveIndex];
+            measureFocusedLineLayout(previousLine.node);
             previousLine.node.classList.remove('active', 'past');
             if (isSeek) {
               previousLine.node.classList.remove('exiting');
@@ -98,6 +100,8 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         if (newActiveIndex !== -1) {
             const activeLine = lines[newActiveIndex];
             activeLine.node.classList.add('active');
+            measureFocusedLineLayout(activeLine.node);
+            measureFocusedTranslationWidths(activeLine.node);
             activeLine.node.classList.remove('exiting', 'past');
             activeLine.isActive = true;
         }
@@ -107,6 +111,8 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     if (isSeek && newActiveIndex !== -1 && previousActiveIndex === newActiveIndex) {
       const activeLine = lines[newActiveIndex];
       activeLine.node.classList.remove('active', 'exiting', 'past');
+      measureFocusedLineLayout(activeLine.node);
+      measureFocusedTranslationWidths(activeLine.node);
       void activeLine.node.offsetWidth;
       activeLine.node.classList.add('active');
       activeLine.isActive = true;
