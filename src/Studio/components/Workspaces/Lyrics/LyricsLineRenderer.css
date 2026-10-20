@@ -214,6 +214,14 @@ rt.pronunciation-text,
   align-self: flex-start;
 }
 
+.preview-line .live-split-line > .core-chunks.is-main-shifted-for-pronounced-foreign-adlib {
+  translate: 0 var(--live-main-foreign-adlib-offset-y, 0vh);
+}
+
+.preview-line .live-split-line.is-main-shifted-for-pronounced-foreign-adlib {
+  padding-block-end: var(--live-main-foreign-adlib-offset-y, 0vh) !important;
+}
+
 .preview-line .live-split-line > .adlib-node {
   align-self: flex-end;
   translate: 0 var(--live-adlib-glyph-offset-y, 0px);
@@ -246,6 +254,7 @@ rt.pronunciation-text,
   align-self: flex-start;
   align-items: flex-start !important;
   width: 100%;
+  margin-block-start: var(--live-adlib-collision-gap, 0vh) !important;
 }
 
 .preview-line .live-split-line > .adlib-node.is-adlib-new-row {
