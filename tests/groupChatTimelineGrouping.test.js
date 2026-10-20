@@ -77,7 +77,7 @@ test('alternates sides when artists change and treats reordered duos as the same
   assert.equal(messageEvents[0].line.chatSide, messageEvents[3].line.chatSide);
 });
 
-test('switches sides when an artist gap is much longer than their recent gaps', () => {
+test('keeps consecutive same-artist lines together across long gaps', () => {
   const chat = buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'First line' },
@@ -99,37 +99,49 @@ test('switches sides when an artist gap is much longer than their recent gaps', 
     side: group.side,
     lines: group.events.map(event => event.line.text)
   })), [
-    { side: 'left', lines: ['First line', 'Second line', 'Third line'] },
-    { side: 'right', lines: ['Fourth line'] }
+    {
+      side: 'left',
+      lines: ['First line', 'Second line', 'Third line', 'Fourth line']
+    }
   ]);
 });
 
-test('adapts the side-switch threshold to an artist with a slower regular pace', () => {
-  const chat = buildGroupChatTimeline(
+test('does not use timing gaps to switch same-artist sides', () => {
+  const buildChat = finalStart => buildGroupChatTimeline(
     [
       { singer: 'Ari', text: 'First line' },
       { singer: 'Ari', text: 'Second line' },
       { singer: 'Ari', text: 'Third line' },
-      { singer: 'Ari', text: 'Fourth line' },
-      { singer: 'Ari', text: 'Fifth line' }
+      { singer: 'Ari', text: 'Fourth line' }
     ],
     [
-      { start: 1, end: 2 },
-      { start: 6, end: 7 },
-      { start: 11, end: 12 },
-      { start: 20, end: 21 },
-      { start: 33, end: 34 }
+      { start: 1, end: 1.5 },
+      { start: 2, end: 2.5 },
+      { start: 3, end: 3.5 },
+      { start: finalStart, end: finalStart + 0.5 }
     ],
     'Fallback'
   );
-  const groups = groupConsecutiveMessages(chat.events);
+  const gapUnderOneSecond = groupConsecutiveMessages(buildChat(5.99).events);
+  const gapOverOneSecond = groupConsecutiveMessages(buildChat(100).events);
+  const expectedLines = [
+    'First line',
+    'Second line',
+    'Third line',
+    'Fourth line'
+  ];
 
-  assert.deepEqual(groups.map(group => ({
+  assert.deepEqual(gapUnderOneSecond.map(group => ({
     side: group.side,
     lines: group.events.map(event => event.line.text)
   })), [
-    { side: 'left', lines: ['First line', 'Second line', 'Third line', 'Fourth line'] },
-    { side: 'right', lines: ['Fifth line'] }
+    { side: 'left', lines: expectedLines }
+  ]);
+  assert.deepEqual(gapOverOneSecond.map(group => ({
+    side: group.side,
+    lines: group.events.map(event => event.line.text)
+  })), [
+    { side: 'left', lines: expectedLines }
   ]);
 });
 
@@ -159,7 +171,7 @@ test('keeps an artist on their side when they return after another artist speaks
   ]);
 });
 
-test('chains consecutive ad-libs from matching artist clusters', () => {
+test('places consecutive ad-libs opposite their previous bubbles', () => {
   const chat = buildGroupChatTimeline(
     [
       {
@@ -168,9 +180,9 @@ test('chains consecutive ad-libs from matching artist clusters', () => {
         segments: [{ text: 'First lead', artists: ['Ari'] }]
       },
       {
-        singer: 'Bea',
+        singer: 'Ari',
         text: 'Second lead',
-        segments: [{ text: 'Second lead', artists: ['Bea'] }]
+        segments: [{ text: 'Second lead', artists: ['Ari'] }]
       }
     ],
     [
@@ -201,25 +213,80 @@ test('chains consecutive ad-libs from matching artist clusters', () => {
   );
   const messages = chat.events.filter(event => event.type === 'message');
   const groups = groupConsecutiveMessages(messages);
-  const adlibGroup = groups.find(group => group.events[0].line.isAdlib);
+  const adlibGroups = groups.filter(group => group.events[0].line.isAdlib);
   const history = buildGroupChatHistory(messages);
-  const adlibChain = history.find(item => (
+  const adlibHistory = history.filter(item => (
     item.type === 'message-chain' && item.events[0].line.isAdlib
   ));
 
-  assert.deepEqual(adlibGroup.events.map(event => event.line.text), [
+  assert.equal(adlibGroups.length, 2);
+  assert.notEqual(adlibGroups[0].side, adlibGroups[1].side);
+  assert.deepEqual(adlibHistory.map(item => item.events[0].line.text), [
     'First echo',
     'Second echo'
   ]);
-  assert.equal(adlibGroup.events[0].line.chatSide, adlibGroup.events[1].line.chatSide);
-  assert.deepEqual(adlibChain.events.map(event => event.line.text), [
-    'First echo',
-    'Second echo'
+  assert.deepEqual(adlibHistory.map(item => item.artists), [
+    ['Echo', 'Harmony'],
+    ['Harmony', 'Echo']
   ]);
-  assert.deepEqual(adlibChain.artists, ['Echo', 'Harmony']);
 });
 
-test('places a following ad-lib artist lyric on the opposite side', () => {
+test('alternates sides for different consecutive artist groups', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'Ari lead',
+        segments: [{ text: 'Ari lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Bea',
+        text: 'Bea reply',
+        segments: [{ text: 'Bea reply', artists: ['Bea'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'First echo',
+          start: 2,
+          end: 2.3,
+          segments: [{ text: 'First echo', artists: ['Echo'] }]
+        }]
+      },
+      {
+        start: 1.7,
+        end: 1.9,
+        isSplit: true,
+        adlibs: [{
+          text: 'Second echo',
+          start: 2.6,
+          end: 2.9,
+          segments: [{ text: 'Second echo', artists: ['Echo'] }]
+        }]
+      }
+    ],
+    'Fallback'
+  );
+  const ari = chat.lines.find(line => line.text === 'Ari lead');
+  const bea = chat.lines.find(line => line.text === 'Bea reply');
+  const firstAdlib = chat.lines.find(line => line.text === 'First echo');
+  const secondAdlib = chat.lines.find(line => line.text === 'Second echo');
+
+  assert.ok(ari);
+  assert.ok(bea);
+  assert.ok(firstAdlib);
+  assert.ok(secondAdlib);
+  assert.notEqual(firstAdlib.chatSide, bea.chatSide);
+  assert.equal(firstAdlib.chatSide, ari.chatSide);
+  assert.notEqual(firstAdlib.chatSide, secondAdlib.chatSide);
+  assert.equal(secondAdlib.chatSide, bea.chatSide);
+});
+
+test('places following bubbles opposite the preceding ad-lib', () => {
   const chat = buildGroupChatTimeline(
     [
       {
@@ -239,27 +306,132 @@ test('places a following ad-lib artist lyric on the opposite side', () => {
         end: 1.5,
         isSplit: true,
         adlibs: [{
+          text: 'Marty first ad-lib',
+          start: 1.4,
+          end: 1.7,
+          segments: [{ text: 'Marty first ad-lib', artists: ['Marty'] }]
+        }]
+      },
+      {
+        start: 2,
+        end: 2.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'Echo source ad-lib',
+          start: 2.6,
+          end: 2.9,
+          segments: [{ text: 'Echo source ad-lib', artists: ['Echo'] }]
+        }]
+      }
+    ],
+    'Fallback'
+  );
+  const sourceLine = chat.lines.find(line => line.text === 'Echo answer');
+  const firstAdlib = chat.lines.find(line => line.text === 'Marty first ad-lib');
+  const sourceAdlib = chat.lines.find(line => line.text === 'Echo source ad-lib');
+  const ari = chat.lines.find(line => line.text === 'Ari lead');
+
+  assert.ok(ari);
+  assert.ok(sourceLine);
+  assert.ok(firstAdlib);
+  assert.ok(sourceAdlib);
+  assert.notEqual(ari.chatSide, firstAdlib.chatSide);
+  assert.notEqual(firstAdlib.chatSide, sourceLine.chatSide);
+  assert.notEqual(sourceLine.chatSide, sourceAdlib.chatSide);
+});
+
+test('places following same-artist main lyrics opposite ad-libs', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'Ari lead',
+        segments: [{ text: 'Ari lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Echo',
+        text: 'Echo answer',
+        segments: [{ text: 'Echo answer', artists: ['Echo'] }]
+      },
+      {
+        singer: 'Echo',
+        text: 'Echo continues',
+        segments: [{ text: 'Echo continues', artists: ['Echo'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
           text: 'Echo ad-lib',
           start: 2,
           end: 2.5,
           segments: [{ text: 'Echo ad-lib', artists: ['Echo'] }]
         }]
       },
-      { start: 3, end: 4 }
+      { start: 3, end: 4 },
+      { start: 4.5, end: 5 }
     ],
     'Fallback'
   );
   const adlib = chat.lines.find(line => line.isAdlib);
   const followingLine = chat.lines.find(line => line.text === 'Echo answer');
+  const continuedLine = chat.lines.find(line => line.text === 'Echo continues');
 
   assert.ok(adlib);
   assert.ok(followingLine);
+  assert.ok(continuedLine);
   assert.deepEqual(adlib.artists, ['Echo']);
   assert.deepEqual(followingLine.artists, ['Echo']);
-  assert.notEqual(adlib.chatSide, followingLine.chatSide);
+  assert.notEqual(adlib.chatSide, chat.lines.find(line => line.text === 'Ari lead').chatSide);
+  assert.notEqual(followingLine.chatSide, adlib.chatSide);
+  assert.equal(followingLine.chatSide, continuedLine.chatSide);
 });
 
-test('switches sides when an ad-lib changes the consecutive artist', () => {
+test('keeps consecutive same-artist lyrics together with an ad-lib', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Marty',
+        text: 'First Marty line',
+        segments: [{ text: 'First Marty line', artists: ['Marty'] }]
+      },
+      {
+        singer: 'Marty',
+        text: 'Second Marty line',
+        segments: [{ text: 'Second Marty line', artists: ['Marty'] }]
+      }
+    ],
+    [
+      { start: 1, end: 1.5 },
+      {
+        start: 2,
+        end: 2.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'Marty echo',
+          start: 2.6,
+          end: 2.9,
+          segments: [{ text: 'Marty echo', artists: ['Marty'] }]
+        }]
+      }
+    ],
+    'Fallback'
+  );
+  const firstLine = chat.lines.find(line => line.text === 'First Marty line');
+  const secondLine = chat.lines.find(line => line.text === 'Second Marty line');
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.ok(firstLine);
+  assert.ok(secondLine);
+  assert.ok(adlib);
+  assert.equal(firstLine.chatSide, secondLine.chatSide);
+  assert.notEqual(secondLine.chatSide, adlib.chatSide);
+});
+
+test('does not let an ad-lib change main-lyric side assignment', () => {
   const chat = buildGroupChatTimeline(
     [
       {
@@ -290,9 +462,53 @@ test('switches sides when an ad-lib changes the consecutive artist', () => {
     'Fallback'
   );
   const adlib = chat.lines.find(line => line.isAdlib);
+  const sourceLine = chat.lines.find(line => line.text === 'Ari lead');
   const followingLine = chat.lines.find(line => line.text === 'Jisoo reply');
 
   assert.ok(adlib);
+  assert.ok(sourceLine);
   assert.ok(followingLine);
-  assert.notEqual(adlib.chatSide, followingLine.chatSide);
+  assert.notEqual(adlib.chatSide, sourceLine.chatSide);
+  assert.notEqual(followingLine.chatSide, adlib.chatSide);
+});
+
+test('places an ad-lib opposite the immediately previous artist group', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'Ari lead',
+        segments: [{ text: 'Ari lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Bea',
+        text: 'Bea reply',
+        segments: [{ text: 'Bea reply', artists: ['Bea'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'Echo ad-lib',
+          start: 2.4,
+          end: 2.8,
+          segments: [{ text: 'Echo ad-lib', artists: ['Echo'] }]
+        }]
+      },
+      { start: 2, end: 2.5 }
+    ],
+    'Fallback'
+  );
+  const ari = chat.lines.find(line => line.text === 'Ari lead');
+  const bea = chat.lines.find(line => line.text === 'Bea reply');
+  const adlib = chat.lines.find(line => line.isAdlib);
+
+  assert.ok(ari);
+  assert.ok(bea);
+  assert.ok(adlib);
+  assert.equal(ari.chatSide, adlib.chatSide);
+  assert.notEqual(adlib.chatSide, bea.chatSide);
 });
