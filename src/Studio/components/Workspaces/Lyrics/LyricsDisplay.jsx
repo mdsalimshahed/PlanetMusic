@@ -51,6 +51,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <LiveLyricsView
+          key={selectedSong?.trackId}
           liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}

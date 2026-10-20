@@ -188,20 +188,40 @@ function flushLiveLayoutMeasurements(deadline) {
   liveLayoutMeasurementIdleCallback = null;
   liveLayoutMeasurementTimeout = null;
   if (!liveLayoutMeasurementsPrioritized) {
+    const container = pendingLiveLayoutMeasurements[0]?.wrapper.closest(
+      '.live-lyrics-preview'
+    );
+    const containerBounds = container?.getBoundingClientRect();
+    pendingLiveLayoutMeasurements.forEach(entry => {
+      const lineBounds = entry.wrapper.getBoundingClientRect();
+      const isVisible = containerBounds &&
+        lineBounds.bottom > containerBounds.top &&
+        lineBounds.top < containerBounds.bottom;
+      entry.priority = entry.wrapper.classList.contains('active')
+        ? 0
+        : isVisible ? 1 : 2;
+      entry.distance = containerBounds
+        ? Math.abs(
+          (lineBounds.top + lineBounds.bottom) / 2 -
+          (containerBounds.top + containerBounds.bottom) / 2
+        )
+        : 0;
+    });
     pendingLiveLayoutMeasurements.sort((first, second) =>
-      Number(second.wrapper.classList.contains('active')) -
-      Number(first.wrapper.classList.contains('active'))
+      first.priority - second.priority || first.distance - second.distance
     );
     liveLayoutMeasurementsPrioritized = true;
   }
 
-  if (
-    pendingLiveLayoutMeasurements.length > 0 &&
-    (deadline.didTimeout ||
-      deadline.timeRemaining() >= LIVE_LAYOUT_IDLE_BUDGET_MS)
-  ) {
-    const { measure } = pendingLiveLayoutMeasurements.shift();
-    measure();
+  if (deadline.didTimeout) {
+    pendingLiveLayoutMeasurements.shift()?.measure();
+  } else {
+    while (
+      pendingLiveLayoutMeasurements.length > 0 &&
+      deadline.timeRemaining() >= LIVE_LAYOUT_IDLE_BUDGET_MS
+    ) {
+      pendingLiveLayoutMeasurements.shift().measure();
+    }
   }
 
   if (pendingLiveLayoutMeasurements.length > 0) {
@@ -616,6 +636,7 @@ export const LyricLineWrapper = React.memo(({
           ? wrapper.getBoundingClientRect().height / wrapper.offsetHeight
           : 1;
         const mainGlyphs = wrapper.querySelector('.core-chunks > .main-lyrics-layer');
+        const hasMainLyrics = Boolean(mainGlyphs?.textContent.trim());
         let mainGlyphRows = getGlyphRows(mainGlyphs);
         splitLine?.classList.toggle('is-main-wrapped', mainGlyphRows.length > 1);
         let splitLineBounds = splitLine?.getBoundingClientRect();
@@ -778,6 +799,10 @@ export const LyricLineWrapper = React.memo(({
 
         adlibMeasurements.forEach(({ adlib, hasSecondary }) => {
           adlib.classList.toggle('has-secondary', hasSecondary);
+          if (!hasMainLyrics) {
+            adlib.classList.add('is-adlib-wrapped', 'is-adlib-new-row');
+            return;
+          }
           if (!splitLineBounds || rowCursor === undefined || rowBottom === undefined) return;
 
           adlib.classList.remove('is-adlib-new-row', 'is-adlib-wrapped');

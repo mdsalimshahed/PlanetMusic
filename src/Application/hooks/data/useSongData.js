@@ -1,10 +1,25 @@
 /* --- src/hooks/data/useSongData.js --- */
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { getVaultArtistData } from '../../services/vaultCodec.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+
+const EMPTY_ARTIST_DATA = Object.freeze({});
+
+const createCustomDataForSong = song => ({
+  spotify: song?.customLinks?.spotify || '',
+  yt: song?.customLinks?.yt || '',
+  deezer: song?.customLinks?.deezer || '',
+  hasLocal: song?.customLinks?.hasLocal || false,
+  localName: song?.customLinks?.localName || '',
+  lyrics: toSmartPunctuation(
+    song?.lyrics || (song?.syncData ? song.syncData.map(line => line.text).join('\n') : '')
+  ),
+  artistImages: song?.artistImages || EMPTY_ARTIST_DATA,
+  artistColors: song?.artistColors || EMPTY_ARTIST_DATA
+});
 
 export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -41,8 +56,33 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     return parsed;
   });
 
-  const [customData, setCustomData] = useState({ spotify: '', yt: '', deezer: '', hasLocal: false, localName: '', lyrics: '', artistImages: {}, artistColors: {} });
+  const [customDataState, setCustomDataState] = useState(() => ({
+    trackId: selectedSong?.trackId ?? null,
+    data: createCustomDataForSong(selectedSong)
+  }));
   const [singerImages, setSingerImages] = useState({});
+  const songDefaultCustomData = useMemo(
+    () => createCustomDataForSong(selectedSong),
+    [selectedSong]
+  );
+  const customData = selectedSong &&
+    String(customDataState.trackId) !== String(selectedSong.trackId)
+    ? songDefaultCustomData
+    : customDataState.data;
+  const setCustomData = useCallback(update => {
+    setCustomDataState(previous => {
+      const song = selectedSong;
+      const trackId = song?.trackId ?? null;
+      const currentData = song &&
+        String(previous.trackId) !== String(trackId)
+        ? createCustomDataForSong(song)
+        : previous.data;
+      return {
+        trackId,
+        data: typeof update === 'function' ? update(currentData) : update
+      };
+    });
+  }, [selectedSong]);
   
   const previousTrackId = useRef(null);
   // Track to prevent infinite fetch loops within the same active session
@@ -50,13 +90,16 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
-  const featuredArtists = trackNameData.featuredArtists;
   
   const rawLyricsStr = customData.lyrics || (selectedSong?.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : '');
+  const selectedArtistName = selectedSong?.artistName;
+  const hasSelectedSong = Boolean(selectedSong);
   
   const basePalette = useMemo(() => {
-      return selectedSong ? getDistinctArtistColors(rawLyricsStr, selectedSong.artistName, trackNameData.featuredArtists) : {};
-  }, [rawLyricsStr, selectedSong?.artistName, trackNameData]);
+      return hasSelectedSong
+        ? getDistinctArtistColors(rawLyricsStr, selectedArtistName, trackNameData.featuredArtists)
+        : {};
+  }, [rawLyricsStr, selectedArtistName, hasSelectedSong, trackNameData]);
 
   const masterPalette = useMemo(() => {
       return { ...basePalette, ...globalArtistData.colors, ...customData.artistColors };
@@ -77,20 +120,12 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         setSingerImages({});
       }
 
-      const initialLyricsStr = toSmartPunctuation(selectedSong.lyrics || (selectedSong.syncData ? selectedSong.syncData.map(l => l.text).join('\n') : ''));
-      
-      setCustomData({
-        spotify: selectedSong.customLinks?.spotify || '',
-        yt: selectedSong.customLinks?.yt || '',
-        deezer: selectedSong.customLinks?.deezer || '',
-        hasLocal: selectedSong.customLinks?.hasLocal || false,
-        localName: selectedSong.customLinks?.localName || '',
-        lyrics: initialLyricsStr,
-        artistImages: selectedSong.artistImages || {},
-        artistColors: selectedSong.artistColors || {}
-      });
+      // Keep the track-specific draft aligned with the selected-song prop.
+      // The render-time fallback above prevents a worker parse of the previous track.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCustomData(createCustomDataForSong(selectedSong));
     }
-  }, [selectedSong]);
+  }, [selectedSong, setCustomData]);
 
   // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved OR a custom Deezer link is added
   useEffect(() => {

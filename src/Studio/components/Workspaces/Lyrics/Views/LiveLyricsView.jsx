@@ -81,8 +81,12 @@ const LiveLyricsView = ({
     settings?.transliterationBottomPadding,
     settings?.modalSplitRatio
   ].join('|');
+  const allLinesLayoutReady = layoutSource.readyLines.size >= liveParsedLyrics.length;
   const isLayoutReady = isSongModalReady &&
-    (liveParsedLyrics.length === 0 || readyLayoutSource === layoutSource);
+    (liveParsedLyrics.length === 0 || (
+      readyLayoutSource === layoutSource &&
+      (!isPlayingCurrentSong || allLinesLayoutReady)
+    ));
       const nextStarts = useMemo(() => {
         const syncData = syncList || [];
         const result = Array(syncData.length).fill('NaN');
@@ -130,18 +134,18 @@ const LiveLyricsView = ({
   const reportLineLayoutReady = useCallback(lineIndex => {
     if (layoutSource.readyLines.has(lineIndex)) return;
     layoutSource.readyLines.add(lineIndex);
+    const allLinesReady = layoutSource.readyLines.size >= layoutSource.lyrics.length;
     const initialLinesReady = layoutSource.initialLines.size > 0 &&
       Array.from(layoutSource.initialLines).every(index =>
         layoutSource.readyLines.has(index)
       );
-    const allLinesReady = layoutSource.readyLines.size >= layoutSource.lyrics.length;
-    if (!initialLinesReady && !allLinesReady) return;
+    if (isPlayingCurrentSong ? !allLinesReady : !initialLinesReady && !allLinesReady) return;
 
     if (!layoutReadyRef.current) setReadyLayoutSource(layoutSource);
     layoutReadyRef.current = true;
     const activeLine = cachedLinesRef.current[activeLineIndexRef.current];
     if (activeLine) centerActiveLine(activeLine.node);
-  }, [centerActiveLine, layoutSource]);
+  }, [centerActiveLine, isPlayingCurrentSong, layoutSource]);
 
   const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;
@@ -222,7 +226,16 @@ const LiveLyricsView = ({
     }
     layoutSource.initialLines.clear();
     if (activeLineIndexRef.current >= 0) {
-      layoutSource.initialLines.add(activeLineIndexRef.current);
+      for (
+        let index = Math.max(0, activeLineIndexRef.current - 1);
+        index <= Math.min(
+          cachedLinesRef.current.length - 1,
+          activeLineIndexRef.current + 1
+        );
+        index++
+      ) {
+        layoutSource.initialLines.add(index);
+      }
     } else {
       const containerBounds = container.getBoundingClientRect();
       cachedLinesRef.current.forEach((line, index) => {
