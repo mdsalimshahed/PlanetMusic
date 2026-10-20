@@ -80,10 +80,9 @@ const getMainSegmentBounds = (lineNode, overlayRect) => {
     if (!mainLayer) return;
 
     const mainRows = getLineTextBoundsList(mainLayer, overlayRect, true);
-    const pronunciationRows = getLineTextBoundsList(
-      chunk.querySelector('.pronunciation-text'),
-      overlayRect
-    );
+    const pronunciationRows = Array.from(
+      chunk.querySelectorAll('.pronunciation-text')
+    ).flatMap(pronunciation => getLineTextBoundsList(pronunciation, overlayRect));
     if (mainRows.length === 0) return;
 
     const rowRects = mainRows.map(row => ({ ...row }));
@@ -258,8 +257,48 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
         });
       });
 
-    getMainSegmentBounds(lineNode, overlayRect).forEach(({ id, bounds }) => {
-      addBox(boxes, id, bounds, '#ff3030', 'transparent', 'live-debug-box-outline');
+    const mainSegments = getMainSegmentBounds(lineNode, overlayRect);
+    const translationRows = getLineTextBoundsList(
+      lineNode.querySelector('.main-live-translation'),
+      overlayRect
+    );
+    mainSegments.forEach(({ id, bounds }, segmentIndex) => {
+      const redPadding = 3;
+      const redLeft = bounds.left - redPadding;
+      const redTop = bounds.top - redPadding;
+      const redRight = bounds.right + redPadding;
+      const redBottom = bounds.bottom + redPadding;
+      const redBounds = {
+        left: redLeft,
+        top: redTop,
+        right: redRight,
+        bottom: redBottom,
+        width: redRight - redLeft,
+        height: redBottom - redTop
+      };
+      addBox(boxes, id, redBounds, '#ff3030', 'transparent', 'live-debug-box-outline');
+
+      const rowTranslationBounds = segmentIndex === 0
+        ? boundsForRects(translationRows)
+        : null;
+      const rowBounds = boundsForRects([
+        redBounds,
+        ...(rowTranslationBounds ? [rowTranslationBounds] : [])
+      ]);
+      if (!rowBounds) return;
+      const whitePadding = 3;
+      const left = rowBounds.left - whitePadding;
+      const top = rowBounds.top - whitePadding;
+      const right = rowBounds.right + whitePadding;
+      const bottom = rowBounds.bottom + whitePadding;
+      addBox(
+        boxes,
+        `active-row-outline-${id}`,
+        { left, top, right, bottom, width: right - left, height: bottom - top },
+        '#ffffff',
+        'transparent',
+        'live-debug-active-row-outline'
+      );
     });
   });
 
@@ -277,7 +316,8 @@ const haveBoxesChanged = (previous, next) => (
       oldBox.width !== box.width ||
       oldBox.height !== box.height ||
       oldBox.color !== box.color ||
-      oldBox.fillColor !== box.fillColor;
+      oldBox.fillColor !== box.fillColor ||
+      oldBox.className !== box.className;
   })
 );
 

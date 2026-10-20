@@ -38,7 +38,7 @@ export const STEPS = [
   { n: '03', title: 'Add artist images', text: 'Give each singer a photo and color in Artist Manager, bringing every voice to life across your lyrics.', to: '/docs/dev-blog/post/image-manager-customizing-artist-profiles' },
   { n: '04', title: 'Sync the lyrics', text: 'Our engine automatically fetches available sync data, and you can fine-tune every line yourself. Press the Down Arrow to lock in a timestamp, or the Up Arrow to remove it.', to: '/docs/dev-blog/post/how-to-sync-songs-with-music' },
   { n: '05', title: 'Translate in one click', text: 'Translate every line at once with our automated translation engine. Then fine-tune each result in the Translation Workspace until it sounds right to you.', to: '/docs/dev-blog/post/complete-guide-to-the-translation-workspace' },
-  { n: '06', title: 'Enjoy the music', text: 'Sit back and enjoy your lyrics in four different views. Follow every line in Live Scroll, stay with the moment in Focused, watch each voice come alive in Group Chat, or take in the full song in Plain Text.', to: '/docs/dev-blog/post/group-chat-lyrics-view' }
+  { n: '06', title: 'Enjoy the music', text: 'Sit back and enjoy your lyrics in four different views. Follow every line in Live, stay with the moment in Focused, watch each voice come alive in Group Chat, or take in the full song in Plain Text.', to: '/docs/dev-blog/post/group-chat-lyrics-view' }
 ];
 
 export const FEATURES = [

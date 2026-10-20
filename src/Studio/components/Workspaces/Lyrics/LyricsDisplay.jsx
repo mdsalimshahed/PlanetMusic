@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import LyricsEqualizer from './LyricsEqualizer.jsx';
 import EditLyricsView from './Views/EditLyricsView.jsx';
-import LiveScrollLyricsView from './Views/LiveScrollLyricsView.jsx';
+import LiveLyricsView from './Views/LiveLyricsView.jsx';
 import FocusedLyricsView from './Views/FocusedLyricsView.jsx';
 import GroupChatLyricsView from './Views/GroupChatLyricsView.jsx';
 import PlainLyricsView from './Views/PlainLyricsView.jsx';
@@ -50,7 +50,7 @@ const LyricsDisplay = ({
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
         />
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
-        <LiveScrollLyricsView
+        <LiveLyricsView
           key={selectedSong?.trackId}
           liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
@@ -58,6 +58,7 @@ const LyricsDisplay = ({
           isPlayingCurrentSong={isPlayingCurrentSong}
           handleLineClick={handleLineClick}
           settings={settings}
+          currentTrack={currentTrack}
           isSongModalReady={isSongModalReady}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
           shouldAnimateEntrance={shouldAnimateLiveEntrance}

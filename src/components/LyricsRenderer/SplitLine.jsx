@@ -16,7 +16,8 @@ const SplitLine = ({
   pronunciation,
   hasSpacingText,
   useTranslationFormatting = false,
-  focusedMainLyrics = false
+  focusedMainLyrics = false,
+  autoLiveLayout = false
 }) => {
   const currentTime = window.currentAudioTime || 0;
   const isRTL = isRTLLanguage(lineObj.text || '');
@@ -164,13 +165,14 @@ const SplitLine = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
-      {mainTranslationJSX ? (
+      {mainTranslationJSX && !(focusedMainLyrics && autoLiveLayout) ? (
         <span className="chunk-translation live-translation main-live-translation" dir="ltr">
           {mainTranslationJSX}
         </span>
       ) : null}
       <span
           className={`primary-text${focusedMainLyrics ? ' live-split-line' : ''}`}
+          dir={focusedMainLyrics && autoLiveLayout ? (isRTL ? 'rtl' : 'ltr') : undefined}
           style={{
             display: 'inline-flex',
             flexDirection: 'row',
@@ -204,6 +206,11 @@ const SplitLine = ({
               boxSizing: 'border-box'
             }}
         >
+          {focusedMainLyrics && autoLiveLayout && mainTranslationJSX ? (
+            <span className="chunk-translation live-translation main-live-translation" dir="ltr">
+              {mainTranslationJSX}
+            </span>
+          ) : null}
           <span
               className="main-lyrics-layer"
               style={{

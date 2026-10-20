@@ -202,6 +202,15 @@ rt.pronunciation-text,
   box-sizing: border-box;
 }
 
+.live-layout-auto .chunk-translation.live-translation {
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + var(--dyn-trans-top-padding, 8px));
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+}
+
 .preview-line .adlib-node .chunk-translation.live-translation {
   max-width: 100%;
 }
@@ -211,12 +220,29 @@ rt.pronunciation-text,
   align-items: baseline !important;
 }
 
+.live-layout-auto .live-split-line {
+  column-gap: min(0.72vw, 1.5vh);
+}
+
 .preview-line .live-split-line > .adlib-node {
   margin-inline-start: 0 !important;
 }
 
 .preview-line .live-split-line > .core-chunks {
   align-self: flex-start;
+}
+
+.live-layout-auto .live-split-line > .core-chunks > .main-live-translation {
+  max-width: 100%;
+}
+
+.live-layout-auto .live-split-line > .adlib-node > .adlib-live-translation {
+  position: absolute;
+  top: auto;
+  bottom: calc(100% + var(--dyn-trans-top-padding, 8px));
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
 }
 
 .preview-line .live-split-line > .core-chunks.is-main-shifted-for-pronounced-foreign-adlib {
@@ -243,6 +269,10 @@ rt.pronunciation-text,
   translate: 0 var(--live-adlib-glyph-offset-y, 0px);
 }
 
+.live-layout-auto .live-split-line > .adlib-node {
+  align-self: baseline;
+}
+
 .preview-line .live-split-line > .adlib-node.is-english-adlib-on-foreign-line:not(.is-adlib-inline-after-wrapped-main) {
   translate: 0 calc(
     var(--live-adlib-glyph-offset-y, 0px) +
@@ -250,17 +280,9 @@ rt.pronunciation-text,
   );
 }
 
-.preview-line .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main {
-  position: absolute !important;
-  left: var(--live-adlib-inline-x);
-  top: var(--live-adlib-inline-y);
-  margin-inline-start: 0 !important;
-  translate: none;
-}
-
-.preview-line .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main.is-nonforeign-adlib-on-foreign-main {
-  top: calc(
-    var(--live-adlib-inline-y) +
+.live-layout-auto .live-split-line > .adlib-node.is-nonforeign-adlib-on-foreign-main {
+  translate: 0 calc(
+    var(--live-adlib-glyph-offset-y, 0px) +
     (var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2
   );
 }
@@ -276,12 +298,6 @@ rt.pronunciation-text,
   ) !important;
 }
 
-.preview-line .live-split-line > .adlib-node.is-adlib-new-row {
-  margin-inline-start: 0 !important;
-}
-
-
-
 .preview-line .live-split-line > .adlib-node.is-adlib-wrapped > .primary-text {
   width: auto !important;
   max-width: 100%;
@@ -291,10 +307,26 @@ rt.pronunciation-text,
   position: relative;
   top: auto;
   left: auto;
+  bottom: auto;
   order: -1;
   margin: 0 0 var(--dyn-trans-top-padding, 8px);
   align-self: flex-start;
   transform: none !important;
+}
+
+.live-layout-auto .live-split-line > .adlib-node.is-adlib-wrapped > .adlib-live-translation {
+  position: relative;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  order: -1;
+  margin: 0 0 var(--dyn-trans-top-padding, 8px);
+  align-self: flex-start;
+  transform: none;
+}
+
+.preview-line .live-split-line > .adlib-node.is-adlib-new-row {
+  margin-inline-start: 0 !important;
 }
 
 .preview-line .adlib-node > .adlib-live-translation {

@@ -15,6 +15,7 @@ const StandardLine = ({
   hasSpacingText,
   useTranslationFormatting = false,
   focusedMainLyrics = false,
+  autoLiveLayout = false,
   excludeAdlibs = false,
   isAdlib = false
 }) => {
@@ -78,6 +79,24 @@ const StandardLine = ({
       overflowWrap: 'normal',
       whiteSpace: 'normal',
       textWrap: 'balance'
+    }
+    : autoLiveLayout
+    ? {
+      position: 'absolute',
+      top: 'auto',
+      left: 0,
+      transform: 'none',
+      display: 'block',
+      margin: 0,
+      width: 'max-content',
+      minWidth: 0,
+      maxWidth: '100%',
+      textAlign: 'center',
+      wordBreak: 'normal',
+      overflowWrap: 'normal',
+      whiteSpace: 'normal',
+      textWrap: 'normal',
+      boxSizing: 'border-box'
     }
     : focusedMainLyrics
     ? {
@@ -174,7 +193,7 @@ const StandardLine = ({
         textWrap: isFocused ? 'balance' : 'normal', 
         boxSizing: 'border-box' 
       }}>
-        {focusedMainLyrics && translationElement}
+        {focusedMainLyrics && !autoLiveLayout && translationElement}
         <span
           className="core-chunks"
           style={{
@@ -192,7 +211,7 @@ const StandardLine = ({
             boxSizing: 'border-box'
           }}
         >
-          {!focusedMainLyrics && (
+          {(!focusedMainLyrics || autoLiveLayout) && (
             <>
               {translationElement}
             </>

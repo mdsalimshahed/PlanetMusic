@@ -1013,7 +1013,7 @@ const HomeGuide = ({ isPlayerActive = false }) => {
           <div className="home-guide-preview-tabs" role="group" aria-label="Choose a workspace preview">
             {[
               ['vault', 'Vault'],
-              ['lyrics', 'Live Scroll'],
+              ['lyrics', 'Live'],
               ['group-chat', 'Group Chat'],
               ['ambient', 'Ambient'],
               ['changelog', 'Changelog']

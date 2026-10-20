@@ -107,13 +107,22 @@ const LiveScrollLyricsView = ({
     const container = containerRef.current;
     if (!container || !node) return;
     const containerBounds = container.getBoundingClientRect();
-    const activeBounds = node.getBoundingClientRect();
+    const contentBounds = [
+      node.getBoundingClientRect(),
+      ...Array.from(node.querySelectorAll([
+        '.adlib-node > .primary-text',
+        '.adlib-node > .adlib-live-translation',
+        '.adlib-node > .pronunciation-text'
+      ].join(', ')), element => element.getBoundingClientRect())
+    ];
+    const activeTop = Math.min(...contentBounds.map(bounds => bounds.top));
+    const activeBottom = Math.max(...contentBounds.map(bounds => bounds.bottom));
     const target = getCenteredScrollTop({
       scrollTop: container.scrollTop,
       viewportTop: containerBounds.top + container.clientTop,
       viewportHeight: container.clientHeight,
-      activeTop: activeBounds.top,
-      activeHeight: activeBounds.height,
+      activeTop,
+      activeHeight: activeBottom - activeTop,
       maxScrollTop: container.scrollHeight - container.clientHeight
     });
     if (Math.abs(target - container.scrollTop) < 1) return;

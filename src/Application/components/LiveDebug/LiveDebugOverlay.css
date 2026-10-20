@@ -29,6 +29,13 @@
     box-shadow: none;
 }
 
+.live-debug-active-row-outline {
+    border: 2px dashed #ffffff !important;
+    background: transparent !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.75);
+    z-index: 10004;
+}
+
 .live-debug-alignment-guide {
     height: 0 !important;
     border: 0 !important;
