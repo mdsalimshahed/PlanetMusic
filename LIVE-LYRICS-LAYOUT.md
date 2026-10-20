@@ -216,30 +216,37 @@ pronunciation, before deciding placement.
 - Otherwise the layout first tries to place an ad-lib inline after the main
   text, aligned to the lyric baseline. The browser's flex layout calculates
   whether it fits beside the preceding content and wraps it onto a new row at
-  the appropriate edge when necessary. The inline clearance is
-  `min(0.72vw, 1.5vh)`.
+  the appropriate edge when necessary. When an in-flow main translation shifts
+  the main text block's flex baseline, measured main-glyph and ad-lib-glyph rows
+  correct the ad-lib's vertical offset so it aligns to the last main-glyph row;
+  pronunciation and translation rows are not used as that baseline. The inline
+  clearance is `min(0.72vw, 1.5vh)`.
 - An ad-lib's secondary translation is sized to the widest row of its primary
   glyphs. It stays inside the ad-lib container's normal flow so the containing
   lyric line includes its height. If that translation would overlap a main
-  glyph row, the ad-lib is moved to its own row and a dynamic collision gap is
-  calculated.
+  glyph row and the ad-lib cannot fit inline, the ad-lib is moved to its own row
+  and a dynamic collision gap is calculated.
 - Wrapped ad-libs with translations put that translation before the ad-lib
   primary text. Wrapped content is constrained to the available width.
 - The algorithm checks measured ad-lib text against the current line's main
   content and ad-libs, as well as the previous and next lyric wrappers. Its
   collision clearance is `min(0.5vw, 0.25vh)`.
 - A collision with the current or previous line can force an ad-lib to a new
-  row and add a start clearance. A collision extending below the current split
-  line adds bottom padding so the following lyric line does not cover it.
+  row and add a start clearance when it cannot fit inline. If it fits inline,
+  previous-line clearance is added before the whole lyric wrapper instead, so
+  the ad-lib stays beside the main text. A collision extending below the current
+  split line adds bottom padding so the following lyric line does not cover it.
 - Lines with foreign-script pronunciation receive baseline-aware handling.
   When a non-foreign ad-lib sits inline with a foreign-only main line, the
   ad-lib is offset to account for the main pronunciation block. When an inline
   ad-lib has pronunciation beside a non-foreign main line, the main block and
   following line spacing can be shifted to preserve the baseline.
-- The browser calculates inline placement, baseline alignment, and wrapping
-  from the rendered content. JavaScript measurements remain for the documented
-  collision decisions; dynamic collision clearances are passed to CSS as
-  custom properties, and CSS applies the resulting row wrapping and spacing.
+- The browser calculates inline placement and wrapping from the rendered
+  content. JavaScript measurements remain for the documented collision
+  decisions and for correcting the inline ad-lib baseline when the in-flow
+  main translation affects flex baseline alignment; dynamic offsets and
+  collision clearances are passed to CSS as custom properties, and CSS applies
+  the resulting row wrapping and spacing.
 - Active ad-libs animate upward from `12px` and fade in over `320ms`. The
   animation is removed for reduced-motion preferences.
 

@@ -463,6 +463,8 @@ export const LyricLineWrapper = React.memo(({
         splitLine?.classList.remove('is-main-shifted-for-pronounced-foreign-adlib');
         splitLine?.style.removeProperty('--live-main-foreign-adlib-offset-y');
         splitLine?.style.removeProperty('--live-adlib-neighbor-clearance');
+        wrapper.classList.remove('has-inline-adlib-neighbor-clearance');
+        wrapper.style.removeProperty('--live-adlib-neighbor-clearance-start');
         adlibNodes.forEach(adlib => {
           adlib.classList.remove('is-adlib-wrapped');
           adlib.classList.remove('is-english-adlib-on-foreign-line');
@@ -651,28 +653,63 @@ export const LyricLineWrapper = React.memo(({
           translation.style.width = `${Math.max(1, Math.floor(width))}px`;
         });
 
-        let shiftMainForForeignAdlibBaseline = false;
-        adlibMeasurements.forEach(({ adlib }) => {
+        mainGlyphRows = getGlyphRows(mainGlyphs);
+        const inlineBesideMainByAdlib = new Map();
+        const fitsBesideMain = adlib => {
+          if (inlineBesideMainByAdlib.has(adlib)) {
+            return inlineBesideMainByAdlib.get(adlib);
+          }
+
           const mainBounds = coreChunks?.getBoundingClientRect();
           const adlibBounds = adlib.getBoundingClientRect();
-          const fitsBesideMain = Boolean(
+          const isRTL = getComputedStyle(splitLine).direction === 'rtl';
+          const fits = Boolean(
             mainBounds &&
-            adlibBounds.left < mainBounds.right &&
-            adlibBounds.right > mainBounds.left &&
-            adlibBounds.top < mainBounds.bottom &&
-            adlibBounds.bottom > mainBounds.top
+            !adlib.classList.contains('is-adlib-wrapped') &&
+            (isRTL
+              ? adlibBounds.right <= mainBounds.left + 1
+              : adlibBounds.left >= mainBounds.right - 1)
           );
+          inlineBesideMainByAdlib.set(adlib, fits);
+          return fits;
+        };
+        adlibMeasurements.forEach(({ adlib }) => {
+          const primaryText = adlib.querySelector(':scope > .primary-text');
+          const adlibRows = getGlyphRows(primaryText);
+          const isInlineBesideMain = fitsBesideMain(adlib);
+
+          if (!isInlineBesideMain || mainGlyphRows.length === 0 || adlibRows.length === 0) {
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+            return;
+          }
+
+          const mainBaseline = mainGlyphRows[mainGlyphRows.length - 1].bottom;
+          const adlibBaseline = adlibRows[adlibRows.length - 1].bottom;
+          const baselineOffset = (mainBaseline - adlibBaseline) / scaleY;
+          if (Math.abs(baselineOffset) < 0.5) {
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+          } else {
+            adlib.style.setProperty(
+              '--live-adlib-glyph-offset-y',
+              `${baselineOffset}px`
+            );
+          }
+        });
+
+        let shiftMainForForeignAdlibBaseline = false;
+        adlibMeasurements.forEach(({ adlib }) => {
+          const isInlineBesideMain = fitsBesideMain(adlib);
           const adlibHasPronunciation = Boolean(
             adlib.querySelector('.pronunciation-text')
           );
           adlib.classList.toggle(
             'is-nonforeign-adlib-on-foreign-main',
-            fitsBesideMain &&
+            isInlineBesideMain &&
               mainIsForeignOnly &&
               !adlibHasPronunciation
           );
           if (
-            fitsBesideMain &&
+            isInlineBesideMain &&
             mainIsNonForeignOnly &&
             adlibHasPronunciation
           ) {
@@ -712,9 +749,11 @@ export const LyricLineWrapper = React.memo(({
 
           if (
             overlappingRows.length > 0 &&
-            !adlib.classList.contains('is-adlib-wrapped')
+            !adlib.classList.contains('is-adlib-wrapped') &&
+            !fitsBesideMain(adlib)
           ) {
             adlib.classList.add('is-adlib-wrapped');
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
             appliedGap = parseFloat(getComputedStyle(adlib).marginBlockStart) || 0;
             translationRows = getGlyphRows(translation);
             overlappingRows = findOverlappingRows(translationRows, appliedGap);
@@ -749,9 +788,11 @@ export const LyricLineWrapper = React.memo(({
           window.innerHeight * 0.0025
         );
         const splitLineBottom = splitLine?.getBoundingClientRect().bottom;
+        let inlineNeighborStartClearance = 0;
         adlibMeasurements.forEach(({ adlib }) => {
           const adlibRects = getFinalAdlibRects(adlib);
           let neighborStartClearance = 0;
+          const isInlineBesideMain = fitsBesideMain(adlib);
           if (splitLineBottom !== undefined) {
             neighborBottomClearance = Math.max(
               neighborBottomClearance,
@@ -773,10 +814,20 @@ export const LyricLineWrapper = React.memo(({
                   if (!intersects) return;
 
                   if (line === wrapper || line === previousLineWrapper) {
-                    neighborStartClearance = Math.max(
-                      neighborStartClearance,
+                    const clearance = (
                       occupiedRect.bottom + collisionClearance - adlibRect.top
                     );
+                    if (line === previousLineWrapper && isInlineBesideMain) {
+                      inlineNeighborStartClearance = Math.max(
+                        inlineNeighborStartClearance,
+                        clearance
+                      );
+                    } else {
+                      neighborStartClearance = Math.max(
+                        neighborStartClearance,
+                        clearance
+                      );
+                    }
                   } else {
                     neighborBottomClearance = Math.max(
                       neighborBottomClearance,
@@ -790,6 +841,7 @@ export const LyricLineWrapper = React.memo(({
 
           if (neighborStartClearance > 0) {
             adlib.classList.add('is-adlib-wrapped');
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
             adlib.style.setProperty(
               '--live-adlib-neighbor-clearance-start',
               `${(
@@ -803,6 +855,13 @@ export const LyricLineWrapper = React.memo(({
             });
           }
         });
+        if (inlineNeighborStartClearance > 0 && window.innerHeight > 0) {
+          wrapper.classList.add('has-inline-adlib-neighbor-clearance');
+          wrapper.style.setProperty(
+            '--live-adlib-neighbor-clearance-start',
+            `${inlineNeighborStartClearance / window.innerHeight * 100}vh`
+          );
+        }
         if (neighborBottomClearance > 0) {
           splitLine?.style.setProperty(
             '--live-adlib-neighbor-clearance',

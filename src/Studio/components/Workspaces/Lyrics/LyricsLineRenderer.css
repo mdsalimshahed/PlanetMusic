@@ -265,6 +265,10 @@ rt.pronunciation-text,
   margin-block-end: var(--live-main-foreign-adlib-following-row-offset-y);
 }
 
+.live-layout-auto .preview-line.has-inline-adlib-neighbor-clearance {
+  margin-block-start: var(--live-adlib-neighbor-clearance-start);
+}
+
 .preview-line .live-split-line {
   padding-block-end: calc(
     var(--live-main-foreign-adlib-offset-y, 0vh) +
