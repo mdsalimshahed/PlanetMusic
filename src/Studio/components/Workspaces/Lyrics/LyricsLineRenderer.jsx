@@ -1,5 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.jsx --- */
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
@@ -14,11 +14,14 @@ export { renderFormattedTranslation } from '../../../../components/LyricsRendere
 const LIVE_LAYOUT_IDLE_BUDGET_MS = 5;
 const pendingLiveLayoutMeasurements = [];
 const liveLayoutResizeMeasurements = new Set();
+const liveLayoutFontMeasurements = new Set();
 let liveLayoutMeasurementIdleCallback = null;
 let liveLayoutMeasurementTimeout = null;
 let liveLayoutResizeListenerAttached = false;
 let liveLayoutMeasurementsPrioritized = false;
 const liveLineLayoutCache = new WeakMap();
+let liveLayoutFontRevision = 0;
+let liveLayoutFontListenerAttached = false;
 const LIVE_LAYOUT_CLASS_NAMES = [
   'has-main-shift-for-foreign-adlib',
   'is-main-shifted-for-pronounced-foreign-adlib',
@@ -56,8 +59,41 @@ const getLiveLayoutCacheTargets = wrapper => [
   ].join(', '))
 ];
 
+const getLiveLayoutTypography = wrapper => {
+  const style = getComputedStyle(wrapper);
+  return [
+    style.font,
+    style.lineHeight,
+    style.letterSpacing,
+    style.direction,
+    style.writingMode
+  ].join('|');
+};
+
+const attachLiveLayoutFontListener = () => {
+  if (liveLayoutFontListenerAttached || !document.fonts) return;
+  const handleFontChange = () => {
+    liveLayoutFontRevision++;
+    liveLayoutFontMeasurements.forEach(invalidate => invalidate());
+  };
+  document.fonts.addEventListener('loadingdone', handleFontChange);
+  document.fonts.addEventListener('loadingerror', handleFontChange);
+  liveLayoutFontListenerAttached = true;
+};
+
+const registerLiveLayoutFontMeasurement = invalidate => {
+  attachLiveLayoutFontListener();
+  liveLayoutFontMeasurements.add(invalidate);
+  return () => liveLayoutFontMeasurements.delete(invalidate);
+};
+
 const applyCachedLiveLayout = (wrapper, cacheEntry) => {
-  if (wrapper.clientWidth !== cacheEntry.width) return false;
+  attachLiveLayoutFontListener();
+  if (
+    wrapper.clientWidth !== cacheEntry.width ||
+    liveLayoutFontRevision !== cacheEntry.fontRevision ||
+    getLiveLayoutTypography(wrapper) !== cacheEntry.typography
+  ) return false;
   const targets = getLiveLayoutCacheTargets(wrapper);
   if (targets.length !== cacheEntry.targets.length) return false;
 
@@ -77,11 +113,14 @@ const applyCachedLiveLayout = (wrapper, cacheEntry) => {
 
 const cacheLiveLayout = (wrapper, lineObj, savedNode, lineIndex, cacheKey) => {
   if (document.fonts && document.fonts.status !== 'loaded') return;
+  attachLiveLayoutFontListener();
   liveLineLayoutCache.set(lineObj, {
     savedNode,
     lineIndex,
     cacheKey,
     width: wrapper.clientWidth,
+    typography: getLiveLayoutTypography(wrapper),
+    fontRevision: liveLayoutFontRevision,
     targets: getLiveLayoutCacheTargets(wrapper).map(target => ({
       classes: LIVE_LAYOUT_CLASS_NAMES.filter(className =>
         target.classList.contains(className)
@@ -149,25 +188,9 @@ function flushLiveLayoutMeasurements(deadline) {
   liveLayoutMeasurementIdleCallback = null;
   liveLayoutMeasurementTimeout = null;
   if (!liveLayoutMeasurementsPrioritized) {
-    pendingLiveLayoutMeasurements.forEach(entry => {
-      const container = entry.wrapper.closest('.live-lyrics-preview');
-      const lineBounds = entry.wrapper.getBoundingClientRect();
-      const containerBounds = container?.getBoundingClientRect();
-      const isVisible = containerBounds &&
-        lineBounds.bottom > containerBounds.top &&
-        lineBounds.top < containerBounds.bottom;
-      entry.priority = entry.wrapper.classList.contains('active')
-        ? 0
-        : isVisible ? 1 : 2;
-      entry.distance = isVisible && containerBounds
-        ? Math.abs(
-          (lineBounds.top + lineBounds.bottom) / 2 -
-          (containerBounds.top + containerBounds.bottom) / 2
-        )
-        : 0;
-    });
     pendingLiveLayoutMeasurements.sort((first, second) =>
-      first.priority - second.priority || first.distance - second.distance
+      Number(second.wrapper.classList.contains('active')) -
+      Number(first.wrapper.classList.contains('active'))
     );
     liveLayoutMeasurementsPrioritized = true;
   }
@@ -329,10 +352,11 @@ export const LyricLineWrapper = React.memo(({
   isPlayingCurrentSong,
   lineIndex,
   isSongModalReady = true,
-  liveLayoutCacheKey,
+  liveLayoutCacheSignature,
   onLiveLayoutReady
 }) => {
   const wrapperRef = useRef(null);
+  const [liveLayoutCacheVersion, setLiveLayoutCacheVersion] = useState(0);
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
   const renderPlaybackState = viewMode === 'live' ? false : isPlayingCurrentSong;
@@ -353,6 +377,49 @@ export const LyricLineWrapper = React.memo(({
     const wrapper = wrapperRef.current;
     if (!wrapper || (viewMode !== 'focused' && viewMode !== 'live')) return undefined;
     if (viewMode === 'live' && !isSongModalReady) return undefined;
+
+    if (viewMode === 'live') {
+      const cachedLayout = liveLineLayoutCache.get(lineObj);
+      if (
+        cachedLayout?.savedNode === savedNode &&
+        cachedLayout.lineIndex === lineIndex &&
+        cachedLayout.cacheKey === liveLayoutCacheSignature &&
+        applyCachedLiveLayout(wrapper, cachedLayout)
+      ) {
+        let cancelled = false;
+        let observedWidth = wrapper.clientWidth;
+        const invalidateCachedLayout = () => {
+          if (cancelled) return;
+          liveLineLayoutCache.delete(lineObj);
+          setLiveLayoutCacheVersion(version => version + 1);
+        };
+        const unregisterResizeMeasurement = registerLiveLayoutResizeMeasurement(
+          invalidateCachedLayout
+        );
+        const unregisterFontMeasurement = registerLiveLayoutFontMeasurement(
+          invalidateCachedLayout
+        );
+        const resizeObserver = typeof ResizeObserver === 'undefined'
+          ? null
+          : new ResizeObserver(entries => {
+            const width = entries[0]?.contentRect.width;
+            if (width === undefined || Math.abs(width - observedWidth) < 0.5) return;
+            observedWidth = width;
+            invalidateCachedLayout();
+          });
+        resizeObserver?.observe(wrapper);
+        queueMicrotask(() => {
+          if (!cancelled && wrapper.isConnected) onLiveLayoutReady?.(lineIndex);
+        });
+
+        return () => {
+          cancelled = true;
+          resizeObserver?.disconnect();
+          unregisterResizeMeasurement();
+          unregisterFontMeasurement();
+        };
+      }
+    }
 
     const measureWidestLine = element => {
       if (!element || !element.textContent.trim()) return null;
@@ -442,17 +509,6 @@ export const LyricLineWrapper = React.memo(({
     };
 
     if (viewMode === 'live') {
-      const cachedLayout = liveLineLayoutCache.get(lineObj);
-      if (
-        cachedLayout?.savedNode === savedNode &&
-        cachedLayout.lineIndex === lineIndex &&
-        cachedLayout.cacheKey === liveLayoutCacheKey &&
-        applyCachedLiveLayout(wrapper, cachedLayout)
-      ) {
-        queueMicrotask(() => onLiveLayoutReady?.(lineIndex));
-        return undefined;
-      }
-
       let cancelled = false;
       let queuedMeasurement = null;
       let measurementQueued = false;
@@ -547,7 +603,7 @@ export const LyricLineWrapper = React.memo(({
             lineObj,
             savedNode,
             lineIndex,
-            liveLayoutCacheKey
+            liveLayoutCacheSignature
           );
           onLiveLayoutReady?.(lineIndex);
           return;
@@ -1070,7 +1126,7 @@ export const LyricLineWrapper = React.memo(({
           lineObj,
           savedNode,
           lineIndex,
-          liveLayoutCacheKey
+          liveLayoutCacheSignature
         );
         onLiveLayoutReady?.(lineIndex);
       };
@@ -1171,7 +1227,8 @@ export const LyricLineWrapper = React.memo(({
   }, [
     isSongModalReady,
     lineIndex,
-    liveLayoutCacheKey,
+    liveLayoutCacheSignature,
+    liveLayoutCacheVersion,
     lineObj,
     onLiveLayoutReady,
     renderedContent,

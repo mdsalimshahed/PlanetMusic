@@ -5,6 +5,20 @@ import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } f
 import { buildTimedLineData, findActiveLineIndex, getCenteredScrollTop } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
 
+const liveLayoutCacheIdentities = new WeakMap();
+let nextLiveLayoutCacheIdentity = 0;
+
+const getLiveLayoutCacheIdentity = value => {
+  if (value === null || (typeof value !== 'object' && typeof value !== 'function')) {
+    return String(value);
+  }
+  if (!liveLayoutCacheIdentities.has(value)) {
+    nextLiveLayoutCacheIdentity++;
+    liveLayoutCacheIdentities.set(value, nextLiveLayoutCacheIdentity);
+  }
+  return liveLayoutCacheIdentities.get(value);
+};
+
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
   const activeBounds = node.getBoundingClientRect();
@@ -53,8 +67,11 @@ const LiveLyricsView = ({
     readyLines: new Set(),
     initialLines: new Set()
   }), [liveParsedLyrics, syncList]);
-  const liveLayoutCacheKey = useMemo(() => [
+  const liveLayoutCacheSignature = [
     selectedSong?.trackId,
+    getLiveLayoutCacheIdentity(liveParsedLyrics),
+    getLiveLayoutCacheIdentity(syncList),
+    getLiveLayoutCacheIdentity(masterPalette),
     window.innerWidth,
     window.innerHeight,
     settings?.liveSyncFontSize,
@@ -62,17 +79,8 @@ const LiveLyricsView = ({
     settings?.translationTopPadding,
     settings?.transliterationFontSize,
     settings?.transliterationBottomPadding,
-    settings?.modalSplitRatio,
-    getComputedStyle(document.documentElement).getPropertyValue('--font-family')
-  ].join('|'), [
-    selectedSong?.trackId,
-    settings?.liveSyncFontSize,
-    settings?.liveSyncLineGap,
-    settings?.translationTopPadding,
-    settings?.transliterationFontSize,
-    settings?.transliterationBottomPadding,
     settings?.modalSplitRatio
-  ]);
+  ].join('|');
   const isLayoutReady = isSongModalReady &&
     (liveParsedLyrics.length === 0 || readyLayoutSource === layoutSource);
       const nextStarts = useMemo(() => {
@@ -436,7 +444,7 @@ const LiveLyricsView = ({
               isPlayingCurrentSong={false}
               lineIndex={i}
               isSongModalReady={isSongModalReady}
-              liveLayoutCacheKey={liveLayoutCacheKey}
+              liveLayoutCacheSignature={liveLayoutCacheSignature}
               onLiveLayoutReady={reportLineLayoutReady}
             />
         )
