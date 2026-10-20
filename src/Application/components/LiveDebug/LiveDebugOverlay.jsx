@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import './LiveDebugOverlay.css';
 
 const getLineTextBoundsList = (element, overlayRect, excludePronunciation = false) => {
+  if (!element) return [];
   const lineGroups = [];
   const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
     acceptNode: textNode => (
@@ -15,49 +16,240 @@ const getLineTextBoundsList = (element, overlayRect, excludePronunciation = fals
   let node;
 
   while ((node = walker.nextNode())) {
-    if (node.textContent.trim() !== '') {
-      const range = document.createRange();
-      range.selectNodeContents(node);
-      const rects = range.getClientRects();
-      for (let i = 0; i < rects.length; i++) {
-        const rect = rects[i];
-        if (rect.width > 0 && rect.height > 0) {
-          const rTop = rect.top - overlayRect.top;
-          const rBottom = rect.bottom - overlayRect.top;
-          const rLeft = rect.left - overlayRect.left;
-          const rRight = rect.right - overlayRect.left;
+    if (!node.textContent.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    [...range.getClientRects()].forEach(rect => {
+      if (rect.width <= 0 || rect.height <= 0) return;
 
-          // Group rects that belong to the same wrapped line (>50% vertical overlap)
-          let matchedGroup = lineGroups.find(group => {
-            const verticalOverlap = Math.min(rBottom, group.bottom) - Math.max(rTop, group.top);
-            const minHeight = Math.min(rect.height, group.bottom - group.top);
-            return verticalOverlap > minHeight * 0.5;
-          });
+      const bounds = {
+        top: rect.top - overlayRect.top,
+        bottom: rect.bottom - overlayRect.top,
+        left: rect.left - overlayRect.left,
+        right: rect.right - overlayRect.left
+      };
+      const matchedGroup = lineGroups.find(group => {
+        const verticalOverlap = Math.min(bounds.bottom, group.bottom) -
+          Math.max(bounds.top, group.top);
+        const minHeight = Math.min(
+          bounds.bottom - bounds.top,
+          group.bottom - group.top
+        );
+        return verticalOverlap > minHeight * 0.5;
+      });
 
-          if (matchedGroup) {
-            matchedGroup.top = Math.min(matchedGroup.top, rTop);
-            matchedGroup.bottom = Math.max(matchedGroup.bottom, rBottom);
-            matchedGroup.left = Math.min(matchedGroup.left, rLeft);
-            matchedGroup.right = Math.max(matchedGroup.right, rRight);
-          } else {
-            lineGroups.push({
-              top: rTop,
-              bottom: rBottom,
-              left: rLeft,
-              right: rRight
-            });
-          }
-        }
+      if (matchedGroup) {
+        matchedGroup.top = Math.min(matchedGroup.top, bounds.top);
+        matchedGroup.bottom = Math.max(matchedGroup.bottom, bounds.bottom);
+        matchedGroup.left = Math.min(matchedGroup.left, bounds.left);
+        matchedGroup.right = Math.max(matchedGroup.right, bounds.right);
+      } else {
+        lineGroups.push(bounds);
       }
-    }
+    });
   }
 
-  return lineGroups.map(g => ({
-    top: g.top,
-    left: g.left,
-    width: g.right - g.left,
-    height: g.bottom - g.top
+  return lineGroups.map(group => ({
+    top: group.top,
+    left: group.left,
+    width: group.right - group.left,
+    height: group.bottom - group.top,
+    right: group.right,
+    bottom: group.bottom
   }));
+};
+
+const boundsForRects = rects => {
+  if (rects.length === 0) return null;
+  const left = Math.min(...rects.map(rect => rect.left));
+  const right = Math.max(...rects.map(rect => rect.right));
+  const top = Math.min(...rects.map(rect => rect.top));
+  const bottom = Math.max(...rects.map(rect => rect.bottom));
+  return { left, right, top, bottom, width: right - left, height: bottom - top };
+};
+
+const addBox = (boxes, id, bounds, color, fillColor, className = '') => {
+  if (!bounds || bounds.width <= 0 || bounds.height <= 0) return;
+  boxes.push({ id, ...bounds, color, fillColor, className });
+};
+
+const getMainSegmentBounds = (lineNode, overlayRect) => {
+  const result = [];
+  lineNode.querySelectorAll('.core-chunks').forEach((chunk, chunkIndex) => {
+    const mainLayer = chunk.querySelector('.main-lyrics-layer');
+    if (!mainLayer) return;
+
+    const mainRows = getLineTextBoundsList(mainLayer, overlayRect, true);
+    const pronunciationRows = getLineTextBoundsList(
+      chunk.querySelector('.pronunciation-text'),
+      overlayRect
+    );
+    if (mainRows.length === 0) return;
+
+    const rowRects = mainRows.map(row => ({ ...row }));
+    pronunciationRows.forEach(pronunciation => {
+      const closestMainRow = rowRects.reduce((closest, row, index) => {
+        const distance = Math.abs(
+          (row.top + row.bottom) / 2 -
+          (pronunciation.top + pronunciation.bottom) / 2
+        );
+        return !closest || distance < closest.distance
+          ? { index, distance }
+          : closest;
+      }, null);
+
+      if (closestMainRow) {
+        const row = rowRects[closestMainRow.index];
+        row.left = Math.min(row.left, pronunciation.left);
+        row.right = Math.max(row.right, pronunciation.right);
+        row.top = Math.min(row.top, pronunciation.top);
+        row.bottom = Math.max(row.bottom, pronunciation.bottom);
+        row.width = row.right - row.left;
+        row.height = row.bottom - row.top;
+      }
+    });
+
+    rowRects.forEach((row, rowIndex) => {
+      result.push({
+        id: `main-segment-${chunkIndex}-${rowIndex}`,
+        bounds: row
+      });
+    });
+  });
+  return result;
+};
+
+const buildBoxesForLines = (targetNodes, overlayRect) => {
+  const boxes = [];
+
+  targetNodes.forEach((lineNode, lineIndex) => {
+    const lineRect = lineNode.getBoundingClientRect();
+    if (lineRect.bottom < overlayRect.top || lineRect.top > overlayRect.bottom) return;
+
+    const mainGlyphLayer = lineNode.querySelector('.main-lyrics-layer');
+    const mainGlyphRows = getLineTextBoundsList(mainGlyphLayer, overlayRect, true);
+    const lineBounds = {
+      left: lineRect.left - overlayRect.left,
+      right: lineRect.right - overlayRect.left
+    };
+    const isRtl = mainGlyphLayer && getComputedStyle(mainGlyphLayer).direction === 'rtl';
+    mainGlyphRows.forEach((bounds, rowIndex) => {
+      addBox(
+        boxes,
+        `primary-line-${lineIndex}-${rowIndex}`,
+        bounds,
+        '#facc15',
+        'rgba(250, 204, 21, 0.15)'
+      );
+
+      const guideLeft = isRtl ? lineBounds.left : bounds.right;
+      const guideRight = isRtl ? bounds.left : lineBounds.right;
+      if (guideRight > guideLeft) {
+        boxes.push({
+          id: `main-baseline-guide-${lineIndex}-${rowIndex}`,
+          top: bounds.bottom,
+          left: guideLeft,
+          width: guideRight - guideLeft,
+          height: 0,
+          color: 'rgba(250, 204, 21, 0.45)',
+          fillColor: 'transparent',
+          className: 'live-debug-alignment-guide'
+        });
+      }
+    });
+
+    lineNode.querySelectorAll('.adlib-node').forEach((adlibNode, adlibIndex) => {
+      const glyphLayer = adlibNode.querySelector(':scope > .primary-text');
+      getLineTextBoundsList(glyphLayer, overlayRect, true).forEach((bounds, rowIndex) => {
+        addBox(
+          boxes,
+          `adlib-glyph-${lineIndex}-${adlibIndex}-${rowIndex}`,
+          bounds,
+          '#facc15',
+          'rgba(250, 204, 21, 0.15)'
+        );
+
+        const guideLeft = isRtl ? lineBounds.left : bounds.right;
+        const guideRight = isRtl ? bounds.left : lineBounds.right;
+        if (guideRight > guideLeft) {
+          boxes.push({
+            id: `adlib-baseline-guide-${lineIndex}-${adlibIndex}-${rowIndex}`,
+            top: bounds.bottom,
+            left: guideLeft,
+            width: guideRight - guideLeft,
+            height: 0,
+            color: 'rgba(250, 204, 21, 0.45)',
+            fillColor: 'transparent',
+            className: 'live-debug-alignment-guide'
+          });
+        }
+      });
+
+      const structureElements = [
+        adlibNode.querySelector(':scope > .primary-text'),
+        adlibNode.querySelector(':scope > .adlib-live-translation'),
+        adlibNode.querySelector(':scope > .pronunciation-text')
+      ].filter(Boolean);
+      const structureBounds = boundsForRects(structureElements.flatMap(element =>
+        getLineTextBoundsList(element, overlayRect)
+      ));
+      addBox(
+        boxes,
+        `adlib-structure-${lineIndex}-${adlibIndex}`,
+        structureBounds,
+        '#ff3030',
+        'transparent',
+        'live-debug-box-outline'
+      );
+    });
+
+    const gradientLayers = Array.from(lineNode.querySelectorAll(
+      '.segment-mask-span[style*="backgroundImage"], .segment-mask-span[style*="background-image"]'
+    ));
+    gradientLayers.forEach((gradient, gradientIndex) => {
+      getLineTextBoundsList(gradient, overlayRect).forEach((bounds, rowIndex) => {
+        addBox(
+          boxes,
+          `grad-${lineIndex}-${gradientIndex}-line-${rowIndex}`,
+          bounds,
+          '#f97316',
+          'rgba(249, 115, 22, 0.18)'
+        );
+      });
+    });
+
+    Array.from(lineNode.querySelectorAll('.chunk-translation, .live-translation'))
+      .forEach((translation, translationIndex) => {
+        getLineTextBoundsList(translation, overlayRect).forEach((bounds, rowIndex) => {
+          addBox(
+            boxes,
+            `trans-${lineIndex}-${translationIndex}-line-${rowIndex}`,
+            bounds,
+            '#00bbf9',
+            'rgba(0, 187, 249, 0.12)'
+          );
+        });
+      });
+
+    Array.from(lineNode.querySelectorAll('.pronunciation-text'))
+      .forEach((pronunciation, pronunciationIndex) => {
+        getLineTextBoundsList(pronunciation, overlayRect).forEach((bounds, rowIndex) => {
+          addBox(
+            boxes,
+            `pron-chunk-${lineIndex}-${pronunciationIndex}-line-${rowIndex}`,
+            bounds,
+            '#c084fc',
+            'rgba(192, 132, 252, 0.12)'
+          );
+        });
+      });
+
+    getMainSegmentBounds(lineNode, overlayRect).forEach(({ id, bounds }) => {
+      addBox(boxes, id, bounds, '#ff3030', 'transparent', 'live-debug-box-outline');
+    });
+  });
+
+  return boxes;
 };
 
 const LiveDebugOverlay = () => {
@@ -69,117 +261,10 @@ const LiveDebugOverlay = () => {
     const trackLiveLyrics = () => {
       if (!overlayRef.current) return;
       const overlayRect = overlayRef.current.getBoundingClientRect();
-      
-      // 1. Locate the currently active line element in the DOM
       const activeLineNode = document.querySelector('.preview-line.active');
-      const targetNodes = [];
+      const targetNodes = activeLineNode ? [activeLineNode] : [];
 
-      if (activeLineNode) {
-        // Line above active line (if present)
-        if (activeLineNode.previousElementSibling && activeLineNode.previousElementSibling.classList.contains('preview-line')) {
-          targetNodes.push(activeLineNode.previousElementSibling);
-        }
-        
-        // Active line
-        targetNodes.push(activeLineNode);
-
-        // Line below active line (if present)
-        if (activeLineNode.nextElementSibling && activeLineNode.nextElementSibling.classList.contains('preview-line')) {
-          targetNodes.push(activeLineNode.nextElementSibling);
-        }
-      }
-
-      const newBoxes = [];
-
-      targetNodes.forEach((lineNode, index) => {
-        const lineRect = lineNode.getBoundingClientRect();
-        if (lineRect.bottom < 0 || lineRect.top > overlayRect.bottom) return;
-
-        const addGlyphBox = (glyphSpans, id) => {
-          if (glyphSpans.length === 0) return;
-          let minTop = Infinity, minLeft = Infinity, maxRight = -Infinity, maxBottom = -Infinity;
-          let hasValidMain = false;
-
-          glyphSpans.forEach(spanNode => {
-            const lineBoundsList = getLineTextBoundsList(spanNode, overlayRect, true);
-            lineBoundsList.forEach(bounds => {
-              hasValidMain = true;
-              minTop = Math.min(minTop, bounds.top);
-              minLeft = Math.min(minLeft, bounds.left);
-              maxRight = Math.max(maxRight, bounds.left + bounds.width);
-              maxBottom = Math.max(maxBottom, bounds.top + bounds.height);
-            });
-          });
-
-          if (hasValidMain) {
-            newBoxes.push({
-              id,
-              top: minTop,
-              left: minLeft,
-              width: maxRight - minLeft,
-              height: maxBottom - minTop,
-              color: '#facc15',
-              fillColor: 'rgba(250, 204, 21, 0.15)'
-            });
-          }
-        };
-
-        addGlyphBox(
-          Array.from(lineNode.querySelectorAll('.main-lyrics-layer .lyric-text-span')),
-          `primary-full-line-${index}`
-        );
-        lineNode.querySelectorAll('.adlib-node').forEach((adlibNode, adlibIdx) => {
-          addGlyphBox(
-            Array.from(adlibNode.querySelectorAll('.lyric-text-span')),
-            `adlib-glyph-${index}-${adlibIdx}`
-          );
-        });
-
-        // Gradient Mask Layer bounding box (Orange shaded box covering the full line whenever a gradient mask is applied)
-        const gradientLayers = Array.from(lineNode.querySelectorAll('.segment-mask-span[style*="backgroundImage"], .segment-mask-span[style*="background-image"]'));
-        gradientLayers.forEach((gradNode, gIdx) => {
-          const lineBoundsList = getLineTextBoundsList(gradNode, overlayRect);
-          lineBoundsList.forEach((bounds, bIdx) => {
-            newBoxes.push({
-              id: `grad-${index}-${gIdx}-line-${bIdx}`,
-              ...bounds,
-              color: '#f97316',
-              fillColor: 'rgba(249, 115, 22, 0.18)'
-            });
-          });
-        });
-
-        // Translation bounding boxes (Blue border and fill)
-        const translations = Array.from(lineNode.querySelectorAll('.chunk-translation, .live-translation'));
-        translations.forEach((trans, tIdx) => {
-          const lineBoundsList = getLineTextBoundsList(trans, overlayRect);
-          lineBoundsList.forEach((bounds, bIdx) => {
-            newBoxes.push({
-              id: `trans-${index}-${tIdx}-line-${bIdx}`,
-              ...bounds,
-              color: '#00bbf9',
-              fillColor: 'rgba(0, 187, 249, 0.12)'
-            });
-          });
-        });
-
-        const pronElements = Array.from(lineNode.querySelectorAll('.pronunciation-text'));
-
-        // Individual pronunciation bounding boxes (purple)
-        pronElements.forEach((pronChunk, pIdx) => {
-          const lineBoundsList = getLineTextBoundsList(pronChunk, overlayRect);
-          lineBoundsList.forEach((bounds, bIdx) => {
-            newBoxes.push({
-              id: `pron-chunk-${index}-${pIdx}-line-${bIdx}`,
-              ...bounds,
-              color: '#c084fc',
-              fillColor: 'rgba(192, 132, 252, 0.12)'
-            });
-          });
-        });
-      });
-
-      setBoxes(newBoxes);
+      setBoxes(buildBoxesForLines(targetNodes, overlayRect));
       rafRef.current = requestAnimationFrame(trackLiveLyrics);
     };
 
@@ -194,7 +279,7 @@ const LiveDebugOverlay = () => {
       {boxes.map(box => (
         <div
           key={box.id}
-          className="live-debug-box"
+          className={`live-debug-box${box.className ? ` ${box.className}` : ''}`}
           style={{
             top: `${box.top}px`,
             left: `${box.left}px`,

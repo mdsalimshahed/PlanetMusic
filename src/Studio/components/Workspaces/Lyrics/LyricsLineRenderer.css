@@ -218,8 +218,11 @@ rt.pronunciation-text,
   translate: 0 var(--live-main-foreign-adlib-offset-y, 0vh);
 }
 
-.preview-line .live-split-line.is-main-shifted-for-pronounced-foreign-adlib {
-  padding-block-end: var(--live-main-foreign-adlib-offset-y, 0vh) !important;
+.preview-line .live-split-line {
+  padding-block-end: calc(
+    var(--live-main-foreign-adlib-offset-y, 0vh) +
+    var(--live-adlib-neighbor-clearance, 0px)
+  ) !important;
 }
 
 .preview-line .live-split-line > .adlib-node {
@@ -242,19 +245,15 @@ rt.pronunciation-text,
   translate: none;
 }
 
-.preview-line .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main.is-english-adlib-on-foreign-line {
-  top: calc(
-    var(--live-adlib-inline-y) +
-    (var(--dyn-translit-font-size, 0.55em) + var(--dyn-translit-bottom-padding, 4px)) / 2
-  );
-}
-
-.preview-line .live-split-line > .adlib-node.is-adlib-wrapped.has-secondary {
+.preview-line .live-split-line > .adlib-node.is-adlib-wrapped {
   flex: 0 0 100%;
   align-self: flex-start;
   align-items: flex-start !important;
   width: 100%;
-  margin-block-start: var(--live-adlib-collision-gap, 0vh) !important;
+  margin-block-start: calc(
+    var(--live-adlib-collision-gap, 0vh) +
+    var(--live-adlib-neighbor-clearance-start, 0px)
+  ) !important;
 }
 
 .preview-line .live-split-line > .adlib-node.is-adlib-new-row {

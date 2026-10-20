@@ -101,13 +101,14 @@ const LiveLyricsView = ({
   const reportLineLayoutReady = useCallback(lineIndex => {
     if (layoutSource.readyLines.has(lineIndex)) return;
     layoutSource.readyLines.add(lineIndex);
-    if (layoutSource.readyLines.size < liveParsedLyrics.length) return;
 
+    if (!layoutReadyRef.current) setReadyLayoutSource(layoutSource);
     layoutReadyRef.current = true;
-    setReadyLayoutSource(layoutSource);
-    const activeLine = cachedLinesRef.current[activeLineIndexRef.current];
-    if (activeLine) centerActiveLine(activeLine.node);
-  }, [centerActiveLine, layoutSource, liveParsedLyrics.length]);
+    if (lineIndex === activeLineIndexRef.current) {
+      const activeLine = cachedLinesRef.current[lineIndex];
+      if (activeLine) centerActiveLine(activeLine.node);
+    }
+  }, [centerActiveLine, layoutSource]);
 
   const handleTimeUpdate = useCallback((time) => {
     if (!isPlayingCurrentSong) return;

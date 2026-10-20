@@ -9,10 +9,23 @@
 
 .live-debug-box {
     position: absolute;
-    border: 1px dashed; /* Set all bounding boxes to dashed */
+    border: 1px dashed;
     border-radius: 0;
     box-sizing: border-box;
     pointer-events: none;
     z-index: 10003;
     transition: background-color 0.2s ease;
+}
+
+.live-debug-box-outline {
+    border: 2px dashed #ff3030 !important;
+    background: transparent !important;
+    box-shadow: none;
+}
+
+.live-debug-alignment-guide {
+    height: 0 !important;
+    border: 0 !important;
+    border-top: 1px dashed rgba(250, 204, 21, 0.45) !important;
+    background: transparent !important;
 }
