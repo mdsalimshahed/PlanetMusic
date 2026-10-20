@@ -284,19 +284,6 @@ const LiveLyricsView = ({
         needsInitialCenterRef.current = true;
     };
 
-    const clearAllActive = () => {
-        clearActiveLines();
-        cachedAdlibsRef.current.forEach(item => {
-            if (item.state !== 'hidden') {
-                item.node.classList.add('adlib-hidden');
-                item.node.classList.remove('adlib-active', 'adlib-visible');
-                item.state = 'hidden';
-            }
-        });
-        adlibCursorRef.current = 0;
-        lastAdlibTimeRef.current = null;
-    };
-
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
@@ -315,7 +302,7 @@ const LiveLyricsView = ({
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
     } else if (currentTrack || selectedTrackChanged) {
-        clearAllActive();
+        clearActiveLines();
     }
 
     return () => {
