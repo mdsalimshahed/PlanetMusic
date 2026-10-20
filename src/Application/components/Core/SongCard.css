@@ -135,6 +135,7 @@
   margin: 8px;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  will-change: transform;
   pointer-events: none;
   background: transparent !important;
   border: none !important;
@@ -144,7 +145,11 @@
   gap: 2px;
 }
 
-.song-card:hover .card-info-text-only {
+.card-info-text-only h4,
+.card-info-text-only p,
+.card-info-text-only .text-fill-span {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
   will-change: transform;
 }
 

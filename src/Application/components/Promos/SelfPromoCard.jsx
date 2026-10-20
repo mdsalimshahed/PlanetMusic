@@ -34,13 +34,18 @@ const SelfPromoCard = ({ placement = 'default', format = 'square', className = '
   const flipFrame = useRef();
   const promo = selfPromoItems[creative.promoIndex];
   const campaign = promo.campaigns[creative.messageIndex];
-  const featureCount = getFeatureCount(format, placement, cardWidth, {
+  const baseFeatureCount = getFeatureCount(format, placement, cardWidth, {
     isCompact,
     isTiny,
     isTall,
     isExpanded,
     isNarrow
   });
+  const isChapterListCampaign = promo.id === 'video-caption-creator' &&
+    campaign.topic === 'MAKE A CHAPTER LIST FROM YOUR VIDEO';
+  const featureCount = isChapterListCampaign && placement.startsWith('settings')
+    ? Math.max(baseFeatureCount, campaign.features.length)
+    : baseFeatureCount;
   const features = getFeatures(promo, creative.messageIndex, featureCount);
   const artworkSet = promo.artworkSets?.[creative.messageIndex] ?? [promo.visual];
   const bannerSupportingVisuals = [...artworkSet.slice(1, 3)];

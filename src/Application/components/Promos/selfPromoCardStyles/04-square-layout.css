@@ -30,6 +30,16 @@
   margin: 0;
 }
 
+.self-promo-card[data-placement="trackGrid"][data-promo-format="square"] > .self-promo-gallery {
+  justify-content: center;
+}
+
+.self-promo-card[data-placement="trackGrid"][data-promo-format="square"] .self-promo-gallery .self-promo-art {
+  width: calc(52.5 * var(--self-promo-h-unit));
+  max-width: none;
+  flex: 0 1 calc(52.5 * var(--self-promo-h-unit));
+}
+
 .self-promo-card[data-promo-format="square"] .self-promo-brand {
   top: 8px;
   left: 10px;
@@ -241,15 +251,5 @@
 @media (min-width: 1024px) {
   .self-promo-card[data-placement="trackGrid"][data-promo-format="square"][data-compact="true"] {
     padding: 18px 10px 22px;
-  }
-
-  .self-promo-card[data-placement="trackGrid"][data-promo-format="square"][data-compact="true"] .self-promo-art {
-    width: min(100%, 110px);
-    max-width: 110px;
-  }
-
-  .self-promo-card[data-placement="trackGrid"][data-promo-format="square"][data-tiny="true"] .self-promo-art {
-    width: min(100%, 76px);
-    max-width: 76px;
   }
 }

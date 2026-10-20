@@ -124,7 +124,7 @@ const selfPromoItems = [
         topic: 'MAKE A CHAPTER LIST FROM YOUR VIDEO',
         headline: 'Turn timestamps into a YouTube-ready outline.',
         detail: 'Build bookmark entries for key sections, then generate formatted chapter text.',
-        features: ['Add one point per section', 'Name each chapter', 'Generate chapter text'],
+        features: ['Add one point per section', 'Name each chapter', 'Generate chapter text', 'Copy the finished chapter list'],
         action: 'Draft a chapter list'
       },
       {

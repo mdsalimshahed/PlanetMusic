@@ -7,6 +7,10 @@
   width: min(100%, 150px);
 }
 
+.page-sidebar-ad-small.self-promo-card[data-promo-format="sidebar"] .self-promo-art {
+  width: min(100%, 220px);
+}
+
 .self-promo-card[data-promo-format="sidebar"] .self-promo-title {
   font-size: clamp(20px, 2.2vw, 28px);
 }
@@ -22,6 +26,10 @@
 
 .self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-art {
   width: min(100%, 78px);
+}
+
+.page-sidebar-ad-small.self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-art {
+  width: min(100%, 160px);
 }
 
 .self-promo-card[data-promo-format="sidebar"][data-compact="true"] .self-promo-copy {
@@ -333,4 +341,3 @@
   grid-row: 2;
   justify-self: start;
 }
-

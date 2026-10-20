@@ -121,6 +121,20 @@
   transition: transform 180ms ease;
 }
 
+.self-promo-card .self-promo-brand,
+.self-promo-card .self-promo-badge,
+.self-promo-card .self-promo-label,
+.self-promo-card .self-promo-title,
+.self-promo-card .self-promo-description,
+.self-promo-card .self-promo-highlights,
+.self-promo-card .self-promo-highlight,
+.self-promo-card .self-promo-highlight-text,
+.self-promo-card > .self-promo-action {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 .self-promo-card:hover .self-promo-action span {
   transform: translate(2px, -2px);
 }
@@ -144,4 +158,3 @@
   background: var(--self-promo-accent);
   box-shadow: 0 0 7px var(--self-promo-accent);
 }
-
