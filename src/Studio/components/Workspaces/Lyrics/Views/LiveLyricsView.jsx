@@ -26,6 +26,7 @@ const LiveLyricsView = ({
   handleLineClick,
   settings,
   currentTrack,
+  isSongModalReady = true,
   lyricsPlaybackOffsetSeconds = 0,
   shouldAnimateEntrance = false,
   onEntranceAnimationComplete
@@ -51,7 +52,8 @@ const LiveLyricsView = ({
     syncData: syncList,
     readyLines: new Set()
   }), [liveParsedLyrics, syncList]);
-  const isLayoutReady = liveParsedLyrics.length === 0 || readyLayoutSource === layoutSource;
+  const isLayoutReady = isSongModalReady &&
+    (liveParsedLyrics.length === 0 || readyLayoutSource === layoutSource);
       const nextStarts = useMemo(() => {
         const syncData = syncList || [];
         const result = Array(syncData.length).fill('NaN');
@@ -385,6 +387,7 @@ const LiveLyricsView = ({
               masterPalette={masterPalette}
               isPlayingCurrentSong={isPlayingCurrentSong}
               lineIndex={i}
+              isSongModalReady={isSongModalReady}
               onLiveLayoutReady={reportLineLayoutReady}
             />
         )

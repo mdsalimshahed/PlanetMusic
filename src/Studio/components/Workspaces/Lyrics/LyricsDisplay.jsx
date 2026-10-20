@@ -10,7 +10,7 @@ import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
-    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
+    lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, isSongModalReady, masterPalette, currentTrack,
     isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
     showGroupChatDebug, shouldAnimateLiveEntrance, onLiveEntranceAnimationComplete
 }) => {
@@ -49,6 +49,7 @@ const LyricsDisplay = ({
           currentTrack={currentTrack}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
           shouldAnimateEntrance={shouldAnimateLiveEntrance}
+          isSongModalReady={isSongModalReady}
           onEntranceAnimationComplete={onLiveEntranceAnimationComplete}
         />
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (

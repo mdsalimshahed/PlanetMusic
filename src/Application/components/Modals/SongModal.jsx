@@ -9,7 +9,7 @@ import { useLyricsDisplay } from '../../../Studio/hooks/sync/useLyricsDisplay.js
 import { useSyncWorkspace } from '../../../Studio/hooks/sync/useSyncWorkspace.js';
 import './SongModal.css';
 
-const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
+const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
   const selectedTrackId = selectedSong?.trackId;
   const previousTrackIdRef = useRef(selectedTrackId);
@@ -135,6 +135,7 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
 
   const sharedProps = {
     selectedSong: effectiveSong,
+    isSongModalReady,
     realSelectedSong: selectedSong,
     isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings,
     setNotification,
@@ -241,6 +242,7 @@ const SongModal = ({ selectedSong, onModalReady, setSelectedSong, isSaved, toggl
           
           <div className="modal-two-column-layout">
             <ModalLeft {...sharedProps} />
+            <div id="song-modal-player-slot" className="song-modal-player-slot" />
             <ModalRight 
               {...sharedProps} 
               shouldAnimateLiveEntrance={

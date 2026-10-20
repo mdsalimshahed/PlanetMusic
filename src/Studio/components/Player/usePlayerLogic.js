@@ -13,7 +13,7 @@ import { usePlayerGlobalEvents } from './usePlayerGlobalEvents.js';
 const YOUTUBE_START_TIMEOUT_MS = 5000;
 
 export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, setSelectedSong, settings, isSyncWorkspaceActive = false, isZenMode = false }) => {
-  const playerState = usePlayerState({ currentTrack, isSyncWorkspaceActive });
+  const playerState = usePlayerState({ currentTrack, selectedSong, isSyncWorkspaceActive });
   const {
     audioRef, audioSrcRef, ytPlayerRef, ytPlaybackConfirmedRef, ytPendingSeekRef,
     ytSeekWasPlayingRef, ytPlayTimeoutRef, ytSeekBufferTimeoutRef,

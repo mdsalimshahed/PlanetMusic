@@ -192,6 +192,10 @@ const App = () => {
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [songModalReadyTrackId, setSongModalReadyTrackId] = useState(null);
+  const isSongModalReady = Boolean(
+    selectedSong &&
+    String(songModalReadyTrackId) === String(selectedSong.trackId)
+  );
   const songSelectionContextRef = useRef({ selectedSong, searchQuery, location, navigate });
   useLayoutEffect(() => {
     songSelectionContextRef.current = { selectedSong, searchQuery, location, navigate };
@@ -770,6 +774,7 @@ const App = () => {
 
       <SongModal
         selectedSong={selectedSong}
+        isSongModalReady={isSongModalReady}
         onModalReady={setSongModalReadyTrackId}
         setSelectedSong={handleSetSelectedSong}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
@@ -787,10 +792,7 @@ const App = () => {
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}
         isSyncWorkspaceActive={isSyncWorkspaceActive}
-        isSongModalReady={Boolean(
-          selectedSong &&
-          String(songModalReadyTrackId) === String(selectedSong.trackId)
-        )}
+        isSongModalReady={isSongModalReady}
         settings={settings}
       />
 

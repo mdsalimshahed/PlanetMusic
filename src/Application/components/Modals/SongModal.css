@@ -275,6 +275,19 @@
     order: 4;
   }
 
+  .modal-two-column-layout > .song-modal-player-slot {
+    order: 3;
+    display: flex;
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .song-modal-player-slot .global-player.stacked {
+    margin: 0;
+  }
+
   .workspace-controls:not(.lyrics-view-modes-panel) {
     order: 5;
     width: 100%;

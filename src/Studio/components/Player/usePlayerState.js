@@ -1,8 +1,8 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { formatPreciseTime } from '../../utils/songHelpers.js';
 import { formatTime } from './PlayerUI.jsx';
 
-export const usePlayerState = ({ currentTrack, isSyncWorkspaceActive }) => {
+export const usePlayerState = ({ currentTrack, selectedSong, isSyncWorkspaceActive }) => {
   const audioRef = useRef(null);
   const audioSrcRef = useRef(undefined);
   const ytPlayerRef = useRef(null);
@@ -65,6 +65,7 @@ export const usePlayerState = ({ currentTrack, isSyncWorkspaceActive }) => {
   const [slotNode, setSlotNode] = useState(null);
 
   const formatPlayerTime = isSyncWorkspaceActive ? formatPreciseTime : formatTime;
+  const selectedTrackId = selectedSong?.trackId;
   const setPendingSeekValue = time => {
     pendingSeekRef.current = time;
     setPendingSeek(time);
@@ -78,14 +79,21 @@ export const usePlayerState = ({ currentTrack, isSyncWorkspaceActive }) => {
     audioSrcRef.current = audioSrc;
   }, [audioSrc]);
 
-  useEffect(() => {
-    if (isSyncWorkspaceActive) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSlotNode(document.getElementById('sync-player-slot'));
-    } else {
-      setSlotNode(null);
-    }
-  }, [isSyncWorkspaceActive]);
+  useLayoutEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    const updateSlot = () => {
+      const nextSlot = isSyncWorkspaceActive
+        ? document.getElementById('sync-player-slot')
+        : selectedTrackId != null && mobileQuery.matches
+          ? document.getElementById('song-modal-player-slot')
+          : null;
+      setSlotNode(currentSlot => currentSlot === nextSlot ? currentSlot : nextSlot);
+    };
+
+    updateSlot();
+    mobileQuery.addEventListener('change', updateSlot);
+    return () => mobileQuery.removeEventListener('change', updateSlot);
+  }, [isSyncWorkspaceActive, selectedTrackId]);
 
   return {
     audioRef,

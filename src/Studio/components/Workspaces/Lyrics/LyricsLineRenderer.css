@@ -210,6 +210,10 @@ rt.pronunciation-text,
   align-items: baseline !important;
 }
 
+.preview-line .live-split-line > .core-chunks {
+  align-self: flex-start;
+}
+
 .preview-line .live-split-line > .adlib-node {
   align-self: flex-end;
   translate: 0 var(--live-adlib-glyph-offset-y, 0px);
