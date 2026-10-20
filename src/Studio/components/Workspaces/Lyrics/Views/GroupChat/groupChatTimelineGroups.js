@@ -105,16 +105,21 @@ export const groupConsecutiveMessages = events => {
       .join('\u0000');
     const previousGroup = groups[groups.length - 1];
     const sourceMainSide = mainSideByLineIndex.get(line.sourceIndex);
-    const side = line.isAdlib
-      ? ((sourceMainSide || previousGroup?.side || 'left') === 'left' ? 'right' : 'left')
-      : mainSideByLineIndex.get(line.index) || 'left';
+    const previousLine = previousGroup?.events[previousGroup.events.length - 1].line;
+    const continuesAdlibChain = line.isAdlib &&
+      previousLine?.isAdlib &&
+      previousGroup.artistsKey === artistsKey;
+    const side = continuesAdlibChain
+      ? previousGroup.side
+      : line.isAdlib
+        ? ((sourceMainSide || previousGroup?.side || 'left') === 'left' ? 'right' : 'left')
+        : mainSideByLineIndex.get(line.index) || 'left';
 
     line.chatSide = side;
     if (
-      !line.isAdlib &&
       previousGroup?.artistsKey === artistsKey &&
       previousGroup.side === side &&
-      !previousGroup.events[previousGroup.events.length - 1].line.isAdlib
+      (continuesAdlibChain || (!line.isAdlib && !previousLine?.isAdlib))
     ) {
       previousGroup.events.push(event);
       return;
@@ -146,12 +151,18 @@ export const buildGroupChatHistory = events => {
     });
     const current = history[history.length - 1];
     const previous = history[history.length - 2];
+    const previousLine = previous?.type === 'message-chain'
+      ? previous.events[previous.events.length - 1].line
+      : null;
+    const currentLine = event.line;
     if (
       previous?.type === 'message-chain' &&
       previous.artistsKey === current.artistsKey &&
       previous.side === current.side &&
-      !previous.events[previous.events.length - 1].line.isAdlib &&
-      !event.line.isAdlib
+      (
+        (previousLine?.isAdlib && currentLine.isAdlib) ||
+        (!previousLine?.isAdlib && !currentLine.isAdlib)
+      )
     ) {
       previous.events.push(event);
       history.pop();

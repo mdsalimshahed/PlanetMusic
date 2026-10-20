@@ -158,3 +158,63 @@ test('keeps an artist on their side when they return after another artist speaks
     { side: 'left', lines: ['Ari returns'] }
   ]);
 });
+
+test('chains consecutive ad-libs from matching artist clusters', () => {
+  const chat = buildGroupChatTimeline(
+    [
+      {
+        singer: 'Ari',
+        text: 'First lead',
+        segments: [{ text: 'First lead', artists: ['Ari'] }]
+      },
+      {
+        singer: 'Bea',
+        text: 'Second lead',
+        segments: [{ text: 'Second lead', artists: ['Bea'] }]
+      }
+    ],
+    [
+      {
+        start: 1,
+        end: 1.5,
+        isSplit: true,
+        adlibs: [{
+          text: 'First echo',
+          start: 2,
+          end: 2.3,
+          segments: [{ text: 'First echo', artists: ['Echo', 'Harmony'] }]
+        }]
+      },
+      {
+        start: 1.7,
+        end: 1.9,
+        isSplit: true,
+        adlibs: [{
+          text: 'Second echo',
+          start: 2.6,
+          end: 2.9,
+          segments: [{ text: 'Second echo', artists: ['Harmony', 'Echo'] }]
+        }]
+      }
+    ],
+    'Fallback'
+  );
+  const messages = chat.events.filter(event => event.type === 'message');
+  const groups = groupConsecutiveMessages(messages);
+  const adlibGroup = groups.find(group => group.events[0].line.isAdlib);
+  const history = buildGroupChatHistory(messages);
+  const adlibChain = history.find(item => (
+    item.type === 'message-chain' && item.events[0].line.isAdlib
+  ));
+
+  assert.deepEqual(adlibGroup.events.map(event => event.line.text), [
+    'First echo',
+    'Second echo'
+  ]);
+  assert.equal(adlibGroup.events[0].line.chatSide, adlibGroup.events[1].line.chatSide);
+  assert.deepEqual(adlibChain.events.map(event => event.line.text), [
+    'First echo',
+    'Second echo'
+  ]);
+  assert.deepEqual(adlibChain.artists, ['Echo', 'Harmony']);
+});
