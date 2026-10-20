@@ -1,5 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.jsx --- */
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
@@ -75,11 +75,14 @@ export const measureFocusedTranslationWidths = wrapper => {
 
 const LIVE_LAYOUT_IDLE_BUDGET_MS = 5;
 const pendingLiveLayoutMeasurements = [];
+const pendingLiveAutoLayoutMeasurements = [];
 const liveLayoutResizeMeasurements = new Set();
 let liveLayoutMeasurementIdleCallback = null;
 let liveLayoutMeasurementTimeout = null;
+let liveAutoLayoutAnimationFrame = null;
 let liveLayoutResizeListenerAttached = false;
 let liveLayoutMeasurementsPrioritized = false;
+const LIVE_AUTO_LAYOUT_FRAME_BUDGET_MS = 8;
 const handleLiveLayoutResize = () => {
   liveLayoutResizeMeasurements.forEach(schedule => schedule());
 };
@@ -183,6 +186,35 @@ const queueLiveLayoutMeasurement = (measure, wrapper) => {
   }
   pendingLiveLayoutMeasurements.push({ measure, wrapper });
   scheduleLiveLayoutMeasurementFlush();
+};
+
+const flushLiveAutoLayoutMeasurements = () => {
+  liveAutoLayoutAnimationFrame = null;
+  const frameStart = performance.now();
+  let measuredAny = false;
+  while (
+    pendingLiveAutoLayoutMeasurements.length > 0 &&
+    (!measuredAny ||
+      performance.now() - frameStart < LIVE_AUTO_LAYOUT_FRAME_BUDGET_MS)
+  ) {
+    pendingLiveAutoLayoutMeasurements.shift().measure();
+    measuredAny = true;
+  }
+
+  if (pendingLiveAutoLayoutMeasurements.length > 0) {
+    liveAutoLayoutAnimationFrame = window.requestAnimationFrame(
+      flushLiveAutoLayoutMeasurements
+    );
+  }
+};
+
+const queueLiveAutoLayoutMeasurement = measure => {
+  pendingLiveAutoLayoutMeasurements.push({ measure });
+  if (liveAutoLayoutAnimationFrame === null) {
+    liveAutoLayoutAnimationFrame = window.requestAnimationFrame(
+      flushLiveAutoLayoutMeasurements
+    );
+  }
 };
 
 export const renderLine = (
@@ -341,7 +373,7 @@ export const LyricLineWrapper = React.memo(({
     [lineObj, savedNode, viewMode, masterPalette, renderPlaybackState, isLiveRender]
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const wrapper = wrapperRef.current;
     if (!wrapper || !isLiveRender) return undefined;
 
@@ -793,7 +825,14 @@ export const LyricLineWrapper = React.memo(({
       };
       const queueInitialLayoutMeasurement = () => {
         if (viewMode === 'live') {
-          measureLiveTranslations();
+          if (measurementQueued || cancelled) return;
+          measurementQueued = true;
+          queuedMeasurement = () => {
+            queuedMeasurement = null;
+            measurementQueued = false;
+            if (!cancelled) measureLiveTranslations();
+          };
+          queueLiveAutoLayoutMeasurement(queuedMeasurement);
           return;
         }
         if (measurementQueued || cancelled) return;
@@ -832,6 +871,17 @@ export const LyricLineWrapper = React.memo(({
         resizeObserver?.disconnect();
         unregisterResizeMeasurement();
         if (queuedMeasurement) {
+          const liveAutoLayoutIndex = pendingLiveAutoLayoutMeasurements.findIndex(
+            entry => entry.measure === queuedMeasurement
+          );
+          if (liveAutoLayoutIndex !== -1) {
+            pendingLiveAutoLayoutMeasurements.splice(liveAutoLayoutIndex, 1);
+            if (pendingLiveAutoLayoutMeasurements.length === 0 &&
+              liveAutoLayoutAnimationFrame !== null) {
+              window.cancelAnimationFrame(liveAutoLayoutAnimationFrame);
+              liveAutoLayoutAnimationFrame = null;
+            }
+          }
           const measurementIndex = pendingLiveLayoutMeasurements.findIndex(
             entry => entry.measure === queuedMeasurement
           );

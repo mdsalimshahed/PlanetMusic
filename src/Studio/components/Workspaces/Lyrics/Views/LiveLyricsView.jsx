@@ -18,6 +18,27 @@ const getActiveLineScrollTop = (container, node) => {
   });
 };
 
+const scrollContainerToCenter = (container, node, pendingTargetRef) => {
+  const scrollTop = getActiveLineScrollTop(container, node);
+  if (Math.abs(scrollTop - container.scrollTop) < 1) return;
+
+  const pendingTarget = pendingTargetRef.current;
+  if (pendingTarget && Math.abs(pendingTarget.top - scrollTop) < 1) return;
+  if (pendingTarget) window.clearTimeout(pendingTarget.timeout);
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    container.scrollTop = scrollTop;
+    pendingTargetRef.current = null;
+    return;
+  }
+
+  const timeout = window.setTimeout(() => {
+    pendingTargetRef.current = null;
+  }, 800);
+  pendingTargetRef.current = { top: scrollTop, timeout };
+  container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+};
+
 const LiveLyricsView = ({
   liveParsedLyrics,
   selectedSong,
@@ -29,6 +50,7 @@ const LiveLyricsView = ({
   lyricsPlaybackOffsetSeconds = 0
 }) => {
   const containerRef = useRef(null);
+  const activeLineResizeObserverRef = useRef(null);
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -62,27 +84,7 @@ const LiveLyricsView = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const scrollTop = getActiveLineScrollTop(container, node);
-    if (Math.abs(scrollTop - container.scrollTop) >= 1) {
-      const pendingTarget = pendingCenterTargetRef.current;
-      if (pendingTarget && Math.abs(pendingTarget.top - scrollTop) < 1) {
-        needsInitialCenterRef.current = false;
-        return;
-      }
-
-      if (pendingTarget) window.clearTimeout(pendingTarget.timeout);
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduceMotion) {
-        container.scrollTop = scrollTop;
-        pendingCenterTargetRef.current = null;
-      } else {
-        const timeout = window.setTimeout(() => {
-          pendingCenterTargetRef.current = null;
-        }, 800);
-        pendingCenterTargetRef.current = { top: scrollTop, timeout };
-        container.scrollTo({ top: scrollTop, behavior: 'smooth' });
-      }
-    }
+    scrollContainerToCenter(container, node, pendingCenterTargetRef);
     needsInitialCenterRef.current = false;
   }, []);
 
@@ -173,6 +175,38 @@ const LiveLyricsView = ({
     selectedSong?.syncData,
     timedLineData
   ]);
+
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container || typeof ResizeObserver === 'undefined') return undefined;
+
+    const observer = new ResizeObserver(() => {
+      const activeLine = container.querySelector('.lyric-line-wrapper.active');
+      if (activeLine) {
+        scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
+      }
+    });
+    container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
+      observer.observe(line);
+    });
+    activeLineResizeObserverRef.current = observer;
+
+    return () => {
+      observer.disconnect();
+      activeLineResizeObserverRef.current = null;
+    };
+  }, [liveParsedLyrics]);
+
+  useEffect(() => {
+    return () => {
+      activeLineResizeObserverRef.current?.disconnect();
+      activeLineResizeObserverRef.current = null;
+      if (pendingCenterTargetRef.current) {
+        window.clearTimeout(pendingCenterTargetRef.current.timeout);
+        pendingCenterTargetRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const clearActiveLines = () => {

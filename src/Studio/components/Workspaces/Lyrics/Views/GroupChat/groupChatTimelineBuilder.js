@@ -2,6 +2,7 @@ import { groupConsecutiveMessages } from './groupChatTimelineGroups.js';
 
 const PRESENCE_LEAD_SECONDS = 4;
 const PRESENCE_TRAIL_SECONDS = 8.5;
+const PRESENCE_NOTIFICATION_MESSAGE_GAP_SECONDS = 0.5;
 
 const hasTimestamp = value => (
   (typeof value === 'number' && Number.isFinite(value)) ||
@@ -199,6 +200,23 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
   ]);
 
   events.push(...messages);
+  const messageTimes = messages
+    .map(event => event.time)
+    .sort((first, second) => first - second);
+  events.forEach(event => {
+    if (event.type !== 'join' && event.type !== 'leave') return;
+
+    let notificationTime = event.time;
+    messageTimes.forEach(messageTime => {
+      if (
+        Math.abs(messageTime - notificationTime) <
+        PRESENCE_NOTIFICATION_MESSAGE_GAP_SECONDS
+      ) {
+        notificationTime = messageTime + PRESENCE_NOTIFICATION_MESSAGE_GAP_SECONDS;
+      }
+    });
+    event.time = notificationTime;
+  });
   events.sort((first, second) => first.time - second.time);
 
   return { artists, events, lines: messages.map(event => ({ ...event.line, start: event.time })) };

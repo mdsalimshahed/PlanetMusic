@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import GroupChatMessageChain from './GroupChatMessageChain.jsx';
 import { getClockTime } from '../utils/groupChatUtils.js';
 
@@ -7,6 +8,14 @@ const GroupChatHistory = ({
   messageProps,
   precomputedLayouts,
 }) => {
+  const [initialSystemMessageIds] = useState(() => (
+    new Set(
+      history
+        .filter(item => item.type !== 'message-chain')
+        .map(item => `${item.type}-${item.event.artist.name}-${item.event.time}`)
+    )
+  ));
+
   return (
     <div className="group-chat-history-content">
       {history.map((item, itemIndex) => {
@@ -18,7 +27,10 @@ const GroupChatHistory = ({
               key={`${item.type}-${event.artist.name}-${event.time}`}
               data-history-item-id={`${item.type}-${event.artist.name}-${event.time}`}
             >
-              <div className="group-chat-system-message" role="status">
+              <div
+                className={`group-chat-system-message${initialSystemMessageIds.has(`${item.type}-${event.artist.name}-${event.time}`) ? ' is-initial' : ''}`}
+                role="status"
+              >
                 <span>{event.artist.name} {item.type === 'join' ? 'joined the chat' : 'left the chat'}</span>
                 <time>{getClockTime(event.time, playbackTime)}</time>
               </div>

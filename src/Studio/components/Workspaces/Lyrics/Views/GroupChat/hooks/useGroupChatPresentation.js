@@ -229,6 +229,7 @@ const useGroupChatPresentation = ({
       ));
       turns.forEach(turn => seenIds.add(turn.dataset.chatLineIndex));
       seenMessageLineIdsRef.current = seenIds;
+      if (!previousIds) return;
       if (settings?.disableAnimations) return;
 
       newTurns.forEach((turn, index) => {
