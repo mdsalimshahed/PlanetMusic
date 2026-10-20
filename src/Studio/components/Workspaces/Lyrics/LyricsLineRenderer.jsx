@@ -348,6 +348,7 @@ export const LyricLineWrapper = React.memo(({
           adlib.classList.remove('is-adlib-new-row');
           adlib.classList.remove('is-adlib-inline-after-wrapped-main');
           adlib.classList.remove('is-english-adlib-on-foreign-line');
+          adlib.classList.remove('is-nonforeign-adlib-on-foreign-main');
           adlib.style.removeProperty('--live-adlib-glyph-offset-y');
           adlib.style.removeProperty('--live-adlib-inline-x');
           adlib.style.removeProperty('--live-adlib-inline-y');
@@ -412,6 +413,33 @@ export const LyricLineWrapper = React.memo(({
         splitLine?.classList.toggle('is-main-wrapped', mainGlyphRows.length > 1);
         let splitLineBounds = splitLine?.getBoundingClientRect();
         const direction = mainGlyphs ? getComputedStyle(mainGlyphs).direction : 'ltr';
+        const mainHasForeignText = Boolean(
+          mainGlyphs?.querySelector('.inline-cjk-chunk > .pronunciation-text')
+        );
+        let mainHasNonForeignText = false;
+        if (mainGlyphs) {
+          const textWalker = document.createTreeWalker(
+            mainGlyphs,
+            NodeFilter.SHOW_TEXT,
+            {
+              acceptNode: textNode => (
+                textNode.parentElement?.closest('.pronunciation-text') ||
+                !textNode.textContent.trim()
+                  ? NodeFilter.FILTER_REJECT
+                  : NodeFilter.FILTER_ACCEPT
+              )
+            }
+          );
+          let textNode;
+          while ((textNode = textWalker.nextNode())) {
+            const foreignChunk = textNode.parentElement?.closest('.inline-cjk-chunk');
+            if (!foreignChunk?.querySelector(':scope > .pronunciation-text')) {
+              mainHasNonForeignText = true;
+              break;
+            }
+          }
+        }
+        const mainIsForeignOnly = mainHasForeignText && !mainHasNonForeignText;
         const adlibMeasurements = Array.from(adlibNodes, adlib => {
           return {
             adlib,
@@ -551,6 +579,15 @@ export const LyricLineWrapper = React.memo(({
             targetTop = rowBottom + normalLineGap;
             rowBottom = targetTop + adlibHeight;
           }
+          const adlibHasPronunciation = Boolean(
+            adlib.querySelector('.pronunciation-text')
+          );
+          adlib.classList.toggle(
+            'is-nonforeign-adlib-on-foreign-main',
+            fitsBesidePreviousBox &&
+              mainIsForeignOnly &&
+              !adlibHasPronunciation
+          );
           if (adlibMainBounds) {
             rowBaseline = adlibMainBounds.bottom + targetTop - adlibBoxBounds.top;
           }
@@ -658,6 +695,15 @@ export const LyricLineWrapper = React.memo(({
             targetTop = rowBottom + normalLineGap;
             rowBottom = targetTop + adlibHeight;
           }
+          const adlibHasPronunciation = Boolean(
+            adlib.querySelector('.pronunciation-text')
+          );
+          adlib.classList.toggle(
+            'is-nonforeign-adlib-on-foreign-main',
+            fitsBesidePreviousBox &&
+              mainIsForeignOnly &&
+              !adlibHasPronunciation
+          );
           if (adlibMainBounds) {
             rowBaseline = adlibMainBounds.bottom + targetTop - adlibBoxBounds.top;
           }
