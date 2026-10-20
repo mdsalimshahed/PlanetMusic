@@ -510,9 +510,10 @@ export const LyricLineWrapper = React.memo(({
           ? direction === 'rtl' ? mainBoxBounds.left : mainBoxBounds.right
           : undefined;
         let rowBottom = mainBoxBounds?.bottom;
+        let rowBaseline = mainGlyphRows[mainGlyphRows.length - 1]?.bottom;
         const inlineGap = Math.min(
-          window.innerWidth * 0.012,
-          window.innerHeight * 0.025
+          window.innerWidth * 0.0072,
+          window.innerHeight * 0.015
         ) * scaleX;
         const currentLineBounds = wrapper.getBoundingClientRect();
         const previousLineBounds = previousLineWrapper?.getBoundingClientRect();
@@ -530,10 +531,15 @@ export const LyricLineWrapper = React.memo(({
           const adlibBoxBounds = getBoundsForRects(getAdlibStructureRects(adlib));
           const adlibWidth = adlibBoxBounds.right - adlibBoxBounds.left;
           const adlibHeight = adlibBoxBounds.bottom - adlibBoxBounds.top;
+          const adlibMainBounds = getBoundsForRects(
+            getGlyphRows(adlib.querySelector(':scope > .primary-text'))
+          );
           let targetLeft = direction === 'rtl'
             ? rowCursor - inlineGap - adlibWidth
             : rowCursor + inlineGap;
-          let targetTop = rowBottom - adlibHeight;
+          let targetTop = adlibMainBounds && rowBaseline !== undefined
+            ? adlibBoxBounds.top + rowBaseline - adlibMainBounds.bottom
+            : rowBottom - adlibHeight;
           const fitsBesidePreviousBox = direction === 'rtl'
             ? targetLeft >= splitLineBounds.left
             : targetLeft + adlibWidth <= splitLineBounds.right;
@@ -544,6 +550,9 @@ export const LyricLineWrapper = React.memo(({
               : splitLineBounds.left;
             targetTop = rowBottom + normalLineGap;
             rowBottom = targetTop + adlibHeight;
+          }
+          if (adlibMainBounds) {
+            rowBaseline = adlibMainBounds.bottom + targetTop - adlibBoxBounds.top;
           }
 
           adlib.style.removeProperty('--live-adlib-glyph-offset-y');
@@ -615,6 +624,7 @@ export const LyricLineWrapper = React.memo(({
           ? direction === 'rtl' ? mainBoxBounds.left : mainBoxBounds.right
           : undefined;
         rowBottom = mainBoxBounds?.bottom;
+        rowBaseline = mainGlyphRows[mainGlyphRows.length - 1]?.bottom;
         adlibMeasurements.forEach(({ adlib }) => {
           if (
             !splitLineBounds ||
@@ -628,10 +638,15 @@ export const LyricLineWrapper = React.memo(({
           if (!Number.isFinite(adlibBoxBounds.left)) return;
           const adlibWidth = adlibBoxBounds.right - adlibBoxBounds.left;
           const adlibHeight = adlibBoxBounds.bottom - adlibBoxBounds.top;
+          const adlibMainBounds = getBoundsForRects(
+            getGlyphRows(adlib.querySelector(':scope > .primary-text'))
+          );
           let targetLeft = direction === 'rtl'
             ? rowCursor - inlineGap - adlibWidth
             : rowCursor + inlineGap;
-          let targetTop = rowBottom - adlibHeight;
+          let targetTop = adlibMainBounds && rowBaseline !== undefined
+            ? adlibBoxBounds.top + rowBaseline - adlibMainBounds.bottom
+            : rowBottom - adlibHeight;
           const fitsBesidePreviousBox = direction === 'rtl'
             ? targetLeft >= splitLineBounds.left
             : targetLeft + adlibWidth <= splitLineBounds.right;
@@ -642,6 +657,9 @@ export const LyricLineWrapper = React.memo(({
               : splitLineBounds.left;
             targetTop = rowBottom + normalLineGap;
             rowBottom = targetTop + adlibHeight;
+          }
+          if (adlibMainBounds) {
+            rowBaseline = adlibMainBounds.bottom + targetTop - adlibBoxBounds.top;
           }
 
           adlib.style.setProperty(
