@@ -1,0 +1,75 @@
+.live-scroll-preview {
+  overflow-anchor: none;
+}
+
+.live-scroll-preview.live-scroll-entrance-pending .live-scroll-line,
+.live-scroll-preview.live-scroll-entrance-pending .live-scroll-line * {
+  visibility: hidden !important;
+}
+
+.live-scroll-preview .live-split-line {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.375em;
+  row-gap: 0;
+}
+
+.live-scroll-preview .live-split-line > .adlib-node,
+.live-scroll-preview .live-split-line > .adlib-node.is-adlib-inline-after-wrapped-main {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 1 auto;
+  align-self: baseline;
+  margin: 0 0 0 0.25em !important;
+  translate: none !important;
+}
+
+.live-scroll-preview .live-split-line > .adlib-node.is-adlib-wrapped {
+  flex-basis: 100%;
+  margin: 0 !important;
+}
+
+.live-scroll-preview .chunk-translation.live-translation {
+  text-align: center;
+  text-wrap: wrap !important;
+  white-space: pre-line;
+}
+
+.live-scroll-preview .main-live-translation {
+  transform: translateX(var(--live-scroll-translation-offset-x, 0px)) !important;
+}
+
+.live-scroll-preview .adlib-node > .adlib-live-translation {
+  position: absolute;
+  inset: auto 0 calc(100% + var(--dyn-trans-top-padding, 8px));
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  transform: none;
+  box-sizing: border-box;
+  text-align: center;
+  text-wrap: wrap !important;
+}
+
+.live-scroll-preview .adlib-live-translation .trans-word {
+  display: inline-block !important;
+  white-space: pre-wrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.live-scroll-preview .adlib-live-translation .trans-word-group {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.live-scroll-preview .adlib-node > .pronunciation-text {
+  position: static;
+  display: block;
+  margin-block-start: var(--dyn-translit-bottom-padding, 8px);
+}

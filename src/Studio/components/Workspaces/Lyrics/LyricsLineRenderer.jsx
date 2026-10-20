@@ -379,7 +379,8 @@ export const LyricLineWrapper = React.memo(({
   const [liveLayoutCacheVersion, setLiveLayoutCacheVersion] = useState(0);
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
-  const renderPlaybackState = viewMode === 'live' ? false : isPlayingCurrentSong;
+  const isLiveRender = viewMode === 'live' || viewMode === 'live-scroll';
+  const renderPlaybackState = isLiveRender ? false : isPlayingCurrentSong;
 
   const renderedContent = useMemo(() =>
     renderLine(
@@ -388,9 +389,9 @@ export const LyricLineWrapper = React.memo(({
       viewMode === 'focused',
       masterPalette,
       renderPlaybackState,
-      { focusedMainLyrics: viewMode === 'live' }
+      { focusedMainLyrics: isLiveRender }
     ),
-    [lineObj, savedNode, viewMode, masterPalette, renderPlaybackState]
+    [lineObj, savedNode, viewMode, masterPalette, renderPlaybackState, isLiveRender]
   );
 
   useLayoutEffect(() => {
@@ -1264,7 +1265,7 @@ export const LyricLineWrapper = React.memo(({
   return (
     <div
       ref={wrapperRef}
-      className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}`}
+      className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}${viewMode === 'live-scroll' ? ' live-scroll-line' : ''}`}
       data-start={start}
       data-end={end}
       data-next-start={nextStart}

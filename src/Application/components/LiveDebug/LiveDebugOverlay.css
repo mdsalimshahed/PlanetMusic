@@ -23,6 +23,12 @@
     box-shadow: none;
 }
 
+.live-debug-adlib-full-outline {
+    border: 2px dashed #ffffff !important;
+    background: transparent !important;
+    box-shadow: none;
+}
+
 .live-debug-alignment-guide {
     height: 0 !important;
     border: 0 !important;

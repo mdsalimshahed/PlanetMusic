@@ -187,7 +187,6 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
 
       const structureElements = [
         adlibNode.querySelector(':scope > .primary-text'),
-        adlibNode.querySelector(':scope > .adlib-live-translation'),
         adlibNode.querySelector(':scope > .pronunciation-text')
       ].filter(Boolean);
       const structureBounds = boundsForRects(structureElements.flatMap(element =>
@@ -200,6 +199,21 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
         '#ff3030',
         'transparent',
         'live-debug-box-outline'
+      );
+      const fullAdlibElements = [
+        ...structureElements,
+        adlibNode.querySelector(':scope > .adlib-live-translation')
+      ].filter(Boolean);
+      const fullAdlibBounds = boundsForRects(fullAdlibElements.flatMap(element =>
+        getLineTextBoundsList(element, overlayRect)
+      ));
+      addBox(
+        boxes,
+        `adlib-full-structure-${lineIndex}-${adlibIndex}`,
+        fullAdlibBounds,
+        '#ffffff',
+        'transparent',
+        'live-debug-adlib-full-outline'
       );
     });
 

@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
 const MODES = [
-  ['live', 'Live'],
+  ['live', 'Live Scroll'],
   ['focused', 'Focused'],
   ['group-chat', 'Group Chat'],
   ['plain', 'Plain Text']
