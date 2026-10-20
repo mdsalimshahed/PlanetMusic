@@ -208,6 +208,13 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   ]);
 
   const handlePurgeAllData = () => {
+    const scrollTop = document.querySelector('.content-scroll-area')?.scrollTop ?? 0;
+    try {
+      sessionStorage.setItem('planetmusic.purgeScrollTop', String(scrollTop));
+    } catch (error) {
+      console.error('Could not preserve the page position during purge.', error);
+    }
+
     try {
       const rawLibrary = localStorage.getItem('songLibrary');
       const parsedLibrary = rawLibrary ? unpackVault(JSON.parse(rawLibrary)).library : [];
@@ -255,7 +262,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
         console.error("Failed to delete IndexedDB:", err);
       }
     }
-    window.location.href = '/';
+    window.location.reload();
   };
 
   const getSliderStyle = (key, progressPct) => {

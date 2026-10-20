@@ -7,8 +7,8 @@ import { slugifyBlogLinkTitle } from '../../utils/blogRoutes.js';
 export const useVaultOperations = ({
   library, setLibrary, settings, setSettings,
   isSampleVaultActive, setIsSampleVaultActive,
-  selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick,
-  isVaultRoute
+  selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack,
+  isVaultRoute, navigate
 }) => {
   const [songToRemove, setSongToRemove] = useState(null);
   const [isLoadingSample, setIsLoadingSample] = useState(false);
@@ -28,7 +28,7 @@ export const useVaultOperations = ({
     setSettings(newSettingsAction);
   };
 
-  const applyParsedData = (parsedData, shouldRedirect = true) => {
+  const applyParsedData = (parsedData) => {
     if (!Array.isArray(parsedData) && !Array.isArray(parsedData?.library)) {
       throw new Error('This file does not contain a PlanetMusic song library.');
     }
@@ -52,7 +52,6 @@ export const useVaultOperations = ({
       const importedSettings = sanitizeVaultSettings(decodedData.settings);
       setSettings(prev => ({ ...prev, ...importedSettings }));
     }
-    if (shouldRedirect) handleHomeClick();
   };
 
   useEffect(() => {
@@ -73,7 +72,7 @@ export const useVaultOperations = ({
         if (!Array.isArray(decodedData.library)) {
           throw new Error('The sample backup does not contain a valid song library.');
         }
-        applyParsedData(data, false);
+        applyParsedData(data);
         localStorage.setItem('hasVisitedBefore', 'true');
         localStorage.setItem('isSampleVaultActive', 'true');
         setIsSampleVaultActive(true);
@@ -326,12 +325,13 @@ export const useVaultOperations = ({
       }
 
       dismissSampleMode();
-      applyParsedData({ library: selectedSongs, settings: importSettings }, false);
+      applyParsedData({ library: selectedSongs, settings: importSettings });
       if (mergedPosts) {
         localStorage.setItem('custom_blog_posts_storage', JSON.stringify(mergedPosts));
         window.dispatchEvent(new Event('planetmusic-custom-blogs-updated'));
       }
       setPendingImport(null);
+      navigate('/vault');
     } catch (err) {
       console.error('Could not import the selected PlanetMusic backup.', err);
       alert(err instanceof Error ? err.message : 'Could not import the selected backup.');
@@ -346,10 +346,11 @@ export const useVaultOperations = ({
         throw new Error('File not found');
       }
       const data = await res.json();
-      applyParsedData(data, true);
+      applyParsedData(data);
       localStorage.setItem('isSampleVaultActive', 'true');
       localStorage.setItem('hasVisitedBefore', 'true');
       setIsSampleVaultActive(true);
+      navigate('/vault');
     } catch (error) {
       console.error('Could not load sample backup file.', error);
       alert(`Could not load sample backup file: ${error.message}`);

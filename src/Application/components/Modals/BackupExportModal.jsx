@@ -21,7 +21,7 @@ const BackupExportModal = ({ songs, settings, onClose, onExport }) => {
   const [selectedSongIds, setSelectedSongIds] = useState(
     () => new Set(songs.map((song) => String(song.trackId)))
   );
-  const [includeSettings, setIncludeSettings] = useState(false);
+  const [includeSettings, setIncludeSettings] = useState(true);
   const [includeDeezerArl, setIncludeDeezerArl] = useState(false);
   const [includeBlogPosts, setIncludeBlogPosts] = useState(false);
   const [search, setSearch] = useState('');

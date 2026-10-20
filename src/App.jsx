@@ -87,6 +87,7 @@ const App = () => {
   const contentScrollAreaRef = useRef(null);
   const previousPathnameRef = useRef(location.pathname);
   const vaultScrollPositionRef = useRef(null);
+  const purgeRestoredPathRef = useRef(null);
   const searchBoxRef = useRef(null);
   const zenSequenceRef = useRef([]);
   const zenIndexRef = useRef(-1);
@@ -136,8 +137,21 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (purgeRestoredPathRef.current === location.pathname) return;
+    purgeRestoredPathRef.current = null;
     const previousPathname = previousPathnameRef.current;
     previousPathnameRef.current = location.pathname;
+    const purgeScrollTop = sessionStorage.getItem('planetmusic.purgeScrollTop');
+    if (purgeScrollTop !== null) {
+      sessionStorage.removeItem('planetmusic.purgeScrollTop');
+      const parsedScrollTop = Number(purgeScrollTop);
+      if (Number.isFinite(parsedScrollTop) && parsedScrollTop >= 0) {
+        purgeRestoredPathRef.current = location.pathname;
+        contentScrollAreaRef.current?.scrollTo(0, parsedScrollTop);
+        return;
+      }
+    }
+
     const isChangelogMonthNavigation = previousPathname !== location.pathname
       && /^\/docs\/changelog(?:\/[^/]+)?$/.test(previousPathname)
       && /^\/docs\/changelog(?:\/[^/]+)?$/.test(location.pathname);
@@ -430,8 +444,9 @@ const App = () => {
   } = useVaultOperations({
     library, setLibrary, settings, setSettings,
     isSampleVaultActive, setIsSampleVaultActive,
-    selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack, handleHomeClick,
-    isVaultRoute: location.pathname === '/vault' || location.pathname.startsWith('/vault/')
+    selectedSong, handleSetSelectedSong, updateSelectedSongDirect, setCurrentTrack,
+    isVaultRoute: location.pathname === '/vault' || location.pathname.startsWith('/vault/'),
+    navigate
   });
   const exportSelectedBackup = useCallback((options) => {
     handleExport(options);
