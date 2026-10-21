@@ -810,7 +810,7 @@ const App = () => {
         settings={settings}
       />
 
-      {!selectedSong && songToRemove && (
+      {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>
           <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
             <h3>Remove Song?</h3>
