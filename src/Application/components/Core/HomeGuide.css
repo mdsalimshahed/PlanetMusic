@@ -45,7 +45,7 @@
     radial-gradient(ellipse at 5% 100%, rgba(40, 140, 220, 0.16), transparent 42%),
     linear-gradient(130deg, #0b0a14 5%, #120d1f 60%, #150c26 100%);
 }
-.home-guide-hero.is-player-active {
+.home-guide-hero.has-player-ui {
   padding-bottom: clamp(44px, 6vw, 76px);
 }
 .home-guide-stars {
@@ -608,10 +608,10 @@
     min-height: 660px;
     padding-block: clamp(52px, 4vw, 64px) clamp(48px, 5vw, 72px);
   }
-  .home-guide-hero.is-player-active {
+  .home-guide-hero.has-player-ui {
     padding-bottom: clamp(48px, 5vw, 72px);
   }
-  .home-guide-hero:not(.is-player-active) {
+  .home-guide-hero:not(.has-player-ui) {
     padding-bottom: clamp(16px, 1.5vw, 24px);
   }
   .home-guide-player, .home-guide-preview-tabs { width: min(100%, 760px, max(280px, calc(100svh - 190px))); }
@@ -622,8 +622,8 @@
   .home-guide-footer nav { width: 100%; justify-content: center; }
   #guides { scroll-margin-top: 165px; }
   .home-guide-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: clamp(28px, 5vw, 66px); }
-  .home-guide-hero.is-player-active { padding-bottom: clamp(44px, 6vw, 76px); }
-  .home-guide-hero:not(.is-player-active) { padding-bottom: 18px; }
+  .home-guide-hero.has-player-ui { padding-bottom: clamp(44px, 6vw, 76px); }
+  .home-guide-hero:not(.has-player-ui) { padding-bottom: 18px; }
   .home-guide-player { max-height: none; aspect-ratio: 1; }
   .home-guide-nav { top: 6px; margin-top: 8px; margin-bottom: -52px; }
   .home-guide-preview-tabs { transform: none; }

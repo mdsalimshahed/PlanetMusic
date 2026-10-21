@@ -31,7 +31,6 @@ export const useAutoSpacing = ({
 
     if (targetIndices.length === 0) {
       setNotification({ show: true, message: 'No valid lines found to auto-space.', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
       return;
     }
 
@@ -161,7 +160,6 @@ export const useAutoSpacing = ({
     });
 
     setNotification({ show: true, message: 'Auto Spacing complete!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 2000);
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);
   };

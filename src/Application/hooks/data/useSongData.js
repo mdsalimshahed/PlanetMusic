@@ -22,14 +22,18 @@ const createCustomDataForSong = song => ({
   artistColors: song?.artistColors || EMPTY_ARTIST_DATA
 });
 
-export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
+export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library = []) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
   
-  const [globalArtistData, setGlobalArtistData] = useState(() => {
+  const [storedGlobalArtistData, setStoredGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
-    const parsed = stored ? JSON.parse(stored) : { images: {}, colors: {} };
+    const parsed = stored ? JSON.parse(stored) : {};
+    const globalData = {
+      images: parsed?.images && typeof parsed.images === 'object' ? parsed.images : {},
+      colors: parsed?.colors && typeof parsed.colors === 'object' ? parsed.colors : {}
+    };
     
     // HYDRATE FROM VAULT: Scan the entire library for manually set images/colors.
     // This ensures that if an artist was customized in any other song, 
@@ -40,12 +44,12 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
         getVaultArtistData(JSON.parse(libraryStr)).forEach(({ artistImages, artistColors }) => {
           if (artistImages) {
             Object.entries(artistImages).forEach(([artist, url]) => {
-              if (url && !parsed.images[artist]) parsed.images[artist] = url;
+              if (url && !globalData.images[artist]) globalData.images[artist] = url;
             });
           }
           if (artistColors) {
             Object.entries(artistColors).forEach(([artist, color]) => {
-              if (color && !parsed.colors[artist]) parsed.colors[artist] = color;
+              if (color && !globalData.colors[artist]) globalData.colors[artist] = color;
             });
           }
         });
@@ -54,8 +58,28 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
       console.error("Vault artist data hydration failed", e);
     }
     
-    return parsed;
+    return globalData;
   });
+  const globalArtistData = useMemo(() => {
+    const libraryImages = {};
+    const libraryColors = {};
+    getVaultArtistData(library).forEach(({ artistImages, artistColors }) => {
+      Object.entries(artistImages || {}).forEach(([artist, image]) => {
+        if (typeof image === 'string' && image.trim() && !libraryImages[artist]) {
+          libraryImages[artist] = image;
+        }
+      });
+      Object.entries(artistColors || {}).forEach(([artist, color]) => {
+        if (typeof color === 'string' && color.trim() && !libraryColors[artist]) {
+          libraryColors[artist] = color;
+        }
+      });
+    });
+    return {
+      images: { ...libraryImages, ...storedGlobalArtistData.images },
+      colors: { ...libraryColors, ...storedGlobalArtistData.colors }
+    };
+  }, [library, storedGlobalArtistData]);
 
   const [customDataState, setCustomDataState] = useState(() => ({
     trackId: selectedSong?.trackId ?? null,
@@ -278,17 +302,23 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
     // Commit updated song payload to vault and active player state simultaneously
     updateSongInLibrary(updatedSongPayload);
-    return true;
+    return updatedSongPayload;
   };
 
   const saveImageManager = () => {
     const newGlobal = {
-      images: { ...globalArtistData.images, ...customData.artistImages },
-      colors: { ...globalArtistData.colors, ...customData.artistColors }
+      images: { ...globalArtistData.images },
+      colors: { ...globalArtistData.colors }
     };
+    Object.entries(customData.artistImages || {}).forEach(([artist, image]) => {
+      if (typeof image === 'string' && image.trim()) newGlobal.images[artist] = image;
+    });
+    Object.entries(customData.artistColors || {}).forEach(([artist, color]) => {
+      if (typeof color === 'string' && color.trim()) newGlobal.colors[artist] = color;
+    });
     
     localStorage.setItem('globalArtistData', JSON.stringify(newGlobal));
-    setGlobalArtistData(newGlobal);
+    setStoredGlobalArtistData(newGlobal);
     
     const newMasterPalette = { ...basePalette, ...newGlobal.colors, ...customData.artistColors };
 

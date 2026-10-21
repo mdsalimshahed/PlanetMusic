@@ -416,7 +416,7 @@ const App = () => {
 
   const renderHomeView = () => (
     <section className="view-section">
-      <HomeGuide isPlayerActive={logoPlaybackVisuals.isPlaying} />
+      <HomeGuide isPlayerVisible={Boolean(playerTrack)} />
     </section>
   );
 
@@ -794,6 +794,7 @@ const App = () => {
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
         toggleLibrary={toggleLibrary}
         updateSongInLibrary={updateSongInLibrary}
+        library={library}
         setCurrentTrack={setCurrentTrack}
         currentTrack={currentTrack}
         settings={settings}

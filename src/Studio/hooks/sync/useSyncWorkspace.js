@@ -307,7 +307,6 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     if (setNotification) {
       const modeLabel = isShowingAutoSync ? "Auto-Sync" : "Manual Sync";
       setNotification({ show: true, message: `${modeLabel} timings cleared! Click "Save Timings" to apply changes.`, progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 3000);
     }
     setShowRefreshPrompt(false);
   };

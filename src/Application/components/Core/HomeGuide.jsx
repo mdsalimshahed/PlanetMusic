@@ -223,7 +223,7 @@ const FEATURE_ART = [
   </svg>
 ];
 
-const HomeGuide = ({ isPlayerActive = false }) => {
+const HomeGuide = ({ isPlayerVisible = false }) => {
   const rootRef = useRef(null);
   const footerRef = useRef(null);
   const homeGuideCopyRef = useRef(null);
@@ -698,7 +698,7 @@ const HomeGuide = ({ isPlayerActive = false }) => {
         ))}
       </nav>
 
-      <header className={`home-guide-hero${isPlayerActive ? ' is-player-active' : ''}`} id="top">
+      <header className={`home-guide-hero${isPlayerVisible ? ' has-player-ui' : ''}`} id="top">
         <div className="home-guide-stars" aria-hidden="true" />
         <div className="home-guide-copy" ref={homeGuideCopyRef}>
           <h1 className="pm-logo home-guide-title">

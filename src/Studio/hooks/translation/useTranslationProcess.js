@@ -90,7 +90,6 @@ export const useTranslationProcess = ({
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
         
         setNotification({ show: true, message: 'Wiped all translation and transliteration fields!', progress: 100 });
-        setTimeout(() => setNotification({ show: false }), 2000);
       }
     });
   };

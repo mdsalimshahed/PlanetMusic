@@ -18,8 +18,7 @@ export const useTranslationWorkspaceData = ({
   masterPalette,
   updateSongInLibrary,
   setIsTranslationManagerOpen,
-  setNotification,
-  setConfirmModalState
+  setNotification
 }) => {
   const [workspaceData, setWorkspaceData] = useState([]);
   const [initialDataSnapshot, setInitialDataSnapshot] = useState('');
@@ -187,8 +186,9 @@ export const useTranslationWorkspaceData = ({
     setIsTranslationManagerOpen(false);
     
     if (!quiet) {
-      setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
+      setNotification(hasUnsavedChanges
+        ? { show: true, message: 'Translations and pronunciations saved.', progress: 100, type: 'success' }
+        : { show: true, message: 'No translation changes were made.', progress: null, type: 'info' });
     }
     return updatedSong;
   };
@@ -290,7 +290,6 @@ export const useTranslationWorkspaceData = ({
         if (listContainerRef.current) listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
         
         setNotification({ show: true, message: `Overwrote workspace data for ${importedCount} lines!`, progress: 100 });
-        setTimeout(() => setNotification({ show: false }), 2500);
 
       } catch (err) {
         console.error("Text import error:", err);

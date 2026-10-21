@@ -25,7 +25,6 @@ export const useTranslationBatch = ({
     setIsTranslatingAll(false);
     setActiveTranslatingId(null);
     setNotification({ show: true, message: 'Process stopped.', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 1500);
   };
 
   const handleTranslateAll = async () => {
@@ -136,7 +135,6 @@ export const useTranslationBatch = ({
         listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
       setNotification({ show: true, message: 'All lines translated! Ready to Save.', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
       setTimeout(() => setShowSuccessBanner(false), 4000);
     }
 
@@ -307,7 +305,6 @@ export const useTranslationBatch = ({
         listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
       setNotification({ show: true, message: 'Context Translation complete! Ready to Save.', progress: 100 });
-      setTimeout(() => setNotification({ show: false }), 2000);
       setTimeout(() => setShowSuccessBanner(false), 4000);
     }
 
@@ -364,7 +361,6 @@ export const useTranslationBatch = ({
     
     setActiveTranslatingId(null);
     setNotification({ show: true, message: 'Line translated!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 1500);
   };
 
   return {

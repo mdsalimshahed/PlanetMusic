@@ -3,6 +3,15 @@ import { Link } from 'react-router-dom';
 import WorkspaceTip from '../WorkspaceTip.jsx';
 import './ImageManager.css';
 
+const getArtistImage = (images, artist) => {
+  if (images?.[artist]) return images[artist];
+  const normalizedArtist = artist.trim().toLowerCase();
+  const matchingArtist = Object.keys(images || {}).find(
+    name => name.trim().toLowerCase() === normalizedArtist
+  );
+  return matchingArtist ? images[matchingArtist] : '';
+};
+
 const ImageManager = ({
   allPotentialSingers, selectedSong, customData, singerImages, handleImageChange, handleColorChange, masterPalette, globalArtistData
 }) => {
@@ -33,7 +42,10 @@ const ImageManager = ({
           const colorValue = masterPalette[singer] || '#ffffff';
                      
           // Determine the image currently intended to be shown
-          const currentImage = customData.artistImages?.[singer] ?? globalArtistData?.images?.[singer] ?? singerImages[singer];
+          const currentImage = getArtistImage(customData.artistImages, singer) ||
+            getArtistImage(globalArtistData?.images, singer) ||
+            singerImages[singer];
+          const imageInputValue = getArtistImage(customData.artistImages, singer);
 
           return (
             <div key={singer} className="image-manager-row glass-panel-light">
@@ -59,7 +71,7 @@ const ImageManager = ({
                   type="text" 
                   className="img-manager-input" 
                   placeholder="Paste HD Image URL here..." 
-                  value={customData.artistImages?.[singer] ?? globalArtistData?.images?.[singer] ?? ''} 
+                  value={imageInputValue}
                   onChange={(e) => handleImageChange(singer, e.target.value)} 
                 />
                 {currentImage && (

@@ -533,7 +533,6 @@ export const useSyncActions = ({
     }
     
     setNotification({ show: true, message: 'Sequentially mapped Auto-Sync timings to Manual Lyrics!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 2500);
   };
 
   const handleShiftTimings = (offset) => {
@@ -564,7 +563,6 @@ export const useSyncActions = ({
       updateWorkspaceData(data);
       if (setNotification) {
         setNotification({ show: true, message: `Shifted all timings by ${offset > 0 ? '+' : ''}${offset}s`, progress: 100 });
-        setTimeout(() => setNotification({ show: false }), 2000);
       }
     }
   };
@@ -580,7 +578,6 @@ export const useSyncActions = ({
           syncDataRef.current = selectedSong.syncData || [];
         }
         setNotification({ show: true, message: 'Switched to Manual Sync', progress: 100 });
-        setTimeout(() => setNotification({ show: false }), 2000);
       } else {
         setIsShowingAutoSync(true);
         if (isSyncMode) {
@@ -588,7 +585,6 @@ export const useSyncActions = ({
           syncDataRef.current = selectedSong.autoSyncData;
         }
         setNotification({ show: true, message: 'Showing Auto-Sync Data', progress: 100 });
-        setTimeout(() => setNotification({ show: false }), 2000);
       }
       return;
     }
@@ -690,7 +686,6 @@ export const useSyncActions = ({
       return null;
     } finally {
        setIsLrcFetching(false);
-       if (!silent) setTimeout(() => setNotification({ show: false }), 3000);
     }
   };
 
