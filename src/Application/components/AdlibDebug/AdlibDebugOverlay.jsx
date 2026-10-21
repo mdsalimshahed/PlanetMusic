@@ -22,6 +22,69 @@ const getClosestPoints = (r1, r2) => {
   return { x1, y1, x2, y2, dist };
 };
 
+const getTextBoundsList = (element, overlayRect, excludePronunciation = false) => {
+  if (!element) return [];
+  const rows = [];
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+    acceptNode: textNode => (
+      excludePronunciation &&
+      textNode.parentElement?.closest('.pronunciation-text')
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT
+    )
+  });
+  let node;
+
+  while ((node = walker.nextNode())) {
+    if (!node.textContent.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    [...range.getClientRects()].forEach(rect => {
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const bounds = {
+        top: rect.top - overlayRect.top,
+        bottom: rect.bottom - overlayRect.top,
+        left: rect.left - overlayRect.left,
+        right: rect.right - overlayRect.left
+      };
+      const matchedRow = rows.find(row => {
+        const overlap = Math.min(bounds.bottom, row.bottom) -
+          Math.max(bounds.top, row.top);
+        return overlap > Math.min(
+          bounds.bottom - bounds.top,
+          row.bottom - row.top
+        ) * 0.5;
+      });
+
+      if (matchedRow) {
+        matchedRow.top = Math.min(matchedRow.top, bounds.top);
+        matchedRow.bottom = Math.max(matchedRow.bottom, bounds.bottom);
+        matchedRow.left = Math.min(matchedRow.left, bounds.left);
+        matchedRow.right = Math.max(matchedRow.right, bounds.right);
+      } else {
+        rows.push(bounds);
+      }
+    });
+  }
+
+  return rows
+    .sort((first, second) => first.top - second.top)
+    .map(row => ({
+      ...row,
+      width: row.right - row.left,
+      height: row.bottom - row.top
+    }));
+};
+
+const unionBounds = rects => {
+  if (rects.length === 0) return null;
+  const left = Math.min(...rects.map(rect => rect.left));
+  const right = Math.max(...rects.map(rect => rect.right));
+  const top = Math.min(...rects.map(rect => rect.top));
+  const bottom = Math.max(...rects.map(rect => rect.bottom));
+  return { left, right, top, bottom, width: right - left, height: bottom - top };
+};
+
 const AdlibDebugOverlay = ({
   currentSingerBg,
   isSingerVisible,
@@ -156,6 +219,82 @@ const AdlibDebugOverlay = ({
         if (tightBounds) {
           newBoxes.push({ id: 'combined-bounds', color: '#4ade80', ...tightBounds });
         }
+
+        const mainLayer = activeLine.querySelector('.main-lyrics-layer');
+        const mainRows = getTextBoundsList(mainLayer, overlayRect, true);
+        const pronouncedChunks = Array.from(
+          mainLayer?.querySelectorAll('.inline-cjk-chunk') || []
+        ).map(chunk => {
+          const mainBounds = unionBounds(getTextBoundsList(chunk, overlayRect, true));
+          const pronunciationBounds = unionBounds(
+            Array.from(chunk.querySelectorAll('.pronunciation-text'))
+              .flatMap(pronunciation => getTextBoundsList(pronunciation, overlayRect))
+          );
+          if (!mainBounds || !pronunciationBounds || mainRows.length === 0) return null;
+
+          const mainCenter = (mainBounds.top + mainBounds.bottom) / 2;
+          const mainRowIndex = mainRows.reduce((closestIndex, row, rowIndex) => {
+            const distance = Math.abs(
+              mainCenter - (row.top + row.bottom) / 2
+            );
+            if (closestIndex === null) return rowIndex;
+            const closestRow = mainRows[closestIndex];
+            const closestDistance = Math.abs(
+              mainCenter - (closestRow.top + closestRow.bottom) / 2
+            );
+            return distance < closestDistance ? rowIndex : closestIndex;
+          }, null);
+
+          return { mainRowIndex, pronunciationBounds };
+        }).filter(Boolean);
+
+        mainRows.forEach((row, rowIndex) => {
+          newBoxes.push({
+            id: `main-lyrics-row-${rowIndex}`,
+            color: '#facc15',
+            ...row
+          });
+
+          const rowPronunciations = pronouncedChunks
+            .filter(({ mainRowIndex }) => mainRowIndex === rowIndex)
+            .map(({ pronunciationBounds }) => pronunciationBounds);
+          const structureBounds = unionBounds([
+            row,
+            ...rowPronunciations
+          ]);
+          if (structureBounds) {
+            newBoxes.push({
+              id: `main-pronunciation-row-${rowIndex}`,
+              color: '#ff3030',
+              ...structureBounds
+            });
+          }
+        });
+
+        Array.from(activeLine.querySelectorAll('.pronunciation-text'))
+          .flatMap(pronunciation => getTextBoundsList(pronunciation, overlayRect))
+          .forEach((row, rowIndex) => {
+          newBoxes.push({
+            id: `pronunciation-row-${rowIndex}`,
+            color: '#c084fc',
+            ...row
+          });
+          });
+
+        Array.from(activeLine.querySelectorAll(
+          '.chunk-translation.focused-translation, .main-live-translation'
+        )).forEach((translation, translationIndex) => {
+          const translationBounds = unionBounds(
+            getTextBoundsList(translation, overlayRect)
+          );
+          if (translationBounds) {
+            newBoxes.push({
+              id: `translation-${translationIndex}`,
+              color: '#00bbf9',
+              ...translationBounds
+            });
+          }
+        });
       }
 
       const singerNameCorner = document.querySelector('.singer-name-corner.visible') || document.querySelector('.singer-name-corner');
