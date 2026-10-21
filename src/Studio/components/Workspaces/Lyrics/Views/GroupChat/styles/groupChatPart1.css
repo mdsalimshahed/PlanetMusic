@@ -86,6 +86,20 @@
   opacity: 1;
 }
 
+.group-chat-participant.is-entering {
+  animation: group-chat-participant-enter 300ms ease both;
+}
+
+@keyframes group-chat-participant-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 .group-chat-participant.is-dimmed {
   opacity: 1;
   filter: none;

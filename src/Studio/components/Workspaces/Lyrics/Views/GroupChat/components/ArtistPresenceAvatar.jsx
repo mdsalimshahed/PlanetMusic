@@ -10,6 +10,7 @@ const ArtistPresenceAvatar = ({
   disableAnimations
 }) => {
   const [isVisible, setIsVisible] = useState(isOnline);
+  const [isEntering, setIsEntering] = useState(isOnline && !disableAnimations);
   const avatarRef = useRef(null);
   const previousActiveRef = useRef(isOnline && !isDimmed);
   const isActive = isOnline && !isDimmed;
@@ -65,12 +66,16 @@ const ArtistPresenceAvatar = ({
         'group-chat-participant',
         isOnline ? 'is-online' : 'is-offline',
         isActive ? 'is-active' : 'is-inactive',
-        isDimmed ? 'is-dimmed' : ''
+        isDimmed ? 'is-dimmed' : '',
+        isEntering && isOnline && !disableAnimations ? 'is-entering' : ''
       ].filter(Boolean).join(' ')}
       style={{ '--artist-color': artist.color }}
       data-artist-name={artist.name}
       aria-label={`${artist.name}, ${isDimmed ? 'inactive' : isOnline ? 'online' : 'offline'}`}
       aria-hidden={!isOnline}
+      onAnimationEnd={event => {
+        if (event.target === event.currentTarget) setIsEntering(false);
+      }}
     >
       <span className="group-chat-avatar-motion" aria-hidden="true">
         <span className="group-chat-avatar" ref={avatarRef}>
