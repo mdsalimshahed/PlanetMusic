@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { getGroupChatState, getActiveChatLines } from '../groupChatTimelineState.js';
 
+const TYPING_INDICATOR_UPDATE_MS = 500;
+const TYPING_INDICATOR_EXIT_MS = 260;
+
 const useGroupChatPlayback = ({
   timeline,
   isPlayingCurrentSong,
@@ -19,6 +22,9 @@ const useGroupChatPlayback = ({
   const displayTypingNamesRef = useRef('');
   const typingVisibleRef = useRef(false);
   const typingExitTimerRef = useRef(null);
+  const typingUpdateTimerRef = useRef(null);
+  const pendingTypingNamesRef = useRef(null);
+  const lastTypingUpdateAtRef = useRef(null);
   const [displayTypingNames, setDisplayTypingNames] = useState('');
   const [typingIndicatorVisible, setTypingIndicatorVisible] = useState(false);
   const chatState = getGroupChatState(timeline, playbackTime);
@@ -30,27 +36,16 @@ const useGroupChatPlayback = ({
 
   useEffect(() => {
     let endedTimer = null;
-    const updateTime = rawTime => {
-      const time = Number.isFinite(rawTime) ? rawTime - lyricsPlaybackOffsetSeconds : 0;
-      const nextTime = isPlayingCurrentSong ? Math.max(0, time) : 0;
-      const previousTime = playbackTimeRef.current;
-      const crossedEvents = nextTime > previousTime
-        ? timeline.events.filter(event => event.time > previousTime && event.time <= nextTime)
-        : [];
-      const hasPresenceChanges = crossedEvents.some(
-        event => event.type === 'join' || event.type === 'leave'
-      );
-      const hasMessageEvents = crossedEvents.some(event => event.type === 'message');
-      const nextTypingNames = getGroupChatState(timeline, nextTime).typingArtists.join(', ');
-      const typingChanged = nextTypingNames !== typingNamesRef.current;
-      typingNamesRef.current = nextTypingNames;
-
+    const applyTypingNames = nextTypingNames => {
       if (nextTypingNames) {
         if (typingExitTimerRef.current) {
           clearTimeout(typingExitTimerRef.current);
           typingExitTimerRef.current = null;
         }
-        if (typingChanged || !typingVisibleRef.current) {
+        if (
+          nextTypingNames !== displayTypingNamesRef.current ||
+          !typingVisibleRef.current
+        ) {
           displayTypingNamesRef.current = nextTypingNames;
           setDisplayTypingNames(nextTypingNames);
           typingVisibleRef.current = true;
@@ -64,8 +59,53 @@ const useGroupChatPlayback = ({
           displayTypingNamesRef.current = '';
           setDisplayTypingNames('');
           typingExitTimerRef.current = null;
-        }, 260);
+        }, TYPING_INDICATOR_EXIT_MS);
       }
+    };
+    const updateTypingNames = nextTypingNames => {
+      if (nextTypingNames === typingNamesRef.current) return;
+      typingNamesRef.current = nextTypingNames;
+      pendingTypingNamesRef.current = nextTypingNames;
+
+      const now = performance.now();
+      const elapsed = lastTypingUpdateAtRef.current == null
+        ? TYPING_INDICATOR_UPDATE_MS
+        : now - lastTypingUpdateAtRef.current;
+      if (elapsed >= TYPING_INDICATOR_UPDATE_MS) {
+        if (typingUpdateTimerRef.current) {
+          clearTimeout(typingUpdateTimerRef.current);
+          typingUpdateTimerRef.current = null;
+        }
+        const pendingNames = pendingTypingNamesRef.current;
+        pendingTypingNamesRef.current = null;
+        lastTypingUpdateAtRef.current = now;
+        applyTypingNames(pendingNames);
+        return;
+      }
+
+      if (typingUpdateTimerRef.current) return;
+      typingUpdateTimerRef.current = setTimeout(() => {
+        typingUpdateTimerRef.current = null;
+        const pendingNames = pendingTypingNamesRef.current;
+        pendingTypingNamesRef.current = null;
+        lastTypingUpdateAtRef.current = performance.now();
+        applyTypingNames(pendingNames);
+      }, TYPING_INDICATOR_UPDATE_MS - elapsed);
+    };
+
+    const updateTime = rawTime => {
+      const time = Number.isFinite(rawTime) ? rawTime - lyricsPlaybackOffsetSeconds : 0;
+      const nextTime = isPlayingCurrentSong ? Math.max(0, time) : 0;
+      const previousTime = playbackTimeRef.current;
+      const crossedEvents = nextTime > previousTime
+        ? timeline.events.filter(event => event.time > previousTime && event.time <= nextTime)
+        : [];
+      const hasPresenceChanges = crossedEvents.some(
+        event => event.type === 'join' || event.type === 'leave'
+      );
+      const hasMessageEvents = crossedEvents.some(event => event.type === 'message');
+      const nextTypingNames = getGroupChatState(timeline, nextTime).typingArtists.join(', ');
+      updateTypingNames(nextTypingNames);
 
       const activeIndices = getActiveChatLines(timeline, nextTime).map(line => String(line.index));
       if (activeIndices.length) {
@@ -109,7 +149,12 @@ const useGroupChatPlayback = ({
       setExpandedLineIndices(new Set());
       const endedAt = Math.max(0, (window.currentAudioTime || 0) - lyricsPlaybackOffsetSeconds);
       updateTime(window.currentAudioTime || 0);
-      const finalOfflineTime = Math.max(endedAt, ...timeline.artists.map(artist => artist.offlineAt));
+      const finalOfflineTime = Math.max(
+        endedAt,
+        ...timeline.artists.map(artist =>
+          artist.notificationOfflineAt ?? artist.offlineAt
+        )
+      );
       if (finalOfflineTime > endedAt) {
         endedTimer = setTimeout(
           () => {
@@ -127,6 +172,7 @@ const useGroupChatPlayback = ({
     return () => {
       if (endedTimer) clearTimeout(endedTimer);
       if (typingExitTimerRef.current) clearTimeout(typingExitTimerRef.current);
+      if (typingUpdateTimerRef.current) clearTimeout(typingUpdateTimerRef.current);
       window.removeEventListener('globalTimeUpdate', handleTimeUpdate);
       window.removeEventListener('globalPlayState', handlePlayState);
     };

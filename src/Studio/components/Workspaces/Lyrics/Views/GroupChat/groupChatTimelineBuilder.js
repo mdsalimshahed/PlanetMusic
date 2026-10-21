@@ -216,6 +216,11 @@ export const buildGroupChatTimeline = (lyrics, syncData, fallbackArtist, palette
       }
     });
     event.time = notificationTime;
+    if (event.type === 'join') {
+      event.artist.notificationOnlineAt = notificationTime;
+    } else {
+      event.artist.notificationOfflineAt = notificationTime;
+    }
   });
   events.sort((first, second) => first.time - second.time);
 

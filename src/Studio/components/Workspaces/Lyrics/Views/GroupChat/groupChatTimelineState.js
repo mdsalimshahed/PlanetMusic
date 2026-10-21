@@ -3,7 +3,8 @@ export const ARTIST_ACTIVITY_WINDOW_SECONDS = 2;
 export const getGroupChatState = (timeline, time) => {
   const currentTime = Number.isFinite(time) ? time : 0;
   const artists = timeline.artists.filter(artist =>
-    currentTime >= artist.onlineAt && currentTime < artist.offlineAt
+    currentTime >= (artist.notificationOnlineAt ?? artist.onlineAt) &&
+    currentTime < (artist.notificationOfflineAt ?? artist.offlineAt)
   );
   const messages = timeline.events.filter(event => event.time <= currentTime);
   const eligibleArtists = line =>

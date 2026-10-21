@@ -24,7 +24,7 @@ const timeline = buildGroupChatTimeline(
 test('builds persistent artist join, lyric, and leave events from synced lines', () => {
   assert.deepEqual(timeline.events.map(event => [event.type, event.time, event.artist?.name || event.line?.text]), [
     ['join', 6, 'Ari'],
-    ['join', 10, 'Bea'],
+    ['join', 10.5, 'Bea'],
     ['message', 10, 'First line'],
     ['message', 14, 'Reply'],
     ['message', 20, 'Last line'],
@@ -39,8 +39,13 @@ test('shows artists online, typing before their next line, and chat history thro
   assert.deepEqual(getGroupChatState(timeline, 7.99).typingArtists, []);
 
   const atLine = getGroupChatState(timeline, 10);
-  assert.deepEqual(atLine.artists.map(artist => artist.name), ['Ari', 'Bea']);
+  assert.deepEqual(atLine.artists.map(artist => artist.name), ['Ari']);
   assert.deepEqual(atLine.messages.filter(event => event.type === 'message').map(event => event.line.text), ['First line']);
+
+  assert.deepEqual(
+    getGroupChatState(timeline, 10.5).artists.map(artist => artist.name),
+    ['Ari', 'Bea']
+  );
 
   const afterBeaLeaves = getGroupChatState(timeline, 24.6);
   assert.deepEqual(afterBeaLeaves.artists.map(artist => artist.name), ['Ari']);
@@ -48,6 +53,51 @@ test('shows artists online, typing before their next line, and chat history thro
 
   const seekBack = getGroupChatState(timeline, 11);
   assert.deepEqual(seekBack.messages.filter(event => event.type === 'message').map(event => event.line.text), ['First line']);
+});
+
+test('keeps avatar presence in sync with delayed join and leave notifications', () => {
+  const delayedPresence = buildGroupChatTimeline(
+    [
+      { singer: 'Ari', text: 'Ari starts' },
+      { singer: 'Bea', text: 'Nearby bubble' },
+      { singer: 'Bea', text: 'Nearby ending bubble' }
+    ],
+    [
+      { start: 10, end: 12 },
+      { start: 6.1, end: 6.3 },
+      { start: 20.3, end: 20.5 }
+    ],
+    'Fallback'
+  );
+
+  assert.equal(
+    delayedPresence.events.find(event =>
+      event.type === 'join' && event.artist.name === 'Ari'
+    ).time,
+    6.6
+  );
+  assert.deepEqual(
+    getGroupChatState(delayedPresence, 6.59).artists.map(artist => artist.name),
+    ['Bea']
+  );
+  assert.deepEqual(
+    getGroupChatState(delayedPresence, 6.6).artists.map(artist => artist.name),
+    ['Bea', 'Ari']
+  );
+  assert.equal(
+    delayedPresence.events.find(event =>
+      event.type === 'leave' && event.artist.name === 'Ari'
+    ).time,
+    20.8
+  );
+  assert.deepEqual(
+    getGroupChatState(delayedPresence, 20.79).artists.map(artist => artist.name),
+    ['Bea', 'Ari']
+  );
+  assert.deepEqual(
+    getGroupChatState(delayedPresence, 20.8).artists.map(artist => artist.name),
+    ['Bea']
+  );
 });
 
 test('keeps typing prediction continuous across closely spaced lyric lines', () => {
@@ -181,8 +231,8 @@ test('includes join and leave notices between grouped lyric messages', () => {
 
   assert.deepEqual(history.map(item => item.type), [
     'join',
-    'join',
     'message-chain',
+    'join',
     'message-chain',
     'message-chain',
     'leave',
