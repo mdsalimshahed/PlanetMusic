@@ -492,7 +492,7 @@ const ModalLeft = ({
             </div>
           )}
           {showDeezerNotice && !hasArl && (
-            <div className="no-sync-warning deezer-arl-warning">
+            <div className="source-link-warning deezer-arl-warning" role="note">
               <span className="source-link-warning-icon" aria-hidden="true">!</span>
               <div className="source-link-warning-content">
                 <strong className="source-link-warning-title">Deezer needs an ARL</strong>
