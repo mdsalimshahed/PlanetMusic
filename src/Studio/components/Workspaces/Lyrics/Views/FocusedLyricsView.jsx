@@ -10,7 +10,7 @@ import { FocusedAdlibsTracker } from '../../Sync/FocusedAdlibsTracker.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import './FocusedLyricsView.css';
 
-const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
+const FocusedLyricsView = ({ syncWorkspaceLyrics, selectedSong, masterPalette, isPlayingCurrentSong, handleLineClick, currentTrack, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
   const cachedLinesRef = useRef([]);
   const timedLinesRef = useRef([]);
@@ -62,7 +62,7 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
     adlibCursorRef.current = 0;
     lastAdlibTimeRef.current = null;
 
-  }, [liveParsedLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
+  }, [syncWorkspaceLyrics, selectedSong?.syncData, lyricsPlaybackOffsetSeconds]);
 
   const handleTimeUpdate = useCallback((time, isSeek = false) => {
     if (!isPlayingCurrentSong) return;
@@ -179,11 +179,11 @@ const FocusedLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isPl
         window.removeEventListener('globalTimeSeek', handleTimeSeek);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-    }, [isPlayingCurrentSong, currentTrack, liveParsedLyrics, syncList, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
+    }, [isPlayingCurrentSong, currentTrack, syncWorkspaceLyrics, syncList, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
 
   return (
     <div className="focused-lyrics-preview" ref={containerRef}>
-      {liveParsedLyrics.map((line, i) => {
+      {syncWorkspaceLyrics.map((line, i) => {
         return (
             <LyricLineWrapper
                 key={i}

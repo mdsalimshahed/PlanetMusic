@@ -40,7 +40,7 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
 };
 
 const LiveLyricsView = ({
-  liveParsedLyrics,
+  syncWorkspaceLyrics,
   selectedSong,
   masterPalette,
   isPlayingCurrentSong,
@@ -171,7 +171,7 @@ const LiveLyricsView = ({
   }, [
     handleTimeUpdate,
     isPlayingCurrentSong,
-    liveParsedLyrics,
+    syncWorkspaceLyrics,
     lyricsPlaybackOffsetSeconds,
     selectedSong?.syncData,
     timedLineData
@@ -196,7 +196,7 @@ const LiveLyricsView = ({
       observer.disconnect();
       activeLineResizeObserverRef.current = null;
     };
-  }, [liveParsedLyrics]);
+  }, [syncWorkspaceLyrics]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
@@ -258,7 +258,7 @@ const LiveLyricsView = ({
       if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
       revealLines.forEach(line => line.classList.remove('is-preparing-reveal'));
     };
-  }, [liveParsedLyrics, selectedSong?.trackId]);
+  }, [syncWorkspaceLyrics, selectedSong?.trackId]);
 
   useEffect(() => {
     return () => {
@@ -316,7 +316,7 @@ const LiveLyricsView = ({
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >
-      {liveParsedLyrics.map((line, i) => {
+      {syncWorkspaceLyrics.map((line, i) => {
         return (
             <LyricLineWrapper
               key={i}

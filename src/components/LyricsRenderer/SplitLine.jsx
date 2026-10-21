@@ -2,7 +2,7 @@
 import React from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
-import { isRTLLanguage } from './textUtils.js';
+import { isRTLLanguage, usesCjkWordSpacing } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 
 const SplitLine = ({
@@ -16,6 +16,7 @@ const SplitLine = ({
   pronunciation,
   hasSpacingText,
   useTranslationFormatting = false,
+  renderSyncChunks = false,
   focusedMainLyrics = false,
   autoLiveLayout = false
 }) => {
@@ -77,6 +78,9 @@ const SplitLine = ({
     isAdlib: false,
     includeFocusedMain: focusedMainLyrics
   });
+  const preserveEngineOutput = useTranslationFormatting &&
+    (renderSyncChunks || Boolean(pronunciation));
+  const displayMainPronunciation = mainPronunciationJSX;
   const focusedMainJSX = focusedMainLyrics
     ? engineFocusedMainJSX || EngineRouter({
       chars: mainChars,
@@ -110,6 +114,11 @@ const SplitLine = ({
     );
 
     const cleanedAdlibTrans = adlib.translation ? adlib.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
+    const renderAdlibChunks = renderSyncChunks &&
+      usesCjkWordSpacing(adlib.lang || lang, adlib.text) &&
+      Boolean(adlib.spacingText?.trim());
+    const preserveAdlibEngineOutput = useTranslationFormatting &&
+      (renderAdlibChunks || Boolean(adlib.pronunciation));
 
     const { mainJSX: adlibMainJSX, translationJSX: adlibTransJSX, pronunciationJSX: adlibPronJSX } = EngineRouter({
        chars: extractedAdlibChars,
@@ -145,9 +154,14 @@ const SplitLine = ({
             marginInlineStart: '0.25em'
           }}
         >
-          <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto">
-            {adlibMainJSX}
-          </span>
+          <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto"          >
+              {useTranslationFormatting && !preserveAdlibEngineOutput
+                ? renderTranslationOriginalText(
+                  { ...adlib, _meta: { isAdlib: true } },
+                  masterPalette
+                )
+                : adlibMainJSX}
+            </span>
           {adlibTransJSX ? (
             <span className="chunk-translation live-translation adlib-live-translation" dir="ltr">
               {adlibTransJSX}
@@ -222,20 +236,20 @@ const SplitLine = ({
               }}
               dir={isRTL ? 'rtl' : 'ltr'}
           >
-            {useTranslationFormatting
+            {useTranslationFormatting && !preserveEngineOutput
               ? renderTranslationOriginalText(lineObj, masterPalette, {
                 savedNode,
                 excludeAdlibs: true
               })
               : focusedMainJSX}
           </span>
-          {mainPronunciationJSX && (
+          {displayMainPronunciation && (
             <span
                 className="pronunciation-text"
                 style={blockPronStyle}
                 dir="ltr"
             >
-              {mainPronunciationJSX}
+              {displayMainPronunciation}
             </span>
           )}
         </span>

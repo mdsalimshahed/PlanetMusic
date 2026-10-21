@@ -39,6 +39,22 @@ export const isRTLLanguage = (text) => /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC
 
 export const isBengaliLanguage = (text) => /[\u0980-\u09FF]/.test(text);
 
+export const usesCjkWordSpacing = (lang, text = '') => {
+  const normalizedLang = String(lang || 'auto').toLowerCase().trim();
+  if (
+    normalizedLang === 'ja' ||
+    normalizedLang.startsWith('ja-') ||
+    normalizedLang === 'japanese' ||
+    normalizedLang === 'zh' ||
+    normalizedLang.startsWith('zh-') ||
+    normalizedLang.startsWith('chinese')
+  ) {
+    return true;
+  }
+
+  return normalizedLang === 'auto' && /[\u3040-\u30ff\u3400-\u9fff]/u.test(text);
+};
+
 export const parsePronunciation = (pronString) => {
   let parsedChunks = null;
   let fullTrans = null;

@@ -13,7 +13,6 @@ const GroupChatMessageChain = ({
   artistByName,
   imageSources,
   masterPalette,
-  liveParsedLyrics,
   settings,
   activeLineIndices,
   showDebug,
@@ -43,9 +42,7 @@ const GroupChatMessageChain = ({
     >
       {group.events.map((event, eventIndex) => {
         const { line } = event;
-        const lyricLine = line.lyric ||
-          liveParsedLyrics[line.sourceIndex ?? line.index] ||
-          { text: line.text };
+        const lyricLine = line.lyric;
         const layoutKey = getLyricLayoutKey(
           line,
           lyricLine,

@@ -1,11 +1,12 @@
 /* --- src/components/Workspaces/Lyrics/LyricsDisplay.jsx --- */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import LyricsEqualizer from './LyricsEqualizer.jsx';
 import EditLyricsView from './Views/EditLyricsView.jsx';
 import LiveLyricsView from './Views/LiveLyricsView.jsx';
 import FocusedLyricsView from './Views/FocusedLyricsView.jsx';
 import GroupChatLyricsView from './Views/GroupChatLyricsView.jsx';
 import PlainLyricsView from './Views/PlainLyricsView.jsx';
+import { getSyncWorkspaceLyrics } from './syncWorkspaceLyrics.js';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
@@ -15,6 +16,10 @@ const LyricsDisplay = ({
     showGroupChatDebug
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
+  const syncWorkspaceLyrics = useMemo(
+    () => getSyncWorkspaceLyrics(selectedSong?.syncData),
+    [selectedSong?.syncData]
+  );
   const [activeSource, setActiveSource] = useState(() => {
     const source = window.globalActiveSource;
     return source?.trackId === selectedSong?.trackId ? source.source : null;
@@ -40,7 +45,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'focused' ? (
         <FocusedLyricsView 
-          liveParsedLyrics={liveParsedLyrics}
+          syncWorkspaceLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
@@ -52,7 +57,7 @@ const LyricsDisplay = ({
       ) : hasValidSyncData && lyricsViewMode === 'live' ? (
         <LiveLyricsView
           key={selectedSong?.trackId}
-          liveParsedLyrics={liveParsedLyrics}
+          syncWorkspaceLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isPlayingCurrentSong={isPlayingCurrentSong}
@@ -63,7 +68,7 @@ const LyricsDisplay = ({
         />
       ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView
-          liveParsedLyrics={liveParsedLyrics}
+          syncWorkspaceLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           artistImages={{

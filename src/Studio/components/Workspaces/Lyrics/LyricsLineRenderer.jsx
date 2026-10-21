@@ -1,10 +1,13 @@
 /* --- src/components/Workspaces/Lyrics/LyricsLineRenderer.jsx --- */
 import React, { useEffect, useMemo, useRef } from 'react';
+import {
+  stripPronunciationParentheses,
+  usesCjkWordSpacing
+} from '../../../../components/LyricsRenderer/textUtils.js';
 import SplitLine from '../../../../components/LyricsRenderer/SplitLine.jsx';
 import StandardLine from '../../../../components/LyricsRenderer/StandardLine.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../../utils/smartPunctuation.js';
-import { stripPronunciationParentheses } from '../../../../components/LyricsRenderer/textUtils.js';
 import './LyricsLineRenderer.css';
 
 // Re-export formatter utilities from their new centralized locations so the Views don't break
@@ -253,6 +256,7 @@ export const renderLine = (
   {
     excludeAdlibs = false,
     preserveText = false,
+    renderSyncChunks = false,
     focusedMainLyrics = false,
     isAdlib = false,
     autoLiveLayout = false
@@ -282,10 +286,13 @@ export const renderLine = (
         }))
       }
     : savedNode;
+  const shouldRenderSyncChunks = renderSyncChunks &&
+    usesCjkWordSpacing(savedNode?.lang || lineObj.lang, lineObj.text) &&
+    Boolean(savedNode?.spacingText?.trim());
   const { chars, hasSpacingText } = extractCharsAndSegments(
     displayLine,
     displayNode,
-    { useParsedSegments: preserveText }
+    { useParsedSegments: preserveText && !shouldRenderSyncChunks }
   );
 
   const commonProps = {
@@ -301,6 +308,7 @@ export const renderLine = (
     pronunciation: savedNode?.pronunciation || lineObj.pronunciation,
     hasSpacingText,
     useTranslationFormatting: preserveText,
+    renderSyncChunks: shouldRenderSyncChunks,
     focusedMainLyrics,
     autoLiveLayout
   };
@@ -394,7 +402,9 @@ export const LyricLineWrapper = React.memo(({
       renderPlaybackState,
       {
         focusedMainLyrics: isLiveRender,
-        autoLiveLayout: viewMode === 'live'
+        autoLiveLayout: viewMode === 'live',
+        preserveText: viewMode === 'live' || viewMode === 'focused',
+        renderSyncChunks: viewMode === 'live' || viewMode === 'focused'
       }
     ),
     [lineObj, savedNode, viewMode, masterPalette, renderPlaybackState, isLiveRender]

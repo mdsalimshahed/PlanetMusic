@@ -14,6 +14,7 @@ const StandardLine = ({
   pronunciation,
   hasSpacingText,
   useTranslationFormatting = false,
+  renderSyncChunks = false,
   focusedMainLyrics = false,
   autoLiveLayout = false,
   excludeAdlibs = false,
@@ -45,6 +46,8 @@ const StandardLine = ({
     isAdlib,
     includeFocusedMain: focusedMainLyrics
   });
+  const preserveEngineOutput = useTranslationFormatting &&
+    (renderSyncChunks || Boolean(pronunciation));
   const focusedMainJSX = focusedMainLyrics && !isFocused
     ? engineFocusedMainJSX || EngineRouter({
       chars: displayChars,
@@ -168,7 +171,7 @@ const StandardLine = ({
       }}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {useTranslationFormatting
+      {useTranslationFormatting && !preserveEngineOutput
         ? renderTranslationOriginalText(lineObj, masterPalette, {
           savedNode,
           excludeAdlibs

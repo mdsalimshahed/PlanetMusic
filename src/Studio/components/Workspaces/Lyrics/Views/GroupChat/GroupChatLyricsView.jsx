@@ -22,7 +22,7 @@ import './styles/index.css';
 const PREMEASUREMENT_BATCH_SIZE = 24;
 
 const GroupChatLyricsView = ({
-  liveParsedLyrics,
+  syncWorkspaceLyrics,
   selectedSong,
   masterPalette,
   artistImages,
@@ -56,11 +56,11 @@ const GroupChatLyricsView = ({
     advanced: false
   });
   const timeline = useMemo(() => buildGroupChatTimeline(
-    liveParsedLyrics,
+    syncWorkspaceLyrics,
     selectedSong?.syncData,
     selectedSong?.artistName,
     masterPalette
-  ), [liveParsedLyrics, selectedSong?.syncData, selectedSong?.artistName, masterPalette]);
+  ), [syncWorkspaceLyrics, selectedSong?.syncData, selectedSong?.artistName, masterPalette]);
   const playback = useGroupChatPlayback({
     timeline,
     isPlayingCurrentSong,
@@ -172,7 +172,6 @@ const GroupChatLyricsView = ({
     artistByName,
     imageSources,
     masterPalette,
-    liveParsedLyrics,
     settings,
     activeLineIndices,
     showDebug,
