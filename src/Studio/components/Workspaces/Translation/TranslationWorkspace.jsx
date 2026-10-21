@@ -141,8 +141,8 @@ const TranslationWorkspace = ({
         guideLabel="Translation Workspace guide"
       >
         <ul>
-          <li><span>Review language tags, translations, and pronunciations for each lyric row.</span></li>
-          <li><span>Use context translation for surrounding meaning, and auto-spacing for Chinese or Japanese.</span></li>
+          <li><span>Use <strong className="workspace-tip-action workspace-tip-action--translate">Translate All</strong> for every row, or <strong className="workspace-tip-action workspace-tip-action--context">Translate with Context</strong> when nearby lyrics should guide meaning.</span></li>
+          <li><span>Choose <strong className="workspace-tip-action workspace-tip-action--spacing">Auto Spacing</strong> for Chinese or Japanese. <strong className="workspace-tip-action workspace-tip-action--refresh">Refresh Lyrics</strong> clears fields; <strong className="workspace-tip-action workspace-tip-action--file">Import Text</strong> and <strong className="workspace-tip-action workspace-tip-action--file">Export Text</strong> transfer text. Finish with <strong className="workspace-tip-action workspace-tip-action--save">Save Changes</strong> or leave with <strong className="workspace-tip-action workspace-tip-action--close">Close Editor</strong>.</span></li>
         </ul>
       </WorkspaceTip>
       <TranslationHeader

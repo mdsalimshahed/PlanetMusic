@@ -15,10 +15,10 @@ const ImageManager = ({
       >
         <ul>
           <li>
-            <span>Artists appear here when lyrics use singer names in section tags, such as <code>[Verse: Artist Name]</code>.</span>
+            <span>Use <strong className="workspace-tip-action workspace-tip-action--manage">Manage Artists</strong> to assign an image and color to each singer.</span>
           </li>
           <li>
-            <span>Add an image and color for each singer below. See the <Link to="/docs/dev-blog/post/image-manager-customizing-artist-profiles">Image Manager guide</Link>.</span>
+            <span>Use <strong className="workspace-tip-action workspace-tip-action--clear">Clear Image</strong> to remove an image, then <strong className="workspace-tip-action workspace-tip-action--save">Save Artists Data</strong> to keep changes or <strong className="workspace-tip-action workspace-tip-action--close">Close Editor</strong> to leave. See the <Link to="/docs/dev-blog/post/image-manager-customizing-artist-profiles">Image Manager guide</Link>.</span>
           </li>
         </ul>
       </WorkspaceTip>

@@ -76,6 +76,20 @@
   text-align: left;
 }
 
+.workspace-tip-action {
+  font-weight: 750;
+}
+
+.workspace-tip-action--manage { color: #d8cbff; }
+.workspace-tip-action--clear,
+.workspace-tip-action--refresh { color: #ff6b6b; }
+.workspace-tip-action--translate,
+.workspace-tip-action--save { color: #4ade80; }
+.workspace-tip-action--context,
+.workspace-tip-action--file { color: #38bdf8; }
+.workspace-tip-action--spacing { color: #facc15; }
+.workspace-tip-action--close { color: rgba(255, 255, 255, 0.8); }
+
 .workspace-tip-content li::before {
   content: '•';
   flex: 0 0 8px;
