@@ -77,8 +77,23 @@ const GroupChatDebugOverlay = () => {
       const turns = [
         ...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])
       ].filter(turn => !turn.closest('.group-chat-premeasurement'));
-      const activeTurn = turns.at(-1) ?? null;
-      const previousTurn = turns.at(-2) ?? null;
+      const history = overlay.parentElement?.querySelector('.group-chat-history');
+      const historyRect = history?.getBoundingClientRect();
+      const historyScaleY = history?.offsetHeight
+        ? historyRect.height / history.offsetHeight
+        : 1;
+      const visibleTop = historyRect
+        ? historyRect.top + history.clientTop * historyScaleY
+        : Number.NEGATIVE_INFINITY;
+      const visibleBottom = historyRect
+        ? visibleTop + history.clientHeight * historyScaleY
+        : Number.POSITIVE_INFINITY;
+      const visibleTurns = turns.filter(turn => {
+        const rect = turn.getBoundingClientRect();
+        return rect.height > 0 && rect.bottom > visibleTop && rect.top < visibleBottom;
+      });
+      const activeTurn = visibleTurns.at(-1) ?? null;
+      const previousTurn = visibleTurns.at(-2) ?? null;
 
       turns.forEach(turn => {
         turn.classList.toggle('is-chat-debug-active', turn === activeTurn);
