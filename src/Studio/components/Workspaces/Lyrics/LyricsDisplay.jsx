@@ -12,7 +12,7 @@ import './LyricsDisplay.css';
 const LyricsDisplay = ({
     isEditing, customData, handleDataChange, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
-    isPlaying, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
+    isPlaying, isSaved, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
     showGroupChatDebug
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
@@ -88,6 +88,7 @@ const LyricsDisplay = ({
           liveParsedLyrics={liveParsedLyrics}
           selectedSong={selectedSong}
           masterPalette={masterPalette}
+          isSaved={isSaved}
         />
       )}
       

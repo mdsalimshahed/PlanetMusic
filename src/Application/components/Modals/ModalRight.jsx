@@ -79,6 +79,7 @@ const ModalRight = (props) => {
                 liveParsedLyrics={canvasProps.liveParsedLyrics}
                 handleLineClick={canvasProps.handleLineClick}
                 selectedSong={canvasProps.selectedSong}
+                isSaved={canvasProps.isSaved}
                 masterPalette={canvasProps.masterPalette}
                 singerImages={canvasProps.singerImages}
                 globalArtistData={canvasProps.globalArtistData}

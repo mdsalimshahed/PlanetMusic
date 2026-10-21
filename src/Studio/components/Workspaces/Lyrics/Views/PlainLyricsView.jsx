@@ -5,7 +5,7 @@ import { toSmartPunctuation } from '../../../../../utils/smartPunctuation.js';
 import { renderPunctuationColoredText } from '../../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import './PlainLyricsView.css';
 
-const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
+const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isSaved }) => {
   const groupedPlainLyrics = useMemo(() => {
     const groups = [];
     let currentGroup = null;
@@ -175,7 +175,11 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette }) => {
         )})
       ) : (
         <div className="no-lyrics-empty-state">
-          <p>No lyrics found in your Vault.</p>
+          <p>
+            {isSaved
+              ? 'No lyrics found in your Vault.'
+              : 'This song is not in your Vault yet. Click “Add to Vault” at the bottom of the left panel to save it.'}
+          </p>
         </div>
       )}
     </div>
