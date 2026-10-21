@@ -500,8 +500,14 @@ export const LyricLineWrapper = React.memo(({
         wrapper.classList.remove('has-inline-adlib-neighbor-clearance');
         wrapper.style.removeProperty('--live-adlib-neighbor-clearance-start');
         adlibGroup?.classList.remove('has-adlib-row');
+        adlibGroup?.classList.remove('is-adlib-inline-after-wrapped-main');
+        adlibGroup?.style.removeProperty('left');
+        adlibGroup?.style.removeProperty('right');
+        adlibGroup?.style.removeProperty('top');
+        adlibGroup?.style.removeProperty('width');
         adlibNodes.forEach(adlib => {
           adlib.classList.remove('is-adlib-wrapped');
+          adlib.classList.remove('is-adlib-inline-after-wrapped-main');
           adlib.classList.remove('is-english-adlib-on-foreign-line');
           adlib.classList.remove('is-nonforeign-adlib-on-foreign-main');
           adlib.style.removeProperty('--live-adlib-glyph-offset-y');
@@ -690,9 +696,96 @@ export const LyricLineWrapper = React.memo(({
 
         mainGlyphRows = getGlyphRows(mainGlyphs);
         const inlineBesideMainByAdlib = new Map();
+        const placeAdlibsAfterWrappedMain = () => {
+          if (
+            mainGlyphRows.length < 2 ||
+            !splitLine ||
+            !adlibGroup ||
+            adlibMeasurements.length === 0
+          ) return false;
+
+          const splitBounds = splitLine.getBoundingClientRect();
+          const lastMainRow = mainGlyphRows[mainGlyphRows.length - 1];
+          const isRTL = getComputedStyle(splitLine).direction === 'rtl';
+          const columnGap = parseFloat(getComputedStyle(splitLine).columnGap) || 0;
+          const adlibWidth = adlibMeasurements.reduce(
+            (total, { adlib }, index) => (
+              total + adlib.getBoundingClientRect().width +
+                (index === 0 ? 0 : columnGap)
+            ),
+            0
+          );
+          const availableWidth = isRTL
+            ? lastMainRow.left - splitBounds.left
+            : splitBounds.right - lastMainRow.right;
+          if (adlibWidth > availableWidth) return false;
+
+          adlibGroup.classList.add('is-adlib-inline-after-wrapped-main');
+          adlibGroup.style.top = '0px';
+          if (isRTL) {
+            adlibGroup.style.right = `${
+              (splitBounds.right - lastMainRow.left + columnGap) / scaleX
+            }px`;
+          } else {
+            adlibGroup.style.left = `${
+              (lastMainRow.right - splitBounds.left + columnGap) / scaleX
+            }px`;
+          }
+
+          const groupBounds = adlibGroup.getBoundingClientRect();
+          const firstAdlib = adlibMeasurements[0].adlib;
+          const firstAdlibRows = getGlyphRows(
+            firstAdlib.querySelector(':scope > .primary-text')
+          );
+          if (firstAdlibRows.length === 0) {
+            adlibGroup.classList.remove('is-adlib-inline-after-wrapped-main');
+            adlibGroup.style.removeProperty('left');
+            adlibGroup.style.removeProperty('right');
+            adlibGroup.style.removeProperty('top');
+            return false;
+          }
+          const firstAdlibBaseline = firstAdlibRows[firstAdlibRows.length - 1].bottom;
+          adlibGroup.style.top = `${
+            (
+              lastMainRow.bottom - splitBounds.top -
+              (firstAdlibBaseline - groupBounds.top)
+            ) / scaleY
+          }px`;
+          return true;
+        };
+        let adlibsPlacedAfterWrappedMain = placeAdlibsAfterWrappedMain();
+        if (adlibsPlacedAfterWrappedMain) {
+          const mainRects = getStaticContentRects(wrapper);
+          const inlineClearance = Math.min(
+            window.innerWidth * 0.005,
+            window.innerHeight * 0.0025
+          );
+          const overlapsMainContent = adlibMeasurements.some(({ adlib }) =>
+            getFinalAdlibRects(adlib).some(adlibRect =>
+              mainRects.some(mainRect => (
+                adlibRect.left < mainRect.right + inlineClearance &&
+                adlibRect.right > mainRect.left - inlineClearance &&
+                adlibRect.top < mainRect.bottom + inlineClearance &&
+                adlibRect.bottom > mainRect.top - inlineClearance
+              ))
+            )
+          );
+          if (overlapsMainContent) {
+            adlibsPlacedAfterWrappedMain = false;
+            adlibGroup.classList.remove('is-adlib-inline-after-wrapped-main');
+            adlibGroup.style.removeProperty('left');
+            adlibGroup.style.removeProperty('right');
+            adlibGroup.style.removeProperty('top');
+          }
+        }
         const fitsBesideMain = adlib => {
           if (inlineBesideMainByAdlib.has(adlib)) {
             return inlineBesideMainByAdlib.get(adlib);
+          }
+
+          if (adlibsPlacedAfterWrappedMain) {
+            inlineBesideMainByAdlib.set(adlib, true);
+            return true;
           }
 
           const mainBounds = coreChunks?.getBoundingClientRect();
@@ -719,9 +812,13 @@ export const LyricLineWrapper = React.memo(({
         }
         adlibMeasurements.forEach(({ adlib }) => {
           const primaryText = adlib.querySelector(':scope > .primary-text');
-          const adlibRows = getGlyphRows(primaryText);
           const isInlineBesideMain = fitsBesideMain(adlib);
 
+          adlib.classList.toggle(
+            'is-adlib-inline-after-wrapped-main',
+            isInlineBesideMain && mainGlyphRows.length > 1
+          );
+          const adlibRows = getGlyphRows(primaryText);
           if (!isInlineBesideMain || mainGlyphRows.length === 0 || adlibRows.length === 0) {
             adlib.style.removeProperty('--live-adlib-glyph-offset-y');
             return;
