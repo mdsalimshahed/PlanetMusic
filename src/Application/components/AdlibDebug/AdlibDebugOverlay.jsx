@@ -381,10 +381,15 @@ const AdlibDebugOverlay = ({
 
       setLayoutStats({ lyricsClipped, singerClipped });
 
-      const currentAdlibSingers = adlibBoxes.length > 0 ? adlibBoxes[0].datasetSinger : null;
-      const activeSingersList = currentAdlibSingers
-        ? currentAdlibSingers.split(',').map(s => s.trim()).filter(Boolean)
-        : [];
+      const activeSingersList = Array.from(new Set(
+        activeAdlibs.flatMap(adlibNode =>
+          (adlibNode.dataset.singer || '')
+            .split(',')
+            .map(singer => singer.trim())
+            .filter(Boolean)
+        )
+      ));
+      const currentAdlibSingers = activeSingersList.join(', ');
 
       if (currentAdlibSingers !== prevAdlibSingersRef.current) {
         prevAdlibSingersRef.current = currentAdlibSingers;
