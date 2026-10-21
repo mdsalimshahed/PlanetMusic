@@ -1,6 +1,10 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import ArtistPresenceAvatar from './ArtistPresenceAvatar.jsx';
-import { getArtistImage } from '../utils/groupChatUtils.js';
+import {
+  getArtistImage,
+  isArtistDimmed,
+  orderGroupChatArtists
+} from '../utils/groupChatUtils.js';
 import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
 const animateParticipantPositions = (container, previousPositionsRef) => {
@@ -47,6 +51,11 @@ const GroupChatHeader = ({
   artists,
   onlineArtists,
   typingArtists,
+  mainSingingArtists,
+  adlibSingingArtists,
+  typingArtistOrder,
+  mainSingingArtistOrder,
+  adlibSingingArtistOrder,
   lastLineEndByArtist,
   playbackTime,
   imageSources,
@@ -54,31 +63,30 @@ const GroupChatHeader = ({
 }) => {
   const participantsRef = useRef(null);
   const previousPositionsRef = useRef(new Map());
-  const isArtistTyping = artist => typingArtists.has(artist.name);
-  const isArtistActive = artist => {
-    const lastLineEnd = lastLineEndByArtist.get(artist.name);
-    return onlineArtists.has(artist.name) && (
-      isArtistTyping(artist) ||
-      !(lastLineEnd != null && playbackTime - lastLineEnd > 5)
-    );
-  };
-  const orderedArtists = [...artists].sort((a, b) => {
-    const activeDifference = Number(isArtistActive(b)) - Number(isArtistActive(a));
-    if (activeDifference) return activeDifference;
-
-    const getInactiveAt = artist => {
-      if (onlineArtists.has(artist.name)) {
-        const lastLineEnd = lastLineEndByArtist.get(artist.name);
-        return lastLineEnd == null ? Number.NEGATIVE_INFINITY : lastLineEnd + 5;
-      }
-      return artist.offlineAt ?? Number.NEGATIVE_INFINITY;
-    };
-    return getInactiveAt(b) - getInactiveAt(a);
+  const orderedArtists = orderGroupChatArtists({
+    artists,
+    onlineArtists,
+    typingArtists,
+    mainSingingArtists,
+    adlibSingingArtists,
+    typingArtistOrder,
+    mainSingingArtistOrder,
+    adlibSingingArtistOrder,
+    lastLineEndByArtist,
+    playbackTime
   });
   const layoutKey = JSON.stringify(orderedArtists.map(artist => [
     artist.name,
     onlineArtists.has(artist.name),
-    isArtistActive(artist)
+    onlineArtists.has(artist.name) && !isArtistDimmed({
+      artistName: artist.name,
+      onlineArtists,
+      mainSingingArtists,
+      adlibSingingArtists,
+      typingArtists,
+      lastLineEndByArtist,
+      playbackTime
+    })
   ]));
 
   useLayoutEffect(() => {
@@ -103,23 +111,24 @@ const GroupChatHeader = ({
     <header className="group-chat-header">
       <div className="group-chat-heading">
         <div className="group-chat-participants" aria-live="polite" ref={participantsRef}>
-          {orderedArtists.map(artist => {
-            const lastLineEnd = lastLineEndByArtist.get(artist.name);
-            return (
-              <ArtistPresenceAvatar
-                key={artist.name}
-                artist={artist}
-                isOnline={onlineArtists.has(artist.name)}
-                isDimmed={
-                  !isArtistTyping(artist) &&
-                  lastLineEnd != null &&
-                  playbackTime - lastLineEnd > 5
-                }
-                image={getArtistImage(artist.name, imageSources)}
-                inactiveScale={inactiveScale}
-              />
-            );
-          })}
+          {orderedArtists.map(artist => (
+            <ArtistPresenceAvatar
+              key={artist.name}
+              artist={artist}
+              isOnline={onlineArtists.has(artist.name)}
+              isDimmed={isArtistDimmed({
+                artistName: artist.name,
+                onlineArtists,
+                mainSingingArtists,
+                adlibSingingArtists,
+                typingArtists,
+                lastLineEndByArtist,
+                playbackTime
+              })}
+              image={getArtistImage(artist.name, imageSources)}
+              inactiveScale={inactiveScale}
+            />
+          ))}
         </div>
       </div>
     </header>

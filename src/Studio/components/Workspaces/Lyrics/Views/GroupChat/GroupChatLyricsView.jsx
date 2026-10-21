@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import {
   buildGroupChatHistory,
-  buildGroupChatTimeline
+  buildGroupChatTimeline,
+  getSingingArtistGroups
 } from '../groupChatTimeline.js';
 import GroupChatHeader from './components/GroupChatHeader.jsx';
 import GroupChatHistory from './components/GroupChatHistory.jsx';
@@ -160,6 +161,13 @@ const GroupChatLyricsView = ({
       );
     });
   });
+  const {
+    mainArtists: mainSingingArtists,
+    adlibArtists: adlibSingingArtists,
+    typingArtistOrder,
+    mainArtistOrder: mainSingingArtistOrder,
+    adlibArtistOrder: adlibSingingArtistOrder
+  } = getSingingArtistGroups(timeline, playback.playbackTime);
   const messageProps = {
     artistByName,
     imageSources,
@@ -248,6 +256,11 @@ const GroupChatLyricsView = ({
           artists={timeline.artists}
           onlineArtists={new Set(playback.chatState.artists.map(artist => artist.name))}
           typingArtists={new Set(playback.chatState.typingArtists)}
+          mainSingingArtists={mainSingingArtists}
+          adlibSingingArtists={adlibSingingArtists}
+          typingArtistOrder={typingArtistOrder}
+          mainSingingArtistOrder={mainSingingArtistOrder}
+          adlibSingingArtistOrder={adlibSingingArtistOrder}
           lastLineEndByArtist={lastLineEndByArtist}
           playbackTime={playback.playbackTime}
           imageSources={imageSources}
