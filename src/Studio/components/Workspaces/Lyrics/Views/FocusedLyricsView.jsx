@@ -160,7 +160,30 @@ const FocusedLyricsView = ({ syncWorkspaceLyrics, selectedSong, masterPalette, i
         pendingSeekRef.current = true;
     };
     const handlePlayState = (e) => {
-        if (e.detail.isEnded) clearAllActive();
+        if (
+          !e.detail?.isEnded ||
+          String(e.detail.trackId) !== String(selectedSong?.trackId)
+        ) return;
+
+        const activeIndex = activeLineIndexRef.current;
+        if (activeIndex !== -1) {
+          const activeLine = cachedLinesRef.current[activeIndex];
+          measureFocusedLineLayout(activeLine.node);
+          activeLine.node.classList.remove('active', 'past');
+          activeLine.node.classList.add('exiting');
+          activeLine.isActive = false;
+          activeLineIndexRef.current = -1;
+        }
+
+        cachedAdlibsRef.current.forEach(item => {
+          if (item.state !== 'hidden') {
+            item.node.classList.add('adlib-hidden');
+            item.node.classList.remove('adlib-active', 'adlib-visible');
+            item.state = 'hidden';
+          }
+        });
+        adlibCursorRef.current = 0;
+        lastAdlibTimeRef.current = null;
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
@@ -179,7 +202,7 @@ const FocusedLyricsView = ({ syncWorkspaceLyrics, selectedSong, masterPalette, i
         window.removeEventListener('globalTimeSeek', handleTimeSeek);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
-    }, [isPlayingCurrentSong, currentTrack, syncWorkspaceLyrics, syncList, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
+    }, [isPlayingCurrentSong, currentTrack, syncWorkspaceLyrics, syncList, selectedSong?.trackId, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
 
   return (
     <div className="focused-lyrics-preview" ref={containerRef}>
