@@ -1,5 +1,6 @@
 /* --- src/components/ImageManager.jsx --- */
-import React from 'react';
+import { Link } from 'react-router-dom';
+import WorkspaceTip from '../WorkspaceTip.jsx';
 import './ImageManager.css';
 
 const ImageManager = ({
@@ -7,9 +8,20 @@ const ImageManager = ({
 }) => {
   return (
     <div className="image-manager-container">
-      <p className="image-manager-sub">
-        Set custom HD images and tag colors for each artist appearing in the lyrics. Values saved here will persist across all songs.
-      </p>
+      <WorkspaceTip
+        title="Customize artist profiles"
+        guideTo="/docs/dev-blog/post/formatting-lyrics-singer-tags"
+        guideLabel="Lyrics & singer tags"
+      >
+        <ul>
+          <li>
+            <span>Artists appear here when lyrics use singer names in section tags, such as <code>[Verse: Artist Name]</code>.</span>
+          </li>
+          <li>
+            <span>Add an image and color for each singer below. See the <Link to="/docs/dev-blog/post/image-manager-customizing-artist-profiles">Image Manager guide</Link>.</span>
+          </li>
+        </ul>
+      </WorkspaceTip>
              
       <div className="image-manager-list">
         {allPotentialSingers.map(singer => {

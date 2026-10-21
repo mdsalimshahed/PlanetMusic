@@ -1,8 +1,9 @@
 /* --- src/components/Workspaces/Translation/TranslationWorkspace.jsx --- */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ConfirmModal from '../../../../Application/components/Modals/ConfirmModal.jsx';
 import TranslationHeader from './TranslationHeader.jsx';
 import TranslationRow from './TranslationRow.jsx';
+import WorkspaceTip from '../WorkspaceTip.jsx';
 import { useTranslationWorkspaceData } from '../../../hooks/translation/useTranslationWorkspaceData.js';
 import { useTranslationProcess } from '../../../hooks/translation/useTranslationProcess.js';
 import './TranslationWorkspace.css';
@@ -134,6 +135,16 @@ const TranslationWorkspace = ({
         onConfirm={confirmModalState.onConfirm}
         onCancel={() => setConfirmModalState(prev => ({ ...prev, isOpen: false }))}
       />
+      <WorkspaceTip
+        title="Translate and refine your lyrics"
+        guideTo="/docs/dev-blog/post/complete-guide-to-the-translation-workspace"
+        guideLabel="Translation Workspace guide"
+      >
+        <ul>
+          <li><span>Review language tags, translations, and pronunciations for each lyric row.</span></li>
+          <li><span>Use context translation for surrounding meaning, and auto-spacing for Chinese or Japanese.</span></li>
+        </ul>
+      </WorkspaceTip>
       <TranslationHeader
         isTranslatingAll={isTranslatingAll}
         isAutoSpacing={isAutoSpacing}

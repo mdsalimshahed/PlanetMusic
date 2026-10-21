@@ -18,11 +18,6 @@
 }
 
 .image-manager-title { margin-top: 0; margin-bottom: 8px; color: white; }
-.image-manager-sub {
-   font-size: clamp(11px, 1.3vw, 13px); color: rgba(255, 255, 255, 0.8);
-   margin-bottom: 24px; line-height: 1.5; background: rgba(255,200,0,0.1);
-   padding: 12px; border-radius: 8px; border-left: 4px solid #fbbf24;
-}
 .image-manager-list { display: flex; flex-direction: column; gap: 16px; }
 .image-manager-row {
    display: flex; flex-direction: column; padding: 16px; border-radius: 12px;
