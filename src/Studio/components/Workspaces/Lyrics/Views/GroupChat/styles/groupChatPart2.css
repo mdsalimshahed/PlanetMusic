@@ -285,17 +285,6 @@
   outline: none;
 }
 
-.group-chat-debug-view .group-chat-turn.is-chat-debug-active .group-chat-message,
-.group-chat-debug-view .group-chat-turn.is-chat-debug-previous .group-chat-message {
-  outline: calc(0.1 * var(--chat-vh-unit)) dashed #39e6ff;
-  outline-offset: calc(0.2 * var(--chat-vh-unit));
-}
-
-.group-chat-debug-view .group-chat-turn.is-chat-debug-active .group-chat-artist {
-  outline: calc(0.1 * var(--chat-vh-unit)) dashed #66ff8a;
-  outline-offset: calc(0.2 * var(--chat-vh-unit));
-}
-
 .group-chat-debug-view .group-chat-header {
   border-bottom-style: dashed;
   border-bottom-color: #ff4fd8;

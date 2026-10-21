@@ -17,6 +17,12 @@
   border-color: #facc15;
 }
 
+.group-chat-debug-box-bubble {
+  border-color: #39e6ff;
+  outline: 1px dashed #39e6ff;
+  outline-offset: 2px;
+}
+
 .group-chat-debug-box-timestamp {
   border-color: #fff;
 }
@@ -30,6 +36,10 @@
 }
 
 .group-chat-debug-box-artist {
+  border-color: #66ff8a;
+}
+
+.group-chat-debug-box-artist-frame {
   border-color: #66ff8a;
 }
 

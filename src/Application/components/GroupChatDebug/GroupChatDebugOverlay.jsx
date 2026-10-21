@@ -62,6 +62,24 @@ const getElementBounds = (element, metrics) => {
   };
 };
 
+const boxesAreEqual = (first, second) => first.length === second.length &&
+  first.every((box, index) => (
+    box.id === second[index].id &&
+    box.type === second[index].type &&
+    Math.abs(box.top - second[index].top) < 0.25 &&
+    Math.abs(box.left - second[index].left) < 0.25 &&
+    Math.abs(box.width - second[index].width) < 0.25 &&
+    Math.abs(box.height - second[index].height) < 0.25
+  ));
+
+const gapLabelsAreEqual = (first, second) => (
+  first?.text === second?.text &&
+  (first === null || second === null || (
+    Math.abs(first.left - second.left) < 0.25 &&
+    Math.abs(first.top - second.top) < 0.25
+  ))
+);
+
 const GroupChatDebugOverlay = () => {
   const overlayRef = useRef(null);
   const frameRef = useRef(null);
@@ -69,15 +87,26 @@ const GroupChatDebugOverlay = () => {
   const [gapLabel, setGapLabel] = useState(null);
 
   useEffect(() => {
+    const overlay = overlayRef.current;
+    const chat = overlay?.closest('.group-chat');
+    const history = chat?.querySelector('.group-chat-history');
+    if (!overlay || !chat || !history) return undefined;
+
+    const hasRunningHistoryAnimation = () => (
+      [...history.querySelectorAll('.group-chat-history-item')]
+        .some(item => item.getAnimations({ subtree: true })
+          .some(animation => animation.playState === 'running'))
+    );
+
+    let disposed = false;
     const updateBoxes = () => {
+      frameRef.current = null;
+      if (disposed) return;
       const overlay = overlayRef.current;
       if (!overlay) return;
       const metrics = getOverlayMetrics(overlay);
       const nextBoxes = [];
-      const turns = [
-        ...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])
-      ].filter(turn => !turn.closest('.group-chat-premeasurement'));
-      const history = overlay.parentElement?.querySelector('.group-chat-history');
+      const turns = [...history.querySelectorAll('.group-chat-turn')];
       const historyRect = history?.getBoundingClientRect();
       const historyScaleY = history?.offsetHeight
         ? historyRect.height / history.offsetHeight
@@ -88,23 +117,26 @@ const GroupChatDebugOverlay = () => {
       const visibleBottom = historyRect
         ? visibleTop + history.clientHeight * historyScaleY
         : Number.POSITIVE_INFINITY;
-      const visibleTurns = turns.filter(turn => {
+      const visibleTurns = turns.map(turn => {
         const rect = turn.getBoundingClientRect();
-        return rect.height > 0 && rect.bottom > visibleTop && rect.top < visibleBottom;
-      });
-      const activeTurn = visibleTurns.at(-1) ?? null;
-      const previousTurn = visibleTurns.at(-2) ?? null;
+        return { turn, rect };
+      }).filter(({ rect }) => (
+        rect.height > 0 &&
+        rect.bottom > visibleTop &&
+        rect.top < visibleBottom
+      )).sort((first, second) => first.rect.bottom - second.rect.bottom);
+      const selectedTurns = visibleTurns.slice(-2);
+      const previousTurn = selectedTurns.at(-2)?.turn ?? null;
+      const activeTurn = selectedTurns.at(-1)?.turn ?? null;
 
-      turns.forEach(turn => {
-        turn.classList.toggle('is-chat-debug-active', turn === activeTurn);
-        turn.classList.toggle('is-chat-debug-previous', turn === previousTurn);
-      });
-
-      turns.filter(turn => (
-        turn === activeTurn || turn === previousTurn
-      )).forEach((turn, turnIndex) => {
+      selectedTurns.forEach(({ turn }, turnIndex) => {
         const artistName = turn.querySelector('.group-chat-artist');
         if (artistName) {
+          nextBoxes.push({
+            id: `${turnIndex}-artist-frame`,
+            ...getElementBounds(artistName, metrics),
+            type: 'artist-frame'
+          });
           const bounds = getTextBounds(artistName, metrics);
           if (bounds) {
             nextBoxes.push({
@@ -136,6 +168,11 @@ const GroupChatDebugOverlay = () => {
             type
           });
         };
+
+        const message = turn.querySelector('.group-chat-message');
+        if (message) {
+          addElementBox(message, 'bubble', `${turnIndex}-bubble`);
+        }
 
         const lyricSpans = turn.querySelectorAll('.lyric-text-span');
         if (lyricSpans.length) addTextBox(lyricSpans, 'main');
@@ -174,14 +211,41 @@ const GroupChatDebugOverlay = () => {
         }
       }
 
-      setBoxes(nextBoxes);
-      setGapLabel(nextGapLabel);
-      frameRef.current = requestAnimationFrame(updateBoxes);
+      setBoxes(previous => (
+        boxesAreEqual(previous, nextBoxes) ? previous : nextBoxes
+      ));
+      setGapLabel(previous => (
+        gapLabelsAreEqual(previous, nextGapLabel) ? previous : nextGapLabel
+      ));
+      if (hasRunningHistoryAnimation()) scheduleUpdate();
     };
 
-    frameRef.current = requestAnimationFrame(updateBoxes);
+    function scheduleUpdate() {
+      if (disposed || frameRef.current !== null) return;
+      frameRef.current = requestAnimationFrame(updateBoxes);
+    }
+
+    const resizeObserver = new ResizeObserver(scheduleUpdate);
+    resizeObserver.observe(overlay);
+    resizeObserver.observe(history);
+    const mutationObserver = new MutationObserver(scheduleUpdate);
+    mutationObserver.observe(history, { childList: true, subtree: true });
+    history.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('globalTimeUpdate', scheduleUpdate);
+    scheduleUpdate();
+
     return () => {
-      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      disposed = true;
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      history.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener('globalTimeUpdate', scheduleUpdate);
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
     };
   }, []);
 
