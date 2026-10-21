@@ -231,10 +231,10 @@ pronunciation, before deciding placement.
   whether it fits beside the preceding content and wraps it onto a new row at
   the appropriate edge when necessary. If the main lyric wraps and the whole
   ad-lib group fits beside its final glyph row, the group is positioned beside
-  that row instead of below the main text. Measured main-glyph and ad-lib-glyph
-  rows align its baseline to the final main-glyph row; pronunciation and
-  translation rows are not used as that baseline. The inline clearance is
-  `min(0.72vw, 1.5vh)`.
+  that row instead of below the main text at any viewport width. Measured
+  main-glyph and ad-lib-glyph rows align its baseline to the final main-glyph
+  row; pronunciation and translation rows are not used as that baseline. The
+  inline clearance is `min(0.72vw, 1.5vh)`.
 - If any ad-lib wraps below the main text, naturally or through collision
   handling, all ad-libs flow together on that row. They wrap only when their
   combined width requires it; later ad-libs are not left beside the main lyric.

@@ -286,7 +286,7 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
         ...(rowTranslationBounds ? [rowTranslationBounds] : [])
       ]);
       if (!rowBounds) return;
-      const whitePadding = 3;
+      const whitePadding = 0;
       const left = rowBounds.left - whitePadding;
       const top = rowBounds.top - whitePadding;
       const right = rowBounds.right + whitePadding;
