@@ -502,14 +502,14 @@ const ModalLeft = ({
                       <circle cx="8" cy="15" r="5" />
                       <path d="m11.5 11.5 8-8L22 6l-2 2 2 2-3 3-2-2-2 2" />
                     </svg>
-                    <span className="source-warning-item-copy">A valid Deezer ARL token is required for streaming.</span>
+                    <span className="source-warning-item-copy">A valid <span className="source-platform-name source-platform-deezer">Deezer ARL token</span> is required for streaming.</span>
                   </li>
                   <li>
                     <svg className="source-warning-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M4 5h16v14H4z" />
                       <path d="M8 9h8M8 13h5" />
                     </svg>
-                    <span className="source-warning-item-copy">Enter your token in Settings or use a YouTube link instead.</span>
+                    <span className="source-warning-item-copy">Enter your token in <span className="source-platform-name source-platform-settings">Settings</span> or use a <span className="source-platform-name source-platform-youtube">YouTube</span> link instead.</span>
                   </li>
                 </ul>
               </div>

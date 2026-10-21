@@ -561,6 +561,10 @@ a.platform-label.yt-color:hover {
   color: #c084fc;
 }
 
+.source-platform-settings {
+  color: #facc15;
+}
+
 .local-file-btn {
   flex: 1;
   background: rgba(0, 0, 0, 0.5);
