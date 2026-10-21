@@ -75,6 +75,9 @@ const ModalRight = (props) => {
                 isEditing={canvasProps.isEditing}
                 customData={canvasProps.customData}
                 handleDataChange={canvasProps.handleDataChange}
+                setIsEditing={canvasProps.setIsEditing}
+                handleAutoSyncDatabases={canvasProps.handleAutoSyncDatabases}
+                isLrcFetching={canvasProps.isLrcFetching}
                 hasValidSyncData={canvasProps.hasValidSyncData}
                 lyricsViewMode={canvasProps.lyricsViewMode}
                 liveParsedLyrics={canvasProps.liveParsedLyrics}

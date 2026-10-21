@@ -120,6 +120,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
   const [toastItems, setToastItems] = useState([]);
   const [isAutomatedVaultAddRunning, setIsAutomatedVaultAddRunning] = useState(false);
   const [automatedTranslationRequest, setAutomatedTranslationRequest] = useState(null);
+  const [showEmptyLyricsConfirm, setShowEmptyLyricsConfirm] = useState(false);
   const automatedAddRunningRef = useRef(false);
   const automatedRequestIdRef = useRef(0);
   const lyricsCheckTimerRef = useRef(null);
@@ -467,6 +468,90 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     navigate(buildUrl({ workspace: isOpen ? wsName : null }));
   };
 
+  const saveSongData = (confirmEmptyLyrics = false) => {
+    const lyricsAreEmpty = !songDataProps.customData.lyrics?.trim();
+    const hasLyricsRelatedData = Boolean(
+      selectedSong.lyrics?.trim() ||
+      selectedSong.syncData?.length ||
+      selectedSong.autoSyncData?.length ||
+      Object.keys(selectedSong.artistImages || {}).length ||
+      Object.keys(songDataProps.customData.artistImages || {}).length
+    );
+
+    if (lyricsAreEmpty && hasLyricsRelatedData && !confirmEmptyLyrics) {
+      setShowEmptyLyricsConfirm(true);
+      return;
+    }
+
+    setShowEmptyLyricsConfirm(false);
+    const originalLyrics = selectedSong.lyrics ||
+        (selectedSong.syncData ? selectedSong.syncData.map(line => line.text).join('\n') : '');
+    const lyricsChanged = songDataProps.customData.lyrics !== originalLyrics;
+    const linksChanged = ['spotify', 'yt', 'deezer', 'hasLocal', 'localName'].some(key => (
+        songDataProps.customData[key] !== (selectedSong.customLinks?.[key] ?? (key === 'hasLocal' ? false : ''))
+    ));
+    const savedSong = songDataProps.saveData({
+      clearLyricsRelatedData: confirmEmptyLyrics
+    });
+    if (savedSong === false) return;
+    if (!lyricsChanged && !linksChanged && !confirmEmptyLyrics) {
+        showSaveNotification('No changes were made to song info or lyrics.', 'info');
+    } else if (lyricsChanged && songDataProps.customData.lyrics?.trim()) {
+        if (lyricsCheckTimerRef.current) clearTimeout(lyricsCheckTimerRef.current);
+        setNotification({
+            show: true,
+            message: 'Song info and lyrics saved. Checking the supernova for untimed lines...',
+            progress: null,
+            type: 'loading'
+        });
+        lyricsCheckTimerRef.current = setTimeout(() => {
+            lyricsCheckTimerRef.current = null;
+            const hasTimedManualData = savedSong.syncData?.some(line => (
+                line?.start !== null && line?.start !== undefined && line?.start !== '' && Number.isFinite(Number(line.start))
+            ));
+            const hasTimedAutoData = savedSong.autoSyncData?.some(line => (
+                line?.start !== null && line?.start !== undefined && line?.start !== '' && Number.isFinite(Number(line.start))
+            ));
+            const syncLines = hasTimedManualData
+                ? savedSong.syncData
+                : hasTimedAutoData
+                  ? savedSong.autoSyncData
+                  : savedSong.syncData;
+            if (hasUntimedLyrics(
+                syncLines,
+                savedSong.lyrics,
+                savedSong.artistName,
+                songDataProps.masterPalette
+            )) {
+                setNotification({
+                    show: true,
+                    message: 'Song info and lyrics saved, but some lyrics do not have timestamps. Click Edit Sync Timing to fix them.',
+                    progress: null,
+                    type: 'warning'
+                });
+                dismissAutomatedNotificationAfter(8000);
+                return;
+            }
+            setNotification({
+                show: true,
+                message: 'Song info and lyrics saved. All lyric lines have timestamps.',
+                progress: 100,
+                type: 'success'
+            });
+            dismissAutomatedNotificationAfter(5000);
+        }, 650);
+    } else if (lyricsChanged || confirmEmptyLyrics) {
+        showSaveNotification(
+          confirmEmptyLyrics
+            ? 'Lyrics, sync, artist images, and translations cleared.'
+            : 'Lyrics and sync data cleared.'
+        );
+    } else {
+        showSaveNotification('Song info saved.');
+    }
+    navigate(buildUrl({ workspace: null }));
+  };
+
   const sharedProps = {
     selectedSong: effectiveSong,
     isSongModalReady,
@@ -530,66 +615,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     setShowGroupChatDebug: (val) => navigate(buildUrl({ viewMode: 'group-chat', debug: val })),
     
     // Hijack Save functions so the URL closes cleanly after saving
-    saveData: () => {
-        const originalLyrics = selectedSong.lyrics ||
-            (selectedSong.syncData ? selectedSong.syncData.map(line => line.text).join('\n') : '');
-        const lyricsChanged = songDataProps.customData.lyrics !== originalLyrics;
-        const linksChanged = ['spotify', 'yt', 'deezer', 'hasLocal', 'localName'].some(key => (
-            songDataProps.customData[key] !== (selectedSong.customLinks?.[key] ?? (key === 'hasLocal' ? false : ''))
-        ));
-        const savedSong = songDataProps.saveData();
-        if (savedSong === false) return;
-        if (!lyricsChanged && !linksChanged) {
-            showSaveNotification('No changes were made to song info or lyrics.', 'info');
-        } else if (lyricsChanged && songDataProps.customData.lyrics?.trim()) {
-            if (lyricsCheckTimerRef.current) clearTimeout(lyricsCheckTimerRef.current);
-            setNotification({
-                show: true,
-                message: 'Song info and lyrics saved. Checking the supernova for untimed lines...',
-                progress: null,
-                type: 'loading'
-            });
-            lyricsCheckTimerRef.current = setTimeout(() => {
-                lyricsCheckTimerRef.current = null;
-                const hasTimedManualData = savedSong.syncData?.some(line => (
-                    line?.start !== null && line?.start !== undefined && line?.start !== '' && Number.isFinite(Number(line.start))
-                ));
-                const hasTimedAutoData = savedSong.autoSyncData?.some(line => (
-                    line?.start !== null && line?.start !== undefined && line?.start !== '' && Number.isFinite(Number(line.start))
-                ));
-                const syncLines = hasTimedManualData
-                    ? savedSong.syncData
-                    : hasTimedAutoData
-                      ? savedSong.autoSyncData
-                      : savedSong.syncData;
-                if (hasUntimedLyrics(
-                    syncLines,
-                    savedSong.lyrics,
-                    savedSong.artistName,
-                    songDataProps.masterPalette
-                )) {
-                    setNotification({
-                        show: true,
-                        message: 'Song info and lyrics saved, but some lyrics do not have timestamps. Click Edit Sync Timing to fix them.',
-                        progress: null,
-                        type: 'warning'
-                    });
-                    dismissAutomatedNotificationAfter(8000);
-                    return;
-                }
-                setNotification({
-                    show: true,
-                    message: 'Song info and lyrics saved. All lyric lines have timestamps.',
-                    progress: 100,
-                    type: 'success'
-                });
-                dismissAutomatedNotificationAfter(5000);
-            }, 650);
-        } else {
-            showSaveNotification('Song info saved.');
-        }
-        navigate(buildUrl({ workspace: null }));
-    },
+    saveData: () => saveSongData(),
     saveImageManager: () => {
         const hasChanges =
             JSON.stringify(songDataProps.customData.artistImages || {}) !== JSON.stringify(selectedSong.artistImages || {}) ||
@@ -653,6 +679,16 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
               onAutomatedTranslationComplete={handleAutomatedTranslationComplete}
             />
           </div>
+
+          <ConfirmModal
+            isOpen={showEmptyLyricsConfirm}
+            title="Clear Lyrics and Related Data?"
+            message="Saving with an empty lyrics field will permanently remove this song’s lyrics, sync timings, artist image links, and translation data from your Vault. This cannot be undone."
+            confirmText="Clear Data and Save"
+            cancelText="Keep Editing"
+            onConfirm={() => saveSongData(true)}
+            onCancel={() => setShowEmptyLyricsConfirm(false)}
+          />
 
           <ConfirmModal
             isOpen={syncProps.showBluetoothSyncPrompt && isSync}

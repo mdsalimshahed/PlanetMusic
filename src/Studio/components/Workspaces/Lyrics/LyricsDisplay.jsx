@@ -10,7 +10,8 @@ import { getSyncWorkspaceLyrics } from './syncWorkspaceLyrics.js';
 import './LyricsDisplay.css';
 
 const LyricsDisplay = ({
-    isEditing, customData, handleDataChange, hasValidSyncData,
+    isEditing, customData, handleDataChange, setIsEditing, handleAutoSyncDatabases,
+    isLrcFetching, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, isSaved, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
     showGroupChatDebug
@@ -89,6 +90,9 @@ const LyricsDisplay = ({
           selectedSong={selectedSong}
           masterPalette={masterPalette}
           isSaved={isSaved}
+          setIsEditing={setIsEditing}
+          handleAutoSyncDatabases={handleAutoSyncDatabases}
+          isLrcFetching={isLrcFetching}
         />
       )}
       

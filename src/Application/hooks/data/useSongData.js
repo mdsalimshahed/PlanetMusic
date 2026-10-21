@@ -271,19 +271,20 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
     if (isSaved) updateSongInLibrary({ ...selectedSong, customLinks: { ...selectedSong.customLinks, hasLocal: false, localName: '' }});
   };
 
-  const saveData = () => {
+  const saveData = ({ clearLyricsRelatedData = false } = {}) => {
     const hasInvalidPlatformLink = Object.values(getPlatformLinkErrors(customData)).some(Boolean);
     if (hasInvalidPlatformLink) return false;
 
-    let updatedSyncData = selectedSong.syncData;
+    const hasLyrics = Boolean(customData.lyrics?.trim());
+    let updatedSyncData = hasLyrics ? selectedSong.syncData : [];
     
     // Enforce strict merging regardless of whether timestamps exist yet to prevent index displacement
-    if (updatedSyncData && customData.lyrics) {
+    if (updatedSyncData && hasLyrics) {
       updatedSyncData = mergeSyncWithGenius(updatedSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
     
-    let updatedAutoSyncData = selectedSong.autoSyncData;
-    if (updatedAutoSyncData && customData.lyrics) {
+    let updatedAutoSyncData = hasLyrics ? selectedSong.autoSyncData : [];
+    if (updatedAutoSyncData && hasLyrics) {
       updatedAutoSyncData = mergeSyncWithGenius(updatedAutoSyncData, customData.lyrics, selectedSong.artistName, masterPalette);
     }
 
@@ -291,7 +292,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
       ...selectedSong,
       customLinks: { spotify: customData.spotify, yt: customData.yt, deezer: customData.deezer, hasLocal: customData.hasLocal, localName: customData.localName },
       lyrics: customData.lyrics,
-      artistImages: customData.artistImages,
+      artistImages: clearLyricsRelatedData ? {} : customData.artistImages,
       artistColors: customData.artistColors,
       syncData: updatedSyncData,
       autoSyncData: updatedAutoSyncData

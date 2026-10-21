@@ -46,6 +46,80 @@
   margin: 0;
 }
 
+.lyrics-empty-prompt {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(100%, 480px);
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at top, rgba(168, 85, 247, 0.12), transparent 70%),
+    rgba(10, 12, 20, 0.58);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.045);
+  text-align: center;
+}
+
+.lyrics-empty-prompt > strong {
+  color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(17px, 2vw, 21px);
+}
+
+.lyrics-empty-prompt > p {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.lyrics-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.lyrics-empty-action {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.lyrics-empty-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.lyrics-empty-action:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.lyrics-empty-fetch {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: rgba(29, 185, 84, 0.2);
+}
+
+.lyrics-empty-fetch:hover:not(:disabled) {
+  border-color: rgba(74, 222, 128, 0.75);
+  background: rgba(29, 185, 84, 0.3);
+}
+
+.lyrics-empty-manual {
+  border-color: rgba(192, 132, 252, 0.4);
+  background: rgba(147, 51, 234, 0.16);
+}
+
+.lyrics-empty-manual:hover:not(:disabled) {
+  border-color: rgba(192, 132, 252, 0.72);
+  background: rgba(147, 51, 234, 0.26);
+}
+
 .unsaved-song-warning {
   display: flex;
   align-items: flex-start;
@@ -95,6 +169,21 @@
 
 .unsaved-song-warning-copy > span strong {
   color: #fff1c2;
+}
+
+@media (max-width: 600px) {
+  .lyrics-empty-prompt {
+    padding: 22px 16px;
+  }
+
+  .lyrics-empty-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .lyrics-empty-action {
+    width: 100%;
+  }
 }
 
 .debug-lyrics-preview {

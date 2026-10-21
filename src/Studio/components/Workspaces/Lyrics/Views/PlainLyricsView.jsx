@@ -5,7 +5,15 @@ import { toSmartPunctuation } from '../../../../../utils/smartPunctuation.js';
 import { renderPunctuationColoredText } from '../../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import './PlainLyricsView.css';
 
-const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isSaved }) => {
+const PlainLyricsView = ({
+  liveParsedLyrics,
+  selectedSong,
+  masterPalette,
+  isSaved,
+  setIsEditing,
+  handleAutoSyncDatabases,
+  isLrcFetching
+}) => {
   const groupedPlainLyrics = useMemo(() => {
     const groups = [];
     let currentGroup = null;
@@ -176,7 +184,27 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isSave
       ) : (
         isSaved ? (
           <div className="no-lyrics-empty-state">
-            <p>No lyrics found in your Vault.</p>
+            <div className="lyrics-empty-prompt">
+              <strong>No lyrics saved for this song</strong>
+              <p>Choose how you’d like to add them.</p>
+              <div className="lyrics-empty-actions">
+                <button
+                  type="button"
+                  className="lyrics-empty-action lyrics-empty-fetch"
+                  onClick={() => handleAutoSyncDatabases(true)}
+                  disabled={isLrcFetching}
+                >
+                  {isLrcFetching ? 'Fetching lyrics…' : 'Fetch lyrics & sync online'}
+                </button>
+                <button
+                  type="button"
+                  className="lyrics-empty-action lyrics-empty-manual"
+                  onClick={() => setIsEditing(true)}
+                >
+                  Add lyrics manually
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="no-lyrics-empty-state">

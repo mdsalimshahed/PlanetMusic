@@ -1,7 +1,13 @@
 /* --- src/Studio/hooks/sync/useSyncLogic.js --- */
 import { useEffect, useRef } from 'react';
 import { globalClock as workspaceClock } from '../../utils/clockEngine';
-import { fetchYouLyrics, fetchLRCLIB, parseLRC, parseLyrics } from '../../utils/songHelpers';
+import {
+  fetchYouLyrics,
+  fetchLRCLIB,
+  mergeSyncWithGenius,
+  parseLRC,
+  parseLyrics
+} from '../../utils/songHelpers';
 
 const BLUETOOTH_SYNC_OFFSET_SECONDS = 0.2;
 
@@ -644,15 +650,23 @@ export const useSyncActions = ({
 
       let updatedSong;
       if (finalSyncData) {
+        const formattedSyncData = mergeSyncWithGenius(
+          finalSyncData,
+          finalPlainText,
+          selectedSong.artistName,
+          masterPalette
+        );
         const hasManualLyrics = Boolean(customData.lyrics && customData.lyrics.trim());
         const hasManualSync = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
         
-        let newSyncData = hasManualSync ? selectedSong.syncData : (hasManualLyrics ? selectedSong.syncData : finalSyncData);
+        let newSyncData = hasManualSync
+          ? selectedSong.syncData
+          : (hasManualLyrics ? selectedSong.syncData : formattedSyncData);
         let saveLyrics = hasManualLyrics ? customData.lyrics : finalPlainText;
 
         updatedSong = {
           ...selectedSong,
-          autoSyncData: finalSyncData,
+          autoSyncData: formattedSyncData,
           syncData: newSyncData,
           lyrics: saveLyrics
         };
