@@ -541,20 +541,25 @@
   content: '';
   pointer-events: none;
 }
-.home-guide-card:hover, .home-guide-guides a:hover { transform: translateY(-4px); border-color: rgba(194, 147, 255, 0.5); background: #211936; }
+.home-guide-card:hover { transform: translateY(-4px); border-color: rgba(194, 147, 255, 0.5); background: #211936; }
 .home-guide-feature-art { display: block; height: 140px; margin: -26px -26px 18px; }
 .home-guide-feature-art > svg { position: absolute; z-index: 0; inset: 0 0 auto; display: block; width: 100%; max-width: none; height: 46%; }
 .home-guide-card h3, .home-guide-card p, .home-guide-more { position: relative; z-index: 2; }
 .home-guide-card h3 { margin-bottom: 8px; }
 .home-guide-more { display: inline-block; margin-top: 14px; color: #d3bcff; font-size: 13px; font-weight: 700; }
 
-.home-guide-guides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
-.home-guide-guides a { display: flex; flex-direction: column; gap: 10px; padding: 22px; transition: transform 0.25s, border-color 0.25s, background 0.25s; }
-.home-guide-guides .home-guide-guide-artwork { width: calc(100% + 44px); height: 130px; margin: -22px -22px 8px; overflow: hidden; border-radius: var(--home-guide-radius) var(--home-guide-radius) 0 0; }
-.home-guide-guides .home-guide-guide-artwork svg { display: block; width: 100%; height: 100%; }
-.home-guide-guides strong { font-size: 15px; line-height: 1.4; }
-.home-guide-guides a > span:last-child { color: #b9b0cf; font-size: 13.5px; line-height: 1.65; }
-.home-guide-guide-meta { color: #c293ff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.home-guide-portals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; border-top: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
+.home-guide-portal { --portal-accent: var(--hg-cyan); position: relative; display: flex; min-width: 0; min-height: 190px; flex-direction: column; justify-content: center; align-items: flex-start; padding: 28px 36px 28px 0; transition: background 0.2s; }
+.home-guide-portal-custom { --portal-accent: var(--hg-pink); padding-right: 0; padding-left: 36px; border-left: 1px solid rgba(255, 255, 255, 0.15); }
+.home-guide-portal:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--portal-accent) 8%, transparent), transparent 85%); }
+.home-guide-portal-custom:hover { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--portal-accent) 8%, transparent)); }
+.home-guide-portal:focus-visible { outline: 2px solid var(--portal-accent); outline-offset: 4px; }
+.home-guide-portal-mode { color: var(--portal-accent); font-size: 13px; font-weight: 800; }
+.home-guide-portal h3 { margin-top: 12px; font-size: 28px; line-height: 1.25; }
+.home-guide-portal p { margin-top: 10px; color: #d1c9df; font-size: 17px; line-height: 1.5; }
+.home-guide-portal-arrow { position: absolute; right: 30px; bottom: 28px; color: var(--portal-accent); font-size: 25px; transition: transform 0.2s; }
+.home-guide-portal:hover .home-guide-portal-arrow { transform: translate(3px, -3px); }
+.home-guide-portal-custom .home-guide-portal-arrow { right: 0; }
 
 .home-guide-faq-list { display: grid; gap: 10px; width: min(100%, 820px); margin: 28px auto 0; }
 .home-guide-faq { text-align: center; }
@@ -580,7 +585,7 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 980px) {
-  .home-guide-about, .home-guide-grid, .home-guide-guides { grid-template-columns: repeat(2, 1fr); }
+  .home-guide-about, .home-guide-grid { grid-template-columns: repeat(2, 1fr); }
   .home-guide-about article:nth-child(2) { margin-top: 0; }
   .home-guide-about article:nth-child(2) .home-guide-about-art { height: 112px; }
   .home-guide-about article:nth-child(3) .home-guide-about-art { height: 112px; }
@@ -615,6 +620,7 @@
   .home-guide-footer { justify-content: center; text-align: center; }
   .home-guide-footer p { max-width: 100%; padding-left: 0; border-left: 0; }
   .home-guide-footer nav { width: 100%; justify-content: center; }
+  #guides { scroll-margin-top: 165px; }
   .home-guide-hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: clamp(28px, 5vw, 66px); }
   .home-guide-hero.is-player-active { padding-bottom: clamp(44px, 6vw, 76px); }
   .home-guide-hero:not(.is-player-active) { padding-bottom: 18px; }
@@ -622,7 +628,13 @@
   .home-guide-nav { top: 6px; margin-top: 8px; margin-bottom: -52px; }
   .home-guide-preview-tabs { transform: none; }
   .home-guide-hero h1 { margin-top: 48px; }
-  .home-guide-about, .home-guide-grid, .home-guide-guides { grid-template-columns: 1fr; }
+  .home-guide-about, .home-guide-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-guide-portals { grid-template-columns: minmax(0, 1fr); }
+  .home-guide-portal, .home-guide-portal-custom { min-height: 150px; padding: 22px 38px 22px 0; border-left: 0; }
+  .home-guide-portal-custom { border-top: 1px solid rgba(255, 255, 255, 0.15); }
+  .home-guide-portal h3 { font-size: 25px; }
+  .home-guide-portal p { font-size: 16px; }
+  .home-guide-portal-arrow, .home-guide-portal-custom .home-guide-portal-arrow { right: 8px; bottom: 24px; }
   .home-guide-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 8px; }
   .home-guide-steps li:nth-child(1) { grid-column: 1; grid-row: 1; }
   .home-guide-steps li:nth-child(2) { grid-column: 2; grid-row: 1; }

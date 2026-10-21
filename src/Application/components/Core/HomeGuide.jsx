@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ABOUT, FAQ, FEATURED_GUIDES, FEATURES, SECTIONS, SITE, STEPS } from '../../content/homeContent.js';
-import BlogPostArtwork from '../../pages/BlogPostArtwork.jsx';
+import { ABOUT, FAQ, FEATURES, SECTIONS, SITE, STEPS } from '../../content/homeContent.js';
 import { getProceduralColor } from '../../../utils/proceduralColors.js';
 import './HomeGuide.css';
 
@@ -180,9 +179,11 @@ const FEATURE_ART = [
     <path d="M188 75h53" stroke="#5FD4FF" strokeWidth="5" strokeLinecap="round" />
   </svg>,
   <svg key="delay" viewBox="0 0 320 120" fill="none" aria-hidden="true">
-    <path d="M59 66V54c0-29 22-48 48-48s48 19 48 48v12" stroke="#A77BFF" strokeWidth="8" strokeLinecap="round" />
-    <rect x="51" y="58" width="19" height="37" rx="9" fill="#7548E8" stroke="#D7C2FF" strokeWidth="2" />
-    <rect x="144" y="58" width="19" height="37" rx="9" fill="#3478E5" stroke="#5FD4FF" strokeWidth="2" />
+    <g transform="translate(0 10)">
+      <path d="M59 66V54c0-29 22-48 48-48s48 19 48 48v12" stroke="#A77BFF" strokeWidth="8" strokeLinecap="round" />
+      <rect x="51" y="58" width="19" height="37" rx="9" fill="#7548E8" stroke="#D7C2FF" strokeWidth="2" />
+      <rect x="144" y="58" width="19" height="37" rx="9" fill="#3478E5" stroke="#5FD4FF" strokeWidth="2" />
+    </g>
     <path d="M185 42h79m-79 35h79" stroke="#554B68" strokeWidth="2" strokeLinecap="round" />
     <path d="M185 42h15l8-10 10 20 11-18 10 8h25" stroke="#D7C2FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
     <path d="M185 77h26l10-13 10 24 11-20 8 9h14" stroke="#5FD4FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
@@ -1083,20 +1084,23 @@ const HomeGuide = ({ isPlayerActive = false }) => {
       <section id="guides" className="home-guide-section" aria-labelledby="guides-title">
         <div className="home-guide-section-row">
           <div>
-            <p className="home-guide-kicker">Guides</p>
-            <h2 id="guides-title">Learn the workspace.</h2>
+            <p className="home-guide-kicker">Docs &amp; writing</p>
+            <h2 id="guides-title">Choose your destination.</h2>
           </div>
-          <Link className="home-guide-all" to="/docs/dev-blogs">All guides →</Link>
         </div>
-        <div className="home-guide-guides">
-          {FEATURED_GUIDES.map((g, i) => (
-            <Link key={g.id} to={`/docs/dev-blog/post/${g.id}`} data-reveal style={{ '--i': i }}>
-              <BlogPostArtwork post={g} className="home-guide-guide-artwork" />
-              <span className="home-guide-guide-meta">{g.category} · {g.readTime}</span>
-              <strong>{g.title}</strong>
-              <span>{g.summary}</span>
-            </Link>
-          ))}
+        <div className="home-guide-portals">
+          <Link to="/docs/dev-blogs" className="home-guide-portal home-guide-portal-docs" data-reveal style={{ '--i': 0 }}>
+            <span className="home-guide-portal-mode">READ</span>
+            <h3>Developer Blogs</h3>
+            <p>Official guides and how-tos.</p>
+            <span className="home-guide-portal-arrow" aria-hidden="true">↗</span>
+          </Link>
+          <Link to="/docs/custom-blog" className="home-guide-portal home-guide-portal-custom" data-reveal style={{ '--i': 1 }}>
+            <span className="home-guide-portal-mode">WRITE · SAVED IN THIS BROWSER</span>
+            <h3>Custom Blogs</h3>
+            <p>Your own articles, stored privately in this browser.</p>
+            <span className="home-guide-portal-arrow" aria-hidden="true">↗</span>
+          </Link>
         </div>
       </section>
 
