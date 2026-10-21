@@ -1,12 +1,20 @@
 /* --- src/components/Workspaces/Lyrics/Views/EditLyricsView.css --- */
 .edit-lyrics-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
   height: 100%;
   flex-grow: 1;
-  min-height: 250px;
+  min-height: 0;
+}
+
+.edit-lyrics-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .lyrics-textarea-wrapper {
@@ -19,12 +27,17 @@
 }
 
 .lyrics-editor-tip {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: grid;
   grid-template-columns: 25px minmax(0, 1fr);
   align-items: start;
   column-gap: 9px;
-  row-gap: 5px;
   flex: 0 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
   padding: 10px 12px;
   border: 1px solid rgba(167, 139, 250, 0.24);
   border-radius: 12px;
@@ -67,7 +80,6 @@
 }
 
 .lyrics-editor-tip-copy {
-  min-width: 0;
   text-align: left;
   color: rgba(255, 255, 255, 0.7);
   font-size: clamp(10px, 1.15vw, 12px);
@@ -116,6 +128,45 @@
 
 .lyrics-editor-tip-copy .lyrics-editor-tip-genius {
   color: #facc15;
+}
+
+.lyrics-editor-tip-example {
+  display: grid;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(196, 181, 253, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.lyrics-editor-tip-example span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.lyrics-editor-tip-example-description {
+  margin: 0;
+}
+
+.lyrics-editor-tip-guide-link {
+  display: inline-block;
+  grid-column: 1 / -1;
+  grid-row: 3;
+  color: #d8cbff;
+  font-size: clamp(10px, 1.1vw, 12px);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lyrics-editor-tip-guide-link:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 .lyrics-textarea {
@@ -254,7 +305,44 @@
 }
 
 @media (max-width: 900px) {
-  .edit-lyrics-container {
+  .lyrics-editor-tip {
+    grid-template-columns: 20px minmax(0, 1fr);
+    column-gap: 6px;
+    padding: 7px 9px;
+  }
+
+  .lyrics-editor-tip-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .lyrics-editor-tip-icon svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .lyrics-editor-tip-copy {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .lyrics-editor-tip-copy ul {
+    gap: 1px;
+  }
+
+  .lyrics-editor-tip-example {
+    gap: 0;
+    margin-top: 3px;
+    padding: 5px 7px;
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .lyrics-editor-tip-guide-link {
+    font-size: 10px;
+  }
+
+  .edit-lyrics-columns {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
   }

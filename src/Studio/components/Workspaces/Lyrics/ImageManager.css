@@ -4,21 +4,39 @@
    flex-direction: column;
    height: 100%;
    padding: 24px;
+   box-sizing: border-box;
+   overflow: hidden;
+}
+
+.image-manager-container > .workspace-tip {
+   position: sticky;
+   top: 0;
+   z-index: 2;
+   flex: 0 0 auto;
+   margin-bottom: 16px;
+   padding-bottom: 14px;
+}
+
+.image-manager-list {
+   display: flex;
+   flex: 1 1 auto;
+   flex-direction: column;
+   gap: 16px;
+   min-height: 0;
    overflow-y: auto;
+   padding: 0 2px 16px 0;
    -webkit-overflow-scrolling: touch;
 }
 
-/* Custom Scrollbar Styling to match the rest of the app */
-.image-manager-container::-webkit-scrollbar { 
+.image-manager-list::-webkit-scrollbar {
    width: 6px; 
 }
-.image-manager-container::-webkit-scrollbar-thumb { 
+.image-manager-list::-webkit-scrollbar-thumb {
    background: rgba(255, 255, 255, 0.2); 
    border-radius: 10px; 
 }
 
 .image-manager-title { margin-top: 0; margin-bottom: 8px; color: white; }
-.image-manager-list { display: flex; flex-direction: column; gap: 16px; }
 .image-manager-row {
    display: flex; flex-direction: column; padding: 16px; border-radius: 12px;
    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);

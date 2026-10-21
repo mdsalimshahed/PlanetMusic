@@ -123,6 +123,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
   const automatedAddRunningRef = useRef(false);
   const automatedRequestIdRef = useRef(0);
   const lyricsCheckTimerRef = useRef(null);
+  const syncWorkspaceSavePendingRef = useRef(false);
   const toastSequenceRef = useRef(0);
   const toastDismissTimersRef = useRef(new Map());
   const latestToastIdRef = useRef(null);
@@ -427,9 +428,11 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
   useEffect(() => {
     if (!selectedSong) return;
     if (pathParts[0] === 'song' && String(selectedSong.trackId) !== String(pathParts[1])) return;
+
+    if (!isSync) syncWorkspaceSavePendingRef.current = false;
     
     // Handle deep-linking explicitly into Sync Workspace
-    if (isSync && !syncProps.isSyncMode) {
+    if (isSync && !syncProps.isSyncMode && !syncWorkspaceSavePendingRef.current) {
         syncProps.startSyncMode(); 
     } else if (!isSync && syncProps.isSyncMode) {
         syncProps.setIsSyncMode(false);
@@ -599,9 +602,8 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
         navigate(buildUrl({ workspace: null }));
     },
     saveSyncData: () => {
-        const hasChanges =
-            JSON.stringify(syncProps.syncData) !== JSON.stringify(selectedSong.syncData || []) ||
-            songDataProps.customData.lyrics !== (selectedSong.lyrics || '');
+        syncWorkspaceSavePendingRef.current = true;
+        const hasChanges = syncProps.hasUnsavedSyncChanges();
         syncProps.saveSyncData();
         showSaveNotification(
             hasChanges ? 'Sync timings saved.' : 'No sync timing changes were made.',

@@ -1,5 +1,6 @@
 /* --- src/components/Workspaces/Lyrics/Views/EditLyricsView.jsx --- */
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { parseLyrics } from '../../../../utils/songHelpers.js';
 import { getGraphemes } from '../../../../../components/LyricsRenderer/textUtils.js';
 import './EditLyricsView.css';
@@ -181,51 +182,74 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
 
   return (
     <div className="edit-lyrics-container">
-      <div className="lyrics-textarea-wrapper">
-        <aside className="lyrics-editor-tip" role="note">
-          <span className="lyrics-editor-tip-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18h6" />
-              <path d="M10 22h4" />
-              <path d="M8.2 14.5A7 7 0 1 1 15.8 14.5c-.9.7-1.4 1.6-1.6 2.5h-4.4c-.2-.9-.7-1.8-1.6-2.5Z" />
-              <path d="M12 2v1" />
-            </svg>
-          </span>
-          <div className="lyrics-editor-tip-copy">
-            <strong>Find links and add accurate lyrics</strong>
-            <ul>
-              <li>
-                <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-4-4" />
-                </svg>
-                <span className="lyrics-editor-tip-item-copy">
-                  Use <b>Find Platform Links (US)</b> to locate a song link.
-                </span>
-              </li>
-              <li>
-                <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M6 3h9l5 5v13H6z" />
-                  <path d="M14 3v6h6M9 13h8M9 17h8" />
-                </svg>
-                <span className="lyrics-editor-tip-item-copy">
-                  Choose <b>Search Google for Lyrics</b>, open the <b className="lyrics-editor-tip-genius">GENIUS.com</b> result, and paste its lyrics here exactly as written.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </aside>
-        <textarea
-          name="lyrics"
-          value={customData.lyrics}
-          onChange={handleDataChange}
-          onPaste={handlePaste}
-          className="lyrics-textarea"
-          placeholder="Paste your lyrics here! Format lines using [Artist Name:] tags or *italics* / **bold** formatting."
-        />
-      </div>
-      
-      <div className="artist-preview-pane">
+      <aside className="lyrics-editor-tip" role="note">
+        <span className="lyrics-editor-tip-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18h6" />
+            <path d="M10 22h4" />
+            <path d="M8.2 14.5A7 7 0 1 1 15.8 14.5c-.9.7-1.4 1.6-1.6 2.5h-4.4c-.2-.9-.7-1.8-1.6-2.5Z" />
+            <path d="M12 2v1" />
+          </svg>
+        </span>
+        <div className="lyrics-editor-tip-copy">
+          <strong>Find links and add accurate lyrics</strong>
+          <ul>
+            <li>
+              <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-4-4" />
+              </svg>
+              <span className="lyrics-editor-tip-item-copy">
+                Use <b>Find Platform Links (US)</b> to find a song link.
+              </span>
+            </li>
+            <li>
+              <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M6 3h9l5 5v13H6z" />
+                <path d="M14 3v6h6M9 13h8M9 17h8" />
+              </svg>
+              <span className="lyrics-editor-tip-item-copy">
+                Search for lyrics, then paste them here. <b className="lyrics-editor-tip-genius">GENIUS.com</b> is a useful source.
+              </span>
+            </li>
+            <li>
+              <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 5h16M4 12h16M4 19h16" />
+                <path d="m8 8 2 2m0-2-2 2m6 5 2 2m0-2-2 2" />
+              </svg>
+              <span className="lyrics-editor-tip-item-copy">
+                <p className="lyrics-editor-tip-example-description">
+                  Assign singers by style or directly by name:
+                </p>
+                <code className="lyrics-editor-tip-example">
+                  <span>[Verse: Artist 1, _Artist 2_, **Artist 3**, **_Artist 4_**]</span>
+                  <span>Plain line (Artist 1)</span>
+                  <span>_Italic line (Artist 2)_</span>
+                  <span>**Bold line (Artist 3)**</span>
+                  <span>**_Bold-italic line (Artist 4)_**</span>
+                  <span>&lt;Artist 5&gt;Directly tagged line&lt;/Artist 5&gt;</span>
+                </code>
+              </span>
+            </li>
+          </ul>
+          <Link className="lyrics-editor-tip-guide-link" to="/docs/dev-blog/post/formatting-lyrics-singer-tags">
+            Learn how to format lyrics and tag singers
+          </Link>
+        </div>
+      </aside>
+      <div className="edit-lyrics-columns">
+        <div className="lyrics-textarea-wrapper">
+          <textarea
+            name="lyrics"
+            value={customData.lyrics}
+            onChange={handleDataChange}
+            onPaste={handlePaste}
+            className="lyrics-textarea"
+            placeholder="Paste your lyrics here! Format lines using [Artist Name:] tags or *italics* / **bold** formatting."
+          />
+        </div>
+
+        <div className="artist-preview-pane">
         <div className="artist-preview-header">
           <span className="artist-preview-title">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -282,6 +306,7 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
             <div className="preview-empty-text">Type lyrics on the left to see live artist separation...</div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

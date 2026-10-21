@@ -37,6 +37,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const prevTrackRef = useRef(null);
   const playbackRateRef = useRef(playbackRate);
   const wasSyncModeRef = useRef(isSyncMode);
+  const initialSyncDataRef = useRef([]);
+  const initialLyricsRef = useRef(customData.lyrics);
 
   useEffect(() => { playbackRateRef.current = playbackRate; }, [playbackRate]);
   useEffect(() => {
@@ -275,6 +277,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       setIsShowingAutoSync(false);
       setSyncData(initialData);
       syncDataRef.current = initialData;
+      initialSyncDataRef.current = cloneSyncData(initialData);
+      initialLyricsRef.current = customData.lyrics;
       setActiveSyncIndex(0);
       setIsSyncMode(true);
     } catch (err) {
@@ -316,11 +320,17 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   };
 
   const saveSyncData = () => {
+    setShowBluetoothSyncPrompt(false);
     updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
     workspaceClock.pause();
   };
+
+  const hasUnsavedSyncChanges = () => (
+    JSON.stringify(syncData) !== JSON.stringify(initialSyncDataRef.current) ||
+    customData.lyrics !== initialLyricsRef.current
+  );
 
   const toggleSyncPlay = () => {
     window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
@@ -342,6 +352,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     isSyncPlaying, activeSyncSource, playbackRate, debugInfo,
     activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
-    availableSources, setManualSource, handleShiftTimings, triggerSyncKey
+    availableSources, setManualSource, handleShiftTimings, triggerSyncKey,
+    hasUnsavedSyncChanges
   };
 };

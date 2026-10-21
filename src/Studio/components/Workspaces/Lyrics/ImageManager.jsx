@@ -19,18 +19,31 @@ const ImageManager = ({
     <div className="image-manager-container">
       <WorkspaceTip
         title="Customize artist profiles"
-        guideTo="/docs/dev-blog/post/formatting-lyrics-singer-tags"
-        guideLabel="Lyrics & singer tags"
+        guideTo="/docs/dev-blog/post/image-manager-customizing-artist-profiles"
+        guideLabel="Artist Image Manager guide"
       >
         <ul>
           <li>
-            <span>Artists appear here when lyrics use singer names in section tags, such as <code>[Verse: Artist Name]</code>.</span>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21a8 8 0 0 1 16 0" />
+            </svg>
+            <span>Artists appear here when lyrics use singer tags such as <code>[Verse: Artist Name]</code>. See the <Link to="/docs/dev-blog/post/formatting-lyrics-singer-tags">singer-tag formatting guide</Link>.</span>
           </li>
           <li>
-            <span>Use <strong className="workspace-tip-action workspace-tip-action--manage">Manage Artists</strong> to assign an image and color to each singer.</span>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="3" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
+            <span>Set a singer’s portrait and color in <strong className="workspace-tip-action workspace-tip-action--manage">Manage Artists</strong>. The shared portrait appears wherever that artist sings; the song-specific link stays local.</span>
           </li>
           <li>
-            <span>Use <strong className="workspace-tip-action workspace-tip-action--clear">Clear Image</strong> to remove an image, then <strong className="workspace-tip-action workspace-tip-action--save">Save Artists Data</strong> to keep changes or <strong className="workspace-tip-action workspace-tip-action--close">Close Editor</strong> to leave. See the <Link to="/docs/dev-blog/post/image-manager-customizing-artist-profiles">Image Manager guide</Link>.</span>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+              <path d="M17 21v-8H7v8M7 3v5h8" />
+            </svg>
+            <span>Use <strong className="workspace-tip-action workspace-tip-action--clear">Clear Image</strong> to remove an image, then <strong className="workspace-tip-action workspace-tip-action--save">Save Artists Data</strong> to keep changes.</span>
           </li>
         </ul>
       </WorkspaceTip>

@@ -1,5 +1,6 @@
 /* --- src/components/Workspaces/Translation/TranslationWorkspace.jsx --- */
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ConfirmModal from '../../../../Application/components/Modals/ConfirmModal.jsx';
 import TranslationHeader from './TranslationHeader.jsx';
 import TranslationRow from './TranslationRow.jsx';
@@ -141,8 +142,27 @@ const TranslationWorkspace = ({
         guideLabel="Translation Workspace guide"
       >
         <ul>
-          <li><span>Use <strong className="workspace-tip-action workspace-tip-action--translate">Translate All</strong> for every row, or <strong className="workspace-tip-action workspace-tip-action--context">Translate with Context</strong> when nearby lyrics should guide meaning.</span></li>
-          <li><span>Choose <strong className="workspace-tip-action workspace-tip-action--spacing">Auto Spacing</strong> for Chinese or Japanese. <strong className="workspace-tip-action workspace-tip-action--refresh">Refresh Lyrics</strong> clears fields; <strong className="workspace-tip-action workspace-tip-action--file">Import Text</strong> and <strong className="workspace-tip-action workspace-tip-action--file">Export Text</strong> transfer text. Finish with <strong className="workspace-tip-action workspace-tip-action--save">Save Changes</strong> or leave with <strong className="workspace-tip-action workspace-tip-action--close">Close Editor</strong>.</span></li>
+          <li>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m5 8 4 4-4 4M12 16h7" />
+              <path d="M3 3h18v18H3z" />
+            </svg>
+            <span>Use <strong className="workspace-tip-action workspace-tip-action--translate">Translate All</strong> for each line, or <strong className="workspace-tip-action workspace-tip-action--context">Translate with Context</strong> when nearby lyrics help explain meaning. Read the <Link to="/docs/dev-blog/post/complete-guide-to-the-translation-workspace">translation workflow guide</Link>.</span>
+          </li>
+          <li>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h10M4 17h7" />
+              <path d="m17 15 3 3-3 3" />
+            </svg>
+            <span>For Chinese or Japanese, use <strong className="workspace-tip-action workspace-tip-action--spacing">Auto Spacing</strong> to add readable word breaks. See the <Link to="/docs/dev-blog/post/understanding-autospacing-engine-cjk">CJK Auto Spacing guide</Link>.</span>
+          </li>
+          <li>
+            <svg className="workspace-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 3v12m-5-5 5 5 5-5" />
+              <path d="M5 17v4h14v-4" />
+            </svg>
+            <span>Review each translation and pronunciation, then <strong className="workspace-tip-action workspace-tip-action--save">Save Changes</strong>; use <strong className="workspace-tip-action workspace-tip-action--file">Import/Export Text</strong> to transfer a draft.</span>
+          </li>
         </ul>
       </WorkspaceTip>
       <TranslationHeader

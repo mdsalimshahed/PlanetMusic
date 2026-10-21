@@ -70,6 +70,14 @@
   text-align: left;
 }
 
+.workspace-tip-item-icon {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  color: #c4b5fd;
+}
+
 .workspace-tip-content li > span {
   flex: 1 1 auto;
   min-width: 0;
@@ -89,12 +97,6 @@
 .workspace-tip-action--file { color: #38bdf8; }
 .workspace-tip-action--spacing { color: #facc15; }
 .workspace-tip-action--close { color: rgba(255, 255, 255, 0.8); }
-
-.workspace-tip-content li::before {
-  content: '•';
-  flex: 0 0 8px;
-  color: #c4b5fd;
-}
 
 .workspace-tip-content li a {
   color: #d8cbff;

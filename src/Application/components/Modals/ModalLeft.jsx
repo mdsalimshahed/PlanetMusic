@@ -687,10 +687,12 @@ const ModalLeft = ({
                 </button>
                 {customData.lyrics ? (
                   <>
-                    <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
-                      {isSyncLoading ? <Icon name="clock" /> : <Icon name="edit" />}
-                      {isSyncLoading ? 'Loading...' : 'Edit Sync Timing'}
-                    </button>
+                    {availableSources?.length > 0 && (
+                      <button className="edit-links-btn" onClick={startSyncMode} disabled={isSyncLoading || isLrcFetching} style={{ opacity: isSyncLoading ? 0.6 : 1, cursor: isSyncLoading ? 'wait' : 'pointer' }}>
+                        {isSyncLoading ? <Icon name="clock" /> : <Icon name="edit" />}
+                        {isSyncLoading ? 'Loading...' : 'Edit Sync Timing'}
+                      </button>
+                    )}
                     
                     <button 
                        className="edit-links-btn" 
