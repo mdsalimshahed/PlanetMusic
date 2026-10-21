@@ -182,9 +182,23 @@ const GroupChatTypingIndicator = ({
 }) => {
   const rowRef = useRef(null);
   const avatarsRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(true);
   const uniqueArtistNames = [...new Set(artistNames)];
   const [items, finishExit, previousPositionsRef] = useTypingPresence(uniqueArtistNames, avatarsRef);
   useExitTimers(rowRef, items, finishExit);
+
+  useEffect(() => {
+    const cssValue = rowRef.current
+      ? getComputedStyle(rowRef.current).getPropertyValue('--typing-exit-ms')
+      : '';
+    const delay = isVisible
+      ? 0
+      : parseFloat(cssValue) || FALLBACK_EXIT_MS;
+    if (isVisible === isMounted) return undefined;
+
+    const timer = setTimeout(() => setIsMounted(isVisible), delay);
+    return () => clearTimeout(timer);
+  }, [isMounted, isVisible]);
 
   const livingItems = items.filter(item => item.phase !== 'exiting');
   const livingNames = livingItems.map(item => item.name);
@@ -202,6 +216,8 @@ const GroupChatTypingIndicator = ({
         pendingTransition.positions.get(avatar.dataset.artistName)
       ));
   }, [items, previousPositionsRef]);
+
+  if (!isMounted && !isVisible) return null;
 
   return (
     <div

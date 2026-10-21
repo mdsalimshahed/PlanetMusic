@@ -62,12 +62,11 @@ const getElementBounds = (element, metrics) => {
   };
 };
 
-const GroupChatDebugOverlay = ({ activeLineIndices }) => {
+const GroupChatDebugOverlay = () => {
   const overlayRef = useRef(null);
   const frameRef = useRef(null);
   const [boxes, setBoxes] = useState([]);
   const [gapLabel, setGapLabel] = useState(null);
-  const activeLineIndicesKey = [...activeLineIndices].map(String).join('\u0000');
 
   useEffect(() => {
     const updateBoxes = () => {
@@ -78,16 +77,8 @@ const GroupChatDebugOverlay = ({ activeLineIndices }) => {
       const turns = [
         ...(overlay.parentElement?.querySelectorAll('.group-chat-turn') || [])
       ].filter(turn => !turn.closest('.group-chat-premeasurement'));
-      const activeIndices = new Set(activeLineIndicesKey.split('\u0000'));
-      const activeTurnIndices = turns
-        .map((turn, index) => activeIndices.has(turn.dataset.chatLineIndex) ? index : -1)
-        .filter(index => index >= 0);
-      const activeTurnIndex = activeTurnIndices.at(-1) ?? -1;
-      const activeTurn = activeTurnIndex >= 0 ? turns[activeTurnIndex] : null;
-      const previousTurnIndex = activeTurnIndices.length > 1
-        ? activeTurnIndices.at(-2)
-        : activeTurnIndex - 1;
-      const previousTurn = previousTurnIndex >= 0 ? turns[previousTurnIndex] : null;
+      const activeTurn = turns.at(-1) ?? null;
+      const previousTurn = turns.at(-2) ?? null;
 
       turns.forEach(turn => {
         turn.classList.toggle('is-chat-debug-active', turn === activeTurn);
@@ -177,7 +168,7 @@ const GroupChatDebugOverlay = ({ activeLineIndices }) => {
     return () => {
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
     };
-  }, [activeLineIndicesKey]);
+  }, []);
 
   return (
     <div className="group-chat-debug-overlay" ref={overlayRef} aria-hidden="true">

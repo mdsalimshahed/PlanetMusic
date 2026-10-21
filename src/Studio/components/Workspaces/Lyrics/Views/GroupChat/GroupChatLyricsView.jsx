@@ -306,19 +306,19 @@ const GroupChatLyricsView = ({
         </div>
         <div
           className="group-chat-typing-footer"
-          aria-hidden={!isPlaying || !playback.displayTypingNames}
+          aria-hidden={!isPlaying || !playback.typingIndicatorVisible}
         >
-          {isPlaying && playback.displayTypingNames && (
+          {playback.displayTypingNames && (
             <GroupChatTypingIndicator
               artistNames={playback.displayTypingNames.split(', ')}
               artistByName={artistByName}
               imageSources={imageSources}
-              isVisible={playback.typingIndicatorVisible}
+              isVisible={isPlaying && playback.typingIndicatorVisible}
             />
           )}
         </div>
         {showDebug && (
-          <GroupChatDebugOverlay activeLineIndices={activeLineIndices} />
+          <GroupChatDebugOverlay />
         )}
       </div>
     </section>
