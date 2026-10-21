@@ -115,7 +115,8 @@ const AdlibDebugOverlay = ({
       const activeAdlibs = cachedFocusedAdlibsRef.current.filter(node => node.classList.contains('active'));
 
       setIsIdle(activeAdlibs.length === 0);
-      if (activeAdlibs.length === 0) {
+      const activeLine = document.querySelector('.focused-line.active');
+      if (activeAdlibs.length === 0 && !activeLine) {
         setBoundingBoxes([]);
         setRadialLines([]);
         setDistanceStats([]);
@@ -148,7 +149,6 @@ const AdlibDebugOverlay = ({
       const safeRight = canvasRight - EDGE_PAD_X;
       const safeBottom = canvasBottom - EDGE_PAD_Y;
 
-      const activeLine = document.querySelector('.focused-line.active');
       const newBoxes = [];
 
       if (activeLine) {
@@ -523,7 +523,7 @@ const AdlibDebugOverlay = ({
         
         {isIdle ? (
           <div style={{ color: '#4ade80', marginTop: '10px', fontSize: '13px' }}>
-            <strong>Status:</strong> Idle (Calculations Paused)
+            <strong>Status:</strong> No active ad-libs (showing lyric bounds)
           </div>
         ) : (
           <>

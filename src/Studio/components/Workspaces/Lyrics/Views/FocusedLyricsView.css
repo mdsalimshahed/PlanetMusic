@@ -78,23 +78,10 @@
   width: auto !important;
 }
 
-.focused-line .lyric-word,
-.focused-line .lyric-word-group,
-.focused-line .trans-word-group {
-  white-space: normal !important;
-  overflow-wrap: normal !important;
-  word-break: normal !important;
-}
-
 .focused-line .trans-word {
   white-space: nowrap !important;
   overflow-wrap: normal !important;
   word-break: normal !important;
-}
-
-.focused-line .lyric-word-group,
-.focused-line .trans-word-group {
-  display: inline !important;
 }
 
 .focused-line .main-lyrics-layer {
@@ -119,33 +106,10 @@
   text-wrap: balance !important;
 }
 
-/* Keep hyphenated spellings together; only emergency-wrap an oversized sequence. */
-.focused-line .hyphenated-word-group,
-.focused-adlib-line .hyphenated-word-group {
-  display: inline-flex !important;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: baseline;
-  gap: 0;
-  max-width: 100% !important;
-  box-sizing: border-box;
-  white-space: normal !important;
-  word-break: keep-all !important;
-  overflow-wrap: break-word !important;
-}
-
-.focused-line .hyphenated-word-group > .lyric-word,
-.focused-line .hyphenated-word-group > .trans-word,
-.focused-adlib-line .hyphenated-word-group > .lyric-word,
-.focused-adlib-line .hyphenated-word-group > .trans-word {
-  white-space: nowrap !important;
-  word-break: keep-all !important;
-}
-
 @keyframes focused-word-enter {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
@@ -234,7 +198,7 @@
   animation: none;
 }
 
-/* Entry uses a word-by-word stagger. */
+/* Entry uses the existing word-by-word stagger. */
 .focused-line.active .lyric-word,
 .focused-line.active .trans-word,
 .focused-adlib-line.active .lyric-word,

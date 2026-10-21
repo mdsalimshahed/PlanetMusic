@@ -60,7 +60,7 @@ export const getDisplayTranslation = (originalText, translation) => {
 };
 
 // Character rendering strictly checks for script types
-export const renderColoredChar = (c, globalIdx, isFocused) => {
+export const renderColoredChar = (c, globalIdx) => {
   const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(c.char);
   const isArabicChar = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(c.char);
   const isBengaliChar = /[\u0980-\u09FF]/.test(c.char);
@@ -124,11 +124,11 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       return { type: 'space', node: <span key={pIdx} style={{ whiteSpace: 'pre' }}>{part}</span> };
     }
 
-    const canWrapHyphenatedWord = (isFocused || (part.match(/-/gu) || []).length > 4);
+    const canWrapHyphenatedWord = (part.match(/-/gu) || []).length > 4;
     const wordParts = canWrapHyphenatedWord ? part.split(/(?<=-)/u) : [part];
     const nodes = wordParts.map((wordPart, wordIdx) => {
-      const tokenIndex = isFocused ? state.index++ : null;
       const punctuationParts = wordPart.split(/([\p{P}\p{S}]+)/u).filter(Boolean);
+      const tokenIndex = isFocused ? state.index++ : null;
       return (
         <span
           key={`${pIdx}-${wordIdx}`}
@@ -149,11 +149,7 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
       );
     });
 
-    return { type: 'token', node: isFocused ? (
-      <span key={pIdx} className={`trans-word-group${wordParts.length > 1 ? ' hyphenated-word-group' : ''}`}>
-        {nodes}
-      </span>
-    ) : canWrapHyphenatedWord ? (
+    return { type: 'token', node: canWrapHyphenatedWord ? (
       <span key={pIdx} className="trans-word-group hyphenated-word-group">
         {nodes}
       </span>
@@ -178,67 +174,6 @@ export const renderFormattedTranslation = (text, isFocused = false, state = { in
 };
 
 export const groupWords = (elements, charData, isFocused, hasSpacingText = false, state = { index: 0 }) => {
-  if (isFocused) {
-    const words = [];
-    let currentToken = [];
-    let currentText = [];
-    let hyphenCount = 0;
-
-    const flushText = (keySuffix) => {
-      if (currentText.length === 0) return;
-      const index = state.index++;
-      currentToken.push(
-        <span key={`focused-word-${keySuffix}`} className="lyric-word" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', '--word-index': index }}>
-          {currentText}
-        </span>
-      );
-      currentText = [];
-    };
-
-    const flushToken = (keySuffix) => {
-      flushText(`${keySuffix}-text`);
-      if (currentToken.length > 0) {
-        const tokenParts = currentToken.length > 1
-          ? currentToken.map(token => React.cloneElement(token, {
-              className: `${token.props.className} hyphenated-word-part`
-            }))
-          : currentToken;
-        words.push(currentToken.length === 1 ? currentToken[0] : (
-          <span
-            key={`focused-group-${keySuffix}`}
-            className={`lyric-word-group${currentToken.length > 1 ? ' hyphenated-word-group' : ''}${hyphenCount > 4 ? ' is-long-hyphenated' : ''}`}
-          >
-            {tokenParts}
-          </span>
-        ));
-      }
-      currentToken = [];
-      hyphenCount = 0;
-    };
-
-    for (let i = 0; i < elements.length; i++) {
-      if (!elements[i]) {
-        flushToken(i);
-        words.push(elements[i]);
-        continue;
-      }
-      const char = charData[i] ? charData[i].char : '';
-      if (/\s/.test(char)) {
-        flushToken(i);
-        words.push(elements[i]);
-      } else if (char === '-') {
-        hyphenCount++;
-        currentText.push(elements[i]);
-        flushText(`${i}-hyphen`);
-      } else {
-        currentText.push(elements[i]);
-      }
-    }
-
-    flushToken('end');
-    return words;
-  }
-
   const words = [];
   let currentWord = [];
   let currentWordIndex = null;
@@ -326,9 +261,18 @@ export const groupWords = (elements, charData, isFocused, hasSpacingText = false
       currentWord = [elements[i]];
       currentWordIndex = state.index++;
       flushWord();
-      const punctuationWord = words.pop();
+      let punctuationWord = words.pop();
 
       if (previousWord && punctuationWord) {
+        if (isFocused && previousWord.props?.style?.['--word-index'] !== undefined) {
+          punctuationWord = React.cloneElement(punctuationWord, {
+            style: {
+              ...punctuationWord.props.style,
+              '--word-index': previousWord.props.style['--word-index']
+            }
+          });
+          state.index--;
+        }
         if (space) words.splice(previousIndex + 1, 1);
         const isHyphenatedWord = previousWord.props?.className?.includes('hyphenated-word');
         words[previousIndex] = (
