@@ -9,6 +9,13 @@ const cloneSyncData = (data = []) => (Array.isArray(data) ? data : []).map(line 
   adlibs: line.adlibs?.map(adlib => ({ ...adlib }))
 }));
 
+const hasTiming = value => (
+  value !== null &&
+  value !== undefined &&
+  value !== '' &&
+  Number.isFinite(Number(value))
+);
+
 export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomData, masterPalette, updateSongInLibrary, setNotification, settings) => {
   const [isSyncMode, setIsSyncMode] = useState(false);
   const [isShowingAutoSync, setIsShowingAutoSync] = useState(false);
@@ -248,8 +255,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       const hasManualText = Boolean(customData.lyrics && customData.lyrics.trim());
       const parsedLines = parseLyrics(hasManualText ? customData.lyrics : '', selectedSong.artistName, masterPalette);
       let initialData = [];
-      const hasManualSync = Array.isArray(selectedSong.syncData) && selectedSong.syncData.some(line => line.start !== null);
-      const hasAutoSync = Array.isArray(selectedSong.autoSyncData) && selectedSong.autoSyncData.some(line => line.start !== null);
+      const hasManualSync = Array.isArray(selectedSong.syncData) && selectedSong.syncData.some(line => hasTiming(line?.start));
+      const hasAutoSync = Array.isArray(selectedSong.autoSyncData) && selectedSong.autoSyncData.some(line => hasTiming(line?.start));
       const useAutoSync = isShowingAutoSync || (!hasManualSync && hasAutoSync);
       const sourceData = useAutoSync
         ? (Array.isArray(selectedSong.autoSyncData) ? selectedSong.autoSyncData : [])
@@ -258,14 +265,23 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       if (hasManualText) {
         initialData = parsedLines.map((line, i) => {
           const existingNode = sourceData?.[i] || {};
+          const primaryTiming = sourceData?.[i];
+          const fallbackTiming = useAutoSync
+            ? selectedSong.syncData?.[i]
+            : selectedSong.autoSyncData?.[i];
           return {
             ...line,
             translation: existingNode.translation || '',
             pronunciation: existingNode.pronunciation || null,
             spacingText: existingNode.spacingText || '',
             lang: existingNode.lang || 'auto',
-            start: existingNode.start !== undefined ? existingNode.start : null,
-            end: existingNode.end !== undefined ? existingNode.end : null,
+            start: hasTiming(primaryTiming?.start)
+              ? primaryTiming.start
+              : hasTiming(fallbackTiming?.start) ? fallbackTiming.start : null,
+            end: hasTiming(primaryTiming?.end)
+              ? primaryTiming.end
+              : hasTiming(fallbackTiming?.end) ? fallbackTiming.end : null,
+            wordSync: primaryTiming?.wordSync || fallbackTiming?.wordSync || null,
             isSplit: existingNode.isSplit || false,
             adlibs: existingNode.adlibs?.map(adlib => ({ ...adlib }))
           };

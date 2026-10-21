@@ -350,40 +350,47 @@ export const mergeSyncWithGenius = (lrcSyncData, rawLyrics, defaultArtist, color
 
   const m = parsedLines.length;
   const n = lrcSyncData.length;
-  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-
-  for (let i = 1; i <= m; i++) {
-    const cleanNew = normalize(parsedLines[i - 1].text);
-    for (let j = 1; j <= n; j++) {
-      const cleanOld = normalize(lrcSyncData[j - 1].text);
-      if (cleanNew === cleanOld && cleanNew !== '') {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  let i = m;
-  let j = n;
   const alignment = [];
 
-  while (i > 0 && j > 0) {
-    const cleanNew = normalize(parsedLines[i - 1].text);
-    const cleanOld = normalize(lrcSyncData[j - 1].text);
-    
-    if (cleanNew === cleanOld && cleanNew !== '') {
-      alignment.push({ newIndex: i - 1, oldIndex: j - 1 });
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
+  if (m === n) {
+    for (let index = 0; index < m; index++) {
+      alignment.push({ newIndex: index, oldIndex: index });
     }
-  }
+  } else {
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
 
-  alignment.reverse();
+    for (let i = 1; i <= m; i++) {
+      const cleanNew = normalize(parsedLines[i - 1].text);
+      for (let j = 1; j <= n; j++) {
+        const cleanOld = normalize(lrcSyncData[j - 1].text);
+        if (cleanNew === cleanOld && cleanNew !== '') {
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+        } else {
+          dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+    }
+
+    let i = m;
+    let j = n;
+
+    while (i > 0 && j > 0) {
+      const cleanNew = normalize(parsedLines[i - 1].text);
+      const cleanOld = normalize(lrcSyncData[j - 1].text);
+
+      if (cleanNew === cleanOld && cleanNew !== '') {
+        alignment.push({ newIndex: i - 1, oldIndex: j - 1 });
+        i--;
+        j--;
+      } else if (dp[i - 1][j] > dp[i][j - 1]) {
+        i--;
+      } else {
+        j--;
+      }
+    }
+
+    alignment.reverse();
+  }
 
   const matchMap = {};
   alignment.forEach(match => {
