@@ -174,13 +174,22 @@ const PlainLyricsView = ({ liveParsedLyrics, selectedSong, masterPalette, isSave
           </React.Fragment>
         )})
       ) : (
-        <div className="no-lyrics-empty-state">
-          <p>
-            {isSaved
-              ? 'No lyrics found in your Vault.'
-              : 'This song is not in your Vault yet. Click “Add to Vault” at the bottom of the left panel to save it.'}
-          </p>
-        </div>
+        isSaved ? (
+          <div className="no-lyrics-empty-state">
+            <p>No lyrics found in your Vault.</p>
+          </div>
+        ) : (
+          <div className="no-lyrics-empty-state">
+            <div className="unsaved-song-warning" role="note">
+              <span className="unsaved-song-warning-icon" aria-hidden="true">!</span>
+              <div className="unsaved-song-warning-copy">
+                <strong>This song isn’t in your Vault yet</strong>
+                <p>Save it to your Vault to add lyrics and keep your song details.</p>
+                <span>Click <strong>Add to Vault</strong> at the bottom of the left panel.</span>
+              </div>
+            </div>
+          </div>
+        )
       )}
     </div>
   );

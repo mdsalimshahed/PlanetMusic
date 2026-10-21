@@ -109,7 +109,7 @@ export const useTranslationWorkspaceData = ({
     setWorkspaceData(newData);
   };
 
-  const handleSave = (cancelTranslationRef) => {
+  const handleSave = (cancelTranslationRef, { quiet = false } = {}) => {
     cancelTranslationRef.current = true;
     
     let sourceData = selectedSong?.syncData || selectedSong?.autoSyncData;
@@ -186,8 +186,11 @@ export const useTranslationWorkspaceData = ({
     updateSongInLibrary(updatedSong);
     setIsTranslationManagerOpen(false);
     
-    setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
-    setTimeout(() => setNotification({ show: false }), 2000);
+    if (!quiet) {
+      setNotification({ show: true, message: 'Translation changes saved!', progress: 100 });
+      setTimeout(() => setNotification({ show: false }), 2000);
+    }
+    return updatedSong;
   };
 
   const handleExport = () => {

@@ -569,7 +569,7 @@ export const useSyncActions = ({
     }
   };
 
-  const handleAutoSyncDatabases = async (forceSync = false) => {
+  const handleAutoSyncDatabases = async (forceSync = false, { silent = false } = {}) => {
     if (!isSaved && !forceSync) return alert("Please add to Vault first before auto-syncing!");
     
     if (selectedSong.autoSyncData && selectedSong.autoSyncData.length > 0 && !forceSync) {
@@ -594,7 +594,9 @@ export const useSyncActions = ({
     }
 
     setIsLrcFetching(true);
-    setNotification({ show: true, message: 'Fetching from databases...', progress: null });
+    if (!silent) {
+      setNotification({ show: true, message: 'Fetching from databases...', progress: null });
+    }
     
     try {
       let finalSyncData = null;
@@ -637,11 +639,14 @@ export const useSyncActions = ({
       setDebugInfo({ source: finalSource, rawData: finalRawData });
 
       if (!finalSyncData && !finalPlainText) {
-        setNotification({ show: false });
-        alert("No lyrics found in databases.");
-        return setIsLrcFetching(false);
+        if (!silent) {
+          setNotification({ show: false });
+          alert("No lyrics found in databases.");
+        }
+        return null;
       }
 
+      let updatedSong;
       if (finalSyncData) {
         const hasManualLyrics = Boolean(customData.lyrics && customData.lyrics.trim());
         const hasManualSync = selectedSong.syncData && selectedSong.syncData.some(l => l.start !== null);
@@ -649,27 +654,43 @@ export const useSyncActions = ({
         let newSyncData = hasManualSync ? selectedSong.syncData : (hasManualLyrics ? selectedSong.syncData : finalSyncData);
         let saveLyrics = hasManualLyrics ? customData.lyrics : finalPlainText;
 
-        updateSongInLibrary({ ...selectedSong, autoSyncData: finalSyncData, syncData: newSyncData, lyrics: saveLyrics });
+        updatedSong = {
+          ...selectedSong,
+          autoSyncData: finalSyncData,
+          syncData: newSyncData,
+          lyrics: saveLyrics
+        };
+        updateSongInLibrary(updatedSong);
         
         if (!hasManualLyrics) {
           setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         }
         
-        setNotification({ show: true, message: hasWordSync ? 'Word-by-word sync found!' : 'Auto-sync successful!', progress: 100 });
+        if (!silent) {
+          setNotification({ show: true, message: hasWordSync ? 'Word-by-word sync found!' : 'Auto-sync successful!', progress: 100 });
+        }
       } else {
         if (!customData.lyrics) {
-          updateSongInLibrary({ ...selectedSong, lyrics: finalPlainText });
+          updatedSong = { ...selectedSong, lyrics: finalPlainText };
+          updateSongInLibrary(updatedSong);
           setCustomData(prev => ({ ...prev, lyrics: finalPlainText }));
         }
-        setNotification({ show: true, message: 'Imported plain lyrics.', progress: 100 });
+        if (!silent) {
+          setNotification({ show: true, message: 'Imported plain lyrics.', progress: 100 });
+        }
       }
+      return updatedSong || null;
 
     } catch (error) {
-      console.error(error); alert("Error fetching lyrics.");
-      setNotification({ show: false });
+      console.error('Error fetching lyrics from databases.', error);
+      if (!silent) {
+        alert("Error fetching lyrics.");
+        setNotification({ show: false });
+      }
+      return null;
     } finally {
        setIsLrcFetching(false);
-       setTimeout(() => setNotification({ show: false }), 3000);
+       if (!silent) setTimeout(() => setNotification({ show: false }), 3000);
     }
   };
 

@@ -182,6 +182,39 @@ const EditLyricsView = ({ customData, handleDataChange, selectedSong, masterPale
   return (
     <div className="edit-lyrics-container">
       <div className="lyrics-textarea-wrapper">
+        <aside className="lyrics-editor-tip" role="note">
+          <span className="lyrics-editor-tip-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path d="M8.2 14.5A7 7 0 1 1 15.8 14.5c-.9.7-1.4 1.6-1.6 2.5h-4.4c-.2-.9-.7-1.8-1.6-2.5Z" />
+              <path d="M12 2v1" />
+            </svg>
+          </span>
+          <div className="lyrics-editor-tip-copy">
+            <strong>Find links and add accurate lyrics</strong>
+            <ul>
+              <li>
+                <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-4-4" />
+                </svg>
+                <span className="lyrics-editor-tip-item-copy">
+                  Use <b>Find Platform Links (US)</b> to locate a song link.
+                </span>
+              </li>
+              <li>
+                <svg className="lyrics-editor-tip-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M6 3h9l5 5v13H6z" />
+                  <path d="M14 3v6h6M9 13h8M9 17h8" />
+                </svg>
+                <span className="lyrics-editor-tip-item-copy">
+                  Choose <b>Search Google for Lyrics</b>, open the <b className="lyrics-editor-tip-genius">GENIUS.com</b> result, and paste its lyrics here exactly as written.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </aside>
         <textarea
           name="lyrics"
           value={customData.lyrics}

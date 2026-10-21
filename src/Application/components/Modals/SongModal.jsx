@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ModalLeft from './ModalLeft.jsx';
 import ModalRight from './ModalRight.jsx';
 import ConfirmModal from './ConfirmModal.jsx';
+import { buildTranslationWorkspaceData } from '../../../Studio/utils/translationWorkspaceData.js';
 import { useSongData } from '../../../Application/hooks/data/useSongData.js';
 import { useLyricsDisplay } from '../../../Studio/hooks/sync/useLyricsDisplay.js';
 import { useSyncWorkspace } from '../../../Studio/hooks/sync/useSyncWorkspace.js';
@@ -11,6 +12,11 @@ import './SongModal.css';
 
 const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, setCurrentTrack, currentTrack, settings }) => {
   const [notification, setNotification] = useState({ show: false, message: '', progress: null });
+  const [isAutomatedVaultAddRunning, setIsAutomatedVaultAddRunning] = useState(false);
+  const [automatedTranslationRequest, setAutomatedTranslationRequest] = useState(null);
+  const automatedAddRunningRef = useRef(false);
+  const automatedRequestIdRef = useRef(0);
+  const notificationTimerRef = useRef(null);
   const selectedTrackId = selectedSong?.trackId;
   const previousTrackIdRef = useRef(selectedTrackId);
   const markModalReady = useCallback(trackId => {
@@ -44,13 +50,116 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
   useEffect(() => {
     if (previousTrackIdForNotificationRef.current === selectedSong?.trackId) return;
     previousTrackIdForNotificationRef.current = selectedSong?.trackId;
+    if (notificationTimerRef.current) clearTimeout(notificationTimerRef.current);
     setNotification({ show: false, message: '', progress: null });
   }, [selectedSong?.trackId]);
+  useEffect(() => () => {
+    if (notificationTimerRef.current) clearTimeout(notificationTimerRef.current);
+  }, []);
+
+  const dismissAutomatedNotificationAfter = useCallback(delay => {
+    if (notificationTimerRef.current) clearTimeout(notificationTimerRef.current);
+    notificationTimerRef.current = setTimeout(() => {
+      setNotification({ show: false, message: '', progress: null });
+      notificationTimerRef.current = null;
+    }, delay);
+  }, []);
   const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setNotification, settings
   );
+  const handleAutoSyncDatabases = syncProps.handleAutoSyncDatabases;
+  const handleAutomatedAddToVault = useCallback(async (event, song) => {
+    event?.stopPropagation();
+    if (automatedAddRunningRef.current) return;
+    automatedAddRunningRef.current = true;
+    setIsAutomatedVaultAddRunning(true);
+    toggleLibrary(event, song);
+    setNotification({
+      show: true,
+      message: 'Digging through the black hole for lyrics and sync data...',
+      progress: 5
+    });
+
+    try {
+      const hasTimedManualData = Array.isArray(song.syncData) &&
+        song.syncData.some(line => line?.start !== null && line?.start !== undefined);
+      const hasTimedAutoData = Array.isArray(song.autoSyncData) &&
+        song.autoSyncData.some(line => line?.start !== null && line?.start !== undefined);
+      const hasTimedSyncData = hasTimedManualData || hasTimedAutoData;
+      const fetchedSong = hasTimedSyncData
+        ? song
+        : await handleAutoSyncDatabases(true, { silent: true });
+      if (!fetchedSong) {
+        throw new Error('No lyrics or synchronized lines were found in available sources.');
+      }
+
+      const preparedSong = {
+        ...fetchedSong,
+        syncData: hasTimedManualData
+          ? fetchedSong.syncData
+          : hasTimedAutoData
+            ? fetchedSong.autoSyncData
+            : fetchedSong.syncData?.length
+              ? fetchedSong.syncData
+              : fetchedSong.autoSyncData || []
+      };
+
+      const fetchedLyrics = preparedSong.lyrics || song.lyrics || '';
+      const requestSong = { ...preparedSong, lyrics: fetchedLyrics };
+      const detectedData = buildTranslationWorkspaceData(
+        requestSong,
+        { ...songDataProps.customData, lyrics: fetchedLyrics },
+        songDataProps.masterPalette,
+        []
+      );
+
+      if (!detectedData.length) {
+        setNotification({
+          show: true,
+          message: 'Lyrics and sync data loaded, but no translatable lyric lines were found.',
+          progress: 100
+        });
+        dismissAutomatedNotificationAfter(6000);
+        return;
+      }
+
+      setNotification({
+        show: true,
+        message: 'Lyrics and sync data loaded.',
+        progress: 100
+      });
+      setTimeout(() => {
+        setAutomatedTranslationRequest({
+          id: ++automatedRequestIdRef.current,
+          song: requestSong,
+          customData: { ...songDataProps.customData, lyrics: fetchedLyrics }
+        });
+      }, 700);
+    } catch (error) {
+      console.error('Could not prepare the song after adding it to the Vault.', error);
+      setNotification({
+        show: true,
+        message: `Song added to your Vault, but lyric loading failed: ${error.message}`,
+        progress: 100
+      });
+      dismissAutomatedNotificationAfter(6000);
+    } finally {
+      automatedAddRunningRef.current = false;
+      setIsAutomatedVaultAddRunning(false);
+    }
+  }, [
+    songDataProps.customData,
+    songDataProps.masterPalette,
+    dismissAutomatedNotificationAfter,
+    handleAutoSyncDatabases,
+    toggleLibrary
+  ]);
+  const handleAutomatedTranslationComplete = useCallback(() => {
+    setAutomatedTranslationRequest(null);
+    dismissAutomatedNotificationAfter(6000);
+  }, [dismissAutomatedNotificationAfter]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -143,6 +252,8 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     ...songDataProps, 
     ...displayProps, 
     ...syncProps,
+    onAutomatedAddToVault: handleAutomatedAddToVault,
+    isAutomatedVaultAddRunning,
     openAudioDelaySettings,
     registerTranslationCancelHandler,
     closeTranslationWorkspace,
@@ -195,7 +306,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     
     // Hijack Save functions so the URL closes cleanly after saving
     saveData: () => {
-        songDataProps.saveData();
+        if (songDataProps.saveData() === false) return;
         navigate(buildUrl({ workspace: null }));
     },
     saveImageManager: () => {
@@ -244,6 +355,8 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
               {...sharedProps} 
               activeLineRef={syncProps.activeLineRef}
               activePreviewRef={displayProps.activePreviewRef}
+              automatedTranslationRequest={automatedTranslationRequest}
+              onAutomatedTranslationComplete={handleAutomatedTranslationComplete}
             />
           </div>
 

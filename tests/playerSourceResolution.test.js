@@ -56,6 +56,13 @@ test('only selects an iTunes preview outside the sync workspace', () => {
   assert.equal(resolvePlayerSource(previewTrack, [], true, '', false).intendedSource, null);
 });
 
+test('honors an explicitly selected iTunes preview when other sources are available', () => {
+  const previewTrack = { ...track, forceSource: 'preview' };
+
+  assert.equal(resolvePlayerSource(previewTrack, [], false, 'test-arl', true).intendedSource, 'preview');
+  assert.equal(resolvePlayerSource(previewTrack, [], true, 'test-arl', true).intendedSource, 'deezer');
+});
+
 test('requires a validated Deezer credential before treating it as available', () => {
   assert.equal(resolvePlayerSource(track, [], false, '  ', true).hasArl, false);
   assert.equal(resolvePlayerSource(track, [], false, 'test-arl', false).hasArl, false);

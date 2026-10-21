@@ -289,6 +289,7 @@ body:has(.global-player:not(.stacked)) .modal-left-scrollable {
 
 .platform-input-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
 }
@@ -347,6 +348,21 @@ a.platform-label.yt-color:hover {
   box-shadow: 0 0 10px rgba(179, 136, 235, 0.2);
 }
 
+.platform-input-row input[type="text"][aria-invalid="true"] {
+  border-color: rgba(248, 113, 113, 0.8);
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.12);
+}
+
+.platform-input-error {
+  flex: 0 0 calc(100% - 92px);
+  margin-left: 92px;
+  margin-top: -5px;
+  color: #fca5a5;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: left;
+}
+
 .platform-links {
   display: flex;
   justify-content: center;
@@ -385,11 +401,6 @@ a.platform-label.yt-color:hover {
   filter: brightness(1.12) saturate(1.15);
 }
 
-.platform-btn.spotify {
-  background-color: #1DB954;
-  color: black;
-}
-
 .platform-btn.yt {
   background-color: #FF0000;
 }
@@ -401,6 +412,164 @@ a.platform-label.yt-color:hover {
 .platform-btn.local {
   background-color: #4ade80;
   color: black;
+}
+
+.platform-btn.preview {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.platform-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: none;
+  transform: none;
+}
+
+.source-link-warning {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 7px;
+  margin-top: 16px;
+  padding: 15px 16px;
+  border: 1px solid rgba(250, 204, 21, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at top left, rgba(250, 204, 21, 0.1), transparent 68%),
+    linear-gradient(145deg, rgba(34, 31, 23, 0.92), rgba(20, 22, 29, 0.94));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16), inset 0 1px rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.72);
+  text-align: left;
+  font-style: normal;
+}
+
+.deezer-arl-warning {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 7px;
+  margin-top: 16px;
+  padding: 15px 16px;
+  border: 1px solid rgba(250, 204, 21, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at top left, rgba(250, 204, 21, 0.1), transparent 68%),
+    linear-gradient(145deg, rgba(34, 31, 23, 0.92), rgba(20, 22, 29, 0.94));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16), inset 0 1px rgba(255, 255, 255, 0.045);
+  text-align: left;
+  font-style: normal;
+}
+
+.source-link-warning-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-top: 1px;
+  border: 1px solid rgba(250, 204, 21, 0.32);
+  border-radius: 10px;
+  background: rgba(250, 204, 21, 0.1);
+  color: #facc15;
+  font-size: 16px;
+  font-weight: 800;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.source-link-warning-content {
+  display: contents;
+}
+
+.source-link-warning-title {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+}
+
+.source-link-warning-content p,
+.source-link-warning-content ul {
+  grid-column: 1 / -1;
+}
+
+.source-link-warning-content p {
+  grid-row: 2;
+  margin: 0;
+}
+
+.source-link-warning-content ul {
+  grid-row: 2;
+  display: grid;
+  gap: 3px;
+  margin: 1px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  justify-items: start;
+}
+
+.source-link-warning-with-description .source-link-warning-content ul {
+  grid-row: 3;
+}
+
+.source-link-warning-content {
+  min-width: 0;
+  font-size: clamp(11px, 1.25vw, 13px);
+  line-height: 1.55;
+}
+
+.source-link-warning-title {
+  color: #f8e6a1;
+  font-size: clamp(12px, 1.35vw, 14px);
+  font-weight: 750;
+  letter-spacing: 0.01em;
+}
+
+.source-link-warning-content li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  width: 100%;
+  padding-left: 0;
+  text-align: left;
+  justify-self: start;
+}
+
+.source-warning-item-icon {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  color: #facc15;
+}
+
+.source-warning-item-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
+.source-warning-key-icon {
+  color: #c084fc;
+}
+
+.source-link-warning-content li strong {
+  color: rgba(255, 255, 255, 0.94);
+  font-weight: 700;
+}
+
+.source-platform-name {
+  font-weight: 750;
+}
+
+.source-platform-youtube {
+  color: #ff6b6b;
+}
+
+.source-platform-deezer {
+  color: #c084fc;
 }
 
 .local-file-btn {
@@ -465,6 +634,7 @@ a.platform-label.yt-color:hover {
 
 .workspace-controls.bottom-actions {
   margin-top: -24px;
+  padding-top: var(--modal-detail-inset);
 }
 
 .measured-height-content {

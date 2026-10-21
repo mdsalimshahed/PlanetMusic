@@ -5,6 +5,7 @@ import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { getVaultArtistData } from '../../services/vaultCodec.js';
 import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import { getPlatformLinkErrors } from '../../utils/platformLinkValidation.js';
 
 const EMPTY_ARTIST_DATA = Object.freeze({});
 
@@ -247,6 +248,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
   };
 
   const saveData = () => {
+    const hasInvalidPlatformLink = Object.values(getPlatformLinkErrors(customData)).some(Boolean);
+    if (hasInvalidPlatformLink) return false;
+
     let updatedSyncData = selectedSong.syncData;
     
     // Enforce strict merging regardless of whether timestamps exist yet to prevent index displacement
@@ -274,6 +278,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
 
     // Commit updated song payload to vault and active player state simultaneously
     updateSongInLibrary(updatedSongPayload);
+    return true;
   };
 
   const saveImageManager = () => {
@@ -328,6 +333,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary) => {
     customData, setCustomData, singerImages, masterPalette, allPotentialSingers,
     trackNameData, releaseType, highResArt, finalLinks, globalArtistData,
     handleDataChange, handleImageChange, handleColorChange, handleLocalFileChange, handleClearLocal,
+    linkValidationErrors: getPlatformLinkErrors(customData),
     saveData, saveImageManager
   };
 };

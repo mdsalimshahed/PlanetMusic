@@ -12,14 +12,117 @@
 .lyrics-textarea-wrapper {
   display: flex;
   flex-direction: column;
+  gap: 12px;
   height: 100%;
   width: 100%;
+  min-height: 0;
+}
+
+.lyrics-editor-tip {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 9px;
+  row-gap: 5px;
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border: 1px solid rgba(167, 139, 250, 0.24);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at top left, rgba(167, 139, 250, 0.1), transparent 72%),
+    linear-gradient(145deg, rgba(31, 28, 43, 0.88), rgba(19, 20, 29, 0.94));
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.045);
+}
+
+.lyrics-editor-tip-icon {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  grid-column: 1;
+  grid-row: 1;
+  border: 1px solid rgba(196, 181, 253, 0.26);
+  border-radius: 8px;
+  background: rgba(167, 139, 250, 0.14);
+  color: #d8cbff;
+}
+
+.lyrics-editor-tip-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.lyrics-editor-tip-copy {
+  display: contents;
+}
+
+.lyrics-editor-tip-copy > strong {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(11px, 1.25vw, 13px);
+  font-weight: 750;
+}
+
+.lyrics-editor-tip-copy {
+  min-width: 0;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(10px, 1.15vw, 12px);
+  line-height: 1.5;
+}
+
+.lyrics-editor-tip-copy ul {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+  justify-items: start;
+}
+
+.lyrics-editor-tip-copy li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  justify-self: start;
+}
+
+.lyrics-editor-tip-item-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
+.lyrics-editor-tip-item-icon {
+  flex: 0 0 13px;
+  width: 13px;
+  height: 13px;
+  margin-top: 2px;
+  color: #c4b5fd;
+}
+
+.lyrics-editor-tip-copy b {
+  color: #d8cbff;
+  font-weight: 700;
+}
+
+.lyrics-editor-tip-copy .lyrics-editor-tip-genius {
+  color: #facc15;
 }
 
 .lyrics-textarea {
   width: 100%;
-  height: 100%;
+  height: auto;
   flex-grow: 1;
+  min-height: 0;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;

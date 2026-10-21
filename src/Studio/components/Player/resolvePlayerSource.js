@@ -20,6 +20,7 @@ export const resolvePlayerSource = (track, failedSources, isSyncWorkspaceActive,
     if (track.forceSource === 'local' && hasLocal) intendedSource = 'local';
     else if (track.forceSource === 'deezer' && hasArl && dzUrl) intendedSource = 'deezer';
     else if (track.forceSource === 'youtube' && extractedYtId) intendedSource = 'youtube';
+    else if (track.forceSource === 'preview' && track.previewUrl && !isSyncWorkspaceActive) intendedSource = 'preview';
   }
 
   if (!intendedSource) intendedSource = getBestSource(failedSources);

@@ -5,6 +5,7 @@ import ImageManager from '../../../Studio/components/Workspaces/Lyrics/ImageMana
 import { SyncWorkspace } from '../../../Studio/components/Workspaces/Sync/SyncWorkspace.jsx';
 import LyricsDisplay from '../../../Studio/components/Workspaces/Lyrics/LyricsDisplay.jsx';
 import TranslationWorkspace from '../../../Studio/components/Workspaces/Translation/TranslationWorkspace.jsx';
+import AutomatedTranslationRunner from '../../../Studio/components/Workspaces/Translation/AutomatedTranslationRunner.jsx';
 import AdlibDebugOverlay from '../AdlibDebug/AdlibDebugOverlay.jsx';
 import LiveDebugOverlay from '../LiveDebug/LiveDebugOverlay.jsx';
 import './ModalRight.css';
@@ -102,6 +103,19 @@ const ModalRight = (props) => {
           </>
         )}
       </div>
+      {props.automatedTranslationRequest && (
+        <div aria-hidden="true" style={{ display: 'none' }}>
+          <AutomatedTranslationRunner
+            key={props.automatedTranslationRequest.id}
+            request={props.automatedTranslationRequest}
+            customData={props.automatedTranslationRequest.customData}
+            masterPalette={canvasProps.masterPalette}
+            updateSongInLibrary={canvasProps.updateSongInLibrary}
+            setNotification={canvasProps.setNotification}
+            onComplete={props.onAutomatedTranslationComplete}
+          />
+        </div>
+      )}
 
     </div>
   );

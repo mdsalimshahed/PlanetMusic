@@ -123,13 +123,13 @@ const ModalLeft = ({
   handleAutoSyncDatabases, isLrcFetching, isShowingAutoSync, isTranslationManagerOpen, setIsTranslationManagerOpen,
   closeTranslationWorkspace, handleRefreshLyrics, showAdlibDebug, setShowAdlibDebug, showLiveDebug, setShowLiveDebug,
   showGroupChatDebug, setShowGroupChatDebug, settings,
-  triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification, onReturnToVault
+  triggerSyncKey, activeSyncSource, availableSources, setManualSource, setNotification, onReturnToVault,
+  onAutomatedAddToVault, isAutomatedVaultAddRunning, linkValidationErrors
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
   const { setContainerRef: setWorkspaceControlsContainer, setContentRef: setWorkspaceControlsContent } = useMeasuredHeightTransition();
   const { setContainerRef: setVaultActionsContainer, setContentRef: setVaultActionsContent } = useMeasuredHeightTransition();
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
-  const [showSpotifyNotice, setShowSpotifyNotice] = useState(false);
   const [loadedArtwork, setLoadedArtwork] = useState(null);
   const [pressedSyncKey, setPressedSyncKey] = useState(null);
   const [activePlaybackSource, setActivePlaybackSource] = useState(() => {
@@ -175,6 +175,7 @@ const ModalLeft = ({
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
   const hasLocalFile = Boolean(customData?.hasLocal);
   const hasArl = Boolean(settings?.deezerArl?.trim()) && settings?.deezerArlValid === true;
+  const hasPlayableLink = hasYtLink || hasLocalFile || (hasDeezerLink && hasArl);
 
   useEffect(() => {
     const handleActiveSource = (event) => {
@@ -223,7 +224,6 @@ const ModalLeft = ({
   };
 
   const handleDeezerPlay = () => {
-    setShowSpotifyNotice(false);
     if (isSyncMode) {
       setShowDeezerNotice(!hasArl);
       if (hasArl) {
@@ -254,7 +254,6 @@ const ModalLeft = ({
 
   const handleYtPlay = () => {
     setShowDeezerNotice(false);
-    setShowSpotifyNotice(false);
     if (isSyncMode) {
       setManualSource('youtube');
       return;
@@ -264,7 +263,6 @@ const ModalLeft = ({
 
   const handleLocalPlay = () => {
     setShowDeezerNotice(false);
-    setShowSpotifyNotice(false);
     if (isSyncMode) {
       setManualSource('local');
       return;
@@ -272,13 +270,15 @@ const ModalLeft = ({
     setCurrentTrack({ ...selectedSong, customLinks: customData, forceSource: 'local', playId: Date.now() });
   };
 
-  const handleSpotifyPlay = () => {
+  const handlePreviewPlay = () => {
     setShowDeezerNotice(false);
-    setShowSpotifyNotice(true);
-    setTimeout(() => {
-      setShowSpotifyNotice(false);
-      window.open(finalLinks.spotify, '_blank', 'noopener,noreferrer');
-    }, 2000);
+    if (!selectedSong.previewUrl || isSyncMode) return;
+    setCurrentTrack({
+      ...selectedSong,
+      customLinks: customData,
+      forceSource: 'preview',
+      playId: Date.now()
+    });
   };
 
   return (
@@ -363,7 +363,10 @@ const ModalLeft = ({
                    value={customData.spotify} 
                    onChange={handleDataChange} 
                    placeholder="Paste Spotify URL..." 
+                   aria-invalid={Boolean(linkValidationErrors?.spotify)}
+                   aria-describedby={linkValidationErrors?.spotify ? 'spotify-link-error' : undefined}
                 />
+                {linkValidationErrors?.spotify && <span id="spotify-link-error" className="platform-input-error" role="alert">{linkValidationErrors.spotify}</span>}
               </div>
               <div className="platform-input-row">
                 <a 
@@ -380,8 +383,11 @@ const ModalLeft = ({
                    name="deezer" 
                    value={customData.deezer} 
                    onChange={handleDataChange} 
-                   placeholder="Paste Deezer Track URL..." 
+                   placeholder="https://www.deezer.com/en/track/854914442"
+                   aria-invalid={Boolean(linkValidationErrors?.deezer)}
+                   aria-describedby={linkValidationErrors?.deezer ? 'deezer-link-error' : undefined}
                 />
+                {linkValidationErrors?.deezer && <span id="deezer-link-error" className="platform-input-error" role="alert">{linkValidationErrors.deezer}</span>}
               </div>
               <div className="platform-input-row">
                 <a 
@@ -399,7 +405,10 @@ const ModalLeft = ({
                    value={customData.yt} 
                    onChange={handleDataChange} 
                    placeholder="Paste YouTube Video URL..." 
+                   aria-invalid={Boolean(linkValidationErrors?.yt)}
+                   aria-describedby={linkValidationErrors?.yt ? 'youtube-link-error' : undefined}
                 />
+                {linkValidationErrors?.yt && <span id="youtube-link-error" className="platform-input-error" role="alert">{linkValidationErrors.yt}</span>}
               </div>
               
               <div className="platform-input-row">
@@ -413,13 +422,17 @@ const ModalLeft = ({
             </div>
           ) : (
             <div className="platform-links">
-              <button 
-                  className={`platform-btn spotify ${activePlaybackSource === 'spotify' ? 'active-source' : ''}`} 
-                 onClick={handleSpotifyPlay}
-              >
-                Spotify
-              </button>
-              
+              {!isSaved && (
+                <button
+                  className={`platform-btn preview ${activePlaybackSource === 'preview' ? 'active-source' : ''}`}
+                  onClick={handlePreviewPlay}
+                  disabled={!selectedSong.previewUrl || isSyncMode}
+                  title={!selectedSong.previewUrl ? 'No 30-second preview is available for this track' : undefined}
+                >
+                  30s Preview
+                </button>
+              )}
+
               {hasDeezerLink && (
                 <button 
                   className={`platform-btn deezer ${(isSyncMode ? activeSyncSource : activePlaybackSource) === 'deezer' ? 'active-source' : ''}`} 
@@ -448,19 +461,57 @@ const ModalLeft = ({
               )}
             </div>
           )}
-          {(!hasYtLink && !hasLocalFile && (!hasDeezerLink || !hasArl)) && (
-            <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
-              <strong>Notice:</strong> Currently playing a 30-second preview snippet. To listen to the full song, please click <strong>Edit Info</strong> and add a YouTube/Deezer link or upload a local file (or set a Deezer ARL in Settings).
+          {isSaved && !hasPlayableLink && (
+            <div className="source-link-warning source-link-warning-with-description" role="note">
+              <span className="source-link-warning-icon" aria-hidden="true">!</span>
+              <div className="source-link-warning-content">
+                <strong className="source-link-warning-title">Add a playback source</strong>
+                <p>This song is saved, but it doesn’t have a playable link yet.</p>
+                <ul>
+                  <li>
+                    <svg className="source-warning-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 2.93l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21.07l1.71-1.72" />
+                    </svg>
+                    <span className="source-warning-item-copy">
+                      Open <strong>Edit Info</strong> to add a <span className="source-platform-name source-platform-youtube">YouTube</span> or <span className="source-platform-name source-platform-deezer">Deezer</span> link, or upload an audio file.
+                    </span>
+                  </li>
+                  <li>
+                    <svg className="source-warning-item-icon source-warning-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="8" cy="15" r="5" />
+                      <path d="m11.5 11.5 8-8L22 6l-2 2 2 2-3 3-2-2-2 2" />
+                    </svg>
+                    <span className="source-warning-item-copy">
+                      <span className="source-platform-name source-platform-deezer">Deezer</span> playback requires a valid ARL in Settings.
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
           )}
           {showDeezerNotice && !hasArl && (
-            <div className="no-sync-warning" style={{ marginTop: '16px', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(251, 191, 36, 0.1)', textAlign: 'left' }}>
-              A valid <strong>Deezer ARL token</strong> is required for Deezer streaming. Enter your token in Settings or add a YouTube link.
-            </div>
-          )}
-          {showSpotifyNotice && (
-            <div className="no-sync-warning" style={{ marginTop: '16px', color: '#1DB954', border: '1px solid rgba(29, 185, 84, 0.3)', padding: '12px', borderRadius: '8px', background: 'rgba(29, 185, 84, 0.1)', textAlign: 'left' }}>
-              Opening Spotify in a new tab...
+            <div className="no-sync-warning deezer-arl-warning">
+              <span className="source-link-warning-icon" aria-hidden="true">!</span>
+              <div className="source-link-warning-content">
+                <strong className="source-link-warning-title">Deezer needs an ARL</strong>
+                <ul>
+                  <li>
+                    <svg className="source-warning-item-icon source-warning-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="8" cy="15" r="5" />
+                      <path d="m11.5 11.5 8-8L22 6l-2 2 2 2-3 3-2-2-2 2" />
+                    </svg>
+                    <span className="source-warning-item-copy">A valid Deezer ARL token is required for streaming.</span>
+                  </li>
+                  <li>
+                    <svg className="source-warning-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 5h16v14H4z" />
+                      <path d="M8 9h8M8 13h5" />
+                    </svg>
+                    <span className="source-warning-item-copy">Enter your token in Settings or use a YouTube link instead.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           )}
         </div>
@@ -681,10 +732,14 @@ const ModalLeft = ({
               </button>
             ) : (
               <button className="edit-links-btn save-mode" onClick={(e) => {
-                toggleLibrary(e, selectedSong);
-                handleAutoSyncDatabases(true);
-              }}>
-                <Icon name="plus" /> Add to Vault
+                if (onAutomatedAddToVault) onAutomatedAddToVault(e, selectedSong);
+                else {
+                  toggleLibrary(e, selectedSong);
+                  handleAutoSyncDatabases(true);
+                }
+              }} disabled={isAutomatedVaultAddRunning}>
+                <Icon name={isAutomatedVaultAddRunning ? 'clock' : 'plus'} />
+                {isAutomatedVaultAddRunning ? 'Preparing Song...' : 'Add to Vault'}
               </button>
             )}
             <button className="edit-links-btn return-dashboard-btn" onClick={handleCloseModal}>
