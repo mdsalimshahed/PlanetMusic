@@ -15,6 +15,9 @@ const ImageManager = ({
       >
         <ul>
           <li>
+            <span>Artists appear here when lyrics use singer names in section tags, such as <code>[Verse: Artist Name]</code>.</span>
+          </li>
+          <li>
             <span>Use <strong className="workspace-tip-action workspace-tip-action--manage">Manage Artists</strong> to assign an image and color to each singer.</span>
           </li>
           <li>

@@ -1,5 +1,6 @@
 /* --- src/components/Modals/ModalLeft.jsx --- */
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { formatDate, parseTrackName, extractYouTubeId, formatTime } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import LyricsViewModeSlider from './LyricsViewModeSlider.jsx';
@@ -366,7 +367,7 @@ const ModalLeft = ({
                    aria-invalid={Boolean(linkValidationErrors?.spotify)}
                    aria-describedby={linkValidationErrors?.spotify ? 'spotify-link-error' : undefined}
                 />
-                {linkValidationErrors?.spotify && <span id="spotify-link-error" className="platform-input-error" role="alert">{linkValidationErrors.spotify}</span>}
+                {linkValidationErrors?.spotify && <span id="spotify-link-error" className="platform-input-error" role="alert">{linkValidationErrors.spotify} <Link to="/docs/dev-blog/post/how-player-audio-streams-custom-links-work">See link guide</Link></span>}
               </div>
               <div className="platform-input-row">
                 <a 
@@ -387,7 +388,7 @@ const ModalLeft = ({
                    aria-invalid={Boolean(linkValidationErrors?.deezer)}
                    aria-describedby={linkValidationErrors?.deezer ? 'deezer-link-error' : undefined}
                 />
-                {linkValidationErrors?.deezer && <span id="deezer-link-error" className="platform-input-error" role="alert">{linkValidationErrors.deezer}</span>}
+                {linkValidationErrors?.deezer && <span id="deezer-link-error" className="platform-input-error" role="alert">{linkValidationErrors.deezer} <Link to="/docs/dev-blog/post/how-player-audio-streams-custom-links-work">See link guide</Link></span>}
               </div>
               <div className="platform-input-row">
                 <a 
@@ -408,7 +409,7 @@ const ModalLeft = ({
                    aria-invalid={Boolean(linkValidationErrors?.yt)}
                    aria-describedby={linkValidationErrors?.yt ? 'youtube-link-error' : undefined}
                 />
-                {linkValidationErrors?.yt && <span id="youtube-link-error" className="platform-input-error" role="alert">{linkValidationErrors.yt}</span>}
+                {linkValidationErrors?.yt && <span id="youtube-link-error" className="platform-input-error" role="alert">{linkValidationErrors.yt} <Link to="/docs/dev-blog/post/how-player-audio-streams-custom-links-work">See link guide</Link></span>}
               </div>
               
               <div className="platform-input-row">
