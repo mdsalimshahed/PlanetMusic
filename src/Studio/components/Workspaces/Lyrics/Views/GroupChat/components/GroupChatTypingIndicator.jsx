@@ -195,8 +195,6 @@ const GroupChatTypingIndicator = ({
     if (!pendingTransition || pendingTransition.items !== items) return;
     previousPositionsRef.current = null;
 
-    if (rowRef.current?.closest('.group-chat-no-motion')) return;
-
     avatarsRef.current
       ?.querySelectorAll('.group-chat-typing-avatar:not(.is-exiting)')
       .forEach(avatar => animateFlip(

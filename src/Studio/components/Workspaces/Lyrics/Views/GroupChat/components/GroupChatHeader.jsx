@@ -3,7 +3,7 @@ import ArtistPresenceAvatar from './ArtistPresenceAvatar.jsx';
 import { getArtistImage } from '../utils/groupChatUtils.js';
 import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
 
-const animateParticipantPositions = (container, previousPositionsRef, disableAnimations) => {
+const animateParticipantPositions = (container, previousPositionsRef) => {
   const currentPositions = new Map();
   const avatarElements = new Map();
   container.querySelectorAll('.group-chat-participant').forEach(participant => {
@@ -18,29 +18,27 @@ const animateParticipantPositions = (container, previousPositionsRef, disableAni
     }
   });
 
-  if (!disableAnimations) {
-    currentPositions.forEach((position, artistName) => {
-      const previousPosition = previousPositionsRef.current.get(artistName);
-      const avatar = avatarElements.get(artistName);
-      if (!previousPosition || !avatar) return;
-      const offsetX = previousPosition.left - position.left;
-      if (Math.abs(offsetX) < 1) return;
+  currentPositions.forEach((position, artistName) => {
+    const previousPosition = previousPositionsRef.current.get(artistName);
+    const avatar = avatarElements.get(artistName);
+    if (!previousPosition || !avatar) return;
+    const offsetX = previousPosition.left - position.left;
+    if (Math.abs(offsetX) < 1) return;
 
-      avatar.getAnimations().forEach(animation => animation.cancel());
-      const animation = avatar.animate(
-        [
-          { transform: `translateX(${offsetX}px)` },
-          { transform: 'translate(0, 0)' }
-        ],
-        {
-          duration: 560,
-          easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)',
-          fill: 'both'
-        }
-      );
-      animation.onfinish = () => finishAnimationAtCurrentStyles(animation);
-    });
-  }
+    avatar.getAnimations().forEach(animation => animation.cancel());
+    const animation = avatar.animate(
+      [
+        { transform: `translateX(${offsetX}px)` },
+        { transform: 'translate(0, 0)' }
+      ],
+      {
+        duration: 560,
+        easing: 'cubic-bezier(0.22, 0.8, 0.2, 1)',
+        fill: 'both'
+      }
+    );
+    animation.onfinish = () => finishAnimationAtCurrentStyles(animation);
+  });
 
   previousPositionsRef.current = currentPositions;
 };
@@ -52,7 +50,6 @@ const GroupChatHeader = ({
   lastLineEndByArtist,
   playbackTime,
   imageSources,
-  disableAnimations,
   inactiveScale
 }) => {
   const participantsRef = useRef(null);
@@ -87,8 +84,8 @@ const GroupChatHeader = ({
   useLayoutEffect(() => {
     const container = participantsRef.current;
     if (!container) return;
-    animateParticipantPositions(container, previousPositionsRef, disableAnimations);
-  }, [layoutKey, disableAnimations, inactiveScale]);
+    animateParticipantPositions(container, previousPositionsRef);
+  }, [layoutKey, inactiveScale]);
 
   useEffect(() => {
     const container = participantsRef.current;
@@ -96,11 +93,11 @@ const GroupChatHeader = ({
 
     const observer = new MutationObserver(records => {
       if (!records.some(record => record.removedNodes.length > 0)) return;
-      animateParticipantPositions(container, previousPositionsRef, disableAnimations);
+      animateParticipantPositions(container, previousPositionsRef);
     });
     observer.observe(container, { childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [disableAnimations]);
+  }, []);
 
   return (
     <header className="group-chat-header">
@@ -120,7 +117,6 @@ const GroupChatHeader = ({
                 }
                 image={getArtistImage(artist.name, imageSources)}
                 inactiveScale={inactiveScale}
-                disableAnimations={disableAnimations}
               />
             );
           })}

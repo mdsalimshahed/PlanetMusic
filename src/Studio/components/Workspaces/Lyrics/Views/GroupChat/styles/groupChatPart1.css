@@ -71,7 +71,6 @@
   width: var(--chat-heading-active-avatar-size);
   height: var(--chat-heading-active-avatar-size);
   flex: 0 0 var(--chat-heading-active-avatar-size);
-  transition: opacity 300ms ease;
   opacity: 0;
 }
 
@@ -84,20 +83,6 @@
 
 .group-chat-participant.is-online {
   opacity: 1;
-}
-
-.group-chat-participant.is-entering {
-  animation: group-chat-participant-enter 300ms ease both;
-}
-
-@keyframes group-chat-participant-enter {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 
 .group-chat-participant.is-dimmed {

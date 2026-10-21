@@ -216,7 +216,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
               color: activeBgLineObj.isGradient ? '#fff' : activeBgLineObj.color
             });
             setIsSingerVisible(true);
-          }, settings?.disableAnimations ? 0 : transitionTiming);
+          }, transitionTiming);
                    
         } else {
           if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
@@ -240,7 +240,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
         if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
     };
-  }, [bgActiveIndex, liveParsedLyrics, selectedSong, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming, settings?.disableAnimations]);
+  }, [bgActiveIndex, liveParsedLyrics, selectedSong, hasValidSyncData, currentTrack, playState.isEnded, displaySingerBg?.name, transitionTiming]);
 
   return {
     lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics,

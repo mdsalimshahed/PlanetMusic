@@ -71,7 +71,6 @@ const useGroupChatPresentation = ({
   activeLineIndices,
   chatState,
   isPlaying,
-  settings,
   setExpandedLineIndices,
   pendingScrollToLatestRef
 }) => {
@@ -230,7 +229,6 @@ const useGroupChatPresentation = ({
       turns.forEach(turn => seenIds.add(turn.dataset.chatLineIndex));
       seenMessageLineIdsRef.current = seenIds;
       if (!previousIds) return;
-      if (settings?.disableAnimations) return;
 
       newTurns.forEach((turn, index) => {
         const bubble = turn.querySelector('.group-chat-message');
@@ -288,7 +286,7 @@ const useGroupChatPresentation = ({
       });
       pendingAnimationFrames.clear();
     };
-  }, [chatRef, settings?.disableAnimations]);
+  }, [chatRef]);
 
   useLayoutEffect(() => {
     const container = chatRef.current;
@@ -301,7 +299,6 @@ const useGroupChatPresentation = ({
     const addedEvents = historyAdded
       ? chatState.messages.slice(previousMessageCount)
       : [];
-    const latestAddedEvent = addedEvents[addedEvents.length - 1];
     const turns = new Map(
       Array.from(container.querySelectorAll('[data-chat-line-index]'))
         .map(turn => [turn.dataset.chatLineIndex, turn])
@@ -350,7 +347,6 @@ const useGroupChatPresentation = ({
     if (
       historyAdded &&
       previousPositions.size &&
-      !settings?.disableAnimations &&
       followsLatestRef.current
     ) {
       const arrivalTargetIds = new Set(addedTargets.map(target => target.id));
@@ -442,14 +438,12 @@ const useGroupChatPresentation = ({
             Math.max(0, container.scrollTop + scrollDelta),
             Math.max(0, container.scrollHeight - container.clientHeight)
           ),
-          behavior: settings?.disableAnimations
-            ? 'auto'
-            : 'smooth'
+          behavior: 'smooth'
         });
       }
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [activeLineIndicesKey, chatRef, isPlaying, settings?.disableAnimations]);
+  }, [activeLineIndicesKey, chatRef, isPlaying]);
 
   useEffect(() => () => {
     entranceAnimationsRef.current.forEach(animation => animation.cancel());

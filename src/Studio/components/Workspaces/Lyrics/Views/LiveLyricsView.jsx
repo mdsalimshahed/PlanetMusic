@@ -221,7 +221,6 @@ const LiveLyricsView = ({
       .filter(line => !revealedLinesRef.current.has(line));
     if (revealLines.length === 0) return undefined;
     if (
-      settings?.disableAnimations ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       revealLines.forEach(line => revealedLinesRef.current.add(line));
@@ -259,7 +258,7 @@ const LiveLyricsView = ({
       if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
       revealLines.forEach(line => line.classList.remove('is-preparing-reveal'));
     };
-  }, [liveParsedLyrics, selectedSong?.trackId, settings?.disableAnimations]);
+  }, [liveParsedLyrics, selectedSong?.trackId]);
 
   useEffect(() => {
     return () => {
