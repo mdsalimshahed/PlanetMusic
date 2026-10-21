@@ -18,6 +18,12 @@ PlanetMusic is a browser-based music and lyrics workspace. It lets you organize 
 
 ---
 
+## A little about me
+
+I’m an engineering graduate from Bangladesh, and I built PlanetMusic as a personal project to keep growing as a developer. Working on it gives me hands-on practice across both front-end and back-end development while I build a tool I genuinely want to use.
+
+---
+
 ## A little about the project
 
 PlanetMusic is an ongoing project, and I built it to be useful both as a practical workspace and as a place to keep improving how music and lyrics can be experienced together.
