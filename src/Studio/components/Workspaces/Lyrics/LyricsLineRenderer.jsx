@@ -190,6 +190,33 @@ const queueLiveLayoutMeasurement = (measure, wrapper) => {
 
 const flushLiveAutoLayoutMeasurements = () => {
   liveAutoLayoutAnimationFrame = null;
+  const queue = pendingLiveAutoLayoutMeasurements;
+  const priorities = new Map(queue.map((entry, index) => {
+    const container = entry.wrapper.closest('.live-lyrics-preview');
+    const containerBounds = container?.getBoundingClientRect();
+    const lineBounds = entry.wrapper.getBoundingClientRect();
+    const isVisible = containerBounds &&
+      lineBounds.bottom > containerBounds.top &&
+      lineBounds.top < containerBounds.bottom;
+    return [entry, {
+      priority: entry.wrapper.classList.contains('active') ? 0 : isVisible ? 1 : 2,
+      distance: containerBounds
+        ? Math.abs(
+          (lineBounds.top + lineBounds.bottom) / 2 -
+          (containerBounds.top + containerBounds.bottom) / 2
+        )
+        : 0,
+      index
+    }];
+  }));
+  queue.sort((first, second) => {
+    const firstPriority = priorities.get(first);
+    const secondPriority = priorities.get(second);
+    return firstPriority.priority - secondPriority.priority ||
+      firstPriority.distance - secondPriority.distance ||
+      firstPriority.index - secondPriority.index;
+  });
+
   const frameStart = performance.now();
   let measuredAny = false;
   while (
@@ -208,8 +235,8 @@ const flushLiveAutoLayoutMeasurements = () => {
   }
 };
 
-const queueLiveAutoLayoutMeasurement = measure => {
-  pendingLiveAutoLayoutMeasurements.push({ measure });
+const queueLiveAutoLayoutMeasurement = (measure, wrapper) => {
+  pendingLiveAutoLayoutMeasurements.push({ measure, wrapper });
   if (liveAutoLayoutAnimationFrame === null) {
     liveAutoLayoutAnimationFrame = window.requestAnimationFrame(
       flushLiveAutoLayoutMeasurements
@@ -435,7 +462,6 @@ export const LyricLineWrapper = React.memo(({
       let cancelled = false;
       let queuedMeasurement = null;
       let measurementQueued = false;
-      let observedWidth = wrapper.getBoundingClientRect().width;
       let resizeObserver = null;
       const previousSibling = wrapper.previousElementSibling;
       const nextSibling = wrapper.nextElementSibling;
@@ -446,6 +472,11 @@ export const LyricLineWrapper = React.memo(({
         previousLineWrapper,
         nextSibling?.classList.contains('lyric-line-wrapper') ? nextSibling : null
       ].filter(Boolean);
+      const observedSizes = new Map(
+        [wrapper, ...neighboringLineWrappers].map(line => {
+          return [line, { width: line.offsetWidth, height: line.offsetHeight }];
+        })
+      );
       const measureLiveTranslations = () => {
         if (cancelled || !wrapper.isConnected) return;
         const adlibNodes = wrapper.querySelectorAll(
@@ -904,7 +935,7 @@ export const LyricLineWrapper = React.memo(({
             measurementQueued = false;
             if (!cancelled) measureLiveTranslations();
           };
-          queueLiveAutoLayoutMeasurement(queuedMeasurement);
+          queueLiveAutoLayoutMeasurement(queuedMeasurement, wrapper);
           return;
         }
         if (measurementQueued || cancelled) return;
@@ -923,12 +954,23 @@ export const LyricLineWrapper = React.memo(({
       );
       if (typeof ResizeObserver !== 'undefined') {
         resizeObserver = new ResizeObserver(entries => {
-          const width = entries[0]?.contentRect.width;
-          if (width === undefined || Math.abs(width - observedWidth) < 0.5) return;
-          observedWidth = width;
+          const sizeChanged = entries.some(({ target, contentRect }) => {
+            const previousSize = observedSizes.get(target);
+            const nextSize = {
+              width: contentRect.width,
+              height: contentRect.height
+            };
+            observedSizes.set(target, nextSize);
+            return !previousSize ||
+              Math.abs(nextSize.width - previousSize.width) >= 0.5 ||
+              Math.abs(nextSize.height - previousSize.height) >= 0.5;
+          });
+          if (!sizeChanged) return;
           queueInitialLayoutMeasurement();
         });
-        resizeObserver.observe(wrapper);
+        [wrapper, ...neighboringLineWrappers].forEach(line => {
+          resizeObserver.observe(line);
+        });
       }
 
       queueInitialLayoutMeasurement();
