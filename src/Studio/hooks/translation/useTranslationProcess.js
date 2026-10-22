@@ -59,6 +59,7 @@ export const useTranslationProcess = ({
   } = useAutoSpacing({
     workspaceData,
     setWorkspaceData,
+    listContainerRef,
     isTranslatingAll,
     cancelTranslationRef,
     setTranslateProgress,

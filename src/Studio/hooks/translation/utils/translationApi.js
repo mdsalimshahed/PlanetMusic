@@ -30,7 +30,11 @@ export const fetchGoogleWithLang = async (
   }
 };
 
-export const fetchSingleLine = async (line, proxySession = null) => {
+export const fetchSingleLine = async (
+  line,
+  proxySession = null,
+  onTranslation = null
+) => {
   const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
   
   let textToTranslate = hasSpacing ? line.spacingText : line.displayText;
@@ -50,6 +54,7 @@ export const fetchSingleLine = async (line, proxySession = null) => {
       sourceLang,
       proxySession
     );
+    onTranslation?.(rawData);
     
     const resArr = await getBulkPronunciations(
       [{ text: textToTranslate, hasSpacing }],

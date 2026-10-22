@@ -54,18 +54,38 @@ export const useTranslationBatch = ({
       if (cancelTranslationRef.current) return null;
       
       if (line.lang === 'en') {
+        const data = { ...line, translation: '', displayPron: '', pronunciation: '' };
+        setActiveTranslatingId(line.rowId);
+        setWorkspaceData(prev => prev.map((current, index) => (
+          index === idx ? data : current
+        )));
         completedCount++;
         const progressPct = Math.round((completedCount / workspaceData.length) * 100);
         setTranslateProgress({ current: completedCount, total: workspaceData.length });
         setNotification({ show: true, message: `Translating (${completedCount}/${workspaceData.length})...`, progress: progressPct });
-        return { index: idx, data: { ...line, translation: '', displayPron: '', pronunciation: '' } };
+        return;
       }
       
       const res = await fetchSingleLine(
         line,
-        `translate-all:${runId}:${idx}`
+        `translate-all:${runId}:${idx}`,
+        rawData => {
+          if (cancelTranslationRef.current) return;
+          setActiveTranslatingId(line.rowId);
+          setWorkspaceData(prev => prev.map((current, index) => (
+            index === idx
+              ? {
+                ...current,
+                translation: String(rawData.translation || '').trim(),
+                lang: rawData.srcLang || current.lang || 'auto'
+              }
+              : current
+          )));
+        }
       );
       
+      if (cancelTranslationRef.current) return;
+
       completedCount++;
       const progressPct = Math.round((completedCount / workspaceData.length) * 100);
       setTranslateProgress({ current: completedCount, total: workspaceData.length });
@@ -75,7 +95,7 @@ export const useTranslationBatch = ({
         if (line.spacingText?.trim() || line.displayText?.trim()) {
           failedLineCount++;
         }
-        return null;
+        return;
       }
 
       let rawTransText = res.translation !== undefined ? String(res.translation).trim() : '';
@@ -117,33 +137,29 @@ export const useTranslationBatch = ({
         }
       }
       
-      return {
-        index: idx,
-        data: {
-          ...line,
-          translation: rawTransText,
-          pronunciation: finalPron,
-          displayPron: displayPron,
-          lang: finalLang
-        }
-      };
+      setActiveTranslatingId(line.rowId);
+      setWorkspaceData(prev => prev.map((current, index) => (
+        index === idx
+          ? {
+            ...current,
+            translation: rawTransText,
+            pronunciation: finalPron,
+            displayPron,
+            lang: finalLang
+          }
+          : current
+      )));
     });
 
-    const results = await Promise.all(promises);
+    await Promise.all(promises);
 
     if (cancelTranslationRef.current) {
       setIsTranslatingAll(false);
+      setActiveTranslatingId(null);
+      listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    setWorkspaceData(prev => {
-      const next = [...prev];
-      results.forEach(r => {
-        if (r) next[r.index] = r.data;
-      });
-      return next;
-    });
-    
     if (!cancelTranslationRef.current) {
       setShowSuccessBanner(failedLineCount === 0);
       if (listContainerRef.current) {
@@ -267,12 +283,30 @@ export const useTranslationBatch = ({
           const hasNumbersInBatch = chunkTexts.some(t => /\d/.test(t.text));
           const translitLang = (hasNumbersInBatch && lang === 'auto') ? detectedLang : lang;
 
+          if (isAligned) {
+            chunkItems.forEach((item, index) => {
+              setActiveTranslatingId(workspaceData[item.index].rowId);
+              setWorkspaceData(prev => prev.map((current, currentIndex) => (
+                currentIndex === item.index
+                  ? {
+                    ...current,
+                    translation: translatedSegments[index].trim(),
+                    lang: detectedLang || current.lang || 'auto'
+                  }
+                  : current
+              )));
+            });
+          }
+
           const batchPronunciations = await getBulkPronunciations(
             chunkTexts, null, translitLang, contextSession
           );
         
           if (cancelTranslationRef.current) return;
 
+          chunkItems.forEach(item => setActiveTranslatingId(
+            workspaceData[item.index].rowId
+          ));
           setWorkspaceData(prev => {
             const next = [...prev];
           
@@ -364,6 +398,7 @@ export const useTranslationBatch = ({
 
     setIsTranslatingAll(false);
     setActiveTranslatingId(null);
+    listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleRefetch = async (index) => {
@@ -373,7 +408,19 @@ export const useTranslationBatch = ({
     
     const res = await fetchSingleLine(
       line,
-      `refetch:${createTranslationRunId()}:${index}`
+      `refetch:${createTranslationRunId()}:${index}`,
+      rawData => {
+        setActiveTranslatingId(line.rowId);
+        setWorkspaceData(prev => prev.map((current, currentIndex) => (
+          currentIndex === index
+            ? {
+              ...current,
+              translation: String(rawData.translation || '').trim(),
+              lang: rawData.srcLang || current.lang || 'auto'
+            }
+            : current
+        )));
+      }
     );
 
     if (!res && (line.spacingText?.trim() || line.displayText?.trim())) {
@@ -385,6 +432,7 @@ export const useTranslationBatch = ({
     }
     
     if (res) {
+      setActiveTranslatingId(line.rowId);
       setWorkspaceData(prev => {
           const next = [...prev];
           
@@ -425,6 +473,7 @@ export const useTranslationBatch = ({
     }
     
     setActiveTranslatingId(null);
+    listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     setNotification({ show: true, message: 'Line translated!', progress: 100 });
   };
 

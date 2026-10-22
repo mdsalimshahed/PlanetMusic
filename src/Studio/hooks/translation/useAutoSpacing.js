@@ -16,6 +16,7 @@ const createAutoSpacingRunId = () => (
 export const useAutoSpacing = ({
   workspaceData,
   setWorkspaceData,
+  listContainerRef,
   isTranslatingAll,
   cancelTranslationRef,
   setTranslateProgress,
@@ -115,22 +116,34 @@ export const useAutoSpacing = ({
       
       let newDisplayPron = pronunciationBlocks.join('');
 
+      if (cancelTranslationRef.current) return null;
+
       completedCount++;
       const progressPct = Math.round((completedCount / targetIndices.length) * 100);
       
       setTranslateProgress({ current: completedCount, total: targetIndices.length });
       setNotification({ show: true, message: `Auto Spacing (${completedCount}/${targetIndices.length})...`, progress: progressPct });
 
-      return { idx, newSpacingText, newDisplayPron };
+      setActiveTranslatingId(line.rowId);
+      setWorkspaceData(prev => prev.map((current, index) => (
+        index === idx
+          ? {
+            ...current,
+            spacingText: newSpacingText,
+            displayPron: newDisplayPron
+          }
+          : current
+      )));
+      return idx;
     });
 
-    let phaseResults;
     try {
-      phaseResults = await Promise.all(phasePromises);
+      await Promise.all(phasePromises);
     } catch (error) {
       cancelTranslationRef.current = true;
       setIsAutoSpacing(false);
       setActiveTranslatingId(null);
+      listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
       const message = error.message?.includes('HTTP 429')
         ? 'Google Translate is rate-limiting requests. Wait a minute before retrying Auto Spacing.'
         : `Auto Spacing failed: ${error.message || 'Translation service unavailable.'}`;
@@ -141,26 +154,14 @@ export const useAutoSpacing = ({
     if (cancelTranslationRef.current) {
         setIsAutoSpacing(false);
         setActiveTranslatingId(null);
+        listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         return;
     }
-
-    setWorkspaceData(prev => {
-      const next = [...prev];
-      phaseResults.forEach(res => {
-        if (res) {
-          next[res.idx] = { 
-              ...next[res.idx], 
-              spacingText: res.newSpacingText,
-              displayPron: res.newDisplayPron
-          };
-        }
-      });
-      return next;
-    });
 
     setNotification({ show: true, message: 'Auto Spacing complete!', progress: 100 });
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);
+    listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return { isAutoSpacing, setIsAutoSpacing, handleAutoSpacing };
