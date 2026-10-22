@@ -7,6 +7,19 @@
   text-align: center !important;
 }
 
+.group-chat .group-chat-message-text .primary-text {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.group-chat .group-chat-message-text .primary-text > .chunk-translation {
+  justify-self: center !important;
+}
+
+.group-chat .group-chat-message-text .primary-text > .core-chunks {
+  justify-self: start !important;
+}
+
 .group-chat-message-text-rtl .pronunciation-text,
 .group-chat-message-text-rtl .pronunciation-text > span {
   text-align: right !important;
@@ -15,9 +28,9 @@
 .group-chat .group-chat-message-text .chunk-translation {
   position: relative !important;
   top: auto !important;
-  left: var(--chat-translation-left-offset, 0px) !important;
+  left: auto !important;
   transform: none !important;
-  width: var(--chat-translation-reference-width, 100%) !important;
+  width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
   align-self: center !important;
@@ -36,6 +49,10 @@
 .group-chat .group-chat-message-text .chunk-translation,
 .group-chat .group-chat-message-text .chunk-translation * {
   text-align: center !important;
+}
+
+.group-chat .group-chat-message-text .chunk-translation.main-live-translation {
+  transform: translateX(var(--chat-translation-offset-x, 0px)) !important;
 }
 
 .group-chat .group-chat-message-text .chunk-translation .trans-word {

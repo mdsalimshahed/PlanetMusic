@@ -158,17 +158,6 @@
   align-items: flex-start;
 }
 
-.group-chat-bubble-stack:has(.group-chat-message-text.is-wrap-enabled) {
-  max-width: min(
-    100%,
-    calc(
-      var(--chat-line-wrap-width, 60cqw) +
-      var(--chat-bubble-horizontal-padding, calc(var(--chat-horizontal-unit) * 1.1)) +
-      var(--chat-bubble-horizontal-padding, calc(var(--chat-horizontal-unit) * 1.1))
-    )
-  );
-}
-
 .group-chat-turn-right .group-chat-bubble-stack {
   align-items: flex-end;
 }
@@ -275,10 +264,6 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
-}
-
-.group-chat-message:has(.group-chat-message-text.is-wrap-enabled) {
-  width: min(var(--chat-measured-bubble-width, 100%), 100%);
 }
 
 .group-chat-debug-view .group-chat-message {

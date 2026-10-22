@@ -17,6 +17,24 @@
   border-color: #facc15;
 }
 
+.group-chat-debug-box-row-outline {
+  z-index: 1;
+  border: 2px dashed #ff3030;
+  background: transparent;
+}
+
+.group-chat-debug-box-content-outline {
+  z-index: 2;
+  border: 2px dashed #fff;
+  background: transparent;
+}
+
+.group-chat-debug-box-bubble-frame {
+  z-index: 3;
+  border: 2px dashed #b66cff;
+  background: transparent;
+}
+
 .group-chat-debug-box-bubble {
   border-color: #39e6ff;
   outline: 1px dashed #39e6ff;
@@ -32,7 +50,7 @@
 }
 
 .group-chat-debug-box-pronunciation {
-  border-color: #f97316;
+  border-color: #c084fc;
 }
 
 .group-chat-debug-box-artist {

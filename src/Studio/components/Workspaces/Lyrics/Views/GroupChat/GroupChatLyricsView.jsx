@@ -189,9 +189,7 @@ const GroupChatLyricsView = ({
         current?.key === key &&
         current.enabled === layout.enabled &&
         current.width === layout.width &&
-        current.renderedGlyphWidth === layout.renderedGlyphWidth &&
-        current.translationReferenceWidth === layout.translationReferenceWidth &&
-        current.translationReferenceOffset === layout.translationReferenceOffset
+        current.renderedGlyphWidth === layout.renderedGlyphWidth
       ) return previous;
       const next = new Map(previous);
       next.set(lineIndex, { ...layout, key });
@@ -316,9 +314,7 @@ const GroupChatLyricsView = ({
             />
           )}
         </div>
-        {showDebug && (
-          <GroupChatDebugOverlay />
-        )}
+        <GroupChatDebugOverlay showDebug={showDebug} />
       </div>
     </section>
   );

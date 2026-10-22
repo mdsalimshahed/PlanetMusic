@@ -60,25 +60,47 @@ const getMaxTextLineWidth = (elements) => {
   return bounds ? bounds.right - bounds.left : 0;
 };
 
-const getTextBoundingBox = elements => {
-  const rects = [];
-  elements.forEach(element => {
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-    let node;
-    while ((node = walker.nextNode())) {
-      if (!node.textContent.trim()) continue;
-      const range = document.createRange();
-      range.selectNodeContents(node);
-      [...range.getClientRects()].forEach(rect => {
-        if (rect.width && rect.height) rects.push(rect);
-      });
-    }
+const getTextLineBounds = (element, excludePronunciation = false) => {
+  if (!element) return [];
+  const rows = [];
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+    acceptNode: textNode => (
+      excludePronunciation && textNode.parentElement?.closest('.pronunciation-text')
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT
+    )
   });
-  if (!rects.length) return null;
-  return {
-    left: Math.min(...rects.map(rect => rect.left)),
-    right: Math.max(...rects.map(rect => rect.right))
-  };
+  let node;
+
+  while ((node = walker.nextNode())) {
+    if (!node.textContent.trim()) continue;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    [...range.getClientRects()].forEach(rect => {
+      if (!rect.width || !rect.height) return;
+      const row = rows.find(candidate => {
+        const overlap = Math.min(candidate.bottom, rect.bottom) -
+          Math.max(candidate.top, rect.top);
+        return overlap > Math.min(candidate.bottom - candidate.top, rect.height) * 0.5;
+      });
+
+      if (row) {
+        row.left = Math.min(row.left, rect.left);
+        row.right = Math.max(row.right, rect.right);
+        row.top = Math.min(row.top, rect.top);
+        row.bottom = Math.max(row.bottom, rect.bottom);
+      } else {
+        rows.push({
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom
+        });
+      }
+    });
+  }
+
+  return rows.sort((first, second) => first.top - second.top);
 };
 
 const getLayoutScale = element => {
@@ -106,31 +128,16 @@ const GroupChatLyricText = React.memo(({
   const [renderedGlyphWidth, setRenderedGlyphWidth] = useState(
     () => precomputedLayout?.renderedGlyphWidth || 0
   );
-  const [translationReferenceWidth, setTranslationReferenceWidth] = useState(
-    () => precomputedLayout?.translationReferenceWidth || 0
-  );
-  const [translationReferenceOffset, setTranslationReferenceOffset] = useState(
-    () => precomputedLayout?.translationReferenceOffset || 0
-  );
   const [wrapLayout, setWrapLayout] = useState({
     enabled: precomputedLayout?.enabled || false,
     width: precomputedLayout?.width || 0
   });
-  const [wrappedContentLayout, setWrappedContentLayout] = useState({
-    key: null,
-    width: 0
-  });
   const [measuredLayoutKey, setMeasuredLayoutKey] = useState(null);
-  const wrappedContentWidth = wrappedContentLayout.key === layoutKey
-    ? wrappedContentLayout.width
-    : 0;
   const isRTL = isRTLLanguage(line.text || '');
 
   useLayoutEffect(() => {
     if (!precomputedLayout) return;
     setRenderedGlyphWidth(precomputedLayout.renderedGlyphWidth);
-    setTranslationReferenceWidth(precomputedLayout.translationReferenceWidth);
-    setTranslationReferenceOffset(precomputedLayout.translationReferenceOffset);
     setWrapLayout({
       enabled: precomputedLayout.enabled,
       width: precomputedLayout.width
@@ -226,206 +233,6 @@ const GroupChatLyricText = React.memo(({
   ]);
 
   useLayoutEffect(() => {
-    const element = textRef.current;
-    if (!element) return undefined;
-
-    const updateWrappedContentWidth = () => {
-      if (!wrapLayout.enabled) {
-        setWrappedContentLayout(previous => (
-          previous.key === layoutKey && previous.width === 0
-            ? previous
-            : { key: layoutKey, width: 0 }
-        ));
-        return;
-      }
-
-      const layoutScale = getLayoutScale(element);
-      const contentWidth = getMaxTextLineWidth([
-        ...element.querySelectorAll(
-          '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
-        )
-      ]) / layoutScale;
-      if (contentWidth > 0) {
-        const width = Math.ceil(contentWidth);
-        setWrappedContentLayout(previous => (
-          previous.key === layoutKey && previous.width === width
-            ? previous
-            : { key: layoutKey, width }
-        ));
-      }
-    };
-
-    updateWrappedContentWidth();
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(updateWrappedContentWidth);
-    [
-      element,
-      element.querySelector('.main-lyrics-layer'),
-      ...element.querySelectorAll(
-        '.pronunciation-text, .chunk-translation, .live-translation'
-      )
-    ].filter(Boolean).forEach(target => resizeObserver?.observe(target));
-
-    let cancelled = false;
-    document.fonts?.ready.then(() => {
-      if (!cancelled) updateWrappedContentWidth();
-    });
-    window.addEventListener('resize', updateWrappedContentWidth);
-
-    return () => {
-      cancelled = true;
-      resizeObserver?.disconnect();
-      window.removeEventListener('resize', updateWrappedContentWidth);
-    };
-  }, [
-    layoutKey,
-    line,
-    renderedGlyphWidth,
-    savedNode,
-    wrapLayout.enabled,
-    wrapLayout.width
-  ]);
-
-  useLayoutEffect(() => {
-    const element = textRef.current;
-    const message = element?.closest('.group-chat-message');
-    if (!element || !message) return undefined;
-
-    if (!wrapLayout.enabled) {
-      message.style.removeProperty('--chat-measured-bubble-width');
-      return undefined;
-    }
-
-    if (wrappedContentLayout.key !== layoutKey || !wrappedContentWidth) {
-      message.style.removeProperty('--chat-measured-bubble-width');
-      return undefined;
-    }
-
-    const lineElement = message.querySelector('.group-chat-message-line');
-    const timestamp = lineElement?.querySelector('time');
-    let measureFrame = null;
-    let cancelled = false;
-
-    const measureFinalBubble = () => {
-      measureFrame = null;
-      if (cancelled) return;
-
-      const layoutScale = getLayoutScale(element);
-      const textBounds = getTextBoundingBox([
-        ...element.querySelectorAll(
-          '.main-lyrics-layer .lyric-text-span, .pronunciation-text, .chunk-translation, .live-translation'
-        )
-      ]);
-      const timestampBounds = timestamp?.getBoundingClientRect();
-      const left = Math.min(
-        textBounds?.left ?? Infinity,
-        timestampBounds?.left ?? Infinity
-      );
-      const right = Math.max(
-        textBounds?.right ?? -Infinity,
-        timestampBounds?.right ?? -Infinity
-      );
-      if (!Number.isFinite(left) || !Number.isFinite(right)) return;
-
-      const messageStyles = getComputedStyle(message);
-      const horizontalPadding =
-        (parseFloat(messageStyles.paddingLeft) || 0) +
-        (parseFloat(messageStyles.paddingRight) || 0);
-      const contentWidth = (right - left) / layoutScale;
-      const bubbleWidth = `${Math.ceil(contentWidth + horizontalPadding)}px`;
-      if (message.style.getPropertyValue('--chat-measured-bubble-width') !== bubbleWidth) {
-        message.style.setProperty('--chat-measured-bubble-width', bubbleWidth);
-      }
-    };
-
-    const scheduleMeasurement = () => {
-      if (cancelled) return;
-      if (measureFrame !== null) window.cancelAnimationFrame(measureFrame);
-      measureFrame = window.requestAnimationFrame(measureFinalBubble);
-    };
-
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(scheduleMeasurement);
-    [element, lineElement, timestamp].filter(Boolean)
-      .forEach(target => resizeObserver?.observe(target));
-    document.fonts?.ready.then(scheduleMeasurement);
-    window.addEventListener('resize', scheduleMeasurement);
-    scheduleMeasurement();
-
-    return () => {
-      cancelled = true;
-      if (measureFrame !== null) window.cancelAnimationFrame(measureFrame);
-      resizeObserver?.disconnect();
-      window.removeEventListener('resize', scheduleMeasurement);
-    };
-  }, [
-    layoutKey,
-    line,
-    lyricFontSize,
-    precomputedLayout,
-    renderedGlyphWidth,
-    savedNode,
-    translationReferenceOffset,
-    translationReferenceWidth,
-    wrapLayout.enabled,
-    wrapLayout.width,
-    wrappedContentLayout.key,
-    wrappedContentWidth
-  ]);
-
-  useLayoutEffect(() => {
-    const element = textRef.current;
-    const translation = element?.querySelector('.chunk-translation');
-    if (!element || !translation || precomputedLayout) return;
-
-    const mainBounds = getTextBoundingBox([
-      ...element.querySelectorAll('.main-lyrics-layer .lyric-text-span')
-    ]);
-    const pronunciationBounds = getTextBoundingBox([
-      ...element.querySelectorAll('.pronunciation-text')
-    ]);
-    const mainWidth = mainBounds ? mainBounds.right - mainBounds.left : 0;
-    const pronunciationWidth = pronunciationBounds
-      ? pronunciationBounds.right - pronunciationBounds.left
-      : 0;
-    const anchorBounds = pronunciationWidth > mainWidth
-      ? pronunciationBounds
-      : mainBounds;
-    if (!anchorBounds) return;
-
-    const layoutScale = getLayoutScale(element);
-    const referenceWidth = Math.max(
-      1,
-      Math.floor((anchorBounds.right - anchorBounds.left) / layoutScale)
-    );
-    const translationStyles = getComputedStyle(translation);
-    const currentLeftOffset = parseFloat(translationStyles.left) || 0;
-    const translationBaseLeft =
-      translation.getBoundingClientRect().left - currentLeftOffset * layoutScale;
-    const targetLeft = (anchorBounds.left + anchorBounds.right) / 2 -
-      (referenceWidth * layoutScale) / 2;
-    const offset = (targetLeft - translationBaseLeft) / layoutScale;
-    setTranslationReferenceWidth(previous => (
-      Math.abs(previous - referenceWidth) < 1 ? previous : referenceWidth
-    ));
-    setTranslationReferenceOffset(previous => (
-      Math.abs(previous - offset) < 0.1 ? previous : offset
-    ));
-  }, [
-    renderedGlyphWidth,
-    translationReferenceWidth,
-    translationReferenceOffset,
-    wrapLayout.enabled,
-    wrapLayout.width,
-    line,
-    savedNode,
-    lyricFontSize,
-    precomputedLayout
-  ]);
-
-  useLayoutEffect(() => {
     if (
       measuredLayoutKey !== layoutKey ||
       !wrapLayout.width ||
@@ -434,9 +241,7 @@ const GroupChatLyricText = React.memo(({
     onLayoutReady(lineIndex, layoutKey, {
       enabled: wrapLayout.enabled,
       width: wrapLayout.width,
-      renderedGlyphWidth,
-      translationReferenceWidth,
-      translationReferenceOffset
+      renderedGlyphWidth
     });
   }, [
     layoutKey,
@@ -444,11 +249,107 @@ const GroupChatLyricText = React.memo(({
     lineIndex,
     onLayoutReady,
     renderedGlyphWidth,
-    translationReferenceOffset,
-    translationReferenceWidth,
     wrapLayout.enabled,
     wrapLayout.width
   ]);
+
+  useLayoutEffect(() => {
+    const element = textRef.current;
+    const translation = element?.querySelector(
+      '.chunk-translation.main-live-translation'
+    );
+    const mainLyrics = element?.querySelector('.main-lyrics-layer');
+    if (!element || !translation || !mainLyrics) return undefined;
+
+    const alignTranslation = () => {
+      translation.style.removeProperty('--chat-translation-offset-x');
+      const translationRow = getTextLineBounds(translation)[0];
+      const mainRows = getTextLineBounds(mainLyrics, true);
+      if (!translationRow || !mainRows.length) return;
+
+      const redRow = { ...mainRows[0] };
+      const closestMainRowIndex = bounds => mainRows.reduce((closest, row, index) => {
+        const distance = Math.abs(
+          row.top + (row.bottom - row.top) / 2 -
+          bounds.top - (bounds.bottom - bounds.top) / 2
+        );
+        return !closest || distance < closest.distance
+          ? { index, distance }
+          : closest;
+      }, null)?.index ?? -1;
+
+      element.querySelectorAll('.pronunciation-text').forEach(pronunciation => {
+        getTextLineBounds(pronunciation).forEach(row => {
+          if (closestMainRowIndex(row) !== 0) return;
+          redRow.left = Math.min(redRow.left, row.left);
+          redRow.right = Math.max(redRow.right, row.right);
+          redRow.top = Math.min(redRow.top, row.top);
+          redRow.bottom = Math.max(redRow.bottom, row.bottom);
+        });
+      });
+
+      const translationCenter = (translationRow.left + translationRow.right) / 2;
+      const redRowCenter = (redRow.left + redRow.right) / 2;
+      translation.style.setProperty(
+        '--chat-translation-offset-x',
+        `${(redRowCenter - translationCenter) / getLayoutScale(element)}px`
+      );
+    };
+
+    alignTranslation();
+    const resizeObserver = new ResizeObserver(alignTranslation);
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+      translation.style.removeProperty('--chat-translation-offset-x');
+    };
+  }, [line, savedNode, layoutKey, wrapLayout.enabled, wrapLayout.width]);
+
+  useLayoutEffect(() => {
+    const element = textRef.current;
+    const turn = element?.closest('.group-chat-turn');
+    const timestamp = turn?.querySelector('.group-chat-message-line time');
+    if (!element || !turn || !timestamp) return undefined;
+
+    const alignTextToTimestamp = () => {
+      element.style.removeProperty('translate');
+      const contentRows = getTextLineBounds(element);
+      const timestampRows = getTextLineBounds(timestamp);
+      if (!contentRows.length || !timestampRows.length) return;
+
+      const contentBounds = contentRows.reduce((bounds, row) => ({
+        left: Math.min(bounds.left, row.left),
+        right: Math.max(bounds.right, row.right)
+      }), { left: Number.POSITIVE_INFINITY, right: Number.NEGATIVE_INFINITY });
+      const timestampBounds = timestampRows.reduce((bounds, row) => ({
+        left: Math.min(bounds.left, row.left),
+        right: Math.max(bounds.right, row.right)
+      }), { left: Number.POSITIVE_INFINITY, right: Number.NEGATIVE_INFINITY });
+      const offset = turn.classList.contains('group-chat-turn-right')
+        ? timestampBounds.right - contentBounds.right
+        : timestampBounds.left - contentBounds.left;
+
+      element.style.translate = `${offset / getLayoutScale(element)}px 0`;
+    };
+
+    let cancelled = false;
+    alignTextToTimestamp();
+    const resizeObserver = new ResizeObserver(alignTextToTimestamp);
+    resizeObserver.observe(element);
+    resizeObserver.observe(timestamp);
+    document.fonts.ready.then(() => {
+      if (!cancelled) alignTextToTimestamp();
+    });
+    window.addEventListener('resize', alignTextToTimestamp);
+
+    return () => {
+      cancelled = true;
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', alignTextToTimestamp);
+      element.style.removeProperty('translate');
+    };
+  }, [line, savedNode, layoutKey, wrapLayout.enabled, wrapLayout.width]);
 
   const renderClassName = [
     'group-chat-message-text',
@@ -462,17 +363,10 @@ const GroupChatLyricText = React.memo(({
       className={renderClassName}
       dir={isRTL ? 'rtl' : 'ltr'}
       style={{
-        '--chat-translation-reference-width': translationReferenceWidth
-          ? `${translationReferenceWidth}px`
-          : '100%',
         '--chat-rendered-glyph-width': renderedGlyphWidth
           ? `${renderedGlyphWidth}px`
           : '100%',
-        '--chat-translation-left-offset': `${translationReferenceOffset}px`,
-        '--chat-wrap-width': `${wrapLayout.width}px`,
-        '--chat-wrapped-content-width': wrappedContentWidth
-          ? `${wrappedContentWidth}px`
-          : undefined,
+        '--chat-wrap-width': `${wrapLayout.width}px`
       }}
     >
       {renderLine(

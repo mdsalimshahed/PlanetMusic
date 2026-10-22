@@ -1,76 +1,117 @@
 import { useEffect, useRef, useState } from 'react';
 import './GroupChatDebugOverlay.css';
 
-const getOverlayMetrics = overlay => {
-  const rect = overlay.getBoundingClientRect();
-  return {
-    rect,
-    scaleX: rect.width && overlay.offsetWidth ? rect.width / overlay.offsetWidth : 1,
-    scaleY: rect.height && overlay.offsetHeight ? rect.height / overlay.offsetHeight : 1
-  };
-};
-
-const getLocalRect = (rect, metrics) => ({
-  top: (rect.top - metrics.rect.top) / metrics.scaleY,
-  left: (rect.left - metrics.rect.left) / metrics.scaleX,
-  right: (rect.right - metrics.rect.left) / metrics.scaleX,
-  bottom: (rect.bottom - metrics.rect.top) / metrics.scaleY
-});
-
-const getTextBounds = (element, metrics) => {
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-  const bounds = [];
+const getTextBounds = (
+  element,
+  overlayRect,
+  scaleX,
+  scaleY,
+  excludePronunciation = false
+) => {
+  if (!element) return [];
+  const rows = [];
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+    acceptNode: textNode => (
+      excludePronunciation &&
+      textNode.parentElement?.closest('.pronunciation-text')
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT
+    )
+  });
   let node;
 
   while ((node = walker.nextNode())) {
     if (!node.textContent.trim()) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
-    for (const rect of range.getClientRects()) {
-      if (rect.width && rect.height) bounds.push(getLocalRect(rect, metrics));
-    }
+    [...range.getClientRects()].forEach(rect => {
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const bounds = {
+        top: (rect.top - overlayRect.top) / scaleY,
+        bottom: (rect.bottom - overlayRect.top) / scaleY,
+        left: (rect.left - overlayRect.left) / scaleX,
+        right: (rect.right - overlayRect.left) / scaleX
+      };
+      const row = rows.find(candidate => {
+        const overlap = Math.min(bounds.bottom, candidate.bottom) -
+          Math.max(bounds.top, candidate.top);
+        return overlap > Math.min(
+          bounds.bottom - bounds.top,
+          candidate.bottom - candidate.top
+        ) * 0.5;
+      });
+
+      if (row) {
+        row.top = Math.min(row.top, bounds.top);
+        row.bottom = Math.max(row.bottom, bounds.bottom);
+        row.left = Math.min(row.left, bounds.left);
+        row.right = Math.max(row.right, bounds.right);
+      } else {
+        rows.push(bounds);
+      }
+    });
   }
 
-  if (!bounds.length) return null;
-  const top = Math.min(...bounds.map(rect => rect.top));
-  const left = Math.min(...bounds.map(rect => rect.left));
-  const right = Math.max(...bounds.map(rect => rect.right));
-  const bottom = Math.max(...bounds.map(rect => rect.bottom));
+  return rows.map(row => ({
+    top: row.top,
+    left: row.left,
+    width: row.right - row.left,
+    height: row.bottom - row.top
+  }));
+};
+
+const getCombinedBounds = (first, second) => {
+  const left = Math.min(first.left, second.left);
+  const top = Math.min(first.top, second.top);
+  const right = Math.max(first.left + first.width, second.left + second.width);
+  const bottom = Math.max(first.top + first.height, second.top + second.height);
   return { top, left, width: right - left, height: bottom - top };
 };
 
-const getCombinedTextBounds = (elements, metrics) => {
-  const bounds = [...elements]
-    .map(element => getTextBounds(element, metrics))
-    .filter(Boolean);
-  if (!bounds.length) return null;
+const bubbleFrameStyleProperties = [
+  '--chat-debug-bubble-left',
+  '--chat-debug-bubble-top',
+  '--chat-debug-bubble-width',
+  '--chat-debug-bubble-height',
+  '--chat-debug-bubble-padding-x',
+  '--chat-debug-bubble-padding-y'
+];
 
-  const top = Math.min(...bounds.map(rect => rect.top));
-  const left = Math.min(...bounds.map(rect => rect.left));
-  const right = Math.max(...bounds.map(rect => rect.left + rect.width));
-  const bottom = Math.max(...bounds.map(rect => rect.top + rect.height));
-  return { top, left, width: right - left, height: bottom - top };
+const setBubbleFrameStyle = (message, bounds) => {
+  if (!message) return;
+  const messageRect = message.getBoundingClientRect();
+  const overlay = message.closest('.group-chat')?.querySelector('.group-chat-debug-overlay');
+  if (!overlay) return;
+  const overlayRect = overlay.getBoundingClientRect();
+  const overlayScaleX = overlay.offsetWidth ? overlayRect.width / overlay.offsetWidth : 1;
+  const overlayScaleY = overlay.offsetHeight ? overlayRect.height / overlay.offsetHeight : 1;
+  const values = [
+    (overlayRect.left + bounds.left * overlayScaleX - messageRect.left) / overlayScaleX,
+    (overlayRect.top + bounds.top * overlayScaleY - messageRect.top) / overlayScaleY,
+    bounds.width,
+    bounds.height,
+    'calc(1.2 * var(--chat-vh-unit))',
+    'calc(1.2 * var(--chat-vh-unit))'
+  ];
+
+  bubbleFrameStyleProperties.forEach((property, index) => {
+    const value = typeof values[index] === 'string'
+      ? values[index]
+      : `${(Math.round(values[index] * 100) / 100).toFixed(2)}px`;
+    if (message.style.getPropertyValue(property) !== value) {
+      message.style.setProperty(property, value);
+    }
+  });
 };
 
-const getElementBounds = (element, metrics) => {
-  const rect = getLocalRect(element.getBoundingClientRect(), metrics);
-  return {
-    top: rect.top,
-    left: rect.left,
-    width: rect.right - rect.left,
-    height: rect.bottom - rect.top
-  };
+const clearBubbleFrameStyle = message => {
+  if (!message) return;
+  bubbleFrameStyleProperties.forEach(property => {
+    if (message.style.getPropertyValue(property)) {
+      message.style.removeProperty(property);
+    }
+  });
 };
-
-const boxesAreEqual = (first, second) => first.length === second.length &&
-  first.every((box, index) => (
-    box.id === second[index].id &&
-    box.type === second[index].type &&
-    Math.abs(box.top - second[index].top) < 0.25 &&
-    Math.abs(box.left - second[index].left) < 0.25 &&
-    Math.abs(box.width - second[index].width) < 0.25 &&
-    Math.abs(box.height - second[index].height) < 0.25
-  ));
 
 const gapLabelsAreEqual = (first, second) => (
   first?.text === second?.text &&
@@ -80,7 +121,17 @@ const gapLabelsAreEqual = (first, second) => (
   ))
 );
 
-const GroupChatDebugOverlay = () => {
+const boxesAreEqual = (first, second) => first.length === second.length &&
+  first.every((box, index) => {
+    const next = second[index];
+    return box.id === next.id &&
+      Math.abs(box.top - next.top) < 0.25 &&
+      Math.abs(box.left - next.left) < 0.25 &&
+      Math.abs(box.width - next.width) < 0.25 &&
+      Math.abs(box.height - next.height) < 0.25;
+  });
+
+const GroupChatDebugOverlay = ({ showDebug = false }) => {
   const overlayRef = useRef(null);
   const frameRef = useRef(null);
   const [boxes, setBoxes] = useState([]);
@@ -99,12 +150,14 @@ const GroupChatDebugOverlay = () => {
     );
 
     let disposed = false;
-    const updateBoxes = () => {
+    const updateOverlay = () => {
       frameRef.current = null;
       if (disposed) return;
       const overlay = overlayRef.current;
       if (!overlay) return;
-      const metrics = getOverlayMetrics(overlay);
+      const overlayRect = overlay.getBoundingClientRect();
+      const scaleX = overlay.offsetWidth ? overlayRect.width / overlay.offsetWidth : 1;
+      const scaleY = overlay.offsetHeight ? overlayRect.height / overlay.offsetHeight : 1;
       const nextBoxes = [];
       const turns = [...history.querySelectorAll('.group-chat-turn')];
       const historyRect = history?.getBoundingClientRect();
@@ -125,66 +178,171 @@ const GroupChatDebugOverlay = () => {
         rect.bottom > visibleTop &&
         rect.top < visibleBottom
       )).sort((first, second) => first.rect.bottom - second.rect.bottom);
+      const visibleTurnSet = new Set(visibleTurns.map(({ turn }) => turn));
+      turns.forEach(turn => {
+        if (!visibleTurnSet.has(turn)) {
+          clearBubbleFrameStyle(turn.querySelector('.group-chat-message'));
+        }
+      });
+      visibleTurns.forEach(({ turn }, turnIndex) => {
+        const drawDebugBoxes = turnIndex >= visibleTurns.length - 3;
+        const lyricBoxes = [];
+        const translationBoxes = [];
+        const rowOutlines = [];
+        const timestampBoxes = [];
+        const artistBoxes = [];
+
+        [
+          {
+            selector: '.chunk-translation, .live-translation',
+            type: 'translation'
+          },
+          {
+            selector: '.pronunciation-text',
+            type: 'pronunciation'
+          },
+          {
+            selector: '.group-chat-message-line time',
+            type: 'timestamp'
+          },
+          {
+            selector: '.group-chat-artist',
+            type: 'artist'
+          }
+        ].forEach(({ selector, type }) => {
+          turn.querySelectorAll(selector).forEach((element, elementIndex) => {
+            getTextBounds(element, overlayRect, scaleX, scaleY)
+              .forEach((bounds, rowIndex) => {
+                const box = {
+                  id: `${turnIndex}-${type}-${elementIndex}-${rowIndex}`,
+                  ...bounds,
+                  type
+                };
+
+                if (type === 'translation') {
+                  translationBoxes.push(box);
+                } else if (type === 'timestamp') {
+                  timestampBoxes.push(box);
+                } else if (type === 'artist') {
+                  artistBoxes.push(box);
+                } else {
+                  lyricBoxes.push(box);
+                  if (drawDebugBoxes) nextBoxes.push(box);
+                }
+              });
+          });
+        });
+
+        const mainLayer = turn.querySelector('.main-lyrics-layer, .lyric-text-span');
+        const mainRows = getTextBounds(
+          mainLayer,
+          overlayRect,
+          scaleX,
+          scaleY,
+          true
+        );
+        const rowBounds = mainRows.map(row => ({ ...row }));
+
+        const closestRowIndex = (rows, bounds) => {
+          if (!rows.length) return -1;
+          return rows.reduce((closest, row, index) => {
+            const distance = Math.abs(
+              row.top + row.height / 2 -
+              bounds.top - bounds.height / 2
+            );
+            return !closest || distance < closest.distance
+              ? { index, distance }
+              : closest;
+          }, null)?.index ?? -1;
+        };
+
+        [...turn.querySelectorAll('.pronunciation-text')].forEach(element => {
+          const chunk = element.closest('.inline-cjk-chunk');
+          const chunkMainRows = chunk
+            ? getTextBounds(chunk, overlayRect, scaleX, scaleY, true)
+            : [];
+          const pronunciationRowBounds = getTextBounds(
+            element,
+            overlayRect,
+            scaleX,
+            scaleY
+          );
+
+          pronunciationRowBounds.forEach(pronunciation => {
+            const chunkRowIndex = closestRowIndex(chunkMainRows, pronunciation);
+            const rowIndex = closestRowIndex(
+              mainRows,
+              chunkRowIndex < 0 ? pronunciation : chunkMainRows[chunkRowIndex]
+            );
+            if (rowIndex < 0) return;
+            rowBounds[rowIndex] = getCombinedBounds(rowBounds[rowIndex], pronunciation);
+          });
+        });
+
+        mainRows.forEach((row, rowIndex) => {
+          const mainBox = {
+            id: `${turnIndex}-main-${rowIndex}`,
+            ...row,
+            type: 'main'
+          };
+          if (drawDebugBoxes) nextBoxes.push(mainBox);
+          lyricBoxes.push(mainBox);
+
+          const combined = rowBounds[rowIndex];
+          const rowOutline = {
+            id: `${turnIndex}-row-outline-${rowIndex}`,
+            top: combined.top,
+            left: combined.left,
+            width: combined.width,
+            height: combined.height,
+            type: 'row-outline'
+          };
+
+          rowOutlines.push(rowOutline);
+          if (drawDebugBoxes) nextBoxes.push(rowOutline);
+          lyricBoxes.push(rowOutline);
+        });
+
+        translationBoxes.forEach(box => {
+          if (drawDebugBoxes) nextBoxes.push(box);
+          lyricBoxes.push(box);
+        });
+
+        const whiteOutline = lyricBoxes.length
+          ? {
+            id: `${turnIndex}-content-outline`,
+            ...lyricBoxes.reduce(getCombinedBounds),
+            type: 'content-outline'
+          }
+          : null;
+
+        if (drawDebugBoxes && whiteOutline) nextBoxes.push(whiteOutline);
+        if (drawDebugBoxes) {
+          timestampBoxes.forEach(box => nextBoxes.push(box));
+          artistBoxes.forEach(box => nextBoxes.push(box));
+        }
+
+        const outerOutlineBoxes = [
+          ...(whiteOutline ? [whiteOutline] : []),
+          ...timestampBoxes
+        ];
+        if (outerOutlineBoxes.length) {
+          const bounds = outerOutlineBoxes.reduce(getCombinedBounds);
+          if (drawDebugBoxes) {
+            nextBoxes.push({
+              id: `${turnIndex}-bubble-frame`,
+              ...bounds,
+              type: 'bubble-frame'
+            });
+          }
+          setBubbleFrameStyle(turn.querySelector('.group-chat-message'), bounds);
+        } else {
+          clearBubbleFrameStyle(turn.querySelector('.group-chat-message'));
+        }
+      });
       const selectedTurns = visibleTurns.slice(-2);
       const previousTurn = selectedTurns.at(-2)?.turn ?? null;
       const activeTurn = selectedTurns.at(-1)?.turn ?? null;
-
-      selectedTurns.forEach(({ turn }, turnIndex) => {
-        const artistName = turn.querySelector('.group-chat-artist');
-        if (artistName) {
-          nextBoxes.push({
-            id: `${turnIndex}-artist-frame`,
-            ...getElementBounds(artistName, metrics),
-            type: 'artist-frame'
-          });
-          const bounds = getTextBounds(artistName, metrics);
-          if (bounds) {
-            nextBoxes.push({
-              id: `${turnIndex}-artist`,
-              ...bounds,
-              type: 'artist'
-            });
-          }
-        }
-
-        const addTextBox = (element, type, elementIndex = 0) => {
-          const bounds = element instanceof Element
-            ? getTextBounds(element, metrics)
-            : getCombinedTextBounds(element, metrics);
-          if (bounds) {
-            nextBoxes.push({
-              id: `${turnIndex}-${type}-${elementIndex}`,
-              ...bounds,
-              type
-            });
-          }
-        };
-
-        const addElementBox = (element, type, id) => {
-          if (!element) return;
-          nextBoxes.push({
-            id,
-            ...getElementBounds(element, metrics),
-            type
-          });
-        };
-
-        const message = turn.querySelector('.group-chat-message');
-        if (message) {
-          addElementBox(message, 'bubble', `${turnIndex}-bubble`);
-        }
-
-        const lyricSpans = turn.querySelectorAll('.lyric-text-span');
-        if (lyricSpans.length) addTextBox(lyricSpans, 'main');
-
-        turn.querySelectorAll('.chunk-translation, .live-translation')
-          .forEach((element, index) => addTextBox(element, 'translation', index));
-        turn.querySelectorAll('.pronunciation-text')
-          .forEach((element, index) => addTextBox(element, 'pronunciation', index));
-
-        const timestamp = turn.querySelector('.group-chat-message-line time');
-        if (timestamp) addElementBox(timestamp, 'timestamp', `${turnIndex}-timestamp`);
-      });
 
       let nextGapLabel = null;
       if (activeTurn && previousTurn) {
@@ -199,12 +357,12 @@ const GroupChatDebugOverlay = () => {
             text: gap >= 0
               ? `Gap: ${gap.toFixed(2)}s`
               : `Overlap: ${Math.abs(gap).toFixed(2)}s`,
-            left: (metrics.rect.width / metrics.scaleX) / 2,
+            left: (overlayRect.width / scaleX) / 2,
             top: Math.max(
               12,
               Math.min(
-                metrics.rect.height / metrics.scaleY - 12,
-                (betweenY - metrics.rect.top) / metrics.scaleY
+                overlayRect.height / scaleY - 12,
+                (betweenY - overlayRect.top) / scaleY
               )
             )
           };
@@ -222,14 +380,20 @@ const GroupChatDebugOverlay = () => {
 
     function scheduleUpdate() {
       if (disposed || frameRef.current !== null) return;
-      frameRef.current = requestAnimationFrame(updateBoxes);
+      frameRef.current = requestAnimationFrame(updateOverlay);
     }
 
     const resizeObserver = new ResizeObserver(scheduleUpdate);
     resizeObserver.observe(overlay);
     resizeObserver.observe(history);
     const mutationObserver = new MutationObserver(scheduleUpdate);
-    mutationObserver.observe(history, { childList: true, subtree: true });
+    mutationObserver.observe(history, {
+      attributes: true,
+      attributeFilter: ['class', 'style'],
+      characterData: true,
+      childList: true,
+      subtree: true
+    });
     history.addEventListener('scroll', scheduleUpdate, { passive: true });
     window.addEventListener('resize', scheduleUpdate);
     window.addEventListener('globalTimeUpdate', scheduleUpdate);
@@ -242,6 +406,8 @@ const GroupChatDebugOverlay = () => {
       history.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
       window.removeEventListener('globalTimeUpdate', scheduleUpdate);
+      chat.querySelectorAll('.group-chat-message')
+        .forEach(clearBubbleFrameStyle);
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
         frameRef.current = null;
@@ -251,10 +417,10 @@ const GroupChatDebugOverlay = () => {
 
   return (
     <div className="group-chat-debug-overlay" ref={overlayRef} aria-hidden="true">
-      {boxes.map(box => (
+      {showDebug && boxes.map(box => (
         <div
-          className={`group-chat-debug-box group-chat-debug-box-${box.type}`}
           key={box.id}
+          className={`group-chat-debug-box group-chat-debug-box-${box.type}`}
           style={{
             top: `${box.top}px`,
             left: `${box.left}px`,
@@ -263,7 +429,7 @@ const GroupChatDebugOverlay = () => {
           }}
         />
       ))}
-      {gapLabel && (
+      {showDebug && gapLabel && (
         <div
           className="group-chat-debug-gap"
           style={{ top: `${gapLabel.top}px`, left: `${gapLabel.left}px` }}

@@ -12,6 +12,29 @@
   pointer-events: none;
 }
 
+.group-chat .group-chat-message::before {
+  box-sizing: border-box;
+  inset: auto;
+  top: calc(
+    var(--chat-debug-bubble-top, 0px) -
+    var(--chat-debug-bubble-padding-y, 0px)
+  );
+  left: calc(
+    var(--chat-debug-bubble-left, 0px) -
+    var(--chat-debug-bubble-padding-x, 0px)
+  );
+  width: calc(
+    var(--chat-debug-bubble-width, 100%) +
+    var(--chat-debug-bubble-padding-x, 0px) +
+    var(--chat-debug-bubble-padding-x, 0px)
+  );
+  height: calc(
+    var(--chat-debug-bubble-height, 100%) +
+    var(--chat-debug-bubble-padding-y, 0px) +
+    var(--chat-debug-bubble-padding-y, 0px)
+  );
+}
+
 .group-chat-turn-right .group-chat-message {
   align-self: flex-end;
   align-items: flex-end;
@@ -104,10 +127,7 @@
 }
 
 .group-chat-message-text.is-wrap-enabled {
-  width: min(
-    var(--chat-wrapped-content-width, var(--chat-rendered-glyph-width, var(--chat-wrap-width))),
-    var(--chat-wrap-width)
-  );
+  width: max-content;
   max-width: min(var(--chat-wrap-width), 100%);
   text-wrap: wrap;
   white-space: pre-wrap;
