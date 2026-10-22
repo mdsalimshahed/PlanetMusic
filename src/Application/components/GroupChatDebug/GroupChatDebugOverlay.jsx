@@ -74,7 +74,8 @@ const bubbleFrameStyleProperties = [
   '--chat-debug-bubble-width',
   '--chat-debug-bubble-height',
   '--chat-debug-bubble-padding-x',
-  '--chat-debug-bubble-padding-y'
+  '--chat-debug-bubble-padding-y',
+  '--chat-debug-bubble-padding-bottom'
 ];
 
 const setBubbleFrameStyle = (message, bounds) => {
@@ -90,8 +91,9 @@ const setBubbleFrameStyle = (message, bounds) => {
     (overlayRect.top + bounds.top * overlayScaleY - messageRect.top) / overlayScaleY,
     bounds.width,
     bounds.height,
+    'calc(1.5 * var(--chat-vh-unit))',
     'calc(1.2 * var(--chat-vh-unit))',
-    'calc(1.2 * var(--chat-vh-unit))'
+    'calc(0.25 * var(--chat-vh-unit))'
   ];
 
   bubbleFrameStyleProperties.forEach((property, index) => {

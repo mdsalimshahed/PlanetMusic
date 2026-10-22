@@ -31,7 +31,7 @@
   height: calc(
     var(--chat-debug-bubble-height, 100%) +
     var(--chat-debug-bubble-padding-y, 0px) +
-    var(--chat-debug-bubble-padding-y, 0px)
+    var(--chat-debug-bubble-padding-bottom, var(--chat-debug-bubble-padding-y, 0px))
   );
 }
 
