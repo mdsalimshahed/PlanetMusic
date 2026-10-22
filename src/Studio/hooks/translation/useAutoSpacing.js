@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { fetchGoogleWithLang } from './utils/translationApi.js';
 import { 
-  isSpacelessScript, 
   extractPunctuationMap, 
   cleanPunctuationPythonStyle, 
-  runBruteForceAlignment 
+  runBruteForceAlignment,
+  splitLatinAndOtherChunks
 } from './utils/bruteForceEngine.js';
 
 export const useAutoSpacing = ({
@@ -50,43 +50,16 @@ export const useAutoSpacing = ({
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
         line.adlibs.forEach(a => { textInput = textInput.replace(a.text, ''); });
       }
-      textInput = textInput.replace(/\s+/g, ' ').trim();
+      textInput = textInput.trim();
 
-      // 1. REGEX TOKENIZATION: Split line into CJK vs Latin/English chunks
-      const tokens = textInput.split(/([\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+)/u).filter(Boolean);
-      
-      const blocks = [];
-      tokens.forEach(t => {
-        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(t);
-        if (t.trim()) {
-          blocks.push({ mode: isLatin ? 'latin' : 'cjk', text: t.trim() });
-        }
-      });
+      const blocks = splitLatinAndOtherChunks(textInput);
+      const finalPronChunks = await Promise.all(blocks.map(async block => {
+        if (block.mode === 'latin') return block.text;
+        const gData = await fetchGoogleWithLang(block.text, line.lang);
+        return gData.transliteration || gData.translation || '';
+      }));
 
-      // 2. FETCH PRONUNCIATIONS USING MUSIC NOTE DELIMITER (\u266B)
-      let finalPronChunks = [];
-      if (blocks.length > 1) {
-        const delimitedText = blocks.map(b => b.text).join(' \u266B ');
-        const gData = await fetchGoogleWithLang(delimitedText, line.lang);
-        const delimitedPron = gData.transliteration || gData.translation || '';
-        const pronChunks = delimitedPron.split(/\s*[\u266B♫]\s*/).map(s => s.trim());
-
-        for (let i = 0; i < blocks.length; i++) {
-          if (blocks[i].mode === 'latin') {
-            // LATIN CHUNK: Strictly force exact raw text (no Romaji)
-            finalPronChunks.push(blocks[i].text);
-          } else {
-            finalPronChunks.push(pronChunks[i] || '');
-          }
-        }
-      } else if (blocks.length === 1 && blocks[0].mode === 'latin') {
-        finalPronChunks = [blocks[0].text];
-      } else {
-        const gData = await fetchGoogleWithLang(textInput, line.lang);
-        finalPronChunks = [gData.transliteration || gData.translation || ''];
-      }
-
-      // 3. RUN BRUTE FORCE ONLY ON CJK BLOCKS
+      // Run the alignment engine only on non-Latin text; Latin phrases stay untouched.
       const resultBlocks = [];
       for (let bIdx = 0; bIdx < blocks.length; bIdx++) {
         if (cancelTranslationRef.current) break;
@@ -123,10 +96,10 @@ export const useAutoSpacing = ({
         resultBlocks.push(resultArr.join(' '));
       }
 
-      let newSpacingText = resultBlocks.join(' ').replace(/\s+/g, ' ').trim();
+      let newSpacingText = resultBlocks.join(' ').trim();
       
       // Clean display pron: Combine CJK Romaji + raw Latin text
-      let newDisplayPron = blocks.map((b, i) => b.mode === 'latin' ? b.text : finalPronChunks[i]).join(' ').replace(/\s+/g, ' ').trim();
+      let newDisplayPron = blocks.map((b, i) => b.mode === 'latin' ? b.text : finalPronChunks[i]).join(' ').trim();
 
       completedCount++;
       const progressPct = Math.round((completedCount / targetIndices.length) * 100);

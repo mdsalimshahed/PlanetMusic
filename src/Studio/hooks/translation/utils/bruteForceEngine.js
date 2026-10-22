@@ -5,6 +5,24 @@ export const isSpacelessScript = (char) => {
   return /[\u3000-\u303f\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\uac00-\ud7af\u0e00-\u0e7f\uff00-\uffef]/.test(char);
 };
 
+export const splitLatinAndOtherChunks = (text) => {
+  const latinPhrasePattern = /[\p{Script=Latin}\p{N}]+(?:[\s\p{P}\p{S}]*[\p{Script=Latin}\p{N}]+)*/gu;
+  const chunks = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(latinPhrasePattern)) {
+    const latinStart = match.index;
+    const otherText = text.slice(lastIndex, latinStart).replace(/\s+/g, ' ').trim();
+    if (otherText) chunks.push({ mode: 'cjk', text: otherText });
+    chunks.push({ mode: 'latin', text: match[0] });
+    lastIndex = latinStart + match[0].length;
+  }
+
+  const remainingText = text.slice(lastIndex).replace(/\s+/g, ' ').trim();
+  if (remainingText) chunks.push({ mode: 'cjk', text: remainingText });
+  return chunks;
+};
+
 export const cleanPunctuationPythonStyle = (str) => {
   if (!str) return '';
   return str.replace(/['!"(),*+.:%;<!¬~=>?\[\\\]^_`।{|}~،؟¿¡”（）‘’？！\-♫\u266B]/g, '').trim();
