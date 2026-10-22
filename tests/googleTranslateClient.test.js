@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { fetchGoogleTranslate } from '../src/Studio/services/googleTranslateClient.js';
 
-test('batches pending translation lookups and preserves proxy affinity fields', async () => {
+test('batches pending translation lookups without pinning them to one proxy', async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
   globalThis.fetch = async (url, options) => {
@@ -38,12 +38,36 @@ test('batches pending translation lookups and preserves proxy affinity fields', 
       requests.map(item => item.body.items.length).sort((left, right) => left - right),
       [2, 10]
     );
-    assert.equal(
-      requests.flatMap(item => item.body.items)
-        .filter(item => item.proxy_session === 'auto-spacing:run:7').length,
-      1
-    );
+    assert.ok(requests.flatMap(item => item.body.items)
+      .every(item => !Object.hasOwn(item, 'proxy_session')));
     assert.equal(results[7].translation, 'translated line 7');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('flushes requests on the next microtask without a batching timer', async () => {
+  const originalFetch = globalThis.fetch;
+  const requested = [];
+  globalThis.fetch = async (_url, options) => {
+    requested.push(JSON.parse(options.body));
+    return new Response(JSON.stringify({
+      results: JSON.parse(options.body).items.map(item => ({
+        id: item.id,
+        ok: true,
+        status: 200,
+        translation: item.text,
+        srcLang: item.sl
+      }))
+    }), { headers: { 'content-type': 'application/json' } });
+  };
+
+  try {
+    const promise = fetchGoogleTranslate('immediate', 'ja', 'en');
+    await Promise.resolve();
+    await Promise.resolve();
+    assert.equal(requested.length, 1);
+    await promise;
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -73,6 +97,38 @@ test('does not retry slow backend failures in the browser', async () => {
       /HTTP 503/
     );
     assert.equal(requestCount, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('does not add a fallback cooldown when a 429 has no Retry-After header', async () => {
+  const originalFetch = globalThis.fetch;
+  let requestCount = 0;
+  globalThis.fetch = async (_url, options) => {
+    requestCount++;
+    const [{ id }] = JSON.parse(options.body).items;
+    const isLimited = requestCount === 1;
+    return new Response(JSON.stringify({
+      results: [{
+        id,
+        ok: !isLimited,
+        status: isLimited ? 429 : 200,
+        error: isLimited ? 'Rate limited' : undefined,
+        translation: 'translated',
+        srcLang: 'ja'
+      }]
+    }), { headers: { 'content-type': 'application/json' } });
+  };
+
+  try {
+    await assert.rejects(
+      fetchGoogleTranslate('limited request', 'ja', 'en'),
+      /HTTP 429/
+    );
+    const nextResult = await fetchGoogleTranslate('next request', 'ja', 'en');
+    assert.equal(nextResult.translation, 'translated');
+    assert.equal(requestCount, 2);
   } finally {
     globalThis.fetch = originalFetch;
   }

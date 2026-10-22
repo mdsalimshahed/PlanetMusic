@@ -4,10 +4,8 @@ const scheduleGoogleBatch = createRequestScheduler(0, 3);
 const googleResponseCache = new Map();
 const MAX_CACHED_GOOGLE_RESPONSES = 500;
 const MAX_TRANSLATION_BATCH_ITEMS = 10;
-const TRANSLATION_BATCH_DELAY_MS = 12;
-let rateLimitCooldownMs = 60000;
 let pendingGoogleRequests = [];
-let googleBatchTimer = null;
+let flushScheduled = false;
 let nextGoogleRequestId = 0;
 
 const parseRetryAfter = (value) => {
@@ -61,10 +59,7 @@ const parseGoogleResponse = (data) => {
 };
 
 const flushGoogleRequests = () => {
-  if (googleBatchTimer !== null) {
-    clearTimeout(googleBatchTimer);
-    googleBatchTimer = null;
-  }
+  flushScheduled = false;
 
   while (pendingGoogleRequests.length) {
     const batch = pendingGoogleRequests.splice(0, MAX_TRANSLATION_BATCH_ITEMS);
@@ -73,12 +68,11 @@ const flushGoogleRequests = () => {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        items: batch.map(({ id, text, sl, tl, proxySession }) => ({
+        items: batch.map(({ id, text, sl, tl }) => ({
           id: String(id),
           text,
           sl,
-          tl,
-          ...(proxySession ? { proxy_session: proxySession } : {})
+          tl
         }))
       })
       });
@@ -86,9 +80,7 @@ const flushGoogleRequests = () => {
       if (!response.ok) {
         if (response.status === 429) {
           const retryAfter = parseRetryAfter(response.headers.get('Retry-After'));
-          const cooldown = Math.min(retryAfter || rateLimitCooldownMs, 300000);
-          scheduleGoogleBatch.pause(cooldown);
-          rateLimitCooldownMs = Math.min(rateLimitCooldownMs * 2, 300000);
+          if (retryAfter > 0) scheduleGoogleBatch.pause(retryAfter);
         }
         throw new Error(`Translation service HTTP ${response.status}`);
       }
@@ -105,9 +97,7 @@ const flushGoogleRequests = () => {
         } else if (!result.ok) {
           if (result.status === 429) {
             const retryAfter = parseRetryAfter(result.retry_after);
-            const cooldown = Math.min(retryAfter || rateLimitCooldownMs, 300000);
-            scheduleGoogleBatch.pause(cooldown);
-            rateLimitCooldownMs = Math.min(rateLimitCooldownMs * 2, 300000);
+            if (retryAfter > 0) scheduleGoogleBatch.pause(retryAfter);
           }
           item.reject(new Error(
             result.status === 429
@@ -115,7 +105,6 @@ const flushGoogleRequests = () => {
               : `Translation service HTTP ${result.status || 503}`
           ));
         } else {
-          rateLimitCooldownMs = 60000;
           item.resolve(parseGoogleResponse(result));
         }
       });
@@ -125,33 +114,26 @@ const flushGoogleRequests = () => {
   }
 };
 
-const queueGoogleRequest = (text, sl, tl, proxySession) => new Promise((resolve, reject) => {
+const queueGoogleRequest = (text, sl, tl) => new Promise((resolve, reject) => {
   pendingGoogleRequests.push({
     id: ++nextGoogleRequestId,
     text,
     sl,
     tl,
-    proxySession,
     resolve,
     reject
   });
 
-  if (pendingGoogleRequests.length >= MAX_TRANSLATION_BATCH_ITEMS) {
-    flushGoogleRequests();
-  } else if (googleBatchTimer === null) {
-    googleBatchTimer = setTimeout(flushGoogleRequests, TRANSLATION_BATCH_DELAY_MS);
+  if (!flushScheduled) {
+    flushScheduled = true;
+    queueMicrotask(flushGoogleRequests);
   }
 });
 
-export const fetchGoogleTranslate = async (
-  text,
-  sl = 'auto',
-  tl = 'en',
-  proxySession = null
-) => {
+export const fetchGoogleTranslate = async (text, sl = 'auto', tl = 'en') => {
   if (!text) return { translation: '', transliteration: null, srcLang: 'auto' };
 
-  const cacheKey = `${sl}\u0000${tl}\u0000${proxySession || ''}\u0000${text}`;
+  const cacheKey = `${sl}\u0000${tl}\u0000${text}`;
   const cachedResponse = googleResponseCache.get(cacheKey);
   if (cachedResponse) {
     googleResponseCache.delete(cacheKey);
@@ -159,7 +141,7 @@ export const fetchGoogleTranslate = async (
     return cachedResponse;
   }
 
-  const responsePromise = queueGoogleRequest(text, sl, tl, proxySession)
+  const responsePromise = queueGoogleRequest(text, sl, tl)
     .catch(error => {
       googleResponseCache.delete(cacheKey);
       throw error;
