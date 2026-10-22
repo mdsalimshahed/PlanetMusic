@@ -33,6 +33,15 @@ const resolveRoute = (pathname, method, searchParams) => {
     return { upstreamPath: '/download-deezer', isMultipart: true };
   }
 
+  if (
+    apiPath === 'translate'
+    || apiPath === 'translate/batch'
+    || apiPath === 'translate/stream'
+  ) {
+    if (method !== 'POST') return { error: jsonError(405, 'Method not allowed.'), allow: 'POST' };
+    return { upstreamPath: `/api/${apiPath}`, isJson: true };
+  }
+
   return { error: jsonError(404, 'Unknown API route.') };
 };
 
@@ -48,7 +57,7 @@ export async function onRequest({ request, env }) {
 
   const gatewayToken = env.BACKEND_GATEWAY_TOKEN;
   if (typeof gatewayToken !== 'string' || gatewayToken.length === 0) {
-    return jsonError(503, 'Deezer service configuration is unavailable.');
+    return jsonError(503, 'Backend service configuration is unavailable.');
   }
 
   const headers = new Headers();
@@ -59,6 +68,18 @@ export async function onRequest({ request, env }) {
     const contentType = request.headers.get('content-type') || '';
     if (!contentType.toLowerCase().startsWith('multipart/form-data;')) {
       return jsonError(415, 'This endpoint requires multipart form data.');
+    }
+    headers.set('content-type', contentType);
+  }
+
+  if (route.isJson) {
+    const contentType = request.headers.get('content-type') || '';
+    if (!contentType.toLowerCase().startsWith('application/json')) {
+      return jsonError(415, 'This endpoint requires JSON.');
+    }
+    const contentLength = Number(request.headers.get('content-length') || 0);
+    if (contentLength > 220000) {
+      return jsonError(413, 'Translation request is too large.');
     }
     headers.set('content-type', contentType);
   }
@@ -82,6 +103,6 @@ export async function onRequest({ request, env }) {
       signal: request.signal
     });
   } catch {
-    return jsonError(502, 'The Deezer service could not be reached. Please retry.');
+    return jsonError(502, 'The backend service could not be reached. Please retry.');
   }
 }

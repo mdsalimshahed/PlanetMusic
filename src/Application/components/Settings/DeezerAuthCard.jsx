@@ -4,7 +4,8 @@ import SettingsCardHeading from './SettingsCardHeading.jsx';
 
 const DeezerAuthCard = ({
   settings, handleChange, handleVerifyArl,
-  showArl, setShowArl, isVerifying, verifyResult, setVerifyResult, authGradient
+  showArl, setShowArl, isVerifying, verifyResult, setVerifyResult,
+  verifyErrorMessage, authGradient
 }) => {
   return (
       <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
@@ -73,6 +74,11 @@ const DeezerAuthCard = ({
           )}
           {verifyResult === 'error' && (
             <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Invalid or Expired ARL. Please replace it.</span>
+          )}
+          {verifyResult === 'unavailable' && (
+            <span style={{ color: '#fbbf24', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>
+              {verifyErrorMessage || 'The backend could not verify this ARL. Please retry later.'}
+            </span>
           )}
         </div>
       </div>

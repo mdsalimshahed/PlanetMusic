@@ -4,13 +4,19 @@ import { fetchGoogleWithLang } from './utils/translationApi.js';
 import { 
   extractPunctuationMap, 
   cleanPunctuationPythonStyle, 
-  runBruteForceAlignment,
-  splitLatinAndOtherChunks
+  runBruteForceAlignment 
 } from './utils/bruteForceEngine.js';
+import { splitAutoSpacingBlocks } from './utils/autoSpacingText.js';
+
+const createAutoSpacingRunId = () => (
+  globalThis.crypto?.randomUUID?.()
+  || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+);
 
 export const useAutoSpacing = ({
   workspaceData,
   setWorkspaceData,
+  listContainerRef,
   isTranslatingAll,
   cancelTranslationRef,
   setTranslateProgress,
@@ -40,11 +46,13 @@ export const useAutoSpacing = ({
     setNotification({ show: true, message: 'Running Brute Force Engine...', progress: 0 });
 
     let completedCount = 0;
+    const runId = createAutoSpacingRunId();
 
     const phasePromises = targetIndices.map(async (idx) => {
       if (cancelTranslationRef.current) return null;
 
       let line = workspaceData[idx];
+      const proxySession = `auto-spacing:${runId}:${idx}`;
       
       let textInput = line.displayText || '';
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
@@ -52,35 +60,42 @@ export const useAutoSpacing = ({
       }
       textInput = textInput.trim();
 
-      const blocks = splitLatinAndOtherChunks(textInput);
-      const finalPronChunks = await Promise.all(blocks.map(async block => {
-        if (block.mode === 'latin') return block.text;
-        const gData = await fetchGoogleWithLang(block.text, line.lang);
-        return gData.transliteration || gData.translation || '';
-      }));
+      // Keep each run in source order so non-CJK text bypasses auto-spacing unchanged.
+      const blocks = splitAutoSpacingBlocks(textInput);
 
-      // Run the alignment engine only on non-Latin text; Latin phrases stay untouched.
       const resultBlocks = [];
+      const pronunciationBlocks = [];
       for (let bIdx = 0; bIdx < blocks.length; bIdx++) {
         if (cancelTranslationRef.current) break;
         const block = blocks[bIdx];
         
         if (block.mode === 'latin') {
           resultBlocks.push(block.text);
+          pronunciationBlocks.push(block.text);
           continue;
         }
 
-        const blockPron = finalPronChunks[bIdx] || '';
         const { cleanText, purePunctuation, punctMap } = extractPunctuationMap(block.text);
         
         if (purePunctuation) {
           resultBlocks.push(purePunctuation);
+          pronunciationBlocks.push(purePunctuation);
           continue;
         }
 
+        const gData = await fetchGoogleWithLang(
+          cleanText, line.lang, proxySession
+        );
+        const blockPron = gData.transliteration || gData.translation || '';
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
 
-        let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
+        let alignedItems = await runBruteForceAlignment(
+          cleanText,
+          cleanPron,
+          line.lang,
+          cancelTranslationRef,
+          proxySession
+        );
         let resultArr = [];
         let charOffset = 0;
         
@@ -94,12 +109,14 @@ export const useAutoSpacing = ({
         });
         
         resultBlocks.push(resultArr.join(' '));
+        pronunciationBlocks.push(blockPron);
       }
 
-      let newSpacingText = resultBlocks.join(' ').trim();
+      let newSpacingText = resultBlocks.join('');
       
-      // Clean display pron: Combine CJK Romaji + raw Latin text
-      let newDisplayPron = blocks.map((b, i) => b.mode === 'latin' ? b.text : finalPronChunks[i]).join(' ').trim();
+      let newDisplayPron = pronunciationBlocks.join('');
+
+      if (cancelTranslationRef.current) return null;
 
       completedCount++;
       const progressPct = Math.round((completedCount / targetIndices.length) * 100);
@@ -107,34 +124,44 @@ export const useAutoSpacing = ({
       setTranslateProgress({ current: completedCount, total: targetIndices.length });
       setNotification({ show: true, message: `Auto Spacing (${completedCount}/${targetIndices.length})...`, progress: progressPct });
 
-      return { idx, newSpacingText, newDisplayPron };
+      setActiveTranslatingId(line.rowId);
+      setWorkspaceData(prev => prev.map((current, index) => (
+        index === idx
+          ? {
+            ...current,
+            spacingText: newSpacingText,
+            displayPron: newDisplayPron
+          }
+          : current
+      )));
+      return idx;
     });
 
-    const phaseResults = await Promise.all(phasePromises);
+    try {
+      await Promise.all(phasePromises);
+    } catch (error) {
+      cancelTranslationRef.current = true;
+      setIsAutoSpacing(false);
+      setActiveTranslatingId(null);
+      listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      const message = error.message?.includes('HTTP 429')
+        ? 'Google Translate is rate-limiting requests. Wait a minute before retrying Auto Spacing.'
+        : `Auto Spacing failed: ${error.message || 'Translation service unavailable.'}`;
+      setNotification({ show: true, message, progress: 100 });
+      return;
+    }
 
     if (cancelTranslationRef.current) {
         setIsAutoSpacing(false);
         setActiveTranslatingId(null);
+        listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         return;
     }
-
-    setWorkspaceData(prev => {
-      const next = [...prev];
-      phaseResults.forEach(res => {
-        if (res) {
-          next[res.idx] = { 
-              ...next[res.idx], 
-              spacingText: res.newSpacingText,
-              displayPron: res.newDisplayPron
-          };
-        }
-      });
-      return next;
-    });
 
     setNotification({ show: true, message: 'Auto Spacing complete!', progress: 100 });
     setIsAutoSpacing(false);
     setActiveTranslatingId(null);
+    listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return { isAutoSpacing, setIsAutoSpacing, handleAutoSpacing };

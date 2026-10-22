@@ -49,11 +49,13 @@ PlanetMusic is highly modular, featuring dedicated graphical workspaces for tota
 
 PlanetMusic is an architectural fortress of privacy. 
 
-* **Zero Central Servers:** We do not maintain a database of user libraries.
+* **No User Library Database:** We do not store a database of user libraries.
 * **Total Data Sovereignty:** Your data (audio blobs, custom lyrics, translation caches, and metadata) lives exclusively on your local hardware within your browser's sandboxed environment.
 * **No Telemetry:** There are no user accounts, no login portals, and no proprietary tracking scripts.
 
 You have total control. You can export your entire application state as a single JSON backup at any time, or trigger the **Purge** function to permanently annihilate your local database in milliseconds.
+
+Translation requests send the selected lyric text to the PlanetMusic backend, which forwards it to Google Translate for translation and transliteration. The frontend schedules up to ten concurrent requests while preserving a 120-requests-per-minute client-side ceiling; the backend caps in-flight translation requests at ten and distributes outbound requests across the configured Webshare proxy pool. Backend rate limits and upstream `429` responses remain in effect. The backend does not persist request text. Configure the same `BACKEND_GATEWAY_TOKEN` on the backend service and the frontend Pages deployment; local Vite development reads it from `.dev.vars` (copy `.dev.vars.example` and set the token).
 
 ---
 

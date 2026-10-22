@@ -16,6 +16,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, ret
     showArl, setShowArl,
     isVerifying,
     verifyResult, setVerifyResult,
+    verifyErrorMessage,
     showPurgeConfirm, setShowPurgeConfirm,
     authGradient,
     handleChange,
@@ -39,6 +40,7 @@ const SettingsTab = ({ settings, setSettings, dismissSampleMode, adsEnabled, ret
           isVerifying={isVerifying}
           verifyResult={verifyResult}
           setVerifyResult={setVerifyResult}
+          verifyErrorMessage={verifyErrorMessage}
           authGradient={authGradient}
         />
 
