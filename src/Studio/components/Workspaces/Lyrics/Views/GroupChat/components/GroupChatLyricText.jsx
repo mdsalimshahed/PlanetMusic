@@ -263,9 +263,8 @@ const GroupChatLyricText = React.memo(({
 
     const alignTranslation = () => {
       translation.style.removeProperty('--chat-translation-offset-x');
-      const translationRow = getTextLineBounds(translation)[0];
       const mainRows = getTextLineBounds(mainLyrics, true);
-      if (!translationRow || !mainRows.length) return;
+      if (!mainRows.length) return;
 
       const redRow = { ...mainRows[0] };
       const closestMainRowIndex = bounds => mainRows.reduce((closest, row, index) => {
@@ -288,11 +287,20 @@ const GroupChatLyricText = React.memo(({
         });
       });
 
+      const layoutScale = getLayoutScale(element);
+      const wrapWidth = (redRow.right - redRow.left) / layoutScale;
+      translation.style.setProperty(
+        '--chat-translation-wrap-width',
+        `${wrapWidth}px`
+      );
+      const translationRow = getTextLineBounds(translation)[0];
+      if (!translationRow) return;
+
       const translationCenter = (translationRow.left + translationRow.right) / 2;
       const redRowCenter = (redRow.left + redRow.right) / 2;
       translation.style.setProperty(
         '--chat-translation-offset-x',
-        `${(redRowCenter - translationCenter) / getLayoutScale(element)}px`
+        `${(redRowCenter - translationCenter) / layoutScale}px`
       );
     };
 
@@ -303,6 +311,7 @@ const GroupChatLyricText = React.memo(({
     return () => {
       resizeObserver.disconnect();
       translation.style.removeProperty('--chat-translation-offset-x');
+      translation.style.removeProperty('--chat-translation-wrap-width');
     };
   }, [line, savedNode, layoutKey, wrapLayout.enabled, wrapLayout.width]);
 

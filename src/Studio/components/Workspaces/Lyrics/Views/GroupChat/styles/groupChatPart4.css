@@ -52,7 +52,11 @@
 }
 
 .group-chat .group-chat-message-text .chunk-translation.main-live-translation {
+  width: var(--chat-translation-wrap-width, 100%) !important;
+  max-width: 100% !important;
   transform: translateX(var(--chat-translation-offset-x, 0px)) !important;
+  white-space: normal !important;
+  text-wrap: balance !important;
 }
 
 .group-chat .group-chat-message-text .chunk-translation .trans-word {
@@ -68,6 +72,11 @@
   white-space: nowrap !important;
   overflow-wrap: normal !important;
   word-break: normal !important;
+}
+
+.group-chat .group-chat-message-text .chunk-translation .trans-word-group.hyphenated-word-group {
+  max-width: 100% !important;
+  white-space: normal !important;
 }
 
 .group-chat-message-text.is-wrap-enabled .chunk-translation {

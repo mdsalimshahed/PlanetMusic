@@ -54,8 +54,7 @@ export const groupConsecutiveMessages = events => {
     const sameArtistGapSwitch = gapOutlierByEvent.get(event) &&
       previousSide &&
       previousArtistsKey === artistsKey;
-    const switchesSide = line.isAdlib ||
-      previousWasAdlib ||
+    const switchesSide = (previousSide && previousWasAdlib !== Boolean(line.isAdlib)) ||
       sameArtistGapSwitch ||
       (previousSide && previousArtistsKey !== artistsKey);
     const side = switchesSide

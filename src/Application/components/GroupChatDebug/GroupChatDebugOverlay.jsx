@@ -187,7 +187,7 @@ const GroupChatDebugOverlay = ({ showDebug = false }) => {
         }
       });
       visibleTurns.forEach(({ turn }, turnIndex) => {
-        const drawDebugBoxes = turnIndex >= visibleTurns.length - 3;
+        const drawDebugBoxes = showDebug && turnIndex >= visibleTurns.length - 3;
         const lyricBoxes = [];
         const translationBoxes = [];
         const rowOutlines = [];
@@ -342,7 +342,7 @@ const GroupChatDebugOverlay = ({ showDebug = false }) => {
           clearBubbleFrameStyle(turn.querySelector('.group-chat-message'));
         }
       });
-      const selectedTurns = visibleTurns.slice(-2);
+      const selectedTurns = showDebug ? visibleTurns.slice(-2) : [];
       const previousTurn = selectedTurns.at(-2)?.turn ?? null;
       const activeTurn = selectedTurns.at(-1)?.turn ?? null;
 
@@ -371,13 +371,18 @@ const GroupChatDebugOverlay = ({ showDebug = false }) => {
         }
       }
 
-      setBoxes(previous => (
-        boxesAreEqual(previous, nextBoxes) ? previous : nextBoxes
-      ));
-      setGapLabel(previous => (
-        gapLabelsAreEqual(previous, nextGapLabel) ? previous : nextGapLabel
-      ));
-      if (hasRunningHistoryAnimation()) scheduleUpdate();
+      if (showDebug) {
+        setBoxes(previous => (
+          boxesAreEqual(previous, nextBoxes) ? previous : nextBoxes
+        ));
+        setGapLabel(previous => (
+          gapLabelsAreEqual(previous, nextGapLabel) ? previous : nextGapLabel
+        ));
+      } else {
+        setBoxes(previous => previous.length ? [] : previous);
+        setGapLabel(previous => previous === null ? previous : null);
+      }
+      if (showDebug && hasRunningHistoryAnimation()) scheduleUpdate();
     };
 
     function scheduleUpdate() {
@@ -408,14 +413,12 @@ const GroupChatDebugOverlay = ({ showDebug = false }) => {
       history.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
       window.removeEventListener('globalTimeUpdate', scheduleUpdate);
-      chat.querySelectorAll('.group-chat-message')
-        .forEach(clearBubbleFrameStyle);
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
         frameRef.current = null;
       }
     };
-  }, []);
+  }, [showDebug]);
 
   return (
     <div className="group-chat-debug-overlay" ref={overlayRef} aria-hidden="true">

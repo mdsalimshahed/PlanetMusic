@@ -179,7 +179,7 @@ test('keeps an artist on their side when they return after another artist speaks
   ]);
 });
 
-test('places consecutive ad-libs opposite their previous bubbles', () => {
+test('keeps consecutive ad-libs from the same reordered artist cluster on one side', () => {
   const chat = buildGroupChatTimeline(
     [
       {
@@ -228,18 +228,15 @@ test('places consecutive ad-libs opposite their previous bubbles', () => {
   ));
 
   assert.equal(adlibGroups.length, 2);
-  assert.notEqual(adlibGroups[0].side, adlibGroups[1].side);
-  assert.deepEqual(adlibHistory.map(item => item.events[0].line.text), [
+  assert.equal(adlibGroups[0].side, adlibGroups[1].side);
+  assert.deepEqual(adlibHistory.map(item => item.events.map(event => event.line.text)), [[
     'First echo',
     'Second echo'
-  ]);
-  assert.deepEqual(adlibHistory.map(item => item.artists), [
-    ['Echo', 'Harmony'],
-    ['Harmony', 'Echo']
-  ]);
+  ]]);
+  assert.deepEqual(adlibHistory.map(item => item.artists), [['Echo', 'Harmony']]);
 });
 
-test('alternates sides for different consecutive artist groups', () => {
+test('keeps consecutive ad-libs from one artist on the same side', () => {
   const chat = buildGroupChatTimeline(
     [
       {
@@ -290,8 +287,8 @@ test('alternates sides for different consecutive artist groups', () => {
   assert.ok(secondAdlib);
   assert.notEqual(firstAdlib.chatSide, bea.chatSide);
   assert.equal(firstAdlib.chatSide, ari.chatSide);
-  assert.notEqual(firstAdlib.chatSide, secondAdlib.chatSide);
-  assert.equal(secondAdlib.chatSide, bea.chatSide);
+  assert.equal(firstAdlib.chatSide, secondAdlib.chatSide);
+  assert.equal(secondAdlib.chatSide, ari.chatSide);
 });
 
 test('places following bubbles opposite the preceding ad-lib', () => {
