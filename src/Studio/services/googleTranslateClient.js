@@ -1,6 +1,6 @@
 import { createRequestScheduler } from '../hooks/translation/utils/requestScheduler.js';
 
-const scheduleGoogleRequest = createRequestScheduler(2000);
+const scheduleGoogleRequest = createRequestScheduler(550, 10);
 const googleResponseCache = new Map();
 const MAX_CACHED_GOOGLE_RESPONSES = 500;
 let rateLimitCooldownMs = 60000;
@@ -18,6 +18,18 @@ const parseRetryAfter = (value) => {
 };
 
 const parseGoogleResponse = (data) => {
+  if (data && !Array.isArray(data) && typeof data === 'object') {
+    return {
+      translation: typeof data.translation === 'string' ? data.translation.trim() : '',
+      transliteration: typeof data.transliteration === 'string'
+        ? data.transliteration.trim() || null
+        : typeof data.pronunciation === 'string'
+          ? data.pronunciation.trim() || null
+          : null,
+      srcLang: typeof data.srcLang === 'string' ? data.srcLang : 'auto'
+    };
+  }
+
   let translation = '';
   let transliteration = '';
   const srcLang = data?.[2] || 'auto';

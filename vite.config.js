@@ -1,6 +1,30 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { onRequest as handleTranslationRequest } from './functions/api/translate.js'
+import { Buffer } from 'node:buffer'
+import { readFileSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import process from 'node:process'
+
+const loadDevVars = () => {
+  const devVarsPath = resolve(process.cwd(), '.dev.vars')
+  if (!existsSync(devVarsPath)) return {}
+
+  return Object.fromEntries(
+    readFileSync(devVarsPath, 'utf8')
+      .split(/\r?\n/)
+      .map(line => line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/))
+      .filter(Boolean)
+      .map(([, name, value]) => [name, value.replace(/^(['"])(.*)\1$/, '$2')])
+  )
+}
+
+const devVars = loadDevVars()
+const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN
+  || devVars.BACKEND_ORIGIN
+  || 'https://ytdownloader-jnt0.onrender.com'
+const BACKEND_GATEWAY_TOKEN = process.env.BACKEND_GATEWAY_TOKEN
+  || devVars.BACKEND_GATEWAY_TOKEN
+  || ''
 
 const translationEndpointPlugin = () => ({
   name: 'planetmusic-translation-endpoint',
@@ -11,12 +35,21 @@ const translationEndpointPlugin = () => ({
         return
       }
 
+      if (request.method !== 'POST') {
+        response.writeHead(405, {
+          allow: 'POST',
+          'content-type': 'application/json; charset=utf-8'
+        })
+        response.end(JSON.stringify({ error: 'Method not allowed.' }))
+        return
+      }
+
       try {
         const chunks = []
         let bodyLength = 0
         for await (const chunk of request) {
           bodyLength += chunk.length
-          if (bodyLength > 20000) {
+          if (bodyLength > 21000) {
             response.writeHead(413, { 'content-type': 'application/json; charset=utf-8' })
             response.end(JSON.stringify({ error: 'Translation request is too large.' }))
             return
@@ -24,28 +57,33 @@ const translationEndpointPlugin = () => ({
           chunks.push(chunk)
         }
 
-        const body = new Uint8Array(bodyLength)
-        let bodyOffset = 0
-        for (const chunk of chunks) {
-          body.set(chunk, bodyOffset)
-          bodyOffset += chunk.length
+        const contentType = request.headers['content-type'] || ''
+        if (!contentType.toLowerCase().startsWith('application/json')) {
+          response.writeHead(415, { 'content-type': 'application/json; charset=utf-8' })
+          response.end(JSON.stringify({ error: 'This endpoint requires JSON.' }))
+          return
         }
 
-        const headers = new Headers()
-        for (const [name, value] of Object.entries(request.headers)) {
-          if (typeof value === 'string') headers.set(name, value)
+        if (!BACKEND_GATEWAY_TOKEN) {
+          response.writeHead(503, { 'content-type': 'application/json; charset=utf-8' })
+          response.end(JSON.stringify({ error: 'Backend service configuration is unavailable.' }))
+          return
         }
 
-        const method = request.method || 'GET'
-        const edgeRequest = new Request(new URL(request.url, `http://${request.headers.host || 'localhost'}`), {
-          method,
-          headers,
-          body: method === 'GET' || method === 'HEAD' ? undefined : body
+        const upstreamUrl = new URL('/api/translate', BACKEND_ORIGIN)
+        const upstream = await fetch(upstreamUrl, {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': contentType,
+            'X-Backend-Gateway-Token': BACKEND_GATEWAY_TOKEN
+          },
+          body: Buffer.concat(chunks),
+          redirect: 'manual'
         })
-        const edgeResponse = await handleTranslationRequest({ request: edgeRequest })
-        const responseHeaders = Object.fromEntries(edgeResponse.headers.entries())
-        response.writeHead(edgeResponse.status, responseHeaders)
-        response.end(new Uint8Array(await edgeResponse.arrayBuffer()))
+        const responseHeaders = Object.fromEntries(upstream.headers.entries())
+        response.writeHead(upstream.status, responseHeaders)
+        response.end(Buffer.from(await upstream.arrayBuffer()))
       } catch (error) {
         next(error)
       }
