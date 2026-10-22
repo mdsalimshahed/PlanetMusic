@@ -8,6 +8,7 @@ const MAX_TRANSLATION_BATCH_BYTES = 200_000;
 let pendingGoogleRequests = [];
 let flushScheduled = false;
 let nextGoogleRequestId = 0;
+let hasLoggedDirectFallback = false;
 
 const parseRetryAfter = (value) => {
   if (!value) return 0;
@@ -57,6 +58,29 @@ const parseGoogleResponse = (data) => {
     transliteration: transliteration ? transliteration.trim() : null,
     srcLang
   };
+};
+
+const fetchDirectGoogleTranslate = async (text, sl, tl) => {
+  const params = new URLSearchParams({
+    client: 'gtx',
+    sl,
+    tl,
+    dt: 't',
+    q: text
+  });
+  params.append('dt', 'rm');
+  const response = await fetch(
+    `https://translate.googleapis.com/translate_a/single?${params}`
+  );
+  if (!response.ok) {
+    throw new Error(`Direct translation service HTTP ${response.status}`);
+  }
+
+  const result = parseGoogleResponse(await response.json());
+  if (!result.translation && !result.transliteration) {
+    throw new Error('Direct translation service returned an empty result.');
+  }
+  return result;
 };
 
 const serializeBatchItem = ({ id, text, sl, tl }) => ({
@@ -195,7 +219,17 @@ export const fetchGoogleTranslate = async (text, sl = 'auto', tl = 'en') => {
     return cachedResponse;
   }
 
-  const responsePromise = queueGoogleRequest(text, sl, tl)
+  const responsePromise = fetchDirectGoogleTranslate(text, sl, tl)
+    .catch(error => {
+      if (!hasLoggedDirectFallback) {
+        console.warn(
+          'Direct Google Translate request failed; using backend fallback.',
+          error
+        );
+        hasLoggedDirectFallback = true;
+      }
+      return queueGoogleRequest(text, sl, tl);
+    })
     .catch(error => {
       googleResponseCache.delete(cacheKey);
       throw error;

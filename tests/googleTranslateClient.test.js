@@ -2,10 +2,51 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { fetchGoogleTranslate } from '../src/Studio/services/googleTranslateClient.js';
 
+const DIRECT_TRANSLATE_URL = 'https://translate.googleapis.com/';
+
+const failDirectRequest = (url) => {
+  if (String(url).startsWith(DIRECT_TRANSLATE_URL)) {
+    throw new TypeError('Failed to fetch');
+  }
+};
+
+test('uses the direct Google Translate API before any backend request', async () => {
+  const originalFetch = globalThis.fetch;
+  let requestedUrl;
+  globalThis.fetch = async (url) => {
+    requestedUrl = new URL(url);
+    return new Response(JSON.stringify([
+      [['Hello', 'こんにちは', null, null], ['', '', 'konnichiwa', null]],
+      null,
+      'ja'
+    ]));
+  };
+
+  try {
+    const result = await fetchGoogleTranslate('こんにちは', 'ja', 'en');
+
+    assert.equal(requestedUrl.origin, 'https://translate.googleapis.com');
+    assert.equal(requestedUrl.pathname, '/translate_a/single');
+    assert.equal(requestedUrl.searchParams.get('client'), 'gtx');
+    assert.equal(requestedUrl.searchParams.get('sl'), 'ja');
+    assert.equal(requestedUrl.searchParams.get('tl'), 'en');
+    assert.deepEqual(requestedUrl.searchParams.getAll('dt'), ['t', 'rm']);
+    assert.equal(requestedUrl.searchParams.get('q'), 'こんにちは');
+    assert.deepEqual(result, {
+      translation: 'Hello',
+      transliteration: 'konnichiwa',
+      srcLang: 'ja'
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('batches pending translation lookups without pinning them to one proxy', async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
   globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     const body = JSON.parse(options.body);
     requests.push({ url, body });
     return new Response(body.items.map(item => JSON.stringify({
@@ -50,7 +91,8 @@ test('runs up to thirty translation batches concurrently', async () => {
   let activeRequests = 0;
   let maxActiveRequests = 0;
   const requests = [];
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     const body = JSON.parse(options.body);
     requests.push(body);
     activeRequests++;
@@ -106,7 +148,8 @@ test('resolves a translation as soon as its streamed result arrives', async () =
   const originalFetch = globalThis.fetch;
   let streamController;
   let itemIds;
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     itemIds = JSON.parse(options.body).items.map(item => item.id);
     return new Response(new ReadableStream({
       start(controller) {
@@ -154,7 +197,8 @@ test('resolves a translation as soon as its streamed result arrives', async () =
 test('splits large requests below the gateway body limit', async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     const body = JSON.parse(options.body);
     requests.push({ body, byteLength: new TextEncoder().encode(options.body).length });
     return new Response(body.items.map(item => JSON.stringify({
@@ -184,7 +228,8 @@ test('splits large requests below the gateway body limit', async () => {
 test('flushes requests on the next microtask without a batching timer', async () => {
   const originalFetch = globalThis.fetch;
   const requested = [];
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     requested.push(JSON.parse(options.body));
     return new Response(JSON.parse(options.body).items.map(item => JSON.stringify({
         id: item.id,
@@ -199,8 +244,9 @@ test('flushes requests on the next microtask without a batching timer', async ()
 
   try {
     const promise = fetchGoogleTranslate('immediate', 'ja', 'en');
-    await Promise.resolve();
-    await Promise.resolve();
+    for (let attempt = 0; attempt < 20 && requested.length === 0; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
     assert.equal(requested.length, 1);
     await promise;
   } finally {
@@ -211,7 +257,8 @@ test('flushes requests on the next microtask without a batching timer', async ()
 test('does not retry slow backend failures in the browser', async () => {
   const originalFetch = globalThis.fetch;
   let requestCount = 0;
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     requestCount++;
     const [{ id }] = JSON.parse(options.body).items;
     return new Response(JSON.stringify({
@@ -238,7 +285,8 @@ test('does not retry slow backend failures in the browser', async () => {
 test('does not add a fallback cooldown when a 429 has no Retry-After header', async () => {
   const originalFetch = globalThis.fetch;
   let requestCount = 0;
-  globalThis.fetch = async (_url, options) => {
+  globalThis.fetch = async (url, options) => {
+    failDirectRequest(url);
     requestCount++;
     const [{ id }] = JSON.parse(options.body).items;
     const isLimited = requestCount === 1;
