@@ -8,17 +8,15 @@ test('batches pending translation lookups without pinning them to one proxy', as
   globalThis.fetch = async (url, options) => {
     const body = JSON.parse(options.body);
     requests.push({ url, body });
-    return new Response(JSON.stringify({
-      results: body.items.map(item => ({
+    return new Response(body.items.map(item => JSON.stringify({
         id: item.id,
         ok: true,
         status: 200,
         translation: `translated ${item.text}`,
         transliteration: null,
         srcLang: item.sl
-      }))
-    }), {
-      headers: { 'content-type': 'application/json' }
+      })).join('\n') + '\n', {
+      headers: { 'content-type': 'application/x-ndjson' }
     });
   };
 
@@ -33,7 +31,7 @@ test('batches pending translation lookups without pinning them to one proxy', as
     );
 
     assert.equal(requests.length, 2);
-    assert.ok(requests.every(item => item.url === '/api/translate/batch'));
+    assert.ok(requests.every(item => item.url === '/api/translate/stream'));
     assert.deepEqual(
       requests.map(item => item.body.items.length).sort((left, right) => left - right),
       [12, 50]
@@ -60,15 +58,15 @@ test('runs up to thirty translation batches concurrently', async () => {
     return new Promise(resolve => {
       pendingResponses.push(() => {
         activeRequests--;
-        resolve(new Response(JSON.stringify({
-          results: body.items.map(item => ({
+        resolve(new Response(body.items.map(item => JSON.stringify({
             id: item.id,
             ok: true,
             status: 200,
             translation: `translated ${item.text}`,
             srcLang: item.sl
-          }))
-        }), { headers: { 'content-type': 'application/json' } }));
+          })).join('\n') + '\n', {
+          headers: { 'content-type': 'application/x-ndjson' }
+        }));
       });
     });
   };
@@ -104,21 +102,70 @@ test('runs up to thirty translation batches concurrently', async () => {
   }
 });
 
+test('resolves a translation as soon as its streamed result arrives', async () => {
+  const originalFetch = globalThis.fetch;
+  let streamController;
+  let itemIds;
+  globalThis.fetch = async (_url, options) => {
+    itemIds = JSON.parse(options.body).items.map(item => item.id);
+    return new Response(new ReadableStream({
+      start(controller) {
+        streamController = controller;
+      }
+    }), { headers: { 'content-type': 'application/x-ndjson' } });
+  };
+
+  try {
+    const first = fetchGoogleTranslate('first line', 'ja', 'en');
+    const second = fetchGoogleTranslate('second line', 'ja', 'en');
+    await new Promise(resolve => setTimeout(resolve, 0));
+    streamController.enqueue(new TextEncoder().encode(
+      `${JSON.stringify({
+        id: itemIds[0],
+        ok: true,
+        status: 200,
+        translation: 'first result',
+        srcLang: 'ja'
+      })}\n`
+    ));
+
+    assert.equal((await first).translation, 'first result');
+    let secondResolved = false;
+    second.then(() => { secondResolved = true; });
+    await Promise.resolve();
+    assert.equal(secondResolved, false);
+
+    streamController.enqueue(new TextEncoder().encode(
+      `${JSON.stringify({
+        id: itemIds[1],
+        ok: true,
+        status: 200,
+        translation: 'second result',
+        srcLang: 'ja'
+      })}\n`
+    ));
+    streamController.close();
+    assert.equal((await second).translation, 'second result');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('splits large requests below the gateway body limit', async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
   globalThis.fetch = async (_url, options) => {
     const body = JSON.parse(options.body);
     requests.push({ body, byteLength: new TextEncoder().encode(options.body).length });
-    return new Response(JSON.stringify({
-      results: body.items.map(item => ({
+    return new Response(body.items.map(item => JSON.stringify({
         id: item.id,
         ok: true,
         status: 200,
         translation: 'done',
         srcLang: item.sl
-      }))
-    }), { headers: { 'content-type': 'application/json' } });
+      })).join('\n') + '\n', {
+      headers: { 'content-type': 'application/x-ndjson' }
+    });
   };
 
   try {
@@ -139,15 +186,15 @@ test('flushes requests on the next microtask without a batching timer', async ()
   const requested = [];
   globalThis.fetch = async (_url, options) => {
     requested.push(JSON.parse(options.body));
-    return new Response(JSON.stringify({
-      results: JSON.parse(options.body).items.map(item => ({
+    return new Response(JSON.parse(options.body).items.map(item => JSON.stringify({
         id: item.id,
         ok: true,
         status: 200,
         translation: item.text,
         srcLang: item.sl
-      }))
-    }), { headers: { 'content-type': 'application/json' } });
+      })).join('\n') + '\n', {
+      headers: { 'content-type': 'application/x-ndjson' }
+    });
   };
 
   try {
@@ -168,14 +215,12 @@ test('does not retry slow backend failures in the browser', async () => {
     requestCount++;
     const [{ id }] = JSON.parse(options.body).items;
     return new Response(JSON.stringify({
-      results: [{
         id,
         ok: false,
         status: 503,
         error: 'Translation service is temporarily unavailable.'
-      }]
-    }), {
-      headers: { 'content-type': 'application/json' }
+      }) + '\n', {
+      headers: { 'content-type': 'application/x-ndjson' }
     });
   };
 
@@ -198,15 +243,13 @@ test('does not add a fallback cooldown when a 429 has no Retry-After header', as
     const [{ id }] = JSON.parse(options.body).items;
     const isLimited = requestCount === 1;
     return new Response(JSON.stringify({
-      results: [{
         id,
         ok: !isLimited,
         status: isLimited ? 429 : 200,
         error: isLimited ? 'Rate limited' : undefined,
         translation: 'translated',
         srcLang: 'ja'
-      }]
-    }), { headers: { 'content-type': 'application/json' } });
+      }) + '\n', { headers: { 'content-type': 'application/x-ndjson' } });
   };
 
   try {

@@ -14,7 +14,7 @@ const parseRetryAfter = (value) => {
 
   const seconds = Number(value);
   if (Number.isFinite(seconds)) {
-    return Math.max(0, seconds *1);
+    return Math.max(0, seconds * 1000);
   }
 
   const retryAt = Date.parse(value);
@@ -101,12 +101,12 @@ const flushGoogleRequests = () => {
   pendingGoogleRequests = [];
   splitIntoBatches(requests).forEach(batch => {
     scheduleGoogleBatch(async () => {
-      const response = await fetch('/api/translate/batch', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        items: batch.map(serializeBatchItem)
-      })
+      const response = await fetch('/api/translate/stream', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          items: batch.map(serializeBatchItem)
+        })
       });
 
       if (!response.ok) {
@@ -117,16 +117,13 @@ const flushGoogleRequests = () => {
         throw new Error(`Translation service HTTP ${response.status}`);
       }
 
-      const payload = await response.json();
-      const resultById = new Map(
-        (Array.isArray(payload.results) ? payload.results : [])
-          .map(result => [result.id, result])
-      );
-      batch.forEach(item => {
-        const result = resultById.get(String(item.id));
-        if (!result) {
-          item.reject(new Error('Translation service omitted a batch result.'));
-        } else if (!result.ok) {
+      const itemById = new Map(batch.map(item => [String(item.id), item]));
+      const settledIds = new Set();
+      const processResult = result => {
+        const item = itemById.get(String(result.id));
+        if (!item || settledIds.has(String(result.id))) return;
+        settledIds.add(String(result.id));
+        if (!result.ok) {
           if (result.status === 429) {
             const retryAfter = parseRetryAfter(result.retry_after);
             if (retryAfter > 0) scheduleGoogleBatch.pause(retryAfter);
@@ -136,8 +133,33 @@ const flushGoogleRequests = () => {
               ? 'Translation service HTTP 429'
               : `Translation service HTTP ${result.status || 503}`
           ));
-        } else {
-          item.resolve(parseGoogleResponse(result));
+          return;
+        }
+        item.resolve(parseGoogleResponse(result));
+      };
+
+      if (!response.body) {
+        throw new Error('Translation service returned no response stream.');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        buffer += decoder.decode(value, { stream: !done });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        lines.filter(line => line.trim()).forEach(line => {
+          processResult(JSON.parse(line));
+        });
+        if (done) break;
+      }
+      if (buffer.trim()) processResult(JSON.parse(buffer));
+
+      batch.forEach(item => {
+        if (!settledIds.has(String(item.id))) {
+          item.reject(new Error('Translation service omitted a batch result.'));
         }
       });
     }).catch(error => {

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { onRequest } from '../functions/api/[[path]].js';
 
-test('forwards translation batches through the authenticated backend gateway', async () => {
+test('forwards streamed translation batches through the authenticated backend gateway', async () => {
   const originalFetch = globalThis.fetch;
   let requestedUrl;
   let forwardedHeaders;
@@ -11,8 +11,8 @@ test('forwards translation batches through the authenticated backend gateway', a
     requestedUrl = new URL(url);
     forwardedHeaders = options.headers;
     forwardedBody = await new Response(options.body).text();
-    return new Response(JSON.stringify({ results: [] }), {
-      headers: { 'content-type': 'application/json' }
+    return new Response('', {
+      headers: { 'content-type': 'application/x-ndjson' }
     });
   };
 
@@ -20,7 +20,7 @@ test('forwards translation batches through the authenticated backend gateway', a
     const body = JSON.stringify({ items: [{ id: 'line-1', text: 'lyrics' }] });
     const response = await onRequest({
       request: new Request(
-        'https://planetmusic.example/api/translate/batch',
+        'https://planetmusic.example/api/translate/stream',
         {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
@@ -31,12 +31,45 @@ test('forwards translation batches through the authenticated backend gateway', a
     });
 
     assert.equal(response.status, 200);
-    assert.equal(requestedUrl.pathname, '/api/translate/batch');
+    assert.equal(requestedUrl.pathname, '/api/translate/stream');
     assert.equal(
       forwardedHeaders.get('X-Backend-Gateway-Token'),
       'gateway-test-token'
     );
     assert.equal(forwardedBody, body);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('allows the backend response stream to pass through without buffering', async () => {
+  const originalFetch = globalThis.fetch;
+  let responseController;
+  globalThis.fetch = async () => new Response(new ReadableStream({
+    start(controller) {
+      responseController = controller;
+    }
+  }), { headers: { 'content-type': 'application/x-ndjson' } });
+
+  try {
+    const response = await onRequest({
+      request: new Request(
+        'https://planetmusic.example/api/translate/stream',
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ items: [{ id: 'line-1', text: 'lyrics' }] })
+        }
+      ),
+      env: { BACKEND_GATEWAY_TOKEN: 'gateway-test-token' }
+    });
+    const reader = response.body.getReader();
+    responseController.enqueue(new TextEncoder().encode('{"id":"line-1"}\n'));
+
+    const chunk = await reader.read();
+    assert.equal(new TextDecoder().decode(chunk.value), '{"id":"line-1"}\n');
+    responseController.close();
+    await reader.read();
   } finally {
     globalThis.fetch = originalFetch;
   }

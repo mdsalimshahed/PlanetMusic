@@ -33,7 +33,11 @@ const resolveRoute = (pathname, method, searchParams) => {
     return { upstreamPath: '/download-deezer', isMultipart: true };
   }
 
-  if (apiPath === 'translate' || apiPath === 'translate/batch') {
+  if (
+    apiPath === 'translate'
+    || apiPath === 'translate/batch'
+    || apiPath === 'translate/stream'
+  ) {
     if (method !== 'POST') return { error: jsonError(405, 'Method not allowed.'), allow: 'POST' };
     return { upstreamPath: `/api/${apiPath}`, isJson: true };
   }

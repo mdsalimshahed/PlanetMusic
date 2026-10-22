@@ -31,7 +31,11 @@ const translationEndpointPlugin = () => ({
   configureServer(server) {
     server.middlewares.use(async (request, response, next) => {
       const requestPath = request.url?.split('?')[0]
-      if (!['/api/translate', '/api/translate/batch'].includes(requestPath)) {
+      if (![
+        '/api/translate',
+        '/api/translate/batch',
+        '/api/translate/stream'
+      ].includes(requestPath)) {
         next()
         return
       }
@@ -84,7 +88,16 @@ const translationEndpointPlugin = () => ({
         })
         const responseHeaders = Object.fromEntries(upstream.headers.entries())
         response.writeHead(upstream.status, responseHeaders)
-        response.end(Buffer.from(await upstream.arrayBuffer()))
+        if (!upstream.body) {
+          response.end()
+          return
+        }
+        for await (const chunk of upstream.body) {
+          if (!response.write(Buffer.from(chunk))) {
+            await new Promise(resolve => response.once('drain', resolve))
+          }
+        }
+        response.end()
       } catch (error) {
         next(error)
       }
