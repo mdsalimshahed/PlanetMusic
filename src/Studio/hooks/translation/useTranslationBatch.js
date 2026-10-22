@@ -206,23 +206,7 @@ export const useTranslationBatch = ({
       const combinedText = cleanTexts.map(t => t.text).join(' \u266B ');
 
       try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(lang)}&tl=en&dt=t`;
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ q: combinedText }) 
-        });
-
-        const data = await response.json();
-        
-        let combinedTranslation = '';
-        let detectedLang = data?.[2] || lang;
-        
-        if (data && data[0]) {
-          data[0].forEach(item => {
-            if (item[0]) combinedTranslation += item[0];
-          });
-        }
+        const { translation: combinedTranslation, srcLang: detectedLang } = await fetchGoogleWithLang(combinedText, lang);
 
         const translatedSegments = combinedTranslation.split(/\s*[\u266B]\s*/);
         const isAligned = translatedSegments.length === items.length;

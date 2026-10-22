@@ -2,11 +2,11 @@
 import { useState } from 'react';
 import { fetchGoogleWithLang } from './utils/translationApi.js';
 import { 
-  isSpacelessScript, 
   extractPunctuationMap, 
   cleanPunctuationPythonStyle, 
   runBruteForceAlignment 
 } from './utils/bruteForceEngine.js';
+import { splitAutoSpacingBlocks } from './utils/autoSpacingText.js';
 
 export const useAutoSpacing = ({
   workspaceData,
@@ -50,61 +50,33 @@ export const useAutoSpacing = ({
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
         line.adlibs.forEach(a => { textInput = textInput.replace(a.text, ''); });
       }
-      textInput = textInput.replace(/\s+/g, ' ').trim();
+      textInput = textInput.trim();
 
-      // 1. REGEX TOKENIZATION: Split line into CJK vs Latin/English chunks
-      const tokens = textInput.split(/([\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+)/u).filter(Boolean);
-      
-      const blocks = [];
-      tokens.forEach(t => {
-        const isLatin = /^[\p{Script=Latin}\d\s' ".,!?:\-&()\[\]]+$/u.test(t);
-        if (t.trim()) {
-          blocks.push({ mode: isLatin ? 'latin' : 'cjk', text: t.trim() });
-        }
-      });
+      // Keep each run in source order so non-CJK text bypasses auto-spacing unchanged.
+      const blocks = splitAutoSpacingBlocks(textInput);
 
-      // 2. FETCH PRONUNCIATIONS USING MUSIC NOTE DELIMITER (\u266B)
-      let finalPronChunks = [];
-      if (blocks.length > 1) {
-        const delimitedText = blocks.map(b => b.text).join(' \u266B ');
-        const gData = await fetchGoogleWithLang(delimitedText, line.lang);
-        const delimitedPron = gData.transliteration || gData.translation || '';
-        const pronChunks = delimitedPron.split(/\s*[\u266B♫]\s*/).map(s => s.trim());
-
-        for (let i = 0; i < blocks.length; i++) {
-          if (blocks[i].mode === 'latin') {
-            // LATIN CHUNK: Strictly force exact raw text (no Romaji)
-            finalPronChunks.push(blocks[i].text);
-          } else {
-            finalPronChunks.push(pronChunks[i] || '');
-          }
-        }
-      } else if (blocks.length === 1 && blocks[0].mode === 'latin') {
-        finalPronChunks = [blocks[0].text];
-      } else {
-        const gData = await fetchGoogleWithLang(textInput, line.lang);
-        finalPronChunks = [gData.transliteration || gData.translation || ''];
-      }
-
-      // 3. RUN BRUTE FORCE ONLY ON CJK BLOCKS
       const resultBlocks = [];
+      const pronunciationBlocks = [];
       for (let bIdx = 0; bIdx < blocks.length; bIdx++) {
         if (cancelTranslationRef.current) break;
         const block = blocks[bIdx];
         
         if (block.mode === 'latin') {
           resultBlocks.push(block.text);
+          pronunciationBlocks.push(block.text);
           continue;
         }
 
-        const blockPron = finalPronChunks[bIdx] || '';
         const { cleanText, purePunctuation, punctMap } = extractPunctuationMap(block.text);
         
         if (purePunctuation) {
           resultBlocks.push(purePunctuation);
+          pronunciationBlocks.push(purePunctuation);
           continue;
         }
 
+        const gData = await fetchGoogleWithLang(cleanText, line.lang);
+        const blockPron = gData.transliteration || gData.translation || '';
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
 
         let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
@@ -121,12 +93,12 @@ export const useAutoSpacing = ({
         });
         
         resultBlocks.push(resultArr.join(' '));
+        pronunciationBlocks.push(blockPron);
       }
 
-      let newSpacingText = resultBlocks.join(' ').replace(/\s+/g, ' ').trim();
+      let newSpacingText = resultBlocks.join('');
       
-      // Clean display pron: Combine CJK Romaji + raw Latin text
-      let newDisplayPron = blocks.map((b, i) => b.mode === 'latin' ? b.text : finalPronChunks[i]).join(' ').replace(/\s+/g, ' ').trim();
+      let newDisplayPron = pronunciationBlocks.join('');
 
       completedCount++;
       const progressPct = Math.round((completedCount / targetIndices.length) * 100);
@@ -137,7 +109,19 @@ export const useAutoSpacing = ({
       return { idx, newSpacingText, newDisplayPron };
     });
 
-    const phaseResults = await Promise.all(phasePromises);
+    let phaseResults;
+    try {
+      phaseResults = await Promise.all(phasePromises);
+    } catch (error) {
+      cancelTranslationRef.current = true;
+      setIsAutoSpacing(false);
+      setActiveTranslatingId(null);
+      const message = error.message?.includes('HTTP 429')
+        ? 'Google Translate is rate-limiting requests. Wait a minute before retrying Auto Spacing.'
+        : `Auto Spacing failed: ${error.message || 'Translation service unavailable.'}`;
+      setNotification({ show: true, message, progress: 100 });
+      return;
+    }
 
     if (cancelTranslationRef.current) {
         setIsAutoSpacing(false);
