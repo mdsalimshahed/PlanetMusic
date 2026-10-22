@@ -14,7 +14,7 @@ const parseRetryAfter = (value) => {
 
   const seconds = Number(value);
   if (Number.isFinite(seconds)) {
-    return Math.max(0, seconds * 1000);
+    return Math.max(0, seconds *1);
   }
 
   const retryAt = Date.parse(value);
