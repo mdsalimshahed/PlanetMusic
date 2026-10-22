@@ -24,7 +24,7 @@ test('batches pending translation lookups without pinning them to one proxy', as
 
   try {
     const results = await Promise.all(
-      Array.from({ length: 12 }, (_, index) => fetchGoogleTranslate(
+      Array.from({ length: 62 }, (_, index) => fetchGoogleTranslate(
         `line ${index}`,
         'ja',
         'en',
@@ -36,11 +36,41 @@ test('batches pending translation lookups without pinning them to one proxy', as
     assert.ok(requests.every(item => item.url === '/api/translate/batch'));
     assert.deepEqual(
       requests.map(item => item.body.items.length).sort((left, right) => left - right),
-      [2, 10]
+      [12, 50]
     );
     assert.ok(requests.flatMap(item => item.body.items)
       .every(item => !Object.hasOwn(item, 'proxy_session')));
-    assert.equal(results[7].translation, 'translated line 7');
+    assert.equal(results[57].translation, 'translated line 57');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('splits large requests below the gateway body limit', async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (_url, options) => {
+    const body = JSON.parse(options.body);
+    requests.push({ body, byteLength: new TextEncoder().encode(options.body).length });
+    return new Response(JSON.stringify({
+      results: body.items.map(item => ({
+        id: item.id,
+        ok: true,
+        status: 200,
+        translation: 'done',
+        srcLang: item.sl
+      }))
+    }), { headers: { 'content-type': 'application/json' } });
+  };
+
+  try {
+    await Promise.all(Array.from({ length: 45 }, (_, index) => (
+      fetchGoogleTranslate(`${index}${'x'.repeat(4998)}`, 'ja', 'en')
+    )));
+
+    assert.ok(requests.length > 1);
+    assert.ok(requests.every(request => request.byteLength <= 200_000));
+    assert.ok(requests.every(request => request.body.items.length <= 50));
   } finally {
     globalThis.fetch = originalFetch;
   }

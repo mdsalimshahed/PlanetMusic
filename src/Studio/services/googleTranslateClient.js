@@ -3,7 +3,8 @@ import { createRequestScheduler } from '../hooks/translation/utils/requestSchedu
 const scheduleGoogleBatch = createRequestScheduler(0, 3);
 const googleResponseCache = new Map();
 const MAX_CACHED_GOOGLE_RESPONSES = 500;
-const MAX_TRANSLATION_BATCH_ITEMS = 10;
+const MAX_TRANSLATION_BATCH_ITEMS = 50;
+const MAX_TRANSLATION_BATCH_BYTES = 200_000;
 let pendingGoogleRequests = [];
 let flushScheduled = false;
 let nextGoogleRequestId = 0;
@@ -58,22 +59,53 @@ const parseGoogleResponse = (data) => {
   };
 };
 
+const serializeBatchItem = ({ id, text, sl, tl }) => ({
+  id: String(id),
+  text,
+  sl,
+  tl
+});
+
+const splitIntoBatches = (requests) => {
+  const batches = [];
+  let batch = [];
+  let batchBytes = 16;
+
+  requests.forEach(item => {
+    const serializedBytes = new TextEncoder().encode(
+      JSON.stringify(serializeBatchItem(item))
+    ).length + 1;
+    if (
+      batch.length
+      && (
+        batch.length >= MAX_TRANSLATION_BATCH_ITEMS
+        || batchBytes + serializedBytes > MAX_TRANSLATION_BATCH_BYTES
+      )
+    ) {
+      batches.push(batch);
+      batch = [];
+      batchBytes = 16;
+    }
+    batch.push(item);
+    batchBytes += serializedBytes;
+  });
+
+  if (batch.length) batches.push(batch);
+  return batches;
+};
+
 const flushGoogleRequests = () => {
   flushScheduled = false;
 
-  while (pendingGoogleRequests.length) {
-    const batch = pendingGoogleRequests.splice(0, MAX_TRANSLATION_BATCH_ITEMS);
+  const requests = pendingGoogleRequests;
+  pendingGoogleRequests = [];
+  splitIntoBatches(requests).forEach(batch => {
     scheduleGoogleBatch(async () => {
       const response = await fetch('/api/translate/batch', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        items: batch.map(({ id, text, sl, tl }) => ({
-          id: String(id),
-          text,
-          sl,
-          tl
-        }))
+        items: batch.map(serializeBatchItem)
       })
       });
 
@@ -111,7 +143,7 @@ const flushGoogleRequests = () => {
     }).catch(error => {
       batch.forEach(item => item.reject(error));
     });
-  }
+  });
 };
 
 const queueGoogleRequest = (text, sl, tl) => new Promise((resolve, reject) => {
