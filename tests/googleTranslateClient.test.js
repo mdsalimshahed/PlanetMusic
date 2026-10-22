@@ -46,7 +46,7 @@ test('batches pending translation lookups without pinning them to one proxy', as
   }
 });
 
-test('runs up to ten translation batches concurrently', async () => {
+test('runs up to thirty translation batches concurrently', async () => {
   const originalFetch = globalThis.fetch;
   const pendingResponses = [];
   let activeRequests = 0;
@@ -82,22 +82,22 @@ test('runs up to ten translation batches concurrently', async () => {
 
   try {
     const translations = Promise.all(
-      Array.from({ length: 501 }, (_, index) => (
+      Array.from({ length: 1501 }, (_, index) => (
         fetchGoogleTranslate(`parallel line ${index}`, 'ja', 'en')
       ))
     );
 
-    await waitForRequestCount(10);
-    assert.equal(activeRequests, 10);
-    assert.equal(maxActiveRequests, 10);
+    await waitForRequestCount(30);
+    assert.equal(activeRequests, 30);
+    assert.equal(maxActiveRequests, 30);
     pendingResponses.splice(0).forEach(resolve => resolve());
 
-    await waitForRequestCount(11);
+    await waitForRequestCount(31);
     pendingResponses.splice(0).forEach(resolve => resolve());
     const results = await translations;
 
-    assert.equal(results.length, 501);
-    assert.equal(maxActiveRequests, 10);
+    assert.equal(results.length, 1501);
+    assert.equal(maxActiveRequests, 30);
   } finally {
     pendingResponses.splice(0).forEach(resolve => resolve());
     globalThis.fetch = originalFetch;

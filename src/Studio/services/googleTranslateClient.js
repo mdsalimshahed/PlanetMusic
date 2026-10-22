@@ -1,6 +1,6 @@
 import { createRequestScheduler } from '../hooks/translation/utils/requestScheduler.js';
 
-const scheduleGoogleBatch = createRequestScheduler(0, 10);
+const scheduleGoogleBatch = createRequestScheduler(0, 30);
 const googleResponseCache = new Map();
 const MAX_CACHED_GOOGLE_RESPONSES = 500;
 const MAX_TRANSLATION_BATCH_ITEMS = 50;
