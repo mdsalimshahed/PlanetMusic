@@ -16,21 +16,31 @@ const stripHtmlAndBrackets = (text) => {
     .trim();
 };
 
-const getGoogleData = async (text, sl = 'auto', tl = 'en') => {
+const getGoogleData = async (
+  text,
+  sl = 'auto',
+  tl = 'en',
+  proxySession = null
+) => {
   if (!text || text === '') return { translation: '', transliteration: null, srcLang: 'auto' };
 
   try {
-    return await fetchGoogleTranslate(text, sl, tl);
+    return await fetchGoogleTranslate(text, sl, tl, proxySession);
   } catch (error) {
     console.warn("Google Translate API error:", error);
     return { translation: '', transliteration: null, srcLang: sl || 'auto' };
   }
 };
 
-export const quickTransliterate = async (text, sl = 'auto', tl = 'en') => {
+export const quickTransliterate = async (
+  text,
+  sl = 'auto',
+  tl = 'en',
+  proxySession = null
+) => {
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return { translation: '', transliteration: null, srcLang: 'auto' };
-  return await getGoogleData(clean, sl, tl);
+  return await getGoogleData(clean, sl, tl, proxySession);
 };
 
 const isRomanChar = (char) => {
@@ -39,11 +49,15 @@ const isRomanChar = (char) => {
 };
 
 // Helper: Converts digits to English words, then translates to the target language of the line
-const translateNumberToTargetLang = async (numStr, targetLang) => {
+const translateNumberToTargetLang = async (
+  numStr,
+  targetLang,
+  proxySession = null
+) => {
     const enWords = numberToEnglishWords(numStr);
     if (!targetLang || targetLang === 'auto' || targetLang === 'en') return enWords;
     
-    const res = await getGoogleData(enWords, 'en', targetLang);
+    const res = await getGoogleData(enWords, 'en', targetLang, proxySession);
     
     // For phonetic fields, prioritize the transliteration (e.g. Romaji/Pinyin) if the language provides one
     if (res.transliteration) return res.transliteration.toLowerCase();
@@ -51,10 +65,32 @@ const translateNumberToTargetLang = async (numStr, targetLang) => {
     return res.translation ? res.translation.toLowerCase() : enWords;
 };
 
-export const getBulkPronunciations = async (linesArray, onProgress, targetLang = 'auto') => {
+const translateNumberMatches = async (text, targetLang, proxySession) => {
+  const matches = [...new Set(text.match(/\d+/g) || [])];
+  const translations = await Promise.all(
+    matches.map(match => translateNumberToTargetLang(
+      match, targetLang, proxySession
+    ))
+  );
+  return matches.reduce(
+    (result, match, index) => result.replace(
+      new RegExp(`\\b${match}\\b`, 'g'),
+      translations[index]
+    ),
+    text
+  );
+};
+
+export const getBulkPronunciations = async (
+  linesArray,
+  onProgress,
+  targetLang = 'auto',
+  proxySession = null,
+  initialResponses = []
+) => {
   let completed = 0;
 
-  const promises = linesArray.map(async (item) => {
+  const promises = linesArray.map(async (item, itemIndex) => {
     const updateProgress = () => {
       completed++;
       if (onProgress) onProgress(completed, linesArray.length);
@@ -72,63 +108,54 @@ export const getBulkPronunciations = async (linesArray, onProgress, targetLang =
       return null;
     }
     
-    const fullData = await quickTransliterate(cleanLine, targetLang);
+    const fullData = initialResponses[itemIndex] || await quickTransliterate(
+      cleanLine, targetLang, 'en', proxySession
+    );
     const finalLang = fullData.srcLang !== 'auto' ? fullData.srcLang : targetLang;
     let fullTrans = fullData.transliteration || '';
     
-    // Process full sentence transliteration payload (if it exists)
     if (fullTrans) {
-        const matches = fullTrans.match(/\d+/g) || [];
-        for (const match of new Set(matches)) {
-            const translatedNum = await translateNumberToTargetLang(match, finalLang);
-            fullTrans = fullTrans.replace(new RegExp(`\\b${match}\\b`, 'g'), translatedNum);
-        }
+      fullTrans = await translateNumberMatches(
+        fullTrans, finalLang, proxySession
+      );
     }
     
-    // Split by organic space boundaries
     const tokens = cleanLine.split(/(\s+)/);
-    const chunks = [];
-
-    for (const token of tokens) {
-      if (!token) continue;
-      
+    const chunks = (await Promise.all(tokens.map(async token => {
+      if (!token) return null;
       if (/^\s+$/.test(token)) {
-        chunks.push({ type: 'en', text: token, trans: '' });
-      } else {
-        const isEnToken = Array.from(token).every(c => isRomanChar(c));
-        
-        if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
-          chunks.push({ type: 'en', text: token, trans: '' });
-          continue;
-        }
-
-        // HACK: Intercept tokens that are purely numbers (ignoring punctuation like commas/parentheses)
-        const nakedToken = token.replace(/[\p{P}\p{S}]/gu, '').trim();
-        if (/^\d+$/.test(nakedToken)) {
-            const translatedNum = await translateNumberToTargetLang(nakedToken, finalLang);
-            const translatedToken = token.replace(nakedToken, translatedNum);
-            chunks.push({ type: 'foreign', text: token, trans: translatedToken });
-            continue;
-        }
-
-        if (isEnToken) {
-          chunks.push({ type: 'en', text: token, trans: '' });
-        } else {
-          const chunkData = await quickTransliterate(token, targetLang);
-          let chunkTrans = chunkData.transliteration || '';
-          
-          if (chunkTrans) {
-              const matches = chunkTrans.match(/\d+/g) || [];
-              for (const match of new Set(matches)) {
-                  const translatedNum = await translateNumberToTargetLang(match, finalLang);
-                  chunkTrans = chunkTrans.replace(new RegExp(`\\b${match}\\b`, 'g'), translatedNum);
-              }
-          }
-          
-          chunks.push({ type: 'foreign', text: token, trans: chunkTrans });
-        }
+        return { type: 'en', text: token, trans: '' };
       }
-    }
+
+      const isEnToken = Array.from(token).every(c => isRomanChar(c));
+      if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
+        return { type: 'en', text: token, trans: '' };
+      }
+
+      const nakedToken = token.replace(/[\p{P}\p{S}]/gu, '').trim();
+      if (/^\d+$/.test(nakedToken)) {
+        const translatedNum = await translateNumberToTargetLang(
+          nakedToken, finalLang, proxySession
+        );
+        return {
+          type: 'foreign',
+          text: token,
+          trans: token.replace(nakedToken, translatedNum)
+        };
+      }
+
+      if (isEnToken) return { type: 'en', text: token, trans: '' };
+
+      const chunkData = token === cleanLine
+        ? fullData
+        : await quickTransliterate(token, targetLang, 'en', proxySession);
+      const chunkTrans = await translateNumberMatches(
+        chunkData.transliteration || '',
+        finalLang,
+        proxySession
+      );
+      return { type: 'foreign', text: token, trans: chunkTrans };
+    }))).filter(Boolean);
 
     updateProgress();
     

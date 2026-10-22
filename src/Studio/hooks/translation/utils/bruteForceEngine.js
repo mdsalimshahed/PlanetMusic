@@ -45,10 +45,18 @@ export const extractPunctuationMap = (block) => {
  * PRECISE PORT OF PYTHON chinese_and_japanese(line) BRUTE FORCE ALGORITHM
  * Uses \u266B as the context query delimiter.
  */
-export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
+export const runBruteForceAlignment = async (
+  line,
+  fullPron,
+  sl,
+  cancelRef,
+  proxySession = null
+) => {
   let k = fullPron;
   if (!k) {
-    const fetchResMain = await fetchGoogleWithLang(line.replace(/\s+/g, ''), sl);
+    const fetchResMain = await fetchGoogleWithLang(
+      line.replace(/\s+/g, ''), sl, proxySession
+    );
     k = fetchResMain.transliteration || fetchResMain.translation || '';
   }
 
@@ -71,7 +79,7 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
 
     // CONTEXT QUERY USING MUSIC NOTE SYMBOL (\u266B)
     let contextStr = `(${line}) \u266B ${w}`;
-    let fetchRes = await fetchGoogleWithLang(contextStr, sl);
+    let fetchRes = await fetchGoogleWithLang(contextStr, sl, proxySession);
     let rawP = fetchRes.transliteration || fetchRes.translation || '';
 
     let parts = rawP.toLowerCase().split(/\s*[\u266B♫]\s*/);
@@ -152,7 +160,9 @@ export const runBruteForceAlignment = async (line, fullPron, sl, cancelRef) => {
         character1 = char1;
         w1 = w1 + character1;
 
-        let fetchRes11 = await fetchGoogleWithLang(`(${line1}) \u266B ${w1}`, sl);
+        let fetchRes11 = await fetchGoogleWithLang(
+          `(${line1}) \u266B ${w1}`, sl, proxySession
+        );
         let rawP11 = fetchRes11.transliteration || fetchRes11.translation || '';
         let parts11 = rawP11.toLowerCase().split(/\s*[\u266B♫]\s*/);
         let lastSegment11 = parts11[parts11.length - 1].replace(/^[-.,_]+/, '').trim();

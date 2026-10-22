@@ -30,7 +30,8 @@ const translationEndpointPlugin = () => ({
   name: 'planetmusic-translation-endpoint',
   configureServer(server) {
     server.middlewares.use(async (request, response, next) => {
-      if (request.url?.split('?')[0] !== '/api/translate') {
+      const requestPath = request.url?.split('?')[0]
+      if (!['/api/translate', '/api/translate/batch'].includes(requestPath)) {
         next()
         return
       }
@@ -49,7 +50,7 @@ const translationEndpointPlugin = () => ({
         let bodyLength = 0
         for await (const chunk of request) {
           bodyLength += chunk.length
-          if (bodyLength > 21000) {
+          if (bodyLength > 220000) {
             response.writeHead(413, { 'content-type': 'application/json; charset=utf-8' })
             response.end(JSON.stringify({ error: 'Translation request is too large.' }))
             return
@@ -70,7 +71,7 @@ const translationEndpointPlugin = () => ({
           return
         }
 
-        const upstreamUrl = new URL('/api/translate', BACKEND_ORIGIN)
+        const upstreamUrl = new URL(requestPath, BACKEND_ORIGIN)
         const upstream = await fetch(upstreamUrl, {
           method: 'POST',
           headers: {

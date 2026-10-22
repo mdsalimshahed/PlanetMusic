@@ -8,6 +8,11 @@ import {
   formatAdlibPronunciation 
 } from './utils/translationApi.js';
 
+const createTranslationRunId = () => (
+  globalThis.crypto?.randomUUID?.()
+  || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+);
+
 export const useTranslationBatch = ({
   workspaceData,
   setWorkspaceData,
@@ -42,6 +47,8 @@ export const useTranslationBatch = ({
     setNotification({ show: true, message: 'Starting Translation...', progress: 0 });
     
     let completedCount = 0;
+    let failedLineCount = 0;
+    const runId = createTranslationRunId();
 
     const promises = workspaceData.map(async (line, idx) => {
       if (cancelTranslationRef.current) return null;
@@ -54,14 +61,22 @@ export const useTranslationBatch = ({
         return { index: idx, data: { ...line, translation: '', displayPron: '', pronunciation: '' } };
       }
       
-      const res = await fetchSingleLine(line);
+      const res = await fetchSingleLine(
+        line,
+        `translate-all:${runId}:${idx}`
+      );
       
       completedCount++;
       const progressPct = Math.round((completedCount / workspaceData.length) * 100);
       setTranslateProgress({ current: completedCount, total: workspaceData.length });
       setNotification({ show: true, message: `Translating (${completedCount}/${workspaceData.length})...`, progress: progressPct });
 
-      if (!res) return null;
+      if (!res) {
+        if (line.spacingText?.trim() || line.displayText?.trim()) {
+          failedLineCount++;
+        }
+        return null;
+      }
 
       let rawTransText = res.translation !== undefined ? String(res.translation).trim() : '';
       
@@ -130,11 +145,17 @@ export const useTranslationBatch = ({
     });
     
     if (!cancelTranslationRef.current) {
-      setShowSuccessBanner(true);
+      setShowSuccessBanner(failedLineCount === 0);
       if (listContainerRef.current) {
         listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      setNotification({ show: true, message: 'All lines translated! Ready to Save.', progress: 100 });
+      setNotification({
+        show: true,
+        message: failedLineCount
+          ? `Translation finished with issues: ${failedLineCount} line(s) could not be translated. Retry those lines.`
+          : 'All lines translated! Ready to Save.',
+        progress: 100
+      });
       setTimeout(() => setShowSuccessBanner(false), 4000);
     }
 
@@ -155,6 +176,9 @@ export const useTranslationBatch = ({
     setShowSuccessBanner(false);
     setTranslateProgress({ current: 0, total: workspaceData.length });
     setNotification({ show: true, message: 'Grouping lines by language...', progress: 0 });
+    const runId = createTranslationRunId();
+    let skippedOversizedLineCount = 0;
+    let failedChunkCount = 0;
     
     setWorkspaceData(prev => {
         const next = [...prev];
@@ -197,37 +221,64 @@ export const useTranslationBatch = ({
         const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
         let text = hasSpacing ? line.spacingText : line.displayText;
         
-        if (!hasSpacing && !line._meta.isAdlib && line.isSplit && line.adlibs) {
+        if (!hasSpacing && !line._meta?.isAdlib && line.isSplit && line.adlibs) {
           line.adlibs.forEach(a => { text = text.replace(a.text, ''); });
         }
         return { text: text.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim(), hasSpacing };
       });
 
-      const combinedText = cleanTexts.map(t => t.text).join(' \u266B ');
-
-      try {
-        const { translation: combinedTranslation, srcLang: detectedLang } = await fetchGoogleWithLang(combinedText, lang);
-
-        const translatedSegments = combinedTranslation.split(/\s*[\u266B]\s*/);
-        const isAligned = translatedSegments.length === items.length;
-
-        if (!isAligned) {
-          console.warn(`Context translation mismatch for [${lang}]: Expected ${items.length} lines, got ${translatedSegments.length} segments.`);
+      const contextChunks = [];
+      let currentChunk = [];
+      let currentLength = 0;
+      cleanTexts.forEach((cleanText, index) => {
+        const textLength = Array.from(cleanText.text).length;
+        if (textLength > 5000) {
+          skippedOversizedLineCount++;
+          return;
         }
+        const nextLength = currentLength + textLength + (currentChunk.length ? 3 : 0);
+        if (currentChunk.length && nextLength > 5000) {
+          contextChunks.push(currentChunk);
+          currentChunk = [];
+          currentLength = 0;
+        }
+        if (currentChunk.length) currentLength += 3;
+        currentChunk.push(index);
+        currentLength += textLength;
+      });
+      if (currentChunk.length) contextChunks.push(currentChunk);
 
-        const hasNumbersInBatch = cleanTexts.some(t => /\d/.test(t.text));
-        const translitLang = (hasNumbersInBatch && lang === 'auto') ? detectedLang : lang;
+      const chunkResults = await Promise.allSettled(contextChunks.map(async (chunkIndices, chunkNumber) => {
+          if (cancelTranslationRef.current) return;
+          const contextSession = `translate-context:${runId}:${lang}:${chunkNumber}`;
+          const chunkItems = chunkIndices.map(index => items[index]);
+          const chunkTexts = chunkIndices.map(index => cleanTexts[index]);
+          const combinedText = chunkTexts.map(t => t.text).join(' \u266B ');
+          const { translation: combinedTranslation, srcLang: detectedLang } =
+            await fetchGoogleWithLang(combinedText, lang, contextSession);
 
-        const batchPronunciations = await getBulkPronunciations(cleanTexts, null, translitLang);
+          const translatedSegments = combinedTranslation.split(/\s*[\u266B]\s*/);
+          const isAligned = translatedSegments.length === chunkItems.length;
+
+          if (!isAligned) {
+            console.warn(`Context translation mismatch for [${lang}]: Expected ${chunkItems.length} lines, got ${translatedSegments.length} segments.`);
+          }
+
+          const hasNumbersInBatch = chunkTexts.some(t => /\d/.test(t.text));
+          const translitLang = (hasNumbersInBatch && lang === 'auto') ? detectedLang : lang;
+
+          const batchPronunciations = await getBulkPronunciations(
+            chunkTexts, null, translitLang, contextSession
+          );
         
-        if (cancelTranslationRef.current) break;
+          if (cancelTranslationRef.current) return;
 
-        setWorkspaceData(prev => {
-          const next = [...prev];
+          setWorkspaceData(prev => {
+            const next = [...prev];
           
-          items.forEach((item, i) => {
-            const targetIdx = item.index;
-            const line = next[targetIdx];
+            chunkItems.forEach((item, i) => {
+              const targetIdx = item.index;
+              const line = next[targetIdx];
             
             let rawTransText = (isAligned && translatedSegments[i] !== undefined)
                 ? translatedSegments[i]
@@ -235,7 +286,7 @@ export const useTranslationBatch = ({
                 
             if (rawTransText) rawTransText = String(rawTransText).trim();
             
-            const normOrig = normalizeForComparison(cleanTexts[i].text);
+            const normOrig = normalizeForComparison(chunkTexts[i].text);
             const normTrans = normalizeForComparison(rawTransText);
             
             // FIX: Prevent pure numbers/CJK from triggering false English match auto-wipe
@@ -256,7 +307,7 @@ export const useTranslationBatch = ({
                   const hasSpacing = Boolean(line.spacingText && line.spacingText.trim());
                   displayPron = (p.full && !hasSpacing) ? p.full : p.chunks.map(ch => ch.trans || ch.text).join('');
                 } catch (e) {}
-              } else if (rawTransText && !/[^\x00-\x7F]/.test(cleanTexts[i].text)) {
+              } else if (rawTransText && !/[^\x00-\x7F]/.test(chunkTexts[i].text)) {
                 displayPron = '';
                 finalPron = '';
               }
@@ -273,22 +324,41 @@ export const useTranslationBatch = ({
               displayPron: isEnglishMatch ? '' : displayPron,
               lang: finalLang
             };
-          });
+            });
           
-          return next;
-        });
+            return next;
+          });
+        }));
 
-      } catch (err) {
-        console.error("Context translation error:", err);
-      }
+      chunkResults.forEach(result => {
+        if (result.status === 'rejected') {
+          failedChunkCount++;
+          console.error('Context translation error:', result.reason);
+        }
+      });
     }
     
     if (!cancelTranslationRef.current) {
-      setShowSuccessBanner(true);
+      const issues = [];
+      if (skippedOversizedLineCount) {
+        issues.push(
+          `${skippedOversizedLineCount} line(s) exceeded 5,000 characters and were skipped`
+        );
+      }
+      if (failedChunkCount) {
+        issues.push(`${failedChunkCount} context chunk(s) failed`);
+      }
+      setShowSuccessBanner(issues.length === 0);
       if (listContainerRef.current) {
         listContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
-      setNotification({ show: true, message: 'Context Translation complete! Ready to Save.', progress: 100 });
+      setNotification({
+        show: true,
+        message: issues.length
+          ? `Context Translation finished with issues: ${issues.join('; ')}.`
+          : 'Context Translation complete! Ready to Save.',
+        progress: 100
+      });
       setTimeout(() => setShowSuccessBanner(false), 4000);
     }
 
@@ -301,7 +371,18 @@ export const useTranslationBatch = ({
     setActiveTranslatingId(line.rowId);
     setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
     
-    const res = await fetchSingleLine(line);
+    const res = await fetchSingleLine(
+      line,
+      `refetch:${createTranslationRunId()}:${index}`
+    );
+
+    if (!res && (line.spacingText?.trim() || line.displayText?.trim())) {
+      setNotification({
+        show: true,
+        message: `Could not translate line ${index + 1}. Check the connection or proxy and retry.`,
+        progress: 100
+      });
+    }
     
     if (res) {
       setWorkspaceData(prev => {

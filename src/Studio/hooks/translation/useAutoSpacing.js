@@ -8,6 +8,11 @@ import {
 } from './utils/bruteForceEngine.js';
 import { splitAutoSpacingBlocks } from './utils/autoSpacingText.js';
 
+const createAutoSpacingRunId = () => (
+  globalThis.crypto?.randomUUID?.()
+  || `${Date.now()}-${Math.random().toString(36).slice(2)}`
+);
+
 export const useAutoSpacing = ({
   workspaceData,
   setWorkspaceData,
@@ -40,11 +45,13 @@ export const useAutoSpacing = ({
     setNotification({ show: true, message: 'Running Brute Force Engine...', progress: 0 });
 
     let completedCount = 0;
+    const runId = createAutoSpacingRunId();
 
     const phasePromises = targetIndices.map(async (idx) => {
       if (cancelTranslationRef.current) return null;
 
       let line = workspaceData[idx];
+      const proxySession = `auto-spacing:${runId}:${idx}`;
       
       let textInput = line.displayText || '';
       if (!line._meta?.isAdlib && line.isSplit && line.adlibs) {
@@ -75,11 +82,19 @@ export const useAutoSpacing = ({
           continue;
         }
 
-        const gData = await fetchGoogleWithLang(cleanText, line.lang);
+        const gData = await fetchGoogleWithLang(
+          cleanText, line.lang, proxySession
+        );
         const blockPron = gData.transliteration || gData.translation || '';
         const cleanPron = cleanPunctuationPythonStyle(blockPron);
 
-        let alignedItems = await runBruteForceAlignment(cleanText, cleanPron, line.lang, cancelTranslationRef);
+        let alignedItems = await runBruteForceAlignment(
+          cleanText,
+          cleanPron,
+          line.lang,
+          cancelTranslationRef,
+          proxySession
+        );
         let resultArr = [];
         let charOffset = 0;
         

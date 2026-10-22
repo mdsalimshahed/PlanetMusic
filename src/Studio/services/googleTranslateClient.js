@@ -1,9 +1,14 @@
 import { createRequestScheduler } from '../hooks/translation/utils/requestScheduler.js';
 
-const scheduleGoogleRequest = createRequestScheduler(550, 10);
+const scheduleGoogleBatch = createRequestScheduler(0, 3);
 const googleResponseCache = new Map();
 const MAX_CACHED_GOOGLE_RESPONSES = 500;
+const MAX_TRANSLATION_BATCH_ITEMS = 10;
+const TRANSLATION_BATCH_DELAY_MS = 12;
 let rateLimitCooldownMs = 60000;
+let pendingGoogleRequests = [];
+let googleBatchTimer = null;
+let nextGoogleRequestId = 0;
 
 const parseRetryAfter = (value) => {
   if (!value) return 0;
@@ -55,45 +60,98 @@ const parseGoogleResponse = (data) => {
   };
 };
 
-const fetchGoogleResponse = async (text, sl, tl) => {
-  let serverErrorRetryDelay = 1000;
-
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const response = await fetch('/api/translate', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ text, sl, tl })
-    });
-
-    if (response.ok) {
-      rateLimitCooldownMs = 60000;
-      return response.json();
-    }
-
-    if (response.status === 429) {
-      const retryAfter = parseRetryAfter(response.headers.get('Retry-After'));
-      const cooldown = Math.min(retryAfter || rateLimitCooldownMs, 300000);
-      scheduleGoogleRequest.pause(cooldown);
-      rateLimitCooldownMs = Math.min(rateLimitCooldownMs * 2, 300000);
-      throw new Error('Translation service HTTP 429');
-    }
-
-    if (response.status !== 503 || attempt === 2) {
-      throw new Error(`Translation service HTTP ${response.status}`);
-    }
-
-    const retryAfter = parseRetryAfter(response.headers.get('Retry-After'));
-    await new Promise(resolve => setTimeout(resolve, Math.min(retryAfter || serverErrorRetryDelay, 30000)));
-    serverErrorRetryDelay *= 2;
+const flushGoogleRequests = () => {
+  if (googleBatchTimer !== null) {
+    clearTimeout(googleBatchTimer);
+    googleBatchTimer = null;
   }
 
-  throw new Error('Translation service retries exhausted');
+  while (pendingGoogleRequests.length) {
+    const batch = pendingGoogleRequests.splice(0, MAX_TRANSLATION_BATCH_ITEMS);
+    scheduleGoogleBatch(async () => {
+      const response = await fetch('/api/translate/batch', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        items: batch.map(({ id, text, sl, tl, proxySession }) => ({
+          id: String(id),
+          text,
+          sl,
+          tl,
+          ...(proxySession ? { proxy_session: proxySession } : {})
+        }))
+      })
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          const retryAfter = parseRetryAfter(response.headers.get('Retry-After'));
+          const cooldown = Math.min(retryAfter || rateLimitCooldownMs, 300000);
+          scheduleGoogleBatch.pause(cooldown);
+          rateLimitCooldownMs = Math.min(rateLimitCooldownMs * 2, 300000);
+        }
+        throw new Error(`Translation service HTTP ${response.status}`);
+      }
+
+      const payload = await response.json();
+      const resultById = new Map(
+        (Array.isArray(payload.results) ? payload.results : [])
+          .map(result => [result.id, result])
+      );
+      batch.forEach(item => {
+        const result = resultById.get(String(item.id));
+        if (!result) {
+          item.reject(new Error('Translation service omitted a batch result.'));
+        } else if (!result.ok) {
+          if (result.status === 429) {
+            const retryAfter = parseRetryAfter(result.retry_after);
+            const cooldown = Math.min(retryAfter || rateLimitCooldownMs, 300000);
+            scheduleGoogleBatch.pause(cooldown);
+            rateLimitCooldownMs = Math.min(rateLimitCooldownMs * 2, 300000);
+          }
+          item.reject(new Error(
+            result.status === 429
+              ? 'Translation service HTTP 429'
+              : `Translation service HTTP ${result.status || 503}`
+          ));
+        } else {
+          rateLimitCooldownMs = 60000;
+          item.resolve(parseGoogleResponse(result));
+        }
+      });
+    }).catch(error => {
+      batch.forEach(item => item.reject(error));
+    });
+  }
 };
 
-export const fetchGoogleTranslate = async (text, sl = 'auto', tl = 'en') => {
+const queueGoogleRequest = (text, sl, tl, proxySession) => new Promise((resolve, reject) => {
+  pendingGoogleRequests.push({
+    id: ++nextGoogleRequestId,
+    text,
+    sl,
+    tl,
+    proxySession,
+    resolve,
+    reject
+  });
+
+  if (pendingGoogleRequests.length >= MAX_TRANSLATION_BATCH_ITEMS) {
+    flushGoogleRequests();
+  } else if (googleBatchTimer === null) {
+    googleBatchTimer = setTimeout(flushGoogleRequests, TRANSLATION_BATCH_DELAY_MS);
+  }
+});
+
+export const fetchGoogleTranslate = async (
+  text,
+  sl = 'auto',
+  tl = 'en',
+  proxySession = null
+) => {
   if (!text) return { translation: '', transliteration: null, srcLang: 'auto' };
 
-  const cacheKey = `${sl}\u0000${tl}\u0000${text}`;
+  const cacheKey = `${sl}\u0000${tl}\u0000${proxySession || ''}\u0000${text}`;
   const cachedResponse = googleResponseCache.get(cacheKey);
   if (cachedResponse) {
     googleResponseCache.delete(cacheKey);
@@ -101,8 +159,7 @@ export const fetchGoogleTranslate = async (text, sl = 'auto', tl = 'en') => {
     return cachedResponse;
   }
 
-  const responsePromise = scheduleGoogleRequest(() => fetchGoogleResponse(text, sl, tl))
-    .then(parseGoogleResponse)
+  const responsePromise = queueGoogleRequest(text, sl, tl, proxySession)
     .catch(error => {
       googleResponseCache.delete(cacheKey);
       throw error;

@@ -33,9 +33,9 @@ const resolveRoute = (pathname, method, searchParams) => {
     return { upstreamPath: '/download-deezer', isMultipart: true };
   }
 
-  if (apiPath === 'translate') {
+  if (apiPath === 'translate' || apiPath === 'translate/batch') {
     if (method !== 'POST') return { error: jsonError(405, 'Method not allowed.'), allow: 'POST' };
-    return { upstreamPath: '/api/translate', isJson: true };
+    return { upstreamPath: `/api/${apiPath}`, isJson: true };
   }
 
   return { error: jsonError(404, 'Unknown API route.') };
@@ -72,6 +72,10 @@ export async function onRequest({ request, env }) {
     const contentType = request.headers.get('content-type') || '';
     if (!contentType.toLowerCase().startsWith('application/json')) {
       return jsonError(415, 'This endpoint requires JSON.');
+    }
+    const contentLength = Number(request.headers.get('content-length') || 0);
+    if (contentLength > 220000) {
+      return jsonError(413, 'Translation request is too large.');
     }
     headers.set('content-type', contentType);
   }

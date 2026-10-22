@@ -14,6 +14,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   const [verifyResult, setVerifyResult] = useState(
     settings.deezerArlValid === true ? 'success' : null
   );
+  const [verifyErrorMessage, setVerifyErrorMessage] = useState('');
   const [showPurgeConfirm, setShowPurgeConfirm] = useState(false);
   const verificationRequestRef = useRef(null);
   const verificationSequenceRef = useRef(0);
@@ -84,6 +85,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
     const cachedResult = getCachedArlVerification(arl);
     if (cachedResult) {
       setVerifyResult(cachedResult);
+      setVerifyErrorMessage('');
       if (
         settings.deezerArlValid !== (cachedResult === 'success') ||
         (cachedResult === 'success' && settings.rememberDeezerArl !== true)
@@ -105,6 +107,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
     const requestId = ++verificationSequenceRef.current;
     setIsVerifying(true);
     setVerifyResult('checking');
+    setVerifyErrorMessage('');
 
     const promise = (async () => {
       let result = null;
@@ -141,12 +144,23 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
             result = 'success';
           }
         } else {
-          result = 'error';
+          result = response.status === 400 ? 'error' : 'unavailable';
+          if (result === 'unavailable') {
+            const responseData = await response.clone().json().catch(() => null);
+            setVerifyErrorMessage(
+              response.status === 503 && responseData?.error
+                ? `${responseData.error} Check the Cloudflare Pages Preview backend configuration.`
+                : `The backend could not verify this ARL (HTTP ${response.status}). Please retry later.`
+            );
+          }
         }
       } catch (error) {
         if (error.name !== 'AbortError') {
-          console.error('Verification failed:', error);
-          result = 'error';
+          console.error('ARL verification request failed.', error);
+          result = 'unavailable';
+          setVerifyErrorMessage(
+            'The backend could not be reached to verify this ARL. Please retry later.'
+          );
         }
       } finally {
         const request = verificationRequestRef.current;
@@ -163,20 +177,22 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
 
       if (isCurrentRequest && arlInputRef.current === arl && result) {
         setVerifyResult(result);
-        setSettings(prev => {
-          const isValid = result === 'success';
-          if (
-            prev.deezerArlValid === isValid &&
-            (result !== 'success' || prev.rememberDeezerArl === true)
-          ) return prev;
-          return prev.deezerArl?.trim() === arl
-            ? {
-              ...prev,
-              deezerArlValid: isValid,
-              rememberDeezerArl: isValid ? true : prev.rememberDeezerArl
-            }
-            : prev;
-        });
+        if (result !== 'unavailable') {
+          setSettings(prev => {
+            const isValid = result === 'success';
+            if (
+              prev.deezerArlValid === isValid &&
+              (result !== 'success' || prev.rememberDeezerArl === true)
+            ) return prev;
+            return prev.deezerArl?.trim() === arl
+              ? {
+                ...prev,
+                deezerArlValid: isValid,
+                rememberDeezerArl: isValid ? true : prev.rememberDeezerArl
+              }
+              : prev;
+          });
+        }
       }
       return result;
     })();
@@ -276,7 +292,7 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
   return {
     showArl, setShowArl,
     isVerifying,
-    verifyResult, setVerifyResult,
+    verifyResult, setVerifyResult, verifyErrorMessage,
     showPurgeConfirm, setShowPurgeConfirm,
     authGradient,
     handleChange,
