@@ -46,6 +46,64 @@ test('batches pending translation lookups without pinning them to one proxy', as
   }
 });
 
+test('runs up to ten translation batches concurrently', async () => {
+  const originalFetch = globalThis.fetch;
+  const pendingResponses = [];
+  let activeRequests = 0;
+  let maxActiveRequests = 0;
+  const requests = [];
+  globalThis.fetch = async (_url, options) => {
+    const body = JSON.parse(options.body);
+    requests.push(body);
+    activeRequests++;
+    maxActiveRequests = Math.max(maxActiveRequests, activeRequests);
+    return new Promise(resolve => {
+      pendingResponses.push(() => {
+        activeRequests--;
+        resolve(new Response(JSON.stringify({
+          results: body.items.map(item => ({
+            id: item.id,
+            ok: true,
+            status: 200,
+            translation: `translated ${item.text}`,
+            srcLang: item.sl
+          }))
+        }), { headers: { 'content-type': 'application/json' } }));
+      });
+    });
+  };
+
+  const waitForRequestCount = async (count) => {
+    for (let attempt = 0; attempt < 100 && requests.length < count; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    assert.equal(requests.length, count);
+  };
+
+  try {
+    const translations = Promise.all(
+      Array.from({ length: 501 }, (_, index) => (
+        fetchGoogleTranslate(`parallel line ${index}`, 'ja', 'en')
+      ))
+    );
+
+    await waitForRequestCount(10);
+    assert.equal(activeRequests, 10);
+    assert.equal(maxActiveRequests, 10);
+    pendingResponses.splice(0).forEach(resolve => resolve());
+
+    await waitForRequestCount(11);
+    pendingResponses.splice(0).forEach(resolve => resolve());
+    const results = await translations;
+
+    assert.equal(results.length, 501);
+    assert.equal(maxActiveRequests, 10);
+  } finally {
+    pendingResponses.splice(0).forEach(resolve => resolve());
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('splits large requests below the gateway body limit', async () => {
   const originalFetch = globalThis.fetch;
   const requests = [];
