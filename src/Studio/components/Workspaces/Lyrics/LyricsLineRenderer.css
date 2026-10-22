@@ -213,6 +213,7 @@ rt.pronunciation-text,
 }
 
 .live-layout-auto .core-chunks > .main-live-translation {
+  align-self: flex-start;
   margin-bottom: var(--dyn-trans-top-padding, 8px);
 }
 
