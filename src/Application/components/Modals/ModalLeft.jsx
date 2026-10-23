@@ -175,8 +175,10 @@ const ModalLeft = ({
   const hasYtLink = Boolean(extractYouTubeId(ytUrl));
   const hasDeezerLink = Boolean(customData?.deezer || selectedSong?.customLinks?.deezer);
   const hasLocalFile = Boolean(customData?.hasLocal);
+  const hasProvidedArl = Boolean(settings?.deezerArl?.trim());
   const hasArl = Boolean(settings?.deezerArl?.trim()) && settings?.deezerArlValid === true;
-  const hasPlayableLink = hasYtLink || hasLocalFile || (hasDeezerLink && hasArl);
+  const canUseDeezer = !hasProvidedArl || hasArl;
+  const hasPlayableLink = hasYtLink || hasLocalFile || (hasDeezerLink && canUseDeezer);
 
   useEffect(() => {
     const handleActiveSource = (event) => {
@@ -226,19 +228,19 @@ const ModalLeft = ({
 
   const handleDeezerPlay = () => {
     if (isSyncMode) {
-      setShowDeezerNotice(!hasArl);
-      if (hasArl) {
+      setShowDeezerNotice(!canUseDeezer);
+      if (canUseDeezer) {
         setManualSource('deezer');
       } else {
         const fallbackSource = availableSources?.includes('youtube')
           ? 'youtube'
           : availableSources?.includes('local') ? 'local' : null;
         if (fallbackSource) setManualSource(fallbackSource);
-        else setNotification?.({ show: true, message: 'A Deezer ARL is required to play this source.', progress: 100 });
+        else setNotification?.({ show: true, message: 'Your Deezer ARL is not valid. Remove it to use a backend account, or replace it in Settings.', progress: 100 });
       }
       return;
     }
-    if (!hasArl) {
+    if (!canUseDeezer) {
       setShowDeezerNotice(true);
       const fallbackSource = hasYtLink ? 'youtube' : hasLocalFile ? 'local' : null;
       setCurrentTrack({
@@ -484,32 +486,32 @@ const ModalLeft = ({
                       <path d="m11.5 11.5 8-8L22 6l-2 2 2 2-3 3-2-2-2 2" />
                     </svg>
                     <span className="source-warning-item-copy">
-                      <span className="source-platform-name source-platform-deezer">Deezer</span> playback requires a valid ARL in Settings.
+                    <span className="source-platform-name source-platform-deezer">Deezer</span> playback needs a valid ARL, or configured backend accounts when no personal ARL is entered.
                     </span>
                   </li>
                 </ul>
               </div>
             </div>
           )}
-          {showDeezerNotice && !hasArl && (
+          {showDeezerNotice && !canUseDeezer && (
             <div className="source-link-warning deezer-arl-warning" role="note">
               <span className="source-link-warning-icon" aria-hidden="true">!</span>
               <div className="source-link-warning-content">
-                <strong className="source-link-warning-title">Deezer needs an ARL</strong>
+                <strong className="source-link-warning-title">Your Deezer ARL is invalid</strong>
                 <ul>
                   <li>
                     <svg className="source-warning-item-icon source-warning-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <circle cx="8" cy="15" r="5" />
                       <path d="m11.5 11.5 8-8L22 6l-2 2 2 2-3 3-2-2-2 2" />
                     </svg>
-                    <span className="source-warning-item-copy">A valid <span className="source-platform-name source-platform-deezer">Deezer ARL token</span> is required for streaming.</span>
+                    <span className="source-warning-item-copy">The saved token takes precedence over backend accounts. Remove it to use a configured backend account, or replace it in Settings.</span>
                   </li>
                   <li>
                     <svg className="source-warning-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M4 5h16v14H4z" />
                       <path d="M8 9h8M8 13h5" />
                     </svg>
-                    <span className="source-warning-item-copy">Enter your token in <span className="source-platform-name source-platform-settings">Settings</span> or use a <span className="source-platform-name source-platform-youtube">YouTube</span> link instead.</span>
+                    <span className="source-warning-item-copy">You can also use a <span className="source-platform-name source-platform-youtube">YouTube</span> link instead.</span>
                   </li>
                 </ul>
               </div>

@@ -24,6 +24,7 @@ test('preserves source priority and extracts the linked YouTube ID', () => {
       dzUrl: 'https://www.deezer.com/track/123',
       extractedYtId: 'abcdefghijk',
       hasArl: true,
+      canUseDeezer: true,
       intendedSource: 'deezer'
     }
   );
@@ -40,9 +41,24 @@ test('honors a usable forced source and falls back when that source has failed',
   );
 });
 
-test('does not select Deezer before the ARL has been validated', () => {
-  assert.equal(resolvePlayerSource(track, [], false, '', false).hasArl, false);
-  assert.equal(resolvePlayerSource(track, [], false, '', false).intendedSource, 'local');
+test('selects Deezer without a personal ARL so the backend can authenticate', () => {
+  const source = resolvePlayerSource(track, [], false, '', false);
+
+  assert.equal(source.hasArl, false);
+  assert.equal(source.canUseDeezer, true);
+  assert.equal(source.intendedSource, 'deezer');
+  assert.equal(
+    resolvePlayerSource({ ...track, forceSource: 'deezer' }, [], false, '', false).intendedSource,
+    'deezer'
+  );
+});
+
+test('does not use backend accounts when an unvalidated personal ARL was supplied', () => {
+  const source = resolvePlayerSource(track, [], false, 'invalid', false);
+
+  assert.equal(source.hasArl, false);
+  assert.equal(source.canUseDeezer, false);
+  assert.equal(source.intendedSource, 'local');
   assert.equal(
     resolvePlayerSource({ ...track, forceSource: 'deezer' }, [], false, 'invalid', false).intendedSource,
     'local'

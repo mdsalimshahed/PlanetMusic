@@ -109,7 +109,7 @@ export const usePlayerSourceLifecycle = runtime => {
       return;
     }
     const {
-      trackId, dzUrl, extractedYtId, hasArl, intendedSource
+      trackId, dzUrl, extractedYtId, intendedSource
     } = resolvePlayerSource(
       currentTrack,
       failedSources,
@@ -273,12 +273,6 @@ export const usePlayerSourceLifecycle = runtime => {
               setActiveSource('deezer');
               setBuffering(false);
               setAudioSrc(url);
-              return;
-            }
-
-            if (!hasArl) {
-              triggerFallbackMessage("Deezer ARL required. Falling back...");
-              setFailedSources(prev => [...prev, 'deezer']);
               return;
             }
 
