@@ -1,6 +1,6 @@
 /* --- src/components/Workspaces/Lyrics/Views/PlainLyricsView.jsx --- */
 import React, { useMemo } from 'react';
-import { getGraphemes } from '../../../../../components/LyricsRenderer/textUtils.js';
+import { renderPlainLyricsText } from '../../../../../components/LyricsRenderer/PlainLyricsText.jsx';
 import { toSmartPunctuation } from '../../../../../utils/smartPunctuation.js';
 import { renderPunctuationColoredText } from '../../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import './PlainLyricsView.css';
@@ -50,67 +50,6 @@ const PlainLyricsView = ({
     return groups;
   }, [liveParsedLyrics, selectedSong?.artistName, masterPalette]);
 
-  const renderPlainColoredText = (item) => {
-    let artists = item.artists || [];
-    if (artists.length === 0 && item.singer) {
-      artists = item.singer.split(/\s*(?:&|,|\band\b|\+)\s*/i).filter(Boolean).map(a => a.trim());
-    }
-
-    let isGradient = false;
-    let gradientStyle = '';
-    let activeColor = '#ffffff';
-
-    if (artists.length > 1) {
-      isGradient = true;
-      const gradientColors = artists.map(artist => masterPalette[artist] || '#ffffff').join(', ');
-      gradientStyle = `linear-gradient(90deg, ${gradientColors})`;
-    } else if (artists.length === 1) {
-      activeColor = masterPalette[artists[0]] || item.color || '#ffffff';
-    } else if (item.isGradient && item.gradient) {
-      isGradient = true;
-      gradientStyle = item.gradient;
-    } else {
-      activeColor = item.color || '#ffffff';
-    }
-
-    // Apply the gradient or solid color to the SEGMENT parent wrapper
-    let parentStyle = {};
-    if (isGradient) {
-      parentStyle = {
-         backgroundImage: gradientStyle,
-         WebkitBackgroundClip: 'text',
-         WebkitTextFillColor: 'transparent',
-        display: 'inline'
-      };
-    } else {
-      parentStyle = { color: activeColor };
-    }
-
-    const chars = getGraphemes(toSmartPunctuation(item.text || ''));
-    const renderedChars = chars.map((char, cIdx) => {
-      const isPunct = /^[\p{P}\p{S}\s\u064B-\u065F\u0670]+$/u.test(char);
-      let childStyle = {};
-
-      if (isPunct && char.trim() !== '') {
-        // Punches through the parent gradient with a solid opaque color
-        childStyle = {
-           color: '#fbbf24',
-           WebkitTextFillColor: '#fbbf24',
-           textShadow: '0 0 10px rgba(251, 191, 36, 0.6)',
-          backgroundImage: 'none' 
-         };
-      }
-
-      return Object.keys(childStyle).length > 0 ? (
-        <span key={cIdx} style={childStyle}>{char}</span>
-      ) : (
-        <React.Fragment key={cIdx}>{char}</React.Fragment>
-      );
-    });
-
-    return <span style={parentStyle}>{renderedChars}</span>;
-  };
-
   const renderColoredSingerHeader = (singerString) => {
     if (!singerString) {
       const defaultSinger = selectedSong?.artistName || 'Default Artist';
@@ -135,7 +74,7 @@ const PlainLyricsView = ({
         groupedPlainLyrics.map((group, gIdx) => {
           let displayHeader = '';
           if (group.sectionHeader) {
-            displayHeader = group.sectionHeader.replace(/[\[\]]/g, '');
+            displayHeader = group.sectionHeader.replace(/\[|\]/g, '');
             if (displayHeader.includes(':')) {
               displayHeader = displayHeader.split(':')[0].trim();
             }
@@ -164,13 +103,7 @@ const PlainLyricsView = ({
                 {group.lines.map((line, lIdx) => (
                   <div key={lIdx} className="plain-lyric-line" dir="auto">
                     <div style={{ textAlign: 'left' }}>
-                      {line.segments ? line.segments.map((seg, sIdx) => (
-                        <React.Fragment key={sIdx}>
-                          {renderPlainColoredText(seg)}
-                        </React.Fragment>
-                      )) : (
-                        renderPlainColoredText(line)
-                      )}
+                      {renderPlainLyricsText(line, masterPalette)}
                     </div>
                     {line.translation && (
                       <span className="plain-lyric-translation" dir="ltr">{renderPunctuationColoredText(line.translation)}</span>

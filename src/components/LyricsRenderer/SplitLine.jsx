@@ -4,6 +4,7 @@ import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
 import { isRTLLanguage, usesCjkWordSpacing } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
+import { renderPlainLyricsText } from './PlainLyricsText.jsx';
 
 const SplitLine = ({
   lineObj,
@@ -108,19 +109,16 @@ const SplitLine = ({
       initialClass = 'adlib-visible';
     }
 
-    const { chars: extractedAdlibChars, hasSpacingText: extractedHasSpacing } = extractCharsAndSegments(
-        { text: adlib.text, segments: adlib.segments }, 
-        adlib
-    );
-
     const cleanedAdlibTrans = adlib.translation ? adlib.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
     const renderAdlibChunks = renderSyncChunks &&
       usesCjkWordSpacing(adlib.lang || lang, adlib.text) &&
       Boolean(adlib.spacingText?.trim());
-    const preserveAdlibEngineOutput = useTranslationFormatting &&
-      (renderAdlibChunks || Boolean(adlib.pronunciation));
-
-    const { mainJSX: adlibMainJSX, translationJSX: adlibTransJSX, pronunciationJSX: adlibPronJSX } = EngineRouter({
+    const { chars: extractedAdlibChars, hasSpacingText: extractedHasSpacing } = extractCharsAndSegments(
+        { text: adlib.text, segments: adlib.segments },
+        adlib,
+        { useParsedSegments: useTranslationFormatting && !renderAdlibChunks }
+    );
+    const { translationJSX: adlibTransJSX, pronunciationJSX: adlibPronJSX } = EngineRouter({
        chars: extractedAdlibChars,
        lang: adlib.lang || lang,
        translation: cleanedAdlibTrans,
@@ -154,13 +152,8 @@ const SplitLine = ({
             marginInlineStart: '0.25em'
           }}
         >
-          <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto"          >
-              {useTranslationFormatting && !preserveAdlibEngineOutput
-                ? renderTranslationOriginalText(
-                  { ...adlib, _meta: { isAdlib: true } },
-                  masterPalette
-                )
-                : adlibMainJSX}
+            <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto"          >
+              {renderPlainLyricsText(adlib, masterPalette)}
             </span>
           {adlibTransJSX ? (
             <span className="chunk-translation live-translation adlib-live-translation" dir="ltr">

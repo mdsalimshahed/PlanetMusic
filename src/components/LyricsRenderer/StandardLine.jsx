@@ -2,6 +2,7 @@
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { isRTLLanguage } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
+import { renderPlainLyricsText } from './PlainLyricsText.jsx';
 
 const StandardLine = ({
   lineObj,
@@ -171,7 +172,9 @@ const StandardLine = ({
       }}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {useTranslationFormatting && !preserveEngineOutput
+      {isAdlib
+        ? renderPlainLyricsText(lineObj, masterPalette)
+        : useTranslationFormatting && !preserveEngineOutput
         ? renderTranslationOriginalText(lineObj, masterPalette, {
           savedNode,
           excludeAdlibs

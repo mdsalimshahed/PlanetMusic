@@ -4,7 +4,7 @@ import { generateSafeAdlibPosition, getRelativeRect } from "../../../../Applicat
 import EngineRouter from '../../../../components/LyricsRenderer/LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
 import { usesCjkWordSpacing } from '../../../../components/LyricsRenderer/textUtils.js';
-import { renderTranslationOriginalText } from '../../../../components/LyricsRenderer/TranslationOriginalText.jsx';
+import { renderPlainLyricsText } from '../../../../components/LyricsRenderer/PlainLyricsText.jsx';
 
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong, lyricsPlaybackOffsetSeconds = 0 }) => {
   const containerRef = useRef(null);
@@ -34,12 +34,15 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
           const activeSingersList = adlib.singer?.split(/\s*(?:&|,|\band\b)\s*/i).filter(Boolean).map(s => s.trim()) || [];
 
           const renderAdlibPure = (adlibObj) => {
+            const renderAdlibChunks = usesCjkWordSpacing(adlibObj.lang, adlibObj.text) &&
+              Boolean(adlibObj.spacingText?.trim());
             const { chars, hasSpacingText } = extractCharsAndSegments(
                 { text: adlibObj.text, segments: adlibObj.segments }, 
-                adlibObj
+                adlibObj,
+                { useParsedSegments: !renderAdlibChunks }
             );
             const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
-            const { mainJSX, translationJSX, pronunciationJSX } = EngineRouter({
+            const { translationJSX, pronunciationJSX } = EngineRouter({
                 chars,
                 lang: adlibObj.lang || 'auto',
                 translation: cleanedAdlibTrans,
@@ -51,10 +54,6 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 isOnlyPunct: chars.length > 0 && chars.every(c => /^[\p{P}\p{S}\s]+$/u.test(c.char)),
                 isAdlib: true // Flags isolated ad-lib to omit parenthetical wrap
             });
-            const renderAdlibChunks = usesCjkWordSpacing(adlibObj.lang, adlibObj.text) &&
-              Boolean(adlibObj.spacingText?.trim());
-            const preserveEngineOutput = renderAdlibChunks || Boolean(adlibObj.pronunciation);
-
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', position: 'relative' }}>
                 {translationJSX && (
@@ -80,12 +79,7 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   </span>
                 )}
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
-                  {preserveEngineOutput
-                    ? mainJSX
-                    : renderTranslationOriginalText(
-                      { ...adlibObj, _meta: { isAdlib: true } },
-                      masterPalette
-                    )}
+                  {renderPlainLyricsText(adlibObj, masterPalette)}
                 </span>
                 {pronunciationJSX && (
                   <span className="pronunciation-text" style={{
