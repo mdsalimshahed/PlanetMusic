@@ -386,7 +386,6 @@
   pointer-events: auto;
   cursor: pointer;
   visibility: visible;
-  transition: none;
 }
 
 .focused-adlib-line.exiting {

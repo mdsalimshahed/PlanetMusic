@@ -1,6 +1,6 @@
 /* --- src/components/LyricsRenderer/StandardLine.jsx --- */
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
-import { isRTLLanguage } from './textUtils.js';
+import { hasInlinePronunciation, isRTLLanguage } from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 import { renderPlainLyricsText } from './PlainLyricsText.jsx';
 
@@ -172,7 +172,9 @@ const StandardLine = ({
       }}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {isAdlib
+      {isAdlib && hasInlinePronunciation(pronunciation, lang, lineObj.text)
+        ? mainJSX
+        : isAdlib
         ? renderPlainLyricsText(lineObj, masterPalette)
         : useTranslationFormatting && !preserveEngineOutput
         ? renderTranslationOriginalText(lineObj, masterPalette, {

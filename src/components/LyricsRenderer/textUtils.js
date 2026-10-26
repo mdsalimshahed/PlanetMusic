@@ -74,3 +74,26 @@ export const parsePronunciation = (pronString) => {
   }
   return { parsedChunks, fullTrans };
 };
+
+export const hasInlinePronunciation = (pronunciation, lang, text = '') => {
+  if (typeof pronunciation !== 'string' || !pronunciation.trim()) return false;
+
+  const { parsedChunks } = parsePronunciation(pronunciation);
+  if (Array.isArray(parsedChunks)) {
+    return parsedChunks.some(chunk => {
+      if (
+        chunk?.type === 'en' ||
+        typeof chunk?.trans !== 'string' ||
+        !chunk.trans.trim()
+      ) {
+        return false;
+      }
+
+      const cleanText = String(chunk.text || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+      const cleanPronunciation = chunk.trans.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+      return !cleanText || cleanText !== cleanPronunciation;
+    });
+  }
+
+  return usesCjkWordSpacing(lang, text);
+};

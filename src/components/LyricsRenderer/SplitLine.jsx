@@ -2,7 +2,11 @@
 import React from 'react';
 import EngineRouter from './LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from './LanguageEngines/EngineUtils.jsx';
-import { isRTLLanguage, usesCjkWordSpacing } from './textUtils.js';
+import {
+  hasInlinePronunciation,
+  isRTLLanguage,
+  usesCjkWordSpacing
+} from './textUtils.js';
 import { renderTranslationOriginalText } from './TranslationOriginalText.jsx';
 import { renderPlainLyricsText } from './PlainLyricsText.jsx';
 
@@ -118,7 +122,11 @@ const SplitLine = ({
         adlib,
         { useParsedSegments: useTranslationFormatting && !renderAdlibChunks }
     );
-    const { translationJSX: adlibTransJSX, pronunciationJSX: adlibPronJSX } = EngineRouter({
+    const {
+      mainJSX: adlibMainJSX,
+      translationJSX: adlibTransJSX,
+      pronunciationJSX: adlibPronJSX
+    } = EngineRouter({
        chars: extractedAdlibChars,
        lang: adlib.lang || lang,
        translation: cleanedAdlibTrans,
@@ -153,7 +161,9 @@ const SplitLine = ({
           }}
         >
             <span className="primary-text" style={{ display: 'inline', whiteSpace: 'pre-wrap', wordBreak: 'normal', overflowWrap: 'normal', margin: 0, padding: 0 }} dir="auto"          >
-              {renderPlainLyricsText(adlib, masterPalette)}
+              {hasInlinePronunciation(adlib.pronunciation, adlib.lang || lang, adlib.text)
+                ? adlibMainJSX
+                : renderPlainLyricsText(adlib, masterPalette)}
             </span>
           {adlibTransJSX ? (
             <span className="chunk-translation live-translation adlib-live-translation" dir="ltr">

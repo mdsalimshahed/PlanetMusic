@@ -3,7 +3,10 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { generateSafeAdlibPosition, getRelativeRect } from "../../../../Application/components/AdlibDebug/adlibPlacementLogic.js";
 import EngineRouter from '../../../../components/LyricsRenderer/LanguageEngines/EngineRouter.jsx';
 import { extractCharsAndSegments } from '../../../../components/LyricsRenderer/LanguageEngines/EngineUtils.jsx';
-import { usesCjkWordSpacing } from '../../../../components/LyricsRenderer/textUtils.js';
+import {
+  hasInlinePronunciation,
+  usesCjkWordSpacing
+} from '../../../../components/LyricsRenderer/textUtils.js';
 import { renderPlainLyricsText } from '../../../../components/LyricsRenderer/PlainLyricsText.jsx';
 
 export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, masterPalette, isPlayingCurrentSong, lyricsPlaybackOffsetSeconds = 0 }) => {
@@ -42,7 +45,11 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                 { useParsedSegments: !renderAdlibChunks }
             );
             const cleanedAdlibTrans = adlibObj.translation ? adlibObj.translation.replace(/[()\uff08\uff09]/g, '').trim() : '';
-            const { translationJSX, pronunciationJSX } = EngineRouter({
+            const {
+                mainJSX,
+                translationJSX,
+                pronunciationJSX
+            } = EngineRouter({
                 chars,
                 lang: adlibObj.lang || 'auto',
                 translation: cleanedAdlibTrans,
@@ -79,7 +86,13 @@ export const FocusedAdlibsTracker = React.memo(({ syncData, handleLineClick, mas
                   </span>
                 )}
                 <span className="primary-text" style={{ whiteSpace: 'pre-wrap', display: 'inline-block', maxWidth: '100%' }} dir="auto">
-                  {renderPlainLyricsText(adlibObj, masterPalette)}
+                  {hasInlinePronunciation(
+                    adlibObj.pronunciation,
+                    adlibObj.lang,
+                    adlibObj.text
+                  )
+                    ? mainJSX
+                    : renderPlainLyricsText(adlibObj, masterPalette)}
                 </span>
                 {pronunciationJSX && (
                   <span className="pronunciation-text" style={{
