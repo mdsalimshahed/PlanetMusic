@@ -168,6 +168,32 @@
   font-weight: 500;
 }
 
+.global-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.global-footer-links a,
+.global-footer-links button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-subdued);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.global-footer-links a:hover,
+.global-footer-links button:hover {
+  color: var(--accent);
+}
+
 /* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .content-scroll-area {

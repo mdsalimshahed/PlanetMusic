@@ -1,6 +1,6 @@
 /* --- src/App.jsx --- */
 import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
-import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
+import { useLocation, useNavigate, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
 
@@ -12,6 +12,7 @@ import './Application/components/Core/SampleVault.css';
 import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
 import HomeGuide from './Application/components/Core/HomeGuide.jsx';
+import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import SongModal from './Application/components/Modals/SongModal.jsx';
 import BackupExportModal from './Application/components/Modals/BackupExportModal.jsx';
 import BackupImportModal from './Application/components/Modals/BackupImportModal.jsx';
@@ -23,6 +24,7 @@ import PrivacyTab from './Application/pages/PrivacyTab.jsx';
 import ContactTab from './Application/pages/ContactTab.jsx';
 import TermsTab from './Application/pages/TermsTab.jsx';
 import AboutTab from './Application/pages/AboutTab.jsx';
+import SiteMessagePage from './Application/pages/SiteMessagePage.jsx';
 
 import SelfPromoCard from './Application/components/Promos/SelfPromoCard.jsx';
 import TrackGrid from './Application/components/Core/TrackGrid.jsx';
@@ -774,11 +776,24 @@ const App = () => {
             } />
 
             <Route path="/deezer/*" element={<Navigate to="/vault" replace />} />
+            <Route path="*" element={<SiteMessagePage />} />
           </Routes>
 
-          {/* GLOBAL FOOTER: Copyright, Ambient Toggle & Ad Toggle */}
+          {/* GLOBAL FOOTER: Copyright, legal links, and privacy choices */}
           <div className="global-footer">
             <p>&copy; {new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
+            <nav className="global-footer-links" aria-label="Legal and privacy">
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/docs/terms-of-service">Terms</Link>
+              <Link to="/docs/about-me">About</Link>
+              <Link to="/contact">Contact</Link>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event('planetmusic-open-ad-choice'))}
+              >
+                Privacy choices
+              </button>
+            </nav>
           </div>
             </div>
           </main>
@@ -823,6 +838,7 @@ const App = () => {
           </div>
         </div>
       )}
+      <ConsentNotice />
     </div>
   );
 };

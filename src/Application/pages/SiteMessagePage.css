@@ -1,0 +1,66 @@
+.site-message-page {
+  display: grid;
+  place-items: center;
+  min-height: min(60vh, 640px);
+  padding: 32px 16px;
+}
+
+.site-message-card {
+  width: min(100%, 680px);
+  padding: clamp(24px, 5vw, 48px);
+  background: rgba(17, 17, 17, 0.94) !important;
+}
+
+.site-message-eyebrow {
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-message-card h1 {
+  margin-bottom: 16px;
+  color: #fff;
+  font-size: clamp(28px, 5vw, 42px);
+  line-height: 1.15;
+}
+
+.site-message-card > p:not(.site-message-eyebrow) {
+  color: var(--text-subdued);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.site-message-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 28px;
+}
+
+.site-message-links a {
+  color: var(--text-base);
+  text-underline-offset: 3px;
+}
+
+.site-message-links .site-message-primary {
+  padding: 10px 16px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg-heavy);
+  font-weight: 700;
+}
+
+.site-message-links p {
+  flex-basis: 100%;
+  margin-top: 8px;
+  color: var(--text-subdued);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.site-message-links code {
+  color: var(--text-base);
+}

@@ -43,9 +43,9 @@ const PrivacyTab = ({ adsEnabled }) => {
           <div className="privacy-hero glass-panel">
             <h1 className="privacy-hero-title" style={{ backgroundImage: getProceduralGradient('privacy:hero-heading') }}>Privacy Policy</h1>
             <p className="privacy-hero-sub">
-              A comprehensive legal framework detailing our stateless client-side architecture, absolute data sovereignty, strict DRM compliance, and total limitation of liability across all global jurisdictions.
+              How PlanetMusic and the third-party services used by the app handle information.
             </p>
-            <span className="privacy-last-updated">Last Updated: September 2026</span>
+            <span className="privacy-last-updated">Last Updated: October 27, 2026</span>
           </div>
 
           {/* MAIN CONTENT BODY */}
@@ -55,12 +55,12 @@ const PrivacyTab = ({ adsEnabled }) => {
              
             {/* SECTION 1 */}
             <div className="privacy-section">
-              <h2>1. Architectural Statelessness & Ephemeral DOM Sandboxing</h2>
+              <h2>1. Data stored by the app</h2>
               <p>
-                PlanetMusic operates fundamentally and exclusively as a stateless, non-custodial client-side graphical user interface (GUI). The localized state management system have exclusive jurisdiction over all computational logic and memory allocation. We do not own, operate, or lease any centralized database infrastructure for the purpose of harvesting, aggregating, or retaining user telemetry.
+                PlanetMusic does not require an account. Your music library, lyrics, and settings are generally saved in your browser on your device. PlanetMusic does not operate a user-library database. Clearing your browser storage or using the app's purge feature removes locally saved app data; export a backup first if you want to keep it.
               </p>
               <div className="privacy-highlight-box">
-                <strong>Zero-Knowledge Guarantee:</strong> All metadata permutations, synchronous timing coordinates, custom lyrics, and binary audio blobs inputted into this application reside strictly within the localized, sandboxed Document Object Model (DOM) and <code>IndexedDB</code> environment of the end-user's proprietary hardware. We possess zero infrastructural or cryptographic capacity to audit, intercept, or exfiltrate this localized payload.
+                <strong>Local storage:</strong> Library data and preferences are stored using browser storage such as IndexedDB and local storage. This does not prevent information from being sent to a third party when you use a feature that contacts that provider, submit the contact form, or allow third-party advertising.
               </div>
             </div>
 
@@ -68,16 +68,14 @@ const PrivacyTab = ({ adsEnabled }) => {
 
             {/* SECTION 2 */}
             <div className="privacy-section">
-              <h2>2. Omnijurisdictional Statutory Compliance Framework</h2>
+              <h2>2. Third-party services and information</h2>
               <p>
-                By virtue of our strictly decentralized, client-side execution model, PlanetMusic inherently satisfy and seamlessly exceed the compliance mandates of a multitude of global data protection frameworks, including but not limited to:
+                When you use search, lyrics, translation, media, or contact features, your browser may connect to the relevant provider. Those providers may receive your IP address, browser and device information, and the information needed to fulfill your request. Their own privacy policies and terms apply to their services.
               </p>
               <ul>
-                <li><strong>GDPR & ePrivacy Directive (EU/EEA):</strong> We process zero Personally Identifiable Information (PII) on remote servers. We deploy no cross-site tracking pixels for backend telemetry.</li>
-                <li><strong>CCPA & CPRA (California, USA):</strong> We do not sell, share, or aggregate consumer data, as we do not possess the architectural capability to collect it in the first instance.</li>
-                <li><strong>LGPD (Brazil), PIPEDA (Canada), & APPI (Japan):</strong> The absolute absence of data ingestion render these extraterritorial data privacy frameworks natively satisfied.</li>
-                <li><strong>COPPA & FERPA (USA):</strong> The application acts as a standalone educational utility. No data regarding minors or educational records are transmitted or stored remotely.</li>
-                <li><strong>Right to be Forgotten:</strong> As no data is ever transmitted to our non-existent central servers, the "Right to Erasure" is executed unilaterally by the user simply by purging their browser's cache or triggering the application's native Purge function, thereby permanently annihilating their Vault's localized existence.</li>
+                <li><strong>Search and lyrics:</strong> Queries may be sent to third-party music, lyrics, or metadata services.</li>
+                <li><strong>Translation:</strong> Text you submit for translation is sent to PlanetMusic's translation service and forwarded to Google Translate to provide the requested result. The translation service does not intentionally retain request text.</li>
+                <li><strong>Contact form:</strong> Information you submit is sent to the service that processes the feedback form so we can receive and respond to your message.</li>
               </ul>
             </div>
 
@@ -115,7 +113,13 @@ const PrivacyTab = ({ adsEnabled }) => {
               </p>
               <h3>Third-Party Advertising</h3>
               <p>
-                PlanetMusic may load advertising scripts from providers such as Adsterra or Google AdSense when an ad placement is configured and advertising is enabled. Those providers may receive technical information, such as your IP address and browser details, and may use cookies or similar technologies under their own privacy policies. You can choose whether third-party ads may load in this browser using the advertising choice.
+                When you allow advertising, PlanetMusic may load Google AdSense and other configured advertising providers. Google and its partners may use cookies or similar technologies to collect or receive information from this site and other sites, and use that information to provide, measure, and personalize ads. This may include your IP address, browser or device information, and activity related to ad delivery. Google's information about its advertising technologies is available in its <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noreferrer">Advertising policy</a>.
+              </p>
+              <p>
+                Advertising is off until you choose “Allow ads.” Choose “Continue without ads” to keep third-party ad scripts from loading. You can change or withdraw this choice at any time using “Privacy choices” in the site footer. You can also manage Google's personalized advertising settings at <a href="https://adssettings.google.com/" target="_blank" rel="noreferrer">Google Ads Settings</a>. Blocking ads in PlanetMusic does not change settings or cookies controlled by other websites or services.
+              </p>
+              <p>
+                The site choice controls whether this browser loads third-party ads; it is not a Google-certified consent management platform. Where laws or Google policies require a certified consent management platform or additional consent signals, the publisher must configure an appropriate Google-certified CMP in the AdSense account before serving ads in those regions.
               </p>
             </div>
 

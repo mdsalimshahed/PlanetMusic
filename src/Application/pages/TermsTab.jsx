@@ -53,7 +53,7 @@ const TermsTab = ({ adsEnabled }) => (
         Terms of Service
       </h1>
       <p className="privacy-hero-sub">Rules and responsibilities for using PlanetMusic.</p>
-      <span className="privacy-last-updated">Last updated: October 16, 2026</span>
+      <span className="privacy-last-updated">Last updated: October 27, 2026</span>
     </header>
 
     <article className="privacy-card-body glass-panel blog-article-body legal-article-body">

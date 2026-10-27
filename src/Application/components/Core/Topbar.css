@@ -342,6 +342,13 @@
     font-size: 13px;
   }
 
+  .zen-nav-dropdown {
+    position: fixed;
+    top: var(--zen-dropdown-top, 0);
+    left: var(--zen-dropdown-left, 0);
+    width: var(--zen-dropdown-width, auto);
+  }
+
   .topbar-tools {
     order: 3;
     width: auto;
@@ -379,10 +386,4 @@
     margin: 0;
   }
 
-  .zen-nav-dropdown {
-    position: fixed;
-    top: var(--zen-dropdown-top, 0);
-    left: var(--zen-dropdown-left, 0);
-    width: var(--zen-dropdown-width, auto);
-  }
 }

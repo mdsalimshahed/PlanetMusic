@@ -18,8 +18,15 @@ const posts = JSON.parse(readFileSync(join(root, 'public/blog_posts.json'), 'utf
 const changelogMonths = JSON.parse(readFileSync(join(root, 'public/changelog.json'), 'utf8'));
 const template = readFileSync(join(dist, 'index.html'), 'utf8');
 const prerenderedPaths = [];
+const sitemapLastModified = new Map();
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const xmlEsc = (s) => esc(s).replace(/'/g, '&apos;');
+const toIsoDate = (date) => {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) throw new Error(`Invalid publication date: ${date}`);
+  return parsed.toISOString().slice(0, 10);
+};
 
 // ---- shared shell
 const css = `<style>
@@ -35,8 +42,19 @@ const css = `<style>
 const nav = `<nav aria-label="Main"><strong>PlanetMusic</strong><a href="/">Home</a><a href="/vault">Vault</a><a href="/docs/dev-blogs">Docs</a><a href="/docs/changelog">Changelog</a><a href="/contact">Contact</a></nav>`;
 const footer = `<footer><p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p><p><a href="/privacy">Privacy Policy</a> · <a href="/docs/terms-of-service">Terms of Service</a> · <a href="/contact">Contact</a> · <a href="/docs/dev-blogs">Docs</a> · <a href="/docs/about-me">About Me</a></p></footer>`;
 
-const page = ({ path, title, description, body, jsonld, useAppStyles = false }) => {
+const page = ({
+  path,
+  title,
+  description,
+  body,
+  jsonld,
+  useAppStyles = false,
+  openGraphType = 'website',
+  publishedDate,
+  lastModified
+}) => {
   prerenderedPaths.push(path);
+  if (lastModified) sitemapLastModified.set(path, lastModified);
   const url = `${SITE.url}${path}`;
   let html = template
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`)
@@ -45,9 +63,10 @@ const page = ({ path, title, description, body, jsonld, useAppStyles = false }) 
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta\s+property="og:description"\s+content=")[\s\S]*?("\s*\/>)/, `$1${esc(description)}$2`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${url}$2`)
+    .replace(/(<meta property="og:type" content=")[^"]*(")/, `$1${openGraphType}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta\s+name="twitter:description"\s+content=")[\s\S]*?("\s*\/>)/, `$1${esc(description)}$2`)
-    .replace('</head>', `${useAppStyles ? '' : css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
+    .replace('</head>', `${publishedDate ? `<meta property="article:published_time" content="${toIsoDate(publishedDate)}" />` : ''}${useAppStyles ? '' : css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${useAppStyles ? body : `<div class="static">${nav}${body}${footer}</div>`}</div>`);
   const file = path === '/'
     ? join(dist, 'index.html')
@@ -200,24 +219,131 @@ page({
   title: 'PlanetMusic Guides | How-to articles for the lyrics workspace',
   description: `${posts.length} plain-language guides covering syncing lyrics, translations, the Vault, backups and troubleshooting in PlanetMusic.`,
   body: renderAppPage('/docs/dev-blogs', '/docs/*', BlogTab, blogProps),
-  useAppStyles: true
+  useAppStyles: true,
+  jsonld: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'PlanetMusic Guides',
+    description: 'How-to articles for the PlanetMusic lyrics workspace.',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: `${SITE.url}/docs/dev-blog/post/${post.id}`,
+        name: post.title
+      }))
+    }
+  },
+  lastModified: toIsoDate(posts.reduce((latest, post) => (
+    new Date(post.date) > new Date(latest.date) ? post : latest
+  )).date)
 });
 
 // ---- every guide
 for (const p of posts) {
   const path = `/docs/dev-blog/post/${p.id}`;
+  const publishedDate = toIsoDate(p.date);
   page({
     path,
     title: `${p.title} | PlanetMusic`,
     description: p.summary,
     body: renderAppPage(path, '/docs/*', BlogTab, blogProps),
     useAppStyles: true,
-    jsonld: { '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.summary, datePublished: new Date(p.date).toISOString().slice(0, 10), author: { '@type': 'Person', name: p.author || 'PlanetMusic' }, mainEntityOfPage: `${SITE.url}${path}` }
+    openGraphType: 'article',
+    publishedDate,
+    lastModified: publishedDate,
+    jsonld: {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: p.title,
+      description: p.summary,
+      datePublished: publishedDate,
+      dateModified: publishedDate,
+      author: { '@type': 'Organization', name: 'PlanetMusic' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'PlanetMusic',
+        logo: { '@type': 'ImageObject', url: `${SITE.url}/icon-512.png` }
+      },
+      image: `${SITE.url}/icon-512.png`,
+      mainEntityOfPage: `${SITE.url}${path}`
+    }
   });
 }
+
+const latestPost = posts.reduce((latest, post) => (
+  new Date(post.date) > new Date(latest.date) ? post : latest
+));
+const feedItems = posts
+  .slice()
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .map((post) => {
+    const url = `${SITE.url}/docs/dev-blog/post/${post.id}`;
+    return `    <item>
+      <title>${xmlEsc(post.title)}</title>
+      <link>${xmlEsc(url)}</link>
+      <guid isPermaLink="true">${xmlEsc(url)}</guid>
+      <description>${xmlEsc(post.summary)}</description>
+      <dc:creator>PlanetMusic</dc:creator>
+      <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+    </item>`;
+  })
+  .join('\n');
+const feed = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>PlanetMusic Guides</title>
+    <link>${xmlEsc(`${SITE.url}/docs/dev-blogs`)}</link>
+    <description>Practical guides for using PlanetMusic.</description>
+    <language>en</language>
+    <atom:link href="${xmlEsc(`${SITE.url}/feed.xml`)}" rel="self" type="application/rss+xml" />
+    <lastBuildDate>${new Date(latestPost.date).toUTCString()}</lastBuildDate>
+${feedItems}
+  </channel>
+</rss>
+`;
+writeFileSync(join(dist, 'feed.xml'), feed);
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${prerenderedPaths
-  .map((path) => `  <url><loc>${esc(`${SITE.url}${path}`)}</loc></url>`)
+  .map((path) => {
+    const lastModified = sitemapLastModified.get(path);
+    return `  <url><loc>${xmlEsc(`${SITE.url}${path}`)}</loc>${lastModified ? `<lastmod>${lastModified}</lastmod>` : ''}</url>`;
+  })
   .join('\n')}\n</urlset>\n`;
 writeFileSync(join(dist, 'sitemap.xml'), sitemap);
 
-console.log(`Prerendered ${prerenderedPaths.length} public pages and generated dist/sitemap.xml.`);
+const notFoundPage = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#150f35" />
+    <title>Page not found | PlanetMusic</title>
+    <style>
+      body{margin:0;min-height:100vh;display:grid;place-items:center;background:#100b24;color:#f5f1ff;font:16px/1.6 system-ui,sans-serif}
+      main{width:min(90%,560px);padding:40px 32px;border:1px solid #ffffff24;border-radius:20px;background:#1a1530}
+      h1{margin-top:0;font-size:clamp(2rem,7vw,3rem)}p{color:#c7bfd9}
+      nav{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:24px}
+      a{color:#d5b8ff}
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>404 · PlanetMusic</p>
+      <h1>We couldn't find that page.</h1>
+      <p>The address may be outdated, or the page may have moved. Try the guides or return to PlanetMusic.</p>
+      <nav aria-label="Helpful pages">
+        <a href="/">Home</a>
+        <a href="/docs/dev-blogs">Guides</a>
+        <a href="/docs/changelog">Changelog</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </main>
+  </body>
+</html>
+`;
+writeFileSync(join(dist, '404.html'), notFoundPage);
+
+console.log(`Prerendered ${prerenderedPaths.length} public pages, RSS feed, sitemap, and 404 page.`);

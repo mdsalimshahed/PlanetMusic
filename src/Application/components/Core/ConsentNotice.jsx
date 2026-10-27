@@ -43,7 +43,8 @@ const ConsentNotice = () => {
       justifyContent: 'center'
     }}>
       <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.5, textAlign: 'center' }}>
-        Choose whether third-party ads may load in this browser. Read our <a href="/privacy" style={{ color: '#fff' }}>privacy information</a>.
+        PlanetMusic uses Google AdSense and other advertising providers. Choose whether third-party ads may load in this browser. Read our{' '}
+        <a href="/privacy" style={{ color: '#fff' }}>Privacy Policy</a>.
       </p>
       <button 
         onClick={() => saveAdChoice(true)}

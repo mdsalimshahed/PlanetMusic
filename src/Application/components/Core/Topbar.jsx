@@ -61,13 +61,13 @@ const Topbar = ({
   }, [isZenMenuOpen]);
 
   useLayoutEffect(() => {
-    if (!isZenMenuOpen || !window.matchMedia('(max-width: 600px)').matches) return undefined;
     const navItem = zenNavItemRef.current;
     const dropdown = zenDropdownRef.current;
     const nav = navRef.current;
     if (!navItem || !dropdown || !nav) return undefined;
 
     const positionDropdown = () => {
+      if (!window.matchMedia('(max-width: 1100px)').matches) return;
       const bounds = navItem.getBoundingClientRect();
       dropdown.style.setProperty('--zen-dropdown-top', `${bounds.bottom}px`);
       dropdown.style.setProperty('--zen-dropdown-left', `${bounds.left}px`);
@@ -75,15 +75,19 @@ const Topbar = ({
     };
 
     positionDropdown();
+    const resizeObserver = new ResizeObserver(positionDropdown);
+    resizeObserver.observe(navItem);
+    resizeObserver.observe(nav);
     window.addEventListener('resize', positionDropdown);
     window.addEventListener('scroll', positionDropdown, true);
     nav.addEventListener('scroll', positionDropdown, { passive: true });
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener('resize', positionDropdown);
       window.removeEventListener('scroll', positionDropdown, true);
       nav.removeEventListener('scroll', positionDropdown);
     };
-  }, [isZenMenuOpen]);
+  }, []);
 
   useLayoutEffect(() => {
     const nav = navRef.current;

@@ -124,6 +124,22 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const isChangelog = pathTokens[0] === 'changelog';
   const changelogMonthSlug = pathTokens[1];
   const blogSection = isCustomRoute ? 'custom' : 'dev';
+  const isKnownDocsRoute = pathTokens.length === 0
+    || (pathTokens[0] === 'dev-blogs' && pathTokens.length === 1)
+    || (pathTokens[0] === 'changelog' && pathTokens.length <= 2)
+    || (pathTokens[0] === 'post' && pathTokens.length === 2)
+    || (pathTokens[0] === 'dev-blog' && pathTokens[1] === 'post' && pathTokens.length === 3)
+    || (
+      ['custom-blog', 'custom'].includes(pathTokens[0])
+      && (
+        pathTokens.length === 1
+        || (pathTokens[1] === 'post' && pathTokens.length === 3)
+        || (pathTokens[1] === 'edit' && pathTokens.length === 3)
+        || (pathTokens[1] === 'write' && pathTokens.length === 2)
+      )
+    )
+    || (pathTokens[0] === 'edit' && pathTokens.length <= 2)
+    || (pathTokens[0] === 'write' && pathTokens.length === 1);
   const activeArticleSlug = isPostRoute || isEditRoute
     ? pathTokens[0] === 'post' || pathTokens[0] === 'edit' ? pathTokens[1] : pathTokens[2]
     : null;
@@ -183,6 +199,8 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   }, [viewMode, location.pathname, location.state?.focusBlogCardId, navigate]);
 
   const [devPosts, setDevPosts] = useState(initialPosts);
+  const [devPostsLoadError, setDevPostsLoadError] = useState('');
+  const [areDevPostsLoaded, setAreDevPostsLoaded] = useState(initialPosts.length > 0);
   const [customPosts, setCustomPosts] = useState(() => {
     const saved = typeof window === 'undefined'
       ? null
@@ -225,16 +243,24 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
   const hasDuplicateLinkTitle = hasDuplicateBlogLinkTitle(customPosts, formData.linkTitle, editingPost?.id);
 
   useEffect(() => {
+    if (initialPosts.length > 0) return undefined;
+
     fetch('/blog_posts.json')
       .then((res) => {
         if (res.ok) return res.json();
         throw new Error('No public blog_posts.json found');
       })
       .then((data) => {
-        if (Array.isArray(data)) setDevPosts(data);
+        if (!Array.isArray(data)) throw new Error('The public blog post data has an invalid format.');
+        setDevPosts(data);
+        setAreDevPostsLoaded(true);
       })
-      .catch(() => setDevPosts([]));
-  }, []);
+      .catch((error) => {
+        console.error('Could not load public blog posts.', error);
+        setDevPostsLoadError('Articles could not be loaded. Please try again later.');
+        setAreDevPostsLoaded(true);
+      });
+  }, [initialPosts.length]);
 
   useEffect(() => {
     localStorage.setItem('custom_blog_posts_storage', JSON.stringify(customPosts));
@@ -530,7 +556,13 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
       />
       <div className={`blog-layout-wrapper ${viewMode === 'studio' ? 'studio-active' : ''}`}>
         <div className="blog-main-content">
-          {viewMode === 'studio' ? (
+          {!isKnownDocsRoute ? (
+            <div className="blog-reader-view glass-panel" role="alert">
+              <h1>Page not found</h1>
+              <p>This PlanetMusic page doesn’t exist or may have moved.</p>
+              <Link to="/docs/dev-blogs">Browse all guides</Link>
+            </div>
+          ) : viewMode === 'studio' ? (
             <div className="blog-studio-card glass-panel">
               <div className="blog-studio-header">
                 <h2>{editingPost ? 'Edit Custom Article' : 'New Custom Article Workspace'}</h2>
@@ -791,7 +823,7 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
 
               <hr className="blog-divider" />
 
-              <main className="blog-article-body">{renderMarkdown(activePost.content, `blog:article:${activePost.id}:content`)}</main>
+              <article className="blog-article-body">{renderMarkdown(activePost.content, `blog:article:${activePost.id}:content`)}</article>
 
               <button 
                 className="blog-back-btn bottom-back" 
@@ -800,6 +832,18 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                 <Icon name="arrow-left" size={16} /> Back to Articles
               </button>
 
+            </div>
+          ) : viewMode === 'reader' && !areDevPostsLoaded ? (
+            <div className="blog-reader-view glass-panel" role="status">
+              <p>Loading article…</p>
+            </div>
+          ) : viewMode === 'reader' ? (
+            <div className="blog-reader-view glass-panel" role={devPostsLoadError ? 'alert' : undefined}>
+              <h1>{devPostsLoadError ? 'Articles are unavailable' : 'Article not found'}</h1>
+              <p>
+                {devPostsLoadError || 'This article may have been moved or the link may be incorrect.'}
+              </p>
+              <Link to="/docs/dev-blogs">Browse all guides</Link>
             </div>
           ) : (
             <div className="blog-grid-view">
@@ -810,7 +854,9 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
                     <p className="blog-hero-sub">
                       {isChangelog
                         ? 'Browse PlanetMusic’s day-by-day development history. Choose a month to see the work recorded in Git.'
-                        : 'Explore official system guides or create your own personal articles.'}
+                        : blogSection === 'custom'
+                          ? 'Custom articles are saved only in this browser. They are not published to the public site or included in search results.'
+                          : 'Explore public PlanetMusic guides, each available as its own crawlable page. Custom articles stay private to the browser where they were created.'}
                     </p>
                   </div>
                   {!isChangelog && <div className="blog-hero-actions">
