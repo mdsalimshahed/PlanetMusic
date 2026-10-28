@@ -319,28 +319,68 @@ const notFoundPage = `<!doctype html>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#150f35" />
+    <meta name="theme-color" content="#000000" />
     <title>Page not found | PlanetMusic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-      body{margin:0;min-height:100vh;display:grid;place-items:center;background:#100b24;color:#f5f1ff;font:16px/1.6 system-ui,sans-serif}
-      main{width:min(90%,560px);padding:40px 32px;border:1px solid #ffffff24;border-radius:20px;background:#1a1530}
-      h1{margin-top:0;font-size:clamp(2rem,7vw,3rem)}p{color:#c7bfd9}
-      nav{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:24px}
-      a{color:#d5b8ff}
+      *{box-sizing:border-box}
+      body{margin:0;min-width:320px;min-height:100vh;display:flex;flex-direction:column;background:#000;color:#fff;font:16px/1.6 Outfit,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+      a{color:inherit;text-decoration:none}
+      a:focus-visible{outline:2px solid #fa243c;outline-offset:4px}
+      .site-header{width:min(100% - 48px,1200px);height:76px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222}
+      .brand{font-size:18px;font-weight:700;letter-spacing:-.5px}
+      .brand-mark{color:#fa243c}
+      .site-nav{display:flex;align-items:center;gap:28px;color:#999;font-size:14px}
+      .site-nav a:hover,.site-footer a:hover{color:#fff}
+      .not-found{position:relative;isolation:isolate;flex:1;min-height:560px;display:grid;place-items:center;overflow:hidden;padding:72px 24px}
+      .not-found:before{position:absolute;z-index:-1;top:50%;left:50%;width:min(72vw,760px);aspect-ratio:1;content:"";transform:translate(-50%,-55%);background:radial-gradient(circle,rgba(250,36,60,.09),transparent 68%)}
+      .not-found-content{width:min(100%,620px);text-align:center}
+      .error-code{margin:0;color:#fa243c;font-size:clamp(100px,23vw,200px);font-weight:800;line-height:.9;letter-spacing:-.1em;padding-right:.1em}
+      .eyebrow{margin:30px 0 10px;color:#888;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+      h1{margin:0;font-size:clamp(28px,5vw,44px);font-weight:600;letter-spacing:-.045em;line-height:1.15}
+      .description{max-width:440px;margin:16px auto 28px;color:#999;font-size:16px}
+      .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+      .button{min-height:46px;display:inline-flex;align-items:center;justify-content:center;padding:0 20px;border:1px solid #333;background:#111;color:#fff;font-size:14px;font-weight:600;transition:background .18s ease,border-color .18s ease,color .18s ease}
+      .button:hover{border-color:#fff;background:#fff;color:#000}
+      .button-primary{border-color:#fa243c;background:#fa243c;color:#fff}
+      .button-primary:hover{border-color:#ff5367;background:#ff5367;color:#fff}
+      .site-footer{width:min(100% - 48px,1200px);min-height:64px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;border-top:1px solid #222;color:#777;font-size:12px}
+      .footer-links{display:flex;gap:20px}
+      @media(max-width:600px){.site-header,.site-footer{width:calc(100% - 36px)}.site-header{height:64px}.site-nav{gap:16px;font-size:12px}.site-nav a:nth-child(2){display:none}.not-found{min-height:calc(100svh - 128px);padding:56px 18px}.description{font-size:15px}.site-footer{padding:18px 0;align-items:flex-start;flex-direction:column;gap:8px}.footer-links{gap:16px}}
+      @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
     </style>
   </head>
   <body>
-    <main>
-      <p>404 · PlanetMusic</p>
-      <h1>We couldn't find that page.</h1>
-      <p>The address may be outdated, or the page may have moved. Try the guides or return to PlanetMusic.</p>
-      <nav aria-label="Helpful pages">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="PlanetMusic home"><span class="brand-mark">◉</span> PlanetMusic</a>
+      <nav class="site-nav" aria-label="Main navigation">
         <a href="/">Home</a>
+        <a href="/vault">Your Vault</a>
+        <a href="/docs/dev-blogs">Guides</a>
+      </nav>
+    </header>
+    <main class="not-found">
+      <div class="not-found-content">
+        <p class="error-code" aria-label="Error 404">404</p>
+        <p class="eyebrow">Lost in the cosmos</p>
+        <h1>We couldn't find that page.</h1>
+        <p class="description">This destination isn't here. The link may be outdated, or the page may have drifted into another orbit.</p>
+        <nav class="actions" aria-label="Helpful links">
+          <a class="button button-primary" href="/">Back to PlanetMusic</a>
+          <a class="button" href="/vault">Open your Vault</a>
+        </nav>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <span>© ${new Date().getFullYear()} PlanetMusic</span>
+      <nav class="footer-links" aria-label="More links">
         <a href="/docs/dev-blogs">Guides</a>
         <a href="/docs/changelog">Changelog</a>
         <a href="/contact">Contact</a>
       </nav>
-    </main>
+    </footer>
   </body>
 </html>
 `;

@@ -13,7 +13,7 @@ By leveraging browser-native storage and advanced spatial rendering algorithms, 
 
 ## Public pages and publishing
 
-The production build prerenders public routes as individual HTML files in `dist/`. Cloudflare Pages serves these at clean URLs such as `/docs/dev-blog/post/welcome-to-planetmusic`; crawlers receive the article text, page-specific metadata, and structured data in the HTML response without needing to run the React app. The build also generates `sitemap.xml`, `feed.xml`, and a custom `404.html`.
+The production build prerenders public routes as individual HTML files in `dist/`. Cloudflare Pages serves these at clean URLs such as `/docs/dev-blog/post/welcome-to-planetmusic`; crawlers receive the article text, page-specific metadata, and structured data in the HTML response without needing to run the React app. Song modal URLs are rewritten to the app entry point so opening or refreshing a `/song/...` deep link restores the modal. The build also generates `sitemap.xml`, `feed.xml`, and a custom `404.html`.
 
 The public developer guides come from `public/blog_posts.json`. To publish or update a guide, update that source and deploy a new build. Articles created in the in-app **Custom Blogs** editor are stored in that browser's local storage; they are private to that browser and are not published, included in the sitemap, or sent to search engines.
 
