@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="static-fallback">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -54,10 +54,76 @@
         ]
       }
     </script>
+    <style>
+      html.static-fallback {
+        height: 100% !important;
+        min-height: 100% !important;
+        overflow: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overscroll-behavior: auto !important;
+      }
+      html.static-fallback body {
+        height: 100vh !important;
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: scroll !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      html.static-fallback #root {
+        min-height: 100%;
+        overflow: visible;
+      }
+      body.static-fallback *, body.static-fallback *::before, body.static-fallback *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    </style>
+    <script>
+      (function () {
+        var supportsDynamicImport = false;
+        try {
+          new Function('return import("data:text/javascript,")');
+          supportsDynamicImport = true;
+        } catch (error) {
+          supportsDynamicImport = false;
+        }
+
+        if (supportsDynamicImport || !('noModule' in document.createElement('script'))) return;
+
+        document.addEventListener('DOMContentLoaded', function () {
+          var polyfill = document.getElementById('vite-legacy-polyfill');
+          var entry = document.getElementById('vite-legacy-entry');
+          if (!polyfill || !entry) {
+            console.error('Could not find the legacy application bundle.');
+            return;
+          }
+
+          var legacyLoader = document.createElement('script');
+          legacyLoader.src = polyfill.src;
+          legacyLoader.crossOrigin = 'anonymous';
+          legacyLoader.onload = function () {
+            if (!window.System || typeof window.System.import !== 'function') {
+              console.error('The legacy module loader did not initialize.');
+              return;
+            }
+            window.System.import(entry.getAttribute('data-src')).catch(function (error) {
+              console.error('Could not load the legacy application bundle.', error);
+            });
+          };
+          legacyLoader.onerror = function () {
+            console.error('Could not load legacy browser polyfills.');
+          };
+          document.head.appendChild(legacyLoader);
+        });
+      })();
+    </script>
     <title>PlanetMusic | Lyrics Sync and Translations App</title>
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="static-fallback">
+    <div id="root"><!--app-fallback--><!--app-fallback-end--></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

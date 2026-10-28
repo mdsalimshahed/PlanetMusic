@@ -1,6 +1,7 @@
 /* --- src/Application/components/Core/TrackGrid.css --- */
 .track-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 200px));
   grid-template-columns: repeat(auto-fill, clamp(130px, var(--dyn-card-width, 12vw), 320px));
   justify-content: center; 
   gap: var(--dyn-card-gap, 28px);

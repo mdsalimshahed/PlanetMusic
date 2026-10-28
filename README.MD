@@ -17,6 +17,8 @@ The production build prerenders public routes as individual HTML files in `dist/
 
 The public developer guides come from `public/blog_posts.json`. To publish or update a guide, update that source and deploy a new build. Articles created in the in-app **Custom Blogs** editor are stored in that browser's local storage; they are private to that browser and are not published, included in the sitemap, or sent to search engines.
 
+PlanetMusic targets Chrome 64+, Firefox 60+, Safari 12+, Edge 79+, and iOS 12+. Both production JavaScript outputs are compiled for this baseline. Browsers without module support receive the legacy bundle and polyfills; older module-capable browsers without dynamic-import support are routed to that same bundle. A ResizeObserver polyfill covers older Firefox-based browsers that predate the native API. Public pages are prerendered as readable HTML; motion is suppressed only while this static fallback is displayed, and the full interactive app restores its normal layout and animations once JavaScript starts. The Vault is blocked with a compatibility notice in browsers below the listed minimum versions; public pages remain readable. The Vault and custom blog drafts are stored locally, so viewing or changing that personal data requires JavaScript. Internet Explorer and browsers older than these versions are not supported. For compatibility testing, use `npm run dev:pages` at `http://localhost:8788` or test the deployed site; the Vite development server (`npm run dev`) does not include production compatibility bundles or generated route pages.
+
 ---
 
 ## ✨ Showcase Features

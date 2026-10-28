@@ -1,6 +1,5 @@
-// Runs after `vite build`. Writes real, readable HTML for every public page into dist/, so crawlers
-// (including Google AdSense's reviewer) see content without running JavaScript.
-// When a visitor's browser loads the page, React replaces this HTML with the live app, exactly as before.
+// Runs after `vite build`. Writes readable HTML into dist/ so pages remain useful without JavaScript.
+// When JavaScript runs, React replaces the static content with the live app.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -11,12 +10,13 @@ import { createServer } from 'vite';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
-const { SITE, ABOUT, STEPS, FEATURES, FEATURED_GUIDES, FAQ } = await import(
+const { SITE } = await import(
   pathToFileURL(join(root, 'src/Application/content/homeContent.js')).href
 );
 const posts = JSON.parse(readFileSync(join(root, 'public/blog_posts.json'), 'utf8'));
 const changelogMonths = JSON.parse(readFileSync(join(root, 'public/changelog.json'), 'utf8'));
 const template = readFileSync(join(dist, 'index.html'), 'utf8');
+const appFallbackRootPattern = /<div id="root"><!--app-fallback-->[\s\S]*?<!--app-fallback-end-->\s*<\/div>/;
 const prerenderedPaths = [];
 const sitemapLastModified = new Map();
 
@@ -32,15 +32,41 @@ const toIsoDate = (date) => {
 const css = `<style>
 #root>.static{max-width:860px;margin:0 auto;padding:24px 20px 60px;color:#e9e4f5;font:16px/1.75 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .static{background:#0b0a14;min-height:100vh}.static a{color:#c9a8ff}.static h1,.static h2,.static h3{line-height:1.25;color:#fff}
-.static nav{display:flex;flex-wrap:wrap;gap:16px;padding-bottom:18px;border-bottom:1px solid #2b2540;margin-bottom:28px}
+.static nav:not(.global-footer-links){display:flex;flex-wrap:wrap;gap:16px;padding-bottom:18px;border-bottom:1px solid #2b2540;margin-bottom:28px}
 .static blockquote{margin:16px 0;padding:8px 16px;border-left:3px solid #a77bff;background:#171229}
 .static code{background:#171229;padding:1px 6px;border-radius:5px}.static pre{overflow:auto;background:#171229;padding:14px;border-radius:8px}
 .static .hero-title-gradient{background:linear-gradient(100deg,#e2d2ff,#f09bff 45%,#5fd4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .static .hero-title-logo{background:linear-gradient(120deg,#f06bff,#5fd4ff,#b6ff72);-webkit-background-clip:text;background-clip:text;color:transparent}
 .static .meta{color:#9d93b8;font-size:14px}.static footer{margin-top:40px;padding-top:18px;border-top:1px solid #2b2540;color:#9d93b8;font-size:14px}
 </style>`;
-const nav = `<nav aria-label="Main"><strong>PlanetMusic</strong><a href="/">Home</a><a href="/vault">Vault</a><a href="/docs/dev-blogs">Docs</a><a href="/docs/changelog">Changelog</a><a href="/contact">Contact</a></nav>`;
-const footer = `<footer><p>PlanetMusic is a music editing and organization workspace, not a licensed music catalog. Some features use third-party services.</p><p><a href="/privacy">Privacy Policy</a> · <a href="/docs/terms-of-service">Terms of Service</a> · <a href="/contact">Contact</a> · <a href="/docs/dev-blogs">Docs</a> · <a href="/docs/about-me">About Me</a></p></footer>`;
+const staticHeader = (path) => {
+  const links = [
+    ['Home', '/'],
+    ['Vault', '/vault'],
+    ['Ambient', '/ambient'],
+    ['Zen', '/zen'],
+    ['Docs', '/docs/dev-blogs'],
+    ['Contact', '/contact'],
+    ['Settings', '/settings']
+  ];
+  const isActive = (href) => path === href
+    || (href === '/vault' && path.startsWith('/song'))
+    || (href === '/ambient' && path === '/zen')
+    || (href === '/docs/dev-blogs' && path.startsWith('/docs'));
+  return `<header class="topbar static-topbar">
+    <div class="topbar-left"><a class="logo-area" href="/" aria-label="PlanetMusic home"><h2 class="logo-text"><span class="pm-logo"><span class="pm-planet">PLANET</span><span class="pm-music">MUSIC</span></span></h2></a></div>
+    <div class="topbar-right"><nav class="nav-menu" aria-label="Main navigation">
+      ${links.map(([label, href]) => `<a href="${href}" class="nav-btn${isActive(href) ? ' active' : ''}"${isActive(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('')}
+    </nav></div>
+  </header>`;
+};
+const staticFooter = `<div class="global-footer">
+  <p>© ${new Date().getFullYear()} PlanetMusic. All rights reserved.</p>
+  <nav class="global-footer-links" aria-label="Legal and privacy">
+    <a href="/privacy">Privacy Policy</a><a href="/docs/terms-of-service">Terms</a>
+    <a href="/docs/about-me">About</a><a href="/contact">Contact</a>
+  </nav>
+</div>`;
 
 const page = ({
   path,
@@ -49,11 +75,12 @@ const page = ({
   body,
   jsonld,
   useAppStyles = false,
+  includeInSitemap = true,
   openGraphType = 'website',
   publishedDate,
   lastModified
 }) => {
-  prerenderedPaths.push(path);
+  if (includeInSitemap) prerenderedPaths.push(path);
   if (lastModified) sitemapLastModified.set(path, lastModified);
   const url = `${SITE.url}${path}`;
   let html = template
@@ -67,7 +94,10 @@ const page = ({
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(title)}$2`)
     .replace(/(<meta\s+name="twitter:description"\s+content=")[\s\S]*?("\s*\/>)/, `$1${esc(description)}$2`)
     .replace('</head>', `${publishedDate ? `<meta property="article:published_time" content="${toIsoDate(publishedDate)}" />` : ''}${useAppStyles ? '' : css}${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}</head>`)
-    .replace('<div id="root"></div>', `<div id="root">${useAppStyles ? body : `<div class="static">${nav}${body}${footer}</div>`}</div>`);
+    .replace(
+      appFallbackRootPattern,
+      `<div id="root">${staticHeader(path)}${useAppStyles ? body : `<div class="static">${body}</div>`}${staticFooter}</div>`
+    );
   const file = path === '/'
     ? join(dist, 'index.html')
     : join(dist, `${path.replace(/^\//, '')}.html`);
@@ -87,13 +117,17 @@ let ContactTab;
 let PrivacyTab;
 let TermsTab;
 let AboutTab;
+let HomeGuide;
+let SiteMessagePage;
 try {
-  [{ default: BlogTab }, { default: ContactTab }, { default: PrivacyTab }, { default: TermsTab }, { default: AboutTab }] = await Promise.all([
+  [{ default: BlogTab }, { default: ContactTab }, { default: PrivacyTab }, { default: TermsTab }, { default: AboutTab }, { default: HomeGuide }, { default: SiteMessagePage }] = await Promise.all([
     vite.ssrLoadModule('/src/Application/pages/BlogTab.jsx'),
     vite.ssrLoadModule('/src/Application/pages/ContactTab.jsx'),
     vite.ssrLoadModule('/src/Application/pages/PrivacyTab.jsx'),
     vite.ssrLoadModule('/src/Application/pages/TermsTab.jsx'),
-    vite.ssrLoadModule('/src/Application/pages/AboutTab.jsx')
+    vite.ssrLoadModule('/src/Application/pages/AboutTab.jsx'),
+    vite.ssrLoadModule('/src/Application/components/Core/HomeGuide.jsx'),
+    vite.ssrLoadModule('/src/Application/pages/SiteMessagePage.jsx')
   ]);
 } finally {
   await vite.close();
@@ -115,32 +149,13 @@ const renderAppPage = (path, routePath, Component, props = {}) => renderToString
 );
 
 // ---- home
-const homeBody = `
-<main>
-<h1>Listen to <span class="hero-title-logo">MUSIC</span> of the <span class="hero-title-logo">PLANET</span></h1>
-<p>${esc(SITE.description)}</p>
-<p>Automatic translations and pronunciation readings can be reviewed and edited beside the original lyrics. Sync lyric lines to playback, then follow along using Live, Focused, Group Chat, or Plain Text views.</p>
-<p><a href="/vault">Open your Vault</a> · <a href="/docs/dev-blogs">Read the guides</a></p>
-<p>Learn more: <a href="/docs/terms-of-service">Terms of Service</a> · <a href="/docs/about-me">About Me</a></p>
-<h2>What PlanetMusic is</h2>
-<p>PlanetMusic is not a streaming service. It is a set of tools for people who want to do more with the songs they already listen to: organize them, follow along with the words, and learn what the words mean.</p>
-${ABOUT.map((a) => `<h3>${esc(a.title)}</h3><p>${esc(a.text)}</p>`).join('\n')}
-<h2>How it works</h2>
-<ol>${STEPS.map((s) => `<li><strong>${esc(s.title)}.</strong> ${esc(s.text)}</li>`).join('')}</ol>
-<h2>Features</h2>
-<ul>${FEATURES.map((f) => `<li><a href="${f.to}"><strong>${esc(f.title)}</strong></a>: ${esc(f.text)}</li>`).join('')}</ul>
-<h2>Guides</h2>
-<ul>${FEATURED_GUIDES.map((g) => `<li><a href="/docs/dev-blog/post/${g.id}">${esc(g.title)}</a> (${esc(g.readTime)}): ${esc(g.summary)}</li>`).join('')}</ul>
-<p><a href="/docs/dev-blogs">See all ${posts.length} guides</a></p>
-<h2>Frequently asked questions</h2>
-${FAQ.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('\n')}
-</main>`;
+const homeBody = renderAppPage('/', '/', HomeGuide, { isPlayerVisible: false });
 page({
   path: '/',
   title: 'PlanetMusic | Lyrics Sync and Translations App',
   description: SITE.description,
   body: homeBody,
-  jsonld: { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }
+  useAppStyles: true,
 });
 
 // ---- privacy policy
@@ -313,11 +328,18 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://w
   .join('\n')}\n</urlset>\n`;
 writeFileSync(join(dist, 'sitemap.xml'), sitemap);
 
-const notFoundPage = template
-  .replace('<title>PlanetMusic | Lyrics Sync and Translations App</title>', '<title>Page not found | PlanetMusic</title>')
-  .replace('<meta name="theme-color" content="#150f35" />', '<meta name="theme-color" content="#000000" />')
-  .replace(/<meta\s+name="description"/, '<meta name="robots" content="noindex" />\n    <meta name="description"')
-  .replace(/<link rel="canonical" href="[^"]*" \/>/, '');
-writeFileSync(join(dist, '404.html'), notFoundPage);
+page({
+  path: '/404',
+  title: 'Page not found | PlanetMusic',
+  description: 'The requested PlanetMusic page could not be found.',
+  body: renderAppPage('/404', '*', SiteMessagePage),
+  useAppStyles: true,
+  includeInSitemap: false
+});
+const notFoundPath = join(dist, '404.html');
+const notFoundPage = readFileSync(notFoundPath, 'utf8')
+  .replace(/<link rel="canonical" href="[^"]*" \/>/, '')
+  .replace(/<meta\s+name="description"/, '<meta name="robots" content="noindex" />\n    <meta name="description"');
+writeFileSync(notFoundPath, notFoundPage);
 
 console.log(`Prerendered ${prerenderedPaths.length} public pages, RSS feed, sitemap, and 404 page.`);

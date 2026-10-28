@@ -4,7 +4,8 @@
   flex-direction: column;
   width: 100vw;
   max-width: 100vw;
-  height: 100dvh; 
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -34,6 +35,99 @@
 .content-scroll-area.no-scroll {
   overflow: hidden !important;
   padding-bottom: 20px;
+}
+
+.vault-browser-warning {
+  display: grid;
+  min-height: 60vh;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 40px 24px;
+  color: #fff;
+  text-align: center;
+}
+
+.vault-browser-warning-card {
+  position: relative;
+  width: min(100%, 620px);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 48px);
+  border: 1px solid rgba(194, 147, 255, 0.42);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 92% 0, rgba(120, 57, 230, 0.23), transparent 42%),
+    linear-gradient(135deg, #171226, #100d1b 72%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.vault-browser-warning-kicker {
+  margin: 0 0 14px;
+  color: #c9b5ee;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.vault-browser-warning h1 {
+  margin: 0 0 16px;
+  font-family: 'Unbounded', system-ui, sans-serif;
+  font-size: clamp(23px, 3.6vw, 34px);
+  line-height: 1.25;
+}
+
+.vault-browser-warning p:not(.vault-browser-warning-kicker) {
+  max-width: 470px;
+  margin: 0 auto 24px;
+  color: #cfc7e0;
+  line-height: 1.7;
+}
+
+.vault-browser-support-heading {
+  margin: 0 0 12px;
+  color: #eee5ff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.vault-browser-support-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+
+.vault-browser-support-list li {
+  padding: 8px 12px;
+  border: 1px solid rgba(194, 147, 255, 0.26);
+  border-radius: 999px;
+  color: #e4d8ff;
+  background: rgba(72, 53, 108, 0.42);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.vault-browser-home-link {
+  display: inline-block;
+  padding: 12px 22px;
+  border: 1px solid rgba(211, 190, 255, 0.6);
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(120deg, #7548e8, #426bd0);
+  box-shadow: 0 8px 24px rgba(71, 57, 159, 0.3);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vault-browser-home-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(71, 57, 159, 0.44);
 }
 
 .content-scroll-area::-webkit-scrollbar {

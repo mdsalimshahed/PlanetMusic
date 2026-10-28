@@ -175,11 +175,7 @@ const DefaultEngine = ({ chars, translation, pronunciation, hasSpacingText, isFo
     }
     if (isAdlib && displayPronString) {
         displayPronString = stripPronunciationParentheses(displayPronString)
-            .replaceAll(' ', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll('{', '')
-            .replaceAll('}', '')
+            .replace(/[\x20\x5B\x5D\x7B\x7D]/g, '')
             .trim();
     }
 

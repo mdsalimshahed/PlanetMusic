@@ -17,6 +17,9 @@
 }
 
 .pm-logo {
+  --logo-hue: 0;
+  --logo-gradient-x: 0%;
+  --logo-art-accent: #ffffff;
   display: inline-flex;
   align-items: baseline;
   animation: logoHueShift 18s linear infinite, logoGradientPhase 7s ease infinite;
@@ -34,18 +37,25 @@
 .pm-music {
   position: relative;
   display: inline-block;
-  color: transparent;
-  background-image: linear-gradient(
-    120deg,
-    hsl(var(--logo-hue), 88%, 66%),
-    hsl(calc(var(--logo-hue) + 120), 88%, 60%),
-    hsl(calc(var(--logo-hue) + 240), 88%, 66%)
-  );
-  background-size: 300% 300%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-position: var(--logo-gradient-x) 50%;
+  color: #d6c6ff;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .pm-planet,
+  .pm-music {
+    background-image: linear-gradient(
+      120deg,
+      hsl(var(--logo-hue), 88%, 66%),
+      hsl(calc(var(--logo-hue) + 120), 88%, 60%),
+      hsl(calc(var(--logo-hue) + 240), 88%, 66%)
+    );
+    background-size: 300% 300%;
+    background-position: var(--logo-gradient-x) 50%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .pm-planet {
@@ -55,7 +65,22 @@
 
 .pm-music {
   margin-left: 0.06em;
+  color: #f0b5ff;
   font-weight: 300;
+}
+
+html.static-fallback .pm-planet,
+html.legacy-browser .pm-planet {
+  background: none !important;
+  color: #d6c6ff !important;
+  -webkit-text-fill-color: #d6c6ff !important;
+}
+
+html.static-fallback .pm-music,
+html.legacy-browser .pm-music {
+  background: none !important;
+  color: #f0b5ff !important;
+  -webkit-text-fill-color: #f0b5ff !important;
 }
 
 .pm-planet::after,

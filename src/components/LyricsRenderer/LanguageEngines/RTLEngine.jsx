@@ -48,10 +48,7 @@ const RTLEngine = ({ chars, translation, pronunciation, hasSpacingText, isFocuse
     // Always ensure parens are completely stripped if rendering an adlib unit
     if (isAdlib && displayPronString) {
         displayPronString = stripPronunciationParentheses(displayPronString)
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll('{', '')
-            .replaceAll('}', '')
+            .replace(/[\x5B\x5D\x7B\x7D]/g, '')
             .trim();
     }
 

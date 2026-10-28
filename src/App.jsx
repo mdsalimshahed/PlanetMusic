@@ -35,8 +35,30 @@ import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
 import { useVaultOperations } from './Application/hooks/data/useVaultOperations.js';
 import { useCosmosSearch } from './Application/hooks/core/useCosmosSearch.js';
 import { useDeepLink } from './Application/hooks/core/useDeepLink.js';
+import { isUnsupportedVaultBrowser } from './utils/browserSupport.js';
 
 const ADS_ENABLED = true;
+
+const VaultBrowserWarning = () => (
+  <section className="vault-browser-warning" role="alert">
+    <div className="vault-browser-warning-card">
+      <p className="vault-browser-warning-kicker">Browser compatibility</p>
+      <h1>Your browser isn’t supported for Vault</h1>
+      <p>
+        The Vault needs a browser that meets these minimum requirements. Your stored music has not been changed.
+      </p>
+      <h2 className="vault-browser-support-heading">Supported browsers</h2>
+      <ul className="vault-browser-support-list">
+        <li>Chrome 64+</li>
+        <li>Firefox 60+</li>
+        <li>Safari 12+</li>
+        <li>Edge 79+</li>
+        <li>iOS 12+</li>
+      </ul>
+      <Link className="vault-browser-home-link" to="/">Return to PlanetMusic</Link>
+    </div>
+  </section>
+);
 
 const shuffleZenPool = (songs, previousSequence = [], previousLastTrackId) => {
   const previousIds = previousSequence.map(song => String(song.trackId));
@@ -86,6 +108,7 @@ const shuffleZenPool = (songs, previousSequence = [], previousLastTrackId) => {
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isVaultBrowserUnsupported = isUnsupportedVaultBrowser(navigator.userAgent);
   const contentScrollAreaRef = useRef(null);
   const previousPathnameRef = useRef(location.pathname);
   const vaultScrollPositionRef = useRef(null);
@@ -106,7 +129,7 @@ const App = () => {
 
   useEffect(() => {
     const searchBox = searchBoxRef.current;
-    if (!searchBox) return undefined;
+    if (!searchBox || typeof ResizeObserver === 'undefined') return undefined;
 
     const observer = new ResizeObserver(([entry]) => {
       const bounds = entry.target.getBoundingClientRect();
@@ -694,7 +717,7 @@ const App = () => {
           )}
 
           <main className="main-content">
-        {(activeTab === 'vault' || activeTab === 'ambient' || isZenMode) && (
+        {((activeTab === 'vault' && !isVaultBrowserUnsupported) || activeTab === 'ambient' || isZenMode) && (
           <div className={`search-container ${activeTab !== 'vault' ? 'ambient-search-entry' : ''}`}>
             <form ref={searchBoxRef} onSubmit={handleSearchSubmit} onFocusCapture={assignSearchOrbitColors} className="search-box">
               <span className="search-box-shine" aria-hidden="true" />
@@ -737,7 +760,7 @@ const App = () => {
           
           <Routes>
             <Route path="/" element={renderHomeView()} />
-            <Route path="/vault" element={renderDashboardView()} />
+            <Route path="/vault/*" element={isVaultBrowserUnsupported ? <VaultBrowserWarning /> : renderDashboardView()} />
             <Route path="/ambient" element={renderDashboardView()} />
             <Route path="/zen" element={renderDashboardView()} />
             

@@ -1,1 +1,11 @@
+/vault / 200
+/settings / 200
+/ambient / 200
+/zen / 200
+/song / 200
 /song/* / 200
+/docs/custom-blog / 200
+/terms /docs/terms-of-service 301
+/about /docs/about-me 301
+/blog/* /docs/:splat 301
+/deezer/* /vault 302
