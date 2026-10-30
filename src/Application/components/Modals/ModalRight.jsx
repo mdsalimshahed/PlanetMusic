@@ -92,6 +92,8 @@ const ModalRight = (props) => {
                 settings={canvasProps.settings}
                 lyricsPlaybackOffsetSeconds={canvasProps.lyricsPlaybackOffsetSeconds}
                 showGroupChatDebug={canvasProps.showGroupChatDebug}
+                shouldAnimateLiveEntrance={canvasProps.shouldAnimateLiveEntrance}
+                markLiveEntranceStarted={canvasProps.markLiveEntranceStarted}
               />
             )}
 

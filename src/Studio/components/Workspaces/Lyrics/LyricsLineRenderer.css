@@ -303,11 +303,15 @@ rt.pronunciation-text,
   display: flex;
   flex: 0 0 100%;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: flex-end;
   column-gap: min(0.72vw, 1.5vh);
   row-gap: 0;
   width: 100%;
   max-width: 100%;
+}
+
+.live-layout-auto .live-split-line > .live-adlib-group.has-adlib-row > .adlib-node {
+  align-self: flex-end;
 }
 
 .preview-line .live-split-line .adlib-node.is-english-adlib-on-foreign-line:not(.is-adlib-inline-after-wrapped-main) {

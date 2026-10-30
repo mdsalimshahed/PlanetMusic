@@ -14,7 +14,7 @@ const LyricsDisplay = ({
     isLrcFetching, hasValidSyncData,
     lyricsViewMode, liveParsedLyrics, handleLineClick, selectedSong, masterPalette, currentTrack,
     isPlaying, isSaved, settings, lyricsPlaybackOffsetSeconds, singerImages, globalArtistData,
-    showGroupChatDebug
+    showGroupChatDebug, isSongModalReady, shouldAnimateLiveEntrance, markLiveEntranceStarted
 }) => {
   const isPlayingCurrentSong = Boolean(currentTrack && selectedSong && currentTrack.trackId === selectedSong.trackId);
   const syncWorkspaceLyrics = useMemo(
@@ -66,6 +66,9 @@ const LyricsDisplay = ({
           settings={settings}
           currentTrack={currentTrack}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+          isSongModalReady={isSongModalReady}
+          shouldAnimateEntrance={shouldAnimateLiveEntrance}
+          onEntranceAnimationStart={markLiveEntranceStarted}
         />
       ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView

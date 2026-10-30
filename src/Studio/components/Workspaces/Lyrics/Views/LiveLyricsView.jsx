@@ -8,6 +8,7 @@ import './LiveLyricsView.css';
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
   const activeBounds = node.getBoundingClientRect();
+  const centerOffset = container.clientHeight * 0.1;
   return getCenteredScrollTop({
     scrollTop: container.scrollTop,
     viewportTop: containerBounds.top + container.clientTop,
@@ -15,28 +16,88 @@ const getActiveLineScrollTop = (container, node) => {
     activeTop: activeBounds.top,
     activeHeight: activeBounds.height,
     maxScrollTop: container.scrollHeight - container.clientHeight
-  });
+  }) + centerOffset;
+};
+
+const isActiveLineInCenterView = (container, node) => {
+  const containerBounds = container.getBoundingClientRect();
+  const activeBounds = node.getBoundingClientRect();
+  const centerOffset = container.clientHeight * 0.1;
+  const centerDelta = activeBounds.top + activeBounds.height / 2 -
+    (containerBounds.top + container.clientTop + container.clientHeight / 2);
+  return Math.abs(centerDelta + centerOffset) <= Math.max(12, container.clientHeight * 0.06);
 };
 
 const scrollContainerToCenter = (container, node, pendingTargetRef) => {
-  const scrollTop = getActiveLineScrollTop(container, node);
-  if (Math.abs(scrollTop - container.scrollTop) < 1) return;
-
   const pendingTarget = pendingTargetRef.current;
-  if (pendingTarget && Math.abs(pendingTarget.top - scrollTop) < 1) return;
-  if (pendingTarget) window.clearTimeout(pendingTarget.timeout);
-
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    container.scrollTop = scrollTop;
+  if (isActiveLineInCenterView(container, node)) {
+    if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
     pendingTargetRef.current = null;
     return;
   }
 
-  const timeout = window.setTimeout(() => {
+  const targetTop = getActiveLineScrollTop(container, node);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
+    container.scrollTop = targetTop;
     pendingTargetRef.current = null;
-  }, 800);
-  pendingTargetRef.current = { top: scrollTop, timeout };
-  container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    return;
+  }
+
+  if (pendingTarget) {
+    if (pendingTarget.container === container) {
+      pendingTarget.node = node;
+      if (Math.abs(pendingTarget.top - targetTop) >= 0.5) pendingTarget.top = targetTop;
+      return;
+    }
+    window.cancelAnimationFrame(pendingTarget.frame);
+  } else if (Math.abs(targetTop - container.scrollTop) < 1) {
+    return;
+  }
+
+  const animation = {
+    container,
+    node,
+    top: targetTop,
+    frame: null,
+    lastTimestamp: null,
+    velocity: 0
+  };
+  pendingTargetRef.current = animation;
+
+  const animate = timestamp => {
+    if (pendingTargetRef.current !== animation) return;
+    if (!animation.node.isConnected || isActiveLineInCenterView(container, animation.node)) {
+      pendingTargetRef.current = null;
+      return;
+    }
+
+    const elapsed = animation.lastTimestamp === null
+      ? 0
+      : Math.min((timestamp - animation.lastTimestamp) / 1000, 0.032);
+    animation.lastTimestamp = timestamp;
+
+    if (elapsed > 0) {
+      const omega = 12;
+      const error = container.scrollTop - animation.top;
+      const combinedVelocity = animation.velocity + omega * error;
+      const decay = Math.exp(-omega * elapsed);
+      const nextError = (error + combinedVelocity * elapsed) * decay;
+      animation.velocity = (animation.velocity - omega * combinedVelocity * elapsed) * decay;
+
+      if (Math.abs(nextError) < 0.5 && Math.abs(animation.velocity) < 5) {
+        container.scrollTop = animation.top;
+        pendingTargetRef.current = null;
+        return;
+      }
+
+      container.scrollTop = animation.top + nextError;
+    }
+
+    animation.frame = window.requestAnimationFrame(animate);
+  };
+
+  animation.frame = window.requestAnimationFrame(animate);
 };
 
 const LiveLyricsView = ({
@@ -47,10 +108,14 @@ const LiveLyricsView = ({
   handleLineClick,
   settings,
   currentTrack,
-  lyricsPlaybackOffsetSeconds = 0
+  lyricsPlaybackOffsetSeconds = 0,
+  isSongModalReady = true,
+  shouldAnimateEntrance = true,
+  onEntranceAnimationStart
 }) => {
   const containerRef = useRef(null);
   const activeLineResizeObserverRef = useRef(null);
+  const shouldAnimateEntranceRef = useRef(shouldAnimateEntrance);
   const revealedLinesRef = useRef(new WeakSet());
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
@@ -79,6 +144,10 @@ const LiveLyricsView = ({
     () => buildTimedLineData(syncList, nextStarts),
     [syncList, nextStarts]
   );
+
+  useEffect(() => {
+    shouldAnimateEntranceRef.current = shouldAnimateEntrance;
+  }, [shouldAnimateEntrance]);
 
   const centerActiveLine = useCallback((node) => {
     if (!node) return;
@@ -178,14 +247,48 @@ const LiveLyricsView = ({
   ]);
 
   useLayoutEffect(() => {
+    if (!isSongModalReady) return undefined;
+    let frame = null;
+    frame = window.requestAnimationFrame(() => {
+      frame = null;
+      const container = containerRef.current;
+      const activeLine = container?.querySelector('.lyric-line-wrapper.active');
+      if (container && activeLine) {
+        scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
+      }
+    });
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, [isSongModalReady, selectedSong?.trackId, currentTrack?.trackId, timedLineData]);
+
+  useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container || typeof ResizeObserver === 'undefined') return undefined;
 
+    let frame = null;
+    const linePositions = new Map(
+      Array.from(container.querySelectorAll('.lyric-line-wrapper'))
+        .map((line, index) => [line, index])
+    );
     const observer = new ResizeObserver(entries => {
       const activeLine = container.querySelector('.lyric-line-wrapper.active');
-      if (!activeLine || !entries.some(entry => entry.target === activeLine)) return;
-      scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
+      if (!activeLine) return;
+      const activeLineIndex = linePositions.get(activeLine);
+      const affectsActivePosition = entries.some(({ target }) => (
+        target === container ||
+        (linePositions.has(target) && linePositions.get(target) <= activeLineIndex)
+      ));
+      if (!affectsActivePosition || frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        const currentActiveLine = container.querySelector('.lyric-line-wrapper.active');
+        if (currentActiveLine) {
+          scrollContainerToCenter(container, currentActiveLine, pendingCenterTargetRef);
+        }
+      });
     });
+    observer.observe(container);
     container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
       observer.observe(line);
     });
@@ -193,13 +296,14 @@ const LiveLyricsView = ({
 
     return () => {
       observer.disconnect();
+      if (frame !== null) window.cancelAnimationFrame(frame);
       activeLineResizeObserverRef.current = null;
     };
   }, [syncWorkspaceLyrics]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
-    if (!container || selectedSong?.trackId == null) return undefined;
+    if (!container || !isSongModalReady || selectedSong?.trackId == null) return undefined;
 
     const containerBounds = container.getBoundingClientRect();
     const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
@@ -219,6 +323,11 @@ const LiveLyricsView = ({
       .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
       .filter(line => !revealedLinesRef.current.has(line));
     if (revealLines.length === 0) return undefined;
+    if (!shouldAnimateEntranceRef.current) {
+      revealLines.forEach(line => revealedLinesRef.current.add(line));
+      return undefined;
+    }
+    onEntranceAnimationStart?.(selectedSong?.trackId);
     if (
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
@@ -257,14 +366,19 @@ const LiveLyricsView = ({
       if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
       revealLines.forEach(line => line.classList.remove('is-preparing-reveal'));
     };
-  }, [syncWorkspaceLyrics, selectedSong?.trackId]);
+  }, [
+    syncWorkspaceLyrics,
+    selectedSong?.trackId,
+    isSongModalReady,
+    onEntranceAnimationStart
+  ]);
 
   useEffect(() => {
     return () => {
       activeLineResizeObserverRef.current?.disconnect();
       activeLineResizeObserverRef.current = null;
       if (pendingCenterTargetRef.current) {
-        window.clearTimeout(pendingCenterTargetRef.current.timeout);
+        window.cancelAnimationFrame(pendingCenterTargetRef.current.frame);
         pendingCenterTargetRef.current = null;
       }
     };
