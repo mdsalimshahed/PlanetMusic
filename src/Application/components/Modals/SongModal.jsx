@@ -116,7 +116,7 @@ const NotificationToast = ({ notification, onDismiss }) => {
   );
 };
 
-const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSong, isSaved, toggleLibrary, updateSongInLibrary, library, setCurrentTrack, currentTrack, settings }) => {
+const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSong, updateSelectedSongDirect, isSaved, toggleLibrary, updateSongInLibrary, library, setCurrentTrack, currentTrack, settings }) => {
   const [toastItems, setToastItems] = useState([]);
   const [isAutomatedVaultAddRunning, setIsAutomatedVaultAddRunning] = useState(false);
   const [automatedTranslationRequest, setAutomatedTranslationRequest] = useState(null);
@@ -261,7 +261,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     });
     dismissAutomatedNotificationAfter(8000);
   }, [dismissAutomatedNotificationAfter, setNotification]);
-  const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary, library);
+  const songDataProps = useSongData(selectedSong, isSaved, updateSongInLibrary, updateSelectedSongDirect, library);
   const syncProps = useSyncWorkspace(
     selectedSong, isSaved, songDataProps.customData, songDataProps.setCustomData,
     songDataProps.masterPalette, updateSongInLibrary, setNotification, settings

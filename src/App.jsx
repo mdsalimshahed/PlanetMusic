@@ -426,6 +426,7 @@ const App = () => {
 
   // Direct State Update Handler (No Navigation / Route Interruption)
   const updateSelectedSongDirect = (song) => {
+    if (String(songSelectionContextRef.current.selectedSong?.trackId) !== String(song?.trackId)) return;
     setSongModalReadyTrackId(null);
     setSelectedSong(song);
   };
@@ -829,6 +830,7 @@ const App = () => {
         isSongModalReady={isSongModalReady}
         onModalReady={setSongModalReadyTrackId}
         setSelectedSong={handleSetSelectedSong}
+        updateSelectedSongDirect={updateSelectedSongDirect}
         isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
         toggleLibrary={toggleLibrary}
         updateSongInLibrary={updateSongInLibrary}

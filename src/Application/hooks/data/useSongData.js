@@ -22,7 +22,7 @@ const createCustomDataForSong = song => ({
   artistColors: song?.artistColors || EMPTY_ARTIST_DATA
 });
 
-export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library = []) => {
+export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSelectedSongDirect, library = []) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageManagerOpen, setIsImageManagerOpen] = useState(false);
   const [isTranslationManagerOpen, setIsTranslationManagerOpen] = useState(false);
@@ -110,6 +110,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
   }, [selectedSong]);
   
   const previousTrackId = useRef(null);
+  const isSavedRef = useRef(isSaved);
   // Track to prevent infinite fetch loops within the same active session
   const hasFetchedDeezerMetaRef = useRef(new Set());
 
@@ -152,9 +153,13 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
     }
   }, [selectedSong, setCustomData]);
 
-  // DEEZER METADATA FETCH: Run instantly when a Deezer-only song is saved OR a custom Deezer link is added
   useEffect(() => {
-    if (isSaved && selectedSong) {
+    isSavedRef.current = isSaved;
+  }, [isSaved]);
+
+  // DEEZER METADATA FETCH: Hydrate selected Deezer songs and persist metadata for saved songs.
+  useEffect(() => {
+    if (selectedSong) {
       // --- PERMANENT EFFICIENCY FIX ---
       // If we have already fetched and bound the Deezer metadata to this song in the vault, 
       // skip the network request entirely.
@@ -213,7 +218,11 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
                 }
                 
                 if (modified) {
-                  updateSongInLibrary(updatedSong);
+                  if (isSavedRef.current) {
+                    updateSongInLibrary(updatedSong);
+                  } else {
+                    updateSelectedSongDirect(updatedSong);
+                  }
                 }
               }
             } catch (e) {
@@ -225,7 +234,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, library 
         }
       }
     }
-  }, [isSaved, selectedSong, updateSongInLibrary]);
+  }, [selectedSong, updateSongInLibrary, updateSelectedSongDirect]);
 
   useEffect(() => {
     if (!selectedSong) return;
