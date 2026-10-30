@@ -496,9 +496,10 @@ const App = () => {
     pathParts.includes('sync-workspace') &&
     String(selectedSong.trackId) === String(urlTrackId)
   );
-  const playerTrack = isSyncWorkspaceActive &&
-    String(currentTrack?.trackId) !== String(selectedSong?.trackId)
-    ? null
+  const playerTrack = isSyncWorkspaceActive
+    ? String(currentTrack?.trackId) === String(selectedSong?.trackId)
+      ? currentTrack
+      : selectedSong
     : currentTrack;
 
   const dynamicStyles = {
