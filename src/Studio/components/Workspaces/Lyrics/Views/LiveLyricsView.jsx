@@ -181,11 +181,10 @@ const LiveLyricsView = ({
     const container = containerRef.current;
     if (!container || typeof ResizeObserver === 'undefined') return undefined;
 
-    const observer = new ResizeObserver(() => {
+    const observer = new ResizeObserver(entries => {
       const activeLine = container.querySelector('.lyric-line-wrapper.active');
-      if (activeLine) {
-        scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
-      }
+      if (!activeLine || !entries.some(entry => entry.target === activeLine)) return;
+      scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
     });
     container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
       observer.observe(line);
