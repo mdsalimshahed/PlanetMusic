@@ -194,11 +194,13 @@
 
 .notification-toast.is-visible {
   animation: notification-toast-enter 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  will-change: transform, opacity;
 }
 
 .notification-toast.is-exiting {
   pointer-events: none;
   animation: notification-toast-exit 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  will-change: transform, opacity;
 }
 
 .notification-toast.is-loading { --toast-accent: #8b9dff; }

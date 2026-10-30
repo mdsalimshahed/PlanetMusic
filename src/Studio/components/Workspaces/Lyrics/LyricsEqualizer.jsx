@@ -2,6 +2,12 @@
 import { useEffect, useRef } from 'react';
 import './LyricsEqualizer.css';
 
+const isLowEndDevice = typeof navigator !== 'undefined' && (
+  (Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4) ||
+  (Number(navigator.hardwareConcurrency) > 0 && Number(navigator.hardwareConcurrency) <= 4)
+);
+const LOW_END_FRAME_INTERVAL = 1000 / 30;
+
 const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, isEditing }) => {
   const canvasRef = useRef(null);
   const eqScalesRef = useRef(Array(40).fill(0.05));
@@ -46,6 +52,15 @@ const LyricsEqualizer = ({ isPlaying, isPlayingCurrentSong, activeSource, isEdit
     const targetScales = new Float32Array(numBars).fill(0.05);
 
     const renderEQ = (timestamp) => {
+      if (
+        isLowEndDevice &&
+        previousFrameTimestamp !== null &&
+        timestamp - previousFrameTimestamp < LOW_END_FRAME_INTERVAL
+      ) {
+        rafId = requestAnimationFrame(renderEQ);
+        return;
+      }
+
       const frameDuration = previousFrameTimestamp === null
         ? 1000 / 60
         : Math.min(100, Math.max(0, timestamp - previousFrameTimestamp));

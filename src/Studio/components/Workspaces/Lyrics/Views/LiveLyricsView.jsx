@@ -8,18 +8,21 @@ import './LiveLyricsView.css';
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
   const activeBounds = node.getBoundingClientRect();
-  const visibleTop = containerBounds.top + container.clientTop;
-  const visibleBottom = visibleTop + container.clientHeight;
+  const scaleY = container.offsetHeight > 0
+    ? containerBounds.height / container.offsetHeight
+    : 1;
+  const visibleTop = containerBounds.top + container.clientTop * scaleY;
+  const activeTop = (activeBounds.top - visibleTop) / scaleY;
+  const activeHeight = activeBounds.height / scaleY;
   const safeInset = container.clientHeight * 0.04;
-  const desiredCenter = visibleTop + container.clientHeight * 0.45;
-  const centeredTarget = container.scrollTop +
-    activeBounds.top + activeBounds.height / 2 - desiredCenter;
+  const centeredTarget = container.scrollTop + activeTop + activeHeight / 2 -
+    container.clientHeight * 0.45;
   const firstFullyVisibleTarget = container.scrollTop +
-    activeBounds.bottom - (visibleBottom - safeInset);
+    activeTop + activeHeight - (container.clientHeight - safeInset);
   const lastFullyVisibleTarget = container.scrollTop +
-    activeBounds.top - (visibleTop + safeInset);
+    activeTop - safeInset;
   const safeVisibleHeight = container.clientHeight - safeInset * 2;
-  const targetTop = activeBounds.height <= safeVisibleHeight
+  const targetTop = activeHeight <= safeVisibleHeight
     ? Math.max(firstFullyVisibleTarget, Math.min(centeredTarget, lastFullyVisibleTarget))
     : lastFullyVisibleTarget;
 
@@ -175,7 +178,6 @@ const LiveLyricsView = ({
 }) => {
   const containerRef = useRef(null);
   const activeLineResizeObserverRef = useRef(null);
-  const suppressLayoutScrollUntilRef = useRef(0);
   const pendingSeekRef = useRef(false);
   const shouldAnimateEntranceRef = useRef(shouldAnimateEntrance);
   const revealedLinesRef = useRef(new WeakSet());
@@ -236,7 +238,6 @@ const LiveLyricsView = ({
     const isSeek = pendingSeekRef.current;
     pendingSeekRef.current = false;
     if (activeLineChanged) {
-      suppressLayoutScrollUntilRef.current = performance.now() + 100;
       lines.forEach((line, index) => {
         if (index === newActiveIndex) {
           line.node.classList.add('active');
@@ -341,7 +342,6 @@ const LiveLyricsView = ({
         .map((line, index) => [line, index])
     );
     const observer = new ResizeObserver(entries => {
-      if (performance.now() < suppressLayoutScrollUntilRef.current) return;
       const activeLine = container.querySelector('.lyric-line-wrapper.active');
       if (!activeLine) return;
       const activeLineIndex = linePositions.get(activeLine);
@@ -352,7 +352,6 @@ const LiveLyricsView = ({
       if (!affectsActivePosition || frame !== null) return;
       frame = window.requestAnimationFrame(() => {
         frame = null;
-        if (performance.now() < suppressLayoutScrollUntilRef.current) return;
         const currentActiveLine = container.querySelector('.lyric-line-wrapper.active');
         if (currentActiveLine) {
           smoothScrollToActiveLine(container, currentActiveLine, pendingCenterTargetRef);
