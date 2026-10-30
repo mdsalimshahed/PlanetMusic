@@ -142,7 +142,7 @@ const smoothScrollToActiveLine = (container, node, pendingTargetRef) => {
     animation.lastTimestamp = timestamp;
 
     if (elapsed > 0) {
-      const omega = 8;
+      const omega = 5;
       const error = container.scrollTop - animation.top;
       const combinedVelocity = animation.velocity + omega * error;
       const decay = Math.exp(-omega * elapsed);
@@ -260,7 +260,7 @@ const LiveLyricsView = ({
 
     const activeLine = lines[newActiveIndex];
     if (activeLine && (activeLineChanged || needsInitialCenterRef.current || isSeek)) {
-      centerActiveLine(activeLine.node, isSeek);
+      centerActiveLine(activeLine.node, isSeek || needsInitialCenterRef.current);
     }
 
     const adlibTimeline = adlibTimelineRef.current;
