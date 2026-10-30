@@ -2,35 +2,93 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
-import { buildTimedLineData, findActiveLineIndex, getCenteredScrollTop } from './liveLyricsUtils.js';
+import { buildTimedLineData, findActiveLineIndex } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
 
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
   const activeBounds = node.getBoundingClientRect();
-  const centerOffset = container.clientHeight * 0.1;
-  return getCenteredScrollTop({
-    scrollTop: container.scrollTop,
-    viewportTop: containerBounds.top + container.clientTop,
-    viewportHeight: container.clientHeight,
-    activeTop: activeBounds.top,
-    activeHeight: activeBounds.height,
-    maxScrollTop: container.scrollHeight - container.clientHeight
-  }) + centerOffset;
+  const visibleTop = containerBounds.top + container.clientTop;
+  const visibleBottom = visibleTop + container.clientHeight;
+  const safeInset = container.clientHeight * 0.04;
+  const desiredCenter = visibleTop + container.clientHeight * 0.45;
+  const centeredTarget = container.scrollTop +
+    activeBounds.top + activeBounds.height / 2 - desiredCenter;
+  const firstFullyVisibleTarget = container.scrollTop +
+    activeBounds.bottom - (visibleBottom - safeInset);
+  const lastFullyVisibleTarget = container.scrollTop +
+    activeBounds.top - (visibleTop + safeInset);
+  const safeVisibleHeight = container.clientHeight - safeInset * 2;
+  const targetTop = activeBounds.height <= safeVisibleHeight
+    ? Math.max(firstFullyVisibleTarget, Math.min(centeredTarget, lastFullyVisibleTarget))
+    : lastFullyVisibleTarget;
+
+  return Math.max(0, Math.min(targetTop, container.scrollHeight - container.clientHeight));
 };
 
-const isActiveLineInCenterView = (container, node) => {
-  const containerBounds = container.getBoundingClientRect();
-  const activeBounds = node.getBoundingClientRect();
-  const centerOffset = container.clientHeight * 0.1;
-  const centerDelta = activeBounds.top + activeBounds.height / 2 -
-    (containerBounds.top + container.clientTop + container.clientHeight / 2);
-  return Math.abs(centerDelta + centerOffset) <= Math.max(12, container.clientHeight * 0.06);
+const isAtDesiredLinePosition = (container, node) => {
+  const targetTop = getActiveLineScrollTop(container, node);
+  const tolerance = Math.max(1, container.clientHeight * 0.005);
+  return Math.abs(container.scrollTop - targetTop) <= tolerance;
 };
 
-const scrollContainerToCenter = (container, node, pendingTargetRef) => {
+const cancelPendingScroll = pendingTargetRef => {
   const pendingTarget = pendingTargetRef.current;
-  if (isActiveLineInCenterView(container, node)) {
+  if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
+  pendingTargetRef.current = null;
+};
+
+const scrollToActiveLineNormally = (container, node, pendingTargetRef) => {
+  const targetTop = getActiveLineScrollTop(container, node);
+  if (isAtDesiredLinePosition(container, node)) {
+    cancelPendingScroll(pendingTargetRef);
+    return;
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    cancelPendingScroll(pendingTargetRef);
+    container.scrollTop = targetTop;
+    return;
+  }
+
+  cancelPendingScroll(pendingTargetRef);
+  const startTop = container.scrollTop;
+  const distance = targetTop - startTop;
+  const duration = Math.min(280, Math.max(130, Math.abs(distance) * 0.45));
+  const animation = {
+    type: 'normal',
+    container,
+    node,
+    top: targetTop,
+    frame: null,
+    startTop,
+    startTime: null,
+    duration
+  };
+  pendingTargetRef.current = animation;
+
+  const animate = timestamp => {
+    if (pendingTargetRef.current !== animation) return;
+    if (!animation.node.isConnected) {
+      pendingTargetRef.current = null;
+      return;
+    }
+
+    if (animation.startTime === null) animation.startTime = timestamp;
+    const progress = Math.min(1, (timestamp - animation.startTime) / animation.duration);
+    container.scrollTop = animation.startTop + distance * progress;
+    if (progress === 1) {
+      pendingTargetRef.current = null;
+      return;
+    }
+    animation.frame = window.requestAnimationFrame(animate);
+  };
+
+  animation.frame = window.requestAnimationFrame(animate);
+};
+
+const smoothScrollToActiveLine = (container, node, pendingTargetRef) => {
+  const pendingTarget = pendingTargetRef.current;
+  if (isAtDesiredLinePosition(container, node)) {
     if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
     pendingTargetRef.current = null;
     return;
@@ -45,7 +103,7 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
   }
 
   if (pendingTarget) {
-    if (pendingTarget.container === container) {
+    if (pendingTarget.container === container && pendingTarget.type === 'smooth') {
       pendingTarget.node = node;
       if (Math.abs(pendingTarget.top - targetTop) >= 0.5) pendingTarget.top = targetTop;
       return;
@@ -56,6 +114,7 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
   }
 
   const animation = {
+    type: 'smooth',
     container,
     node,
     top: targetTop,
@@ -67,7 +126,12 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
 
   const animate = timestamp => {
     if (pendingTargetRef.current !== animation) return;
-    if (!animation.node.isConnected || isActiveLineInCenterView(container, animation.node)) {
+    if (!animation.node.isConnected) {
+      pendingTargetRef.current = null;
+      return;
+    }
+    if (isAtDesiredLinePosition(container, animation.node)) {
+      container.scrollTop = getActiveLineScrollTop(container, animation.node);
       pendingTargetRef.current = null;
       return;
     }
@@ -78,7 +142,7 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
     animation.lastTimestamp = timestamp;
 
     if (elapsed > 0) {
-      const omega = 12;
+      const omega = 8;
       const error = container.scrollTop - animation.top;
       const combinedVelocity = animation.velocity + omega * error;
       const decay = Math.exp(-omega * elapsed);
@@ -92,6 +156,11 @@ const scrollContainerToCenter = (container, node, pendingTargetRef) => {
       }
 
       container.scrollTop = animation.top + nextError;
+      if (isAtDesiredLinePosition(container, animation.node)) {
+        container.scrollTop = getActiveLineScrollTop(container, animation.node);
+        pendingTargetRef.current = null;
+        return;
+      }
     }
 
     animation.frame = window.requestAnimationFrame(animate);
@@ -115,6 +184,8 @@ const LiveLyricsView = ({
 }) => {
   const containerRef = useRef(null);
   const activeLineResizeObserverRef = useRef(null);
+  const suppressLayoutScrollUntilRef = useRef(0);
+  const pendingSeekRef = useRef(false);
   const shouldAnimateEntranceRef = useRef(shouldAnimateEntrance);
   const revealedLinesRef = useRef(new WeakSet());
   const cachedLinesRef = useRef([]);
@@ -149,12 +220,16 @@ const LiveLyricsView = ({
     shouldAnimateEntranceRef.current = shouldAnimateEntrance;
   }, [shouldAnimateEntrance]);
 
-  const centerActiveLine = useCallback((node) => {
+  const centerActiveLine = useCallback((node, isSeek) => {
     if (!node) return;
     const container = containerRef.current;
     if (!container) return;
 
-    scrollContainerToCenter(container, node, pendingCenterTargetRef);
+    if (isSeek) {
+      smoothScrollToActiveLine(container, node, pendingCenterTargetRef);
+    } else {
+      scrollToActiveLineNormally(container, node, pendingCenterTargetRef);
+    }
     needsInitialCenterRef.current = false;
   }, []);
 
@@ -167,7 +242,10 @@ const LiveLyricsView = ({
 
     const previousActiveIndex = activeLineIndexRef.current;
     const activeLineChanged = previousActiveIndex !== newActiveIndex;
+    const isSeek = pendingSeekRef.current;
+    pendingSeekRef.current = false;
     if (activeLineChanged) {
+      suppressLayoutScrollUntilRef.current = performance.now() + 100;
       lines.forEach((line, index) => {
         if (index === newActiveIndex) {
           line.node.classList.add('active');
@@ -181,8 +259,8 @@ const LiveLyricsView = ({
     }
 
     const activeLine = lines[newActiveIndex];
-    if (activeLine && (activeLineChanged || needsInitialCenterRef.current)) {
-      centerActiveLine(activeLine.node);
+    if (activeLine && (activeLineChanged || needsInitialCenterRef.current || isSeek)) {
+      centerActiveLine(activeLine.node, isSeek);
     }
 
     const adlibTimeline = adlibTimelineRef.current;
@@ -254,7 +332,7 @@ const LiveLyricsView = ({
       const container = containerRef.current;
       const activeLine = container?.querySelector('.lyric-line-wrapper.active');
       if (container && activeLine) {
-        scrollContainerToCenter(container, activeLine, pendingCenterTargetRef);
+        smoothScrollToActiveLine(container, activeLine, pendingCenterTargetRef);
       }
     });
     return () => {
@@ -272,6 +350,7 @@ const LiveLyricsView = ({
         .map((line, index) => [line, index])
     );
     const observer = new ResizeObserver(entries => {
+      if (performance.now() < suppressLayoutScrollUntilRef.current) return;
       const activeLine = container.querySelector('.lyric-line-wrapper.active');
       if (!activeLine) return;
       const activeLineIndex = linePositions.get(activeLine);
@@ -282,9 +361,10 @@ const LiveLyricsView = ({
       if (!affectsActivePosition || frame !== null) return;
       frame = window.requestAnimationFrame(() => {
         frame = null;
+        if (performance.now() < suppressLayoutScrollUntilRef.current) return;
         const currentActiveLine = container.querySelector('.lyric-line-wrapper.active');
         if (currentActiveLine) {
-          scrollContainerToCenter(container, currentActiveLine, pendingCenterTargetRef);
+          smoothScrollToActiveLine(container, currentActiveLine, pendingCenterTargetRef);
         }
       });
     });
@@ -397,6 +477,9 @@ const LiveLyricsView = ({
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
+    const handleTimeSeek = () => {
+      pendingSeekRef.current = true;
+    };
     const handlePlayState = (e) => {
         if (e.detail.isEnded) {
             clearActiveLines();
@@ -404,6 +487,7 @@ const LiveLyricsView = ({
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
+    window.addEventListener('globalTimeSeek', handleTimeSeek);
     window.addEventListener('globalPlayState', handlePlayState);
 
     const selectedTrackId = selectedSong?.trackId == null ? null : String(selectedSong.trackId);
@@ -419,6 +503,7 @@ const LiveLyricsView = ({
 
     return () => {
         window.removeEventListener('globalTimeUpdate', handleTimeEvent);
+        window.removeEventListener('globalTimeSeek', handleTimeSeek);
         window.removeEventListener('globalPlayState', handlePlayState);
     };
     }, [isPlayingCurrentSong, currentTrack, selectedSong?.trackId, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);

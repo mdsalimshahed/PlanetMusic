@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { getGroupChatState, getActiveChatLines } from '../groupChatTimelineState.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  getGroupChatEventEndIndex,
+  getGroupChatState,
+  getActiveChatLines
+} from '../groupChatTimelineState.js';
 
 const TYPING_INDICATOR_UPDATE_MS = 500;
 const TYPING_INDICATOR_EXIT_MS = 260;
@@ -27,12 +31,20 @@ const useGroupChatPlayback = ({
   const lastTypingUpdateAtRef = useRef(null);
   const [displayTypingNames, setDisplayTypingNames] = useState('');
   const [typingIndicatorVisible, setTypingIndicatorVisible] = useState(false);
-  const chatState = getGroupChatState(timeline, playbackTime);
-  const activeLineIndices = new Set(
+  const visibleEventEndIndex = getGroupChatEventEndIndex(timeline, playbackTime);
+  const visibleEvents = useMemo(
+    () => timeline.events.slice(0, visibleEventEndIndex),
+    [timeline, visibleEventEndIndex]
+  );
+  const chatState = useMemo(
+    () => getGroupChatState(timeline, playbackTime, visibleEvents),
+    [playbackTime, timeline, visibleEvents]
+  );
+  const activeLineIndices = useMemo(() => new Set(
     isPlayingCurrentSong
       ? getActiveChatLines(timeline, playbackTime).map(line => line.index)
       : []
-  );
+  ), [isPlayingCurrentSong, timeline, playbackTime]);
 
   useEffect(() => {
     let endedTimer = null;
@@ -97,8 +109,10 @@ const useGroupChatPlayback = ({
       const time = Number.isFinite(rawTime) ? rawTime - lyricsPlaybackOffsetSeconds : 0;
       const nextTime = isPlayingCurrentSong ? Math.max(0, time) : 0;
       const previousTime = playbackTimeRef.current;
-      const crossedEvents = nextTime > previousTime
-        ? timeline.events.filter(event => event.time > previousTime && event.time <= nextTime)
+      const previousEventIndex = getGroupChatEventEndIndex(timeline, previousTime);
+      const nextEventIndex = getGroupChatEventEndIndex(timeline, nextTime);
+      const crossedEvents = nextTime > previousTime && nextEventIndex > previousEventIndex
+        ? timeline.events.slice(previousEventIndex, nextEventIndex)
         : [];
       const hasPresenceChanges = crossedEvents.some(
         event => event.type === 'join' || event.type === 'leave'
@@ -119,7 +133,12 @@ const useGroupChatPlayback = ({
         pendingScrollToLatestRef.current = true;
       }
       playbackTimeRef.current = nextTime;
-      setPlaybackTime(nextTime);
+      if (
+        crossedEvents.length ||
+        Math.floor(nextTime * 10) !== Math.floor(previousTime * 10)
+      ) {
+        setPlaybackTime(nextTime);
+      }
     };
 
     const handleTimeUpdate = event => {

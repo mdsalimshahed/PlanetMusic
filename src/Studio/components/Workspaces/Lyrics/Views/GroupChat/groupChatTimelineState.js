@@ -1,12 +1,26 @@
 export const ARTIST_ACTIVITY_WINDOW_SECONDS = 2;
 
-export const getGroupChatState = (timeline, time) => {
+export const getGroupChatEventEndIndex = (timeline, time) => {
+  let low = 0;
+  let high = timeline.events.length;
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (timeline.events[middle].time <= time) low = middle + 1;
+    else high = middle;
+  }
+  return low;
+};
+
+export const getGroupChatState = (timeline, time, visibleEvents) => {
   const currentTime = Number.isFinite(time) ? time : 0;
   const artists = timeline.artists.filter(artist =>
     currentTime >= (artist.notificationOnlineAt ?? artist.onlineAt) &&
     currentTime < (artist.notificationOfflineAt ?? artist.offlineAt)
   );
-  const messages = timeline.events.filter(event => event.time <= currentTime);
+  const messages = visibleEvents ?? timeline.events.slice(
+    0,
+    getGroupChatEventEndIndex(timeline, currentTime)
+  );
   const eligibleArtists = line =>
     line.artists.filter(name => artists.some(artist => artist.name === name));
   const upcomingLines = timeline.lines.filter(line =>

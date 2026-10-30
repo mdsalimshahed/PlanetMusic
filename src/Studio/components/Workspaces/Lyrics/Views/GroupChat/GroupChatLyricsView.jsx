@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -19,7 +20,7 @@ import useGroupChatPlayback from './hooks/useGroupChatPlayback.js';
 import useGroupChatPresentation from './hooks/useGroupChatPresentation.js';
 import './styles/index.css';
 
-const PREMEASUREMENT_BATCH_SIZE = 24;
+const PREMEASUREMENT_BATCH_SIZE = 6;
 
 const GroupChatLyricsView = ({
   syncWorkspaceLyrics,
@@ -39,6 +40,7 @@ const GroupChatLyricsView = ({
   const pendingScrollToLatestRef = useRef(false);
   const chatRef = useRef(null);
   const chatLayoutRef = useRef(null);
+  const premeasurementTaskRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
   const [precomputedLayouts, setPrecomputedLayouts] = useState(() => new Map());
   const [layoutSignature, setLayoutSignature] = useState('');
@@ -116,7 +118,10 @@ const GroupChatLyricsView = ({
     };
   }, []);
 
-  const history = buildGroupChatHistory(playback.chatState.messages);
+  const history = useMemo(
+    () => buildGroupChatHistory(playback.chatState.messages),
+    [playback.chatState.messages]
+  );
   const messageEvents = useMemo(
     () => timeline.events.filter(event => event.type === 'message'),
     [timeline.events]
@@ -146,29 +151,39 @@ const GroupChatLyricsView = ({
     () => new Set(premeasurementBatch.map(event => event.line.index)),
     [premeasurementBatch]
   );
-  const artistByName = new Map(timeline.artists.map(artist => [artist.name, artist]));
-  const imageSources = {
+  const artistByName = useMemo(
+    () => new Map(timeline.artists.map(artist => [artist.name, artist])),
+    [timeline.artists]
+  );
+  const imageSources = useMemo(() => ({
     ...(selectedSong?.artistImages || {}),
     ...(artistImages || {})
-  };
-  const lastLineEndByArtist = new Map();
-  playback.chatState.messages.forEach(event => {
-    if (event.type !== 'message') return;
-    event.line.artists.forEach(name => {
-      lastLineEndByArtist.set(
-        name,
-        Math.max(lastLineEndByArtist.get(name) ?? Number.NEGATIVE_INFINITY, event.line.end)
-      );
+  }), [artistImages, selectedSong?.artistImages]);
+  const lastLineEndByArtist = useMemo(() => {
+    const lastLineEnd = new Map();
+    playback.chatState.messages.forEach(event => {
+      if (event.type !== 'message') return;
+      event.line.artists.forEach(name => {
+        lastLineEnd.set(
+          name,
+          Math.max(lastLineEnd.get(name) ?? Number.NEGATIVE_INFINITY, event.line.end)
+        );
+      });
     });
-  });
+    return lastLineEnd;
+  }, [playback.chatState.messages]);
+  const singingArtists = useMemo(
+    () => getSingingArtistGroups(timeline, playback.playbackTime),
+    [playback.playbackTime, timeline]
+  );
   const {
     mainArtists: mainSingingArtists,
     adlibArtists: adlibSingingArtists,
     typingArtistOrder,
     mainArtistOrder: mainSingingArtistOrder,
     adlibArtistOrder: adlibSingingArtistOrder
-  } = getSingingArtistGroups(timeline, playback.playbackTime);
-  const messageProps = {
+  } = singingArtists;
+  const messageProps = useMemo(() => ({
     artistByName,
     imageSources,
     masterPalette,
@@ -181,7 +196,31 @@ const GroupChatLyricsView = ({
     playbackTime: playback.playbackTime,
     isPlayingCurrentSong,
     layoutSignature
-  };
+  }), [
+    activeLineIndices,
+    artistByName,
+    expandedLineIndices,
+    handleLineClick,
+    imageSources,
+    isPlayingCurrentSong,
+    layoutSignature,
+    masterPalette,
+    playback.playbackEnded,
+    playback.playbackTime,
+    settings,
+    showDebug
+  ]);
+  const cancelPremeasurementTask = useCallback(() => {
+    const task = premeasurementTaskRef.current;
+    if (!task) return;
+    if (task.type === 'idle' && window.cancelIdleCallback) {
+      window.cancelIdleCallback(task.id);
+    } else {
+      window.clearTimeout(task.id);
+    }
+    premeasurementTaskRef.current = null;
+  }, []);
+  useEffect(() => cancelPremeasurementTask, [cancelPremeasurementTask]);
   const handleLayoutReady = useCallback((lineIndex, key, layout) => {
     setPrecomputedLayouts(previous => {
       const current = previous.get(lineIndex);
@@ -215,11 +254,21 @@ const GroupChatLyricsView = ({
     batch.completed.add(lineIndex);
     if (batch.completed.size === batch.expected.size) {
       batch.advanced = true;
-      setPremeasurementProgress({
-        layoutKey: premeasurementLayoutKey,
-        messageEvents,
-        start: batch.start + batch.expected.size
-      });
+      const advanceBatch = () => {
+        premeasurementTaskRef.current = null;
+        setPremeasurementProgress({
+          layoutKey: premeasurementLayoutKey,
+          messageEvents,
+          start: batch.start + batch.expected.size
+        });
+      };
+      if (window.requestIdleCallback) {
+        const id = window.requestIdleCallback(advanceBatch, { timeout: 250 });
+        premeasurementTaskRef.current = { type: 'idle', id };
+      } else {
+        const id = window.setTimeout(advanceBatch, 50);
+        premeasurementTaskRef.current = { type: 'timeout', id };
+      }
     }
   }, [
     expectedPremeasurementLines,
