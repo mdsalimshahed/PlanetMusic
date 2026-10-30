@@ -1,5 +1,5 @@
 /* --- src/App.jsx --- */
-import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation, useNavigate, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { toSmartPunctuation } from './utils/smartPunctuation.js';
 import './App.css';
@@ -13,22 +13,21 @@ import Background from './Application/components/Core/Background.jsx';
 import Topbar from './Application/components/Core/Topbar.jsx';
 import HomeGuide from './Application/components/Core/HomeGuide.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
-import SongModal from './Application/components/Modals/SongModal.jsx';
-import BackupExportModal from './Application/components/Modals/BackupExportModal.jsx';
-import BackupImportModal from './Application/components/Modals/BackupImportModal.jsx';
-import Player from './Studio/components/Player/Player.jsx';
-
-import SettingsTab from './Application/pages/SettingsTab.jsx';
-import BlogTab from './Application/pages/BlogTab.jsx';
-import PrivacyTab from './Application/pages/PrivacyTab.jsx';
-import ContactTab from './Application/pages/ContactTab.jsx';
-import TermsTab from './Application/pages/TermsTab.jsx';
-import AboutTab from './Application/pages/AboutTab.jsx';
-import SiteMessagePage from './Application/pages/SiteMessagePage.jsx';
-
-import SelfPromoCard from './Application/components/Promos/SelfPromoCard.jsx';
-import TrackGrid from './Application/components/Core/TrackGrid.jsx';
 import { extractYouTubeId } from './Studio/utils/songHelpers.js';
+
+const SongModal = lazy(() => import('./Application/components/Modals/SongModal.jsx'));
+const BackupExportModal = lazy(() => import('./Application/components/Modals/BackupExportModal.jsx'));
+const BackupImportModal = lazy(() => import('./Application/components/Modals/BackupImportModal.jsx'));
+const Player = lazy(() => import('./Studio/components/Player/Player.jsx'));
+const SettingsTab = lazy(() => import('./Application/pages/SettingsTab.jsx'));
+const BlogTab = lazy(() => import('./Application/pages/BlogTab.jsx'));
+const PrivacyTab = lazy(() => import('./Application/pages/PrivacyTab.jsx'));
+const ContactTab = lazy(() => import('./Application/pages/ContactTab.jsx'));
+const TermsTab = lazy(() => import('./Application/pages/TermsTab.jsx'));
+const AboutTab = lazy(() => import('./Application/pages/AboutTab.jsx'));
+const SiteMessagePage = lazy(() => import('./Application/pages/SiteMessagePage.jsx'));
+const SelfPromoCard = lazy(() => import('./Application/components/Promos/SelfPromoCard.jsx'));
+const TrackGrid = lazy(() => import('./Application/components/Core/TrackGrid.jsx'));
 
 // Custom Hooks for Modular Logic
 import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
@@ -691,8 +690,8 @@ const App = () => {
 
           <Topbar
             activeTab={activeTab}
-            isMusicPlaying={logoPlaybackVisuals.isPlaying}
-            albumAccentColor={logoPlaybackVisuals.albumAccentColor}
+            isMusicPlaying={Boolean(playerTrack && logoPlaybackVisuals.isPlaying)}
+            albumAccentColor={playerTrack ? logoPlaybackVisuals.albumAccentColor : null}
             handleHomeClick={handleHomeClick}
             onOpenExport={() => setIsBackupExportOpen(true)}
             handleImport={handleImport}
@@ -701,21 +700,25 @@ const App = () => {
             handleLoadSample={handleLoadSample}
           />
           {isBackupExportOpen && (
-            <BackupExportModal
-              songs={library}
-              settings={settings}
-              onClose={closeBackupExport}
-              onExport={exportSelectedBackup}
-            />
+            <Suspense fallback={null}>
+              <BackupExportModal
+                songs={library}
+                settings={settings}
+                onClose={closeBackupExport}
+                onExport={exportSelectedBackup}
+              />
+            </Suspense>
           )}
           {pendingImport && (
-            <BackupImportModal
-              key={pendingImport.fileName}
-              backup={pendingImport}
-              existingSongs={library}
-              onClose={cancelImport}
-              onImport={confirmImport}
-            />
+            <Suspense fallback={null}>
+              <BackupImportModal
+                key={pendingImport.fileName}
+                backup={pendingImport}
+                existingSongs={library}
+                onClose={cancelImport}
+                onImport={confirmImport}
+              />
+            </Suspense>
           )}
 
           <main className="main-content">
@@ -760,6 +763,7 @@ const App = () => {
 
             <div ref={contentScrollAreaRef} className={`content-scroll-area ${isExplicitSearch && (activeTab === 'vault' || activeTab === 'ambient') && searchQuery.trim() ? 'no-scroll' : ''}`}>
           
+          <Suspense fallback={<div className="empty-message glass-panel" role="status">Loading page…</div>}>
           <Routes>
             <Route path="/" element={renderHomeView()} />
             <Route path="/vault/*" element={isVaultBrowserUnsupported ? <VaultBrowserWarning /> : renderDashboardView()} />
@@ -803,6 +807,7 @@ const App = () => {
             <Route path="/deezer/*" element={<Navigate to="/vault" replace />} />
             <Route path="*" element={<SiteMessagePage />} />
           </Routes>
+          </Suspense>
 
           {/* GLOBAL FOOTER: Copyright, legal links, and privacy choices */}
           <div className="global-footer">
@@ -826,31 +831,39 @@ const App = () => {
         </>
       )}
 
-      <SongModal
-        selectedSong={selectedSong}
-        isSongModalReady={isSongModalReady}
-        onModalReady={setSongModalReadyTrackId}
-        setSelectedSong={handleSetSelectedSong}
-        updateSelectedSongDirect={updateSelectedSongDirect}
-        isSaved={selectedSong ? library.some(s => s.trackId === selectedSong.trackId) : false}
-        toggleLibrary={toggleLibrary}
-        updateSongInLibrary={updateSongInLibrary}
-        library={library}
-        setCurrentTrack={setCurrentTrack}
-        currentTrack={currentTrack}
-        settings={settings}
-      />
+      {selectedSong && (
+        <Suspense fallback={null}>
+          <SongModal
+            selectedSong={selectedSong}
+            isSongModalReady={isSongModalReady}
+            onModalReady={setSongModalReadyTrackId}
+            setSelectedSong={handleSetSelectedSong}
+            updateSelectedSongDirect={updateSelectedSongDirect}
+            isSaved={library.some(s => s.trackId === selectedSong.trackId)}
+            toggleLibrary={toggleLibrary}
+            updateSongInLibrary={updateSongInLibrary}
+            library={library}
+            setCurrentTrack={setCurrentTrack}
+            currentTrack={currentTrack}
+            settings={settings}
+          />
+        </Suspense>
+      )}
       
-      <Player
-        currentTrack={playerTrack}
-        onPlaybackVisualChange={setLogoPlaybackVisuals}
-        setCurrentTrack={setCurrentTrack}
-        selectedSong={selectedSong}
-        setSelectedSong={handleSetSelectedSong}
-        isSyncWorkspaceActive={isSyncWorkspaceActive}
-        isSongModalReady={isSongModalReady}
-        settings={settings}
-      />
+      {playerTrack && (
+        <Suspense fallback={null}>
+          <Player
+            currentTrack={playerTrack}
+            onPlaybackVisualChange={setLogoPlaybackVisuals}
+            setCurrentTrack={setCurrentTrack}
+            selectedSong={selectedSong}
+            setSelectedSong={handleSetSelectedSong}
+            isSyncWorkspaceActive={isSyncWorkspaceActive}
+            isSongModalReady={isSongModalReady}
+            settings={settings}
+          />
+        </Suspense>
+      )}
 
       {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>

@@ -75,7 +75,8 @@ const scrollToActiveLineNormally = (container, node, pendingTargetRef) => {
 
     if (animation.startTime === null) animation.startTime = timestamp;
     const progress = Math.min(1, (timestamp - animation.startTime) / animation.duration);
-    container.scrollTop = animation.startTop + distance * progress;
+    const easedProgress = progress * progress * (3 - 2 * progress);
+    container.scrollTop = animation.startTop + distance * easedProgress;
     if (progress === 1) {
       pendingTargetRef.current = null;
       return;
@@ -130,11 +131,6 @@ const smoothScrollToActiveLine = (container, node, pendingTargetRef) => {
       pendingTargetRef.current = null;
       return;
     }
-    if (isAtDesiredLinePosition(container, animation.node)) {
-      container.scrollTop = getActiveLineScrollTop(container, animation.node);
-      pendingTargetRef.current = null;
-      return;
-    }
 
     const elapsed = animation.lastTimestamp === null
       ? 0
@@ -149,18 +145,13 @@ const smoothScrollToActiveLine = (container, node, pendingTargetRef) => {
       const nextError = (error + combinedVelocity * elapsed) * decay;
       animation.velocity = (animation.velocity - omega * combinedVelocity * elapsed) * decay;
 
-      if (Math.abs(nextError) < 0.5 && Math.abs(animation.velocity) < 5) {
+      if (Math.abs(nextError) < 0.05 && Math.abs(animation.velocity) < 0.1) {
         container.scrollTop = animation.top;
         pendingTargetRef.current = null;
         return;
       }
 
       container.scrollTop = animation.top + nextError;
-      if (isAtDesiredLinePosition(container, animation.node)) {
-        container.scrollTop = getActiveLineScrollTop(container, animation.node);
-        pendingTargetRef.current = null;
-        return;
-      }
     }
 
     animation.frame = window.requestAnimationFrame(animate);
