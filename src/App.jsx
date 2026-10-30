@@ -14,11 +14,11 @@ import Topbar from './Application/components/Core/Topbar.jsx';
 import HomeGuide from './Application/components/Core/HomeGuide.jsx';
 import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import { extractYouTubeId } from './Studio/utils/songHelpers.js';
+import Player from './Studio/components/Player/Player.jsx';
 
 const SongModal = lazy(() => import('./Application/components/Modals/SongModal.jsx'));
 const BackupExportModal = lazy(() => import('./Application/components/Modals/BackupExportModal.jsx'));
 const BackupImportModal = lazy(() => import('./Application/components/Modals/BackupImportModal.jsx'));
-const Player = lazy(() => import('./Studio/components/Player/Player.jsx'));
 const SettingsTab = lazy(() => import('./Application/pages/SettingsTab.jsx'));
 const BlogTab = lazy(() => import('./Application/pages/BlogTab.jsx'));
 const PrivacyTab = lazy(() => import('./Application/pages/PrivacyTab.jsx'));
@@ -680,7 +680,7 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      {!selectedSong && (
+      {(!selectedSong || !isSongModalReady) && (
         <>
           <Background
             isModalOpen={false}
@@ -850,20 +850,16 @@ const App = () => {
         </Suspense>
       )}
       
-      {playerTrack && (
-        <Suspense fallback={null}>
-          <Player
-            currentTrack={playerTrack}
-            onPlaybackVisualChange={setLogoPlaybackVisuals}
-            setCurrentTrack={setCurrentTrack}
-            selectedSong={selectedSong}
-            setSelectedSong={handleSetSelectedSong}
-            isSyncWorkspaceActive={isSyncWorkspaceActive}
-            isSongModalReady={isSongModalReady}
-            settings={settings}
-          />
-        </Suspense>
-      )}
+      <Player
+        currentTrack={playerTrack}
+        onPlaybackVisualChange={setLogoPlaybackVisuals}
+        setCurrentTrack={setCurrentTrack}
+        selectedSong={selectedSong}
+        setSelectedSong={handleSetSelectedSong}
+        isSyncWorkspaceActive={isSyncWorkspaceActive}
+        isSongModalReady={isSongModalReady}
+        settings={settings}
+      />
 
       {songToRemove && (
         <div className="confirm-overlay" onClick={cancelRemove}>

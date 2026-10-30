@@ -153,12 +153,12 @@ export const usePlayerSourceLifecycle = runtime => {
         shouldResumeSourceSwitch = window.globalIsAudioPlaying === true || pendingAutoplayRef.current;
       }
       pendingAutoplayRef.current = isSourceSwitch
-        ? shouldResumeSourceSwitch
+        ? shouldResumeSourceSwitch || Boolean(syncLoadRequest?.autoplay)
         : isSyncWorkspaceActive
           ? Boolean(syncLoadRequest?.autoplay)
           : true;
       if (isSourceSwitch) {
-        pendingSeekShouldPlayRef.current = shouldResumeSourceSwitch;
+        pendingSeekShouldPlayRef.current = shouldResumeSourceSwitch || Boolean(syncLoadRequest?.autoplay);
         setPendingSeekValue(switchTime);
       }
       const sourceLoadGeneration = ++sourceLoadGenerationRef.current;

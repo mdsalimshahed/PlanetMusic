@@ -37,6 +37,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [loopRange, setLoopRange] = useState(null);
 
   const activeLineRef = useRef(null);
+  const skipNextSourceLoadRef = useRef(false);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
   const constrainedEndRef = useRef(constrainedEnd);
@@ -114,8 +115,32 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
       ? manualSource 
       : (availableSources[0] || null);
 
+  const handleManualSourceSelection = source => {
+    if (!availableSources.includes(source)) return;
+    if (source !== computedSource) {
+      skipNextSourceLoadRef.current = true;
+      setManualSource(source);
+    }
+    window.dispatchEvent(new CustomEvent('globalPlayerLoadTrack', {
+      detail: {
+        track: {
+          ...selectedSong,
+          customLinks: { ...selectedSong.customLinks, ...customData }
+        },
+        source,
+        autoplay: true,
+        playbackRate: playbackRateRef.current
+      }
+    }));
+  };
+
   useEffect(() => {
     if (!isSyncMode || !songTrackId) return;
+
+    if (skipNextSourceLoadRef.current) {
+      skipNextSourceLoadRef.current = false;
+      return;
+    }
 
     if (!computedSource) {
       window.dispatchEvent(new CustomEvent('globalPlayerCommand', {
@@ -368,7 +393,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     isSyncPlaying, activeSyncSource, playbackRate, debugInfo,
     activeLineRef, startSyncMode, handleRefreshLyrics, confirmRefreshLyrics, cancelRefreshLyrics, showRefreshPrompt, saveSyncData, handleAutoSyncDatabases, handleTranslate, handleMapAutoSync, toggleSyncPlay,
     handleSpeedChange, workspaceLines, handleSplitAdlibs, handleUndoSplit, setConstrainedEnd, loopRange, setLoopRange, toggleWorkspaceMode,
-    availableSources, setManualSource, handleShiftTimings, triggerSyncKey,
+    availableSources, setManualSource: handleManualSourceSelection, handleShiftTimings, triggerSyncKey,
     hasUnsavedSyncChanges
   };
 };
