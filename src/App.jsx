@@ -145,6 +145,56 @@ const App = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (import.meta.env.DEV) return undefined;
+
+    let activeRequest = null;
+
+    const wakeBackend = async () => {
+      if (document.visibilityState !== 'visible' || activeRequest) return;
+
+      const controller = new AbortController();
+      activeRequest = controller;
+      try {
+        const response = await fetch('/api/backend-health', {
+          method: 'GET',
+          headers: { accept: 'application/json' },
+          cache: 'no-store',
+          credentials: 'same-origin',
+          signal: controller.signal
+        });
+        if (!response.ok) {
+          throw new Error(`Backend wake request failed (${response.status}).`);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.warn('PlanetMusic could not keep its backend awake.', error);
+        }
+      } finally {
+        if (activeRequest === controller) activeRequest = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        wakeBackend();
+      } else if (activeRequest) {
+        activeRequest.abort();
+        activeRequest = null;
+      }
+    };
+
+    wakeBackend();
+    const keepAliveInterval = window.setInterval(wakeBackend, 10 * 60 * 1000);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.clearInterval(keepAliveInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      activeRequest?.abort();
+    };
+  }, []);
+
   const assignSearchOrbitColors = (event) => {
     if (event.currentTarget.contains(event.relatedTarget)) return;
 

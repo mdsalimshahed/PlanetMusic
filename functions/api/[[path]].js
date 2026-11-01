@@ -16,10 +16,21 @@ const jsonError = (status, error) => new Response(JSON.stringify({ error }), {
 const resolveRoute = (pathname, method, searchParams) => {
   const apiPath = pathname.slice('/api/'.length);
 
+  if (apiPath === 'backend-health') {
+    if (method !== 'GET') return { error: jsonError(405, 'Method not allowed.'), allow: 'GET' };
+    return { healthCheck: true };
+  }
+
   if (apiPath === 'search-deezer') {
     if (method !== 'GET') return { error: jsonError(405, 'Method not allowed.'), allow: 'GET' };
     if (!searchParams.has('q')) return { error: jsonError(400, 'Missing search query.') };
     return { upstreamPath: '/search-deezer' };
+  }
+
+  if (apiPath === 'search-youtube') {
+    if (method !== 'GET') return { error: jsonError(405, 'Method not allowed.'), allow: 'GET' };
+    if (!searchParams.has('q')) return { error: jsonError(400, 'Missing search query.') };
+    return { upstreamPath: '/search-youtube' };
   }
 
   if (/^track-info-deezer\/\d+$/.test(apiPath)) {
@@ -115,6 +126,15 @@ export async function onRequest({ request, env }) {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
         'retry-after': '3'
+      }
+    });
+  }
+
+  if (route.healthCheck) {
+    return new Response(JSON.stringify({ status: 'ok' }), {
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store'
       }
     });
   }

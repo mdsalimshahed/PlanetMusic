@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { saveAudioFile, deleteAudioFile } from '../../services/db.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
 import { getVaultArtistData } from '../../services/vaultCodec.js';
-import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName } from '../../../Studio/utils/songHelpers.js';
+import { getDistinctArtistColors, cleanUrl, cleanImageUrl, fetchSingerImage, mergeSyncWithGenius, parseTrackName, extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
 import { getPlatformLinkErrors } from '../../utils/platformLinkValidation.js';
 
@@ -85,7 +85,9 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
     trackId: selectedSong?.trackId ?? null,
     data: createCustomDataForSong(selectedSong)
   }));
+  const customDataStateRef = useRef(customDataState);
   const [singerImages, setSingerImages] = useState({});
+  const libraryRef = useRef(library);
   const songDefaultCustomData = useMemo(
     () => createCustomDataForSong(selectedSong),
     [selectedSong]
@@ -102,10 +104,12 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
         String(previous.trackId) !== String(trackId)
         ? createCustomDataForSong(song)
         : previous.data;
-      return {
+      const nextState = {
         trackId,
         data: typeof update === 'function' ? update(currentData) : update
       };
+      customDataStateRef.current = nextState;
+      return nextState;
     });
   }, [selectedSong]);
   
@@ -113,6 +117,10 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
   const isSavedRef = useRef(isSaved);
   // Track to prevent infinite fetch loops within the same active session
   const hasFetchedDeezerMetaRef = useRef(new Set());
+
+  useEffect(() => {
+    libraryRef.current = library;
+  }, [library]);
 
   const trackNameStr = selectedSong?.trackName || '';
   const trackNameData = useMemo(() => parseTrackName(trackNameStr), [trackNameStr]);
@@ -148,10 +156,74 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
 
       // Keep the track-specific draft aligned with the selected-song prop.
       // The render-time fallback above prevents a worker parse of the previous track.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCustomData(createCustomDataForSong(selectedSong));
     }
   }, [selectedSong, setCustomData]);
+
+  useEffect(() => {
+    if (!selectedSong) return undefined;
+
+    const trackId = selectedSong.trackId;
+    const existingYtUrl = selectedSong.customLinks?.yt || selectedSong.yt || '';
+    if (extractYouTubeId(existingYtUrl)) return undefined;
+
+    const controller = new AbortController();
+    const query = `${selectedSong.trackName || ''} ${selectedSong.artistName || ''}`.trim();
+    if (!query) return undefined;
+
+    const lookupYouTubeVideo = async () => {
+      try {
+        const response = await fetchDeezerApi(
+          `/search-youtube?q=${encodeURIComponent(query)}`,
+          { signal: controller.signal }
+        );
+        if (!response.ok) {
+          throw new Error(`YouTube search failed (${response.status}).`);
+        }
+
+        const result = await response.json();
+        const videoUrl = result.url;
+        if (!extractYouTubeId(videoUrl) || controller.signal.aborted) return;
+
+        const currentDraft = customDataStateRef.current;
+        const draftYtUrl = String(currentDraft.trackId) === String(trackId)
+          ? currentDraft.data.yt
+          : existingYtUrl;
+        if (draftYtUrl && draftYtUrl !== existingYtUrl) return;
+
+        setCustomData(previous => ({ ...previous, yt: videoUrl }));
+
+        if (isSavedRef.current) {
+          const savedSong = libraryRef.current.find(
+            song => String(song.trackId) === String(trackId)
+          );
+          if (savedSong && !extractYouTubeId(savedSong.customLinks?.yt || savedSong.yt)) {
+            updateSongInLibrary({
+              ...savedSong,
+              customLinks: { ...savedSong.customLinks, yt: videoUrl }
+            });
+          }
+        } else {
+          updateSelectedSongDirect({
+            ...selectedSong,
+            customLinks: { ...selectedSong.customLinks, yt: videoUrl }
+          });
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error('Could not automatically find a YouTube video for this song.', error);
+        }
+      }
+    };
+
+    lookupYouTubeVideo();
+    return () => controller.abort();
+  }, [
+    selectedSong,
+    setCustomData,
+    updateSongInLibrary,
+    updateSelectedSongDirect
+  ]);
 
   useEffect(() => {
     isSavedRef.current = isSaved;
