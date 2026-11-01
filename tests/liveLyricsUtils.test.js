@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   buildTimedLineData,
   findActiveLineIndex,
+  getCombinedVerticalBounds,
   getCenteredScrollTop
 } from '../src/Studio/components/Workspaces/Lyrics/Views/liveLyricsUtils.js';
 
@@ -63,4 +64,16 @@ test('keeps first and last lines within the scroll boundaries', () => {
     activeTop: 800,
     maxScrollTop: 900
   }), 900);
+});
+
+test('includes translations and pronunciation extending beyond the lyric line box', () => {
+  assert.deepEqual(getCombinedVerticalBounds([
+    { top: 200, bottom: 240 },
+    { top: 174, bottom: 192 },
+    { top: 244, bottom: 260 }
+  ]), {
+    top: 174,
+    bottom: 260,
+    height: 86
+  });
 });

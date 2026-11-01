@@ -40,3 +40,16 @@ export const getCenteredScrollTop = ({
     (viewportTop + viewportHeight / 2);
   return Math.max(0, Math.min(centeredScrollTop, maxScrollTop));
 };
+
+export const getCombinedVerticalBounds = rects => {
+  const visibleRects = rects.filter(rect =>
+    Number.isFinite(rect?.top) &&
+    Number.isFinite(rect?.bottom) &&
+    rect.bottom > rect.top
+  );
+  if (visibleRects.length === 0) return null;
+
+  const top = Math.min(...visibleRects.map(rect => rect.top));
+  const bottom = Math.max(...visibleRects.map(rect => rect.bottom));
+  return { top, bottom, height: bottom - top };
+};

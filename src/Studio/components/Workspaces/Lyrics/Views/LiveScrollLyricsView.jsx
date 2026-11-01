@@ -305,7 +305,6 @@ const LiveScrollLyricsView = ({
     };
     prepareVisibleLines();
     revealVisibleLines();
-    revealVisibleLines();
     return () => {
       cancelled = true;
       if (revealTimeout !== null) window.clearTimeout(revealTimeout);

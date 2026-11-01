@@ -2,12 +2,23 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
-import { buildTimedLineData, findActiveLineIndex } from './liveLyricsUtils.js';
+import {
+  buildTimedLineData,
+  findActiveLineIndex,
+  getCombinedVerticalBounds
+} from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
 
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
-  const activeBounds = node.getBoundingClientRect();
+  const activeBounds = getCombinedVerticalBounds([
+    node.getBoundingClientRect(),
+    ...Array.from(
+      node.querySelectorAll('.main-live-translation, .pronunciation-text'),
+      element => element.getBoundingClientRect()
+    )
+  ]);
+  if (!activeBounds) return container.scrollTop;
   const scaleY = container.offsetHeight > 0
     ? containerBounds.height / container.offsetHeight
     : 1;
@@ -341,13 +352,17 @@ const LiveLyricsView = ({
       Array.from(container.querySelectorAll('.lyric-line-wrapper'))
         .map((line, index) => [line, index])
     );
+    const observedLinePositions = new Map(linePositions);
     const observer = new ResizeObserver(entries => {
       const activeLine = container.querySelector('.lyric-line-wrapper.active');
       if (!activeLine) return;
       const activeLineIndex = linePositions.get(activeLine);
       const affectsActivePosition = entries.some(({ target }) => (
         target === container ||
-        (linePositions.has(target) && linePositions.get(target) <= activeLineIndex)
+        (
+          observedLinePositions.has(target) &&
+          observedLinePositions.get(target) <= activeLineIndex
+        )
       ));
       if (!affectsActivePosition || frame !== null) return;
       frame = window.requestAnimationFrame(() => {
@@ -361,6 +376,10 @@ const LiveLyricsView = ({
     observer.observe(container);
     container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
       observer.observe(line);
+      line.querySelectorAll('.main-live-translation, .pronunciation-text').forEach(element => {
+        observedLinePositions.set(element, linePositions.get(line));
+        observer.observe(element);
+      });
     });
     activeLineResizeObserverRef.current = observer;
 
@@ -375,66 +394,127 @@ const LiveLyricsView = ({
     const container = containerRef.current;
     if (!container || !isSongModalReady || selectedSong?.trackId == null) return undefined;
 
-    const containerBounds = container.getBoundingClientRect();
     const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
-    const visibleLines = mountedLines.filter(line => {
-      const bounds = line.getBoundingClientRect();
-      return bounds.height > 0 &&
-        bounds.bottom > containerBounds.top &&
-        bounds.top < containerBounds.bottom &&
-        bounds.bottom > 0 &&
-        bounds.top < window.innerHeight;
-    });
-    if (visibleLines.length === 0) return undefined;
-
-    const firstVisibleLineIndex = mountedLines.indexOf(visibleLines[0]);
-    const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
-    const revealLines = mountedLines
-      .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
-      .filter(line => !revealedLinesRef.current.has(line));
-    if (revealLines.length === 0) return undefined;
-    if (!shouldAnimateEntranceRef.current) {
-      revealLines.forEach(line => revealedLinesRef.current.add(line));
-      return undefined;
-    }
-    onEntranceAnimationStart?.(selectedSong?.trackId);
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      revealLines.forEach(line => revealedLinesRef.current.add(line));
-      return undefined;
-    }
-
-    revealLines.forEach(line => line.classList.add('is-preparing-reveal'));
     let revealFrame = null;
+    let revealFallbackTimeout = null;
     let cancelled = false;
-    revealFrame = window.requestAnimationFrame(() => {
+    let stableFrames = 0;
+    let waitFrames = 0;
+    let previousLayout = '';
+    let hasCollectedRevealLines = false;
+    let revealLines = [];
+    let firstVisibleLineIndex = -1;
+    const animationEndHandlers = new Map();
+    const finishReveal = line => {
+      line.classList.add('has-revealed');
+      line.classList.remove('initial-reveal', 'is-preparing-reveal');
+      line.style.removeProperty('--initial-reveal-delay');
+      const handler = animationEndHandlers.get(line);
+      if (handler) {
+        line.removeEventListener('animationend', handler);
+        animationEndHandlers.delete(line);
+      }
+    };
+    const beginReveal = () => {
       revealFrame = null;
       if (cancelled) return;
 
-      revealLines.forEach(line => {
-        if (!line.isConnected) return;
-        revealedLinesRef.current.add(line);
-        const lineIndex = mountedLines.indexOf(line);
-        const staggerIndex = Math.max(0, lineIndex - firstVisibleLineIndex);
-        line.style.setProperty('--initial-reveal-delay', `${staggerIndex * 55}ms`);
-        const finishReveal = event => {
-          if (event.target !== line) return;
-          line.classList.add('has-revealed');
-          line.classList.remove('initial-reveal');
-          line.style.removeProperty('--initial-reveal-delay');
-          line.removeEventListener('animationend', finishReveal);
-        };
-        line.addEventListener('animationend', finishReveal);
-        line.classList.remove('is-preparing-reveal');
-        line.classList.add('initial-reveal');
+      const pendingScroll = pendingCenterTargetRef.current;
+      if (
+        pendingScroll &&
+        Math.abs(container.scrollTop - pendingScroll.top) > 1 &&
+        waitFrames < 120
+      ) {
+        waitFrames += 1;
+        revealFrame = window.requestAnimationFrame(beginReveal);
+        return;
+      }
+
+      if (!hasCollectedRevealLines) {
+        const containerBounds = container.getBoundingClientRect();
+        const visibleLines = mountedLines.filter(line => {
+          const bounds = line.getBoundingClientRect();
+          return bounds.height > 0 &&
+            bounds.bottom > containerBounds.top &&
+            bounds.top < containerBounds.bottom;
+        });
+        if (visibleLines.length === 0) {
+          if (waitFrames < 120) {
+            waitFrames += 1;
+            revealFrame = window.requestAnimationFrame(beginReveal);
+          }
+          return;
+        }
+
+        firstVisibleLineIndex = mountedLines.indexOf(visibleLines[0]);
+        const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
+        hasCollectedRevealLines = true;
+        revealLines = mountedLines
+          .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
+          .filter(line => !revealedLinesRef.current.has(line));
+        if (revealLines.length === 0) return;
+      }
+
+      const currentLayout = [
+        container.clientHeight,
+        ...revealLines.flatMap(line => {
+          const bounds = line.getBoundingClientRect();
+          return [bounds.top.toFixed(2), bounds.height.toFixed(2)];
+        })
+      ].join(':');
+      stableFrames = currentLayout === previousLayout ? stableFrames + 1 : 0;
+      previousLayout = currentLayout;
+      if (stableFrames < 2 && waitFrames < 120) {
+        waitFrames += 1;
+        revealFrame = window.requestAnimationFrame(beginReveal);
+        return;
+      }
+
+      if (!shouldAnimateEntranceRef.current ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        revealLines.forEach(line => revealedLinesRef.current.add(line));
+        return;
+      }
+
+      onEntranceAnimationStart?.(selectedSong?.trackId);
+      revealLines.forEach(line => line.classList.add('is-preparing-reveal'));
+      revealFrame = window.requestAnimationFrame(() => {
+        revealFrame = null;
+        if (cancelled) return;
+
+        revealLines.forEach(line => {
+          if (!line.isConnected) return;
+          revealedLinesRef.current.add(line);
+          const lineIndex = mountedLines.indexOf(line);
+          const staggerIndex = Math.max(0, lineIndex - firstVisibleLineIndex);
+          line.style.setProperty('--initial-reveal-delay', `${staggerIndex * 55}ms`);
+          const handleAnimationEnd = event => {
+            if (event.target === line) finishReveal(line);
+          };
+          animationEndHandlers.set(line, handleAnimationEnd);
+          line.addEventListener('animationend', handleAnimationEnd);
+          line.classList.remove('is-preparing-reveal');
+          line.classList.add('initial-reveal');
+        });
+        revealFallbackTimeout = window.setTimeout(() => {
+          revealLines.forEach(line => finishReveal(line));
+          revealFallbackTimeout = null;
+        }, 260 + Math.max(0, revealLines.length - 1) * 55 + 100);
       });
-    });
+    };
+
+    revealFrame = window.requestAnimationFrame(beginReveal);
 
     return () => {
       cancelled = true;
       if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
-      revealLines.forEach(line => line.classList.remove('is-preparing-reveal'));
+      if (revealFallbackTimeout !== null) window.clearTimeout(revealFallbackTimeout);
+      revealLines.forEach(line => {
+        const handler = animationEndHandlers.get(line);
+        if (handler) line.removeEventListener('animationend', handler);
+        animationEndHandlers.delete(line);
+        line.classList.remove('is-preparing-reveal');
+      });
     };
   }, [
     syncWorkspaceLyrics,
