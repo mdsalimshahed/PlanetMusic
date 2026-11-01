@@ -16,7 +16,9 @@ import ConsentNotice from './Application/components/Core/ConsentNotice.jsx';
 import { extractYouTubeId } from './Studio/utils/songHelpers.js';
 import Player from './Studio/components/Player/Player.jsx';
 
-const SongModal = lazy(() => import('./Application/components/Modals/SongModal.jsx'));
+import { loadSongModal } from './Application/components/Modals/songModalLoader.js';
+
+const SongModal = lazy(loadSongModal);
 const BackupExportModal = lazy(() => import('./Application/components/Modals/BackupExportModal.jsx'));
 const BackupImportModal = lazy(() => import('./Application/components/Modals/BackupImportModal.jsx'));
 const SettingsTab = lazy(() => import('./Application/pages/SettingsTab.jsx'));
@@ -253,6 +255,29 @@ const App = () => {
                     pathParts[0] === 'zen' ? 'zen' : 'main';
                     
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
+
+  useEffect(() => {
+    if (activeTab !== 'vault') return undefined;
+
+    let idleCallbackId;
+    let timeoutId;
+    const preloadSongModal = () => {
+      loadSongModal().catch(error => {
+        console.error('Could not preload the song modal.', error);
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = window.requestIdleCallback(preloadSongModal, { timeout: 1500 });
+    } else {
+      timeoutId = window.setTimeout(preloadSongModal, 250);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined) window.cancelIdleCallback(idleCallbackId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [activeTab]);
 
   // Extract ?q= search parameter from URL for bookmarking
   const queryParams = new URLSearchParams(location.search);
@@ -730,7 +755,7 @@ const App = () => {
 
   return (
     <div className={`app-layout ${settings.disableAnimations ? 'disable-animations' : ''}`} style={dynamicStyles}>
-      {(!selectedSong || !isSongModalReady) && (
+      {!selectedSong && (
         <>
           <Background
             isModalOpen={false}

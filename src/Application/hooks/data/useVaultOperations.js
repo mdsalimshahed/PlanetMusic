@@ -72,7 +72,7 @@ export const useVaultOperations = ({
         if (!Array.isArray(decodedData.library)) {
           throw new Error('The sample backup does not contain a valid song library.');
         }
-        applyParsedData(data);
+        applyParsedData(decodedData);
         localStorage.setItem('hasVisitedBefore', 'true');
         localStorage.setItem('isSampleVaultActive', 'true');
         setIsSampleVaultActive(true);

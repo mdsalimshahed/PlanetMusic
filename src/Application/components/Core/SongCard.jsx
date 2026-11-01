@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { extractYouTubeId } from '../../../Studio/utils/songHelpers.js';
 import { toSmartPunctuation } from '../../../utils/smartPunctuation.js';
+import { loadSongModal } from '../Modals/songModalLoader.js';
 import './SongCard.css';
 
 const ACCENT_CACHE_LIMIT = 500;
@@ -108,6 +109,9 @@ const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }
     <div 
       className="song-card" 
       onClick={() => setSelectedSong(song)}
+      onPointerEnter={() => loadSongModal().catch(error => {
+        console.error('Could not preload the song modal.', error);
+      })}
       style={{
         '--card-accent-rgb': accentRGB
       }}

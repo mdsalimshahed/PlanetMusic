@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ModalLeft from './ModalLeft.jsx';
 import ModalRight from './ModalRight.jsx';
 import ConfirmModal from './ConfirmModal.jsx';
-import { buildTranslationWorkspaceData } from '../../../Studio/utils/translationWorkspaceData.js';
 import { parseLyrics } from '../../../Studio/utils/lyricsUtils.js';
 import { useSongData } from '../../../Application/hooks/data/useSongData.js';
 import { useLyricsDisplay } from '../../../Studio/hooks/sync/useLyricsDisplay.js';
@@ -305,6 +304,9 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
 
       const fetchedLyrics = preparedSong.lyrics || song.lyrics || '';
       const requestSong = { ...preparedSong, lyrics: fetchedLyrics };
+      const { buildTranslationWorkspaceData } = await import(
+        '../../../Studio/utils/translationWorkspaceData.js'
+      );
       const detectedData = buildTranslationWorkspaceData(
         requestSong,
         { ...songDataProps.customData, lyrics: fetchedLyrics },

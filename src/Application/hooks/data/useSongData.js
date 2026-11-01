@@ -30,35 +30,10 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
   const [storedGlobalArtistData, setStoredGlobalArtistData] = useState(() => {
     const stored = localStorage.getItem('globalArtistData');
     const parsed = stored ? JSON.parse(stored) : {};
-    const globalData = {
+    return {
       images: parsed?.images && typeof parsed.images === 'object' ? parsed.images : {},
       colors: parsed?.colors && typeof parsed.colors === 'object' ? parsed.colors : {}
     };
-    
-    // HYDRATE FROM VAULT: Scan the entire library for manually set images/colors.
-    // This ensures that if an artist was customized in any other song, 
-    // we reuse those assets globally instead of auto-fetching new ones.
-    try {
-      const libraryStr = localStorage.getItem('songLibrary');
-      if (libraryStr) {
-        getVaultArtistData(JSON.parse(libraryStr)).forEach(({ artistImages, artistColors }) => {
-          if (artistImages) {
-            Object.entries(artistImages).forEach(([artist, url]) => {
-              if (url && !globalData.images[artist]) globalData.images[artist] = url;
-            });
-          }
-          if (artistColors) {
-            Object.entries(artistColors).forEach(([artist, color]) => {
-              if (color && !globalData.colors[artist]) globalData.colors[artist] = color;
-            });
-          }
-        });
-      }
-    } catch (e) {
-      console.error("Vault artist data hydration failed", e);
-    }
-    
-    return globalData;
   });
   const globalArtistData = useMemo(() => {
     const libraryImages = {};

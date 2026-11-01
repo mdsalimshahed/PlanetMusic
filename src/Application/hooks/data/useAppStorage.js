@@ -148,18 +148,29 @@ export const useAppStorage = (urlSearchQuery) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlSearchQuery]);
 
-  // Persistent Memory engine - ALWAYS ON
   useEffect(() => {
     const persistedSettings = sanitizeVaultSettings(settings);
     persistedSettings.adsEnabled = true;
     delete persistedSettings.deezerArl;
     updateRememberedDeezerArl(settings.rememberDeezerArl ? settings.deezerArl : '');
     localStorage.setItem('appSettings', JSON.stringify(persistedSettings));
+  }, [settings]);
+
+  useEffect(() => {
     localStorage.setItem('songLibrary', JSON.stringify(packVault({ library })));
+  }, [library]);
+
+  useEffect(() => {
     localStorage.setItem('searchQuery', searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
     localStorage.setItem('searchResults', JSON.stringify(searchResults));
+  }, [searchResults]);
+
+  useEffect(() => {
     localStorage.setItem('isSampleVaultActive', isSampleVaultActive ? 'true' : 'false');
-  }, [settings, library, searchQuery, searchResults, isSampleVaultActive]);
+  }, [isSampleVaultActive]);
 
   return {
     settings, setSettings,

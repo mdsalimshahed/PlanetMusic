@@ -1,14 +1,17 @@
 /* --- src/components/Modals/ModalRight.jsx --- */
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import DynamicBackground from '../../../Application/components/Core/DynamicBackground.jsx';
-import ImageManager from '../../../Studio/components/Workspaces/Lyrics/ImageManager.jsx';
-import { SyncWorkspace } from '../../../Studio/components/Workspaces/Sync/SyncWorkspace.jsx';
 import LyricsDisplay from '../../../Studio/components/Workspaces/Lyrics/LyricsDisplay.jsx';
-import TranslationWorkspace from '../../../Studio/components/Workspaces/Translation/TranslationWorkspace.jsx';
-import AutomatedTranslationRunner from '../../../Studio/components/Workspaces/Translation/AutomatedTranslationRunner.jsx';
-import AdlibDebugOverlay from '../AdlibDebug/AdlibDebugOverlay.jsx';
-import LiveDebugOverlay from '../LiveDebug/LiveDebugOverlay.jsx';
 import './ModalRight.css';
+
+const ImageManager = lazy(() => import('../../../Studio/components/Workspaces/Lyrics/ImageManager.jsx'));
+const SyncWorkspace = lazy(() => import('../../../Studio/components/Workspaces/Sync/SyncWorkspace.jsx').then(module => ({
+  default: module.SyncWorkspace
+})));
+const TranslationWorkspace = lazy(() => import('../../../Studio/components/Workspaces/Translation/TranslationWorkspace.jsx'));
+const AutomatedTranslationRunner = lazy(() => import('../../../Studio/components/Workspaces/Translation/AutomatedTranslationRunner.jsx'));
+const AdlibDebugOverlay = lazy(() => import('../AdlibDebug/AdlibDebugOverlay.jsx'));
+const LiveDebugOverlay = lazy(() => import('../LiveDebug/LiveDebugOverlay.jsx'));
 
 const ModalRight = (props) => {
   const canvasRef = useRef(null);
@@ -61,64 +64,66 @@ const ModalRight = (props) => {
       )}
 
       <div className="modal-canvas-content" inert={isCanvasInactive} aria-hidden={isCanvasInactive}>
-        {props.isTranslationManagerOpen ? (
-          <TranslationWorkspace {...canvasProps} />
-        ) : (
-          <>
-            {props.isImageManagerOpen && <ImageManager {...canvasProps} />}
+        <Suspense fallback={<div className="empty-message glass-panel" role="status">Loading workspace…</div>}>
+          {props.isTranslationManagerOpen ? (
+            <TranslationWorkspace {...canvasProps} />
+          ) : (
+            <>
+              {props.isImageManagerOpen && <ImageManager {...canvasProps} />}
 
-            {/* Main Core Workspaces */}
-            {props.isSyncMode && !props.isImageManagerOpen ? (
-              <SyncWorkspace {...canvasProps} />
-            ) : !props.isImageManagerOpen && (
-              <LyricsDisplay
-                isEditing={canvasProps.isEditing}
-                customData={canvasProps.customData}
-                handleDataChange={canvasProps.handleDataChange}
-                setIsEditing={canvasProps.setIsEditing}
-                handleAutoSyncDatabases={canvasProps.handleAutoSyncDatabases}
-                isLrcFetching={canvasProps.isLrcFetching}
-                hasValidSyncData={canvasProps.hasValidSyncData}
-                lyricsViewMode={canvasProps.lyricsViewMode}
-                liveParsedLyrics={canvasProps.liveParsedLyrics}
-                handleLineClick={canvasProps.handleLineClick}
-                selectedSong={canvasProps.selectedSong}
-                isSaved={canvasProps.isSaved}
-                masterPalette={canvasProps.masterPalette}
-                singerImages={canvasProps.singerImages}
-                globalArtistData={canvasProps.globalArtistData}
-                currentTrack={canvasProps.currentTrack}
-                isPlaying={canvasProps.isPlaying}
-                settings={canvasProps.settings}
-                lyricsPlaybackOffsetSeconds={canvasProps.lyricsPlaybackOffsetSeconds}
-                showGroupChatDebug={canvasProps.showGroupChatDebug}
-                shouldAnimateLiveEntrance={canvasProps.shouldAnimateLiveEntrance}
-                markLiveEntranceStarted={canvasProps.markLiveEntranceStarted}
-              />
-            )}
+              {props.isSyncMode && !props.isImageManagerOpen ? (
+                <SyncWorkspace {...canvasProps} />
+              ) : !props.isImageManagerOpen && (
+                <LyricsDisplay
+                  isEditing={canvasProps.isEditing}
+                  customData={canvasProps.customData}
+                  handleDataChange={canvasProps.handleDataChange}
+                  setIsEditing={canvasProps.setIsEditing}
+                  handleAutoSyncDatabases={canvasProps.handleAutoSyncDatabases}
+                  isLrcFetching={canvasProps.isLrcFetching}
+                  hasValidSyncData={canvasProps.hasValidSyncData}
+                  lyricsViewMode={canvasProps.lyricsViewMode}
+                  liveParsedLyrics={canvasProps.liveParsedLyrics}
+                  handleLineClick={canvasProps.handleLineClick}
+                  selectedSong={canvasProps.selectedSong}
+                  isSaved={canvasProps.isSaved}
+                  masterPalette={canvasProps.masterPalette}
+                  singerImages={canvasProps.singerImages}
+                  globalArtistData={canvasProps.globalArtistData}
+                  currentTrack={canvasProps.currentTrack}
+                  isPlaying={canvasProps.isPlaying}
+                  settings={canvasProps.settings}
+                  lyricsPlaybackOffsetSeconds={canvasProps.lyricsPlaybackOffsetSeconds}
+                  showGroupChatDebug={canvasProps.showGroupChatDebug}
+                  shouldAnimateLiveEntrance={canvasProps.shouldAnimateLiveEntrance}
+                  markLiveEntranceStarted={canvasProps.markLiveEntranceStarted}
+                />
+              )}
 
-            {/* Experimental Debug Layers */}
-            {canvasProps.showAdlibDebug && canvasProps.lyricsViewMode === 'focused' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
-              <AdlibDebugOverlay {...canvasProps} />
-            )}
+              {canvasProps.showAdlibDebug && canvasProps.lyricsViewMode === 'focused' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
+                <AdlibDebugOverlay {...canvasProps} />
+              )}
 
-            {canvasProps.showLiveDebug && canvasProps.lyricsViewMode === 'live' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
-              <LiveDebugOverlay {...canvasProps} />
-            )}
-          </>
-        )}
+              {canvasProps.showLiveDebug && canvasProps.lyricsViewMode === 'live' && !canvasProps.isSyncMode && !canvasProps.isEditing && (
+                <LiveDebugOverlay {...canvasProps} />
+              )}
+            </>
+          )}
+        </Suspense>
       </div>
       {props.automatedTranslationRequest && (
         <div aria-hidden="true" style={{ display: 'none' }}>
-          <AutomatedTranslationRunner
-            key={props.automatedTranslationRequest.id}
-            request={props.automatedTranslationRequest}
-            customData={props.automatedTranslationRequest.customData}
-            masterPalette={canvasProps.masterPalette}
-            updateSongInLibrary={canvasProps.updateSongInLibrary}
-            setNotification={canvasProps.setNotification}
-            onComplete={props.onAutomatedTranslationComplete}
-          />
+          <Suspense fallback={null}>
+            <AutomatedTranslationRunner
+              key={props.automatedTranslationRequest.id}
+              request={props.automatedTranslationRequest}
+              customData={props.automatedTranslationRequest.customData}
+              masterPalette={canvasProps.masterPalette}
+              updateSongInLibrary={canvasProps.updateSongInLibrary}
+              setNotification={canvasProps.setNotification}
+              onComplete={props.onAutomatedTranslationComplete}
+            />
+          </Suspense>
         </div>
       )}
 
