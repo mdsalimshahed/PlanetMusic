@@ -423,6 +423,12 @@ rt.pronunciation-text,
   filter: grayscale(0%) !important;
 }
 
+.live-layout-auto .adlib-node.adlib-visible,
+.live-layout-auto .adlib-node.adlib-visible .pronunciation-text {
+  opacity: 1 !important;
+  filter: grayscale(0%) !important;
+}
+
 .adlib-node.adlib-active,
 .adlib-node.adlib-active .pronunciation-text {
   opacity: 1 !important;

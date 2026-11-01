@@ -1,5 +1,5 @@
 /* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import {
@@ -184,13 +184,13 @@ const LiveLyricsView = ({
   currentTrack,
   lyricsPlaybackOffsetSeconds = 0,
   isSongModalReady = true,
-  shouldAnimateEntrance = true,
-  onEntranceAnimationStart
+  shouldAnimateEntrance = true
 }) => {
   const containerRef = useRef(null);
   const activeLineResizeObserverRef = useRef(null);
   const pendingSeekRef = useRef(false);
-  const shouldAnimateEntranceRef = useRef(shouldAnimateEntrance);
+  const [shouldAnimateEntranceForMount] = useState(shouldAnimateEntrance);
+  const entranceHandledRef = useRef(false);
   const revealedLinesRef = useRef(new WeakSet());
   const cachedLinesRef = useRef([]);
     const timedLinesRef = useRef([]);
@@ -201,9 +201,6 @@ const LiveLyricsView = ({
     const pendingCenterTargetRef = useRef(null);
     const activeLineIndexRef = useRef(-1);
     const needsInitialCenterRef = useRef(true);
-    const previousSelectedTrackIdRef = useRef(
-      selectedSong?.trackId == null ? null : String(selectedSong.trackId)
-    );
     const syncList = selectedSong?.syncData;
       const nextStarts = useMemo(() => {
         const syncData = syncList || [];
@@ -219,10 +216,6 @@ const LiveLyricsView = ({
     () => buildTimedLineData(syncList, nextStarts),
     [syncList, nextStarts]
   );
-
-  useEffect(() => {
-    shouldAnimateEntranceRef.current = shouldAnimateEntrance;
-  }, [shouldAnimateEntrance]);
 
   const centerActiveLine = useCallback((node, isSeek) => {
     if (!node) return;
@@ -269,11 +262,19 @@ const LiveLyricsView = ({
     const adlibTimeline = adlibTimelineRef.current;
     const lastAdlibTime = lastAdlibTimeRef.current;
     if (lastAdlibTime === null || time < lastAdlibTime) {
-        cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(item, time));
+        cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(
+          item,
+          time,
+          { persistActive: true }
+        ));
         adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
     } else {
         while (adlibCursorRef.current < adlibTimeline.length && adlibTimeline[adlibCursorRef.current].time <= time) {
-            updateAdlibStateAtTime(adlibTimeline[adlibCursorRef.current].item, time);
+            updateAdlibStateAtTime(
+              adlibTimeline[adlibCursorRef.current].item,
+              time,
+              { persistActive: true }
+            );
             adlibCursorRef.current++;
         }
     }
@@ -393,6 +394,11 @@ const LiveLyricsView = ({
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container || !isSongModalReady || selectedSong?.trackId == null) return undefined;
+    if (entranceHandledRef.current || isPlayingCurrentSong) {
+      entranceHandledRef.current = true;
+      container.classList.remove('live-lyrics-entrance-pending');
+      return undefined;
+    }
 
     const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
     let revealFrame = null;
@@ -443,8 +449,8 @@ const LiveLyricsView = ({
             waitFrames += 1;
             revealFrame = window.requestAnimationFrame(beginReveal);
           } else {
+            entranceHandledRef.current = true;
             container.classList.remove('live-lyrics-entrance-pending');
-            onEntranceAnimationStart?.(selectedSong?.trackId);
           }
           return;
         }
@@ -456,8 +462,8 @@ const LiveLyricsView = ({
           .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
           .filter(line => !revealedLinesRef.current.has(line));
         if (revealLines.length === 0) {
+          entranceHandledRef.current = true;
           container.classList.remove('live-lyrics-entrance-pending');
-          onEntranceAnimationStart?.(selectedSong?.trackId);
           return;
         }
       }
@@ -477,11 +483,11 @@ const LiveLyricsView = ({
         return;
       }
 
-      if (!shouldAnimateEntranceRef.current ||
+      if (!shouldAnimateEntranceForMount ||
         window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        entranceHandledRef.current = true;
         revealLines.forEach(line => revealedLinesRef.current.add(line));
         container.classList.remove('live-lyrics-entrance-pending');
-        onEntranceAnimationStart?.(selectedSong?.trackId);
         return;
       }
 
@@ -504,8 +510,8 @@ const LiveLyricsView = ({
           line.classList.remove('is-preparing-reveal');
           line.classList.add('initial-reveal');
         });
+        entranceHandledRef.current = true;
         container.classList.remove('live-lyrics-entrance-pending');
-        onEntranceAnimationStart?.(selectedSong?.trackId);
         revealFallbackTimeout = window.setTimeout(() => {
           revealLines.forEach(line => finishReveal(line));
           revealFallbackTimeout = null;
@@ -523,14 +529,16 @@ const LiveLyricsView = ({
         const handler = animationEndHandlers.get(line);
         if (handler) line.removeEventListener('animationend', handler);
         animationEndHandlers.delete(line);
-        line.classList.remove('is-preparing-reveal');
+        line.classList.remove('is-preparing-reveal', 'initial-reveal');
+        line.style.removeProperty('--initial-reveal-delay');
       });
     };
   }, [
     syncWorkspaceLyrics,
     selectedSong?.trackId,
     isSongModalReady,
-    onEntranceAnimationStart
+    isPlayingCurrentSong,
+    shouldAnimateEntranceForMount
   ]);
 
   useEffect(() => {
@@ -554,6 +562,7 @@ const LiveLyricsView = ({
         });
         activeLineIndexRef.current = -1;
         needsInitialCenterRef.current = true;
+        cancelPendingScroll(pendingCenterTargetRef);
     };
 
     const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
@@ -570,14 +579,10 @@ const LiveLyricsView = ({
     window.addEventListener('globalTimeSeek', handleTimeSeek);
     window.addEventListener('globalPlayState', handlePlayState);
 
-    const selectedTrackId = selectedSong?.trackId == null ? null : String(selectedSong.trackId);
-    const selectedTrackChanged = previousSelectedTrackIdRef.current !== selectedTrackId;
-    previousSelectedTrackIdRef.current = selectedTrackId;
-
     if (isPlayingCurrentSong) {
         const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
         handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
-    } else if (currentTrack || selectedTrackChanged) {
+    } else {
         clearActiveLines();
     }
 
@@ -590,7 +595,7 @@ const LiveLyricsView = ({
 
   return (
     <div
-      className={`live-lyrics-preview${shouldAnimateEntrance ? ' live-lyrics-entrance-pending' : ''}`}
+      className={`live-lyrics-preview${!isPlayingCurrentSong ? ' playback-stopped' : ''}${shouldAnimateEntranceForMount ? ' live-lyrics-entrance-pending' : ''}`}
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >

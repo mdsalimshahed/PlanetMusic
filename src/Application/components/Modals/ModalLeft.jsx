@@ -128,6 +128,7 @@ const ModalLeft = ({
   onAutomatedAddToVault, isAutomatedVaultAddRunning, linkValidationErrors
 }) => {
   const { mainTitle, extras, featuredArtists } = parseTrackName(selectedSong.trackName);
+  const artworkKey = `${selectedSong.trackId}:${highResArt || ''}`;
   const { setContainerRef: setWorkspaceControlsContainer, setContentRef: setWorkspaceControlsContent } = useMeasuredHeightTransition();
   const { setContainerRef: setVaultActionsContainer, setContentRef: setVaultActionsContent } = useMeasuredHeightTransition();
   const [showDeezerNotice, setShowDeezerNotice] = useState(false);
@@ -288,14 +289,16 @@ const ModalLeft = ({
     <div className="modal-left-col">
       <div className="modal-left-static">
         <div className="modal-top">
-          <img
-            key={highResArt || selectedSong.trackId}
-            src={highResArt}
-            alt="Artwork"
-            className={`modal-cover${loadedArtwork === highResArt ? ' is-ready' : ''}`}
-            onLoad={() => setLoadedArtwork(highResArt)}
-            onError={() => setLoadedArtwork(highResArt)}
-          />
+          <div className="modal-cover-wrap">
+            <img
+              key={artworkKey}
+              src={highResArt}
+              alt="Artwork"
+              className={`modal-cover${loadedArtwork === artworkKey ? ' is-ready' : ''}`}
+              onLoad={() => setLoadedArtwork(artworkKey)}
+              onError={() => setLoadedArtwork(artworkKey)}
+            />
+          </div>
           <div className="modal-header-info">
             <h2>
               {toSmartPunctuation(mainTitle)}

@@ -37,12 +37,22 @@
   display: none;
 }
 
+.live-lyrics-preview.playback-stopped {
+  --live-line-rest-opacity: 1;
+}
+
+.live-lyrics-preview.playback-stopped .preview-line,
+.live-lyrics-preview.playback-stopped .preview-line:hover {
+  opacity: 1;
+}
+
 .live-lyrics-preview.live-lyrics-entrance-pending .preview-line {
   opacity: 0 !important;
   transition: none;
 }
 
 .preview-line {
+  position: relative;
   font-family: var(--font-family);
   font-size: clamp(16px, min(5vw, 10cqw), var(--dyn-live-sync-font-size, 34px));
   font-weight: 700; 
@@ -91,7 +101,7 @@
 
 @keyframes liveLineIntro {
   from { opacity: 0; transform: translate3d(18px, 0, 0) scale(0.95); }
-  to { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); }
+  to { opacity: var(--live-line-rest-opacity, 0.4); transform: translate3d(0, 0, 0) scale(0.95); }
 }
 
 @keyframes liveActiveLineIntro {
@@ -110,12 +120,29 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
+.preview-line.active .main-lyrics-layer .lyric-word,
+.preview-line .adlib-node.adlib-active > .primary-text .lyric-word {
+  animation: liveLyricsGlyphShine 360ms ease-out both;
+  animation-delay: calc(var(--word-index, 0) * 45ms);
+}
+
+@keyframes liveLyricsGlyphShine {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+  }
+  45% {
+    filter:
+      brightness(1.65)
+      drop-shadow(0 0 7px rgba(255, 255, 255, 0.85))
+      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+  }
+}
+
 .preview-line .live-split-line .adlib-node.adlib-active {
   animation: liveAdlibFadeUp 320ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
-.preview-line .live-split-line .adlib-node.adlib-active > .primary-text,
-.preview-line .live-split-line .adlib-node.adlib-active > .adlib-live-translation {
+.preview-line .live-split-line .adlib-node.adlib-active > .primary-text {
   animation: liveAdlibFadeIn 320ms ease-out both;
 }
 
@@ -144,9 +171,18 @@
     animation: none;
   }
 
-  .preview-line .live-split-line .adlib-node.adlib-active,
-  .preview-line .live-split-line .adlib-node.adlib-active > .primary-text,
-  .preview-line .live-split-line .adlib-node.adlib-active > .adlib-live-translation {
+  .preview-line.active .main-lyrics-layer .lyric-word,
+  .preview-line .adlib-node.adlib-active > .primary-text .lyric-word {
     animation: none;
   }
+
+  .preview-line .live-split-line .adlib-node.adlib-active,
+  .preview-line .live-split-line .adlib-node.adlib-active > .primary-text {
+    animation: none;
+  }
+}
+
+.disable-animations .preview-line.active .main-lyrics-layer .lyric-word,
+.disable-animations .preview-line .adlib-node.adlib-active > .primary-text .lyric-word {
+  animation: none;
 }

@@ -107,7 +107,7 @@ const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }
 
   return (
     <div 
-      className="song-card" 
+      className="song-card"
       onClick={() => setSelectedSong(song)}
       onPointerEnter={() => loadSongModal().catch(error => {
         console.error('Could not preload the song modal.', error);
@@ -127,7 +127,6 @@ const SongCard = React.memo(({ song, isSaved, setSelectedSong, setCurrentTrack }
           crossOrigin="anonymous" 
           onError={(e) => { e.target.src = 'https://via.placeholder.com/300?text=No+Cover' }}
         />
-        
         <div className="card-top-left-badges">
           {!isSaved && sources.length > 0 && (
             sources.map(source => (

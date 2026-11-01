@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSyncMode, isEditing, isImageManagerOpen, currentTrack, settings) => {
   const [lyricsViewMode, setLyricsViewMode] = useState('live');
   const [parsedLyrics, setParsedLyrics] = useState({ trackId: null, lines: [] });
-  const [liveEntranceStartedTracks, setLiveEntranceStartedTracks] = useState(() => new Set());
   const parserWorkerRef = useRef(null);
   const parserRequestIdRef = useRef(0);
   const [isHeadphoneDelayEnabled, setIsHeadphoneDelayEnabled] = useState(() => localStorage.getItem('lyricsHeadphoneDelayEnabled') === 'true');
@@ -41,16 +40,12 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   const trackId = selectedSong?.trackId ?? null;
   const selectedTrackKey = trackId == null ? null : String(trackId);
-  const shouldAnimateLiveEntrance = selectedTrackKey !== null &&
-    !liveEntranceStartedTracks.has(selectedTrackKey);
-  const markLiveEntranceStarted = useCallback(startedTrackId => {
-    if (startedTrackId == null) return;
-    const trackKey = String(startedTrackId);
-    setLiveEntranceStartedTracks(previous => {
-      if (previous.has(trackKey)) return previous;
-      return new Set(previous).add(trackKey);
-    });
-  }, []);
+  const isSelectedSongInPlayer = Boolean(
+    currentTrack &&
+    selectedTrackKey !== null &&
+    String(currentTrack.trackId) === selectedTrackKey
+  );
+  const shouldAnimateLiveEntrance = selectedTrackKey !== null && !isSelectedSongInPlayer;
   const liveParsedLyrics = useMemo(
     () => parsedLyrics.trackId === trackId ? parsedLyrics.lines : [],
     [parsedLyrics, trackId]
@@ -256,7 +251,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   return {
     lyricsViewMode, setLyricsViewMode, cycleViewMode, liveParsedLyrics,
-    shouldAnimateLiveEntrance, markLiveEntranceStarted,
+    shouldAnimateLiveEntrance,
     isHeadphoneDelayEnabled, toggleHeadphoneDelay, headphoneDelayMs, lyricsPlaybackOffsetSeconds,
     currentSingerBg: displaySingerBg, isSingerVisible,
     activePreviewRef, handleLineClick, hasValidSyncData,

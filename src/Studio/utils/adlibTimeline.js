@@ -27,10 +27,10 @@ export const findAdlibBoundaryCursor = (events, time) => {
   return low;
 };
 
-export const updateAdlibStateAtTime = (item, time) => {
+export const updateAdlibStateAtTime = (item, time, { persistActive = false } = {}) => {
   let targetState = 'hidden';
   if (!isNaN(item.start)) {
-    if (time >= item.start && time <= item.end) targetState = 'active';
+    if (time >= item.start && (persistActive || time <= item.end)) targetState = 'active';
     else if (time >= item.start) targetState = 'visible';
   }
 
