@@ -1,6 +1,7 @@
 /* --- src/services/transliterator.js --- */
 import { numberToEnglishWords } from '../../Application/utils/numberToWords.js';
 import { fetchGoogleTranslate } from './googleTranslateClient.js';
+import { isLatinLikeToken } from '../utils/latinScript.js';
 
 try {
   localStorage.removeItem('globalTranslationCache');
@@ -41,11 +42,6 @@ export const quickTransliterate = async (
   const clean = stripHtmlAndBrackets(text);
   if (!clean) return { translation: '', transliteration: null, srcLang: 'auto' };
   return await getGoogleData(clean, sl, tl, proxySession);
-};
-
-const isRomanChar = (char) => {
-  if (/[\u0900-\u109F\u200C\u200D]/.test(char)) return false; 
-  return /^[\p{Script=Latin}\p{M}\p{P}\p{Z}\p{S}\p{C}]+$/u.test(char);
 };
 
 // Helper: Converts digits to English words, then translates to the target language of the line
@@ -127,7 +123,7 @@ export const getBulkPronunciations = async (
         return { type: 'en', text: token, trans: '' };
       }
 
-      const isEnToken = Array.from(token).every(c => isRomanChar(c));
+      const isEnToken = isLatinLikeToken(token);
       if (/^[\p{P}\p{S}]+$/u.test(token.trim())) {
         return { type: 'en', text: token, trans: '' };
       }

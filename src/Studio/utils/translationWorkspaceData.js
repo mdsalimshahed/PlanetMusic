@@ -1,4 +1,5 @@
 import { parseLyrics } from './lyricsUtils.js';
+import { isLatinLikeText } from './latinScript.js';
 
 const getDisplayPronunciation = pronunciation => {
   if (typeof pronunciation !== 'string') return pronunciation || '';
@@ -14,6 +15,65 @@ const getDisplayPronunciation = pronunciation => {
   } catch {
     return pronunciation;
   }
+};
+
+const latinLookalikeMap = new Map(
+  Object.entries({
+    а: 'a', в: 'b', с: 'c', е: 'e', ё: 'e', н: 'h', і: 'i', ј: 'j',
+    к: 'k', м: 'm', о: 'o', р: 'p', т: 't', у: 'y', х: 'x',
+    α: 'a', β: 'b', ε: 'e', η: 'h', ι: 'i', κ: 'k', μ: 'm',
+    ν: 'v', ο: 'o', ρ: 'p', τ: 't', υ: 'y', χ: 'x'
+  })
+);
+
+const normalizeImportedLyric = text => {
+  let normalized = '';
+  let previousWasLatin = false;
+  const foldedText = String(text || '')
+    .normalize('NFKD')
+    .replace(/[’‘ʼ`]/g, "'")
+    .replace(/[‐‑‒–—―]/g, '-')
+    .toLowerCase();
+
+  for (const char of foldedText) {
+    if (/\p{M}/u.test(char) && previousWasLatin) continue;
+
+    const mappedChar = latinLookalikeMap.get(char) || char;
+    normalized += mappedChar;
+    previousWasLatin = /\p{Script=Latin}/u.test(mappedChar);
+  }
+
+  return normalized
+    .replace(/[\p{P}\p{S}]/gu, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+};
+
+export const findNextTranslationImportTarget = (workspaceData, originalText, startIndex = 0) => {
+  const normalizedOriginal = normalizeImportedLyric(originalText);
+  if (!normalizedOriginal) return -1;
+
+  const matchingIndexes = workspaceData.flatMap((row, index) => (
+    index >= startIndex && normalizeImportedLyric(row.displayText) === normalizedOriginal
+      ? [index]
+      : []
+  ));
+
+  for (const index of matchingIndexes) {
+    const row = workspaceData[index];
+    if (row._meta?.isAdlib) return index;
+
+    const fullLineAdlibIndex = workspaceData.findIndex(candidate => (
+      candidate._meta?.isAdlib
+      && candidate._meta.lineIndex === row._meta?.lineIndex
+      && normalizeImportedLyric(candidate.displayText) === normalizedOriginal
+    ));
+
+    if (fullLineAdlibIndex !== -1) return fullLineAdlibIndex;
+    return index;
+  }
+
+  return -1;
 };
 
 export const buildTranslationWorkspaceData = (
@@ -58,7 +118,9 @@ export const buildTranslationWorkspaceData = (
     }
 
     const parsedLine = parsedLyricsColorMap?.[index];
-    const pronunciation = line.pronunciation || '';
+    const hasMainText = Boolean(line.text?.trim());
+    const hasLatinText = isLatinLikeText(line.text);
+    const pronunciation = hasLatinText ? '' : (line.pronunciation || '');
     const isEnglish = line.lang === 'en';
     const lineSegments = (Array.isArray(parsedLine?.segments)
       ? parsedLine.segments
@@ -69,9 +131,9 @@ export const buildTranslationWorkspaceData = (
       rowId: `main-${index}`,
       segments: lineSegments,
       displayText: line.text || '',
-      translation: isEnglish ? '' : (line.translation || ''),
+      translation: !hasMainText || isEnglish ? '' : (line.translation || ''),
       pronunciation: isEnglish ? '' : pronunciation,
-      displayPron: isEnglish ? '' : getDisplayPronunciation(pronunciation),
+      displayPron: isEnglish || hasLatinText ? '' : getDisplayPronunciation(pronunciation),
       lang: line.lang || 'auto',
       spacingText: line.spacingText || '',
       _meta: { isAdlib: false, lineIndex: index }
@@ -93,7 +155,8 @@ export const buildTranslationWorkspaceData = (
           };
         }
 
-        const adlibPronunciation = adlib.pronunciation || '';
+        const hasLatinAdlib = isLatinLikeText(adlib.text);
+        const adlibPronunciation = hasLatinAdlib ? '' : (adlib.pronunciation || '');
         const isAdlibEnglish = adlib.lang === 'en';
         return {
           ...adlib,
@@ -104,7 +167,9 @@ export const buildTranslationWorkspaceData = (
           displayText: adlib.text,
           translation: isAdlibEnglish ? '' : (adlib.translation || ''),
           pronunciation: isAdlibEnglish ? '' : adlibPronunciation,
-          displayPron: isAdlibEnglish ? '' : getDisplayPronunciation(adlibPronunciation),
+          displayPron: isAdlibEnglish || hasLatinAdlib
+            ? ''
+            : getDisplayPronunciation(adlibPronunciation),
           lang: adlib.lang || 'auto',
           spacingText: adlib.spacingText || '',
           _meta: { isAdlib: true, lineIndex: index, adlibIndex }

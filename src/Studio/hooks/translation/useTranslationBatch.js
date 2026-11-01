@@ -1,5 +1,5 @@
 /* --- src/Studio/hooks/translation/useTranslationBatch.js --- */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { getBulkPronunciations } from '../../services/transliterator.js';
 import { 
   fetchSingleLine, 
@@ -17,6 +17,7 @@ export const useTranslationBatch = ({
   workspaceData,
   setWorkspaceData,
   listContainerRef,
+  skipNextActiveRowScrollRef,
   cancelTranslationRef,
   setTranslateProgress,
   setNotification,
@@ -24,6 +25,8 @@ export const useTranslationBatch = ({
   setShowSuccessBanner
 }) => {
   const [isTranslatingAll, setIsTranslatingAll] = useState(false);
+  const refetchRequestsRef = useRef(new Map());
+  const activeRefetchRunIdRef = useRef(null);
 
   const stopTranslationProcess = () => {
     cancelTranslationRef.current = true;
@@ -52,6 +55,19 @@ export const useTranslationBatch = ({
 
     const promises = workspaceData.map(async (line, idx) => {
       if (cancelTranslationRef.current) return null;
+
+      if (!line._meta?.isAdlib && !line.displayText?.trim()) {
+        setWorkspaceData(prev => prev.map((current, index) => (
+          index === idx
+            ? { ...current, translation: '' }
+            : current
+        )));
+        completedCount++;
+        const progressPct = Math.round((completedCount / workspaceData.length) * 100);
+        setTranslateProgress({ current: completedCount, total: workspaceData.length });
+        setNotification({ show: true, message: `Translating (${completedCount}/${workspaceData.length})...`, progress: progressPct });
+        return;
+      }
       
       if (line.lang === 'en') {
         const data = { ...line, translation: '', displayPron: '', pronunciation: '' };
@@ -213,7 +229,7 @@ export const useTranslationBatch = ({
     
     const groups = {};
     workspaceData.forEach((line, index) => {
-      if (line.lang === 'en') return;
+      if (line.lang === 'en' || (!line._meta?.isAdlib && !line.displayText?.trim())) return;
       const lang = line.lang || 'auto';
       if (!groups[lang]) groups[lang] = [];
       groups[lang].push({ line, index });
@@ -403,78 +419,99 @@ export const useTranslationBatch = ({
 
   const handleRefetch = async (index) => {
     const line = workspaceData[index];
+    if (
+      !line
+      || (!line._meta?.isAdlib && !line.displayText?.trim())
+      || refetchRequestsRef.current.has(line.rowId)
+    ) return;
+
+    const runId = createTranslationRunId();
+    refetchRequestsRef.current.set(line.rowId, runId);
+    activeRefetchRunIdRef.current = runId;
+    skipNextActiveRowScrollRef.current = true;
     setActiveTranslatingId(line.rowId);
+    setWorkspaceData(prev => prev.map((current, currentIndex) => (
+      currentIndex === index && current.rowId === line.rowId
+        ? { ...current, translation: '', displayPron: '', pronunciation: '' }
+        : current
+    )));
     setNotification({ show: true, message: `Translating line ${index + 1}...`, progress: null });
-    
-    const res = await fetchSingleLine(
-      line,
-      `refetch:${createTranslationRunId()}:${index}`,
-      rawData => {
-        setActiveTranslatingId(line.rowId);
-        setWorkspaceData(prev => prev.map((current, currentIndex) => (
-          currentIndex === index
-            ? {
-              ...current,
-              translation: String(rawData.translation || '').trim(),
-              lang: rawData.srcLang || current.lang || 'auto'
-            }
-            : current
-        )));
+
+    try {
+      const res = await fetchSingleLine(line, `refetch:${runId}:${index}`);
+      if (refetchRequestsRef.current.get(line.rowId) !== runId) return;
+
+      if (!res) {
+        const hasText = line.spacingText?.trim() || line.displayText?.trim();
+        setNotification({
+          show: true,
+          message: hasText
+            ? `Could not translate line ${index + 1}. Check the connection or proxy and retry.`
+            : `Line ${index + 1} has no text to translate.`,
+          progress: 100
+        });
+        return;
       }
-    );
 
-    if (!res && (line.spacingText?.trim() || line.displayText?.trim())) {
-      setNotification({
-        show: true,
-        message: `Could not translate line ${index + 1}. Check the connection or proxy and retry.`,
-        progress: 100
-      });
-    }
-    
-    if (res) {
-      setActiveTranslatingId(line.rowId);
-      setWorkspaceData(prev => {
-          const next = [...prev];
-          
-          let rawTransText = res.translation !== undefined ? res.translation : next[index].translation;
-          if (rawTransText) rawTransText = String(rawTransText).trim();
-          
-          let baselineText = next[index].spacingText?.trim() ? next[index].spacingText : next[index].displayText;
-          if (!next[index].spacingText?.trim() && !next[index]._meta?.isAdlib && next[index].isSplit && next[index].adlibs) {
-            next[index].adlibs.forEach(a => { baselineText = baselineText.replace(a.text, ''); });
+      setWorkspaceData(prev => prev.map((current, currentIndex) => {
+        if (currentIndex !== index || current.rowId !== line.rowId) return current;
+
+        let rawTransText = String(res.translation ?? '').trim();
+        let baselineText = current.spacingText?.trim()
+          ? current.spacingText
+          : current.displayText;
+        if (!current.spacingText?.trim() && !current._meta?.isAdlib && current.isSplit && current.adlibs) {
+          current.adlibs.forEach(adlib => {
+            baselineText = baselineText.replace(adlib.text, '');
+          });
+        }
+
+        const normOrig = normalizeForComparison(baselineText);
+        const normTrans = normalizeForComparison(rawTransText);
+        const isEnglishMatch = normOrig.length > 0
+          && normOrig === normTrans
+          && /[a-z]/i.test(normOrig);
+        const finalLang = isEnglishMatch
+          ? 'en'
+          : (res.srcLang || current.lang || 'auto');
+
+        let displayPron = '';
+        if (!isEnglishMatch && res.pronunciation) {
+          try {
+            const pronunciation = JSON.parse(res.pronunciation);
+            const hasSpacing = Boolean(current.spacingText?.trim());
+            displayPron = pronunciation.full && !hasSpacing
+              ? pronunciation.full
+              : pronunciation.chunks.map(chunk => chunk.trans || chunk.text).join('');
+          } catch (error) {
+            console.warn('Could not parse line pronunciation:', error);
           }
+        }
 
-          const normOrig = normalizeForComparison(baselineText);
-          const normTrans = normalizeForComparison(rawTransText);
-          
-          // FIX: Prevent pure numbers/CJK from triggering false English match auto-wipe
-          const isEnglishMatch = normOrig.length > 0 && normOrig === normTrans && /[a-z]/i.test(normOrig);
-          const finalLang = isEnglishMatch ? 'en' : (res.srcLang || next[index].lang || 'auto');
-          
-          let displayPron = '';
-          if (!isEnglishMatch && res.pronunciation) {
-            try {
-              const p = JSON.parse(res.pronunciation);
-              const hasSpacing = Boolean(next[index].spacingText && next[index].spacingText.trim());
-              displayPron = (p.full && !hasSpacing) ? p.full : p.chunks.map(c => c.trans || c.text).join('');
-            } catch (e) {}
-          }
-          
-          next[index] = {
-              ...next[index],
-              lang: finalLang,
-              translation: isEnglishMatch ? '' : rawTransText,
-              displayPron: isEnglishMatch ? '' : displayPron,
-              pronunciation: isEnglishMatch ? '' : (next[index]._meta?.isAdlib ? formatAdlibPronunciation(next[index].displayText, displayPron) : (res.pronunciation || ''))
-          };
+        if (isEnglishMatch) rawTransText = '';
 
-          return next;
-      });
+        return {
+          ...current,
+          lang: finalLang,
+          translation: rawTransText,
+          displayPron: isEnglishMatch ? '' : displayPron,
+          pronunciation: isEnglishMatch
+            ? ''
+            : (current._meta?.isAdlib
+              ? formatAdlibPronunciation(current.displayText, displayPron) || ''
+              : (res.pronunciation || ''))
+        };
+      }));
+      setNotification({ show: true, message: 'Line translated!', progress: 100 });
+    } finally {
+      if (refetchRequestsRef.current.get(line.rowId) === runId) {
+        refetchRequestsRef.current.delete(line.rowId);
+      }
+      if (activeRefetchRunIdRef.current === runId) {
+        activeRefetchRunIdRef.current = null;
+        setActiveTranslatingId(null);
+      }
     }
-    
-    setActiveTranslatingId(null);
-    listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-    setNotification({ show: true, message: 'Line translated!', progress: 100 });
   };
 
   return {

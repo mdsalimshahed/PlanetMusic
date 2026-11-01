@@ -18,9 +18,15 @@ export const useTranslationProcess = ({
 
   const activeRowRef = useRef(null);
   const cancelTranslationRef = useRef(false);
+  const skipNextActiveRowScrollRef = useRef(false);
 
   useEffect(() => {
     if (activeTranslatingId !== null && activeRowRef.current) {
+      if (skipNextActiveRowScrollRef.current) {
+        skipNextActiveRowScrollRef.current = false;
+        return;
+      }
+
       activeRowRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
@@ -45,6 +51,7 @@ export const useTranslationProcess = ({
     workspaceData,
     setWorkspaceData,
     listContainerRef,
+    skipNextActiveRowScrollRef,
     cancelTranslationRef,
     setTranslateProgress,
     setNotification,

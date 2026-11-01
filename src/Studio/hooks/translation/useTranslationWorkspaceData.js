@@ -2,7 +2,10 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { parseLyrics } from '../../utils/songHelpers.js';
 import { normalizeStructuredPunctuation, toSmartPunctuation } from '../../../utils/smartPunctuation.js';
-import { buildTranslationWorkspaceData } from '../../utils/translationWorkspaceData.js';
+import {
+  buildTranslationWorkspaceData,
+  findNextTranslationImportTarget
+} from '../../utils/translationWorkspaceData.js';
 
 const formatAdlibPronunciation = (adlibText, displayPron) => {
   if (!displayPron) return '';
@@ -97,6 +100,11 @@ export const useTranslationWorkspaceData = ({
         newData[index].pronunciation = value;
       }
     } else if (field === 'translation') {
+      if (!newData[index]._meta.isAdlib && !newData[index].displayText?.trim()) {
+        newData[index].translation = '';
+        setWorkspaceData(newData);
+        return;
+      }
       if (newData[index].lang === 'en' && value) {
         newData[index].lang = 'auto';
       }
@@ -131,7 +139,9 @@ export const useTranslationWorkspaceData = ({
       const isEn = item.lang === 'en';
       
       let finalPron = isEn ? '' : item.pronunciation;
-      let finalTrans = isEn ? '' : toSmartPunctuation(item.translation || '');
+      let finalTrans = isEn || (!meta.isAdlib && !item.displayText?.trim())
+        ? ''
+        : toSmartPunctuation(item.translation || '');
 
       if (!isEn) {
         if (meta.isAdlib) {
@@ -224,8 +234,9 @@ export const useTranslationWorkspaceData = ({
 
         const newData = [...workspaceData];
         let importedCount = 0;
+        let nextTargetIndex = 0;
 
-        blocks.forEach((block, blockIdx) => {
+        blocks.forEach(block => {
           let lines = block.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
           if (lines.length === 0) return;
 
@@ -250,15 +261,14 @@ export const useTranslationWorkspaceData = ({
           importedPron = toSmartPunctuation(importedPron);
           importedTrans = toSmartPunctuation(importedTrans);
 
-          let targetIndex = newData.findIndex(
-            w => w.displayText.toLowerCase() === originalText.toLowerCase()
+          const targetIndex = findNextTranslationImportTarget(
+            newData,
+            originalText,
+            nextTargetIndex
           );
 
-          if (targetIndex === -1 && blockIdx < newData.length) {
-            targetIndex = blockIdx;
-          }
-
           if (targetIndex !== -1) {
+            nextTargetIndex = targetIndex + 1;
             const isEn = importedLang === 'en';
             newData[targetIndex].lang = importedLang;
             newData[targetIndex].translation = isEn ? '' : importedTrans;

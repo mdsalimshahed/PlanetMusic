@@ -13,6 +13,7 @@ const TranslationRow = ({
   handleRefetch
 }) => {
   const isAdlib = line._meta.isAdlib;
+  const isEmptyMainLine = !isAdlib && !line.displayText?.trim();
   const isTranslating = activeTranslatingId === line.rowId;
   
   // Detect if the line is explicitly tagged as Japanese or Chinese
@@ -63,7 +64,8 @@ const TranslationRow = ({
           className="tw-input tw-translation-input"
           value={line.translation || ''}
           onChange={(e) => handleChange(idx, 'translation', e.target.value)}
-          placeholder="English Translation..."
+          placeholder={isEmptyMainLine ? 'No main lyric...' : 'English Translation...'}
+          disabled={isEmptyMainLine}
           dir="ltr"
           style={{ textAlign: 'left' }}
         />
@@ -73,8 +75,8 @@ const TranslationRow = ({
         <button
           className={`tw-refetch-btn ${isTranslating ? 'tw-refetch-active' : ''}`}
           onClick={() => handleRefetch(idx)}
-          disabled={isTranslatingAll}
-          title="Re-fetch from Google Translate"
+          disabled={isEmptyMainLine || isTranslating || isTranslatingAll}
+          title={isEmptyMainLine ? 'No main lyric to translate' : 'Re-fetch from Google Translate'}
         >
           {isTranslating ? (
             <span className="tw-spinner"></span>
