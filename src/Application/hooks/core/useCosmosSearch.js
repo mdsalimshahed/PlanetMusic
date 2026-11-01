@@ -1,146 +1,104 @@
 /* --- src/hooks/useCosmosSearch.js --- */
-import { useState, useEffect } from 'react';
-import { norm, filterAndSortByTitleMatch } from '../../utils/searchEngine.js';
+import { useState, useEffect, useRef } from 'react';
+import { filterAndSortByTitleMatch, mergeOnlineSearchResults } from '../../utils/searchEngine.js';
 import { fetchDeezerApi } from '../../services/deezerBackend.js';
 
 export const useCosmosSearch = ({
   searchQuery, searchResults, setSearchResults,
   activeTab, urlSearchQuery, navigate, library, setIsExplicitSearch
 }) => {
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchingQuery, setSearchingQuery] = useState('');
+  const searchRequestId = useRef(0);
+  const activeSearchQuery = useRef('');
+  const activeSearchController = useRef(null);
+  const debounceTimer = useRef(null);
 
   const filteredLibrary = activeTab === 'vault' && searchQuery.trim()
     ? filterAndSortByTitleMatch(library, searchQuery)
     : library;
+  const isSearching = Boolean(
+    searchingQuery &&
+    searchingQuery === searchQuery.trim() &&
+    activeTab === 'vault' &&
+    filteredLibrary.length === 0
+  );
+
+  const invalidateActiveSearch = () => {
+    searchRequestId.current += 1;
+    activeSearchQuery.current = '';
+    activeSearchController.current?.abort();
+    activeSearchController.current = null;
+  };
 
   const performOnlineSearch = async (query) => {
     if (!query.trim()) return;
-    setIsSearching(true);
-    
-    let currentResults = [];
-    
-    // Ensure iTunes results are strictly unique by ID before processing
-    const processITunes = (items) => {
-      const seenIds = new Set();
-      const uniqueItems = [];
-      items.forEach(song => {
-        if (!seenIds.has(song.trackId)) {
-          seenIds.add(song.trackId);
-          uniqueItems.push({
-            ...song,
-            sourceNames: ['iTunes']
-          });
-        }
-      });
-      return uniqueItems;
+    activeSearchController.current?.abort();
+    const controller = new AbortController();
+    activeSearchController.current = controller;
+    const requestId = searchRequestId.current + 1;
+    searchRequestId.current = requestId;
+    activeSearchQuery.current = query.trim();
+    setSearchingQuery(query.trim());
+    let itunesResults = [];
+    let deezerResults = [];
+    const publishResults = () => {
+      if (searchRequestId.current !== requestId) return;
+      const mergedResults = mergeOnlineSearchResults(itunesResults, deezerResults);
+      setSearchResults(filterAndSortByTitleMatch(mergedResults, query));
     };
 
-    const fuseDeezerAndDeduplicate = (existing, dzItems) => {
-      // 1. Deduplicate Deezer's raw payload first (fixes the Deezer self-duplication bug)
-      const uniqueDzMap = new Map();
-      dzItems.forEach(dz => {
-        const tId = `dz_${dz.id}`;
-        if (!uniqueDzMap.has(tId)) {
-          uniqueDzMap.set(tId, {
-            trackId: tId,
-            trackName: dz.title,
-            artistName: dz.artist,
-            collectionName: dz.album,
-            artworkUrl100: dz.cover,
-            trackTimeMillis: (dz.duration || 0) * 1000,
-            previewUrl: '',
-            trackExplicitness: 'explicit',
-            sourceNames: ['Deezer'],
-            customLinks: { deezer: dz.link }
-          });
-        }
-      });
-      const deezerResults = Array.from(uniqueDzMap.values());
-
-      const finalResults = [];
-      const matchedDeezerIds = new Set();
-
-      // 2. Process existing (iTunes) and fuse identical Deezer tracks into them
-      existing.forEach(song => {
-        const normTitle = norm(song.trackName);
-        const normArtist = norm(song.artistName);
-
-        const dzMatch = deezerResults.find(dz => 
-          !matchedDeezerIds.has(dz.trackId) &&
-          norm(dz.trackName) === normTitle &&
-          norm(dz.artistName) === normArtist
-        );
-
-        const formattedSong = { ...song };
-
-        if (dzMatch) {
-          formattedSong.sourceNames = Array.from(new Set([...(formattedSong.sourceNames || []), 'Deezer']));
-          formattedSong.customLinks = { ...formattedSong.customLinks, deezer: dzMatch.customLinks.deezer };
-          if (dzMatch.trackExplicitness === 'explicit') formattedSong.trackExplicitness = 'explicit';
-          matchedDeezerIds.add(dzMatch.trackId);
-        }
-
-        finalResults.push(formattedSong);
+    const iTunesPromise = fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`, {
+      signal: controller.signal
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        itunesResults = Array.isArray(data.results) ? data.results : [];
+        publishResults();
+      })
+      .catch(error => {
+        if (!controller.signal.aborted) console.error('iTunes Search Error:', error);
       });
 
-      // 3. Add any remaining Deezer tracks that didn't match an iTunes track
-      deezerResults.forEach(dz => {
-        if (!matchedDeezerIds.has(dz.trackId)) {
-          finalResults.push(dz);
-          matchedDeezerIds.add(dz.trackId); // Safety lock ensures we never add the same ID twice
-        }
+    const deezerPromise = fetchDeezerApi(`/search-deezer?q=${encodeURIComponent(query)}`, {
+      signal: controller.signal
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        deezerResults = Array.isArray(data.results) ? data.results : [];
+        publishResults();
+      })
+      .catch(error => {
+        if (!controller.signal.aborted) console.error('Deezer Search Error:', error);
       });
 
-      return finalResults;
-    };
-
-    try {
-      const iTunesPromise = fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=25&explicit=Yes&country=US`)
-        .then(res => res.json())
-        .then(data => {
-          const formatted = processITunes(data.results || []);
-          currentResults = formatted;
-          setSearchResults(filterAndSortByTitleMatch(formatted, query));
-          setIsSearching(false); 
-          return data;
-        })
-        .catch(err => {
-          console.error("iTunes Search Error:", err);
-          return { results: [] };
-        });
-
-      const deezerPromise = fetchDeezerApi(`/search-deezer?q=${encodeURIComponent(query)}`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          if (data.results && data.results.length > 0) {
-            const fused = fuseDeezerAndDeduplicate(currentResults, data.results);
-            setSearchResults(filterAndSortByTitleMatch(fused, query));
-          }
-          return data;
-        })
-        .catch(err => {
-          console.error("Deezer Search Error:", err);
-          return { results: [] };
-        });
-
-      await Promise.allSettled([iTunesPromise, deezerPromise]);
-    } catch (error) {
-      console.error('Error fetching songs:', error);
-    } finally {
-      setIsSearching(false);
+    await Promise.allSettled([iTunesPromise, deezerPromise]);
+    if (searchRequestId.current === requestId) {
+      setSearchingQuery('');
+      activeSearchController.current = null;
     }
   };
 
   useEffect(() => {
-    if (activeTab !== 'vault') return;
+    if (activeTab !== 'vault') {
+      invalidateActiveSearch();
+      return;
+    }
     if (!searchQuery.trim()) {
+      invalidateActiveSearch();
       setSearchResults([]);
       setIsExplicitSearch(false);
       if (urlSearchQuery) navigate('/vault', { replace: true });
       return;
+    }
+    const isCurrentQueryAlreadySearched = activeSearchQuery.current === searchQuery.trim();
+    if (!isCurrentQueryAlreadySearched) {
+      invalidateActiveSearch();
     }
     setIsExplicitSearch(false);
     
@@ -149,22 +107,34 @@ export const useCosmosSearch = ({
     }
 
     if (filteredLibrary.length > 0) {
+      invalidateActiveSearch();
       setSearchResults([]);
-      setIsSearching(false);
       return;
     }
 
-    const debounceTimer = setTimeout(() => {
+    if (isCurrentQueryAlreadySearched) return;
+
+    debounceTimer.current = setTimeout(() => {
+      debounceTimer.current = null;
       performOnlineSearch(searchQuery);
     }, 400);
 
-    return () => clearTimeout(debounceTimer);
+    return () => {
+      if (debounceTimer.current !== null) {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = null;
+      }
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, activeTab, filteredLibrary.length]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
+    if (debounceTimer.current !== null) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
     setIsExplicitSearch(true);
     navigate(`/vault?q=${encodeURIComponent(searchQuery.trim())}`);
     performOnlineSearch(searchQuery);
