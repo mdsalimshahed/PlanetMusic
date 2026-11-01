@@ -509,12 +509,12 @@ export const LyricLineWrapper = React.memo(({
         splitLine?.style.removeProperty('--live-adlib-neighbor-clearance');
         wrapper.classList.remove('has-inline-adlib-neighbor-clearance');
         wrapper.style.removeProperty('--live-adlib-neighbor-clearance-start');
-        adlibGroup?.classList.remove('has-adlib-row');
         adlibGroup?.classList.remove('is-adlib-inline-after-wrapped-main');
         adlibGroup?.style.removeProperty('left');
         adlibGroup?.style.removeProperty('right');
         adlibGroup?.style.removeProperty('top');
         adlibGroup?.style.removeProperty('width');
+        adlibGroup?.classList.remove('has-adlib-row');
         adlibNodes.forEach(adlib => {
           adlib.classList.remove('is-adlib-wrapped');
           adlib.classList.remove('is-adlib-inline-after-wrapped-main');
@@ -813,13 +813,6 @@ export const LyricLineWrapper = React.memo(({
           inlineBesideMainByAdlib.set(adlib, fits);
           return fits;
         };
-        if (
-          hasMainLyrics &&
-          adlibMeasurements.some(({ adlib }) => !fitsBesideMain(adlib))
-        ) {
-          adlibGroup?.classList.add('has-adlib-row');
-          inlineBesideMainByAdlib.clear();
-        }
         adlibMeasurements.forEach(({ adlib }) => {
           const primaryText = adlib.querySelector(':scope > .primary-text');
           const isInlineBesideMain = fitsBesideMain(adlib);
