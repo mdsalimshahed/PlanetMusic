@@ -21,15 +21,26 @@ import { loadSongModal } from './Application/components/Modals/songModalLoader.j
 const SongModal = lazy(loadSongModal);
 const BackupExportModal = lazy(() => import('./Application/components/Modals/BackupExportModal.jsx'));
 const BackupImportModal = lazy(() => import('./Application/components/Modals/BackupImportModal.jsx'));
-const SettingsTab = lazy(() => import('./Application/pages/SettingsTab.jsx'));
-const BlogTab = lazy(() => import('./Application/pages/BlogTab.jsx'));
+const loadSettingsTab = () => import('./Application/pages/SettingsTab.jsx');
+const loadBlogTab = () => import('./Application/pages/BlogTab.jsx');
+const loadContactTab = () => import('./Application/pages/ContactTab.jsx');
+const loadTrackGrid = () => import('./Application/components/Core/TrackGrid.jsx');
+const loadSelfPromoCard = () => import('./Application/components/Promos/SelfPromoCard.jsx');
+const SettingsTab = lazy(loadSettingsTab);
+const BlogTab = lazy(loadBlogTab);
 const PrivacyTab = lazy(() => import('./Application/pages/PrivacyTab.jsx'));
-const ContactTab = lazy(() => import('./Application/pages/ContactTab.jsx'));
+const ContactTab = lazy(loadContactTab);
 const TermsTab = lazy(() => import('./Application/pages/TermsTab.jsx'));
 const AboutTab = lazy(() => import('./Application/pages/AboutTab.jsx'));
 const SiteMessagePage = lazy(() => import('./Application/pages/SiteMessagePage.jsx'));
-const SelfPromoCard = lazy(() => import('./Application/components/Promos/SelfPromoCard.jsx'));
-const TrackGrid = lazy(() => import('./Application/components/Core/TrackGrid.jsx'));
+const SelfPromoCard = lazy(loadSelfPromoCard);
+const TrackGrid = lazy(loadTrackGrid);
+const navigationPreloaders = {
+  '/vault': () => Promise.all([loadTrackGrid(), loadSelfPromoCard()]),
+  '/docs/dev-blogs': loadBlogTab,
+  '/contact': loadContactTab,
+  '/settings': loadSettingsTab
+};
 
 // Custom Hooks for Modular Logic
 import { useAppStorage } from './Application/hooks/data/useAppStorage.js';
@@ -127,6 +138,37 @@ const App = () => {
     ['#ff4d6d', '#ffd166', '#50c7ff'],
     ['#8aff80', '#b388ff', '#ff8c42']
   ]);
+  const preloadNavigationRoute = useCallback(path => {
+    const preload = navigationPreloaders[path];
+    if (!preload) return;
+    preload().catch(error => {
+      console.error(`Could not preload the ${path} page.`, error);
+    });
+  }, []);
+
+  useEffect(() => {
+    let idleCallbackId;
+    let timeoutId;
+    const preloadCommonPages = () => {
+      [[loadBlogTab, '/docs'], [loadContactTab, '/contact'], [loadSettingsTab, '/settings']]
+        .forEach(([loadPage, path]) => {
+          loadPage().catch(error => {
+            console.error(`Could not preload the ${path} page.`, error);
+          });
+        });
+    };
+
+    if (typeof window.requestIdleCallback === 'function') {
+      idleCallbackId = window.requestIdleCallback(preloadCommonPages, { timeout: 1500 });
+    } else {
+      timeoutId = window.setTimeout(preloadCommonPages, 500);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined) window.cancelIdleCallback(idleCallbackId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     const searchBox = searchBoxRef.current;
@@ -765,6 +807,7 @@ const App = () => {
 
           <Topbar
             activeTab={activeTab}
+            preloadNavigationRoute={preloadNavigationRoute}
             isMusicPlaying={Boolean(playerTrack && logoPlaybackVisuals.isPlaying)}
             albumAccentColor={playerTrack ? logoPlaybackVisuals.albumAccentColor : null}
             handleHomeClick={handleHomeClick}

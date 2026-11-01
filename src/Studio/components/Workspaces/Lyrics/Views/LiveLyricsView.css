@@ -37,6 +37,11 @@
   display: none;
 }
 
+.live-lyrics-preview.live-lyrics-entrance-pending .preview-line {
+  opacity: 0 !important;
+  transition: none;
+}
+
 .preview-line {
   font-family: var(--font-family);
   font-size: clamp(16px, min(5vw, 10cqw), var(--dyn-live-sync-font-size, 34px));

@@ -442,6 +442,9 @@ const LiveLyricsView = ({
           if (waitFrames < 120) {
             waitFrames += 1;
             revealFrame = window.requestAnimationFrame(beginReveal);
+          } else {
+            container.classList.remove('live-lyrics-entrance-pending');
+            onEntranceAnimationStart?.(selectedSong?.trackId);
           }
           return;
         }
@@ -452,7 +455,11 @@ const LiveLyricsView = ({
         revealLines = mountedLines
           .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
           .filter(line => !revealedLinesRef.current.has(line));
-        if (revealLines.length === 0) return;
+        if (revealLines.length === 0) {
+          container.classList.remove('live-lyrics-entrance-pending');
+          onEntranceAnimationStart?.(selectedSong?.trackId);
+          return;
+        }
       }
 
       const currentLayout = [
@@ -473,10 +480,11 @@ const LiveLyricsView = ({
       if (!shouldAnimateEntranceRef.current ||
         window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         revealLines.forEach(line => revealedLinesRef.current.add(line));
+        container.classList.remove('live-lyrics-entrance-pending');
+        onEntranceAnimationStart?.(selectedSong?.trackId);
         return;
       }
 
-      onEntranceAnimationStart?.(selectedSong?.trackId);
       revealLines.forEach(line => line.classList.add('is-preparing-reveal'));
       revealFrame = window.requestAnimationFrame(() => {
         revealFrame = null;
@@ -496,6 +504,8 @@ const LiveLyricsView = ({
           line.classList.remove('is-preparing-reveal');
           line.classList.add('initial-reveal');
         });
+        container.classList.remove('live-lyrics-entrance-pending');
+        onEntranceAnimationStart?.(selectedSong?.trackId);
         revealFallbackTimeout = window.setTimeout(() => {
           revealLines.forEach(line => finishReveal(line));
           revealFallbackTimeout = null;
@@ -580,7 +590,7 @@ const LiveLyricsView = ({
 
   return (
     <div
-      className="live-lyrics-preview"
+      className={`live-lyrics-preview${shouldAnimateEntrance ? ' live-lyrics-entrance-pending' : ''}`}
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >

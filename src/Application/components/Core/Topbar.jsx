@@ -8,6 +8,7 @@ const Topbar = ({
   activeTab, 
   isMusicPlaying,
   albumAccentColor,
+  preloadNavigationRoute,
   handleHomeClick, 
   onOpenExport,
   handleImport,
@@ -162,6 +163,9 @@ const Topbar = ({
             className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
             aria-current={activeTab === 'vault' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
+            onPointerEnter={() => preloadNavigationRoute?.('/vault')}
+            onPointerDown={() => preloadNavigationRoute?.('/vault')}
+            onFocus={() => preloadNavigationRoute?.('/vault')}
           >
             Vault
           </Link>
@@ -247,6 +251,9 @@ const Topbar = ({
             className={`nav-btn ${activeTab === 'blog' ? 'active' : ''}`}
             aria-current={activeTab === 'blog' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
+            onPointerEnter={() => preloadNavigationRoute?.('/docs/dev-blogs')}
+            onPointerDown={() => preloadNavigationRoute?.('/docs/dev-blogs')}
+            onFocus={() => preloadNavigationRoute?.('/docs/dev-blogs')}
           >
             Docs
           </Link>
@@ -256,6 +263,9 @@ const Topbar = ({
             className={`nav-btn ${activeTab === 'contact' ? 'active' : ''}`}
             aria-current={activeTab === 'contact' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
+            onPointerEnter={() => preloadNavigationRoute?.('/contact')}
+            onPointerDown={() => preloadNavigationRoute?.('/contact')}
+            onFocus={() => preloadNavigationRoute?.('/contact')}
           >
             Contact
           </Link>
@@ -265,6 +275,9 @@ const Topbar = ({
             className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
             aria-current={activeTab === 'settings' ? 'page' : undefined}
             style={{ textDecoration: 'none' }}
+            onPointerEnter={() => preloadNavigationRoute?.('/settings')}
+            onPointerDown={() => preloadNavigationRoute?.('/settings')}
+            onFocus={() => preloadNavigationRoute?.('/settings')}
           >
             Settings
           </Link>
