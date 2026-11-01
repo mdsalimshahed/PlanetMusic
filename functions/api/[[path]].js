@@ -1,5 +1,9 @@
 const BACKEND_ORIGIN = 'https://ytdownloader-jnt0.onrender.com';
 const GATEWAY_HEADER = 'X-Backend-Gateway-Token';
+const BACKEND_READY_CACHE_MS = 5000;
+const BACKEND_READY_TIMEOUT_MS = 85000;
+const BACKEND_RETRY_DELAY_MS = 1500;
+let backendReadyUntil = 0;
 
 const jsonError = (status, error) => new Response(JSON.stringify({ error }), {
   status,
@@ -45,6 +49,46 @@ const resolveRoute = (pathname, method, searchParams) => {
   return { error: jsonError(404, 'Unknown API route.') };
 };
 
+const waitForBackend = async signal => {
+  if (Date.now() < backendReadyUntil) return true;
+
+  const healthUrl = new URL('/healthz', BACKEND_ORIGIN);
+  const deadline = Date.now() + BACKEND_READY_TIMEOUT_MS;
+  const healthSignal = AbortSignal.any([
+    signal,
+    AbortSignal.timeout(BACKEND_READY_TIMEOUT_MS)
+  ]);
+
+  while (Date.now() < deadline && !healthSignal.aborted) {
+    try {
+      const response = await fetch(healthUrl, {
+        method: 'GET',
+        headers: { accept: 'application/json' },
+        cache: 'no-store',
+        signal: healthSignal
+      });
+
+      if (response.ok) {
+        const health = await response.json().catch(() => null);
+        if (health?.status === 'ok') {
+          backendReadyUntil = Date.now() + BACKEND_READY_CACHE_MS;
+          return true;
+        }
+      } else if (![502, 503, 504, 520, 521, 522, 523, 524].includes(response.status)) {
+        await response.body?.cancel();
+        return false;
+      }
+      await response.body?.cancel();
+    } catch {
+      if (signal.aborted || healthSignal.aborted) return false;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, BACKEND_RETRY_DELAY_MS));
+  }
+
+  return false;
+};
+
 export async function onRequest({ request, env }) {
   const incomingUrl = new URL(request.url);
   if (!incomingUrl.pathname.startsWith('/api/')) return jsonError(404, 'Unknown API route.');
@@ -58,6 +102,21 @@ export async function onRequest({ request, env }) {
   const gatewayToken = env.BACKEND_GATEWAY_TOKEN;
   if (typeof gatewayToken !== 'string' || gatewayToken.length === 0) {
     return jsonError(503, 'Backend service configuration is unavailable.');
+  }
+
+  if (!await waitForBackend(request.signal)) {
+    return new Response(JSON.stringify({
+      error: request.signal.aborted
+        ? 'The request was cancelled while the backend was starting.'
+        : 'The backend did not become ready in time. Please retry shortly.'
+    }), {
+      status: 503,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'no-store',
+        'retry-after': '3'
+      }
+    });
   }
 
   const headers = new Headers();
