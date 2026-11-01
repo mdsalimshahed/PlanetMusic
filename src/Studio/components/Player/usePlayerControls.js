@@ -330,7 +330,7 @@ export const usePlayerControls = runtime => {
     setIsPlaying(false);
     globalClock.pause();
     emitPlayState(false, false);
-    triggerFallbackMessage('Audio source failed. Falling back...');
+    triggerFallbackMessage('Playback could not start. Trying another option…');
     setFailedSources(previous => previous.includes(failedSource)
       ? previous
       : [...previous, failedSource]);

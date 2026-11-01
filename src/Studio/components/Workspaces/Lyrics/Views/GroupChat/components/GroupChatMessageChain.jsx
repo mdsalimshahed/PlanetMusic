@@ -3,8 +3,7 @@ import GroupChatLyricText from './GroupChatLyricText.jsx';
 import {
   getArtistImage,
   getClockTime,
-  getInitials,
-  getLyricLayoutKey
+  getInitials
 } from '../utils/groupChatUtils.js';
 
 const GroupChatMessageChain = ({
@@ -18,11 +17,7 @@ const GroupChatMessageChain = ({
   showDebug,
   handleLineClick,
   playbackTime,
-  isPlayingCurrentSong,
-  precomputedLayouts,
-  isPremeasurement = false,
-  onLayoutReady,
-  layoutSignature
+  isPlayingCurrentSong
 }) => {
   const firstLine = group.events[0].line;
   const color = artistByName.get(group.artists[0])?.color || firstLine.color;
@@ -43,15 +38,6 @@ const GroupChatMessageChain = ({
       {group.events.map((event, eventIndex) => {
         const { line } = event;
         const lyricLine = line.lyric;
-        const layoutKey = getLyricLayoutKey(
-          line,
-          lyricLine,
-          settings,
-          group.side,
-          group.artists.length,
-          layoutSignature
-        );
-        const cachedLayout = precomputedLayouts?.get(line.index);
         const bubbleShape = group.events.length === 1
           ? 'single'
           : (eventIndex === group.events.length - 1 ? 'last' : 'middle');
@@ -93,6 +79,7 @@ const GroupChatMessageChain = ({
                             src={image}
                             alt=""
                             loading="lazy"
+                            decoding="async"
                             onError={imageEvent => { imageEvent.currentTarget.hidden = true; }}
                           />
                         )}
@@ -118,17 +105,7 @@ const GroupChatMessageChain = ({
                     isAdlib={line.isAdlib}
                     masterPalette={masterPalette}
                     isPlayingCurrentSong={isPlayingCurrentSong}
-                    lyricFontSize={settings?.groupChatLyricFontSize ?? 2.2}
-                    lineWrapWidthPercent={settings?.groupChatLineWrapWidth ?? 60}
                     excludeAdlibs={!line.isAdlib}
-                    precomputedLayout={
-                      !isPremeasurement && cachedLayout?.key === layoutKey
-                        ? cachedLayout
-                        : undefined
-                    }
-                    onLayoutReady={isPremeasurement ? onLayoutReady : undefined}
-                    layoutKey={layoutKey}
-                    lineIndex={line.index}
                   />
                   <time>{getClockTime(event.time, playbackTime)}</time>
                 </button>

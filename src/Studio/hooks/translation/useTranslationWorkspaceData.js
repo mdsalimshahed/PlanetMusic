@@ -230,7 +230,7 @@ export const useTranslationWorkspaceData = ({
         if (!text || !text.trim()) return alert("The selected text file is empty.");
 
         const blocks = text.split(/\r?\n\s*\r?\n/).map(b => b.trim()).filter(Boolean);
-        if (blocks.length === 0) return alert("Could not parse blocks in text file.");
+        if (blocks.length === 0) return alert("No lyrics were found in the selected file.");
 
         const newData = [...workspaceData];
         let importedCount = 0;
@@ -303,7 +303,7 @@ export const useTranslationWorkspaceData = ({
 
       } catch (err) {
         console.error("Text import error:", err);
-        alert("Failed to parse text file.");
+        alert("Could not read the selected lyrics file. Please check it and try again.");
       }
     };
     reader.readAsText(file);

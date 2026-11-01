@@ -46,7 +46,7 @@ export const useYouTubePlayer = runtime => {
       if (cancelled || playerGeneration !== sourceLoadGenerationRef.current) return;
       const container = document.getElementById('yt-player-container');
       if (!container) {
-        triggerFallbackMessage('YouTube player container is unavailable. Falling back...');
+        triggerFallbackMessage('Playback could not start. Trying another option…');
         setFailedSources(previous => previous.includes('youtube')
           ? previous
           : [...previous, 'youtube']);
@@ -241,7 +241,7 @@ export const useYouTubePlayer = runtime => {
             setYtPlayerReady(false);
             setAudioSrc(undefined);
             setActiveSource(null);
-            triggerFallbackMessage("YouTube stream unavailable. Falling back...");
+            triggerFallbackMessage('Playback could not start. Trying another option…');
             setFailedSources(prev => [...prev, 'youtube']);
           }
         }
@@ -253,7 +253,7 @@ export const useYouTubePlayer = runtime => {
         if (cancelled || playerGeneration !== sourceLoadGenerationRef.current) return;
         console.warn('Could not initialize YouTube playback:', error);
         setBuffering(false);
-        triggerFallbackMessage('YouTube player did not become ready. Falling back...');
+        triggerFallbackMessage('Playback is taking longer than expected. Trying again…');
         setFailedSources(previous => previous.includes('youtube')
           ? previous
           : [...previous, 'youtube']);

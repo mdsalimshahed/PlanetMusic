@@ -516,10 +516,11 @@ const BlogTab = ({ adsEnabled, initialPosts = [], initialChangelogMonths = [] })
           navigate('/docs/custom-blog');
           alert(`Successfully imported ${formattedImport.length} custom articles!`);
         } else {
-          alert('Invalid blog JSON format.');
+          alert('This file is not a valid custom-articles backup.');
         }
       } catch (err) {
-        alert('Failed to parse blog JSON file.');
+        console.error('Could not import custom articles.', err);
+        alert('Could not read this custom-articles backup. Please check the file and try again.');
       }
     };
     reader.readAsText(file);

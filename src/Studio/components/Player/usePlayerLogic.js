@@ -159,11 +159,11 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setIsPlaying(false);
       if (!ytHasPlayedRef.current) {
         pendingAutoplayRef.current = false;
-        triggerFallbackMessage('Click play to start YouTube playback.');
+        triggerFallbackMessage('Tap play to start listening.');
         return;
       }
       sourceLoadGenerationRef.current += 1;
-      triggerFallbackMessage('YouTube did not start in time. Falling back...');
+      triggerFallbackMessage('Playback is taking longer than expected. Trying again…');
       setFailedSources(previous => previous.includes('youtube')
         ? previous
         : [...previous, 'youtube']);
@@ -187,7 +187,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setIsPlaying(false);
       globalClock.pause();
       emitPlayState(false, false);
-      triggerFallbackMessage('Audio source stalled. Falling back...');
+      triggerFallbackMessage('Playback paused unexpectedly. Trying another option…');
       setFailedSources(previous => previous.includes(source)
         ? previous
         : [...previous, source]);
@@ -208,7 +208,7 @@ export const usePlayerLogic = ({ currentTrack, setCurrentTrack, selectedSong, se
       setIsPlaying(false);
       setBuffering(false);
       console.warn('YouTube play request failed:', error);
-      triggerFallbackMessage('YouTube playback could not start. Falling back...');
+      triggerFallbackMessage('Playback could not start. Trying another option…');
       setFailedSources(previous => previous.includes('youtube')
         ? previous
         : [...previous, 'youtube']);

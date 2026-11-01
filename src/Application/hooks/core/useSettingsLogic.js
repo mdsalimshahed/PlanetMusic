@@ -146,21 +146,15 @@ export const useSettingsLogic = (settings, setSettings, dismissSampleMode) => {
         } else {
           result = response.status === 400 ? 'error' : 'unavailable';
           if (result === 'unavailable') {
-            const responseData = await response.clone().json().catch(() => null);
-            setVerifyErrorMessage(
-              response.status === 503 && responseData?.error
-                ? `${responseData.error} Check the Cloudflare Pages Preview backend configuration.`
-                : `The backend could not verify this ARL (HTTP ${response.status}). Please retry later.`
-            );
+            console.warn('ARL verification service returned an unavailable response.', response.status);
+            setVerifyErrorMessage('Could not check this access code. Please try again later.');
           }
         }
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error('ARL verification request failed.', error);
           result = 'unavailable';
-          setVerifyErrorMessage(
-            'The backend could not be reached to verify this ARL. Please retry later.'
-          );
+          setVerifyErrorMessage('Could not check this access code. Please try again later.');
         }
       } finally {
         const request = verificationRequestRef.current;

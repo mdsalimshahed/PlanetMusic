@@ -239,10 +239,6 @@
   text-wrap: wrap !important;
 }
 
-.group-chat-message-text.is-measuring-glyphs .main-lyrics-flow-wrapper {
-  white-space: pre !important;
-}
-
 .group-chat-message-text .pronunciation-text {
   white-space: nowrap !important;
 }
@@ -270,58 +266,6 @@
 .group-chat-message-text.is-wrap-enabled .lyric-word.hyphenated-word,
 .group-chat-message-text.is-wrap-enabled .lyric-word-group.hyphenated-word-group {
   max-width: 100% !important;
-}
-
-.group-chat-turn.is-measuring-glyphs {
-  flex: 0 0 max-content !important;
-  width: max-content !important;
-  max-width: none !important;
-}
-
-.group-chat-turn.is-measuring-glyphs .group-chat-bubble-stack,
-.group-chat-turn.is-measuring-glyphs .group-chat-message,
-.group-chat-turn.is-measuring-glyphs .group-chat-message-line {
-  flex: 0 0 max-content !important;
-  width: max-content !important;
-  max-width: none !important;
-}
-
-.group-chat-message-text.is-measuring-glyphs,
-.group-chat-message-text.is-measuring-glyphs .primary-text,
-.group-chat-message-text.is-measuring-glyphs > div,
-.group-chat-message-text.is-measuring-glyphs .core-chunks,
-.group-chat-message-text.is-measuring-glyphs .inline-cjk-chunk,
-.group-chat-message-text.is-measuring-glyphs .main-lyrics-layer {
-  width: max-content !important;
-  max-width: none !important;
-  flex-wrap: nowrap !important;
-  text-wrap: nowrap !important;
-  white-space: pre !important;
-}
-
-.group-chat-message-text.is-measuring-glyphs .chunk-translation {
-  display: block !important;
-  position: relative !important;
-  top: auto !important;
-  left: 0 !important;
-  transform: none !important;
-  width: max-content !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  white-space: nowrap !important;
-}
-
-.group-chat-message-text.is-measuring-glyphs .pronunciation-text {
-  width: max-content !important;
-  max-width: none !important;
-  white-space: nowrap !important;
-}
-
-.group-chat-message-text.is-measuring-glyphs .lyric-text-span,
-.group-chat-message-text.is-measuring-glyphs .lyric-word,
-.group-chat-message-text.is-measuring-glyphs .lyric-word-group {
-  white-space: nowrap !important;
-  overflow-wrap: normal !important;
 }
 
 .group-chat-message-text .trans-word {

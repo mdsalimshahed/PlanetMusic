@@ -152,7 +152,13 @@ const ArtistPresenceAvatar = ({
         <span className="group-chat-avatar" ref={avatarRef}>
           <span>{getInitials(artist.name)}</span>
           {image && (
-            <img src={image} alt="" onError={event => { event.currentTarget.hidden = true; }} />
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onError={event => { event.currentTarget.hidden = true; }}
+            />
           )}
         </span>
       </span>

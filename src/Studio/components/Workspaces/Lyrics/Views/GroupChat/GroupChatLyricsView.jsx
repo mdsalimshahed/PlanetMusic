@@ -1,6 +1,4 @@
 import React, {
-  useCallback,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -13,14 +11,11 @@ import {
 } from '../groupChatTimeline.js';
 import GroupChatHeader from './components/GroupChatHeader.jsx';
 import GroupChatHistory from './components/GroupChatHistory.jsx';
-import GroupChatMessageChain from './components/GroupChatMessageChain.jsx';
 import GroupChatTypingIndicator from './components/GroupChatTypingIndicator.jsx';
 import GroupChatDebugOverlay from '../../../../../../Application/components/GroupChatDebug/GroupChatDebugOverlay.jsx';
 import useGroupChatPlayback from './hooks/useGroupChatPlayback.js';
 import useGroupChatPresentation from './hooks/useGroupChatPresentation.js';
 import './styles/index.css';
-
-const PREMEASUREMENT_BATCH_SIZE = 6;
 
 const GroupChatLyricsView = ({
   syncWorkspaceLyrics,
@@ -40,23 +35,7 @@ const GroupChatLyricsView = ({
   const pendingScrollToLatestRef = useRef(false);
   const chatRef = useRef(null);
   const chatLayoutRef = useRef(null);
-  const premeasurementTaskRef = useRef(null);
   const [expandedLineIndices, setExpandedLineIndices] = useState(new Set());
-  const [precomputedLayouts, setPrecomputedLayouts] = useState(() => new Map());
-  const [layoutSignature, setLayoutSignature] = useState('');
-  const [premeasurementProgress, setPremeasurementProgress] = useState({
-    layoutKey: null,
-    messageEvents: null,
-    start: 0
-  });
-  const premeasurementProgressRef = useRef({
-    layoutKey: null,
-    messageEvents: null,
-    start: -1,
-    expected: new Set(),
-    completed: new Set(),
-    advanced: false
-  });
   const timeline = useMemo(() => buildGroupChatTimeline(
     syncWorkspaceLyrics,
     selectedSong?.syncData,
@@ -75,6 +54,8 @@ const GroupChatLyricsView = ({
     chatRef,
     activeLineIndices,
     chatState: playback.chatState,
+    isPlaying,
+    initialScrollKey: selectedSong?.trackId,
     setExpandedLineIndices,
     pendingScrollToLatestRef
   });
@@ -96,16 +77,12 @@ const GroupChatLyricsView = ({
       const designHeight = width / designAspectRatio;
       const verticalUnit = designHeight / 100;
       const horizontalUnit = verticalUnit * (16 / 9);
-      const nextSignature = `${width.toFixed(2)}:${verticalUnit.toFixed(4)}:${horizontalUnit.toFixed(4)}`;
 
       layout.style.width = '100%';
       layout.style.height = '100%';
       layout.style.transform = 'none';
       chat.style.setProperty('--chat-vh-unit', `${verticalUnit}px`);
       chat.style.setProperty('--chat-horizontal-unit', `${horizontalUnit}px`);
-      setLayoutSignature(previous => (
-        previous === nextSignature ? previous : nextSignature
-      ));
     };
 
     const observer = new ResizeObserver(updateScale);
@@ -121,35 +98,6 @@ const GroupChatLyricsView = ({
   const history = useMemo(
     () => buildGroupChatHistory(playback.chatState.messages),
     [playback.chatState.messages]
-  );
-  const messageEvents = useMemo(
-    () => timeline.events.filter(event => event.type === 'message'),
-    [timeline.events]
-  );
-  const premeasurementLayoutKey = JSON.stringify([
-    layoutSignature,
-    settings?.groupChatLyricFontSize ?? 2.2,
-    settings?.groupChatLineWrapWidth ?? 60,
-    settings?.groupChatBubbleAvatarSize ?? 4.25,
-    settings?.groupChatTimestampSize ?? 1.125
-  ]);
-  const progressMatchesCurrentLayout = (
-    premeasurementProgress.layoutKey === premeasurementLayoutKey &&
-    premeasurementProgress.messageEvents === messageEvents
-  );
-  const premeasurementBatchStart = progressMatchesCurrentLayout
-    ? premeasurementProgress.start
-    : 0;
-  const premeasurementBatch = useMemo(
-    () => messageEvents.slice(
-      premeasurementBatchStart,
-      premeasurementBatchStart + PREMEASUREMENT_BATCH_SIZE
-    ),
-    [messageEvents, premeasurementBatchStart]
-  );
-  const expectedPremeasurementLines = useMemo(
-    () => new Set(premeasurementBatch.map(event => event.line.index)),
-    [premeasurementBatch]
   );
   const artistByName = useMemo(
     () => new Map(timeline.artists.map(artist => [artist.name, artist])),
@@ -194,8 +142,7 @@ const GroupChatLyricsView = ({
     playbackEnded: playback.playbackEnded,
     handleLineClick,
     playbackTime: playback.playbackTime,
-    isPlayingCurrentSong,
-    layoutSignature
+    isPlayingCurrentSong
   }), [
     activeLineIndices,
     artistByName,
@@ -203,78 +150,11 @@ const GroupChatLyricsView = ({
     handleLineClick,
     imageSources,
     isPlayingCurrentSong,
-    layoutSignature,
     masterPalette,
     playback.playbackEnded,
     playback.playbackTime,
     settings,
     showDebug
-  ]);
-  const cancelPremeasurementTask = useCallback(() => {
-    const task = premeasurementTaskRef.current;
-    if (!task) return;
-    if (task.type === 'idle' && window.cancelIdleCallback) {
-      window.cancelIdleCallback(task.id);
-    } else {
-      window.clearTimeout(task.id);
-    }
-    premeasurementTaskRef.current = null;
-  }, []);
-  useEffect(() => cancelPremeasurementTask, [cancelPremeasurementTask]);
-  const handleLayoutReady = useCallback((lineIndex, key, layout) => {
-    setPrecomputedLayouts(previous => {
-      const current = previous.get(lineIndex);
-      if (
-        current?.key === key &&
-        current.enabled === layout.enabled &&
-        current.width === layout.width &&
-        current.renderedGlyphWidth === layout.renderedGlyphWidth
-      ) return previous;
-      const next = new Map(previous);
-      next.set(lineIndex, { ...layout, key });
-      return next;
-    });
-    let batch = premeasurementProgressRef.current;
-    if (
-      batch.layoutKey !== premeasurementLayoutKey ||
-      batch.messageEvents !== messageEvents ||
-      batch.start !== premeasurementBatchStart
-    ) {
-      batch = {
-        layoutKey: premeasurementLayoutKey,
-        messageEvents,
-        start: premeasurementBatchStart,
-        expected: expectedPremeasurementLines,
-        completed: new Set(),
-        advanced: false
-      };
-      premeasurementProgressRef.current = batch;
-    }
-    if (!batch.expected.has(lineIndex) || batch.advanced) return;
-    batch.completed.add(lineIndex);
-    if (batch.completed.size === batch.expected.size) {
-      batch.advanced = true;
-      const advanceBatch = () => {
-        premeasurementTaskRef.current = null;
-        setPremeasurementProgress({
-          layoutKey: premeasurementLayoutKey,
-          messageEvents,
-          start: batch.start + batch.expected.size
-        });
-      };
-      if (window.requestIdleCallback) {
-        const id = window.requestIdleCallback(advanceBatch, { timeout: 250 });
-        premeasurementTaskRef.current = { type: 'idle', id };
-      } else {
-        const id = window.setTimeout(advanceBatch, 50);
-        premeasurementTaskRef.current = { type: 'timeout', id };
-      }
-    }
-  }, [
-    expectedPremeasurementLines,
-    messageEvents,
-    premeasurementBatchStart,
-    premeasurementLayoutKey
   ]);
   return (
     <section
@@ -284,7 +164,7 @@ const GroupChatLyricsView = ({
         '--chat-heading-active-avatar-size': `calc(${activeAvatarSize} * var(--chat-vh-unit, 1vh))`,
         '--chat-heading-inactive-avatar-size': `calc(${inactiveAvatarSize} * var(--chat-vh-unit, 1vh))`,
         '--chat-heading-inactive-avatar-scale': inactiveAvatarSize / activeAvatarSize,
-        '--chat-line-wrap-width': `${lineWrapWidth}cqw`,
+        '--chat-wrap-width': `${lineWrapWidth}cqw`,
         '--chat-bubble-horizontal-padding': 'calc(var(--chat-horizontal-unit) * 0.75)',
         '--chat-bubble-avatar-size': `calc(${settings?.groupChatBubbleAvatarSize ?? 4.25} * var(--chat-vh-unit, 1vh))`,
         '--chat-lyric-font-size': `calc(${settings?.groupChatLyricFontSize ?? 2.2} * var(--chat-vh-unit, 1vh))`,
@@ -324,31 +204,8 @@ const GroupChatLyricsView = ({
               history={history}
               playbackTime={playback.playbackTime}
               messageProps={messageProps}
-              precomputedLayouts={precomputedLayouts}
             />
           </div>
-        </div>
-        <div className="group-chat-premeasurement" aria-hidden="true">
-          {premeasurementBatch.map((event, itemIndex) => {
-            const group = {
-              side: event.line.chatSide || 'left',
-              artists: event.line.artists,
-              events: [event]
-            };
-            return (
-              <div className="group-chat-history-item" key={event.line.index}>
-                <GroupChatMessageChain
-                  {...messageProps}
-                  group={group}
-                  itemIndex={itemIndex}
-                  showDebug={false}
-                  isPremeasurement
-                  onLayoutReady={handleLayoutReady}
-                  layoutSignature={layoutSignature}
-                />
-              </div>
-            );
-          })}
         </div>
         <div
           className="group-chat-typing-footer"

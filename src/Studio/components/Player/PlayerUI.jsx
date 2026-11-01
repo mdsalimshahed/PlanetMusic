@@ -77,13 +77,7 @@ export const PlayerInfo = ({
           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{fallbackMessage}</span>
         ) : deezerStatus ? (
           <span className="buffering-status" role="status" aria-live="polite">
-            <MarqueeText
-              className="player-status-message"
-              text={deezerStatus.message.replace(/(?:\.{2,}|…)\s*$/, '')}
-            />
-            {typeof deezerStatus.percent === 'number' && (
-              <span className="player-status-percent">{Math.round(deezerStatus.percent)}%</span>
-            )}
+            <span>{isPlaying ? 'Playing while we get things ready…' : 'Getting your song ready…'}</span>
             {isBuffering && (
               <span className="buffering-dots" aria-hidden="true">
                 <span />
@@ -94,7 +88,7 @@ export const PlayerInfo = ({
           </span>
         ) : isBuffering ? (
           <span className="buffering-status" role="status" aria-live="polite">
-            <span>Buffering stream</span>
+            <span>Getting your song ready…</span>
             <span className="buffering-dots" aria-hidden="true">
               <span />
               <span />
@@ -102,11 +96,9 @@ export const PlayerInfo = ({
             </span>
           </span>
         ) : (
-          activeSource === 'youtube' ? "YT Music Stream" :
-          activeSource === 'local' ? "Local Audio File" :
-          activeSource === 'deezer' ? "Deezer HQ Stream" :
-          activeSource === 'preview' ? "iTunes Preview (30s)" :
-          "No Playable Source Available"
+          activeSource === 'preview' ? 'Playing a preview' :
+          activeSource ? 'Playing' :
+          'No audio available for this song'
         )}
       </p>
     </div>

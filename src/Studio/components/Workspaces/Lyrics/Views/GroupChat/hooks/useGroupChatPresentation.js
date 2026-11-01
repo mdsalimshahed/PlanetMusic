@@ -1,7 +1,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { finishAnimationAtCurrentStyles } from '../utils/finishAnimation.js';
+import { getHistoryGlideStart } from '../utils/historyGlide.js';
 
 const getHistoryTargets = content => Array.from(content.children).flatMap(item => {
+  if (item.dataset.chatHistoryRendered !== 'true') return [];
   const turns = Array.from(item.querySelectorAll('[data-chat-line-index]'));
   return turns.length
     ? turns.map(turn => ({
@@ -71,6 +73,7 @@ const useGroupChatPresentation = ({
   activeLineIndices,
   chatState,
   isPlaying,
+  initialScrollKey,
   setExpandedLineIndices,
   pendingScrollToLatestRef
 }) => {
@@ -78,6 +81,8 @@ const useGroupChatPresentation = ({
   const historyGlideAnimationsRef = useRef(new Map());
   const previousHistoryTargetPositionsRef = useRef(new Map());
   const previousHistoryMessageCountRef = useRef(null);
+  const initialScrollToLatestRef = useRef(false);
+  const initialScrollKeyRef = useRef(initialScrollKey);
   const seenMessageLineIdsRef = useRef(null);
   const followsLatestRef = useRef(true);
   const handledLatestHistoryUpdateRef = useRef(false);
@@ -92,7 +97,11 @@ const useGroupChatPresentation = ({
 
   useEffect(() => {
     const container = chatRef.current;
-    if (!container || typeof IntersectionObserver === 'undefined') return undefined;
+    if (
+      !container ||
+      typeof IntersectionObserver === 'undefined' ||
+      typeof MutationObserver === 'undefined'
+    ) return undefined;
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -112,11 +121,52 @@ const useGroupChatPresentation = ({
       });
     }, { root: container, threshold: 0.01 });
 
-    container.querySelectorAll(
-      '[data-chat-line-index], .group-chat-system-message'
-    ).forEach(element => observer.observe(element));
-    return () => observer.disconnect();
+    const observed = new WeakSet();
+    const observeTargets = node => {
+      if (node.nodeType !== 1) return;
+      if (
+        node.matches('[data-chat-line-index], .group-chat-system-message') &&
+        !observed.has(node)
+      ) {
+        observer.observe(node);
+        observed.add(node);
+      }
+      node.querySelectorAll('[data-chat-line-index], .group-chat-system-message')
+        .forEach(element => {
+          if (observed.has(element)) return;
+          observer.observe(element);
+          observed.add(element);
+        });
+    };
+    container.querySelectorAll('[data-chat-line-index], .group-chat-system-message')
+      .forEach(observeTargets);
+    const mutationObserver = new MutationObserver(records => {
+      records.forEach(record => record.addedNodes.forEach(observeTargets));
+    });
+    mutationObserver.observe(container, { childList: true, subtree: true });
+    return () => {
+      mutationObserver.disconnect();
+      observer.disconnect();
+    };
   }, [chatRef, chatState.messages.length, setExpandedLineIndices]);
+
+  useLayoutEffect(() => {
+    const container = chatRef.current;
+    const content = container?.querySelector('.group-chat-history-content');
+    if (initialScrollKeyRef.current !== initialScrollKey) {
+      initialScrollKeyRef.current = initialScrollKey;
+      initialScrollToLatestRef.current = false;
+    }
+    if (
+      !container ||
+      !content ||
+      !chatState.messages.length ||
+      initialScrollToLatestRef.current
+    ) return;
+
+    initialScrollToLatestRef.current = true;
+    container.scrollTop = getBottomScrollTop(container, content);
+  }, [chatRef, chatState.messages.length, initialScrollKey]);
 
   useEffect(() => {
     const container = chatRef.current;
@@ -355,22 +405,29 @@ const useGroupChatPresentation = ({
         ? layout.getBoundingClientRect().height / layout.offsetHeight
         : 1;
       currentTargets.forEach(({ id, element }) => {
-        const previousTop = previousPositions.get(id);
+        const previousPosition = previousPositions.get(id);
         if (
           arrivalTargetIds.has(id) ||
-          previousTop == null ||
+          previousPosition == null ||
           !isVisibleInContainer(element, container)
         ) return;
 
         const currentTop = element.getBoundingClientRect().top;
-        const offset = (previousTop - currentTop) / (layoutScale || 1);
-        if (Math.abs(offset) < 0.1) return;
-
         const currentOffset = getTranslateY(element);
+        const scale = layoutScale || 1;
+        const startOffset = getHistoryGlideStart({
+          previousTop: previousPosition.top,
+          previousTransform: previousPosition.transform,
+          currentTop,
+          currentTransform: currentOffset,
+          scale
+        });
+        if (Math.abs(startOffset - currentOffset) < 0.1) return;
+
         historyGlideAnimationsRef.current.get(id)?.cancel();
         const animation = element.animate(
           [
-            { transform: `translateY(${currentOffset + offset}px)` },
+            { transform: `translateY(${startOffset}px)` },
             { transform: 'translateY(0)' }
           ],
           {
@@ -393,7 +450,10 @@ const useGroupChatPresentation = ({
       currentTargets.map(({ id, element }) => [
         id,
         isVisibleInContainer(element, container)
-          ? element.getBoundingClientRect().top
+          ? {
+            top: element.getBoundingClientRect().top,
+            transform: getTranslateY(element)
+          }
           : null
       ]).filter(([, top]) => top != null)
     );

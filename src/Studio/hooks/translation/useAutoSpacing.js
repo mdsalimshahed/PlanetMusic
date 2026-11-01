@@ -43,7 +43,7 @@ export const useAutoSpacing = ({
     setIsAutoSpacing(true);
     cancelTranslationRef.current = false;
     setTranslateProgress({ current: 0, total: targetIndices.length });
-    setNotification({ show: true, message: 'Running Brute Force Engine...', progress: 0 });
+    setNotification({ show: true, message: 'Adding spacing to lyrics…', progress: 0 });
 
     let completedCount = 0;
     const runId = createAutoSpacingRunId();
@@ -144,9 +144,10 @@ export const useAutoSpacing = ({
       setIsAutoSpacing(false);
       setActiveTranslatingId(null);
       listContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-      const message = error.message?.includes('HTTP 429')
-        ? 'Google Translate is rate-limiting requests. Wait a minute before retrying Auto Spacing.'
-        : `Auto Spacing failed: ${error.message || 'Translation service unavailable.'}`;
+      console.error('Auto Spacing failed.', error);
+      const message = error instanceof Error && error.message.includes('HTTP 429')
+        ? 'Translation is temporarily busy. Please wait a moment and try again.'
+        : 'Could not add spacing to these lyrics. Please try again.';
       setNotification({ show: true, message, progress: 100 });
       return;
     }

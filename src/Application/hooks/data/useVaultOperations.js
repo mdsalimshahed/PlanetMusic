@@ -269,7 +269,7 @@ export const useVaultOperations = ({
         });
       } catch (err) {
         console.error('Could not import the selected PlanetMusic backup.', err);
-        alert(err instanceof Error ? err.message : 'Could not read the JSON file.');
+        alert('Could not read this backup. Make sure it is a valid PlanetMusic backup and try again.');
       }
     };
     reader.onerror = () => {
@@ -334,7 +334,7 @@ export const useVaultOperations = ({
       navigate('/vault');
     } catch (err) {
       console.error('Could not import the selected PlanetMusic backup.', err);
-      alert(err instanceof Error ? err.message : 'Could not import the selected backup.');
+      alert('Could not import this backup. Please check the selected items and try again.');
     }
   };
 
@@ -353,7 +353,7 @@ export const useVaultOperations = ({
       navigate('/vault');
     } catch (error) {
       console.error('Could not load sample backup file.', error);
-      alert(`Could not load sample backup file: ${error.message}`);
+      alert('The sample library could not be loaded. Please try again later.');
     } finally {
       setIsLoadingSample(false);
     }

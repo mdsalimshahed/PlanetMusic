@@ -11,9 +11,9 @@ const DeezerAuthCard = ({
       <div className="settings-card glass-panel deezer-auth-card" style={{ '--auth-gradient': authGradient }}>
         <SettingsCardHeading seed="deezer-audio-access" gradient={authGradient}>Deezer Audio Access</SettingsCardHeading>
         <div className="deezer-auth-instructions">
-          <p>This token unlocks high-quality audio streams directly from Deezer. <strong>The Cosmos search works without it</strong>; if backend Deezer accounts are enabled, PlanetMusic can also request Deezer audio without a personal ARL. A personal ARL takes precedence when provided.</p>
+          <p>Add a Deezer access code to play songs from your account. <strong>Search and lyrics work without one</strong>; other audio options may still be available.</p>
           <p><strong>How to easily get an ARL:</strong><br/>1. Create a free account at Deezer.com in your web browser.<br/>2. Open your Browser’s Developer Tools (F12) and go to the <strong>Application</strong> tab (or Storage tab).<br/>3. Expand <strong>Cookies</strong> on the sidebar, select the Deezer domain, and copy the value of the cookie named <code>arl</code>.</p>
-          <p className="security-warning"><strong style={{ color: getProceduralColor('settings:deezer-security'), WebkitTextFillColor: getProceduralColor('settings:deezer-security') }}>Privacy & Security:</strong> By default, your token stays in memory and is not saved in backups. Turn on the option below to keep it across reloads and browser restarts; it is stored in local storage and can be read by scripts running on this site.</p>
+          <p className="security-warning"><strong style={{ color: getProceduralColor('settings:deezer-security'), WebkitTextFillColor: getProceduralColor('settings:deezer-security') }}>Privacy & Security:</strong> Your access code stays in this tab unless you choose Remember. If remembered, it is saved in this browser and may be accessed by this site. It is never included in backups.</p>
         </div>
         <div className="setting-item" style={{ marginBottom: 0, width: '100%' }}>
           <div style={{ display: 'flex', gap: '8px', width: '100%', alignItems: 'center' }}>
@@ -25,7 +25,7 @@ const DeezerAuthCard = ({
                 handleChange(e);
                 if (e.target.name === 'deezerArl') setVerifyResult(null);
               }}
-              placeholder="Paste Deezer ARL token here..."
+              placeholder="Paste Deezer access code here..."
               style={{
                 flex: 1, minWidth: 0, padding: '12px 16px', borderRadius: '8px', height: '44px',
                 background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -67,17 +67,17 @@ const DeezerAuthCard = ({
             onClick={handleVerifyArl}
             disabled={isVerifying || !settings.deezerArl?.trim()}
           >
-            {isVerifying ? 'Verifying Token...' : 'Verify Token Status'}
+            {isVerifying ? 'Checking access code…' : 'Check access code'}
           </button>
           {verifyResult === 'success' && (
-            <span style={{ color: '#4ade80', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Valid ARL. High-Quality Streams Unlocked!</span>
+            <span style={{ color: '#4ade80', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>Access code verified.</span>
           )}
           {verifyResult === 'error' && (
-            <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>  Invalid or Expired ARL. Please replace it.</span>
+            <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>This access code is invalid or expired. Please check it and try again.</span>
           )}
           {verifyResult === 'unavailable' && (
             <span style={{ color: '#fbbf24', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>
-              {verifyErrorMessage || 'The backend could not verify this ARL. Please retry later.'}
+              {verifyErrorMessage || 'Could not check this access code. Please try again later.'}
             </span>
           )}
         </div>

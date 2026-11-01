@@ -340,7 +340,7 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
       console.error('Could not prepare the song after adding it to the Vault.', error);
       setNotification({
         show: true,
-        message: `Song added to your Vault, but lyric loading failed: ${error.message}`,
+        message: 'Song added to your Vault, but its lyrics could not be loaded. Please try again.',
         progress: 100
       });
       dismissAutomatedNotificationAfter(6000);

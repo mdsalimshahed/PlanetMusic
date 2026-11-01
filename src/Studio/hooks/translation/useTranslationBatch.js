@@ -391,12 +391,10 @@ export const useTranslationBatch = ({
     if (!cancelTranslationRef.current) {
       const issues = [];
       if (skippedOversizedLineCount) {
-        issues.push(
-          `${skippedOversizedLineCount} line(s) exceeded 5,000 characters and were skipped`
-        );
+        issues.push(`${skippedOversizedLineCount} line(s) were too long and were skipped`);
       }
       if (failedChunkCount) {
-        issues.push(`${failedChunkCount} context chunk(s) failed`);
+        issues.push('Some translations could not be completed');
       }
       setShowSuccessBanner(issues.length === 0);
       if (listContainerRef.current) {
@@ -446,7 +444,7 @@ export const useTranslationBatch = ({
         setNotification({
           show: true,
           message: hasText
-            ? `Could not translate line ${index + 1}. Check the connection or proxy and retry.`
+            ? `Could not translate line ${index + 1}. Check your connection and try again.`
             : `Line ${index + 1} has no text to translate.`,
           progress: 100
         });

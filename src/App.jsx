@@ -193,12 +193,18 @@ const App = () => {
     if (import.meta.env.DEV) return undefined;
 
     let activeRequest = null;
+    let requestTimeoutId = null;
+    let retryTimeoutId = null;
+    let keepAliveTimeoutId = null;
+    let isStopped = false;
+    let retryDelayMs = 2000;
 
     const wakeBackend = async () => {
-      if (document.visibilityState !== 'visible' || activeRequest) return;
+      if (isStopped || activeRequest) return;
 
       const controller = new AbortController();
       activeRequest = controller;
+      requestTimeoutId = window.setTimeout(() => controller.abort(), 95_000);
       try {
         const response = await fetch('/api/backend-health', {
           method: 'GET',
@@ -207,34 +213,62 @@ const App = () => {
           credentials: 'same-origin',
           signal: controller.signal
         });
-        if (!response.ok) {
-          throw new Error(`Backend wake request failed (${response.status}).`);
+        if (response.status === 404 || response.status === 405) {
+          throw new Error(`Backend wake endpoint is unavailable (${response.status}).`);
         }
+        if (!response.ok) {
+          const errorBody = await response.json().catch(() => null);
+          if (errorBody?.error === 'Backend service configuration is unavailable.') {
+            throw new Error(errorBody.error);
+          }
+          throw new Error(errorBody?.error || `Backend wake request failed (${response.status}).`);
+        }
+
+        const health = await response.json();
+        if (health?.status !== 'ok') {
+          throw new Error('Backend health check did not confirm readiness.');
+        }
+
+        retryDelayMs = 2000;
+        keepAliveTimeoutId = window.setTimeout(wakeBackend, 10 * 60 * 1000);
       } catch (error) {
-        if (!controller.signal.aborted) {
-          console.warn('PlanetMusic could not keep its backend awake.', error);
+        if (isStopped || (controller.signal.aborted && requestTimeoutId === null)) return;
+
+        const isPermanentFailure = error.message.includes('endpoint is unavailable') ||
+          error.message === 'Backend service configuration is unavailable.';
+        if (isPermanentFailure) {
+          console.error('PlanetMusic could not start its backend wake check.', error);
+        } else {
+          console.warn('PlanetMusic could not reach its backend; retrying.', error);
+          retryTimeoutId = window.setTimeout(wakeBackend, retryDelayMs);
+          retryDelayMs = Math.min(retryDelayMs * 2, 10_000);
         }
       } finally {
+        if (requestTimeoutId !== null) window.clearTimeout(requestTimeoutId);
+        requestTimeoutId = null;
         if (activeRequest === controller) activeRequest = null;
       }
     };
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
+        if (retryTimeoutId !== null) window.clearTimeout(retryTimeoutId);
+        if (keepAliveTimeoutId !== null) window.clearTimeout(keepAliveTimeoutId);
+        retryTimeoutId = null;
+        keepAliveTimeoutId = null;
         wakeBackend();
-      } else if (activeRequest) {
-        activeRequest.abort();
-        activeRequest = null;
       }
     };
 
     wakeBackend();
-    const keepAliveInterval = window.setInterval(wakeBackend, 10 * 60 * 1000);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      window.clearInterval(keepAliveInterval);
+      isStopped = true;
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (requestTimeoutId !== null) window.clearTimeout(requestTimeoutId);
+      if (retryTimeoutId !== null) window.clearTimeout(retryTimeoutId);
+      if (keepAliveTimeoutId !== null) window.clearTimeout(keepAliveTimeoutId);
       activeRequest?.abort();
     };
   }, []);

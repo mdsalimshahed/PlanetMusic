@@ -258,7 +258,7 @@ export const usePlayerSourceLifecycle = runtime => {
               setAudioSrc(url);
               setActiveSource('local');
             } else {
-              triggerFallbackMessage("Local audio missing. Falling back...");
+              triggerFallbackMessage('Playback could not start. Trying another option…');
               setFailedSources(prev => [...prev, 'local']);
             }
           } else if (source === 'deezer') {
@@ -283,7 +283,7 @@ export const usePlayerSourceLifecycle = runtime => {
               setBuffering(false);
               setDeezerStatus({
                 stage: 'connecting',
-                message: 'Playing on YouTube while Deezer loads'
+                message: 'Getting your song ready'
               });
 
               const controller = new AbortController();
@@ -295,7 +295,7 @@ export const usePlayerSourceLifecycle = runtime => {
                 ) {
                   setDeezerStatus({
                     ...progress,
-                    message: `Playing on YouTube while Deezer loads · ${progress.message}`
+                    message: 'Getting your song ready'
                   });
                 }
               };
@@ -347,7 +347,7 @@ export const usePlayerSourceLifecycle = runtime => {
                 .catch(error => {
                   if (error.name !== 'AbortError' && sourceLoadGeneration === sourceLoadGenerationRef.current) {
                     setDeezerStatus(null);
-                    triggerFallbackMessage("Deezer stream failed. Continuing with YouTube...");
+                    triggerFallbackMessage('Playback could not start. Trying another option…');
                   }
                 })
                 .finally(() => {
@@ -387,7 +387,7 @@ export const usePlayerSourceLifecycle = runtime => {
               if (e.name === 'AbortError') return;
               console.error("Deezer buffer error:", e);
               setDeezerStatus(null);
-              triggerFallbackMessage("Deezer stream failed. Falling back...");
+              triggerFallbackMessage('Playback could not start. Trying another option…');
               setFailedSources(prev => [...prev, 'deezer']);
             } finally {
               if (abortControllerRef.current === controller) {
