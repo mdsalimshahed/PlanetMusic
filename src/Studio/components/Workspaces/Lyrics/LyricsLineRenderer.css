@@ -319,7 +319,7 @@ rt.pronunciation-text,
 
 .preview-line .live-split-line .adlib-node.is-adlib-wrapped {
   flex: 0 1 auto;
-  align-self: flex-start;
+  align-self: baseline;
   align-items: flex-start !important;
   width: fit-content;
   max-width: 100%;
