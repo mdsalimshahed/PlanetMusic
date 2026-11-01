@@ -1,10 +1,8 @@
-/* --- src/components/Workspaces/Lyrics/Views/LiveLyricsView.jsx --- */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import {
   buildTimedLineData,
-  findActiveLineIndex,
   getCombinedVerticalBounds
 } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
@@ -19,159 +17,89 @@ const getActiveLineScrollTop = (container, node) => {
     )
   ]);
   if (!activeBounds) return container.scrollTop;
+
   const scaleY = container.offsetHeight > 0
     ? containerBounds.height / container.offsetHeight
     : 1;
-  const visibleTop = containerBounds.top + container.clientTop * scaleY;
-  const activeTop = (activeBounds.top - visibleTop) / scaleY;
+  const viewportTop = containerBounds.top + container.clientTop * scaleY;
+  const activeTop = (activeBounds.top - viewportTop) / scaleY;
   const activeHeight = activeBounds.height / scaleY;
-  const safeInset = container.clientHeight * 0.04;
-  const centeredTarget = container.scrollTop + activeTop + activeHeight / 2 -
-    container.clientHeight * 0.45;
-  const firstFullyVisibleTarget = container.scrollTop +
-    activeTop + activeHeight - (container.clientHeight - safeInset);
-  const lastFullyVisibleTarget = container.scrollTop +
-    activeTop - safeInset;
-  const safeVisibleHeight = container.clientHeight - safeInset * 2;
-  const targetTop = activeHeight <= safeVisibleHeight
-    ? Math.max(firstFullyVisibleTarget, Math.min(centeredTarget, lastFullyVisibleTarget))
-    : lastFullyVisibleTarget;
+  const preferredTop = container.clientHeight * 0.45;
+  const safeInset = Math.min(24, container.clientHeight * 0.06);
+  const targetTop = activeHeight + safeInset * 2 <= container.clientHeight
+    ? container.scrollTop + activeTop + activeHeight / 2 - preferredTop
+    : container.scrollTop + activeTop - safeInset;
 
-  return Math.max(0, Math.min(targetTop, container.scrollHeight - container.clientHeight));
+  return Math.max(
+    0,
+    Math.min(targetTop, container.scrollHeight - container.clientHeight)
+  );
 };
 
-const isAtDesiredLinePosition = (container, node) => {
-  const targetTop = getActiveLineScrollTop(container, node);
-  const tolerance = Math.max(1, container.clientHeight * 0.005);
-  return Math.abs(container.scrollTop - targetTop) <= tolerance;
+const cancelActiveLineScroll = pendingScrollRef => {
+  const animation = pendingScrollRef.current;
+  if (!animation) return;
+  if (animation.frame !== null) window.cancelAnimationFrame(animation.frame);
+  pendingScrollRef.current = null;
 };
 
-const cancelPendingScroll = pendingTargetRef => {
-  const pendingTarget = pendingTargetRef.current;
-  if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
-  pendingTargetRef.current = null;
+const alignActiveLine = (container, node, pendingScrollRef) => {
+  cancelActiveLineScroll(pendingScrollRef);
+  container.scrollTop = getActiveLineScrollTop(container, node);
 };
 
-const scrollToActiveLineNormally = (container, node, pendingTargetRef) => {
-  const targetTop = getActiveLineScrollTop(container, node);
-  if (isAtDesiredLinePosition(container, node)) {
-    cancelPendingScroll(pendingTargetRef);
-    return;
-  }
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    cancelPendingScroll(pendingTargetRef);
-    container.scrollTop = targetTop;
-    return;
-  }
-
-  cancelPendingScroll(pendingTargetRef);
+const animateToActiveLine = (container, node, pendingScrollRef) => {
+  cancelActiveLineScroll(pendingScrollRef);
   const startTop = container.scrollTop;
-  const distance = targetTop - startTop;
-  const duration = Math.min(280, Math.max(130, Math.abs(distance) * 0.45));
+  const targetTop = getActiveLineScrollTop(container, node);
+  if (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    Math.abs(targetTop - startTop) < 1
+  ) {
+    container.scrollTop = targetTop;
+    return;
+  }
+
+  const duration = 420;
   const animation = {
-    type: 'normal',
-    container,
-    node,
-    top: targetTop,
     frame: null,
-    startTop,
-    startTime: null,
-    duration
+    startedAt: null
   };
-  pendingTargetRef.current = animation;
+  pendingScrollRef.current = animation;
 
-  const animate = timestamp => {
-    if (pendingTargetRef.current !== animation) return;
-    if (!animation.node.isConnected) {
-      pendingTargetRef.current = null;
+  const step = timestamp => {
+    if (pendingScrollRef.current !== animation) return;
+    if (!node.isConnected) {
+      pendingScrollRef.current = null;
       return;
     }
 
-    if (animation.startTime === null) animation.startTime = timestamp;
-    const progress = Math.min(1, (timestamp - animation.startTime) / animation.duration);
-    const easedProgress = progress * progress * (3 - 2 * progress);
-    container.scrollTop = animation.startTop + distance * easedProgress;
+    if (animation.startedAt === null) animation.startedAt = timestamp;
+    const progress = Math.min((timestamp - animation.startedAt) / duration, 1);
+    const easedProgress = 1 - ((1 - progress) ** 3);
+    container.scrollTop = startTop + (targetTop - startTop) * easedProgress;
+
     if (progress === 1) {
-      pendingTargetRef.current = null;
+      pendingScrollRef.current = null;
       return;
     }
-    animation.frame = window.requestAnimationFrame(animate);
+    animation.frame = window.requestAnimationFrame(step);
   };
 
-  animation.frame = window.requestAnimationFrame(animate);
+  animation.frame = window.requestAnimationFrame(step);
 };
 
-const smoothScrollToActiveLine = (container, node, pendingTargetRef) => {
-  const pendingTarget = pendingTargetRef.current;
-  if (isAtDesiredLinePosition(container, node)) {
-    if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
-    pendingTargetRef.current = null;
-    return;
+const findCurrentLineIndex = (timedLines, time) => {
+  let low = 0;
+  let high = timedLines.length;
+
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (timedLines[middle].start <= time) low = middle + 1;
+    else high = middle;
   }
 
-  const targetTop = getActiveLineScrollTop(container, node);
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    if (pendingTarget) window.cancelAnimationFrame(pendingTarget.frame);
-    container.scrollTop = targetTop;
-    pendingTargetRef.current = null;
-    return;
-  }
-
-  if (pendingTarget) {
-    if (pendingTarget.container === container && pendingTarget.type === 'smooth') {
-      pendingTarget.node = node;
-      if (Math.abs(pendingTarget.top - targetTop) >= 0.5) pendingTarget.top = targetTop;
-      return;
-    }
-    window.cancelAnimationFrame(pendingTarget.frame);
-  } else if (Math.abs(targetTop - container.scrollTop) < 1) {
-    return;
-  }
-
-  const animation = {
-    type: 'smooth',
-    container,
-    node,
-    top: targetTop,
-    frame: null,
-    lastTimestamp: null,
-    velocity: 0
-  };
-  pendingTargetRef.current = animation;
-
-  const animate = timestamp => {
-    if (pendingTargetRef.current !== animation) return;
-    if (!animation.node.isConnected) {
-      pendingTargetRef.current = null;
-      return;
-    }
-
-    const elapsed = animation.lastTimestamp === null
-      ? 0
-      : Math.min((timestamp - animation.lastTimestamp) / 1000, 0.032);
-    animation.lastTimestamp = timestamp;
-
-    if (elapsed > 0) {
-      const omega = 5;
-      const error = container.scrollTop - animation.top;
-      const combinedVelocity = animation.velocity + omega * error;
-      const decay = Math.exp(-omega * elapsed);
-      const nextError = (error + combinedVelocity * elapsed) * decay;
-      animation.velocity = (animation.velocity - omega * combinedVelocity * elapsed) * decay;
-
-      if (Math.abs(nextError) < 0.05 && Math.abs(animation.velocity) < 0.1) {
-        container.scrollTop = animation.top;
-        pendingTargetRef.current = null;
-        return;
-      }
-
-      container.scrollTop = animation.top + nextError;
-    }
-
-    animation.frame = window.requestAnimationFrame(animate);
-  };
-
-  animation.frame = window.requestAnimationFrame(animate);
+  return low > 0 ? timedLines[low - 1].index : -1;
 };
 
 const LiveLyricsView = ({
@@ -187,432 +115,335 @@ const LiveLyricsView = ({
   shouldAnimateEntrance = true
 }) => {
   const containerRef = useRef(null);
-  const activeLineResizeObserverRef = useRef(null);
+  const pendingScrollRef = useRef(null);
+  const hasProcessedPlaybackTimeRef = useRef(false);
   const pendingSeekRef = useRef(false);
-  const [shouldAnimateEntranceForMount] = useState(shouldAnimateEntrance);
-  const entranceHandledRef = useRef(false);
-  const revealedLinesRef = useRef(new WeakSet());
+  const [isEntrancePending, setIsEntrancePending] = useState(shouldAnimateEntrance);
   const cachedLinesRef = useRef([]);
-    const timedLinesRef = useRef([]);
+  const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
-    const adlibTimelineRef = useRef([]);
-    const adlibCursorRef = useRef(0);
-    const lastAdlibTimeRef = useRef(null);
-    const pendingCenterTargetRef = useRef(null);
-    const activeLineIndexRef = useRef(-1);
-    const needsInitialCenterRef = useRef(true);
-    const syncList = selectedSong?.syncData;
-      const nextStarts = useMemo(() => {
-        const syncData = syncList || [];
-        const result = Array(syncData.length).fill('NaN');
-        let nextStart = 'NaN';
-        for (let index = syncData.length - 1; index >= 0; index--) {
-            result[index] = nextStart;
-            if (syncData[index]?.start != null) nextStart = syncData[index].start;
-        }
-        return result;
-    }, [syncList]);
+  const adlibTimelineRef = useRef([]);
+  const adlibCursorRef = useRef(0);
+  const lastAdlibTimeRef = useRef(null);
+  const activeLineIndexRef = useRef(-1);
+  const syncList = selectedSong?.syncData;
+  const shouldUseSelectedSongTime = Boolean(
+    selectedSong &&
+    (!currentTrack || isPlayingCurrentSong)
+  );
+
+  const nextStarts = useMemo(() => {
+    const syncData = syncList || [];
+    const result = Array(syncData.length).fill('NaN');
+    let nextStart = 'NaN';
+    for (let index = syncData.length - 1; index >= 0; index--) {
+      result[index] = nextStart;
+      if (syncData[index]?.start != null) nextStart = syncData[index].start;
+    }
+    return result;
+  }, [syncList]);
+
   const timedLineData = useMemo(
     () => buildTimedLineData(syncList, nextStarts),
     [syncList, nextStarts]
   );
 
-  const centerActiveLine = useCallback((node, isSeek) => {
-    if (!node) return;
-    const container = containerRef.current;
-    if (!container) return;
+  const handleTimeUpdate = useCallback((time, { isSeek = false, alignImmediately = false } = {}) => {
+    if (!shouldUseSelectedSongTime || !Number.isFinite(time)) return;
 
-    if (isSeek) {
-      smoothScrollToActiveLine(container, node, pendingCenterTargetRef);
-    } else {
-      scrollToActiveLineNormally(container, node, pendingCenterTargetRef);
-    }
-    needsInitialCenterRef.current = false;
-  }, []);
-
-  const handleTimeUpdate = useCallback((time) => {
-    if (!isPlayingCurrentSong) return;
-    
     const lines = cachedLinesRef.current;
-    const timedLines = timedLinesRef.current;
-    const newActiveIndex = findActiveLineIndex(timedLines, time);
-
+    const newActiveIndex = findCurrentLineIndex(timedLinesRef.current, time);
     const previousActiveIndex = activeLineIndexRef.current;
     const activeLineChanged = previousActiveIndex !== newActiveIndex;
-    const isSeek = pendingSeekRef.current;
-    pendingSeekRef.current = false;
+    const isNextLineHandoff = previousActiveIndex >= 0 &&
+      newActiveIndex === previousActiveIndex + 1;
+
     if (activeLineChanged) {
-      lines.forEach((line, index) => {
-        if (index === newActiveIndex) {
-          line.node.classList.add('active');
-          line.isActive = true;
-        } else if (line.isActive) {
-          line.node.classList.remove('active');
-          line.isActive = false;
-        }
-      });
+      if (previousActiveIndex >= 0) {
+        lines[previousActiveIndex]?.node.classList.remove('active');
+      }
+      if (newActiveIndex >= 0) {
+        lines[newActiveIndex]?.node.classList.add('active');
+      }
       activeLineIndexRef.current = newActiveIndex;
     }
 
-    const activeLine = lines[newActiveIndex];
-    if (activeLine && (activeLineChanged || needsInitialCenterRef.current || isSeek)) {
-      centerActiveLine(activeLine.node, isSeek || needsInitialCenterRef.current);
+    const activeLine = lines[newActiveIndex]?.node;
+    if (activeLine && (activeLineChanged || alignImmediately)) {
+      const container = containerRef.current;
+      if (container) {
+        if (
+          !alignImmediately &&
+          !isSeek &&
+          hasProcessedPlaybackTimeRef.current &&
+          isNextLineHandoff
+        ) {
+          animateToActiveLine(container, activeLine, pendingScrollRef);
+        } else {
+          alignActiveLine(container, activeLine, pendingScrollRef);
+        }
+      }
     }
+    hasProcessedPlaybackTimeRef.current = true;
 
     const adlibTimeline = adlibTimelineRef.current;
     const lastAdlibTime = lastAdlibTimeRef.current;
     if (lastAdlibTime === null || time < lastAdlibTime) {
-        cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(
-          item,
+      cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(
+        item,
+        time,
+        { persistActive: true }
+      ));
+      adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
+    } else {
+      while (
+        adlibCursorRef.current < adlibTimeline.length &&
+        adlibTimeline[adlibCursorRef.current].time <= time
+      ) {
+        updateAdlibStateAtTime(
+          adlibTimeline[adlibCursorRef.current].item,
           time,
           { persistActive: true }
-        ));
-        adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
-    } else {
-        while (adlibCursorRef.current < adlibTimeline.length && adlibTimeline[adlibCursorRef.current].time <= time) {
-            updateAdlibStateAtTime(
-              adlibTimeline[adlibCursorRef.current].item,
-              time,
-              { persistActive: true }
-            );
-            adlibCursorRef.current++;
-        }
+        );
+        adlibCursorRef.current++;
+      }
     }
     lastAdlibTimeRef.current = time;
-  }, [centerActiveLine, isPlayingCurrentSong]);
+  }, [shouldUseSelectedSongTime]);
 
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    cachedLinesRef.current = Array.from(container.querySelectorAll('.lyric-line-wrapper')).map(node => ({
-      node,
-      isActive: node.classList.contains('active')
-    }));
+    cachedLinesRef.current = Array.from(
+      container.querySelectorAll('.lyric-line-wrapper')
+    ).map(node => ({ node }));
     timedLinesRef.current = timedLineData
       .filter(line => cachedLinesRef.current[line.index])
       .map(line => ({
         ...line,
         node: cachedLinesRef.current[line.index].node
       }));
-    activeLineIndexRef.current = cachedLinesRef.current.findIndex(line => line.isActive);
+    activeLineIndexRef.current = cachedLinesRef.current.findIndex(
+      line => line.node.classList.contains('active')
+    );
 
-    cachedAdlibsRef.current = Array.from(container.querySelectorAll('.adlib-node')).map(node => ({
+    cachedAdlibsRef.current = Array.from(
+      container.querySelectorAll('.adlib-node')
+    ).map(node => ({
       node,
       start: parseFloat(node.dataset.start),
       end: parseFloat(node.dataset.end),
-      state: node.classList.contains('adlib-active') ? 'active' : (node.classList.contains('adlib-visible') ? 'visible' : 'hidden')
+      state: node.classList.contains('adlib-active')
+        ? 'active'
+        : node.classList.contains('adlib-visible') ? 'visible' : 'hidden'
     }));
     adlibTimelineRef.current = buildAdlibTimeline(cachedAdlibsRef.current);
     adlibCursorRef.current = 0;
     lastAdlibTimeRef.current = null;
 
-    if (isPlayingCurrentSong && typeof window.currentAudioTime === 'number') {
-      handleTimeUpdate(window.currentAudioTime - lyricsPlaybackOffsetSeconds);
-    } else if (!isPlayingCurrentSong) {
+    if (shouldUseSelectedSongTime) {
+      const currentTime = Number.isFinite(window.currentAudioTime)
+        ? window.currentAudioTime
+        : 0;
+      handleTimeUpdate(currentTime - lyricsPlaybackOffsetSeconds, {
+        alignImmediately: true
+      });
+    } else {
+      cachedLinesRef.current.forEach(line => line.node.classList.remove('active'));
+      activeLineIndexRef.current = -1;
       cachedAdlibsRef.current.forEach(item => {
         item.node.classList.add('adlib-visible');
         item.node.classList.remove('adlib-hidden', 'adlib-active');
         item.state = 'visible';
       });
     }
-    if (!isPlayingCurrentSong) {
-      needsInitialCenterRef.current = true;
-    }
   }, [
     handleTimeUpdate,
-    isPlayingCurrentSong,
-    syncWorkspaceLyrics,
     lyricsPlaybackOffsetSeconds,
-    selectedSong?.syncData,
+    selectedSong?.trackId,
+    shouldUseSelectedSongTime,
+    syncWorkspaceLyrics,
     timedLineData
   ]);
 
-  useLayoutEffect(() => {
-    if (!isSongModalReady) return undefined;
-    let frame = null;
-    frame = window.requestAnimationFrame(() => {
-      frame = null;
-      const container = containerRef.current;
-      const activeLine = container?.querySelector('.lyric-line-wrapper.active');
-      if (container && activeLine) {
-        smoothScrollToActiveLine(container, activeLine, pendingCenterTargetRef);
-      }
-    });
-    return () => {
-      if (frame !== null) window.cancelAnimationFrame(frame);
-    };
-  }, [isSongModalReady, selectedSong?.trackId, currentTrack?.trackId, timedLineData]);
-
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container || typeof ResizeObserver === 'undefined') return undefined;
-
-    let frame = null;
-    const linePositions = new Map(
-      Array.from(container.querySelectorAll('.lyric-line-wrapper'))
-        .map((line, index) => [line, index])
-    );
-    const observedLinePositions = new Map(linePositions);
-    const observer = new ResizeObserver(entries => {
-      const activeLine = container.querySelector('.lyric-line-wrapper.active');
-      if (!activeLine) return;
-      const activeLineIndex = linePositions.get(activeLine);
-      const affectsActivePosition = entries.some(({ target }) => (
-        target === container ||
-        (
-          observedLinePositions.has(target) &&
-          observedLinePositions.get(target) <= activeLineIndex
-        )
-      ));
-      if (!affectsActivePosition || frame !== null) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = null;
-        const currentActiveLine = container.querySelector('.lyric-line-wrapper.active');
-        if (currentActiveLine) {
-          smoothScrollToActiveLine(container, currentActiveLine, pendingCenterTargetRef);
-        }
-      });
-    });
-    observer.observe(container);
-    container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
-      observer.observe(line);
-      line.querySelectorAll('.main-live-translation, .pronunciation-text').forEach(element => {
-        observedLinePositions.set(element, linePositions.get(line));
-        observer.observe(element);
-      });
-    });
-    activeLineResizeObserverRef.current = observer;
-
-    return () => {
-      observer.disconnect();
-      if (frame !== null) window.cancelAnimationFrame(frame);
-      activeLineResizeObserverRef.current = null;
-    };
-  }, [syncWorkspaceLyrics]);
-
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container || !isSongModalReady || selectedSong?.trackId == null) return undefined;
-    if (entranceHandledRef.current || isPlayingCurrentSong) {
-      entranceHandledRef.current = true;
-      container.classList.remove('live-lyrics-entrance-pending');
-      return undefined;
-    }
-
-    const mountedLines = Array.from(container.querySelectorAll('.lyric-line-wrapper'));
-    let revealFrame = null;
-    let revealFallbackTimeout = null;
-    let cancelled = false;
-    let stableFrames = 0;
-    let waitFrames = 0;
-    let previousLayout = '';
-    let hasCollectedRevealLines = false;
-    let revealLines = [];
-    let firstVisibleLineIndex = -1;
-    const animationEndHandlers = new Map();
-    const finishReveal = line => {
-      line.classList.add('has-revealed');
-      line.classList.remove('initial-reveal', 'is-preparing-reveal');
-      line.style.removeProperty('--initial-reveal-delay');
-      const handler = animationEndHandlers.get(line);
-      if (handler) {
-        line.removeEventListener('animationend', handler);
-        animationEndHandlers.delete(line);
-      }
-    };
-    const beginReveal = () => {
-      revealFrame = null;
-      if (cancelled) return;
-
-      const pendingScroll = pendingCenterTargetRef.current;
-      if (
-        pendingScroll &&
-        Math.abs(container.scrollTop - pendingScroll.top) > 1 &&
-        waitFrames < 120
-      ) {
-        waitFrames += 1;
-        revealFrame = window.requestAnimationFrame(beginReveal);
-        return;
-      }
-
-      if (!hasCollectedRevealLines) {
-        const containerBounds = container.getBoundingClientRect();
-        const visibleLines = mountedLines.filter(line => {
-          const bounds = line.getBoundingClientRect();
-          return bounds.height > 0 &&
-            bounds.bottom > containerBounds.top &&
-            bounds.top < containerBounds.bottom;
-        });
-        if (visibleLines.length === 0) {
-          if (waitFrames < 120) {
-            waitFrames += 1;
-            revealFrame = window.requestAnimationFrame(beginReveal);
-          } else {
-            entranceHandledRef.current = true;
-            container.classList.remove('live-lyrics-entrance-pending');
-          }
-          return;
-        }
-
-        firstVisibleLineIndex = mountedLines.indexOf(visibleLines[0]);
-        const lastVisibleLineIndex = mountedLines.indexOf(visibleLines[visibleLines.length - 1]);
-        hasCollectedRevealLines = true;
-        revealLines = mountedLines
-          .slice(firstVisibleLineIndex, lastVisibleLineIndex + 4)
-          .filter(line => !revealedLinesRef.current.has(line));
-        if (revealLines.length === 0) {
-          entranceHandledRef.current = true;
-          container.classList.remove('live-lyrics-entrance-pending');
-          return;
-        }
-      }
-
-      const currentLayout = [
-        container.clientHeight,
-        ...revealLines.flatMap(line => {
-          const bounds = line.getBoundingClientRect();
-          return [bounds.top.toFixed(2), bounds.height.toFixed(2)];
-        })
-      ].join(':');
-      stableFrames = currentLayout === previousLayout ? stableFrames + 1 : 0;
-      previousLayout = currentLayout;
-      if (stableFrames < 2 && waitFrames < 120) {
-        waitFrames += 1;
-        revealFrame = window.requestAnimationFrame(beginReveal);
-        return;
-      }
-
-      if (!shouldAnimateEntranceForMount ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        entranceHandledRef.current = true;
-        revealLines.forEach(line => revealedLinesRef.current.add(line));
-        container.classList.remove('live-lyrics-entrance-pending');
-        return;
-      }
-
-      revealLines.forEach(line => line.classList.add('is-preparing-reveal'));
-      revealFrame = window.requestAnimationFrame(() => {
-        revealFrame = null;
-        if (cancelled) return;
-
-        revealLines.forEach(line => {
-          if (!line.isConnected) return;
-          revealedLinesRef.current.add(line);
-          const lineIndex = mountedLines.indexOf(line);
-          const staggerIndex = Math.max(0, lineIndex - firstVisibleLineIndex);
-          line.style.setProperty('--initial-reveal-delay', `${staggerIndex * 55}ms`);
-          const handleAnimationEnd = event => {
-            if (event.target === line) finishReveal(line);
-          };
-          animationEndHandlers.set(line, handleAnimationEnd);
-          line.addEventListener('animationend', handleAnimationEnd);
-          line.classList.remove('is-preparing-reveal');
-          line.classList.add('initial-reveal');
-        });
-        entranceHandledRef.current = true;
-        container.classList.remove('live-lyrics-entrance-pending');
-        revealFallbackTimeout = window.setTimeout(() => {
-          revealLines.forEach(line => finishReveal(line));
-          revealFallbackTimeout = null;
-        }, 260 + Math.max(0, revealLines.length - 1) * 55 + 100);
-      });
-    };
-
-    revealFrame = window.requestAnimationFrame(beginReveal);
-
-    return () => {
-      cancelled = true;
-      if (revealFrame !== null) window.cancelAnimationFrame(revealFrame);
-      if (revealFallbackTimeout !== null) window.clearTimeout(revealFallbackTimeout);
-      revealLines.forEach(line => {
-        const handler = animationEndHandlers.get(line);
-        if (handler) line.removeEventListener('animationend', handler);
-        animationEndHandlers.delete(line);
-        line.classList.remove('is-preparing-reveal', 'initial-reveal');
-        line.style.removeProperty('--initial-reveal-delay');
-      });
-    };
-  }, [
-    syncWorkspaceLyrics,
-    selectedSong?.trackId,
-    isSongModalReady,
-    isPlayingCurrentSong,
-    shouldAnimateEntranceForMount
-  ]);
-
   useEffect(() => {
-    return () => {
-      activeLineResizeObserverRef.current?.disconnect();
-      activeLineResizeObserverRef.current = null;
-      if (pendingCenterTargetRef.current) {
-        window.cancelAnimationFrame(pendingCenterTargetRef.current.frame);
-        pendingCenterTargetRef.current = null;
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    const cancelManualScroll = () => cancelActiveLineScroll(pendingScrollRef);
+    const cancelManualScrollKey = event => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) {
+        cancelManualScroll();
       }
+    };
+    container.addEventListener('wheel', cancelManualScroll, { passive: true });
+    container.addEventListener('touchstart', cancelManualScroll, { passive: true });
+    container.addEventListener('pointerdown', cancelManualScroll, { passive: true });
+    container.addEventListener('keydown', cancelManualScrollKey);
+    return () => {
+      container.removeEventListener('wheel', cancelManualScroll);
+      container.removeEventListener('touchstart', cancelManualScroll);
+      container.removeEventListener('pointerdown', cancelManualScroll);
+      container.removeEventListener('keydown', cancelManualScrollKey);
+      cancelActiveLineScroll(pendingScrollRef);
     };
   }, []);
 
   useEffect(() => {
-    const clearActiveLines = () => {
-        cachedLinesRef.current.forEach(item => {
-            if (item.isActive) {
-                item.node.classList.remove('active');
-                item.isActive = false;
-            }
-        });
-        activeLineIndexRef.current = -1;
-        needsInitialCenterRef.current = true;
-        cancelPendingScroll(pendingCenterTargetRef);
+    const clearActiveLine = () => {
+      cachedLinesRef.current.forEach(line => line.node.classList.remove('active'));
+      activeLineIndexRef.current = -1;
+      hasProcessedPlaybackTimeRef.current = false;
+      pendingSeekRef.current = false;
+      cachedAdlibsRef.current.forEach(item => {
+        if (item.state === 'hidden') return;
+        item.node.classList.add('adlib-hidden');
+        item.node.classList.remove('adlib-active', 'adlib-visible');
+        item.state = 'hidden';
+      });
+      adlibCursorRef.current = 0;
+      lastAdlibTimeRef.current = null;
     };
 
-    const handleTimeEvent = (e) => handleTimeUpdate(e.detail - lyricsPlaybackOffsetSeconds);
+    const handleTimeEvent = event => {
+      const time = Number(event.detail);
+      if (!Number.isFinite(time)) return;
+      handleTimeUpdate(time - lyricsPlaybackOffsetSeconds, {
+        isSeek: pendingSeekRef.current
+      });
+      pendingSeekRef.current = false;
+    };
     const handleTimeSeek = () => {
       pendingSeekRef.current = true;
     };
-    const handlePlayState = (e) => {
-        if (e.detail.isEnded) {
-            clearActiveLines();
-        }
+    const handlePlayState = event => {
+      if (event.detail?.isEnded) clearActiveLine();
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
     window.addEventListener('globalTimeSeek', handleTimeSeek);
     window.addEventListener('globalPlayState', handlePlayState);
-
-    if (isPlayingCurrentSong) {
-        const initialTime = currentTrack ? (window.currentAudioTime || 0) : 0;
-        handleTimeUpdate(initialTime - lyricsPlaybackOffsetSeconds);
+    if (shouldUseSelectedSongTime) {
+      const currentTime = Number.isFinite(window.currentAudioTime)
+        ? window.currentAudioTime
+        : 0;
+      handleTimeUpdate(currentTime - lyricsPlaybackOffsetSeconds, {
+        alignImmediately: true
+      });
     } else {
-        clearActiveLines();
+      clearActiveLine();
     }
 
     return () => {
-        window.removeEventListener('globalTimeUpdate', handleTimeEvent);
-        window.removeEventListener('globalTimeSeek', handleTimeSeek);
-        window.removeEventListener('globalPlayState', handlePlayState);
+      window.removeEventListener('globalTimeUpdate', handleTimeEvent);
+      window.removeEventListener('globalTimeSeek', handleTimeSeek);
+      window.removeEventListener('globalPlayState', handlePlayState);
     };
-    }, [isPlayingCurrentSong, currentTrack, selectedSong?.trackId, lyricsPlaybackOffsetSeconds, handleTimeUpdate]);
+  }, [
+    currentTrack,
+    handleTimeUpdate,
+    lyricsPlaybackOffsetSeconds,
+    selectedSong?.trackId,
+    shouldUseSelectedSongTime
+  ]);
+
+  useEffect(() => {
+    if (!shouldAnimateEntrance) {
+      setIsEntrancePending(false);
+      return undefined;
+    }
+
+    setIsEntrancePending(true);
+    if (!isSongModalReady) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIsEntrancePending(false);
+      return undefined;
+    }
+
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    let frame = null;
+    let fallbackTimeout = null;
+    let cancelled = false;
+    let revealLines = [];
+    const animationEndHandlers = new Map();
+    const finishReveal = line => {
+      line.classList.remove('initial-reveal');
+      line.style.removeProperty('--initial-reveal-delay');
+      const handler = animationEndHandlers.get(line);
+      if (handler) line.removeEventListener('animationend', handler);
+      animationEndHandlers.delete(line);
+    };
+    const startReveal = () => {
+      frame = null;
+      if (cancelled) return;
+
+      const containerBounds = container.getBoundingClientRect();
+      revealLines = Array.from(
+        container.querySelectorAll('.lyric-line-wrapper')
+      ).filter(line => {
+        const bounds = line.getBoundingClientRect();
+        return bounds.height > 0 &&
+          bounds.bottom > containerBounds.top &&
+          bounds.top < containerBounds.bottom;
+      });
+
+      if (revealLines.length === 0) {
+        setIsEntrancePending(false);
+        return;
+      }
+
+      revealLines.forEach((line, index) => {
+        line.style.setProperty('--initial-reveal-delay', `${index * 35}ms`);
+        const handleAnimationEnd = event => {
+          if (event.target === line) finishReveal(line);
+        };
+        animationEndHandlers.set(line, handleAnimationEnd);
+        line.addEventListener('animationend', handleAnimationEnd);
+      });
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        if (cancelled) return;
+        revealLines.forEach(line => {
+          if (line.isConnected) line.classList.add('initial-reveal');
+        });
+        setIsEntrancePending(false);
+        fallbackTimeout = window.setTimeout(() => {
+          revealLines.forEach(finishReveal);
+          fallbackTimeout = null;
+        }, 240 + Math.max(0, revealLines.length - 1) * 35 + 100);
+      });
+    };
+
+    frame = window.requestAnimationFrame(startReveal);
+    return () => {
+      cancelled = true;
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      if (fallbackTimeout !== null) window.clearTimeout(fallbackTimeout);
+      revealLines.forEach(finishReveal);
+    };
+  }, [isSongModalReady, selectedSong?.trackId, shouldAnimateEntrance]);
 
   return (
     <div
-      className={`live-lyrics-preview${!isPlayingCurrentSong ? ' playback-stopped' : ''}${shouldAnimateEntranceForMount ? ' live-lyrics-entrance-pending' : ''}`}
+      className={`live-lyrics-preview${!isPlayingCurrentSong ? ' playback-stopped' : ''}${isEntrancePending ? ' live-lyrics-entrance-pending' : ''}`}
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >
-      {syncWorkspaceLyrics.map((line, i) => {
-        return (
-            <LyricLineWrapper
-              key={i}
-              lineObj={line}
-              savedNode={syncList?.[i]}
-              nextStart={nextStarts[i]}
-              viewMode="live"
-              handleLineClick={handleLineClick}
-              masterPalette={masterPalette}
-              isPlayingCurrentSong={false}
-            />
-        )
-      })}
+      {syncWorkspaceLyrics.map((line, index) => (
+        <LyricLineWrapper
+          key={index}
+          lineObj={line}
+          savedNode={syncList?.[index]}
+          nextStart={nextStarts[index]}
+          viewMode="live"
+          handleLineClick={handleLineClick}
+          masterPalette={masterPalette}
+          isPlayingCurrentSong={false}
+        />
+      ))}
     </div>
   );
 };

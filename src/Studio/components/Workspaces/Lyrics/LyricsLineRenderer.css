@@ -295,10 +295,6 @@ rt.pronunciation-text,
   translate: 0 var(--live-adlib-glyph-offset-y, 0px);
 }
 
-.live-layout-auto .live-split-line .adlib-node {
-  align-self: baseline;
-}
-
 .preview-line .live-split-line .adlib-node.is-english-adlib-on-foreign-line:not(.is-adlib-inline-after-wrapped-main) {
   translate: 0 calc(
     var(--live-adlib-glyph-offset-y, 0px) +
@@ -319,7 +315,7 @@ rt.pronunciation-text,
 
 .preview-line .live-split-line .adlib-node.is-adlib-wrapped {
   flex: 0 1 auto;
-  align-self: baseline;
+  align-self: flex-start;
   align-items: flex-start !important;
   width: fit-content;
   max-width: 100%;

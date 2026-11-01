@@ -40,12 +40,7 @@ export const useLyricsDisplay = (selectedSong, customData, masterPalette, isSync
 
   const trackId = selectedSong?.trackId ?? null;
   const selectedTrackKey = trackId == null ? null : String(trackId);
-  const isSelectedSongInPlayer = Boolean(
-    currentTrack &&
-    selectedTrackKey !== null &&
-    String(currentTrack.trackId) === selectedTrackKey
-  );
-  const shouldAnimateLiveEntrance = selectedTrackKey !== null && !isSelectedSongInPlayer;
+  const shouldAnimateLiveEntrance = selectedTrackKey !== null;
   const liveParsedLyrics = useMemo(
     () => parsedLyrics.trackId === trackId ? parsedLyrics.lines : [],
     [parsedLyrics, trackId]
