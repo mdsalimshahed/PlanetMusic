@@ -71,7 +71,6 @@
   transition:
     opacity 240ms ease,
     transform 240ms ease-out;
-  will-change: opacity, transform;
   box-sizing: border-box;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -89,8 +88,8 @@
     transform 240ms ease-out;
 }
 
+.preview-line.active,
 .preview-line.initial-reveal,
-.preview-line.has-revealed,
 .preview-line.is-preparing-reveal {
   will-change: transform, opacity;
 }
@@ -147,9 +146,7 @@
     filter: brightness(1);
   }
   30% {
-    filter:
-      brightness(1.65)
-      drop-shadow(0 0 7px rgba(255, 255, 255, 0.85));
+    filter: brightness(1.65);
   }
   100% {
     filter: brightness(1);

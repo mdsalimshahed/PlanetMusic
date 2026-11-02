@@ -622,6 +622,7 @@ const LiveLyricsView = ({
 
     let previousContainerSize = null;
     const updateActiveAnchorBaseline = () => {
+      if (pendingScrollRef.current) return;
       const activeLine = container.querySelector('.preview-line.active');
       activeMainTopRef.current = activeLine
         ? getActiveMainTopOffset(container, activeLine)
@@ -677,9 +678,6 @@ const LiveLyricsView = ({
       ? null
       : new ResizeObserver(handleResize);
     resizeObserver?.observe(container);
-    container.querySelectorAll('.lyric-line-wrapper').forEach(line => {
-      resizeObserver?.observe(line);
-    });
     container.addEventListener('scroll', updateActiveAnchorBaseline, { passive: true });
 
     const handleWindowResize = () => {
