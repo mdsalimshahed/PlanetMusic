@@ -145,18 +145,21 @@
 
 .preview-line.active.is-shining .main-lyrics-layer .lyric-word,
 .preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word {
-  animation: liveLyricsGlyphShine 360ms ease-out both;
-  animation-delay: calc(var(--word-index, 0) * 45ms);
+  animation: liveLyricsGlyphShine 240ms linear both;
+  animation-delay: var(--word-shine-delay, 0ms);
 }
 
 @keyframes liveLyricsGlyphShine {
-  0%, 100% {
+  0% {
     filter: brightness(1);
   }
-  45% {
+  30% {
     filter:
       brightness(1.65)
       drop-shadow(0 0 7px rgba(255, 255, 255, 0.85));
+  }
+  100% {
+    filter: brightness(1);
   }
 }
 

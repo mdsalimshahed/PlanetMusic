@@ -155,8 +155,20 @@ const animateToActiveLine = (
   animation.frame = window.requestAnimationFrame(step);
 };
 
+const LINE_SHINE_TOTAL_DURATION_MS = 420;
+const LINE_SHINE_WORD_DURATION_MS = 240;
 const glyphShineTimeouts = new WeakMap();
 const lineActivationTimeouts = new WeakMap();
+
+const clearGlyphShine = activeLine => {
+  if (!activeLine) return;
+  const pendingTimeout = glyphShineTimeouts.get(activeLine);
+  if (pendingTimeout !== undefined) {
+    window.clearTimeout(pendingTimeout);
+    glyphShineTimeouts.delete(activeLine);
+  }
+  activeLine.classList.remove('is-shining');
+};
 
 const clearLineActivation = line => {
   if (!line) return;
@@ -181,19 +193,32 @@ const retriggerLineActivation = activeLine => {
 
 const retriggerGlyphShine = activeLine => {
   if (!activeLine) return;
-  const words = Array.from(activeLine.querySelectorAll('.lyric-word'));
-  const pendingTimeout = glyphShineTimeouts.get(activeLine);
-  if (pendingTimeout !== undefined) window.clearTimeout(pendingTimeout);
-  activeLine.classList.remove('is-shining');
+  const textNode = activeLine.matches('.adlib-node')
+    ? activeLine.querySelector(':scope > .primary-text')
+    : activeLine.querySelector('.main-lyrics-layer');
+  if (!textNode) return;
+
+  const words = Array.from(textNode.querySelectorAll('.lyric-word'));
+  if (words.length === 0) return;
+  clearGlyphShine(activeLine);
+  const wordDelay = words.length > 1
+    ? (LINE_SHINE_TOTAL_DURATION_MS - LINE_SHINE_WORD_DURATION_MS) /
+      (words.length - 1)
+    : 0;
   words.forEach((word, index) => {
-    word.style.setProperty('--word-index', String(index));
+    word.style.setProperty(
+      '--word-shine-delay',
+      `${index * wordDelay}ms`
+    );
   });
   void activeLine.offsetWidth;
   activeLine.classList.add('is-shining');
-  glyphShineTimeouts.set(activeLine, window.setTimeout(() => {
+  const timeout = window.setTimeout(() => {
+    if (glyphShineTimeouts.get(activeLine) !== timeout) return;
     activeLine.classList.remove('is-shining');
     glyphShineTimeouts.delete(activeLine);
-  }, 360 + Math.max(0, words.length - 1) * 45));
+  }, LINE_SHINE_TOTAL_DURATION_MS);
+  glyphShineTimeouts.set(activeLine, timeout);
 };
 
 const updateLiveAdlibAtTime = (item, time, { triggerShine = true } = {}) => {
@@ -201,7 +226,7 @@ const updateLiveAdlibAtTime = (item, time, { triggerShine = true } = {}) => {
   updateAdlibStateAtTime(item, time, { persistActive: true });
 
   if (previousState === 'active' && item.state !== 'active') {
-    item.node.classList.remove('is-shining');
+    clearGlyphShine(item.node);
   } else if (triggerShine && previousState !== 'active' && item.state === 'active') {
     retriggerGlyphShine(item.node);
   }
@@ -215,7 +240,6 @@ const LiveLyricsView = ({
   handleLineClick,
   settings,
   currentTrack,
-  isPlaying,
   lyricsPlaybackOffsetSeconds = 0,
   isSongModalReady = true,
   shouldAnimateEntrance = true,
@@ -247,8 +271,6 @@ const LiveLyricsView = ({
     selectedSong &&
     isPlayingCurrentSong
   );
-  const isPlaybackActive = isPlaying || Boolean(window.globalIsAudioPlaying);
-
   const nextStarts = useMemo(() => {
     const syncData = syncList || [];
     const result = Array(syncData.length).fill('NaN');
@@ -281,7 +303,8 @@ const LiveLyricsView = ({
     if (activeLineChanged) {
       if (previousActiveIndex >= 0) {
         const previousLine = lines[previousActiveIndex]?.node;
-        previousLine?.classList.remove('active', 'is-shining');
+          previousLine?.classList.remove('active');
+          clearGlyphShine(previousLine);
         clearLineActivation(previousLine);
       }
       if (newActiveIndex >= 0) {
@@ -419,7 +442,7 @@ const LiveLyricsView = ({
       cancelActiveLineScroll(pendingScrollRef);
       pendingSeekRef.current = false;
       activeMainTopRef.current = null;
-    } else if (shouldUseSelectedSongTime && isPlaybackActive) {
+    } else if (shouldUseSelectedSongTime) {
       const currentTime = Number.isFinite(window.currentAudioTime)
         ? window.currentAudioTime
         : 0;
@@ -449,7 +472,6 @@ const LiveLyricsView = ({
   }, [
     handleTimeUpdate,
     isViewActive,
-    isPlaybackActive,
     lyricsPlaybackOffsetSeconds,
     selectedSong?.trackId,
     shouldUseSelectedSongTime,
@@ -460,7 +482,8 @@ const LiveLyricsView = ({
   useEffect(() => {
     const clearActiveLine = () => {
       cachedLinesRef.current.forEach(line => {
-        line.node.classList.remove('active', 'is-shining');
+        line.node.classList.remove('active');
+        clearGlyphShine(line.node);
         clearLineActivation(line.node);
       });
       activeLineIndexRef.current = -1;
@@ -492,7 +515,7 @@ const LiveLyricsView = ({
     };
     const handlePlayState = event => {
       if (!isViewActive) return;
-      if (!event.detail?.isPlaying || event.detail?.isEnded) {
+      if (event.detail?.isEnded) {
         clearActiveLine();
       }
     };
