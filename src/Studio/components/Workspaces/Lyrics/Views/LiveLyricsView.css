@@ -87,37 +87,36 @@
 
 .live-lyrics-preview .preview-line.active .lyric-word {
   position: relative;
+  display: inline-block;
+  overflow: hidden;
 }
 
-.live-lyrics-preview .preview-line.active.is-shining .lyric-word::before {
-  content: attr(data-shine-text);
+.live-lyrics-preview .preview-line.active .lyric-word::after {
+  content: '';
   position: absolute;
   z-index: 3;
   top: 0;
+  bottom: 0;
   left: 0;
+  width: 38%;
   pointer-events: none;
-  color: transparent;
-  white-space: nowrap;
-  background-image: linear-gradient(
+  background: linear-gradient(
     105deg,
     transparent,
     rgba(255, 255, 255, 0.28),
     transparent
   );
-  background-repeat: no-repeat;
-  background-size: 38% 100%;
-  background-position: -150% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
+  mix-blend-mode: screen;
+  transform: translateX(-150%) skewX(-18deg);
   animation: liveMainGlyphShine 720ms ease-in-out both !important;
 }
 
 @keyframes liveMainGlyphShine {
   0%, 30% {
-    background-position: -150% 0;
+    transform: translateX(-150%) skewX(-18deg);
   }
   75%, 100% {
-    background-position: 340% 0;
+    transform: translateX(340%) skewX(-18deg);
   }
 }
 
