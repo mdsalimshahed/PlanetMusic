@@ -33,8 +33,6 @@ const LyricsDisplay = ({
   }
   const shouldKeepLiveViewMounted = selectedTrackKey !== null &&
     (isLiveViewActive || mountedLiveTrackKey === selectedTrackKey);
-  const shouldAnimateCurrentLiveEntrance = shouldAnimateLiveEntrance &&
-    !(isPlaying && isPlayingCurrentSong);
   const syncWorkspaceLyrics = useMemo(
     () => getSyncWorkspaceLyrics(selectedSong?.syncData),
     [selectedSong?.syncData]
@@ -122,7 +120,7 @@ const LyricsDisplay = ({
             isPlaying={isPlaying}
             lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
             isSongModalReady={isSongModalReady}
-            shouldAnimateEntrance={shouldAnimateCurrentLiveEntrance}
+            shouldAnimateEntrance={shouldAnimateLiveEntrance}
             isViewActive={isLiveViewActive}
           />
         </div>

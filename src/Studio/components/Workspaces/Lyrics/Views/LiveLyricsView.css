@@ -16,7 +16,7 @@
     ),
     0.2em
   );
-  padding: 120px clamp(8px, 1vw, 16px) clamp(40px, 8vw, 80px);
+  padding: 120px clamp(16px, 3vw, 36px) clamp(40px, 8vw, 80px);
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,

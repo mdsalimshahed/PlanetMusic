@@ -8,7 +8,6 @@ import {
 } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
 
-const liveEntranceTrackKeys = new Set();
 const ACTIVE_MAIN_TOP_RATIO = 0.42;
 
 const getActiveMainLyricsNode = line => (
@@ -299,8 +298,6 @@ const LiveLyricsView = ({
   const pendingSeekRef = useRef(false);
   const [isEntrancePending, setIsEntrancePending] = useState(() => (
     shouldAnimateEntrance &&
-    !(selectedSong?.trackId != null &&
-      liveEntranceTrackKeys.has(String(selectedSong.trackId))) &&
     !window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ));
   const hasAlignedMountRef = useRef(false);
@@ -705,12 +702,11 @@ const LiveLyricsView = ({
     const trackKey = selectedSong?.trackId == null
       ? null
       : String(selectedSong.trackId);
-    if (trackKey === null || liveEntranceTrackKeys.has(trackKey)) return undefined;
+    if (trackKey === null) return undefined;
     if (
       !shouldAnimateEntrance ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
-      liveEntranceTrackKeys.add(trackKey);
       return undefined;
     }
 
@@ -732,8 +728,6 @@ const LiveLyricsView = ({
     const startReveal = () => {
       frame = null;
       if (cancelled) return;
-      if (liveEntranceTrackKeys.has(trackKey)) return;
-      liveEntranceTrackKeys.add(trackKey);
 
       const containerBounds = container.getBoundingClientRect();
       revealLines = Array.from(
