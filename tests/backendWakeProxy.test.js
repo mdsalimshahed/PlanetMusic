@@ -31,6 +31,12 @@ test('waits for the backend health endpoint before forwarding API requests', asy
     assert.equal(response.status, 200);
     assert.equal(healthAttempts, 2);
     assert.equal(calls.length, 3);
+    for (const call of calls.slice(0, 2)) {
+      assert.equal(
+        call.options.headers['X-Backend-Gateway-Token'],
+        'test-gateway-token'
+      );
+    }
     assert.equal(calls[2].url.pathname, '/search-deezer');
     assert.equal(calls[2].url.searchParams.get('q'), 'test');
     assert.equal(
@@ -73,12 +79,14 @@ test('proxies automatic YouTube searches through the authenticated backend route
 
 test('backend-health wakes Render without forwarding an application request', async () => {
   const originalFetch = globalThis.fetch;
-  const calls = [];
+  const originalDateNow = Date.now;
+  let healthRequest;
+  Date.now = () => originalDateNow() + 10_000;
 
-  globalThis.fetch = async (input) => {
+  globalThis.fetch = async (input, options) => {
     const url = new URL(input);
-    calls.push(url.pathname);
     assert.equal(url.pathname, '/healthz');
+    healthRequest = { url, options };
     return Response.json({ status: 'ok' });
   };
 
@@ -90,8 +98,12 @@ test('backend-health wakes Render without forwarding an application request', as
 
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { status: 'ok' });
-    assert.ok(calls.length <= 1);
+    assert.equal(
+      healthRequest.options.headers['X-Backend-Gateway-Token'],
+      'test-gateway-token'
+    );
   } finally {
     globalThis.fetch = originalFetch;
+    Date.now = originalDateNow;
   }
 });

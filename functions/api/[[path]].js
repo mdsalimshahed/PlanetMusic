@@ -60,7 +60,7 @@ const resolveRoute = (pathname, method, searchParams) => {
   return { error: jsonError(404, 'Unknown API route.') };
 };
 
-const waitForBackend = async signal => {
+const waitForBackend = async (signal, gatewayToken) => {
   if (Date.now() < backendReadyUntil) return true;
 
   const healthUrl = new URL('/healthz', BACKEND_ORIGIN);
@@ -74,7 +74,10 @@ const waitForBackend = async signal => {
     try {
       const response = await fetch(healthUrl, {
         method: 'GET',
-        headers: { accept: 'application/json' },
+        headers: {
+          accept: 'application/json',
+          [GATEWAY_HEADER]: gatewayToken
+        },
         cache: 'no-store',
         signal: healthSignal
       });
@@ -115,7 +118,7 @@ export async function onRequest({ request, env }) {
     return jsonError(503, 'Backend service configuration is unavailable.');
   }
 
-  if (!await waitForBackend(request.signal)) {
+  if (!await waitForBackend(request.signal, gatewayToken)) {
     return new Response(JSON.stringify({
       error: request.signal.aborted
         ? 'The request was cancelled while the backend was starting.'
