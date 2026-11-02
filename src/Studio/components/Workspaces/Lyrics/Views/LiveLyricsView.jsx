@@ -27,6 +27,18 @@ const alignActiveLine = (container, node, frameRef) => {
   container.scrollTop = getActiveLineScrollTop(container, node);
 };
 
+const retriggerGlyphShine = activeLine => {
+  if (!activeLine) return;
+
+  activeLine.classList.remove('is-shining');
+  activeLine.querySelectorAll('.lyric-word').forEach(word => {
+    const text = word.textContent?.trim();
+    if (text) word.dataset.shineText = text;
+  });
+  void activeLine.offsetWidth;
+  activeLine.classList.add('is-shining');
+};
+
 const scrollToActiveLine = (container, node, frameRef) => {
   const targetTop = getActiveLineScrollTop(container, node);
   const startTop = container.scrollTop;
@@ -149,6 +161,7 @@ const LiveLyricsView = ({
       }
       if (newActiveIndex >= 0) {
         lines[newActiveIndex]?.node.classList.add('active');
+        retriggerGlyphShine(lines[newActiveIndex].node);
       }
       activeLineIndexRef.current = newActiveIndex;
     }
