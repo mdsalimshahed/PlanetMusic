@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import {
@@ -8,10 +8,29 @@ import {
 import './LiveLyricsView.css';
 
 const getActiveLineScrollTop = (container, node) => {
-  const viewportAnchor = container.clientHeight * 0.5;
-  const layoutTop = node.offsetTop;
-  const layoutHeight = node.offsetHeight;
-  const targetTop = layoutTop + layoutHeight / 2 - viewportAnchor;
+  const containerBounds = container.getBoundingClientRect();
+  const activeBounds = node.getBoundingClientRect();
+  if (
+    !Number.isFinite(containerBounds.top) ||
+    !Number.isFinite(activeBounds.top) ||
+    !Number.isFinite(activeBounds.height) ||
+    activeBounds.height <= 0
+  ) {
+    return container.scrollTop;
+  }
+
+  const scaleY = container.offsetHeight > 0
+    ? containerBounds.height / container.offsetHeight
+    : 1;
+  const viewportTop = containerBounds.top + container.clientTop * scaleY;
+  const activeTop = container.scrollTop +
+    (activeBounds.top - viewportTop) / scaleY;
+  const activeHeight = activeBounds.height / scaleY;
+  const preferredTop = container.clientHeight * 0.42;
+  const safeInset = Math.min(24, container.clientHeight * 0.06);
+  const targetTop = activeHeight + safeInset * 2 <= container.clientHeight
+    ? activeTop + activeHeight / 2 - preferredTop
+    : activeTop - safeInset;
 
   return Math.max(
     0,
@@ -19,85 +38,61 @@ const getActiveLineScrollTop = (container, node) => {
   );
 };
 
-const alignActiveLine = (container, node, frameRef) => {
-  if (frameRef?.current !== null && frameRef?.current !== undefined) {
-    window.cancelAnimationFrame(frameRef.current);
-    frameRef.current = null;
-  }
+const cancelActiveLineScroll = pendingScrollRef => {
+  const animation = pendingScrollRef.current;
+  if (!animation) return;
+  if (animation.frame !== null) window.cancelAnimationFrame(animation.frame);
+  pendingScrollRef.current = null;
+};
+
+const alignActiveLine = (container, node, pendingScrollRef) => {
+  cancelActiveLineScroll(pendingScrollRef);
   container.scrollTop = getActiveLineScrollTop(container, node);
 };
 
-const retriggerGlyphShine = activeLine => {
-  if (!activeLine) return;
-
-  activeLine.classList.remove('is-shining');
-  activeLine.querySelectorAll('.lyric-word').forEach(word => {
-    const text = word.textContent?.trim();
-    if (text) word.dataset.shineText = text;
-  });
-  void activeLine.offsetWidth;
-  activeLine.classList.add('is-shining');
-};
-
-const scrollToActiveLine = (container, node, frameRef) => {
-  const targetTop = getActiveLineScrollTop(container, node);
+const animateToActiveLine = (container, node, pendingScrollRef) => {
+  cancelActiveLineScroll(pendingScrollRef);
   const startTop = container.scrollTop;
-  const distance = targetTop - startTop;
-  if (Math.abs(distance) < 1) {
+  const targetTop = getActiveLineScrollTop(container, node);
+  if (
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    Math.abs(targetTop - startTop) < 1
+  ) {
     container.scrollTop = targetTop;
     return;
   }
 
-  if (frameRef.current !== null) {
-    window.cancelAnimationFrame(frameRef.current);
-  }
-  const startedAt = performance.now();
   const duration = 420;
-  const step = now => {
-    const progress = Math.min((now - startedAt) / duration, 1);
-    const eased = 1 - ((1 - progress) ** 3);
-    container.scrollTop = startTop + distance * eased;
-    if (progress < 1) {
-      frameRef.current = window.requestAnimationFrame(step);
-    } else {
-      frameRef.current = null;
+  const animation = { frame: null, startedAt: null };
+  pendingScrollRef.current = animation;
+
+  const step = timestamp => {
+    if (pendingScrollRef.current !== animation) return;
+    if (!node.isConnected) {
+      pendingScrollRef.current = null;
+      return;
     }
+    if (animation.startedAt === null) animation.startedAt = timestamp;
+    const progress = Math.min((timestamp - animation.startedAt) / duration, 1);
+    const easedProgress = 1 - ((1 - progress) ** 3);
+    container.scrollTop = startTop + (targetTop - startTop) * easedProgress;
+    if (progress === 1) {
+      pendingScrollRef.current = null;
+      return;
+    }
+    animation.frame = window.requestAnimationFrame(step);
   };
-  frameRef.current = window.requestAnimationFrame(step);
+  animation.frame = window.requestAnimationFrame(step);
 };
 
-const animateActiveLineHandoff = (container, previousLine, activeLine) => {
-  if (!previousLine || !activeLine || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    alignActiveLine(container, activeLine);
-    return;
-  }
-
-  const startTop = container.scrollTop;
-  const targetTop = getActiveLineScrollTop(container, activeLine);
-  if (Math.abs(targetTop - startTop) < 1) {
-    alignActiveLine(container, activeLine);
-    return;
-  }
-
-  previousLine.classList.add('is-line-exiting');
-  activeLine.classList.add('is-line-entering');
-  const duration = 420;
-  const startedAt = performance.now();
-
-  const step = now => {
-    const progress = Math.min((now - startedAt) / duration, 1);
-    const eased = 1 - ((1 - progress) ** 3);
-    container.scrollTop = startTop + (targetTop - startTop) * eased;
-    if (progress < 1) {
-      window.requestAnimationFrame(step);
-    } else {
-      container.scrollTop = targetTop;
-      previousLine.classList.remove('is-line-exiting');
-      activeLine.classList.remove('is-line-entering');
-    }
-  };
-
-  window.requestAnimationFrame(step);
+const retriggerGlyphShine = activeLine => {
+  if (!activeLine) return;
+  activeLine.classList.remove('is-shining');
+  activeLine.querySelectorAll('.lyric-word').forEach((word, index) => {
+    word.style.setProperty('--word-index', String(index));
+  });
+  void activeLine.offsetWidth;
+  activeLine.classList.add('is-shining');
 };
 
 const LiveLyricsView = ({
@@ -108,12 +103,15 @@ const LiveLyricsView = ({
   handleLineClick,
   settings,
   currentTrack,
-  lyricsPlaybackOffsetSeconds = 0
+  lyricsPlaybackOffsetSeconds = 0,
+  isSongModalReady = true,
+  shouldAnimateEntrance = true
 }) => {
   const containerRef = useRef(null);
-  const activeScrollFrameRef = useRef(null);
+  const pendingScrollRef = useRef(null);
   const hasProcessedPlaybackTimeRef = useRef(false);
   const pendingSeekRef = useRef(false);
+  const [isEntrancePending, setIsEntrancePending] = useState(shouldAnimateEntrance);
   const hasAlignedMountRef = useRef(false);
   const cachedLinesRef = useRef([]);
   const timedLinesRef = useRef([]);
@@ -154,10 +152,10 @@ const LiveLyricsView = ({
     const newActiveIndex = findActiveLineIndex(timedLinesRef.current, time);
     const previousActiveIndex = activeLineIndexRef.current;
     const activeLineChanged = previousActiveIndex !== newActiveIndex;
-
     if (activeLineChanged) {
       if (previousActiveIndex >= 0) {
         lines[previousActiveIndex]?.node.classList.remove('active');
+        lines[previousActiveIndex]?.node.classList.remove('is-shining');
       }
       if (newActiveIndex >= 0) {
         lines[newActiveIndex]?.node.classList.add('active');
@@ -174,10 +172,15 @@ const LiveLyricsView = ({
     )) {
       const container = containerRef.current;
       if (container) {
-        if (activeLineChanged && !isSeek && !alignImmediately) {
-          scrollToActiveLine(container, activeLine, activeScrollFrameRef);
+        if (
+          activeLineChanged &&
+          !isSeek &&
+          !alignImmediately &&
+          hasProcessedPlaybackTimeRef.current
+        ) {
+          animateToActiveLine(container, activeLine, pendingScrollRef);
         } else {
-          alignActiveLine(container, activeLine, activeScrollFrameRef);
+          alignActiveLine(container, activeLine, pendingScrollRef);
         }
       }
     }
@@ -188,7 +191,8 @@ const LiveLyricsView = ({
     if (lastAdlibTime === null || time < lastAdlibTime) {
       cachedAdlibsRef.current.forEach(item => updateAdlibStateAtTime(
         item,
-        time
+        time,
+        { persistActive: true }
       ));
       adlibCursorRef.current = findAdlibBoundaryCursor(adlibTimeline, time);
     } else {
@@ -198,7 +202,8 @@ const LiveLyricsView = ({
       ) {
         updateAdlibStateAtTime(
           adlibTimeline[adlibCursorRef.current].item,
-          time
+          time,
+          { persistActive: true }
         );
         adlibCursorRef.current++;
       }
@@ -265,7 +270,9 @@ const LiveLyricsView = ({
 
   useEffect(() => {
     const clearActiveLine = () => {
-      cachedLinesRef.current.forEach(line => line.node.classList.remove('active'));
+      cachedLinesRef.current.forEach(line => {
+        line.node.classList.remove('active', 'is-shining');
+      });
       activeLineIndexRef.current = -1;
       hasProcessedPlaybackTimeRef.current = false;
       pendingSeekRef.current = false;
@@ -290,7 +297,9 @@ const LiveLyricsView = ({
       pendingSeekRef.current = true;
     };
     const handlePlayState = event => {
-      if (event.detail?.isEnded) clearActiveLine();
+      if (!event.detail?.isPlaying || event.detail?.isEnded) {
+        clearActiveLine();
+      }
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
@@ -319,10 +328,36 @@ const LiveLyricsView = ({
     const container = containerRef.current;
     if (!container) return undefined;
 
+    const cancelManualScroll = () => {
+      cancelActiveLineScroll(pendingScrollRef);
+    };
+    const cancelManualScrollKey = event => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) {
+        cancelManualScroll();
+      }
+    };
+    container.addEventListener('wheel', cancelManualScroll, { passive: true });
+    container.addEventListener('touchstart', cancelManualScroll, { passive: true });
+    container.addEventListener('pointerdown', cancelManualScroll, { passive: true });
+    container.addEventListener('keydown', cancelManualScrollKey);
+
+    return () => {
+      container.removeEventListener('wheel', cancelManualScroll);
+      container.removeEventListener('touchstart', cancelManualScroll);
+      container.removeEventListener('pointerdown', cancelManualScroll);
+      container.removeEventListener('keydown', cancelManualScrollKey);
+      cancelActiveLineScroll(pendingScrollRef);
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
+
     const realignActiveLine = () => {
       const activeLine = container.querySelector('.preview-line.active');
       if (activeLine) {
-        alignActiveLine(container, activeLine, activeScrollFrameRef);
+        alignActiveLine(container, activeLine, pendingScrollRef);
       }
     };
 
@@ -338,9 +373,87 @@ const LiveLyricsView = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!shouldAnimateEntrance) {
+      setIsEntrancePending(false);
+      return undefined;
+    }
+
+    setIsEntrancePending(true);
+    if (!isSongModalReady) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIsEntrancePending(false);
+      return undefined;
+    }
+
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    let frame = null;
+    let fallbackTimeout = null;
+    let cancelled = false;
+    let revealLines = [];
+    const animationEndHandlers = new Map();
+    const finishReveal = line => {
+      line.classList.remove('initial-reveal');
+      line.style.removeProperty('--initial-reveal-delay');
+      const handler = animationEndHandlers.get(line);
+      if (handler) line.removeEventListener('animationend', handler);
+      animationEndHandlers.delete(line);
+    };
+    const startReveal = () => {
+      frame = null;
+      if (cancelled) return;
+
+      const containerBounds = container.getBoundingClientRect();
+      revealLines = Array.from(
+        container.querySelectorAll('.lyric-line-wrapper')
+      ).filter(line => {
+        const bounds = line.getBoundingClientRect();
+        return bounds.height > 0 &&
+          bounds.bottom > containerBounds.top &&
+          bounds.top < containerBounds.bottom;
+      });
+
+      if (revealLines.length === 0) {
+        setIsEntrancePending(false);
+        return;
+      }
+
+      revealLines.forEach((line, index) => {
+        line.style.setProperty('--initial-reveal-delay', `${index * 35}ms`);
+        const handleAnimationEnd = event => {
+          if (event.target === line) finishReveal(line);
+        };
+        animationEndHandlers.set(line, handleAnimationEnd);
+        line.addEventListener('animationend', handleAnimationEnd);
+      });
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        if (cancelled) return;
+        revealLines.forEach(line => {
+          if (line.isConnected) line.classList.add('initial-reveal');
+        });
+        setIsEntrancePending(false);
+        fallbackTimeout = window.setTimeout(() => {
+          revealLines.forEach(finishReveal);
+          fallbackTimeout = null;
+        }, 240 + Math.max(0, revealLines.length - 1) * 35 + 100);
+      });
+    };
+
+    frame = window.requestAnimationFrame(startReveal);
+    return () => {
+      cancelled = true;
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      if (fallbackTimeout !== null) window.clearTimeout(fallbackTimeout);
+      revealLines.forEach(finishReveal);
+    };
+  }, [isSongModalReady, selectedSong?.trackId, shouldAnimateEntrance]);
+
   return (
     <div
-      className={`live-lyrics-preview${!isPlayingCurrentSong ? ' playback-stopped' : ''}`}
+      className={`live-lyrics-preview${!isPlayingCurrentSong ? ' playback-stopped' : ''}${isEntrancePending ? ' live-lyrics-entrance-pending' : ''}`}
       ref={containerRef}
       style={{ '--dyn-live-sync-gap': settings?.liveSyncLineGap ?? 16 }}
     >
