@@ -21,6 +21,20 @@ const LyricsDisplay = ({
    selectedSong &&
    String(currentTrack.trackId) === String(selectedSong.trackId)
  );
+  const selectedTrackKey = selectedSong?.trackId == null
+    ? null
+    : String(selectedSong.trackId);
+  const isLiveViewActive = !isEditing &&
+    hasValidSyncData &&
+    lyricsViewMode === 'live';
+  const [mountedLiveTrackKey, setMountedLiveTrackKey] = useState(null);
+  if (isLiveViewActive && mountedLiveTrackKey !== selectedTrackKey) {
+    setMountedLiveTrackKey(selectedTrackKey);
+  }
+  const shouldKeepLiveViewMounted = selectedTrackKey !== null &&
+    (isLiveViewActive || mountedLiveTrackKey === selectedTrackKey);
+  const shouldAnimateCurrentLiveEntrance = shouldAnimateLiveEntrance &&
+    !(isPlaying && isPlayingCurrentSong);
   const syncWorkspaceLyrics = useMemo(
     () => getSyncWorkspaceLyrics(selectedSong?.syncData),
     [selectedSong?.syncData]
@@ -57,23 +71,11 @@ const LyricsDisplay = ({
           handleLineClick={handleLineClick}
           settings={settings}
           currentTrack={currentTrack}
+          isPlaying={isPlaying}
           lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
         />
-      ) : hasValidSyncData && lyricsViewMode === 'live' ? (
-        <LiveLyricsView
-          key={selectedSong?.trackId}
-          syncWorkspaceLyrics={syncWorkspaceLyrics}
-          selectedSong={selectedSong}
-          masterPalette={masterPalette}
-          isPlayingCurrentSong={isPlayingCurrentSong}
-          handleLineClick={handleLineClick}
-          settings={settings}
-          currentTrack={currentTrack}
-          lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
-          isSongModalReady={isSongModalReady}
-          shouldAnimateEntrance={shouldAnimateLiveEntrance}
-        />
-      ) : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
+      ) : hasValidSyncData && lyricsViewMode === 'live' ? null
+      : hasValidSyncData && lyricsViewMode === 'group-chat' ? (
         <GroupChatLyricsView
           syncWorkspaceLyrics={syncWorkspaceLyrics}
           selectedSong={selectedSong}
@@ -100,6 +102,30 @@ const LyricsDisplay = ({
           handleAutoSyncDatabases={handleAutoSyncDatabases}
           isLrcFetching={isLrcFetching}
         />
+      )}
+
+      {shouldKeepLiveViewMounted && hasValidSyncData && !isEditing && (
+        <div
+          className={`live-lyrics-view-slot${isLiveViewActive ? '' : ' is-hidden'}`}
+          aria-hidden={!isLiveViewActive}
+          inert={!isLiveViewActive}
+        >
+          <LiveLyricsView
+            key={selectedTrackKey}
+            syncWorkspaceLyrics={syncWorkspaceLyrics}
+            selectedSong={selectedSong}
+            masterPalette={masterPalette}
+            isPlayingCurrentSong={isPlayingCurrentSong}
+            handleLineClick={handleLineClick}
+            settings={settings}
+            currentTrack={currentTrack}
+            isPlaying={isPlaying}
+            lyricsPlaybackOffsetSeconds={lyricsPlaybackOffsetSeconds}
+            isSongModalReady={isSongModalReady}
+            shouldAnimateEntrance={shouldAnimateCurrentLiveEntrance}
+            isViewActive={isLiveViewActive}
+          />
+        </div>
       )}
       
       <LyricsEqualizer 

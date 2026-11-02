@@ -64,12 +64,14 @@
   margin: 0;
   opacity: 0.4;
   transform: translate3d(0, 0, 0) scale(0.95);
-  transform-origin: left center;
+  transform-origin: left var(--live-main-lyrics-origin-y, 0px);
   transition:
     opacity 240ms ease,
     transform 240ms ease-out;
+  will-change: opacity, transform;
   box-sizing: border-box;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .preview-line:hover {
@@ -99,9 +101,18 @@
   animation-name: liveActiveLineIntro;
 }
 
+.preview-line.active.is-activating {
+  animation: liveLineActivation 320ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
 @keyframes liveLineIntro {
   from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.95); }
   to { opacity: var(--live-line-rest-opacity, 0.4); transform: translate3d(0, 0, 0) scale(0.95); }
+}
+
+@keyframes liveLineActivation {
+  from { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @keyframes liveActiveLineIntro {
@@ -112,6 +123,9 @@
 .preview-line .main-lyrics-layer,
 .preview-line .adlib-node .primary-text {
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .preview-line.active .main-lyrics-layer,
@@ -119,21 +133,30 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
-.preview-line.active .main-lyrics-layer .lyric-word,
-.preview-line .adlib-node.adlib-active > .primary-text .lyric-word {
+.preview-line .lyric-word,
+.preview-line .lyric-word-group,
+.preview-line .adlib-node .primary-text .lyric-word,
+.preview-line .adlib-node .primary-text .lyric-word-group {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, filter;
+}
+
+.preview-line.active.is-shining .main-lyrics-layer .lyric-word,
+.preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word {
   animation: liveLyricsGlyphShine 360ms ease-out both;
   animation-delay: calc(var(--word-index, 0) * 45ms);
 }
 
 @keyframes liveLyricsGlyphShine {
   0%, 100% {
-    filter: brightness(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+    filter: brightness(1);
   }
   45% {
     filter:
       brightness(1.65)
-      drop-shadow(0 0 7px rgba(255, 255, 255, 0.85))
-      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+      drop-shadow(0 0 7px rgba(255, 255, 255, 0.85));
   }
 }
 
@@ -188,21 +211,27 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .preview-line.initial-reveal {
+  .live-lyrics-preview.live-lyrics-entrance-pending .preview-line {
+    opacity: 1 !important;
+  }
+
+  .preview-line.initial-reveal,
+  .preview-line.active.is-activating {
     animation: none;
   }
 
-  .preview-line.active .main-lyrics-layer .lyric-word,
-  .preview-line .adlib-node.adlib-active > .primary-text .lyric-word,
+  .preview-line.active.is-shining .main-lyrics-layer .lyric-word,
+  .preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word,
   .preview-line .live-split-line .adlib-node.adlib-active,
   .preview-line .live-split-line .adlib-node.adlib-active > .primary-text {
     animation: none;
   }
 }
 
-.disable-animations .preview-line.active .main-lyrics-layer .lyric-word,
-.disable-animations .preview-line .adlib-node.adlib-active > .primary-text .lyric-word,
+.disable-animations .preview-line.active.is-shining .main-lyrics-layer .lyric-word,
+.disable-animations .preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word,
 .disable-animations .preview-line.initial-reveal,
+.disable-animations .preview-line.active.is-activating,
 .disable-animations .preview-line .live-split-line .adlib-node.adlib-active,
 .disable-animations .preview-line .live-split-line .adlib-node.adlib-active > .primary-text {
   animation: none;

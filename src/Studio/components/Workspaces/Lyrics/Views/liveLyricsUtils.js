@@ -54,6 +54,17 @@ export const getCenteredScrollTop = ({
   return Math.max(0, Math.min(centeredScrollTop, maxScrollTop));
 };
 
+export const getAnchoredScrollTop = ({
+  scrollTop,
+  viewportTop,
+  activeTop,
+  targetOffset,
+  maxScrollTop
+}) => Math.max(
+  0,
+  Math.min(scrollTop + activeTop - viewportTop - targetOffset, maxScrollTop)
+);
+
 export const getCombinedVerticalBounds = rects => {
   const visibleRects = rects.filter(rect =>
     Number.isFinite(rect?.top) &&

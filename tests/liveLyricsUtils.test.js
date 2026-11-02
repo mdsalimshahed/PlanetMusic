@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   buildTimedLineData,
   findActiveLineIndex,
+  getAnchoredScrollTop,
   getCombinedVerticalBounds,
   getCenteredScrollTop
 } from '../src/Studio/components/Workspaces/Lyrics/Views/liveLyricsUtils.js';
@@ -43,6 +44,31 @@ test('centers active lines when the scroll range allows it', () => {
     activeHeight: 40,
     maxScrollTop: 1000
   }), 80);
+});
+
+test('anchors the main lyric top at a fixed viewport offset', () => {
+  assert.equal(getAnchoredScrollTop({
+    scrollTop: 200,
+    viewportTop: 0,
+    activeTop: 360,
+    targetOffset: 205,
+    maxScrollTop: 1000
+  }), 355);
+});
+
+test('clamps the active lyric anchor at scroll boundaries', () => {
+  const anchor = {
+    scrollTop: 0,
+    viewportTop: 0,
+    targetOffset: 205,
+    maxScrollTop: 900
+  };
+  assert.equal(getAnchoredScrollTop({ ...anchor, activeTop: 100 }), 0);
+  assert.equal(getAnchoredScrollTop({
+    ...anchor,
+    scrollTop: 900,
+    activeTop: 300
+  }), 900);
 });
 
 test('keeps first and last lines within the scroll boundaries', () => {

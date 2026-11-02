@@ -115,7 +115,7 @@ const NotificationToast = ({ notification, onDismiss }) => {
   );
 };
 
-const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSong, updateSelectedSongDirect, isSaved, toggleLibrary, updateSongInLibrary, library, setCurrentTrack, currentTrack, settings }) => {
+const SongModal = ({ selectedSong, isSongModalReady, shouldAnimateEntrance = true, onModalReady, setSelectedSong, updateSelectedSongDirect, isSaved, toggleLibrary, updateSongInLibrary, library, setCurrentTrack, currentTrack, settings }) => {
   const [toastItems, setToastItems] = useState([]);
   const [isAutomatedVaultAddRunning, setIsAutomatedVaultAddRunning] = useState(false);
   const [automatedTranslationRequest, setAutomatedTranslationRequest] = useState(null);
@@ -211,10 +211,13 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
     return () => window.cancelAnimationFrame(frame);
   }, [selectedTrackId, markModalReady]);
   useEffect(() => {
-    if (selectedTrackId == null || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    if (
+      selectedTrackId == null ||
+      (shouldAnimateEntrance && !window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    ) return undefined;
     const frame = window.requestAnimationFrame(() => markModalReady(selectedTrackId));
     return () => window.cancelAnimationFrame(frame);
-  }, [selectedTrackId, markModalReady]);
+  }, [markModalReady, selectedTrackId, shouldAnimateEntrance]);
   const previousTrackIdForNotificationRef = useRef(selectedSong?.trackId);
   const translationCancelHandlerRef = useRef(null);
   const registerTranslationCancelHandler = useCallback(handler => {
@@ -644,7 +647,10 @@ const SongModal = ({ selectedSong, isSongModalReady, onModalReady, setSelectedSo
   if (!selectedSong) return null;
 
   return (
-    <div className="modal-backdrop" onClick={() => setSelectedSong(null)}>
+    <div
+      className={`modal-backdrop${shouldAnimateEntrance ? '' : ' is-reopening'}`}
+      onClick={() => setSelectedSong(null)}
+    >
       <div
         className="modal-window glass-panel"
         onClick={(e) => e.stopPropagation()}

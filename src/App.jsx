@@ -333,8 +333,6 @@ const App = () => {
   const urlTrackId = pathParts[0] === 'song' ? pathParts[1] : null;
 
   useEffect(() => {
-    if (activeTab !== 'vault') return undefined;
-
     let idleCallbackId;
     let timeoutId;
     const preloadSongModal = () => {
@@ -353,7 +351,7 @@ const App = () => {
       if (idleCallbackId !== undefined) window.cancelIdleCallback(idleCallbackId);
       if (timeoutId !== undefined) window.clearTimeout(timeoutId);
     };
-  }, [activeTab]);
+  }, []);
 
   // Extract ?q= search parameter from URL for bookmarking
   const queryParams = new URLSearchParams(location.search);
@@ -380,11 +378,21 @@ const App = () => {
 
   const [selectedSong, setSelectedSong] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const seenSongModalTrackIdsRef = useRef(new Set());
+  const [shouldAnimateSongModalEntrance, setShouldAnimateSongModalEntrance] = useState(true);
   const [songModalReadyTrackId, setSongModalReadyTrackId] = useState(null);
+  const selectedSongTrackKey = selectedSong?.trackId == null
+    ? null
+    : String(selectedSong.trackId);
   const isSongModalReady = Boolean(
     selectedSong &&
     String(songModalReadyTrackId) === String(selectedSong.trackId)
   );
+  useEffect(() => {
+    if (selectedSongTrackKey !== null) {
+      seenSongModalTrackIdsRef.current.add(selectedSongTrackKey);
+    }
+  }, [selectedSongTrackKey]);
   const songSelectionContextRef = useRef({ selectedSong, searchQuery, location, navigate });
   useLayoutEffect(() => {
     songSelectionContextRef.current = { selectedSong, searchQuery, location, navigate };
@@ -550,35 +558,74 @@ const App = () => {
     }
   }, [searchQuery, isAmbientMode, isZenMode, navigate]);
 
+  const selectSongForModal = useCallback(song => {
+    setSelectedSong(song);
+    if (!song) return;
+
+    const trackKey = song.trackId == null ? null : String(song.trackId);
+    const isAlreadyPlayingSong = currentTrack &&
+      String(currentTrack.trackId) === trackKey &&
+      Boolean(window.globalIsAudioPlaying);
+    setShouldAnimateSongModalEntrance(
+      trackKey !== null &&
+      !seenSongModalTrackIdsRef.current.has(trackKey) &&
+      !isAlreadyPlayingSong
+    );
+    if (trackKey !== null) seenSongModalTrackIdsRef.current.add(trackKey);
+  }, [currentTrack]);
+
   // Routing Handlers
   const handleSetSelectedSong = useCallback(song => {
-    const { selectedSong: currentSelectedSong, searchQuery: currentSearchQuery, location: currentLocation, navigate: currentNavigate } = songSelectionContextRef.current;
-    setSongModalReadyTrackId(null);
-    if (song) {
-      if (!currentSelectedSong && contentScrollAreaRef.current) {
-        vaultScrollPositionRef.current = contentScrollAreaRef.current.scrollTop;
-      }
-      const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
-      currentNavigate(`/song/${song.trackId}/live${qParam}`, {
-        state: {
-          returnPath: '/vault'
+    const selectSong = () => {
+      const {
+        selectedSong: currentSelectedSong,
+        searchQuery: currentSearchQuery,
+        location: currentLocation,
+        navigate: currentNavigate
+      } = songSelectionContextRef.current;
+      setSongModalReadyTrackId(null);
+      if (song) {
+        if (!currentSelectedSong && contentScrollAreaRef.current) {
+          vaultScrollPositionRef.current = contentScrollAreaRef.current.scrollTop;
         }
-      });
-    } else {
+        const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
+        currentNavigate(`/song/${song.trackId}/live${qParam}`, {
+          state: {
+            returnPath: '/vault'
+          }
+        });
+        selectSongForModal(song);
+        return;
+      }
+
       const qParam = currentSearchQuery ? `?q=${encodeURIComponent(currentSearchQuery)}` : '';
       const returnPath = currentLocation.state?.returnPath || '/vault';
       const tabPath = `${returnPath}${qParam}`;
       currentNavigate(tabPath);
       if (!tabPath.startsWith('/vault')) vaultScrollPositionRef.current = null;
+      selectSongForModal(null);
+    };
+
+    if (!song) {
+      selectSong();
+      return;
     }
-    setSelectedSong(song);
-  }, [setSongModalReadyTrackId]);
+
+    loadSongModal()
+      .then(selectSong)
+      .catch(error => {
+        console.error('Could not load the song modal.', error);
+      });
+  }, [
+    selectSongForModal,
+    setSongModalReadyTrackId
+  ]);
 
   // Direct State Update Handler (No Navigation / Route Interruption)
   const updateSelectedSongDirect = (song) => {
     if (String(songSelectionContextRef.current.selectedSong?.trackId) !== String(song?.trackId)) return;
     setSongModalReadyTrackId(null);
-    setSelectedSong(song);
+    selectSongForModal(song);
   };
 
   const handleHomeClick = () => {
@@ -597,7 +644,13 @@ const App = () => {
   );
 
   // 2. Deep Linking Engine
-  useDeepLink({ urlTrackId, library, searchResults, selectedSong, setSelectedSong });
+  useDeepLink({
+    urlTrackId,
+    library,
+    searchResults,
+    selectedSong,
+    setSelectedSong: selectSongForModal
+  });
 
   // 3. Vault & Data Logic
   const {
@@ -988,6 +1041,7 @@ const App = () => {
           <SongModal
             selectedSong={selectedSong}
             isSongModalReady={isSongModalReady}
+            shouldAnimateEntrance={shouldAnimateSongModalEntrance}
             onModalReady={setSongModalReadyTrackId}
             setSelectedSong={handleSetSelectedSong}
             updateSelectedSongDirect={updateSelectedSongDirect}
@@ -1005,6 +1059,7 @@ const App = () => {
       <Player
         currentTrack={playerTrack}
         onPlaybackVisualChange={setLogoPlaybackVisuals}
+        shouldAnimateSongModalEntrance={shouldAnimateSongModalEntrance}
         setCurrentTrack={setCurrentTrack}
         selectedSong={selectedSong}
         setSelectedSong={handleSetSelectedSong}

@@ -162,6 +162,7 @@ export const PlayerProgress = ({
   handleProgressMouseMove, handleProgressMouseLeave,
   progressBarRef, currentTimeRef, isPrecise
 }) => {
+  const isScrubbingRef = useRef(false);
   const formatDisplayTime = isPrecise ? formatPreciseTime : formatTime;
 
   useEffect(() => {
@@ -169,6 +170,35 @@ export const PlayerProgress = ({
       currentTimeRef.current.innerText = formatDisplayTime(window.currentAudioTime || 0);
     }
   }, [formatDisplayTime, currentTimeRef]);
+
+  const handleProgressPointerDown = event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    isScrubbingRef.current = true;
+    progressBarRef.current?.setAttribute('data-scrubbing', 'true');
+  };
+  const previewProgress = event => {
+    const time = Number(event.currentTarget.value);
+    if (!Number.isFinite(time)) return;
+    if (!isScrubbingRef.current) {
+      handleSeek(time);
+      return;
+    }
+
+    event.currentTarget.style.setProperty(
+      '--progress',
+      `${(time / (duration || 1)) * 100}%`
+    );
+    if (currentTimeRef.current) {
+      currentTimeRef.current.innerText = formatDisplayTime(time);
+    }
+  };
+  const finishProgressScrub = () => {
+    if (!isScrubbingRef.current) return;
+    isScrubbingRef.current = false;
+    progressBarRef.current?.removeAttribute('data-scrubbing');
+    const time = Number(progressBarRef.current?.value);
+    if (Number.isFinite(time)) handleSeek(time);
+  };
 
   return (
     <div className="player-bottom-row" onClick={(e) => e.stopPropagation()}>
@@ -196,7 +226,11 @@ export const PlayerProgress = ({
           min="0" max={duration || 100}
           step={isPrecise ? 0.001 : undefined}
           defaultValue="0"
-          onChange={handleSeek}
+          onPointerDown={handleProgressPointerDown}
+          onPointerUp={finishProgressScrub}
+          onPointerCancel={finishProgressScrub}
+          onLostPointerCapture={finishProgressScrub}
+          onChange={previewProgress}
           style={{ '--progress': `0%` }}
         />
       </div>
@@ -207,6 +241,7 @@ export const PlayerProgress = ({
 
 const PlayerUI = ({
   currentTrack, selectedSong, slotNode, isSyncWorkspaceActive, accentColor, openModal,
+  shouldAnimateSongModalEntrance,
   isPlaying, togglePlay, fallbackMessage, deezerStatus, isBuffering, activeSource,
   volume, isMuted, handleVolumeChange, toggleMute, closePlayer,
   duration, hoverTime, handleSeek, handleContainerClick, handleProgressMouseMove, handleProgressMouseLeave,
@@ -221,38 +256,39 @@ const PlayerUI = ({
     const player = playerRef.current;
     if (!player) return undefined;
 
-    if (
-      hasSelectedSong &&
-      previousBoundsRef.current &&
-      typeof player.animate === 'function' &&
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
+    if (hasSelectedSong) {
       const first = previousBoundsRef.current;
       previousBoundsRef.current = null;
-
-      player.classList.add('is-modal-transitioning');
-      const last = player.getBoundingClientRect();
-      if (last.width > 0 && last.height > 0) {
-        const animation = player.animate([
-          {
-            transform: `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${first.width / last.width}, ${first.height / last.height})`
-          },
-          { transform: 'translate(0, 0) scale(1)' }
-        ], {
-          duration: 500,
-          easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)'
-        });
-        entranceAnimationRef.current = animation;
-        animation.onfinish = () => {
+      if (
+        shouldAnimateSongModalEntrance &&
+        first &&
+        typeof player.animate === 'function' &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        player.classList.add('is-modal-transitioning');
+        const last = player.getBoundingClientRect();
+        if (last.width > 0 && last.height > 0) {
+          const animation = player.animate([
+            {
+              transform: `translate(${first.left - last.left}px, ${first.top - last.top}px) scale(${first.width / last.width}, ${first.height / last.height})`
+            },
+            { transform: 'translate(0, 0) scale(1)' }
+          ], {
+            duration: 500,
+            easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)'
+          });
+          entranceAnimationRef.current = animation;
+          animation.onfinish = () => {
+            player.classList.remove('is-modal-transitioning');
+            entranceAnimationRef.current = null;
+          };
+          animation.oncancel = () => {
+            player.classList.remove('is-modal-transitioning');
+            entranceAnimationRef.current = null;
+          };
+        } else {
           player.classList.remove('is-modal-transitioning');
-          entranceAnimationRef.current = null;
-        };
-        animation.oncancel = () => {
-          player.classList.remove('is-modal-transitioning');
-          entranceAnimationRef.current = null;
-        };
-      } else {
-        player.classList.remove('is-modal-transitioning');
+        }
       }
     }
 
@@ -264,7 +300,7 @@ const PlayerUI = ({
         player.classList.remove('is-modal-transitioning');
       }
     };
-  }, [hasSelectedSong]);
+  }, [hasSelectedSong, shouldAnimateSongModalEntrance]);
 
   if (!currentTrack) return null;
 

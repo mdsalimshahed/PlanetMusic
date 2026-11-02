@@ -60,6 +60,19 @@
   animation-delay: 0.07s;
 }
 
+.modal-backdrop.is-reopening,
+.modal-backdrop.is-reopening .modal-window,
+.modal-backdrop.is-reopening .modal-two-column-layout > .modal-left-col,
+.modal-backdrop.is-reopening .modal-two-column-layout > .modal-right-col {
+  animation: none;
+}
+
+.modal-backdrop.is-reopening .modal-dynamic-bg {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
 .modal-dynamic-bg {
   position: absolute;
   top: 0;

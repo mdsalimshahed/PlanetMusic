@@ -13,6 +13,7 @@ export const usePlayerClockSync = runtime => {
     let lastSecond = -1;
     const updateSeekPosition = (time) => {
       if (!Number.isFinite(time)) return;
+      if (progressBarRef.current?.dataset.scrubbing === 'true') return;
       if (progressBarRef.current) {
         progressBarRef.current.value = time;
         progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
@@ -25,11 +26,12 @@ export const usePlayerClockSync = runtime => {
       if (ytVideoId && !ytPlaybackConfirmedRef.current) return;
       const time = e.detail;
       const currentSecond = Math.floor(time);
-      if (progressBarRef.current) {
+      const isProgressScrubbing = progressBarRef.current?.dataset.scrubbing === 'true';
+      if (progressBarRef.current && !isProgressScrubbing) {
         progressBarRef.current.value = time;
         progressBarRef.current.style.setProperty('--progress', `${(time / (duration || 1)) * 100}%`);
       }
-      if (currentSecond !== lastSecond || isSyncWorkspaceActive) {
+      if (!isProgressScrubbing && (currentSecond !== lastSecond || isSyncWorkspaceActive)) {
         if (currentTimeRef.current) currentTimeRef.current.innerText = formatPlayerTime(time);
         lastSecond = currentSecond;
       }

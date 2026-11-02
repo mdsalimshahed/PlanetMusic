@@ -34,9 +34,8 @@ export const usePlayerControls = runtime => {
     }
   };
 
-  const handleSeek = (e) => {
-    e.stopPropagation();
-    const time = Number(e.target.value);
+  const handleSeek = time => {
+    if (!Number.isFinite(time)) return;
     globalClock.seek(time);
     
     if (ytVideoId && ytPlayerRef.current && ytPlayerReady) {
