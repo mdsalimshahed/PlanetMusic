@@ -8,6 +8,19 @@ export const buildTimedLineData = (syncData, nextStarts) => (syncData || [])
   .filter(line => !Number.isNaN(line.start))
   .sort((first, second) => first.start - second.start);
 
+export const findCurrentLineIndex = (timedLines, time) => {
+  let low = 0;
+  let high = timedLines.length;
+
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (timedLines[middle].start <= time) low = middle + 1;
+    else high = middle;
+  }
+
+  return low > 0 ? timedLines[low - 1].index : -1;
+};
+
 export const findActiveLineIndex = (timedLines, time) => {
   let low = 0;
   let high = timedLines.length;

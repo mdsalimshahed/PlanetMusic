@@ -3,32 +3,34 @@ import { LyricLineWrapper } from '../LyricsLineRenderer.jsx';
 import { buildAdlibTimeline, findAdlibBoundaryCursor, updateAdlibStateAtTime } from '../../../../utils/adlibTimeline.js';
 import {
   buildTimedLineData,
-  getCombinedVerticalBounds
+  findActiveLineIndex
 } from './liveLyricsUtils.js';
 import './LiveLyricsView.css';
 
 const getActiveLineScrollTop = (container, node) => {
   const containerBounds = container.getBoundingClientRect();
-  const activeBounds = getCombinedVerticalBounds([
-    node.getBoundingClientRect(),
-    ...Array.from(
-      node.querySelectorAll('.main-live-translation, .pronunciation-text'),
-      element => element.getBoundingClientRect()
-    )
-  ]);
-  if (!activeBounds) return container.scrollTop;
+  const activeBounds = node.getBoundingClientRect();
+  if (
+    !Number.isFinite(containerBounds.top) ||
+    !Number.isFinite(activeBounds.top) ||
+    !Number.isFinite(activeBounds.height) ||
+    activeBounds.height <= 0
+  ) {
+    return container.scrollTop;
+  }
 
   const scaleY = container.offsetHeight > 0
     ? containerBounds.height / container.offsetHeight
     : 1;
   const viewportTop = containerBounds.top + container.clientTop * scaleY;
-  const activeTop = (activeBounds.top - viewportTop) / scaleY;
+  const activeTop = container.scrollTop +
+    (activeBounds.top - viewportTop) / scaleY;
   const activeHeight = activeBounds.height / scaleY;
-  const preferredTop = container.clientHeight * 0.45;
+  const preferredTop = container.clientHeight * 0.42;
   const safeInset = Math.min(24, container.clientHeight * 0.06);
   const targetTop = activeHeight + safeInset * 2 <= container.clientHeight
-    ? container.scrollTop + activeTop + activeHeight / 2 - preferredTop
-    : container.scrollTop + activeTop - safeInset;
+    ? activeTop + activeHeight / 2 - preferredTop
+    : activeTop - safeInset;
 
   return Math.max(
     0,
@@ -61,10 +63,7 @@ const animateToActiveLine = (container, node, pendingScrollRef) => {
   }
 
   const duration = 420;
-  const animation = {
-    frame: null,
-    startedAt: null
-  };
+  const animation = { frame: null, startedAt: null };
   pendingScrollRef.current = animation;
 
   const step = timestamp => {
@@ -73,33 +72,27 @@ const animateToActiveLine = (container, node, pendingScrollRef) => {
       pendingScrollRef.current = null;
       return;
     }
-
     if (animation.startedAt === null) animation.startedAt = timestamp;
     const progress = Math.min((timestamp - animation.startedAt) / duration, 1);
     const easedProgress = 1 - ((1 - progress) ** 3);
     container.scrollTop = startTop + (targetTop - startTop) * easedProgress;
-
     if (progress === 1) {
       pendingScrollRef.current = null;
       return;
     }
     animation.frame = window.requestAnimationFrame(step);
   };
-
   animation.frame = window.requestAnimationFrame(step);
 };
 
-const findCurrentLineIndex = (timedLines, time) => {
-  let low = 0;
-  let high = timedLines.length;
-
-  while (low < high) {
-    const middle = (low + high) >>> 1;
-    if (timedLines[middle].start <= time) low = middle + 1;
-    else high = middle;
-  }
-
-  return low > 0 ? timedLines[low - 1].index : -1;
+const retriggerGlyphShine = activeLine => {
+  if (!activeLine) return;
+  activeLine.classList.remove('is-shining');
+  activeLine.querySelectorAll('.lyric-word').forEach((word, index) => {
+    word.style.setProperty('--word-index', String(index));
+  });
+  void activeLine.offsetWidth;
+  activeLine.classList.add('is-shining');
 };
 
 const LiveLyricsView = ({
@@ -119,6 +112,7 @@ const LiveLyricsView = ({
   const hasProcessedPlaybackTimeRef = useRef(false);
   const pendingSeekRef = useRef(false);
   const [isEntrancePending, setIsEntrancePending] = useState(shouldAnimateEntrance);
+  const hasAlignedMountRef = useRef(false);
   const cachedLinesRef = useRef([]);
   const timedLinesRef = useRef([]);
   const cachedAdlibsRef = useRef([]);
@@ -129,7 +123,7 @@ const LiveLyricsView = ({
   const syncList = selectedSong?.syncData;
   const shouldUseSelectedSongTime = Boolean(
     selectedSong &&
-    (!currentTrack || isPlayingCurrentSong)
+    isPlayingCurrentSong
   );
 
   const nextStarts = useMemo(() => {
@@ -148,35 +142,41 @@ const LiveLyricsView = ({
     [syncList, nextStarts]
   );
 
-  const handleTimeUpdate = useCallback((time, { isSeek = false, alignImmediately = false } = {}) => {
+  const handleTimeUpdate = useCallback((time, {
+    isSeek = false,
+    alignImmediately = false
+  } = {}) => {
     if (!shouldUseSelectedSongTime || !Number.isFinite(time)) return;
 
     const lines = cachedLinesRef.current;
-    const newActiveIndex = findCurrentLineIndex(timedLinesRef.current, time);
+    const newActiveIndex = findActiveLineIndex(timedLinesRef.current, time);
     const previousActiveIndex = activeLineIndexRef.current;
     const activeLineChanged = previousActiveIndex !== newActiveIndex;
-    const isNextLineHandoff = previousActiveIndex >= 0 &&
-      newActiveIndex === previousActiveIndex + 1;
-
     if (activeLineChanged) {
       if (previousActiveIndex >= 0) {
         lines[previousActiveIndex]?.node.classList.remove('active');
+        lines[previousActiveIndex]?.node.classList.remove('is-shining');
       }
       if (newActiveIndex >= 0) {
         lines[newActiveIndex]?.node.classList.add('active');
+        retriggerGlyphShine(lines[newActiveIndex].node);
       }
       activeLineIndexRef.current = newActiveIndex;
     }
 
     const activeLine = lines[newActiveIndex]?.node;
-    if (activeLine && (activeLineChanged || alignImmediately)) {
+    if (activeLine && (
+      activeLineChanged ||
+      alignImmediately ||
+      isSeek
+    )) {
       const container = containerRef.current;
       if (container) {
         if (
-          !alignImmediately &&
+          activeLineChanged &&
           !isSeek &&
-          hasProcessedPlaybackTimeRef.current &&
-          isNextLineHandoff
+          !alignImmediately &&
+          hasProcessedPlaybackTimeRef.current
         ) {
           animateToActiveLine(container, activeLine, pendingScrollRef);
         } else {
@@ -247,8 +247,9 @@ const LiveLyricsView = ({
         ? window.currentAudioTime
         : 0;
       handleTimeUpdate(currentTime - lyricsPlaybackOffsetSeconds, {
-        alignImmediately: true
+        alignImmediately: !hasAlignedMountRef.current
       });
+      hasAlignedMountRef.current = true;
     } else {
       cachedLinesRef.current.forEach(line => line.node.classList.remove('active'));
       activeLineIndexRef.current = -1;
@@ -268,39 +269,17 @@ const LiveLyricsView = ({
   ]);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return undefined;
-
-    const cancelManualScroll = () => cancelActiveLineScroll(pendingScrollRef);
-    const cancelManualScrollKey = event => {
-      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) {
-        cancelManualScroll();
-      }
-    };
-    container.addEventListener('wheel', cancelManualScroll, { passive: true });
-    container.addEventListener('touchstart', cancelManualScroll, { passive: true });
-    container.addEventListener('pointerdown', cancelManualScroll, { passive: true });
-    container.addEventListener('keydown', cancelManualScrollKey);
-    return () => {
-      container.removeEventListener('wheel', cancelManualScroll);
-      container.removeEventListener('touchstart', cancelManualScroll);
-      container.removeEventListener('pointerdown', cancelManualScroll);
-      container.removeEventListener('keydown', cancelManualScrollKey);
-      cancelActiveLineScroll(pendingScrollRef);
-    };
-  }, []);
-
-  useEffect(() => {
     const clearActiveLine = () => {
-      cachedLinesRef.current.forEach(line => line.node.classList.remove('active'));
+      cachedLinesRef.current.forEach(line => {
+        line.node.classList.remove('active', 'is-shining');
+      });
       activeLineIndexRef.current = -1;
       hasProcessedPlaybackTimeRef.current = false;
       pendingSeekRef.current = false;
       cachedAdlibsRef.current.forEach(item => {
-        if (item.state === 'hidden') return;
-        item.node.classList.add('adlib-hidden');
-        item.node.classList.remove('adlib-active', 'adlib-visible');
-        item.state = 'hidden';
+        item.node.classList.add('adlib-visible');
+        item.node.classList.remove('adlib-active', 'adlib-hidden');
+        item.state = 'visible';
       });
       adlibCursorRef.current = 0;
       lastAdlibTimeRef.current = null;
@@ -318,19 +297,16 @@ const LiveLyricsView = ({
       pendingSeekRef.current = true;
     };
     const handlePlayState = event => {
-      if (event.detail?.isEnded) clearActiveLine();
+      if (!event.detail?.isPlaying || event.detail?.isEnded) {
+        clearActiveLine();
+      }
     };
 
     window.addEventListener('globalTimeUpdate', handleTimeEvent);
     window.addEventListener('globalTimeSeek', handleTimeSeek);
     window.addEventListener('globalPlayState', handlePlayState);
     if (shouldUseSelectedSongTime) {
-      const currentTime = Number.isFinite(window.currentAudioTime)
-        ? window.currentAudioTime
-        : 0;
-      handleTimeUpdate(currentTime - lyricsPlaybackOffsetSeconds, {
-        alignImmediately: true
-      });
+      // The mount layout effect establishes the active line and scroll position.
     } else {
       clearActiveLine();
     }
@@ -347,6 +323,55 @@ const LiveLyricsView = ({
     selectedSong?.trackId,
     shouldUseSelectedSongTime
   ]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    const cancelManualScroll = () => {
+      cancelActiveLineScroll(pendingScrollRef);
+    };
+    const cancelManualScrollKey = event => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) {
+        cancelManualScroll();
+      }
+    };
+    container.addEventListener('wheel', cancelManualScroll, { passive: true });
+    container.addEventListener('touchstart', cancelManualScroll, { passive: true });
+    container.addEventListener('pointerdown', cancelManualScroll, { passive: true });
+    container.addEventListener('keydown', cancelManualScrollKey);
+
+    return () => {
+      container.removeEventListener('wheel', cancelManualScroll);
+      container.removeEventListener('touchstart', cancelManualScroll);
+      container.removeEventListener('pointerdown', cancelManualScroll);
+      container.removeEventListener('keydown', cancelManualScrollKey);
+      cancelActiveLineScroll(pendingScrollRef);
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    const realignActiveLine = () => {
+      const activeLine = container.querySelector('.preview-line.active');
+      if (activeLine) {
+        alignActiveLine(container, activeLine, pendingScrollRef);
+      }
+    };
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(realignActiveLine);
+    resizeObserver?.observe(container);
+    window.addEventListener('resize', realignActiveLine);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', realignActiveLine);
+    };
+  }, []);
 
   useEffect(() => {
     if (!shouldAnimateEntrance) {
@@ -441,7 +466,7 @@ const LiveLyricsView = ({
           viewMode="live"
           handleLineClick={handleLineClick}
           masterPalette={masterPalette}
-          isPlayingCurrentSong={false}
+          isPlayingCurrentSong={isPlayingCurrentSong}
         />
       ))}
     </div>
