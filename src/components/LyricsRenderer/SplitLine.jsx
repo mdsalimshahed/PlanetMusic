@@ -181,7 +181,10 @@ const SplitLine = ({
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+    <div
+      className={mainChars.length === 0 ? 'is-adlib-only-line' : undefined}
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}
+    >
       {mainTranslationJSX && !(focusedMainLyrics && autoLiveLayout) ? (
         <span className="chunk-translation live-translation main-live-translation" dir="ltr">
           {mainTranslationJSX}

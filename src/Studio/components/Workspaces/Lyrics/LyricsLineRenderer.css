@@ -336,7 +336,7 @@ rt.pronunciation-text,
   left: auto;
   bottom: auto;
   order: -1;
-  margin: 0 0 var(--dyn-trans-top-padding, 8px);
+  margin: 0 0 2px;
   align-self: flex-start;
   transform: none !important;
 }
@@ -347,13 +347,14 @@ rt.pronunciation-text,
   bottom: auto;
   left: auto;
   order: -1;
-  margin: 0 0 var(--dyn-trans-top-padding, 8px);
+  margin: 0 0 2px;
   align-self: flex-start;
   transform: none;
 }
 
 .preview-line .live-split-line .adlib-node.is-adlib-new-row {
   margin-inline-start: 0 !important;
+  margin-block-start: 0 !important;
 }
 
 .preview-line .adlib-node > .adlib-live-translation {
@@ -411,12 +412,14 @@ rt.pronunciation-text,
 .adlib-node.adlib-hidden .pronunciation-text {
   opacity: 0 !important;
   filter: grayscale(100%) !important;
+  visibility: hidden !important;
 }
 
 .adlib-node.adlib-visible,
 .adlib-node.adlib-visible .pronunciation-text {
   opacity: 0.6 !important;
   filter: grayscale(0%) !important;
+  visibility: visible;
 }
 
 .live-layout-auto .adlib-node.adlib-visible,
@@ -429,4 +432,5 @@ rt.pronunciation-text,
 .adlib-node.adlib-active .pronunciation-text {
   opacity: 1 !important;
   filter: grayscale(0%) !important;
+  visibility: visible;
 }

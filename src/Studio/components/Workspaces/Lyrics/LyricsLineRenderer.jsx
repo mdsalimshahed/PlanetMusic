@@ -390,8 +390,8 @@ export const LyricLineWrapper = React.memo(({
   const wrapperRef = useRef(null);
   const start = savedNode?.start ?? 'NaN';
   const end = savedNode?.end ?? 'NaN';
-  const isLiveRender = viewMode === 'live' || viewMode === 'live-scroll';
-  const renderPlaybackState = isLiveRender ? false : isPlayingCurrentSong;
+  const isLiveRender = viewMode === 'live';
+  const renderPlaybackState = isPlayingCurrentSong;
 
   const renderedContent = useMemo(() =>
     renderLine(
@@ -550,6 +550,7 @@ export const LyricLineWrapper = React.memo(({
           : 1;
         const mainGlyphs = wrapper.querySelector('.core-chunks > .main-lyrics-layer');
         const hasMainLyrics = Boolean(mainGlyphs?.textContent.trim());
+        wrapper.classList.toggle('is-adlib-only-line', !hasMainLyrics);
         let mainGlyphRows = getGlyphRows(mainGlyphs);
         splitLine?.classList.toggle('is-main-wrapped', mainGlyphRows.length > 1);
         const mainHasForeignText = Boolean(
@@ -680,6 +681,10 @@ export const LyricLineWrapper = React.memo(({
           adlib.classList.toggle('has-secondary', hasSecondary);
           if (!hasMainLyrics) {
             adlib.classList.add('is-adlib-wrapped');
+            adlib.classList.add('is-adlib-new-row');
+            adlib.style.removeProperty('--live-adlib-collision-gap');
+            adlib.style.removeProperty('--live-adlib-neighbor-clearance-start');
+            adlib.style.removeProperty('--live-adlib-glyph-offset-y');
           }
         });
 
@@ -897,7 +902,10 @@ export const LyricLineWrapper = React.memo(({
             !fitsBesideMain(adlib)
           ) {
             adlib.classList.add('is-adlib-wrapped');
+            adlib.classList.add('is-adlib-new-row');
             adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+            adlib.style.removeProperty('--live-adlib-collision-gap');
+            adlib.style.removeProperty('--live-adlib-neighbor-clearance-start');
             appliedGap = parseFloat(getComputedStyle(adlib).marginBlockStart) || 0;
             translationRows = getGlyphRows(translation);
             overlappingRows = findOverlappingRows(translationRows, appliedGap);
@@ -934,6 +942,7 @@ export const LyricLineWrapper = React.memo(({
         const splitLineBottom = splitLine?.getBoundingClientRect().bottom;
         let inlineNeighborStartClearance = 0;
         adlibMeasurements.forEach(({ adlib }) => {
+          if (adlib.classList.contains('is-adlib-new-row')) return;
           const adlibRects = getFinalAdlibRects(adlib);
           let neighborStartClearance = 0;
           const isInlineBesideMain = fitsBesideMain(adlib);
@@ -985,7 +994,9 @@ export const LyricLineWrapper = React.memo(({
 
           if (neighborStartClearance > 0) {
             adlib.classList.add('is-adlib-wrapped');
+            adlib.classList.add('is-adlib-new-row');
             adlib.style.removeProperty('--live-adlib-glyph-offset-y');
+            adlib.style.removeProperty('--live-adlib-collision-gap');
             adlib.style.setProperty(
               '--live-adlib-neighbor-clearance-start',
               `${(
@@ -1028,14 +1039,8 @@ export const LyricLineWrapper = React.memo(({
       };
       const queueInitialLayoutMeasurement = () => {
         if (viewMode === 'live') {
-          if (measurementQueued || cancelled) return;
-          measurementQueued = true;
-          queuedMeasurement = () => {
-            queuedMeasurement = null;
-            measurementQueued = false;
-            if (!cancelled) measureLiveTranslations();
-          };
-          queueLiveAutoLayoutMeasurement(queuedMeasurement, wrapper);
+          if (cancelled) return;
+          measureLiveTranslations();
           return;
         }
         if (measurementQueued || cancelled) return;
@@ -1066,6 +1071,19 @@ export const LyricLineWrapper = React.memo(({
               Math.abs(nextSize.height - previousSize.height) >= 0.5;
           });
           if (!sizeChanged) return;
+          if (viewMode === 'live') {
+            const container = wrapper.closest('.live-lyrics-preview');
+            const containerBounds = container?.getBoundingClientRect();
+            const lineBounds = wrapper.getBoundingClientRect();
+            const isVisible = containerBounds &&
+              lineBounds.height > 0 &&
+              lineBounds.bottom > containerBounds.top &&
+              lineBounds.top < containerBounds.bottom;
+            if (wrapper.classList.contains('active') || isVisible) {
+              measureLiveTranslations();
+              return;
+            }
+          }
           queueInitialLayoutMeasurement();
         });
         [wrapper, ...neighboringLineWrappers].forEach(line => {
@@ -1121,7 +1139,7 @@ export const LyricLineWrapper = React.memo(({
   return (
     <div
       ref={wrapperRef}
-      className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}${viewMode === 'live-scroll' ? ' live-scroll-line' : ''}${viewMode === 'live' ? ' live-layout-auto' : ''}`}
+      className={`lyric-line-wrapper ${viewMode === 'focused' ? 'focused-line' : 'preview-line'}${viewMode === 'live' ? ' live-layout-auto' : ''}`}
       data-start={start}
       data-end={end}
       data-next-start={nextStart}
