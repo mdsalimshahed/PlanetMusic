@@ -68,6 +68,38 @@ const boundsForRects = rects => {
   return { left, right, top, bottom, width: right - left, height: bottom - top };
 };
 
+const rowsShareHorizontalLine = (first, second) => {
+  const verticalOverlap = Math.min(first.bottom, second.bottom) -
+    Math.max(first.top, second.top);
+  return verticalOverlap > Math.min(first.height, second.height) * 0.5;
+};
+
+const mergeBounds = (first, second) => {
+  const left = Math.min(first.left, second.left);
+  const right = Math.max(first.right, second.right);
+  const top = Math.min(first.top, second.top);
+  const bottom = Math.max(first.bottom, second.bottom);
+  return { left, right, top, bottom, width: right - left, height: bottom - top };
+};
+
+const getClosestRowIndex = (rows, target) => rows.reduce((closest, row, index) => {
+  const distance = Math.abs(
+    (row.top + row.bottom) / 2 - (target.top + target.bottom) / 2
+  );
+  return !closest || distance < closest.distance
+    ? { index, distance }
+    : closest;
+}, null)?.index;
+
+const padBounds = (bounds, padding) => ({
+  left: bounds.left - padding,
+  right: bounds.right + padding,
+  top: bounds.top - padding,
+  bottom: bounds.bottom + padding,
+  width: bounds.width + padding * 2,
+  height: bounds.height + padding * 2
+});
+
 const addBox = (boxes, id, bounds, color, fillColor, className = '') => {
   if (!bounds || bounds.width <= 0 || bounds.height <= 0) return;
   boxes.push({ id, ...bounds, color, fillColor, className });
@@ -257,47 +289,109 @@ const buildBoxesForLines = (targetNodes, overlayRect) => {
         });
       });
 
-    const mainSegments = getMainSegmentBounds(lineNode, overlayRect);
-    const translationRows = getLineTextBoundsList(
-      lineNode.querySelector('.main-live-translation'),
-      overlayRect
-    );
-    mainSegments.forEach(({ id, bounds }, segmentIndex) => {
-      const redPadding = 3;
-      const redLeft = bounds.left - redPadding;
-      const redTop = bounds.top - redPadding;
-      const redRight = bounds.right + redPadding;
-      const redBottom = bounds.bottom + redPadding;
-      const redBounds = {
-        left: redLeft,
-        top: redTop,
-        right: redRight,
-        bottom: redBottom,
-        width: redRight - redLeft,
-        height: redBottom - redTop
-      };
-      addBox(boxes, id, redBounds, '#ff3030', 'transparent', 'live-debug-box-outline');
+      const mainSegments = getMainSegmentBounds(lineNode, overlayRect);
+      const translationRows = getLineTextBoundsList(
+        lineNode.querySelector('.main-live-translation'),
+        overlayRect
+      );
+      const translationsBySegment = mainSegments.map(() => []);
+      const mainSegmentBounds = mainSegments.map(segment => segment.bounds);
+      translationRows.forEach(translation => {
+        const segmentIndex = getClosestRowIndex(
+          mainSegmentBounds, translation
+        );
+        if (segmentIndex !== undefined) {
+          translationsBySegment[segmentIndex].push(translation);
+        }
+      });
+      const horizontalRows = [];
+      mainSegments.forEach(({ id, bounds }, segmentIndex) => {
+        const lineSegmentId = `line-${lineIndex}-${id}`;
+        const redBounds = padBounds(bounds, 3);
+        const whiteBounds = boundsForRects([
+          redBounds,
+          ...translationsBySegment[segmentIndex]
+        ]);
+        addBox(
+          boxes,
+          lineSegmentId,
+          redBounds,
+          '#ff3030',
+          'transparent',
+          'live-debug-box-outline'
+        );
+        addBox(
+          boxes,
+          `active-row-outline-${lineSegmentId}`,
+          whiteBounds,
+          '#ffffff',
+          'transparent',
+          'live-debug-active-row-outline'
+        );
+        horizontalRows.push({
+          id: `main-${lineSegmentId}`,
+          glyphRows: [bounds],
+          bounds: whiteBounds
+        });
+      });
 
-      const rowTranslationBounds = segmentIndex === 0
-        ? boundsForRects(translationRows)
-        : null;
-      const rowBounds = boundsForRects([
-        redBounds,
-        ...(rowTranslationBounds ? [rowTranslationBounds] : [])
-      ]);
-      if (!rowBounds) return;
-      const whitePadding = 0;
-      const left = rowBounds.left - whitePadding;
-      const top = rowBounds.top - whitePadding;
-      const right = rowBounds.right + whitePadding;
-      const bottom = rowBounds.bottom + whitePadding;
+    lineNode.querySelectorAll('.adlib-node').forEach((adlibNode, adlibIndex) => {
+      const glyphLayer = adlibNode.querySelector(':scope > .primary-text');
+      const glyphRows = getLineTextBoundsList(glyphLayer, overlayRect, true);
+      if (glyphRows.length === 0) return;
+      const fullAdlibElements = [
+        glyphLayer,
+        adlibNode.querySelector(':scope > .pronunciation-text'),
+        adlibNode.querySelector(':scope > .adlib-live-translation')
+      ].filter(Boolean);
+      const fullAdlibBounds = boundsForRects(fullAdlibElements.flatMap(element =>
+        getLineTextBoundsList(element, overlayRect)
+      ));
+      if (fullAdlibBounds) {
+        horizontalRows.push({
+          id: `adlib-${lineIndex}-${adlibIndex}`,
+          glyphRows,
+          bounds: fullAdlibBounds
+        });
+      }
+    });
+
+    const mergedRows = [];
+    horizontalRows.forEach(row => {
+      const matchingRows = mergedRows.filter(merged => (
+        row.glyphRows.some(glyphRow => (
+          merged.glyphRows.some(mergedGlyphRow => (
+            rowsShareHorizontalLine(glyphRow, mergedGlyphRow)
+          ))
+        ))
+      ));
+      if (matchingRows.length === 0) {
+        mergedRows.push({
+          id: row.id,
+          glyphRows: [...row.glyphRows],
+          bounds: row.bounds
+        });
+        return;
+      }
+
+      const firstMatch = matchingRows[0];
+      firstMatch.id = `${firstMatch.id}-${row.id}`;
+      firstMatch.glyphRows.push(...row.glyphRows);
+      firstMatch.bounds = mergeBounds(firstMatch.bounds, row.bounds);
+      matchingRows.slice(1).forEach(matched => {
+        firstMatch.glyphRows.push(...matched.glyphRows);
+        firstMatch.bounds = mergeBounds(firstMatch.bounds, matched.bounds);
+        mergedRows.splice(mergedRows.indexOf(matched), 1);
+      });
+    });
+    mergedRows.forEach((row, rowIndex) => {
       addBox(
         boxes,
-        `active-row-outline-${id}`,
-        { left, top, right, bottom, width: right - left, height: bottom - top },
-        '#ffffff',
+        `horizontal-row-${lineIndex}-${rowIndex}`,
+        row.bounds,
+        '#22c55e',
         'transparent',
-        'live-debug-active-row-outline'
+        'live-debug-horizontal-row'
       );
     });
   });
@@ -325,7 +419,7 @@ const LiveDebugOverlay = () => {
   const overlayRef = useRef(null);
   const rafRef = useRef(null);
   const resizeObserverRef = useRef(null);
-  const observedLineRef = useRef(null);
+  const observedLinesRef = useRef(new Set());
   const [boxes, setBoxes] = useState([]);
 
   useLayoutEffect(() => {
@@ -336,14 +430,26 @@ const LiveDebugOverlay = () => {
       const activeLineNode = document.querySelector(
         '.live-lyrics-preview .preview-line.active'
       );
-      const targetNodes = activeLineNode ? [activeLineNode] : [];
-      if (observedLineRef.current !== activeLineNode) {
-        if (observedLineRef.current) {
-          resizeObserverRef.current?.unobserve(observedLineRef.current);
+      const lineNodes = Array.from(
+        document.querySelectorAll('.live-lyrics-preview .preview-line')
+      );
+      const activeLineIndex = lineNodes.indexOf(activeLineNode);
+      const targetNodes = activeLineIndex < 0
+        ? []
+        : lineNodes.slice(
+          Math.max(0, activeLineIndex - 1),
+          activeLineIndex + 2
+        );
+      const targetLineSet = new Set(targetNodes);
+      observedLinesRef.current.forEach(line => {
+        if (!targetLineSet.has(line)) resizeObserverRef.current?.unobserve(line);
+      });
+      targetLineSet.forEach(line => {
+        if (!observedLinesRef.current.has(line)) {
+          resizeObserverRef.current?.observe(line);
         }
-        observedLineRef.current = activeLineNode;
-        if (activeLineNode) resizeObserverRef.current?.observe(activeLineNode);
-      }
+      });
+      observedLinesRef.current = targetLineSet;
 
       const nextBoxes = buildBoxesForLines(targetNodes, overlayRect);
       setBoxes(previous => (
@@ -404,7 +510,7 @@ const LiveDebugOverlay = () => {
       mutationObserver.disconnect();
       resizeObserverRef.current?.disconnect();
       resizeObserverRef.current = null;
-      observedLineRef.current = null;
+      observedLinesRef.current.clear();
       window.removeEventListener('resize', scheduleTrack);
       window.removeEventListener('scroll', scheduleTrack, true);
       document.removeEventListener('transitionrun', handleTransition, true);
@@ -419,6 +525,7 @@ const LiveDebugOverlay = () => {
         <div
           key={box.id}
           className={`live-debug-box${box.className ? ` ${box.className}` : ''}`}
+          data-debug-box-id={box.id}
           style={{
             top: `${box.top}px`,
             left: `${box.left}px`,

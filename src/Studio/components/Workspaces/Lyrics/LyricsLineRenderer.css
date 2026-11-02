@@ -228,6 +228,7 @@ rt.pronunciation-text,
 
 .live-layout-auto .live-split-line {
   column-gap: min(0.72vw, 1.5vh);
+  row-gap: 0.1em !important;
 }
 
 .live-split-line > .live-adlib-group {
@@ -281,6 +282,17 @@ rt.pronunciation-text,
 
 .live-layout-auto.preview-line.has-inline-adlib-neighbor-clearance {
   margin-block-start: var(--live-adlib-neighbor-clearance-start);
+}
+
+.live-layout-auto.preview-line {
+  margin-block-end: var(--live-row-stack-clearance-end, 0px);
+}
+
+.live-layout-auto.preview-line.has-main-shift-for-foreign-adlib {
+  margin-block-end: calc(
+    var(--live-main-foreign-adlib-following-row-offset-y, 0px) +
+    var(--live-row-stack-clearance-end, 0px)
+  );
 }
 
 .preview-line .live-split-line {

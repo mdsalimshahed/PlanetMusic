@@ -19,21 +19,6 @@ const getActiveMainLyricsNode = line => (
   line
 );
 
-const setMainLyricsTransformOrigin = line => {
-  const mainLyrics = getActiveMainLyricsNode(line);
-  if (mainLyrics === line) return;
-
-  line.style.setProperty('--live-main-lyrics-origin-y', '0px');
-  const lineBounds = line.getBoundingClientRect();
-  const mainBounds = mainLyrics.getBoundingClientRect();
-  const transform = getComputedStyle(line).transform;
-  const scaleY = transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).d;
-  const offsetY = scaleY
-    ? (mainBounds.top - lineBounds.top) / scaleY
-    : mainBounds.top - lineBounds.top;
-  line.style.setProperty('--live-main-lyrics-origin-y', `${offsetY}px`);
-};
-
 const getActiveMainTopOffset = (container, line) => {
   const containerBounds = container.getBoundingClientRect();
   const node = getActiveMainLyricsNode(line);
@@ -53,17 +38,22 @@ const getActiveMainTopOffset = (container, line) => {
   return (activeBounds.top - viewportTop) / scaleY;
 };
 
-const getActiveLineScrollTop = (container, line) => {
+const getActiveLinePosition = (container, line) => {
   const activeTop = getActiveMainTopOffset(container, line);
-  if (activeTop === null) return container.scrollTop;
+  if (activeTop === null) {
+    return { activeTop: null, targetTop: container.scrollTop };
+  }
 
-  return getAnchoredScrollTop({
-    scrollTop: container.scrollTop,
-    viewportTop: 0,
+  return {
     activeTop,
-    targetOffset: container.clientHeight * ACTIVE_MAIN_TOP_RATIO,
-    maxScrollTop: container.scrollHeight - container.clientHeight
-  });
+    targetTop: getAnchoredScrollTop({
+      scrollTop: container.scrollTop,
+      viewportTop: 0,
+      activeTop,
+      targetOffset: container.clientHeight * ACTIVE_MAIN_TOP_RATIO,
+      maxScrollTop: container.scrollHeight - container.clientHeight
+    })
+  };
 };
 
 const cancelActiveLineScroll = pendingScrollRef => {
@@ -75,9 +65,9 @@ const cancelActiveLineScroll = pendingScrollRef => {
 
 const alignActiveLine = (container, line, pendingScrollRef, activeMainTopRef) => {
   cancelActiveLineScroll(pendingScrollRef);
-  setMainLyricsTransformOrigin(line);
-  container.scrollTop = getActiveLineScrollTop(container, line);
-  activeMainTopRef.current = getActiveMainTopOffset(container, line);
+  const { activeTop, targetTop } = getActiveLinePosition(container, line);
+  container.scrollTop = targetTop;
+  activeMainTopRef.current = activeTop;
 };
 
 const animateToActiveLine = (
@@ -86,25 +76,27 @@ const animateToActiveLine = (
   pendingScrollRef,
   activeMainTopRef
 ) => {
-  setMainLyricsTransformOrigin(line);
-  const targetTop = getActiveLineScrollTop(container, line);
+  const { activeTop, targetTop } = getActiveLinePosition(container, line);
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     cancelActiveLineScroll(pendingScrollRef);
     container.scrollTop = targetTop;
-    activeMainTopRef.current = getActiveMainTopOffset(container, line);
+    activeMainTopRef.current = activeTop;
     return;
   }
 
   const existingAnimation = pendingScrollRef.current;
   if (existingAnimation?.line?.isConnected) {
     existingAnimation.line = line;
-    activeMainTopRef.current = getActiveMainTopOffset(container, line);
+    existingAnimation.targetTop = targetTop;
+    existingAnimation.startScrollTop = container.scrollTop;
+    existingAnimation.startActiveTop = activeTop;
+    activeMainTopRef.current = activeTop;
     return;
   }
   cancelActiveLineScroll(pendingScrollRef);
   if (Math.abs(targetTop - container.scrollTop) < 1) {
     container.scrollTop = targetTop;
-    activeMainTopRef.current = getActiveMainTopOffset(container, line);
+    activeMainTopRef.current = activeTop;
     return;
   }
 
@@ -112,10 +104,13 @@ const animateToActiveLine = (
     frame: null,
     lastTimestamp: null,
     velocity: 0,
-    line
+    line,
+    targetTop,
+    startScrollTop: container.scrollTop,
+    startActiveTop: activeTop
   };
   pendingScrollRef.current = animation;
-  activeMainTopRef.current = getActiveMainTopOffset(container, line);
+  activeMainTopRef.current = activeTop;
 
   const step = timestamp => {
     if (pendingScrollRef.current !== animation) return;
@@ -127,7 +122,7 @@ const animateToActiveLine = (
       ? 0
       : Math.min((timestamp - animation.lastTimestamp) / 1000, 0.05);
     animation.lastTimestamp = timestamp;
-    const nextTargetTop = getActiveLineScrollTop(container, animation.line);
+    const nextTargetTop = animation.targetTop;
     const displacement = container.scrollTop - nextTargetTop;
     const angularFrequency = 16;
     const velocityCoefficient = animation.velocity +
@@ -140,13 +135,20 @@ const animateToActiveLine = (
     container.scrollTop = nextTargetTop + (
       displacement + velocityCoefficient * elapsed
     ) * decay;
-    activeMainTopRef.current = getActiveMainTopOffset(container, animation.line);
+    activeMainTopRef.current = Number.isFinite(animation.startActiveTop)
+      ? animation.startActiveTop - (
+        container.scrollTop - animation.startScrollTop
+      )
+      : null;
     if (
       Math.abs(nextTargetTop - container.scrollTop) < 0.5 &&
       Math.abs(animation.velocity) < 4
     ) {
       container.scrollTop = nextTargetTop;
-      activeMainTopRef.current = getActiveMainTopOffset(container, animation.line);
+      activeMainTopRef.current = getActiveMainTopOffset(
+        container,
+        animation.line
+      );
       pendingScrollRef.current = null;
       return;
     }
@@ -156,9 +158,22 @@ const animateToActiveLine = (
 };
 
 const LINE_SHINE_TOTAL_DURATION_MS = 420;
-const LINE_SHINE_WORD_DURATION_MS = 240;
+const LINE_SHINE_LETTER_DURATION_MS = 240;
 const glyphShineTimeouts = new WeakMap();
 const lineActivationTimeouts = new WeakMap();
+
+const getShineTextNode = activeLine => (
+  activeLine.matches('.adlib-node')
+    ? activeLine.querySelector(':scope > .primary-text')
+    : activeLine.querySelector('.main-lyrics-layer')
+);
+
+const unwrapShineLetters = textNode => {
+  textNode?.querySelectorAll('.live-shine-letter').forEach(letter => {
+    letter.replaceWith(document.createTextNode(letter.textContent));
+  });
+  textNode?.normalize();
+};
 
 const clearGlyphShine = activeLine => {
   if (!activeLine) return;
@@ -168,6 +183,7 @@ const clearGlyphShine = activeLine => {
     glyphShineTimeouts.delete(activeLine);
   }
   activeLine.classList.remove('is-shining');
+  unwrapShineLetters(getShineTextNode(activeLine));
 };
 
 const clearLineActivation = line => {
@@ -193,29 +209,59 @@ const retriggerLineActivation = activeLine => {
 
 const retriggerGlyphShine = activeLine => {
   if (!activeLine) return;
-  const textNode = activeLine.matches('.adlib-node')
-    ? activeLine.querySelector(':scope > .primary-text')
-    : activeLine.querySelector('.main-lyrics-layer');
+  const textNode = getShineTextNode(activeLine);
   if (!textNode) return;
 
-  const words = Array.from(textNode.querySelectorAll('.lyric-word'));
-  if (words.length === 0) return;
   clearGlyphShine(activeLine);
-  const wordDelay = words.length > 1
-    ? (LINE_SHINE_TOTAL_DURATION_MS - LINE_SHINE_WORD_DURATION_MS) /
-      (words.length - 1)
+  const textWalker = document.createTreeWalker(
+    textNode,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: text => (
+        text.parentElement?.closest('.pronunciation-text')
+          ? NodeFilter.FILTER_REJECT
+          : NodeFilter.FILTER_ACCEPT
+      )
+    }
+  );
+  const textNodes = [];
+  let text;
+  while ((text = textWalker.nextNode())) {
+    if (text.textContent) textNodes.push(text);
+  }
+  const segmenter = typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    : null;
+  const letters = [];
+  textNodes.forEach(textNodeToWrap => {
+    const graphemes = segmenter
+      ? Array.from(segmenter.segment(textNodeToWrap.textContent), item => item.segment)
+      : Array.from(textNodeToWrap.textContent);
+    const fragment = document.createDocumentFragment();
+    graphemes.forEach(grapheme => {
+      const letter = document.createElement('span');
+      letter.className = 'live-shine-letter';
+      letter.textContent = grapheme;
+      fragment.append(letter);
+      letters.push(letter);
+    });
+    textNodeToWrap.replaceWith(fragment);
+  });
+  if (letters.length === 0) return;
+
+  const letterDelay = letters.length > 1
+    ? (LINE_SHINE_TOTAL_DURATION_MS - LINE_SHINE_LETTER_DURATION_MS) /
+      (letters.length - 1)
     : 0;
-  words.forEach((word, index) => {
-    word.style.setProperty(
-      '--word-shine-delay',
-      `${index * wordDelay}ms`
-    );
+  letters.forEach((letter, index) => {
+    letter.style.setProperty('--letter-shine-delay', `${index * letterDelay}ms`);
   });
   void activeLine.offsetWidth;
   activeLine.classList.add('is-shining');
   const timeout = window.setTimeout(() => {
     if (glyphShineTimeouts.get(activeLine) !== timeout) return;
     activeLine.classList.remove('is-shining');
+    unwrapShineLetters(textNode);
     glyphShineTimeouts.delete(activeLine);
   }, LINE_SHINE_TOTAL_DURATION_MS);
   glyphShineTimeouts.set(activeLine, timeout);
@@ -310,7 +356,6 @@ const LiveLyricsView = ({
       if (newActiveIndex >= 0) {
         const nextActiveLine = lines[newActiveIndex]?.node;
         if (nextActiveLine) {
-          setMainLyricsTransformOrigin(nextActiveLine);
           nextActiveLine.classList.add('active');
           retriggerLineActivation(nextActiveLine);
         }
@@ -750,6 +795,15 @@ const LiveLyricsView = ({
           lineObj={line}
           savedNode={syncList?.[index]}
           nextStart={nextStarts[index]}
+          liveLayoutCacheKey={JSON.stringify([
+            selectedSong?.trackId,
+            index,
+            line.text,
+            syncList?.[index]?.text,
+            syncList?.[index]?.translation,
+            syncList?.[index]?.pronunciation,
+            syncList?.[index]?.adlibs
+          ])}
           viewMode="live"
           handleLineClick={handleLineClick}
           masterPalette={masterPalette}

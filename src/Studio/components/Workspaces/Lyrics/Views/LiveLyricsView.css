@@ -9,9 +9,12 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  gap: min(
-    calc(var(--dyn-live-sync-gap, 16) * 1vw),
-    calc(var(--dyn-live-sync-gap, 16) * 0.125vh)
+  gap: max(
+    min(
+      calc(var(--dyn-live-sync-gap, 16) * 1vw),
+      calc(var(--dyn-live-sync-gap, 16) * 0.125vh)
+    ),
+    0.2em
   );
   padding: 120px clamp(8px, 1vw, 16px) clamp(40px, 8vw, 80px);
   -webkit-mask-image: linear-gradient(
@@ -64,7 +67,7 @@
   margin: 0;
   opacity: 0.4;
   transform: translate3d(0, 0, 0) scale(0.95);
-  transform-origin: left var(--live-main-lyrics-origin-y, 0px);
+  transform-origin: left top;
   transition:
     opacity 240ms ease,
     transform 240ms ease-out;
@@ -133,20 +136,10 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
-.preview-line .lyric-word,
-.preview-line .lyric-word-group,
-.preview-line .adlib-node .primary-text .lyric-word,
-.preview-line .adlib-node .primary-text .lyric-word-group {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform, filter;
-}
-
-.preview-line.active.is-shining .main-lyrics-layer .lyric-word,
-.preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word {
-  animation: liveLyricsGlyphShine 240ms linear both;
-  animation-delay: var(--word-shine-delay, 0ms);
+.preview-line.active.is-shining .main-lyrics-layer .live-shine-letter,
+.preview-line .adlib-node.adlib-active.is-shining > .primary-text .live-shine-letter {
+  animation: liveLyricsGlyphShine 240ms ease-in-out both;
+  animation-delay: var(--letter-shine-delay, 0ms);
 }
 
 @keyframes liveLyricsGlyphShine {
@@ -223,16 +216,16 @@
     animation: none;
   }
 
-  .preview-line.active.is-shining .main-lyrics-layer .lyric-word,
-  .preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word,
+  .preview-line.active.is-shining .main-lyrics-layer .live-shine-letter,
+  .preview-line .adlib-node.adlib-active.is-shining > .primary-text .live-shine-letter,
   .preview-line .live-split-line .adlib-node.adlib-active,
   .preview-line .live-split-line .adlib-node.adlib-active > .primary-text {
     animation: none;
   }
 }
 
-.disable-animations .preview-line.active.is-shining .main-lyrics-layer .lyric-word,
-.disable-animations .preview-line .adlib-node.adlib-active.is-shining > .primary-text .lyric-word,
+.disable-animations .preview-line.active.is-shining .main-lyrics-layer .live-shine-letter,
+.disable-animations .preview-line .adlib-node.adlib-active.is-shining > .primary-text .live-shine-letter,
 .disable-animations .preview-line.initial-reveal,
 .disable-animations .preview-line.active.is-activating,
 .disable-animations .preview-line .live-split-line .adlib-node.adlib-active,
