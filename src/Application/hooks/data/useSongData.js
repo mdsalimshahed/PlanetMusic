@@ -129,11 +129,12 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
         setSingerImages({});
       }
 
-      // Keep the track-specific draft aligned with the selected-song prop.
-      // The render-time fallback above prevents a worker parse of the previous track.
-      setCustomData(createCustomDataForSong(selectedSong));
+      // Keep the draft aligned with song updates without overwriting active edits.
+      if (isNewTrack || !isEditing) {
+        setCustomData(createCustomDataForSong(selectedSong));
+      }
     }
-  }, [selectedSong, setCustomData]);
+  }, [selectedSong, setCustomData, isEditing]);
 
   useEffect(() => {
     if (!selectedSong) return undefined;
@@ -300,7 +301,7 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
   const handleDataChange = (e) => {
     const { name, value } = e.target;
     const finalValue = name === 'lyrics' ? toSmartPunctuation(value) : cleanUrl(value);
-    setCustomData({ ...customData, [name]: finalValue });
+    setCustomData(previous => ({ ...previous, [name]: finalValue }));
   };
 
   const handleImageChange = (singerName, url) => {
