@@ -61,13 +61,14 @@ test('proxies automatic YouTube searches through the authenticated backend route
 
   try {
     const response = await onRequest({
-      request: new Request('https://planetmusic.example/api/search-youtube?q=Song%20Artist'),
+      request: new Request('https://planetmusic.example/api/search-youtube?q=Song%20Artist&duration=241'),
       env: { BACKEND_GATEWAY_TOKEN: 'test-gateway-token' }
     });
 
     assert.equal(response.status, 200);
     assert.equal(upstreamRequest.url.pathname, '/search-youtube');
     assert.equal(upstreamRequest.url.searchParams.get('q'), 'Song Artist');
+    assert.equal(upstreamRequest.url.searchParams.get('duration'), '241');
     assert.equal(
       upstreamRequest.options.headers.get('X-Backend-Gateway-Token'),
       'test-gateway-token'

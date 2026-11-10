@@ -146,11 +146,16 @@ export const useSongData = (selectedSong, isSaved, updateSongInLibrary, updateSe
     const controller = new AbortController();
     const query = `${selectedSong.trackName || ''} ${selectedSong.artistName || ''}`.trim();
     if (!query) return undefined;
+    const searchParams = new URLSearchParams({ q: query });
+    const trackDurationSeconds = Number(selectedSong.trackTimeMillis) / 1000;
+    if (Number.isFinite(trackDurationSeconds) && trackDurationSeconds > 0) {
+      searchParams.set('duration', String(Math.round(trackDurationSeconds)));
+    }
 
     const lookupYouTubeVideo = async () => {
       try {
         const response = await fetchDeezerApi(
-          `/search-youtube?q=${encodeURIComponent(query)}`,
+          `/search-youtube?${searchParams}`,
           { signal: controller.signal }
         );
         if (!response.ok) {
