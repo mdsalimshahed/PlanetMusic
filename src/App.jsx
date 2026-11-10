@@ -190,8 +190,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (import.meta.env.DEV) return undefined;
-
     let activeRequest = null;
     let requestTimeoutId = null;
     let retryTimeoutId = null;

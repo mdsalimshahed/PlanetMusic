@@ -32,6 +32,85 @@ const BACKEND_GATEWAY_TOKEN = process.env.BACKEND_GATEWAY_TOKEN
   || devVars.BACKEND_GATEWAY_TOKEN
   || ''
 
+const backendHealthEndpointPlugin = () => ({
+  name: 'planetmusic-backend-health-endpoint',
+  configureServer(server) {
+    server.middlewares.use(async (request, response, next) => {
+      if (request.url?.split('?')[0] !== '/api/backend-health') {
+        next()
+        return
+      }
+
+      if (request.method !== 'GET') {
+        response.writeHead(405, {
+          allow: 'GET',
+          'content-type': 'application/json; charset=utf-8'
+        })
+        response.end(JSON.stringify({ error: 'Method not allowed.' }))
+        return
+      }
+
+      const requestController = new AbortController()
+      const abortOnDisconnect = () => requestController.abort()
+      const timeoutSignal = AbortSignal.timeout(85_000)
+      const signal = AbortSignal.any([requestController.signal, timeoutSignal])
+      const deadline = Date.now() + 85_000
+      const transientStatuses = new Set([502, 503, 504, 520, 521, 522, 523, 524])
+      let errorMessage = 'The backend did not become ready in time. Please retry shortly.'
+      request.once('aborted', abortOnDisconnect)
+
+      try {
+        while (Date.now() < deadline && !signal.aborted) {
+          try {
+            const upstream = await fetch(new URL('/healthz', BACKEND_ORIGIN), {
+              method: 'GET',
+              headers: { accept: 'application/json' },
+              cache: 'no-store',
+              signal
+            })
+
+            if (upstream.ok) {
+              const health = await upstream.json().catch(() => null)
+              if (health?.status === 'ok') {
+                response.writeHead(200, {
+                  'content-type': 'application/json; charset=utf-8',
+                  'cache-control': 'no-store'
+                })
+                response.end(JSON.stringify({ status: 'ok' }))
+                return
+              }
+              errorMessage = 'Backend health check did not confirm readiness.'
+            } else if (!transientStatuses.has(upstream.status)) {
+              errorMessage = `Backend health check failed (${upstream.status}).`
+              await upstream.body?.cancel()
+              break
+            } else {
+              errorMessage = `Backend is still starting (${upstream.status}).`
+            }
+
+            await upstream.body?.cancel()
+          } catch (error) {
+            if (signal.aborted) break
+            errorMessage = `Could not reach the backend health endpoint: ${error.message}`
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 1500))
+        }
+
+        if (response.destroyed) return
+        response.writeHead(503, {
+          'content-type': 'application/json; charset=utf-8',
+          'cache-control': 'no-store',
+          'retry-after': '3'
+        })
+        response.end(JSON.stringify({ error: errorMessage }))
+      } finally {
+        request.removeListener('aborted', abortOnDisconnect)
+      }
+    })
+  }
+})
+
 const translationEndpointPlugin = () => ({
   name: 'planetmusic-translation-endpoint',
   configureServer(server) {
@@ -219,6 +298,7 @@ export default defineConfig({
       ],
       modernPolyfills: true
     }),
+    backendHealthEndpointPlugin(),
     translationEndpointPlugin(),
     devHomePrerenderPlugin()
   ],
