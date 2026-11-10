@@ -123,6 +123,28 @@ test('matches repeated imported lyrics against successive workspace rows', () =>
   assert.equal(secondIndex, 1);
 });
 
+test('uses the following repeated ad-lib entry to map an ambiguous full-line match', () => {
+  const workspaceData = [
+    { displayText: '(ad-lib)', _meta: { isAdlib: false, lineIndex: 0 } },
+    { displayText: '(ad-lib)', _meta: { isAdlib: true, lineIndex: 0, adlibIndex: 0 } }
+  ];
+
+  const mainIndex = findNextTranslationImportTarget(
+    workspaceData,
+    '(ad-lib)',
+    0,
+    '(ad-lib)'
+  );
+  const adlibIndex = findNextTranslationImportTarget(
+    workspaceData,
+    '(ad-lib)',
+    mainIndex + 1
+  );
+
+  assert.equal(mainIndex, 0);
+  assert.equal(adlibIndex, 1);
+});
+
 test('matches accented, decomposed, and confusable lyric characters during import', () => {
   const workspaceData = [
     { displayText: 'No fuе el destino' },
@@ -140,6 +162,15 @@ test('matches accented, decomposed, and confusable lyric characters during impor
   assert.equal(
     findNextTranslationImportTarget(workspaceData, 'El camio\u0301n ya salio\u0301', 1),
     1
+  );
+});
+
+test('matches stacked Latin diacritics and curly quotation marks during import', () => {
+  const workspaceData = [{ displayText: '“Tôi thích ‘phở’!”' }];
+
+  assert.equal(
+    findNextTranslationImportTarget(workspaceData, 'Toi thich pho'),
+    0
   );
 });
 

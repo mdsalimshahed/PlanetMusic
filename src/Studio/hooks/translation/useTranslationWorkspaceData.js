@@ -15,6 +15,12 @@ const formatAdlibPronunciation = (adlibText, displayPron) => {
   });
 };
 
+const getImportedOriginalText = block => {
+  const lines = block.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  if (lines[0]?.startsWith('[lang:') && lines[0].endsWith(']')) lines.shift();
+  return lines[0] || '';
+};
+
 export const useTranslationWorkspaceData = ({
   selectedSong,
   customData,
@@ -236,7 +242,7 @@ export const useTranslationWorkspaceData = ({
         let importedCount = 0;
         let nextTargetIndex = 0;
 
-        blocks.forEach(block => {
+        blocks.forEach((block, blockIndex) => {
           let lines = block.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
           if (lines.length === 0) return;
 
@@ -264,7 +270,8 @@ export const useTranslationWorkspaceData = ({
           const targetIndex = findNextTranslationImportTarget(
             newData,
             originalText,
-            nextTargetIndex
+            nextTargetIndex,
+            getImportedOriginalText(blocks[blockIndex + 1] || '')
           );
 
           if (targetIndex !== -1) {

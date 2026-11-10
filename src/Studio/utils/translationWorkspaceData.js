@@ -40,7 +40,9 @@ const normalizeImportedLyric = text => {
 
     const mappedChar = latinLookalikeMap.get(char) || char;
     normalized += mappedChar;
-    previousWasLatin = /\p{Script=Latin}/u.test(mappedChar);
+    if (!/\p{M}/u.test(mappedChar)) {
+      previousWasLatin = /\p{Script=Latin}/u.test(mappedChar);
+    }
   }
 
   return normalized
@@ -49,10 +51,16 @@ const normalizeImportedLyric = text => {
     .replace(/\s+/g, ' ');
 };
 
-export const findNextTranslationImportTarget = (workspaceData, originalText, startIndex = 0) => {
+export const findNextTranslationImportTarget = (
+  workspaceData,
+  originalText,
+  startIndex = 0,
+  nextOriginalText = ''
+) => {
   const normalizedOriginal = normalizeImportedLyric(originalText);
   if (!normalizedOriginal) return -1;
 
+  const normalizedNextOriginal = normalizeImportedLyric(nextOriginalText);
   const matchingIndexes = workspaceData.flatMap((row, index) => (
     index >= startIndex && normalizeImportedLyric(row.displayText) === normalizedOriginal
       ? [index]
@@ -62,6 +70,14 @@ export const findNextTranslationImportTarget = (workspaceData, originalText, sta
   for (const index of matchingIndexes) {
     const row = workspaceData[index];
     if (row._meta?.isAdlib) return index;
+
+    const nextEntryIsAdlib = normalizedNextOriginal && workspaceData.some(candidate => (
+      candidate._meta?.isAdlib
+      && candidate._meta.lineIndex === row._meta?.lineIndex
+      && normalizeImportedLyric(candidate.displayText) === normalizedNextOriginal
+    ));
+
+    if (nextEntryIsAdlib) return index;
 
     const fullLineAdlibIndex = workspaceData.findIndex(candidate => (
       candidate._meta?.isAdlib
