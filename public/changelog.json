@@ -90,7 +90,11 @@
   {
     "label": "November 2026",
     "entries": [
-      { "date": "2026-11-01", "commits": 4, "summary": "Improved accent-insensitive lyric matching. Mapped standalone ad-lib translations correctly. Skipped translations for empty main lyrics. Combined iTunes and Deezer search results. Added automatic YouTube song matching. Kept Render awake during active visits." }
+      { "date": "2026-11-01", "commits": 10, "summary": "Improved accent-insensitive lyric matching. Mapped standalone ad-lib translations correctly. Skipped translations for empty main lyrics. Combined iTunes and Deezer search results. Added automatic YouTube song matching. Kept Render awake during active visits." },
+      { "date": "2026-11-02", "commits": 16, "summary": "Refined real-time lyric glyph animations. Expanded Live Lyrics rendering diagnostics. Improved player synchronization and controls. Adjusted mobile lyrics and player layouts." },
+      { "date": "2026-11-03", "commits": 1, "summary": "Refreshed the example Vault backup." },
+      { "date": "2026-11-10", "commits": 5, "summary": "Preserved active edits during song changes. Matched YouTube videos by track duration. Added local backend wake support. Improved translation import text handling." },
+      { "date": "2026-11-11", "commits": 1, "summary": "Triggered Render startup without gateway tokens. Kept tokens for authenticated API requests." }
     ]
   }
 ]
