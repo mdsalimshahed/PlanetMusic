@@ -1,5 +1,6 @@
 const BACKEND_ORIGIN = 'https://ytdownloader-jnt0.onrender.com';
 const GATEWAY_HEADER = 'X-Backend-Gateway-Token';
+const BACKEND_WAKE_TIMEOUT_MS = 10_000;
 const BACKEND_READY_CACHE_MS = 5000;
 const BACKEND_READY_TIMEOUT_MS = 85000;
 const BACKEND_RETRY_DELAY_MS = 1500;
@@ -12,6 +13,26 @@ const jsonError = (status, error) => new Response(JSON.stringify({ error }), {
     'cache-control': 'no-store'
   }
 });
+
+const triggerBackendWake = async (signal) => {
+  try {
+    const wakeSignal = AbortSignal.any([
+      signal,
+      AbortSignal.timeout(BACKEND_WAKE_TIMEOUT_MS)
+    ]);
+    const response = await fetch(new URL('/wake', BACKEND_ORIGIN), {
+      method: 'GET',
+      headers: { accept: 'text/html,application/json' },
+      redirect: 'manual',
+      cache: 'no-store',
+      signal: wakeSignal
+    });
+    await response.body?.cancel();
+    return response.status < 400;
+  } catch {
+    return false;
+  }
+};
 
 const resolveRoute = (pathname, method, searchParams) => {
   const apiPath = pathname.slice('/api/'.length);
@@ -60,9 +81,10 @@ const resolveRoute = (pathname, method, searchParams) => {
   return { error: jsonError(404, 'Unknown API route.') };
 };
 
-const waitForBackend = async (signal, gatewayToken) => {
+const waitForBackend = async (signal) => {
   if (Date.now() < backendReadyUntil) return true;
 
+  await triggerBackendWake(signal);
   const healthUrl = new URL('/healthz', BACKEND_ORIGIN);
   const deadline = Date.now() + BACKEND_READY_TIMEOUT_MS;
   const healthSignal = AbortSignal.any([
@@ -74,10 +96,7 @@ const waitForBackend = async (signal, gatewayToken) => {
     try {
       const response = await fetch(healthUrl, {
         method: 'GET',
-        headers: {
-          accept: 'application/json',
-          [GATEWAY_HEADER]: gatewayToken
-        },
+        headers: { accept: 'application/json' },
         cache: 'no-store',
         signal: healthSignal
       });
@@ -115,10 +134,22 @@ export async function onRequest({ request, env }) {
 
   const gatewayToken = env.BACKEND_GATEWAY_TOKEN;
   if (typeof gatewayToken !== 'string' || gatewayToken.length === 0) {
+    const wakeTriggered = await triggerBackendWake(request.signal);
+    if (route.healthCheck && wakeTriggered) {
+      return new Response(JSON.stringify({ status: 'ok' }), {
+        headers: {
+          'content-type': 'application/json; charset=utf-8',
+          'cache-control': 'no-store'
+        }
+      });
+    }
+    if (route.healthCheck) {
+      return jsonError(503, 'The backend is still starting. Please retry shortly.');
+    }
     return jsonError(503, 'Backend service configuration is unavailable.');
   }
 
-  if (!await waitForBackend(request.signal, gatewayToken)) {
+  if (!await waitForBackend(request.signal)) {
     return new Response(JSON.stringify({
       error: request.signal.aborted
         ? 'The request was cancelled while the backend was starting.'

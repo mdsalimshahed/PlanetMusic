@@ -30,17 +30,16 @@ test('waits for the backend health endpoint before forwarding API requests', asy
 
     assert.equal(response.status, 200);
     assert.equal(healthAttempts, 2);
-    assert.equal(calls.length, 3);
-    for (const call of calls.slice(0, 2)) {
-      assert.equal(
-        call.options.headers['X-Backend-Gateway-Token'],
-        'test-gateway-token'
-      );
+    assert.equal(calls.length, 4);
+    assert.equal(calls[0].url.pathname, '/wake');
+    assert.equal(calls[0].options.headers['X-Backend-Gateway-Token'], undefined);
+    for (const call of calls.slice(1, 3)) {
+      assert.equal(call.options.headers['X-Backend-Gateway-Token'], undefined);
     }
-    assert.equal(calls[2].url.pathname, '/search-deezer');
-    assert.equal(calls[2].url.searchParams.get('q'), 'test');
+    assert.equal(calls[3].url.pathname, '/search-deezer');
+    assert.equal(calls[3].url.searchParams.get('q'), 'test');
     assert.equal(
-      calls[2].options.headers.get('X-Backend-Gateway-Token'),
+      calls[3].options.headers.get('X-Backend-Gateway-Token'),
       'test-gateway-token'
     );
   } finally {
@@ -86,6 +85,7 @@ test('backend-health wakes Render without forwarding an application request', as
 
   globalThis.fetch = async (input, options) => {
     const url = new URL(input);
+    if (url.pathname === '/wake') return new Response('starting', { status: 503 });
     assert.equal(url.pathname, '/healthz');
     healthRequest = { url, options };
     return Response.json({ status: 'ok' });
@@ -99,12 +99,74 @@ test('backend-health wakes Render without forwarding an application request', as
 
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { status: 'ok' });
-    assert.equal(
-      healthRequest.options.headers['X-Backend-Gateway-Token'],
-      'test-gateway-token'
-    );
+    assert.equal(healthRequest.options.headers['X-Backend-Gateway-Token'], undefined);
   } finally {
     globalThis.fetch = originalFetch;
     Date.now = originalDateNow;
+  }
+});
+
+test('backend-health wakes Render without a gateway token', async () => {
+  const originalFetch = globalThis.fetch;
+  let wakeRequest;
+
+  globalThis.fetch = async (input, options) => {
+    wakeRequest = { url: new URL(input), options };
+    return new Response('Backend is awake', { status: 200 });
+  };
+
+  try {
+    const response = await onRequest({
+      request: new Request('https://planetmusic.example/api/backend-health'),
+      env: {}
+    });
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { status: 'ok' });
+    assert.equal(wakeRequest.url.pathname, '/wake');
+    assert.equal(wakeRequest.options.headers['X-Backend-Gateway-Token'], undefined);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('backend-health keeps retryable failures when the backend is still starting', async () => {
+  const originalFetch = globalThis.fetch;
+
+  globalThis.fetch = async () => new Response('Backend is starting', { status: 503 });
+
+  try {
+    const response = await onRequest({
+      request: new Request('https://planetmusic.example/api/backend-health'),
+      env: {}
+    });
+
+    assert.equal(response.status, 503);
+    assert.match((await response.json()).error, /still starting/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('API requests trigger a tokenless wake before reporting missing configuration', async () => {
+  const originalFetch = globalThis.fetch;
+  let wakeRequest;
+
+  globalThis.fetch = async (input, options) => {
+    wakeRequest = { url: new URL(input), options };
+    return new Response('Backend is starting', { status: 503 });
+  };
+
+  try {
+    const response = await onRequest({
+      request: new Request('https://planetmusic.example/api/search-deezer?q=test'),
+      env: {}
+    });
+
+    assert.equal(response.status, 503);
+    assert.equal(wakeRequest.url.pathname, '/wake');
+    assert.equal(wakeRequest.options.headers['X-Backend-Gateway-Token'], undefined);
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });
