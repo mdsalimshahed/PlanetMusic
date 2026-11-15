@@ -8,8 +8,7 @@ import {
   parseLRC,
   parseLyrics
 } from '../../utils/songHelpers';
-
-const BLUETOOTH_SYNC_OFFSET_SECONDS = 0.2;
+import { getSyncTimingCompensationKey } from '../../utils/syncTimingCompensation.js';
 
 // ------------------------------------------------------------------
 // 1. ENGINE: Handles the requestAnimationFrame loop and auto-tracking
@@ -19,7 +18,8 @@ export const useSyncEngine = ({
   workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
   syncDataRef, updateWorkspaceData,
   loopRangeRef, setLoopRange,
-  constrainedEndRef, setConstrainedEnd
+  constrainedEndRef, setConstrainedEnd,
+  pendingCompensationFieldsRef
 }) => {
   const autoTrackSyncPlayback = (time) => {
     const wLines = workspaceLinesRef.current;
@@ -83,6 +83,13 @@ export const useSyncEngine = ({
              const data = [...syncDataRef.current];
              const itemToMutate = data[currentItem.lineIndex].adlibs[currentItem.adlibIndex];
              itemToMutate.end = currentItem.parentRef.end;
+             if (pendingCompensationFieldsRef.current.has(
+               getSyncTimingCompensationKey(currentItem.lineIndex, null, 'end')
+             )) {
+               pendingCompensationFieldsRef.current.add(
+                 getSyncTimingCompensationKey(currentItem.lineIndex, currentItem.adlibIndex, 'end')
+               );
+             }
              updateWorkspaceData(data);
              setLoopRange(null);
              
@@ -131,7 +138,8 @@ export const useSyncEngine = ({
 export const useSyncKeyboard = ({
   isSyncMode, activeIdxRef, workspaceLinesRef, selectedSong,
   syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-  loopRangeRef, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs
+  loopRangeRef, isShowingAutoSync, isBluetoothDelayCompensationEnabled, bluetoothDelayCompensationMs,
+  pendingCompensationFieldsRef
 }) => {
   const keyboardActionRef = useRef(null);
 
@@ -184,6 +192,11 @@ export const useSyncKeyboard = ({
       
       const currentItem = wLines[currentIdx];
       const data = [...syncDataRef.current];
+      const getCompensationKey = (field) => getSyncTimingCompensationKey(
+        currentItem.lineIndex,
+        currentItem.type === 'adlib' ? currentItem.adlibIndex : null,
+        field
+      );
       
       // DEEP CLONE THE SPECIFIC NODE WE ARE MUTATING to prevent React state stalling
       data[currentItem.lineIndex] = { ...data[currentItem.lineIndex] };
@@ -213,9 +226,10 @@ export const useSyncKeyboard = ({
         }
 
         if (itemToMutate.start === null) {
-          itemToMutate.start = isBluetoothDelayCompensationEnabled && !isShowingAutoSync
-            ? Math.max(0, time - ((bluetoothDelayCompensationMs ?? BLUETOOTH_SYNC_OFFSET_SECONDS * 1000) / 1000))
-            : time;
+          itemToMutate.start = time;
+          if (isBluetoothDelayCompensationEnabled && !isShowingAutoSync) {
+            pendingCompensationFieldsRef.current.add(getCompensationKey('start'));
+          }
         }
         else if (itemToMutate.end === null) {
           let newEnd = time;
@@ -225,6 +239,9 @@ export const useSyncKeyboard = ({
             newEnd = currentItem.parentRef.end;
           }
           itemToMutate.end = newEnd;
+          if (isBluetoothDelayCompensationEnabled && !isShowingAutoSync) {
+            pendingCompensationFieldsRef.current.add(getCompensationKey('end'));
+          }
           
           if (currentItem.type === 'adlib') setLoopRange(null);
           
@@ -261,12 +278,14 @@ export const useSyncKeyboard = ({
 
         if (itemToMutate.end !== null) {
           itemToMutate.end = null;
+          pendingCompensationFieldsRef.current.delete(getCompensationKey('end'));
           if (currentItem.type === 'adlib') {
             setLoopRange({ start: currentItem.parentRef.start, end: currentItem.parentRef.end });
           }
           seekToTime(itemToMutate.start || 0);
         } else if (itemToMutate.start !== null) {
           itemToMutate.start = null;
+          pendingCompensationFieldsRef.current.delete(getCompensationKey('start'));
           let prevIdx = currentIdx - 1;
           while (prevIdx >= 0 && wLines[prevIdx].type !== 'main') prevIdx--;
           const prevItem = prevIdx >= 0 ? wLines[prevIdx].ref : null;

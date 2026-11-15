@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { parseLyrics, extractYouTubeId } from '../../utils/songHelpers.js';
 import { globalClock as workspaceClock } from '../../utils/clockEngine.js';
+import { applySyncTimingCompensation } from '../../utils/syncTimingCompensation.js';
 import { useSyncEngine, useSyncKeyboard, useSyncActions } from './useSyncLogic.js';
 
 const cloneSyncData = (data = []) => (Array.isArray(data) ? data : []).map(line => ({
@@ -37,6 +38,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
   const [loopRange, setLoopRange] = useState(null);
 
   const activeLineRef = useRef(null);
+  const pendingCompensationFieldsRef = useRef(new Set());
   const skipNextSourceLoadRef = useRef(false);
   const activeIdxRef = useRef(activeSyncIndex);
   const syncDataRef = useRef(syncData);
@@ -233,7 +235,8 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     workspaceLinesRef, activeIdxRef, setActiveSyncIndex,
     syncDataRef, updateWorkspaceData,
     loopRangeRef, setLoopRange,
-    constrainedEndRef, setConstrainedEnd
+    constrainedEndRef, setConstrainedEnd,
+    pendingCompensationFieldsRef
   });
 
   const triggerSyncKey = useSyncKeyboard({
@@ -242,7 +245,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     bluetoothDelayCompensationMs,
     activeIdxRef, workspaceLinesRef, selectedSong,
     syncDataRef, updateWorkspaceData, setActiveSyncIndex, setLoopRange,
-    loopRangeRef, isShowingAutoSync
+    loopRangeRef, isShowingAutoSync, pendingCompensationFieldsRef
   });
 
   const { 
@@ -269,6 +272,7 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
     workspaceClock.pause();
     workspaceClock.seek(0);
     window.currentAudioTime = 0;
+    pendingCompensationFieldsRef.current.clear();
     setIsBluetoothDelayCompensationEnabled(false);
     setBluetoothDelayCompensationMs(Number.isFinite(settings?.audioDelayCompensationMs)
       ? Math.max(-250, Math.min(250, settings.audioDelayCompensationMs))
@@ -362,7 +366,15 @@ export const useSyncWorkspace = (selectedSong, isSaved, customData, setCustomDat
 
   const saveSyncData = () => {
     setShowBluetoothSyncPrompt(false);
-    updateSongInLibrary({ ...selectedSong, syncData: syncDataRef.current, lyrics: customData.lyrics });
+    const syncDataToSave = isBluetoothDelayCompensationEnabled
+      ? applySyncTimingCompensation(
+        syncDataRef.current,
+        bluetoothDelayCompensationMs,
+        pendingCompensationFieldsRef.current
+      )
+      : syncDataRef.current;
+    pendingCompensationFieldsRef.current.clear();
+    updateSongInLibrary({ ...selectedSong, syncData: syncDataToSave, lyrics: customData.lyrics });
     setIsSyncMode(false);
     setIsShowingAutoSync(false);
     workspaceClock.pause();
