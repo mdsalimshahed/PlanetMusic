@@ -97,6 +97,26 @@
   cursor: wait;
 }
 
+.backend-wake-link {
+  display: block;
+  margin-top: 10px;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 8px;
+  background: linear-gradient(110deg, rgba(97, 72, 196, 0.42), rgba(31, 152, 165, 0.32));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.backend-wake-link:hover {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: linear-gradient(110deg, rgba(113, 87, 214, 0.58), rgba(39, 171, 183, 0.46));
+}
+
 /* --- PURGE & DATA STORAGE CARD --- */
 .purge-card {
   border: 1px solid rgba(250, 36, 60, 0.2) !important;

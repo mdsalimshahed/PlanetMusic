@@ -1,3 +1,5 @@
+export const DEEZER_BACKEND_HOME_URL = 'https://ytdownloader-jnt0.onrender.com';
+
 export const getDeezerApiUrl = (path) => {
   const relativePath = path.startsWith('/') ? path : `/${path}`;
   return `/api${relativePath}`;

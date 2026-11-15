@@ -1,6 +1,7 @@
 /* --- src/components/Settings/DeezerAuthCard.jsx --- */
 import { getProceduralColor } from '../../../utils/proceduralColors.js';
 import SettingsCardHeading from './SettingsCardHeading.jsx';
+import { DEEZER_BACKEND_HOME_URL } from '../../services/deezerBackend.js';
 
 const DeezerAuthCard = ({
   settings, handleChange, handleVerifyArl,
@@ -76,9 +77,19 @@ const DeezerAuthCard = ({
             <span style={{ color: '#FA243C', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>This access code is invalid or expired. Please check it and try again.</span>
           )}
           {verifyResult === 'unavailable' && (
-            <span style={{ color: '#fbbf24', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>
-              {verifyErrorMessage || 'Could not check this access code. Please try again later.'}
-            </span>
+            <>
+              <span style={{ color: '#fbbf24', fontSize: '13px', marginTop: '8px', fontWeight: 600 }}>
+                {verifyErrorMessage || 'Could not check this access code. Please try again later.'}
+              </span>
+              <a
+                className="backend-wake-link"
+                href={DEEZER_BACKEND_HOME_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open PlanetMusic backend
+              </a>
+            </>
           )}
         </div>
       </div>
